@@ -1,0 +1,138 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <MSBuildCommunityTasksPath>$(SolutionDir)\.build</MSBuildCommunityTasksPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{5761CB44-504F-468B-8263-39F59EEBBB17}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Fuxion</RootNamespace>
+    <AssemblyName>Fuxion</AssemblyName>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <TargetFrameworkProfile>Profile259</TargetFrameworkProfile>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="ApplicationManager.cs" />
+    <Compile Include="Collections\Generic\GenericEqualityComparer.cs" />
+    <Compile Include="Collections\ObjectModel\DeactivatableObservableCollection.cs" />
+    <Compile Include="Commands\CommandAttribute.cs" />
+    <Compile Include="Commands\ICommand.cs" />
+    <Compile Include="Commands\ICommandHandler.cs" />
+    <Compile Include="DomainManager.cs" />
+    <Compile Include="Events\EventAttribute.cs" />
+    <Compile Include="Events\EventBatch.cs" />
+    <Compile Include="Events\IAsyncEventHandler.cs" />
+    <Compile Include="IApplicationNotificationManager.cs" />
+    <Compile Include="Models\IModel.cs" />
+    <Compile Include="Events\IEvent.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="Factories\Factory.cs" />
+    <Compile Include="Factories\IFactory.cs" />
+    <Compile Include="FuxionException.cs" />
+    <Compile Include="Graph\Edge.cs" />
+    <Compile Include="Graph\Graph.cs" />
+    <Compile Include="Graph\GraphCyclicException.cs" />
+    <Compile Include="Graph\Vertex.cs" />
+    <Compile Include="IApplicationCommandManager.cs" />
+    <Compile Include="IApplicationEventManager.cs" />
+    <Compile Include="InvalidStateException.cs" />
+    <Compile Include="IValidatable.cs" />
+    <Compile Include="Logging\ILog.cs" />
+    <Compile Include="Logging\ILogFactory.cs" />
+    <Compile Include="Logging\LogAttribute.cs" />
+    <Compile Include="Logging\LogManager.cs" />
+    <Compile Include="Logging\NullLog.cs" />
+    <Compile Include="Logging\WrapLog.cs" />
+    <Compile Include="Notifications\IAsyncEventProjector.cs" />
+    <Compile Include="Notifications\INotification.cs" />
+    <Compile Include="Notifications\INotificationHandler.cs" />
+    <Compile Include="Notifications\NotificationAttribute.cs" />
+    <Compile Include="ProjectionManager.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Aggregate.cs" />
+    <Compile Include="Repositories\AggregateAlreadyExistException.cs" />
+    <Compile Include="Repositories\AggregateNotFoundException.cs" />
+    <Compile Include="Repositories\AggregateRepository.cs" />
+    <Compile Include="Repositories\HandlerNotFoundException.cs" />
+    <Compile Include="IAggregate.cs" />
+    <Compile Include="Repositories\IKeyValueEntry.cs" />
+    <Compile Include="Repositories\IKeyValueRepository.cs" />
+    <Compile Include="Repositories\IModelRepository.cs" />
+    <Compile Include="Repositories\KeyValueEntry.cs" />
+    <Compile Include="Repositories\MemoryAggregateRepository.cs" />
+    <Compile Include="Repositories\MemoryKeyValueRepository.cs" />
+    <Compile Include="Configuration\ConfigurationItem.cs" />
+    <Compile Include="Configuration\IConfigurationManager.cs" />
+    <Compile Include="EventArgs.cs" />
+    <Compile Include="Linq\Expressions\ExpressionExtensions.cs" />
+    <Compile Include="Net\ConnectableNotifier.cs" />
+    <Compile Include="Reflection\AttributeMoreThanOneException.cs" />
+    <Compile Include="Reflection\AttributeNotFoundException.cs" />
+    <Compile Include="Reflection\MemberInfoExtensions.cs" />
+    <Compile Include="Threading\Locker.cs" />
+    <Compile Include="Threading\Tasks\TaskManager.cs" />
+    <Compile Include="Xml\XElementExtensions.cs" />
+    <Compile Include="Windows\DelegateCommand.cs" />
+    <Compile Include="Windows\IViewModel.cs" />
+    <Compile Include="Windows\ListViewModel.cs" />
+    <Compile Include="ComponentModel\Notifier.cs" />
+    <Compile Include="Windows\ViewModel.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.8.0.2\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Collections.Immutable, Version=1.1.37.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Collections.Immutable.1.1.37\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <!-- <PropertyGroup>
+    <FuxionTasksPath>$(SolutionDir).build</FuxionTasksPath>
+  </PropertyGroup>
+  <Import Project="$(FuxionTasksPath)\Fuxion.Build.Targets" /> -->
+  <Target Name="BeforeBuild" Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <!-- <BuildTask TargetName="BeforeBuild" VersionFile="..\..\.build\version.dat" NugetPath="..\..\.build\nuget\nuget.exe" /> -->
+  </Target>
+  <Target Name="AfterBuild" Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <!-- <BuildTask TargetName="AfterBuild" VersionFile="..\..\.build\version.dat" NugetPath="..\..\.build\nuget\nuget.exe" /> -->
+  </Target>
+</Project>

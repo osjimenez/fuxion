@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>Fuxion</id>
+    <version>###version###</version>
+    <title>Fuxion</title>
+    <authors>Oscar Jimenez</authors>
+    <owners>Oscar Jimenez</owners>
+    <description>Fuxion Core prototype.</description>
+    <releaseNotes />
+    <summary/>
+    <language/>
+    <!--<projectUrl/>
+    <iconUrl/>
+    <licenseUrl/>-->
+    <copyright>Copyright © Oscar Jimenez ###year###</copyright>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <dependencies>
+      <dependency id="System.Collections.Immutable" version="1.1.37" />
+    </dependencies>
+    <references/>
+    <frameworkAssemblies/>
+    <tags/>
+    <!--<developmentDependency/>-->
+  </metadata>
+  <files>
+    <file src="bin\Release\Fuxion.dll" target="lib\portable-net4+sl5+netcore45+wpa81+wp8\Fuxion.dll" />
+    <file src="bin\Release\Fuxion.pdb" target="lib\portable-net4+sl5+netcore45+wpa81+wp8\Fuxion.pdb" />
+    <file src="bin\Release\Fuxion-net46.dll" target="lib\net46\Fuxion-net46.dll" />
+    <file src="bin\Release\Fuxion-net46.pdb" target="lib\net46\Fuxion-net46.pdb" />
+  </files>
+</package>
