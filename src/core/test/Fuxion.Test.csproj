@@ -74,11 +74,13 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="DeactivatableObservableCollectionTest.cs" />
+    <Compile Include="GenericEqualityComparerTest.cs" />
     <Compile Include="MemoryKeyValueRepositoryTest.cs" />
+    <Compile Include="NotifierTest.cs" />
     <Compile Include="ToJsonTest.cs" />
     <Compile Include="ViewModelTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="xunit.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\portable\Fuxion.csproj">
