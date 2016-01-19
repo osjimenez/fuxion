@@ -4,8 +4,7 @@
     <id>FuxionIdentity</id>
     <version>###version###</version>
     <title>Fuxion Identity</title>
-    <authors>Oscar Jimenez</authors>
-    <owners>Oscar Jimenez</owners>
+    <authors>Waf Estructuras Digitales, Oscar Jimenez, Asier Tarancón</authors>
     <description>Fuxion library for identity management.</description>
     <releaseNotes />
     <summary/>
@@ -13,10 +12,9 @@
     <iconUrl>https://raw.githubusercontent.com/waf-es/Fuxion/release/r0.1/res/logo/fuxion.png</iconUrl>
     <projectUrl>https://github.com/waf-es/Fuxion</projectUrl>
     <licenseUrl>https://raw.githubusercontent.com/waf-es/Fuxion/release/r0.1/LICENSE</licenseUrl>
-    <copyright>Copyright © Oscar Jimenez ###year###</copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <dependencies>
-      <dependency id="Fuxion" version="0.0.1-alpha416" />
+      <dependency id="Fuxion" version="0.0.1-alpha423" />
     </dependencies>
     <references/>
     <frameworkAssemblies/>
