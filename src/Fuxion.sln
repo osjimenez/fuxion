@@ -16,6 +16,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{ABD253
 		.build\BuildTask.cs = .build\BuildTask.cs
 		.build\Fuxion.Build.dll = .build\Fuxion.Build.dll
 		.build\Fuxion.Build.targets = .build\Fuxion.Build.targets
+		.build\Fuxion.Identity.ver = .build\Fuxion.Identity.ver
+		.build\Fuxion.ver = .build\Fuxion.ver
 		.build\Version.dat = .build\Version.dat
 	EndProjectSection
 EndProject
