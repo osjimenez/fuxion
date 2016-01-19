@@ -11,9 +11,8 @@
     <summary/>
     <language/>
     <iconUrl>https://raw.githubusercontent.com/osjimenez/Fuxion/release/r0.1/res/logo/fuxion.png</iconUrl>
-    <!--<projectUrl/>
-    
-    <licenseUrl/>-->
+    <projectUrl>https://github.com/osjimenez/Fuxion</projectUrl>
+    <licenseUrl>https://raw.githubusercontent.com/osjimenez/Fuxion/release/r0.1/LICENSE</licenseUrl>
     <copyright>Copyright © Oscar Jimenez ###year###</copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <dependencies>
