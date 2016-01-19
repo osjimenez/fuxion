@@ -48,42 +48,46 @@ namespace Fuxion.Graph
             var components = detector.DetectCycle(graph);
             return components.Cycles().Any();
         }
-        public IEnumerable<T> GetDescendants(T vertex)
+        public IEnumerable<T> GetDescendants(T vertex, IEqualityComparer<T> comparer = null)
         {
+            if (comparer == null) comparer = EqualityComparer<T>.Default;
+
             Debug.WriteLine("DESCENDANTS of " + vertex);
             var res = new List<T>();
-            var currentLevel = Edges.Where(e => e.Source == vertex).Select(e => e.Target).ToList();
+            var currentLevel = Edges.Where(e => comparer.Equals(e.Source, vertex)).Select(e => e.Target).ToList();
             Debug.WriteLine("First level: " + currentLevel.Aggregate("", (c, n) => c.ToString() + " -> " + n.ToString()));
             while (currentLevel.Any())
             {
                 res.AddRange(currentLevel);
-                var nextLevel = Edges.Where(e => currentLevel.Contains(e.Source)).Select(e => e.Target).ToList();
+                var nextLevel = Edges.Where(e => currentLevel.Contains(e.Source, comparer)).Select(e => e.Target).ToList();
                 Debug.WriteLine("Next level: " + nextLevel.Aggregate("", (c, n) => c.ToString() + " -> " + n.ToString()));
-                
+
                 currentLevel.Clear();
                 currentLevel.AddRange(nextLevel);
             }
-            res = res.Distinct().ToList();
+            res = res.Distinct(comparer).ToList();
             Debug.WriteLine("RESULT: " + res.Aggregate("", (c, n) => c.ToString() + " -> " + n.ToString()));
             return res;
         }
 
-        public IEnumerable<T> GetAscendants(T vertex)
+        public IEnumerable<T> GetAscendants(T vertex, IEqualityComparer<T> comparer = null)
         {
+            if (comparer == null) comparer = EqualityComparer<T>.Default;
+
             Debug.WriteLine("ASCENDANTS of " + vertex);
             var res = new List<T>();
-            var currentLevel = Edges.Where(e => e.Target == vertex).Select(e => e.Source).ToList();
+            var currentLevel = Edges.Where(e => comparer.Equals(e.Target, vertex)).Select(e => e.Source).ToList();
             Debug.WriteLine("First level: " + currentLevel.Aggregate("", (c, n) => c.ToString() + " -> " + n.ToString()));
             while (currentLevel.Any())
             {
                 res.AddRange(currentLevel);
-                var nextLevel = Edges.Where(e => currentLevel.Contains(e.Target)).Select(e => e.Source).ToList();
+                var nextLevel = Edges.Where(e => currentLevel.Contains(e.Target, comparer)).Select(e => e.Source).ToList();
                 Debug.WriteLine("Next level: " + nextLevel.Aggregate("", (c, n) => c.ToString() + " -> " + n.ToString()));
 
                 currentLevel.Clear();
                 currentLevel.AddRange(nextLevel);
             }
-            res = res.Distinct().ToList();
+            res = res.Distinct(comparer).ToList();
             Debug.WriteLine("RESULT: " + res.Aggregate("", (c, n) => c.ToString() + " -> " + n.ToString()));
             return res;
         }

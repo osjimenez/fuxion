@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>FuxionIdentity</id>
+    <version>###version###</version>
+    <title>Fuxion Identity</title>
+    <authors>Oscar Jimenez</authors>
+    <owners>Oscar Jimenez</owners>
+    <description>Fuxion library for identity management.</description>
+    <releaseNotes />
+    <summary/>
+    <language/>
+    <iconUrl>https://raw.githubusercontent.com/osjimenez/Fuxion/release/r0.1/res/logo/fuxion.png</iconUrl>
+    <projectUrl>https://github.com/osjimenez/Fuxion</projectUrl>
+    <licenseUrl>https://raw.githubusercontent.com/osjimenez/Fuxion/release/r0.1/LICENSE</licenseUrl>
+    <copyright>Copyright © Oscar Jimenez ###year###</copyright>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <dependencies>
+      <dependency id="Fuxion" version="0.0.1-alpha416" />
+    </dependencies>
+    <references/>
+    <frameworkAssemblies/>
+    <tags/>
+    <!--<developmentDependency/>-->
+  </metadata>
+  <files>
+    <file src="bin\Release\Fuxion.Identity.dll" target="lib\portable-net4+sl5+netcore45+wpa81+wp8\Fuxion.Identity.dll" />
+    <file src="bin\Release\Fuxion.Identity.pdb" target="lib\portable-net4+sl5+netcore45+wpa81+wp8\Fuxion.Identity.pdb" />
+  </files>
+</package>
