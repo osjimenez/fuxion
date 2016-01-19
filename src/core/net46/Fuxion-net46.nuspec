@@ -27,6 +27,8 @@
   <files>
     <file src="bin\Release\Fuxion.dll" target="lib\portable-net4+sl5+netcore45+wpa81+wp8\Fuxion.dll" />
     <file src="bin\Release\Fuxion.pdb" target="lib\portable-net4+sl5+netcore45+wpa81+wp8\Fuxion.pdb" />
+    <file src="bin\Release\Fuxion.dll" target="lib\net46\Fuxion.dll" />
+    <file src="bin\Release\Fuxion.pdb" target="lib\net46\Fuxion.pdb" />
     <file src="bin\Release\Fuxion-net46.dll" target="lib\net46\Fuxion-net46.dll" />
     <file src="bin\Release\Fuxion-net46.pdb" target="lib\net46\Fuxion-net46.pdb" />
   </files>

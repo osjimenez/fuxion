@@ -18,7 +18,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{ABD253
 		.build\Fuxion.Build.targets = .build\Fuxion.Build.targets
 		.build\Fuxion.Identity.ver = .build\Fuxion.Identity.ver
 		.build\Fuxion.ver = .build\Fuxion.ver
-		.build\Version.dat = .build\Version.dat
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion.Build", ".build\Fuxion.Build\Fuxion.Build.csproj", "{45F4DA0C-EE15-4F7A-993D-5BA92D4627BE}"
@@ -28,6 +27,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Identity", "Identity", "{ED2E703A-7204-4A18-8DB4-D47D845849AA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion.Identity", "modules\Identity\portable\Fuxion.Identity.csproj", "{B784238C-90AA-49C0-A4CF-419A9AF81021}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion.Identity.Test", "modules\Identity\test\Fuxion.Identity.Test.csproj", "{CAA14F5A-5DF4-43AE-9DF3-A73220705CCA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -55,6 +56,10 @@ Global
 		{B784238C-90AA-49C0-A4CF-419A9AF81021}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B784238C-90AA-49C0-A4CF-419A9AF81021}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B784238C-90AA-49C0-A4CF-419A9AF81021}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CAA14F5A-5DF4-43AE-9DF3-A73220705CCA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CAA14F5A-5DF4-43AE-9DF3-A73220705CCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CAA14F5A-5DF4-43AE-9DF3-A73220705CCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CAA14F5A-5DF4-43AE-9DF3-A73220705CCA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -66,6 +71,7 @@ Global
 		{45F4DA0C-EE15-4F7A-993D-5BA92D4627BE} = {ABD253A3-63FE-4FF0-8877-E872691E8D41}
 		{ED2E703A-7204-4A18-8DB4-D47D845849AA} = {943161B7-5FFB-4700-99C0-7E8BFF4E15FC}
 		{B784238C-90AA-49C0-A4CF-419A9AF81021} = {ED2E703A-7204-4A18-8DB4-D47D845849AA}
+		{CAA14F5A-5DF4-43AE-9DF3-A73220705CCA} = {ED2E703A-7204-4A18-8DB4-D47D845849AA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		EnterpriseLibraryConfigurationToolBinariesPathV6 = packages\EnterpriseLibrary.TransientFaultHandling.6.0.1304.0\lib\portable-net45+win+wp8;packages\EnterpriseLibrary.TransientFaultHandling.Data.6.0.1304.1\lib\NET45
