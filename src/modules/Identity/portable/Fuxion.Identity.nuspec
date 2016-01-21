@@ -14,7 +14,7 @@
     <licenseUrl>https://raw.githubusercontent.com/waf-es/Fuxion/release/r0.1/LICENSE</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <dependencies>
-      <dependency id="Fuxion" version="0.0.1-alpha423" />
+      <dependency id="Fuxion" version="0.0.1-alpha424" />
     </dependencies>
     <references/>
     <frameworkAssemblies/>
