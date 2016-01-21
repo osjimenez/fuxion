@@ -8,7 +8,12 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Repositories
 {
-    public abstract class AggregateRepository<TAggregate> where TAggregate : IAggregate
+    public interface IAggregateRepository<TAggregate> where TAggregate : IAggregate
+    {
+        Task<TAggregate> FindAsync(Guid id, bool checkIfIsValid = true);
+        Task<TAggregate> GetAsync(Guid id, bool checkIfIsValid = true);
+    }
+    public abstract class AggregateRepository<TAggregate> : IAggregateRepository<TAggregate> where TAggregate : IAggregate
     {
         public abstract Task<TAggregate> FindAsync(Guid id, bool checkIfIsValid = true);
         public abstract Task<TAggregate> GetAsync(Guid id, bool checkIfIsValid = true);
