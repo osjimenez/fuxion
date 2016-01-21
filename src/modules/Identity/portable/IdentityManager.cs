@@ -9,24 +9,27 @@ namespace Fuxion.Identity
 {
     public class IdentityManager
     {
-        public IdentityManager(IPasswordProvider passwordProvider, IStorageProvider storageProvider) {
-            PasswordProvider = passwordProvider;
-            StorageProvider = storageProvider;
-        }
-        public IdentityManager(IPasswordProvider passwordProvider, IAggregateRepository<IIdentity> repository)
+        public IdentityManager(IPasswordProvider passwordProvider, IAggregateRepository<IIdentity, string> repository)
         {
             PasswordProvider = passwordProvider;
+            Repository = repository;
         }
         public IPasswordProvider PasswordProvider { get; private set; }
-        public IStorageProvider StorageProvider { get; private set; }
-        public bool ValidateCredentials(string username, string password) {
+        public IAggregateRepository<IIdentity, string> Repository { get; private set; }
+        public async Task<bool> ValidateCredentials(string username, string password)
+        {
             if (username == null || password == null) return false;
-            var ide = StorageProvider.Identities.FirstOrDefault(i => i.UserName == username);
+            var ide = await Repository.FindAsync(username);
+            if (ide == null) return false;
             return PasswordProvider.Verify(password, ide.PasswordHash, ide.PasswordSalt);
         }
-        public string GetAsCacheValue()
+        public async Task<bool> CheckFunctionAssigned(string username, IFunction function, params IDiscriminator[] discriminators)
         {
-            return null;
+            if (username == null) return false;
+            var ide = await Repository.FindAsync(username);
+            if (ide == null) return false;
+            ide.CheckFunctionAssigned(new FunctionGraph(), function, discriminators);
+            return true;
         }
     }
     public interface IPasswordProvider

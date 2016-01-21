@@ -8,10 +8,19 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Repositories
 {
-    public interface IAggregateRepository<TAggregate> where TAggregate : IAggregate
+    public interface IAggregateRepository<TAggregate, TKey> 
+        where TAggregate : IAggregate 
+        //where TKey : struct
     {
-        Task<TAggregate> FindAsync(Guid id, bool checkIfIsValid = true);
-        Task<TAggregate> GetAsync(Guid id, bool checkIfIsValid = true);
+        Task<TAggregate> FindAsync(TKey id, bool checkIfIsValid = true);
+        Task<TAggregate> GetAsync(TKey id, bool checkIfIsValid = true);
+        Task SaveAsync(TAggregate aggregate, TKey sagaId);
+    }
+    public interface IAggregateRepository<TAggregate> : IAggregateRepository<TAggregate,Guid> where TAggregate : IAggregate
+    {
+        //Task<TAggregate> FindAsync(Guid id, bool checkIfIsValid = true);
+        //Task<TAggregate> GetAsync(Guid id, bool checkIfIsValid = true);
+        //Task SaveAsync(TAggregate aggregate, Guid? sagaId);
     }
     public abstract class AggregateRepository<TAggregate> : IAggregateRepository<TAggregate> where TAggregate : IAggregate
     {
@@ -19,7 +28,7 @@ namespace Fuxion.Repositories
         public abstract Task<TAggregate> GetAsync(Guid id, bool checkIfIsValid = true);
         // TODO - Oscar - Restore PostSharp
         //[Log(typeof(string), typeof(IAggregate), ApplyToStateMachine = true)]
-        public async Task SaveAsync(TAggregate aggregate, Guid? sagaId)
+        public async Task SaveAsync(TAggregate aggregate, Guid sagaId)
         {
             if (!aggregate.Events.Any()) return;
             // TODO - Oscar - Think in correlationId, how will work and if i need it
