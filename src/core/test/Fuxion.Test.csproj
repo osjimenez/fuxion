@@ -75,6 +75,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="DeactivatableObservableCollectionTest.cs" />
+    <Compile Include="FactoryTest.cs" />
     <Compile Include="GenericEqualityComparerTest.cs" />
     <Compile Include="MemoryKeyValueRepositoryTest.cs" />
     <Compile Include="NotifierTest.cs" />
