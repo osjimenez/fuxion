@@ -48,7 +48,7 @@ namespace Fuxion.Identity.Test
         [TestMethod]
         public void IncludesAndExcludes()
         {
-            FunctionGraph col = new FunctionGraph(false);
+            GuidFunctionGraph col = new GuidFunctionGraph(false);
 
             col.ForFunction(Write).Include(Read);
             col.ForFunction(Write).Exclude(Admin);
@@ -64,7 +64,7 @@ namespace Fuxion.Identity.Test
         [TestMethod]
         public void IncludesAndExcludes2()
         {
-            FunctionGraph col = new FunctionGraph(false);
+            GuidFunctionGraph col = new GuidFunctionGraph(false);
 
             col.ForFunction(StrWrite).Include(StrRead);
             col.ForFunction(StrWrite).Exclude(StrAdmin);
@@ -80,7 +80,7 @@ namespace Fuxion.Identity.Test
         [TestMethod]
         public void IncludesAndExcludes3()
         {
-            FunctionGraph col = new FunctionGraph(false);
+            GuidFunctionGraph col = new GuidFunctionGraph(false);
 
             col.ForFunction(StrWrite).Include(Read);
             col.ForFunction(StrWrite).Exclude(Admin);

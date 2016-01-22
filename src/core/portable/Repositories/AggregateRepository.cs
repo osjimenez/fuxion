@@ -13,6 +13,7 @@ namespace Fuxion.Repositories
         //where TKey : struct
     {
         Task<TAggregate> FindAsync(TKey id, bool checkIfIsValid = true);
+        TAggregate Find(TKey id, bool checkIfIsValid = true);
         Task<TAggregate> GetAsync(TKey id, bool checkIfIsValid = true);
         Task SaveAsync(TAggregate aggregate, TKey sagaId);
     }
@@ -25,6 +26,7 @@ namespace Fuxion.Repositories
     public abstract class AggregateRepository<TAggregate> : IAggregateRepository<TAggregate> where TAggregate : IAggregate
     {
         public abstract Task<TAggregate> FindAsync(Guid id, bool checkIfIsValid = true);
+        public abstract TAggregate Find(Guid id, bool checkIfIsValid = true);
         public abstract Task<TAggregate> GetAsync(Guid id, bool checkIfIsValid = true);
         // TODO - Oscar - Restore PostSharp
         //[Log(typeof(string), typeof(IAggregate), ApplyToStateMachine = true)]

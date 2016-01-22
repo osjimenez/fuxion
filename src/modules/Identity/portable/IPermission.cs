@@ -13,7 +13,7 @@ namespace Fuxion.Identity
     public static class PermissionExtensions
     {
         public static bool IsValid(this IPermission me) { return me.Function != null && me.Scopes.Select(s => s.Discriminator.TypeId).Distinct().Count() == me.Scopes.Count(); }
-        public static bool Match(this IPermission me, FunctionGraph functionCollection, IFunction function, IDiscriminator[] discriminators)
+        public static bool Match(this IPermission me, GuidFunctionGraph functionCollection, IFunction function, IDiscriminator[] discriminators)
         {
             var byFunction = me.MatchByFunction(functionCollection, function);
             var byDiscriminator = me.MatchByDiscriminatorsType(discriminators);
@@ -23,7 +23,7 @@ namespace Fuxion.Identity
                 me.MatchByDiscriminatorsType(discriminators) &&
                 me.MatchByDiscriminatorsPath(discriminators);
         }
-        public static bool MatchByFunction(this IPermission me, FunctionGraph functionGraph, IFunction function)
+        public static bool MatchByFunction(this IPermission me, GuidFunctionGraph functionGraph, IFunction function)
         {
             var comparer = new FunctionEqualityComparer();
             // Si es la misma función, TRUE.

@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using static Fuxion.Identity.FunctionGraph;
+using static Fuxion.Identity.GuidFunctionGraph;
 namespace Fuxion.Identity.Test
 {
     [DebuggerDisplay(nameof(Name))]
@@ -54,13 +54,13 @@ namespace Fuxion.Identity.Test
                 new Permission(true, Read, new Scope(SanFranciscoDis, ScopePropagation.ToMe)),
                 new Permission(false, Edit,
                     new Scope(CaliforniaDis, ScopePropagation.ToMe | ScopePropagation.ToInclusions))
-                ).CheckFunctionAssigned(new FunctionGraph(), Read, SanFranciscoDis);
+                ).CheckFunctionAssigned(new GuidFunctionGraph(), Read, new[] { SanFranciscoDis }, null);
 
             Throws<UnauthorizedAccessException>(() =>
                 new Rol(Guid.NewGuid(), "oka", null,
                     new Permission(true, Edit, new Scope(SanFranciscoDis, ScopePropagation.ToMe)),
                     new Permission(false, Edit, new Scope(CaliforniaDis, ScopePropagation.ToMe | ScopePropagation.ToInclusions))
-                ).CheckFunctionAssigned(new FunctionGraph(), Edit, SanFranciscoDis)
+                ).CheckFunctionAssigned(new GuidFunctionGraph(), Edit, new[] { SanFranciscoDis }, null)
                 , "Tengo:\r\n" +
                     $" - Concedido el permiso para {nameof(Edit)} en {nameof(SanFrancisco)}\r\n" +
                     $" - Denegado el permiso para {nameof(Edit)} en {nameof(California)} y sus hijos\r\n" +

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static Fuxion.Identity.FunctionGraph;
+using static Fuxion.Identity.GuidFunctionGraph;
 namespace Fuxion.Identity.Test
 {
     class Permission : IPermission
@@ -21,7 +21,7 @@ namespace Fuxion.Identity.Test
     [TestClass]
     public class PermissionTest
     {
-        FunctionGraph functions = new FunctionGraph();
+        GuidFunctionGraph functions = new GuidFunctionGraph();
         [TestMethod]
         public void WhenPermission_MatchByFunction()
         {
@@ -243,7 +243,7 @@ namespace Fuxion.Identity.Test
                     new Scope(
                         new StringDiscriminator(California, CaliforniIncludes, CaliforniExcludes, LocationType),
                         propagation)
-                ).Match(new FunctionGraph(), Read,
+                ).Match(new GuidFunctionGraph(), Read,
                     new[] {
                         new StringDiscriminator(SanFrancisco, SanFranciscIncludes, SanFranciscExcludes,LocationType)
                     }),
@@ -255,7 +255,7 @@ namespace Fuxion.Identity.Test
                     new Scope(
                         new StringDiscriminator(California, CaliforniIncludes, CaliforniExcludes, LocationType),
                         propagation)
-                ).Match(new FunctionGraph(), Read,
+                ).Match(new GuidFunctionGraph(), Read,
                     new[] {
                         new StringDiscriminator(SanFrancisco, SanFranciscIncludes, SanFranciscExcludes,LocationType)
                     }),

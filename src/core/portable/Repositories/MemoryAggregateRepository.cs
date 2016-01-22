@@ -21,11 +21,20 @@ namespace Fuxion.Repositories
         private readonly Func<Guid, IEnumerable<IEvent>, TAggregate> _entityFactory;
         public override Task<TAggregate> FindAsync(Guid id, bool checkIfIsValid = true)
         {
+            //var evts = _list.Where(evt => evt.SourceId == id);
+            //// Hydration
+            //var res = _entityFactory(id, evts);
+            //if (checkIfIsValid && !res.IsValid) return null;
+            //return Task.FromResult(res);
+            return Task.FromResult(Find(id, checkIfIsValid));
+        }
+        public override TAggregate Find(Guid id, bool checkIfIsValid = true)
+        {
             var evts = _list.Where(evt => evt.SourceId == id);
             // Hydration
             var res = _entityFactory(id, evts);
             if (checkIfIsValid && !res.IsValid) return null;
-            return Task.FromResult(res);
+            return res;
         }
         public override async Task<TAggregate> GetAsync(Guid id, bool checkIfIsValid = true)
         {
