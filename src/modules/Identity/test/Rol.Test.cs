@@ -6,17 +6,17 @@ using static Fuxion.Identity.GuidFunctionGraph;
 namespace Fuxion.Identity.Test
 {
     [DebuggerDisplay(nameof(Name))]
-    class Rol : IRol<Guid>
+    class Rol : IRol
     {
-        public Rol(Guid id, string name, IEnumerable<IGroup> groups, params IPermission[] permissions)
+        public Rol(string name, IEnumerable<IGroup> groups, params IPermission[] permissions)
         {
-            Id = id;
+            //Id = id;
             Name = name;
             Groups = groups;
             Permissions = permissions;
         }
-        public Guid Id { get; private set; }
-        object IRol.Id { get { return Id; } }
+        //public Guid Id { get; private set; }
+        //object IRol.Id { get { return Id; } }
         public string Name { get; private set; }
         public IEnumerable<IGroup> Groups { get; private set; }
 
@@ -50,14 +50,14 @@ namespace Fuxion.Identity.Test
             var SanFranciscoDis = new GuidDiscriminator(SanFrancisco, "SanFrancisco", new Guid[] { }, new[] { USA, California }, LocationType, "LocationType");
             var CaliforniaDis = new GuidDiscriminator(California, "California", new[] { SanFrancisco }, new[] { USA }, LocationType, "LocationType");
 
-            new Rol(Guid.NewGuid(), "oka", null,
+            new Rol("oka", null,
                 new Permission(true, Read, new Scope(SanFranciscoDis, ScopePropagation.ToMe)),
                 new Permission(false, Edit,
                     new Scope(CaliforniaDis, ScopePropagation.ToMe | ScopePropagation.ToInclusions))
                 ).CheckFunctionAssigned(new GuidFunctionGraph(), Read, new[] { SanFranciscoDis }, null);
 
             Throws<UnauthorizedAccessException>(() =>
-                new Rol(Guid.NewGuid(), "oka", null,
+                new Rol("oka", null,
                     new Permission(true, Edit, new Scope(SanFranciscoDis, ScopePropagation.ToMe)),
                     new Permission(false, Edit, new Scope(CaliforniaDis, ScopePropagation.ToMe | ScopePropagation.ToInclusions))
                 ).CheckFunctionAssigned(new GuidFunctionGraph(), Edit, new[] { SanFranciscoDis }, null)

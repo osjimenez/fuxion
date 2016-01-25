@@ -6,19 +6,27 @@ using Fuxion.Graph;
 
 namespace Fuxion.Identity
 {
-    public class FunctionGraph<TId>
+    public interface IFunctionGraph
+    {
+        IEnumerable<IFunction> GetIncludedBy(IFunction function);
+        IEnumerable<IFunction> GetExcludedBy(IFunction function);
+        void Add(IFunction function, IFunction impliedFunction);
+    }
+    public class FunctionGraph<TId> : IFunctionGraph
     {
         Graph<IFunction> gra = new Graph<IFunction>();
         List<IFunction> list = new List<IFunction>();
+
         public IEnumerable<IFunction> GetIncludedBy(IFunction function) { return gra.GetDescendants(function, new FunctionEqualityComparer()); }
         public IEnumerable<IFunction> GetExcludedBy(IFunction function) { return gra.GetAscendants(function, new FunctionEqualityComparer()); }
-        internal void Add(IFunction function, IFunction impliedFunction)
+
+        public IFunction Find(TId key) { return list.Find(f => Comparer.AreEquals(((TId)f.Id), key)); }
+        public void Add(IFunction function, IFunction impliedFunction)
         {
             if (!list.Contains(function)) list.Add(function);
             if (!list.Contains(impliedFunction)) list.Add(impliedFunction);
             gra.AddEdge(function, impliedFunction);
         }
-        public IFunction Find(TId key) { return list.Find(f => Comparer.AreEquals(((TId)f.Id), key)); }
     }
 
 
@@ -107,16 +115,16 @@ namespace Fuxion.Identity
     }
     public static class FunctionCollectionExtensions
     {
-        public static FunctionCollectionFluent ForFunction(this GuidFunctionGraph me, IFunction function) { return new FunctionCollectionFluent(me, function); }
+        public static FunctionCollectionFluent ForFunction(this IFunctionGraph me, IFunction function) { return new FunctionCollectionFluent(me, function); }
     }
     public sealed class FunctionCollectionFluent
     {
-        internal FunctionCollectionFluent(GuidFunctionGraph collection, IFunction function)
+        internal FunctionCollectionFluent(IFunctionGraph collection, IFunction function)
         {
             Collection = collection;
             Function = function;
         }
-        internal GuidFunctionGraph Collection { get; set; }
+        internal IFunctionGraph Collection { get; set; }
         internal IFunction Function { get; set; }
         public void Include(IFunction function) { Collection.Add(Function, function); }
         public void Exclude(IFunction function) { Collection.Add(function, Function); }

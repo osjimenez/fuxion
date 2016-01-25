@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Fuxion.Identity.Helpers;
+using System;
+
 namespace Fuxion.Identity
 {
     public interface IPermission
@@ -13,21 +15,25 @@ namespace Fuxion.Identity
     public static class PermissionExtensions
     {
         public static bool IsValid(this IPermission me) { return me.Function != null && me.Scopes.Select(s => s.Discriminator.TypeId).Distinct().Count() == me.Scopes.Count(); }
-        public static bool Match(this IPermission me, GuidFunctionGraph functionCollection, IFunction function, IDiscriminator[] discriminators)
+        public static bool Match(this IPermission me, IFunctionGraph functionCollection, IFunction function, IDiscriminator[] discriminators, Action<string, bool> console)
         {
-            var byFunction = me.MatchByFunction(functionCollection, function);
-            var byDiscriminator = me.MatchByDiscriminatorsType(discriminators);
-            var byDiscriminatorPath = me.MatchByDiscriminatorsPath(discriminators);
+            var byFunction = me.MatchByFunction(functionCollection, function, console);
+            var byDiscriminator = me.MatchByDiscriminatorsType(discriminators, console);
+            var byDiscriminatorPath = me.MatchByDiscriminatorsPath(discriminators, console);
             return
-                me.MatchByFunction(functionCollection, function) &&
-                me.MatchByDiscriminatorsType(discriminators) &&
-                me.MatchByDiscriminatorsPath(discriminators);
+                byFunction &&
+                byDiscriminator &&
+                byDiscriminatorPath;
         }
-        public static bool MatchByFunction(this IPermission me, GuidFunctionGraph functionGraph, IFunction function)
+        public static bool MatchByFunction(this IPermission me, IFunctionGraph functionGraph, IFunction function, Action<string, bool> console)
         {
+            Action<string, bool> con = (m, i) => { if (console != null) console(m, i); };
+            con($"Permiso '{me.Value}' coincidencia por función ... ({me.Function.Id} == {function.Id})", true);
             var comparer = new FunctionEqualityComparer();
             // Si es la misma función, TRUE.
             var byFunc = comparer.Equals(me.Function, function);
+
+            con($"Mis inclusiones {functionGraph.GetIncludedBy(me.Function).Aggregate("", (a, s) => a + "-" + s.Id)}", true);
 
             // Si soy un permiso de concesión y la funcion esta incluida, TRUE.
             // Ejemplo: Soy un permiso que concede edición y la funcion que me piden es de lectura
@@ -40,10 +46,12 @@ namespace Fuxion.Identity
             //          por lo tanto es permiso encaja.
             var byExclusion = !me.Value && functionGraph.GetExcludedBy(me.Function).Contains(function, comparer);
 
+            con($"byFunc = {byFunc} byInclusion = {byInclusion} byExclusion = {byExclusion}", true);
+
             // El permiso nos dará la función por cualquiera de los trés métodos.
             return byFunc || byInclusion || byExclusion;
         }
-        public static bool MatchByDiscriminatorsType(this IPermission me, IEnumerable<IDiscriminator> discriminators)
+        public static bool MatchByDiscriminatorsType(this IPermission me, IEnumerable<IDiscriminator> discriminators, Action<string, bool> console)
         {
             #region Notes
             // Tenemos que comprobar que todos los tipos de discriminadores que me han pasado estan presentes en este permiso, es decir
@@ -113,10 +121,13 @@ namespace Fuxion.Identity
             //                      en una determianda localización, no puedo afirmar que tenga el permiso en un departamento dado.
             //                      
             #endregion
+            Action<string, bool> con = (m, i) => { if (console != null) console(m, i); };
+            con($"Buscando coincidencia por tipo de discriminatdor ... ", false);
+            con($"Tengo {me.Scopes.Count()} scopes", true);
             // Si no tiene ninguno de los tipos, no encaja.
-            //var anyType = me.Scopes.All(s => discriminators.Select(d => d.TypeId).Contains(s.Discriminator.TypeId));
-            var anyType = me.Scopes.All(s => discriminators.Contains(s.Discriminator, new DiscriminatorEqualityComparer()));
-
+            var anyType = me.Scopes.All(s => discriminators.Select(d => d.TypeId).Contains(s.Discriminator.TypeId));
+            //var anyType = me.Scopes.All(s => discriminators.Contains(s.Discriminator, new DiscriminatorEqualityComparer()));
+            con($"resultado = {anyType}", true);
             return anyType;
 
             // Si alguno de los tipos esta, querrá decir que este permiso se aplica
@@ -126,30 +137,47 @@ namespace Fuxion.Identity
             //    return !res.Any(p => p.Scopes.All(s => !discriminators.Select(d => d.TypeId).Contains(s.Discriminator.TypeId)));
             //return Scopes.All(s => !discriminators.Select(d => d.TypeId).Contains(s.Discriminator.TypeId));
         }
-        public static bool MatchByDiscriminatorsPath(this IPermission me, IEnumerable<IDiscriminator> discriminators)
+        public static bool MatchByDiscriminatorsPath(this IPermission me, IEnumerable<IDiscriminator> discriminators, Action<string, bool> console)
         {
+            Action<string, bool> con = (m, i) => { if (console != null) console(m, i); };
+            con($"Buscando coincidencia por ruta del discriminatdor:", true);
             // Tenemos que tomar nuestros discriminadores, y comprobarlos contra los discriminadores que me han pasado
             // - Cojo un discriminador y busco el discriminador del mismo tipo en la entrada:
             //    - No hay un discriminador del mismo tipo, pues no encaja
             //    - Si hay un discriminador del mismo tipo, compruebo la ruta
             foreach (var sco in me.Scopes)
             {
+                con($"Scope {sco}", true);
                 if (discriminators.Count(d => Comparer.AreEquals(d.TypeId, sco.Discriminator.TypeId)) == 1)
                 {
                     // Si hay un discriminador del mismo tipo, compruebo la ruta
                     var target = discriminators.Single(d => Comparer.AreEquals(d.TypeId, sco.Discriminator.TypeId));
+                    con($"Se propaga a mi {sco.Propagation.HasFlag(ScopePropagation.ToMe)} ids = {target.Id}-{sco.Discriminator.Id}", true);
                     // Se propaga a mi y es el mismo discriminador
-                    if (sco.Propagation.HasFlag(ScopePropagation.ToMe) && Comparer.AreEquals(target.Id, sco.Discriminator.Id)) return true;
+                    if (sco.Propagation.HasFlag(ScopePropagation.ToMe) && Comparer.AreEquals(target.Id, sco.Discriminator.Id))
+                    {
+                        con($"Se propaga a mi y es el mismo discriminador", true);
+                        return true;
+                    }
                     // Se propaga hacia arriba y su id esta en mi path:
                     //if (sco.Propagation.HasFlag(ScopePropagation.ToExclusions) && sco.Discriminator.Path.Contains(target.Id)) return true;
-                    if (sco.Propagation.HasFlag(ScopePropagation.ToExclusions) && sco.Discriminator.Exclusions.Contains(target.Id)) return true;
+                    if (sco.Propagation.HasFlag(ScopePropagation.ToExclusions) && sco.Discriminator.Exclusions.Contains(target.Id))
+                    {
+                        con($"Se propaga hacia arriba y su id esta en mi path", true);
+                        return true;
+                    }
                     // Se propaga hacia abajo y mi id esta en su path:
                     //if (sco.Propagation.HasFlag(ScopePropagation.ToInclusions) && target.Path.Contains(sco.Discriminator.Id)) return true;
-                    if (sco.Propagation.HasFlag(ScopePropagation.ToInclusions) && sco.Discriminator.Inclusions.Contains(target.Id)) return true;
+                    if (sco.Propagation.HasFlag(ScopePropagation.ToInclusions) && sco.Discriminator.Inclusions.Contains(target.Id))
+                    {
+                        con($"Se propaga hacia abajo y mi id esta en su path", true);
+                        return true;
+                    }
                 }
                 else
                 {
                     // No hay un discriminador del mismo tipo, pues no encaja
+                    con($"No hay un discriminador del mismo tipo", true);
                     return false;
                 }
             }

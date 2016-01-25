@@ -93,6 +93,16 @@ namespace Fuxion.Identity.Test
             //Assert.IsFalse(col.ExcludedBy(Write).Contains(Read), "'write' cannot exclude 'read'");
             //Assert.IsTrue(col.ExcludedBy(Write).Contains(Admin), "'write' must exclude 'admin'");
         }
+        [TestMethod]
+        public void MyIncludes()
+        {
+            StringFunctionGraph sfg = new StringFunctionGraph();
+            var comparer = new FunctionEqualityComparer();
+            Assert.IsTrue(sfg.GetIncludedBy(StringFunctionGraph.Admin).Contains(StringFunctionGraph.Read, comparer));
+
+            
+            //Assert.IsTrue(sfg.GetIncludedBy(StringFunctionGraph.Admin).Count() == 5);
+        }
         //[TestMethod]
         //public void WhenGraph_CheckDescendants()
         //{

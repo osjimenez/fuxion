@@ -26,9 +26,9 @@ namespace Fuxion.Identity.Test
         public void WhenPermission_MatchByFunction()
         {
             // Un permiso de concesion para editar algo implicará que tambien puedo leerlo
-            Assert.IsTrue(new Permission(true, Edit, null).MatchByFunction(functions, Read));
+            Assert.IsTrue(new Permission(true, Edit, null).MatchByFunction(functions, Read, null));
             // Un permiso de denegación para leer algo implicará que tampoco puedo editarlo
-            Assert.IsTrue(new Permission(false, Read, null).MatchByFunction(functions, Edit));
+            Assert.IsTrue(new Permission(false, Read, null).MatchByFunction(functions, Edit, null));
         }
         [TestMethod]
         public void WhenPermission_MatchByDiscriminatorsType()
@@ -52,7 +52,7 @@ namespace Fuxion.Identity.Test
                     // Me presentan 'Department' y 'Location'
                     new GuidDiscriminator(depId, "Sales", null,null,Department, "Department"),
                     new GuidDiscriminator( locId, "", null,null,Location, "Location")
-                }));
+                }, null));
             // CASE 2
             // Faltan discriminadores, se han presentado una serie de discriminadores, pero este permiso tiene mas, no cumple
             Assert.IsFalse(
@@ -63,7 +63,7 @@ namespace Fuxion.Identity.Test
                 ).MatchByDiscriminatorsType(new[] {
                     // Me presentan 'Department'
                     new GuidDiscriminator(x(), "", null,null,Department, "Department"),
-                }));
+                }, null));
             // CASE 3
             // Sobran discriminadores, se han presentado más discriminadores que los que aplican en este permiso, se ignorarán,
             // el permiso cumple
@@ -77,7 +77,7 @@ namespace Fuxion.Identity.Test
                     new GuidDiscriminator(x(), "", null, null,Department, "Department"),
                     new GuidDiscriminator(x(), "", null, null,Location, "Location"),
                     new GuidDiscriminator(x(), "", null, null,WorkerClass, "WorkerClass"),
-                }));
+                }, null));
             // CASE 4
             // Permiso de Root, sin discriminadores
             Assert.IsTrue(
@@ -89,7 +89,7 @@ namespace Fuxion.Identity.Test
                         new GuidDiscriminator(x(), "", null, null,Department, "Department"),
                         new GuidDiscriminator(x(), "", null, null,Location, "Location"),
                         new GuidDiscriminator(x(), "", null, null,WorkerClass, "WorkerClass"),
-                    }));
+                    }, null));
         }
         [TestMethod]
         public void WhenPermission_MatchByDiscriminatorsPath()
@@ -109,19 +109,19 @@ namespace Fuxion.Identity.Test
                     new Scope(CaliforniaDiscriminator, propagation)
                 ).MatchByDiscriminatorsPath(new[] {
                     new GuidDiscriminator(California, "California", new[] { USA },new[] { SanFrancisco },LocationType, "LocationType")
-                }), $"Permiso de {nameof(California)} hacia {propagation}, me pasan {nameof(California)}, no debería encajar");
+                }, null), $"Permiso de {nameof(California)} hacia {propagation}, me pasan {nameof(California)}, no debería encajar");
             Assert.IsTrue(
                 new Permission(true, Read,
                     new Scope(CaliforniaDiscriminator, propagation)
                 ).MatchByDiscriminatorsPath(new[] {
                     USADiscriminator
-                }), $"Permiso de {nameof(California)} hacia {propagation}, me pasan {nameof(USA)}, debería encajar");
+                }, null), $"Permiso de {nameof(California)} hacia {propagation}, me pasan {nameof(USA)}, debería encajar");
             Assert.IsFalse(
                 new Permission(true, Read,
                     new Scope(CaliforniaDiscriminator, propagation)
                 ).MatchByDiscriminatorsPath(new[] {
                     SanFranciscoDiscriminator
-                }), $"Permiso de {nameof(California)} hacia {propagation}, me pasan {nameof(SanFrancisco)}, no debería encajar");
+                }, null), $"Permiso de {nameof(California)} hacia {propagation}, me pasan {nameof(SanFrancisco)}, no debería encajar");
 
             // CASE 2 - Propagation to me
             propagation = ScopePropagation.ToMe;
@@ -130,19 +130,19 @@ namespace Fuxion.Identity.Test
                     new Scope(CaliforniaDiscriminator, propagation)
                 ).MatchByDiscriminatorsPath(new[] {
                     CaliforniaDiscriminator
-                }), $"Permiso de {nameof(California)} hacia {propagation}, me pasan {nameof(California)}, debería encajar");
+                }, null), $"Permiso de {nameof(California)} hacia {propagation}, me pasan {nameof(California)}, debería encajar");
             Assert.IsFalse(
                 new Permission(true, Read,
                     new Scope(CaliforniaDiscriminator, propagation)
                 ).MatchByDiscriminatorsPath(new[] {
                     USADiscriminator
-                }), $"Permiso de {nameof(California)} hacia {propagation}, me pasan {nameof(USA)}, no debería encajar");
+                }, null), $"Permiso de {nameof(California)} hacia {propagation}, me pasan {nameof(USA)}, no debería encajar");
             Assert.IsFalse(
                 new Permission(true, Read,
                     new Scope(CaliforniaDiscriminator, propagation)
                 ).MatchByDiscriminatorsPath(new[] {
                     SanFranciscoDiscriminator
-                }), $"Permiso de {nameof(California)} hacia {propagation}, me pasan {nameof(SanFrancisco)}, no debería encajar");
+                }, null), $"Permiso de {nameof(California)} hacia {propagation}, me pasan {nameof(SanFrancisco)}, no debería encajar");
 
             // CASE 3 - Propagation to childs
             propagation = ScopePropagation.ToInclusions;
@@ -151,19 +151,19 @@ namespace Fuxion.Identity.Test
                     new Scope(CaliforniaDiscriminator, propagation)
                 ).MatchByDiscriminatorsPath(new[] {
                     CaliforniaDiscriminator
-                }), $"Permiso de {nameof(California)} hacia {propagation}, me pasan {nameof(California)}, no debería encajar");
+                }, null), $"Permiso de {nameof(California)} hacia {propagation}, me pasan {nameof(California)}, no debería encajar");
             Assert.IsFalse(
                 new Permission(true, Read,
                     new Scope(CaliforniaDiscriminator, propagation)
                 ).MatchByDiscriminatorsPath(new[] {
                     USADiscriminator
-                }), $"Permiso de {nameof(California)} hacia {propagation}, me pasan {nameof(USA)}, no debería encajar");
+                }, null), $"Permiso de {nameof(California)} hacia {propagation}, me pasan {nameof(USA)}, no debería encajar");
             Assert.IsTrue(
                 new Permission(true, Read,
                     new Scope(CaliforniaDiscriminator, propagation)
                 ).MatchByDiscriminatorsPath(new[] {
                     SanFranciscoDiscriminator
-                }), $"Permiso de {nameof(California)} hacia {propagation}, me pasan {nameof(SanFrancisco)}, debería encajar");
+                }, null), $"Permiso de {nameof(California)} hacia {propagation}, me pasan {nameof(SanFrancisco)}, debería encajar");
         }
         static Guid LocationType = Guid.NewGuid();
         static Guid USA = Guid.NewGuid();
@@ -197,7 +197,7 @@ namespace Fuxion.Identity.Test
                 ).Match(functions, Read,
                     new[] {
                         SanFranciscoDiscriminator
-                    }),
+                    }, null),
                 $"Si tengo permiso para {nameof(Edit)} en {nameof(California)} y se propaga {propagation}." +
                 $"¿Debería poder {nameof(Read)} en {nameof(SanFrancisco)}? => SI");
 
@@ -209,7 +209,7 @@ namespace Fuxion.Identity.Test
                 ).Match(functions, Read,
                     new[] {
                         SanFranciscoDiscriminator
-                    }), 
+                    }, null), 
                 $"Si tengo permiso para {nameof(Edit)} en {nameof(California)} y se propaga {propagation}." +
                 $"¿Debería poder {nameof(Read)} en {nameof(SanFrancisco)}? => SI");
         }
@@ -246,7 +246,7 @@ namespace Fuxion.Identity.Test
                 ).Match(new GuidFunctionGraph(), Read,
                     new[] {
                         new StringDiscriminator(SanFrancisco, SanFranciscIncludes, SanFranciscExcludes,LocationType)
-                    }),
+                    }, null),
                 $"Si tengo permiso para {nameof(Edit)} en {nameof(California)} y se propaga {propagation}." +
                 $"¿Debería poder {nameof(Read)} en {nameof(SanFrancisco)}? => SI");
 
@@ -258,7 +258,7 @@ namespace Fuxion.Identity.Test
                 ).Match(new GuidFunctionGraph(), Read,
                     new[] {
                         new StringDiscriminator(SanFrancisco, SanFranciscIncludes, SanFranciscExcludes,LocationType)
-                    }),
+                    }, null),
                 $"Si tengo permiso para {nameof(Edit)} en {nameof(California)} y se propaga {propagation}." +
                 $"¿Debería poder {nameof(Read)} en {nameof(SanFrancisco)}? => SI");
         }

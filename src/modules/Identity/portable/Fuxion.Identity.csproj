@@ -73,10 +73,10 @@
     <FuxionTasksPath>$(SolutionDir).build</FuxionTasksPath>
   </PropertyGroup>
   <Import Project="$(FuxionTasksPath)\Fuxion.Build.Targets" />
-  <Target Name="BeforeBuild">
+  <Target Name="BeforeBuild" Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <BuildTask TargetName="BeforeBuild" VersionFile="..\..\..\.build\Fuxion.Identity.ver" NugetPath="..\..\..\.build\nuget\nuget.exe" />
   </Target>
-  <Target Name="AfterBuild">
+  <Target Name="AfterBuild" Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <BuildTask TargetName="AfterBuild" VersionFile="..\..\..\.build\Fuxion.Identity.ver" NugetPath="..\..\..\.build\nuget\nuget.exe" />
   </Target>
 </Project>
