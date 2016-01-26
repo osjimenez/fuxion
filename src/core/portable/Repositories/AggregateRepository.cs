@@ -10,19 +10,13 @@ namespace Fuxion.Repositories
 {
     public interface IAggregateRepository<TAggregate, TKey> 
         where TAggregate : IAggregate 
-        //where TKey : struct
     {
         Task<TAggregate> FindAsync(TKey id, bool checkIfIsValid = true);
         TAggregate Find(TKey id, bool checkIfIsValid = true);
         Task<TAggregate> GetAsync(TKey id, bool checkIfIsValid = true);
         Task SaveAsync(TAggregate aggregate, TKey sagaId);
     }
-    public interface IAggregateRepository<TAggregate> : IAggregateRepository<TAggregate,Guid> where TAggregate : IAggregate
-    {
-        //Task<TAggregate> FindAsync(Guid id, bool checkIfIsValid = true);
-        //Task<TAggregate> GetAsync(Guid id, bool checkIfIsValid = true);
-        //Task SaveAsync(TAggregate aggregate, Guid? sagaId);
-    }
+    public interface IAggregateRepository<TAggregate> : IAggregateRepository<TAggregate, Guid> where TAggregate : IAggregate { }
     public abstract class AggregateRepository<TAggregate> : IAggregateRepository<TAggregate> where TAggregate : IAggregate
     {
         public abstract Task<TAggregate> FindAsync(Guid id, bool checkIfIsValid = true);

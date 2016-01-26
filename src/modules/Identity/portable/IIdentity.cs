@@ -4,7 +4,7 @@ using System.Linq;
 using Fuxion.Identity.Helpers;
 namespace Fuxion.Identity
 {
-    public interface IIdentity : IRol, IAggregate
+    public interface IIdentity : IRol//, IAggregate
     {
         //IEnumerable<IPermission> Permissions { get; }
         string UserName { get; }

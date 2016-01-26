@@ -94,7 +94,7 @@
     <Compile Include="Net\ConnectableNotifier.cs" />
     <Compile Include="Reflection\AttributeMoreThanOneException.cs" />
     <Compile Include="Reflection\AttributeNotFoundException.cs" />
-    <Compile Include="Reflection\MemberInfoExtensions.cs" />
+    <Compile Include="Reflection\Extensions.cs" />
     <Compile Include="Threading\Locker.cs" />
     <Compile Include="Threading\Tasks\TaskManager.cs" />
     <Compile Include="Xml\XElementExtensions.cs" />

@@ -7,18 +7,47 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Identity
 {
+    public class IdentityKeyValueRepositoryValue : IKeyValueEntry<string, IIdentity>
+    {
+        public string Key { get; set; }
+        public IIdentity Value { get; set; }
+    }
     public class IdentityManager
     {
-        public IdentityManager(IPasswordProvider passwordProvider, IAggregateRepository<IIdentity, string> repository)
+        //public IdentityManager(IPasswordProvider passwordProvider, IAggregateRepository<IIdentity, string> repository)
+        //{
+        //    PasswordProvider = passwordProvider;
+        //    Repository = repository;    
+        //}
+        public IdentityManager(IPasswordProvider passwordProvider, IKeyValueRepository<IdentityKeyValueRepositoryValue,string, IIdentity> repository)
         {
             PasswordProvider = passwordProvider;
             Repository = repository;
         }
         public Action<string, bool> Console { get; set; }
         public IPasswordProvider PasswordProvider { get; private set; }
-        public IAggregateRepository<IIdentity, string> Repository { get; private set; }
+        //public IAggregateRepository<IIdentity, string> Repository { get; private set; }
+        public IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity> Repository { get; private set; }
         private void WriteConsole(string message, bool endOfMessage) { if (Console != null) Console(message, endOfMessage); }
-        public async Task<bool> ValidateCredentials(string username, string password)
+        public bool ValidateCredentials(string username, string password)
+        {
+            WriteConsole($"Validando credenciales\r\n   Usuario: {username}\r\n   Contraseña: {password}\r\n", false);
+            if (username == null || password == null)
+            {
+                WriteConsole($"Resultado: NO VALIDO - El nombre de usuario o la contraseña es NULL", true);
+                return false;
+            }
+            var ide = Repository.Find(username);
+            if (ide == null)
+            {
+                WriteConsole($"Resultado: NO VALIDO - No se ha encontrado una identidad con ese nombre de usuario", true);
+                return false;
+            }
+            var res = PasswordProvider.Verify(password, ide.PasswordHash, ide.PasswordSalt);
+            WriteConsole($"Resultado: VALIDO", true);
+            return res;
+        }
+        public async Task<bool> ValidateCredentialsAsync(string username, string password)
         {
             WriteConsole($"Validando credenciales\r\n   Usuario: {username}\r\n   Contraseña: {password}\r\n", false);
             if (username == null || password == null)
