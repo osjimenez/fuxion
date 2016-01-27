@@ -71,6 +71,24 @@ namespace System
             sb.Append('>');
             return sb.ToString();
         }
+        public static bool IsSubclassOfRawGeneric(this Type me, Type generic)
+        {
+            Queue<Type> toProcess = new Queue<Type>(new[] { me });
+            while (toProcess.Count > 0)
+            {
+                var actual = toProcess.Dequeue();
+                var cur = actual.GetTypeInfo().IsGenericType ? actual.GetGenericTypeDefinition() : actual;
+                if (cur.GetTypeInfo().IsGenericType && generic.GetGenericTypeDefinition() == cur.GetGenericTypeDefinition())
+                {
+                    return true;
+                }
+                foreach (var inter in actual.GetTypeInfo().ImplementedInterfaces)
+                    toProcess.Enqueue(inter);
+                if (actual.GetTypeInfo().BaseType != null)
+                    toProcess.Enqueue(actual.GetTypeInfo().BaseType);
+            }
+            return false;
+        }
         #endregion
     }
 }

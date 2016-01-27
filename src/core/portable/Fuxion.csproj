@@ -97,6 +97,7 @@
     <Compile Include="Reflection\Extensions.cs" />
     <Compile Include="Threading\Locker.cs" />
     <Compile Include="Threading\Tasks\TaskManager.cs" />
+    <Compile Include="Web\Patchable.cs" />
     <Compile Include="Xml\XElementExtensions.cs" />
     <Compile Include="Windows\DelegateCommand.cs" />
     <Compile Include="Windows\IViewModel.cs" />
