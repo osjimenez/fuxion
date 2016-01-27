@@ -12,21 +12,17 @@ namespace Fuxion.Identity
         public string Key { get; set; }
         public IIdentity Value { get; set; }
     }
+    public delegate void Consolehandle(string message, bool enOfLine);
     public class IdentityManager
     {
-        //public IdentityManager(IPasswordProvider passwordProvider, IAggregateRepository<IIdentity, string> repository)
-        //{
-        //    PasswordProvider = passwordProvider;
-        //    Repository = repository;    
-        //}
         public IdentityManager(IPasswordProvider passwordProvider, IKeyValueRepository<IdentityKeyValueRepositoryValue,string, IIdentity> repository)
         {
             PasswordProvider = passwordProvider;
             Repository = repository;
         }
         public Action<string, bool> Console { get; set; }
+        public static IPrincipalProvider PrincipalProvider { get; private set; } = new StaticPrincipalProvider();
         public IPasswordProvider PasswordProvider { get; private set; }
-        //public IAggregateRepository<IIdentity, string> Repository { get; private set; }
         public IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity> Repository { get; private set; }
         private void WriteConsole(string message, bool endOfMessage) { if (Console != null) Console(message, endOfMessage); }
         public bool ValidateCredentials(string username, string password)
@@ -44,7 +40,11 @@ namespace Fuxion.Identity
                 return false;
             }
             var res = PasswordProvider.Verify(password, ide.PasswordHash, ide.PasswordSalt);
-            WriteConsole($"Resultado: VALIDO", true);
+            if(res)
+            {
+                WriteConsole($"Resultado: VALIDO", true);
+                PrincipalProvider.SetPrincipal(new FuxionPrincipal(ide));
+            }
             return res;
         }
         public async Task<bool> ValidateCredentialsAsync(string username, string password)

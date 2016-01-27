@@ -51,7 +51,7 @@
     <Compile Include="IApplicationNotificationManager.cs" />
     <Compile Include="Models\IModel.cs" />
     <Compile Include="Events\IEvent.cs" />
-    <Compile Include="Extensions.cs" />
+    <Compile Include="System-Extensions.cs" />
     <Compile Include="Factories\Factory.cs" />
     <Compile Include="Factories\IFactory.cs" />
     <Compile Include="FuxionException.cs" />
@@ -94,7 +94,7 @@
     <Compile Include="Net\ConnectableNotifier.cs" />
     <Compile Include="Reflection\AttributeMoreThanOneException.cs" />
     <Compile Include="Reflection\AttributeNotFoundException.cs" />
-    <Compile Include="Reflection\Extensions.cs" />
+    <Compile Include="Reflection\System-Extensions.cs" />
     <Compile Include="Threading\Locker.cs" />
     <Compile Include="Threading\Tasks\TaskManager.cs" />
     <Compile Include="Web\Patchable.cs" />
