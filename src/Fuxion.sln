@@ -16,6 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{ABD253
 		.build\BuildTask.cs = .build\BuildTask.cs
 		.build\Fuxion.Build.dll = .build\Fuxion.Build.dll
 		.build\Fuxion.Build.targets = .build\Fuxion.Build.targets
+		.build\Fuxion.Data.ver = .build\Fuxion.Data.ver
 		.build\Fuxion.Identity.ver = .build\Fuxion.Identity.ver
 		.build\Fuxion.SimpleInjector.ver = .build\Fuxion.SimpleInjector.ver
 		.build\Fuxion.ver = .build\Fuxion.ver
@@ -39,6 +40,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{194D3D3D-B330-492E-9731-6085C60F3415}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion.Web", "modules\Web\portable\Fuxion.Web.csproj", "{6F2E20C5-A508-4E9C-8514-6067B9791E1B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{DF0D6875-5D83-4874-9464-6BECB7D82CBE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion.Data", "modules\Data\net46\Fuxion.Data.csproj", "{E066329C-2CB6-4EDD-AB47-0D7B8129254E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -78,6 +83,10 @@ Global
 		{6F2E20C5-A508-4E9C-8514-6067B9791E1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6F2E20C5-A508-4E9C-8514-6067B9791E1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6F2E20C5-A508-4E9C-8514-6067B9791E1B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E066329C-2CB6-4EDD-AB47-0D7B8129254E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E066329C-2CB6-4EDD-AB47-0D7B8129254E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E066329C-2CB6-4EDD-AB47-0D7B8129254E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E066329C-2CB6-4EDD-AB47-0D7B8129254E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -94,6 +103,8 @@ Global
 		{DFE9408B-2BB2-4F86-A1C0-2A050D155F82} = {A4B98BD9-2915-4F7B-ADEA-F2B26AD44EC2}
 		{194D3D3D-B330-492E-9731-6085C60F3415} = {943161B7-5FFB-4700-99C0-7E8BFF4E15FC}
 		{6F2E20C5-A508-4E9C-8514-6067B9791E1B} = {194D3D3D-B330-492E-9731-6085C60F3415}
+		{DF0D6875-5D83-4874-9464-6BECB7D82CBE} = {943161B7-5FFB-4700-99C0-7E8BFF4E15FC}
+		{E066329C-2CB6-4EDD-AB47-0D7B8129254E} = {DF0D6875-5D83-4874-9464-6BECB7D82CBE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		EnterpriseLibraryConfigurationToolBinariesPathV6 = packages\EnterpriseLibrary.TransientFaultHandling.6.0.1304.0\lib\portable-net45+win+wp8;packages\EnterpriseLibrary.TransientFaultHandling.Data.6.0.1304.1\lib\NET45
