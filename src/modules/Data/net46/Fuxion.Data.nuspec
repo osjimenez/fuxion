@@ -3,7 +3,7 @@
   <metadata>
     <id>Fuxion.Data</id>
     <version>###version###</version>
-    <title>Fuxion Web</title>
+    <title>Fuxion Data</title>
     <authors>Waf Estructuras Digitales, Oscar Jimenez, Asier Tarancón</authors>
     <description>Fuxion library for data access.</description>
     <releaseNotes />

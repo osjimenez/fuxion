@@ -53,46 +53,73 @@ public class BuildTask : Microsoft.Build.Utilities.Task
             var semanticVersion = VersionToSemanticVersion(GetVersion());
             File.WriteAllText(nuspecTempPath, File.ReadAllText(nuspecPath)
                 .Replace("###year###", DateTime.Now.Year.ToString())
-                .Replace("###version###", semanticVersion)
-                );
-            var nugetOutputPath = Environment.GetEnvironmentVariable("nugetsource", EnvironmentVariableTarget.User);
-            if (!string.IsNullOrWhiteSpace(nugetOutputPath))
-                nugetOutputPath = Path.Combine(nugetOutputPath, "Fuxion");
-            if (string.IsNullOrWhiteSpace(nugetOutputPath))
-                nugetOutputPath = @"bin\Nuget";
-            if (File.Exists(nugetOutputPath))
+                .Replace("###version###", semanticVersion));
+
+            var nugetDefaultOutputPath = @"bin\Nuget";
+            var nugetOutputPaths = new[] { @"bin\Nuget" };
+            if (File.Exists(nugetDefaultOutputPath))
             {
-                var fileContent = File.ReadAllText(nugetOutputPath);
-                nugetOutputPath = Path.IsPathRooted(fileContent) ? fileContent : Path.Combine(Path.GetDirectoryName(projectFile), fileContent);
-                //nugetOutputPath = File.ReadAllText(nugetOutputPath);
+                nugetOutputPaths = File.ReadAllLines(nugetDefaultOutputPath)
+                    .Select(p => Path.IsPathRooted(p) ? p : Path.Combine(Path.GetDirectoryName(projectFile), p))
+                    .ToArray();
             }
-            else if (!Directory.Exists(nugetOutputPath))
-                Directory.CreateDirectory(nugetOutputPath);
+            else if (!Directory.Exists(nugetDefaultOutputPath))
+            {
+                Directory.CreateDirectory(nugetDefaultOutputPath);
+                nugetOutputPaths = new[] { nugetDefaultOutputPath };
+            }
+            else
+            {
+                nugetOutputPaths = new[] { nugetDefaultOutputPath };
+            }
+
+
+            //var nugetOutputPath = Environment.GetEnvironmentVariable("nugetsource", EnvironmentVariableTarget.User);
+            //if (!string.IsNullOrWhiteSpace(nugetOutputPath))
+            //    nugetOutputPath = Path.Combine(nugetOutputPath, "Fuxion");
+            //if (string.IsNullOrWhiteSpace(nugetOutputPath))
+            //    nugetOutputPath = @"bin\Nuget";
+            //if (File.Exists(nugetOutputPath))
+            //{
+            //    var lines = File.ReadAllLines(nugetOutputPath);
+            //    foreach (var fileContent in lines)
+            //    {
+            //        nugetOutputPath = Path.IsPathRooted(fileContent) ? fileContent : Path.Combine(Path.GetDirectoryName(projectFile), fileContent);
+            //    }
+            //}
+            //else if (!Directory.Exists(nugetOutputPath))
+            //    Directory.CreateDirectory(nugetOutputPath);
             //Log.LogWarning("nugetPath = "+ new DirectoryInfo(nugetPath).FullName);
             //Log.LogWarning("nuspecTempPath = " + nuspecTempPath);
             //Log.LogWarning("nugetOutputPath = " + nugetOutputPath);
-            ProcessStartInfo psi = new ProcessStartInfo(new DirectoryInfo(nugetPath).FullName, "pack " + nuspecTempPath + @" -OutputDirectory " + nugetOutputPath);// -Version " + semanticVersion);
-            psi.CreateNoWindow = true;
-            psi.UseShellExecute = false;
-            psi.RedirectStandardError = true;
-            psi.RedirectStandardInput = true;
-            psi.RedirectStandardOutput = true;
-            var proc = new Process();
-            proc.StartInfo = psi;
-            proc.OutputDataReceived += new DataReceivedEventHandler
-            (
-                delegate (object sender, DataReceivedEventArgs e)
-                {
-                    using (StreamReader output = proc.StandardOutput)
+
+            foreach (var outputPath in nugetOutputPaths)
+            {
+                ProcessStartInfo psi = new ProcessStartInfo(new DirectoryInfo(nugetPath).FullName, "pack " + nuspecTempPath + " -OutputDirectory " + outputPath);
+                psi.CreateNoWindow = true;
+                psi.UseShellExecute = false;
+                psi.RedirectStandardError = true;
+                psi.RedirectStandardInput = true;
+                psi.RedirectStandardOutput = true;
+                var proc = new Process();
+                proc.StartInfo = psi;
+                proc.OutputDataReceived += new DataReceivedEventHandler
+                (
+                    delegate (object sender, DataReceivedEventArgs e)
                     {
-                        Log.LogWarning("NuGet output: " + output.ReadToEnd());
+                        using (StreamReader output = proc.StandardOutput)
+                        {
+                            Log.LogWarning("NuGet output: " + output.ReadToEnd());
+                        }
                     }
-                }
-            );
-            proc.Start();
-            proc.WaitForExit();
-            if (proc.ExitCode != 0)
-                Log.LogError("NuGet exit code: " + proc.ExitCode);
+                );
+                proc.Start();
+                proc.WaitForExit();
+                if (proc.ExitCode != 0)
+                    Log.LogError("NuGet exit code: " + proc.ExitCode);
+            }
+            //foreach(var path in nugetOutputPaths.Skip(1))
+            //    File.Copy(nuge)
             //File.Delete(nuspecTempPath);
         }
     }
