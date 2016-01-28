@@ -72,27 +72,6 @@ public class BuildTask : Microsoft.Build.Utilities.Task
             {
                 nugetOutputPaths = new[] { nugetDefaultOutputPath };
             }
-
-
-            //var nugetOutputPath = Environment.GetEnvironmentVariable("nugetsource", EnvironmentVariableTarget.User);
-            //if (!string.IsNullOrWhiteSpace(nugetOutputPath))
-            //    nugetOutputPath = Path.Combine(nugetOutputPath, "Fuxion");
-            //if (string.IsNullOrWhiteSpace(nugetOutputPath))
-            //    nugetOutputPath = @"bin\Nuget";
-            //if (File.Exists(nugetOutputPath))
-            //{
-            //    var lines = File.ReadAllLines(nugetOutputPath);
-            //    foreach (var fileContent in lines)
-            //    {
-            //        nugetOutputPath = Path.IsPathRooted(fileContent) ? fileContent : Path.Combine(Path.GetDirectoryName(projectFile), fileContent);
-            //    }
-            //}
-            //else if (!Directory.Exists(nugetOutputPath))
-            //    Directory.CreateDirectory(nugetOutputPath);
-            //Log.LogWarning("nugetPath = "+ new DirectoryInfo(nugetPath).FullName);
-            //Log.LogWarning("nuspecTempPath = " + nuspecTempPath);
-            //Log.LogWarning("nugetOutputPath = " + nugetOutputPath);
-
             foreach (var outputPath in nugetOutputPaths)
             {
                 ProcessStartInfo psi = new ProcessStartInfo(new DirectoryInfo(nugetPath).FullName, "pack " + nuspecTempPath + " -OutputDirectory " + outputPath);
@@ -118,20 +97,18 @@ public class BuildTask : Microsoft.Build.Utilities.Task
                 if (proc.ExitCode != 0)
                     Log.LogError("NuGet exit code: " + proc.ExitCode);
             }
-            //foreach(var path in nugetOutputPaths.Skip(1))
-            //    File.Copy(nuge)
-            //File.Delete(nuspecTempPath);
+            File.Delete(nuspecTempPath);
         }
     }
     private Version GetVersion()
     {
         return new Version(File.ReadAllText(Path.Combine(Path.GetDirectoryName(BuildEngine.ProjectFileOfTaskNode), VersionFile)));
     }
-    private string VersionToSemanticVersion(Version version)
+    private static string VersionToSemanticVersion(Version version)
     {
         return version.Major + "." + version.Minor + "." + version.Build + RevisionToSemanticVersion(version.Revision);
     }
-    private string RevisionToSemanticVersion(int revision)
+    private static string RevisionToSemanticVersion(int revision)
     {
         if (revision <= 0)
             return "";
@@ -143,6 +120,7 @@ public class BuildTask : Microsoft.Build.Utilities.Task
             return "-rc" + (revision - 20000).ToString("000");
         throw new FormatException("The revision number of the version with value '" + revision + "' is not convertible to semantic version");
     }
+    #region Assembly info
     string assemblyVersionRegex = @"^\[\s*assembly:\s*AssemblyVersion\(.(\d+)\.(\d+)\.(\d+)\.*(\d*).\)\]";
     private string GetAssemblyVersionSentence(Version version) { return "[assembly: AssemblyVersion(\"" + version.ToString() + "\")]"; }
     string assemblyFileVersionRegex = @"^\[\s*assembly:\s*AssemblyFileVersion\(.(\d+)\.(\d+)\.(\d+)\.*(\d*).\)\]";
@@ -170,66 +148,5 @@ public class BuildTask : Microsoft.Build.Utilities.Task
         writer.Close();
         return res;
     }
-    //private bool SetAssemblyVersion(Version version, string path) {
-    //    var res = false;
-    //    var lines = new List<string>();
-    //    foreach (var line in File.ReadAllLines(path).Where(l => !string.IsNullOrWhiteSpace(l)))
-    //    {
-    //        Regex re = new Regex(@"^\[\s*assembly:\s*AssemblyVersion\(.(\d+)\.(\d+)\.(\d+)\.*(\d*).\)\]");
-    //        Match ma = re.Match(line);
-    //        if (ma.Success)
-    //        {
-    //            lines.Add("[assembly: AssemblyVersion(\"" + version.ToString() + "\")]");
-    //            res = true;
-    //        }
-    //        else lines.Add(line);
-    //    }
-    //    StreamWriter writer = File.CreateText(path);
-    //    foreach (string line in lines)
-    //        writer.WriteLine(line);
-    //    writer.Close();
-    //    return res;
-    //}
-    //private bool SetAssemblyFileVersion(Version version, string path)
-    //{
-    //    var res = false;
-    //    var lines = new List<string>();
-    //    foreach (var line in File.ReadAllLines(path).Where(l => !string.IsNullOrWhiteSpace(l)))
-    //    {
-    //        Regex re = new Regex(@"^\[\s*assembly:\s*AssemblyFileVersion\(.(\d+)\.(\d+)\.(\d+)\.*(\d*).\)\]");
-    //        Match ma = re.Match(line);
-    //        if (ma.Success)
-    //        {
-    //            lines.Add("[assembly: AssemblyFileVersion(\"" + version.ToString() + "\")]");
-    //            res = true;
-    //        }
-    //        else lines.Add(line);
-    //    }
-    //    StreamWriter writer = File.CreateText(path);
-    //    foreach (string line in lines)
-    //        writer.WriteLine(line);
-    //    writer.Close();
-    //    return res;
-    //}
-    //private bool SetAssemblyInformationalVersion(string version, string path)
-    //{
-    //    var res = false;
-    //    var lines = new List<string>();
-    //    foreach (var line in File.ReadAllLines(path).Where(l => !string.IsNullOrWhiteSpace(l)))
-    //    {
-    //        Regex re = new Regex(@"^\[\s*assembly:\s*AssemblyInformationalVersion\(.(\d+)\.(\d+)\.(\d+)-{0,1}(.+)\)\]");
-    //        Match ma = re.Match(line);
-    //        if (ma.Success)
-    //        {
-    //            lines.Add("[assembly: AssemblyInformationalVersion(\"" + version + "\")]");
-    //            res = true;
-    //        }
-    //        else lines.Add(line);
-    //    }
-    //    StreamWriter writer = File.CreateText(path);
-    //    foreach (string line in lines)
-    //        writer.WriteLine(line);
-    //    writer.Close();
-    //    return res;
-    //}
+    #endregion
 }
