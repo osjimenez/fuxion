@@ -45,7 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Newtonsoft.Json.8.0.2\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
+      <HintPath>$(SolutionDir)packages\Newtonsoft.Json.8.0.2\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
@@ -62,13 +62,13 @@
   </Target>
   -->
   <PropertyGroup>
-    <FuxionTasksPath>$(SolutionDir).build</FuxionTasksPath>
+    <FuxionTasksPath>$(SolutionDir).build\</FuxionTasksPath>
   </PropertyGroup>
-  <Import Project="$(FuxionTasksPath)\Fuxion.Build.Targets" />
+  <Import Project="$(FuxionTasksPath)Fuxion.Build.Targets" />
   <Target Name="BeforeBuild" Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <BuildTask TargetName="BeforeBuild" VersionFile="..\..\..\.build\Fuxion.Web.ver" NugetPath="..\..\..\.build\nuget\nuget.exe" />
+    <BuildTask TargetName="BeforeBuild" VersionFile="$(FuxionTasksPath)Fuxion.Web.ver" NugetPath="$(FuxionTasksPath)nuget\nuget.exe" />
   </Target>
   <Target Name="AfterBuild" Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <BuildTask TargetName="AfterBuild" VersionFile="..\..\..\.build\Fuxion.Web.ver" NugetPath="..\..\..\.build\nuget\nuget.exe" />
+    <BuildTask TargetName="AfterBuild" VersionFile="$(FuxionTasksPath)Fuxion.Web.ver" NugetPath="$(FuxionTasksPath)nuget\nuget.exe" />
   </Target>
 </Project>

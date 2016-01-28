@@ -35,7 +35,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion.Identity.Test", "mod
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SimpleInjector", "SimpleInjector", "{A4B98BD9-2915-4F7B-ADEA-F2B26AD44EC2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleInjector_", "modules\SimpleInjector\portable\SimpleInjector_.csproj", "{DFE9408B-2BB2-4F86-A1C0-2A050D155F82}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleInjector", "modules\SimpleInjector\portable\SimpleInjector.csproj", "{DFE9408B-2BB2-4F86-A1C0-2A050D155F82}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{194D3D3D-B330-492E-9731-6085C60F3415}"
 EndProject
