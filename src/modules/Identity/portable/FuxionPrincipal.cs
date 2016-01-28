@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Identity
 {
+    // TODO - Oscar - http://geeks.ms/blogs/etomas/archive/2014/12/19/securizando-tus-servicios-webapi-usando-owin.aspx
     public interface IPrincipalProvider
     {
         void SetPrincipal(IPrincipal principal);
