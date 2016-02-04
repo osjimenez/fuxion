@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Fuxion.Identity.Helpers;
 using System.Diagnostics;
-using Fuxion.Graph;
+using Fuxion.Math.Graph;
 
 namespace Fuxion.Identity
 {

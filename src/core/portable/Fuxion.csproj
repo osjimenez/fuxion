@@ -55,10 +55,10 @@
     <Compile Include="Factories\Factory.cs" />
     <Compile Include="Factories\IFactory.cs" />
     <Compile Include="FuxionException.cs" />
-    <Compile Include="Graph\Edge.cs" />
-    <Compile Include="Graph\Graph.cs" />
-    <Compile Include="Graph\GraphCyclicException.cs" />
-    <Compile Include="Graph\Vertex.cs" />
+    <Compile Include="Math\Graph\Edge.cs" />
+    <Compile Include="Math\Graph\Graph.cs" />
+    <Compile Include="Math\Graph\GraphCyclicException.cs" />
+    <Compile Include="Math\Graph\Vertex.cs" />
     <Compile Include="IApplicationCommandManager.cs" />
     <Compile Include="IApplicationEventManager.cs" />
     <Compile Include="InvalidStateException.cs" />

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Fuxion.Graph
+namespace Fuxion.Math.Graph
 {
     public class Graph<T> where T : class
     {
@@ -174,11 +174,11 @@ namespace Fuxion.Graph
                 if (w.Index < 0)
                 {
                     StrongConnect(w);
-                    v.LowLink = Math.Min(v.LowLink, w.LowLink);
+                    v.LowLink = System.Math.Min(v.LowLink, w.LowLink);
                 }
                 else if (stack.Contains(w))
                 {
-                    v.LowLink = Math.Min(v.LowLink, w.Index);
+                    v.LowLink = System.Math.Min(v.LowLink, w.Index);
                 }
             }
 

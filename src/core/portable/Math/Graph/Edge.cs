@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Fuxion.Graph
+namespace Fuxion.Math.Graph
 {
     [DebuggerDisplay("{Source} -> {Target}")]
     public class Edge<T>

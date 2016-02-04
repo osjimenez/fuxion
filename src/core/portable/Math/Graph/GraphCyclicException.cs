@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Fuxion.Graph
+namespace Fuxion.Math.Graph
 {
     public class GraphCyclicException : FuxionException
     {
