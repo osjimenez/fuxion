@@ -110,6 +110,8 @@ public class BuildTask : Microsoft.Build.Utilities.Task
     }
     private static string RevisionToSemanticVersion(int revision)
     {
+        // TODO - Implements semantics versioning 2
+        // https://github.com/GitTools/GitVersion/blob/master/src/GitVersionCore/SemanticVersion.cs
         if (revision <= 0)
             return "";
         if (revision < 10000)
