@@ -65,7 +65,7 @@ namespace Fuxion.Identity
             WriteConsole($"Resultado: VALIDO", true);
             return res;
         }
-        public async Task<bool> CheckFunctionAssignedAsync(string username, IFunctionGraph functionGraph, IFunction function, params IDiscriminator[] discriminators)
+        public async Task<bool> CheckFunctionAssignedAsync(string username, IFunction function, params IDiscriminator[] discriminators)
         {
             WriteConsole($"Comprobando asignación de funciones\r\n   Usuario: {username}\r\n   Funcion: {function.Name}\r\n   Discriminadores: {discriminators.Aggregate("", (a, c) => $"{a}      {c.Name}\r\n", a => a.Trim('\r', '\n'))}", true);
             if (username == null)
@@ -79,10 +79,10 @@ namespace Fuxion.Identity
                 WriteConsole($"Resultado: NO VALIDO - No se ha encontrado una identidad con ese nombre de usuario", true);
                 return false;
             }
-            ide.CheckFunctionAssigned(functionGraph, function, discriminators, Console);
+            ide.CheckFunctionAssigned(function, discriminators, Console);
             return true;
         }
-        public bool IsFunctionAssigned(string username, IFunctionGraph functionGraph, IFunction function, params IDiscriminator[] discriminators)
+        public bool IsFunctionAssigned(string username, IFunction function, params IDiscriminator[] discriminators)
         {
             WriteConsole($"Comprobando asignación de funciones\r\n   Usuario: {username}\r\n   Funcion: {function.Name}\r\n   Discriminadores:\r\n{discriminators.Aggregate("", (a, c) => $"{a}      {c.Name}\r\n", a => a.Trim('\r', '\n'))}", true);
             if (username == null)
@@ -97,9 +97,15 @@ namespace Fuxion.Identity
                 return false;
             }
             IPermission den;
-            var res = ide.IsFunctionAssigned(functionGraph, function, discriminators, Console, out den);
+            var res = ide.IsFunctionAssigned(function, discriminators, Console, out den);
             return res;
         }
+
+
+
+
+        public bool IsAuthenticated { get; }
+        public IIdentity Current { get; }
     }
     public interface IPasswordProvider
     {

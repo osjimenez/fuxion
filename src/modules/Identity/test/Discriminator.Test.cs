@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Fuxion.Identity.Test.Mocks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,78 +9,14 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Identity.Test
 {
-    [DebuggerDisplay(nameof(Name))]
-    class GuidDiscriminator : IDiscriminator<Guid, Guid>
-    {
-        public GuidDiscriminator(Guid id, string name, IEnumerable<Guid> inclusions, IEnumerable<Guid> exclusions, Guid typeId, string typeName)
-        {
-            Id = id;
-            Name = name;
-            Inclusions = inclusions;
-            Exclusions = exclusions;
-            TypeId = typeId;
-            TypeName = typeName;
-        }
-        public Guid Id { get; private set; }
-        object IDiscriminator.Id { get { return Id; } }
-        public string Name { get; private set; }
-        IEnumerable<object> IDiscriminator.Inclusions { get { return ((IDiscriminator<Guid, Guid>)this).Inclusions.Cast<object>(); } }
-        public IEnumerable<Guid> Inclusions { get; set; }
-        IEnumerable<object> IDiscriminator.Exclusions { get { return ((IDiscriminator<Guid, Guid>)this).Exclusions.Cast<object>(); } }
-        public IEnumerable<Guid> Exclusions { get; set; }
-        public Guid TypeId { get; private set; }
-        object IDiscriminator.TypeId { get { return TypeId; } }
-        public string TypeName { get; private set; }
-    }
-    [DebuggerDisplay(nameof(Name))]
-    class StringDiscriminator : IDiscriminator<string, string>
-    {
-        public StringDiscriminator(string id, IEnumerable<string> inclusions, IEnumerable<string> exclusions, string typeId)
-        {
-            Id = id;
-            Inclusions = inclusions;
-            Exclusions = exclusions;
-            TypeId = typeId;
-        }
-        public string Id { get; private set; }
-        object IDiscriminator.Id { get { return Id; } }
-        public string Name { get { return Id; } }
-        IEnumerable<object> IDiscriminator.Inclusions { get { return ((IDiscriminator<string, string>)this).Inclusions.Cast<object>(); } }
-        public IEnumerable<string> Inclusions { get; set; }
-        IEnumerable<object> IDiscriminator.Exclusions { get { return ((IDiscriminator<string, string>)this).Exclusions.Cast<object>(); } }
-        public IEnumerable<string> Exclusions { get; set; }
-        public string TypeId { get; private set; }
-        object IDiscriminator.TypeId { get { return TypeId; } }
-        public string TypeName { get { return TypeId; } }
-    }
-    [DebuggerDisplay(nameof(Name))]
-    class GuidStringDiscriminator : IDiscriminator<Guid, string>
-    {
-        public GuidStringDiscriminator(Guid id, string name, IEnumerable<Guid> inclusions, IEnumerable<Guid> exclusions, string typeId)
-        {
-            Id = id;
-            Name = name;
-            Inclusions = inclusions;
-            Exclusions = exclusions;
-            TypeId = typeId;
-        }
-        public Guid Id { get; private set; }
-        object IDiscriminator.Id { get { return Id; } }
-        public string Name { get; private set; }
-        IEnumerable<object> IDiscriminator.Inclusions { get { return ((IDiscriminator<Guid, Guid>)this).Inclusions.Cast<object>(); } }
-        public IEnumerable<Guid> Inclusions { get; set; }
-        IEnumerable<object> IDiscriminator.Exclusions { get { return ((IDiscriminator<Guid, Guid>)this).Exclusions.Cast<object>(); } }
-        public IEnumerable<Guid> Exclusions { get; set; }
-        public string TypeId { get; private set; }
-        object IDiscriminator.TypeId { get { return TypeId; } }
-        public string TypeName { get { return TypeId; } }
-    }
     [TestClass]
     public class DiscriminatorTest
     {
         [TestMethod]
         public void Validate_GuidDiscriminator()
         {
+            var ttt = new GuidDiscriminator(default(Guid), "valid", null, null, Guid.NewGuid(), "valid");
+
             // Invalid by Id
             Assert.IsFalse(new GuidDiscriminator(default(Guid) , "valid", null, null, Guid.NewGuid(), "valid").IsValid());
 

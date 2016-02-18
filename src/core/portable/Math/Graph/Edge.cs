@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Math.Graph
 {
-    [DebuggerDisplay("{Source} -> {Target}")]
+    [DebuggerDisplay("{" + nameof(Source) + "} -> {" + nameof(Target) +"}")]
     public class Edge<T>
     {
         public Edge(T source, T target) { Source = source;Target = target; }

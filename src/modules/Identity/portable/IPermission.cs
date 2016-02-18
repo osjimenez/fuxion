@@ -7,7 +7,6 @@ namespace Fuxion.Identity
 {
     public interface IPermission
     {
-        //IRol Rol { get; }
         IFunction Function { get; }
         IEnumerable<IScope> Scopes { get; }
         bool Value { get; }
@@ -15,9 +14,9 @@ namespace Fuxion.Identity
     public static class PermissionExtensions
     {
         public static bool IsValid(this IPermission me) { return me.Function != null && me.Scopes.Select(s => s.Discriminator.TypeId).Distinct().Count() == me.Scopes.Count(); }
-        public static bool Match(this IPermission me, IFunctionGraph functionCollection, IFunction function, IDiscriminator[] discriminators, Action<string, bool> console)
+        public static bool Match(this IPermission me, IFunction function, IDiscriminator[] discriminators, Action<string, bool> console)
         {
-            var byFunction = me.MatchByFunction(functionCollection, function, console);
+            var byFunction = me.MatchByFunction(function, console);
             var byDiscriminator = me.MatchByDiscriminatorsType(discriminators, console);
             var byDiscriminatorPath = me.MatchByDiscriminatorsPath(discriminators, console);
             return
@@ -25,7 +24,7 @@ namespace Fuxion.Identity
                 byDiscriminator &&
                 byDiscriminatorPath;
         }
-        public static bool MatchByFunction(this IPermission me, IFunctionGraph functionGraph, IFunction function, Action<string, bool> console)
+        public static bool MatchByFunction(this IPermission me, IFunction function, Action<string, bool> console)
         {
             Action<string, bool> con = (m, i) => { if (console != null) console(m, i); };
             con($"Permiso '{me.Value}' coincidencia por función ... ({me.Function.Id} == {function.Id})", true);
@@ -33,18 +32,19 @@ namespace Fuxion.Identity
             // Si es la misma función, TRUE.
             var byFunc = comparer.Equals(me.Function, function);
 
-            con($"Mis inclusiones {functionGraph.GetIncludedBy(me.Function).Aggregate("", (a, s) => a + "-" + s.Id)}", true);
+            
+            con($"Mis inclusiones {function.GetAllInclusions().Aggregate("", (a, s) => a + "-" + s.Id)}", true);
 
             // Si soy un permiso de concesión y la funcion esta incluida, TRUE.
             // Ejemplo: Soy un permiso que concede edición y la funcion que me piden es de lectura
             //          la edición implica/incluye la lectura, pro lo tanto, encaja.
-            var byInclusion = me.Value && functionGraph.GetIncludedBy(me.Function).Contains(function, comparer);
+            var byInclusion = me.Value && function.GetAllInclusions().Contains(function, comparer);
 
             // Si soy un permiso de denegacion y la funcion esta excluida, TRUE.
             // Ejemplo: Soy un permiso que deniega la lectura y la funcion que me piden es de edición
             //          la lectura excluye la edición, si no puedo leer algo tampoco podré editarlo
             //          por lo tanto es permiso encaja.
-            var byExclusion = !me.Value && functionGraph.GetExcludedBy(me.Function).Contains(function, comparer);
+            var byExclusion = !me.Value && function.GetAllExclusions().Contains(function, comparer);
 
             con($"byFunc = {byFunc} byInclusion = {byInclusion} byExclusion = {byExclusion}", true);
 

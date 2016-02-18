@@ -3,25 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-
+using Fuxion.Identity.Test.Mocks;
+using static Fuxion.Identity.Functions;
 namespace Fuxion.Identity.Test
 {
-    [DebuggerDisplay(nameof(Name))]
-    class GuidFunction : IFunction<Guid>
-    {
-        public GuidFunction(Guid id, string name) { Id = id; Name = name; }
-        public Guid Id { get; private set; }
-        object IFunction.Id { get { return Id; } }
-        public string Name { get; private set; }
-    }
-    [DebuggerDisplay(nameof(Name))]
-    class StringFunction : IFunction<string>
-    {
-        public StringFunction(string id) { Id = id; }
-        public string Id { get; private set; }
-        object IFunction.Id { get { return Id; } }
-        public string Name { get { return Id; } }
-    }
     [TestClass]
     public class FunctionTest
     {
@@ -39,70 +24,23 @@ namespace Fuxion.Identity.Test
             Assert.IsFalse(new StringFunction(" ").IsValid());
             Assert.IsTrue(new StringFunction("valid").IsValid());
         }
-        GuidFunction Read { get { return new GuidFunction(Guid.Parse("{00000000-0000-0000-0000-000000000001}"), "Read"); } }
-        StringFunction StrRead { get { return new StringFunction("Read"); } }
-        GuidFunction Write { get { return new GuidFunction(Guid.Parse("{00000000-0000-0000-0000-000000000002}"), "Write"); } }
-        StringFunction StrWrite { get { return new StringFunction("Write"); } }
-        GuidFunction Admin { get { return new GuidFunction(Guid.Parse("{00000000-0000-0000-0000-000000000003}"), "Admin"); } }
-        StringFunction StrAdmin { get { return new StringFunction("Admin"); } }
+        //GuidFunction Read { get { return new GuidFunction(Guid.Parse("{00000000-0000-0000-0000-000000000001}"), "Read"); } }
+        //StringFunction StrRead { get { return new StringFunction("Read"); } }
+        //GuidFunction Write { get { return new GuidFunction(Guid.Parse("{00000000-0000-0000-0000-000000000002}"), "Write"); } }
+        //StringFunction StrWrite { get { return new StringFunction("Write"); } }
+        //GuidFunction Admin { get { return new GuidFunction(Guid.Parse("{00000000-0000-0000-0000-000000000003}"), "Admin"); } }
+        //StringFunction StrAdmin { get { return new StringFunction("Admin"); } }
+
+
         [TestMethod]
         public void IncludesAndExcludes()
         {
-            GuidFunctionGraph col = new GuidFunctionGraph(false);
-
-            col.ForFunction(Write).Include(Read);
-            col.ForFunction(Write).Exclude(Admin);
-
-            Assert.AreEqual(0, col.GetIncludedBy(Read).Count(), "'read' cannot include 'write' or 'admin'");
-            Assert.AreEqual(2, col.GetExcludedBy(Read).Count(), "'read' must exclude 'write' and 'admin'");
-            Assert.AreEqual(1, col.GetIncludedBy(Write).Count(), "'write' must include 'read'");
-            Assert.AreEqual(1, col.GetExcludedBy(Write).Count(), "'write' cannot exclude 'read'");
-
-            //Assert.IsFalse(col.ExcludedBy(Write).Contains(Read), "'write' cannot exclude 'read'");
-            //Assert.IsTrue(col.ExcludedBy(Write).Contains(Admin), "'write' must exclude 'admin'");
+            Assert.AreEqual(Read.GetAllInclusions().Count(), 0, "'read' cannot include 'write' or 'admin'");
+            Assert.AreEqual(Read.GetAllExclusions().Count(), 5, "'read' must exclude 'write' and 'admin'");
+            Assert.AreEqual(Edit.GetAllInclusions().Count(), 1, "'write' must include 'read'");
+            Assert.AreEqual(Edit.GetAllInclusions().Count(), 3, "'write' cannot exclude 'read'");
         }
-        [TestMethod]
-        public void IncludesAndExcludes2()
-        {
-            GuidFunctionGraph col = new GuidFunctionGraph(false);
 
-            col.ForFunction(StrWrite).Include(StrRead);
-            col.ForFunction(StrWrite).Exclude(StrAdmin);
-
-            Assert.AreEqual(0, col.GetIncludedBy(StrRead).Count(), "'read' cannot include 'write' or 'admin'");
-            Assert.AreEqual(2, col.GetExcludedBy(StrRead).Count(), "'read' must exclude 'write' and 'admin'");
-            Assert.AreEqual(1, col.GetIncludedBy(StrWrite).Count(), "'write' must include 'read'");
-            Assert.AreEqual(1, col.GetExcludedBy(StrWrite).Count(), "'write' cannot exclude 'read'");
-
-            //Assert.IsFalse(col.ExcludedBy(Write).Contains(Read), "'write' cannot exclude 'read'");
-            //Assert.IsTrue(col.ExcludedBy(Write).Contains(Admin), "'write' must exclude 'admin'");
-        }
-        [TestMethod]
-        public void IncludesAndExcludes3()
-        {
-            GuidFunctionGraph col = new GuidFunctionGraph(false);
-
-            col.ForFunction(StrWrite).Include(Read);
-            col.ForFunction(StrWrite).Exclude(Admin);
-
-            Assert.AreEqual(0, col.GetIncludedBy(Read).Count(), "'read' cannot include 'write' or 'admin'");
-            Assert.AreEqual(2, col.GetExcludedBy(Read).Count(), "'read' must exclude 'write' and 'admin'");
-            Assert.AreEqual(1, col.GetIncludedBy(StrWrite).Count(), "'write' must include 'read'");
-            Assert.AreEqual(1, col.GetExcludedBy(StrWrite).Count(), "'write' cannot exclude 'read'");
-
-            //Assert.IsFalse(col.ExcludedBy(Write).Contains(Read), "'write' cannot exclude 'read'");
-            //Assert.IsTrue(col.ExcludedBy(Write).Contains(Admin), "'write' must exclude 'admin'");
-        }
-        [TestMethod]
-        public void MyIncludes()
-        {
-            StringFunctionGraph sfg = new StringFunctionGraph();
-            var comparer = new FunctionEqualityComparer();
-            Assert.IsTrue(sfg.GetIncludedBy(StringFunctionGraph.Admin).Contains(StringFunctionGraph.Read, comparer));
-
-            
-            //Assert.IsTrue(sfg.GetIncludedBy(StringFunctionGraph.Admin).Count() == 5);
-        }
         //[TestMethod]
         //public void WhenGraph_CheckDescendants()
         //{

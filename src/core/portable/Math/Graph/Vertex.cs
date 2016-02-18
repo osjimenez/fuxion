@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Math.Graph
 {
-    [DebuggerDisplay("{Value}")]
+    [DebuggerDisplay("{" + nameof(Value) + "}")]
     public class Vertex<T>
     {
         public Vertex()

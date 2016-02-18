@@ -1,34 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static Fuxion.Identity.GuidFunctionGraph;
+using static Fuxion.Identity.Functions;
+using Fuxion.Identity.Test.Mocks;
+
 namespace Fuxion.Identity.Test
 {
-    class Permission : IPermission
-    {
-        public Permission(bool value, IFunction function, params IScope[] scopes)
-        {
-            Value = value;
-            //Rol = rol;
-            Function = function;
-            Scopes = scopes;
-        }
-        //public IRol Rol { get; set; }
-        public IFunction Function { get; set; }
-        public IEnumerable<IScope> Scopes { get; set; }
-        public bool Value { get; set; }
-    }
+
     [TestClass]
     public class PermissionTest
     {
-        GuidFunctionGraph functions = new GuidFunctionGraph();
+        //GuidFunctionGraph functions = new GuidFunctionGraph();
         [TestMethod]
         public void WhenPermission_MatchByFunction()
         {
             // Un permiso de concesion para editar algo implicará que tambien puedo leerlo
-            Assert.IsTrue(new Permission(true, Edit, null).MatchByFunction(functions, Read, null));
+            Assert.IsTrue(new Permission(true, Edit, null).MatchByFunction(Read, null));
             // Un permiso de denegación para leer algo implicará que tampoco puedo editarlo
-            Assert.IsTrue(new Permission(false, Read, null).MatchByFunction(functions, Edit, null));
+            Assert.IsTrue(new Permission(false, Read, null).MatchByFunction(Edit, null));
         }
         [TestMethod]
         public void WhenPermission_MatchByDiscriminatorsType()
@@ -194,7 +183,7 @@ namespace Fuxion.Identity.Test
                     new Scope(
                         CaliforniaDiscriminator,
                         propagation)
-                ).Match(functions, Read,
+                ).Match(Read,
                     new[] {
                         SanFranciscoDiscriminator
                     }, null),
@@ -206,7 +195,7 @@ namespace Fuxion.Identity.Test
                     new Scope(
                         CaliforniaDiscriminator, 
                         propagation)
-                ).Match(functions, Read,
+                ).Match(Read,
                     new[] {
                         SanFranciscoDiscriminator
                     }, null), 
@@ -243,7 +232,7 @@ namespace Fuxion.Identity.Test
                     new Scope(
                         new StringDiscriminator(California, CaliforniIncludes, CaliforniExcludes, LocationType),
                         propagation)
-                ).Match(new GuidFunctionGraph(), Read,
+                ).Match(Read,
                     new[] {
                         new StringDiscriminator(SanFrancisco, SanFranciscIncludes, SanFranciscExcludes,LocationType)
                     }, null),
@@ -255,7 +244,7 @@ namespace Fuxion.Identity.Test
                     new Scope(
                         new StringDiscriminator(California, CaliforniIncludes, CaliforniExcludes, LocationType),
                         propagation)
-                ).Match(new GuidFunctionGraph(), Read,
+                ).Match(Read,
                     new[] {
                         new StringDiscriminator(SanFrancisco, SanFranciscIncludes, SanFranciscExcludes,LocationType)
                     }, null),

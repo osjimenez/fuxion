@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using Fuxion.Identity.Helpers;
 using System.Linq;
+using System.Reflection;
+using System.Diagnostics;
+
 namespace Fuxion.Identity
 {
     public interface IDiscriminator
     {
-        //IEnumerable<object> Path { get; }
         IEnumerable<object> Inclusions { get; }
         IEnumerable<object> Exclusions { get; }
         object TypeId { get; }
@@ -16,7 +18,6 @@ namespace Fuxion.Identity
     }
     public interface IDiscriminator<TId, TTypeId> : IDiscriminator
     {
-        //new IEnumerable<TId> Path { get; }
         new IEnumerable<TId> Inclusions { get; }
         new IEnumerable<TId> Exclusions { get; }
         new TTypeId TypeId { get; }
@@ -59,41 +60,82 @@ namespace Fuxion.Identity
             return Comparer.AreEquals(dis1.Id, dis2.Id) && Comparer.AreEquals(dis1.TypeId, dis2.TypeId);
         }
     }
-    //public interface IDiscriminatorBase
-    //{
-    //    object Id { get; }
-    //    string Name { get; }
-    //}
+    [AttributeUsage(AttributeTargets.Class)]
+    public class DiscriminatorAttribute : Attribute
+    {
+        public DiscriminatorAttribute(string key)
+        {
+            Key = key;
+        }
+        public string Key { get; set; }
+    }
+    [AttributeUsage(AttributeTargets.Property)]
+    public class DiscriminatedByAttribute : Attribute
+    {
+        public DiscriminatedByAttribute(Type type)
+        {
+            if (!typeof(IDiscriminator).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
+                throw new Exception("The Type '" + type.Name + "' must implements '" +
+                                               typeof(IDiscriminator).Name + "' interface");
+            Type = type;
+        }
+        public Type Type { get; set; }
+    }
+    [Discriminator("TYPE")]
+    [DebuggerDisplay("{" + nameof(Name) + "}")]
+    public class TypeDiscriminator : IDiscriminator<string, string>
+    {
+        private TypeDiscriminator()
+        {
+        }
+        public static TypeDiscriminator Create<T>(params Type[] knownTypes) { return Create(typeof(T), knownTypes); }
+        public static TypeDiscriminator Create(Type type, params Type[] knownTypes)
+        {
+            var id = type.GetSignature(true);
+            var @base = type.GetTypeInfo().BaseType;
+            var bases = new List<Type>();
+            while (@base != typeof(object))
+            {
+                bases.Add(@base);
+                @base = @base.GetTypeInfo().BaseType;
+            }
+            bases.Reverse();
+            var res = new TypeDiscriminator
+            {
+                Id = GetIdFunction(type),
+                Name = GetNameFunction(type),
+                TypeId = "TYPE",
+                TypeName = "TYPE",
+                Inclusions = knownTypes.Where(t => t.GetTypeInfo().IsSubclassOf(type)).Select(t => GetIdFunction(t)),
+                Exclusions = bases.Select(t => GetIdFunction(t)),
+            };
+            return res;
+        }
+        //public static TypeDiscriminator Create(string typeFullName, params Assembly[] assemblies)
+        //{
+        //    //var asss = AppDomain.CurrentDomain.GetAssemblies();
+        //    var assName = string.Join(".", typeFullName.Split('.').Reverse().Skip(1).Reverse());
+        //    var ass = assemblies.FirstOrDefault(a => a.GetName().Name == assName);
+        //    return Create(ass.GetType(typeFullName));
+        //}
+        public static Func<Type, string> GetIdFunction { get; set; } = type => type.GetSignature(true);
+        public static Func<Type, string> GetNameFunction { get; set; } = type => type.Name;
 
-    //public interface IGraphDiscriminator : IDiscriminatorBase
-    //{
-    //    IEnumerable<IGraphDiscriminator> Inclusions { get; }
-    //    IEnumerable<IGraphDiscriminator> Exclusions { get; }
-    //}
-    //public interface ITreeDiscriminator : IGraphDiscriminator
-    //{
-    //    IGraphDiscriminator Parent { get; }
-    //    IEnumerable<IGraphDiscriminator> Childs { get; }
-    //}
-    //public interface ILinearDiscriminator : ITreeDiscriminator
-    //{
-    //    IGraphDiscriminator Parent { get; }
-    //    IGraphDiscriminator Child { get; }
-    //}
+        public string Id { get; private set; }
+        object IDiscriminator.Id { get { return Id; } }
 
-    //class oo : ILinearDiscriminator
-    //{
-    //    public oo Source { get; set; }
-    //    public oo Target { get; set; }
+        public string Name { get; private set; }
 
-    //    IGraphDiscriminator ILinearDiscriminator.Child { get { return Target; } }
-    //    IEnumerable<IGraphDiscriminator> ITreeDiscriminator.Childs { get { return ((ILinearDiscriminator)Target).Exclusions.Concat(new[] { Target }); } }
-    //    IEnumerable<IGraphDiscriminator> IGraphDiscriminator.Exclusions { get { return ((ILinearDiscriminator)Source).Exclusions.Concat(new[] { Source }); } }
-    //    object IDiscriminatorBase.Id { get { throw new NotImplementedException(); } }
-    //    IEnumerable<IGraphDiscriminator> IGraphDiscriminator.Inclusions { get { return ((ILinearDiscriminator)Target).Exclusions.Concat(new[] { Target }); } }
-    //    string IDiscriminatorBase.Name { get { throw new NotImplementedException(); } }
+        public string TypeId { get; private set; }
+        object IDiscriminator.TypeId { get { return TypeId; } }
 
-    //    IGraphDiscriminator ITreeDiscriminator.Parent { get { return Source; } }
-    //    IGraphDiscriminator ILinearDiscriminator.Parent { get { return Source; } }
-    //}
+        public string TypeName { get; private set; }
+
+        public IEnumerable<string> Inclusions { get; private set; }
+        IEnumerable<object> IDiscriminator.Inclusions { get { return Inclusions; } }
+
+        public IEnumerable<string> Exclusions { get; private set; }
+        IEnumerable<object> IDiscriminator.Exclusions { get { return Exclusions; } }
+        
+    }
 }

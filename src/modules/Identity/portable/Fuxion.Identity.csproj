@@ -44,7 +44,6 @@
     <Compile Include="FunctionGraph.cs" />
     <Compile Include="FuxionPrincipal.cs" />
     <Compile Include="Helpers\Comparer.cs" />
-    <Compile Include="Helpers\InvalidStateException.cs" />
     <Compile Include="IdentityManager.cs" />
     <Compile Include="IDiscriminator.cs" />
     <Compile Include="IFunction.cs" />
