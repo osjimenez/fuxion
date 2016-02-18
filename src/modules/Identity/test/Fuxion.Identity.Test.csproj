@@ -54,6 +54,10 @@
     <Compile Include="Entity.Test.cs" />
     <Compile Include="Function.Test.cs" />
     <Compile Include="IdentityManager.Test.cs" />
+    <Compile Include="Mocks\Group.cs" />
+    <Compile Include="Mocks\Identity.cs" />
+    <Compile Include="Mocks\IdentityRepository.cs" />
+    <Compile Include="Mocks\PasswordProvider.cs" />
     <Compile Include="Mocks\BaseEntity.cs" />
     <Compile Include="Mocks\DerivedEntity.cs" />
     <Compile Include="Mocks\DiscriminatorEntity.cs" />

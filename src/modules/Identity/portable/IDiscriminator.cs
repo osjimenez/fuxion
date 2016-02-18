@@ -72,7 +72,6 @@ namespace Fuxion.Identity
     [AttributeUsage(AttributeTargets.Property)]
     public class DiscriminatedByAttribute : Attribute
     {
-
         public DiscriminatedByAttribute(Type type)
         {
             if (!typeof(IDiscriminator).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
@@ -112,8 +111,6 @@ namespace Fuxion.Identity
             };
             return res;
         }
-        public static Func<Type, string> GetIdFunction { get; set; } = type => type.GetSignature(true);
-        public static Func<Type, string> GetNameFunction { get; set; } = type => type.Name;
         //public static TypeDiscriminator Create(string typeFullName, params Assembly[] assemblies)
         //{
         //    //var asss = AppDomain.CurrentDomain.GetAssemblies();
@@ -121,6 +118,9 @@ namespace Fuxion.Identity
         //    var ass = assemblies.FirstOrDefault(a => a.GetName().Name == assName);
         //    return Create(ass.GetType(typeFullName));
         //}
+        public static Func<Type, string> GetIdFunction { get; set; } = type => type.GetSignature(true);
+        public static Func<Type, string> GetNameFunction { get; set; } = type => type.Name;
+
         public string Id { get; private set; }
         object IDiscriminator.Id { get { return Id; } }
 
