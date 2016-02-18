@@ -65,7 +65,7 @@ namespace Fuxion.Identity
                 Add(Edit, Read);
             }
         }
-        [DebuggerDisplay("{Name}")]
+        [DebuggerDisplay("{" + nameof(Name) + "}")]
         class Function : IFunction<string>
         {
             public Function(string id)
@@ -100,7 +100,7 @@ namespace Fuxion.Identity
                 Add(Edit, Read);
             }
         }
-        [DebuggerDisplay("{Name}")]
+        [DebuggerDisplay("{" + nameof(Name) + "}")]
         class Function : IFunction<Guid>
         {
             public Function(Guid id, string name)

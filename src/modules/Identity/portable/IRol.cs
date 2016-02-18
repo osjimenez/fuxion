@@ -6,20 +6,15 @@ namespace Fuxion.Identity
 {
     public interface IRol
     {
-        //object Id { get; }
         string Name { get; }
         IEnumerable<IGroup> Groups { get; }
         IEnumerable<IPermission> Permissions { get; }
     }
-    //public interface IRol<TId> : IRol
-    //{
-        //new TId Id { get; }
-    //}
     public static class RolExtensions
     {
         //public static bool IsValid(this IRol me) { return me.Id != Guid.Empty && !string.IsNullOrWhiteSpace(me.Name); }
         //public static bool IsValid(this IRol me) { return !Comparer.AreEquals(me.Id, me.Id?.GetType().GetDefaultValue()) && !string.IsNullOrWhiteSpace(me.Name); }
-        public static bool IsValid(this IRol me) { return !string.IsNullOrWhiteSpace(me.Name); }
+        //public static bool IsValid(this IRol me) { return !string.IsNullOrWhiteSpace(me.Name); }
         internal static bool IsFunctionAssigned(this IRol me, IFunctionGraph functions, IFunction function, IDiscriminator[] discriminators, Action<string, bool> console, out IPermission deniedPermissionMatched)
         {
             Action<string, bool> con = (m, i) => { if (console != null) console(m, i); };

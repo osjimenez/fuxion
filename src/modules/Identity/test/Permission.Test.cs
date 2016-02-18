@@ -2,22 +2,11 @@
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Fuxion.Identity.GuidFunctionGraph;
+using Fuxion.Identity.Test.Mocks;
+
 namespace Fuxion.Identity.Test
 {
-    class Permission : IPermission
-    {
-        public Permission(bool value, IFunction function, params IScope[] scopes)
-        {
-            Value = value;
-            //Rol = rol;
-            Function = function;
-            Scopes = scopes;
-        }
-        //public IRol Rol { get; set; }
-        public IFunction Function { get; set; }
-        public IEnumerable<IScope> Scopes { get; set; }
-        public bool Value { get; set; }
-    }
+
     [TestClass]
     public class PermissionTest
     {

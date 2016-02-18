@@ -1,27 +1,11 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Fuxion.Identity.Test.Mocks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using static Fuxion.Identity.GuidFunctionGraph;
 namespace Fuxion.Identity.Test
 {
-    [DebuggerDisplay(nameof(Name))]
-    class Rol : IRol
-    {
-        public Rol(string name, IEnumerable<IGroup> groups, params IPermission[] permissions)
-        {
-            //Id = id;
-            Name = name;
-            Groups = groups;
-            Permissions = permissions;
-        }
-        //public Guid Id { get; private set; }
-        //object IRol.Id { get { return Id; } }
-        public string Name { get; private set; }
-        public IEnumerable<IGroup> Groups { get; private set; }
-
-        public IEnumerable<IPermission> Permissions { get; set; }
-    }
     [TestClass]
     public class RolTest
     {

@@ -7,7 +7,6 @@ namespace Fuxion.Identity
 {
     public interface IPermission
     {
-        //IRol Rol { get; }
         IFunction Function { get; }
         IEnumerable<IScope> Scopes { get; }
         bool Value { get; }

@@ -3,25 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Fuxion.Identity.Test.Mocks;
 
 namespace Fuxion.Identity.Test
 {
-    [DebuggerDisplay(nameof(Name))]
-    class GuidFunction : IFunction<Guid>
-    {
-        public GuidFunction(Guid id, string name) { Id = id; Name = name; }
-        public Guid Id { get; private set; }
-        object IFunction.Id { get { return Id; } }
-        public string Name { get; private set; }
-    }
-    [DebuggerDisplay(nameof(Name))]
-    class StringFunction : IFunction<string>
-    {
-        public StringFunction(string id) { Id = id; }
-        public string Id { get; private set; }
-        object IFunction.Id { get { return Id; } }
-        public string Name { get { return Id; } }
-    }
     [TestClass]
     public class FunctionTest
     {
