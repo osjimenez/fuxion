@@ -35,10 +35,10 @@ namespace Fuxion.Identity.Test
         [TestMethod]
         public void IncludesAndExcludes()
         {
-            Assert.AreEqual(Read.GetAllInclusions().Count(), 0, "'read' cannot include 'write' or 'admin'");
-            Assert.AreEqual(Read.GetAllExclusions().Count(), 5, "'read' must exclude 'write' and 'admin'");
-            Assert.AreEqual(Edit.GetAllInclusions().Count(), 1, "'write' must include 'read'");
-            Assert.AreEqual(Edit.GetAllInclusions().Count(), 3, "'write' cannot exclude 'read'");
+            Assert.AreEqual(Read.GetAllInclusions().Count(), 0, "Read shouldn't include anything");
+            Assert.AreEqual(Read.GetAllExclusions().Count(), 5, "Read should exclude 5 functions");
+            Assert.AreEqual(Edit.GetAllInclusions().Count(), 1, "Edit should include 1 function");
+            Assert.AreEqual(Edit.GetAllExclusions().Count(), 4, "Edit should exclude 4 functions");
         }
 
         //[TestMethod]

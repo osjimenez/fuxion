@@ -90,7 +90,7 @@ namespace Fuxion.Identity
             }
         }
 
-        public string UserName
+        public object Id
         {
             get
             {

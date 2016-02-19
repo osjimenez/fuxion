@@ -32,13 +32,18 @@ namespace Fuxion.Identity.Test
         {
             // Login
             if (!IdentityManager.IsAuthenticated)
-                IdentityManager.ValidateCredentials("root", "root");
-            // Check if can create & delete Entities
+                Assert.IsTrue(IdentityManager.ValidateCredentials("root", "root"));
+            // Check if can create & delete objects of type Entity
             Assert.IsTrue(
                 IdentityManager.Current
                     .Can(Create, Delete)
-                    .In<Entity>());
-
+                    .OfType<Entity>());
+            // Check if can create & delete objects of types Entity AND DerivedEntity
+            Assert.IsTrue(
+                IdentityManager.Current
+                    .Can(Create, Delete)
+                    .OfAllTypes<Entity, DerivedEntity>());
+            return;
             var ent = new Entity();
             // Check if can edit a concrete Entity
             Assert.IsTrue(

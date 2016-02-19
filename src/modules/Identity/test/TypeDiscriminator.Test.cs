@@ -18,7 +18,7 @@ namespace Fuxion.Identity.Test
         {
             TypeDiscriminator.GetIdFunction = type => type.Name;
             TypeDiscriminator.GetNameFunction = type => type.Name.ToUpper();
-            var dis = TypeDiscriminator.Create<Entity>(AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.DefinedTypes).ToArray());
+            var dis = TypeDiscriminator.Create<Entity>();
             Debug.WriteLine("");
         }
     }

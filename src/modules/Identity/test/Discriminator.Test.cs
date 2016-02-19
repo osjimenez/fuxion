@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Fuxion.Identity.Functions;
 
 namespace Fuxion.Identity.Test
 {
@@ -15,26 +16,26 @@ namespace Fuxion.Identity.Test
         [TestMethod]
         public void Validate_GuidDiscriminator()
         {
-            var ttt = new GuidDiscriminator(default(Guid), "valid", null, null, Guid.NewGuid(), "valid");
+            var ttt = new GuidDiscriminator(default(Guid),       "valid", Guid.NewGuid(), "valid");
 
             // Invalid by Id
-            Assert.IsFalse(new GuidDiscriminator(default(Guid) , "valid", null, null, Guid.NewGuid(), "valid").IsValid());
+            Assert.IsFalse(new GuidDiscriminator(default(Guid) , "valid", Guid.NewGuid(), "valid").IsValid());
 
             // Invalid by Name
-            Assert.IsFalse(new GuidDiscriminator(Guid.NewGuid(), null   , null, null, Guid.NewGuid(), "valid").IsValid());
-            Assert.IsFalse(new GuidDiscriminator(Guid.NewGuid(), ""     , null, null, Guid.NewGuid(), "valid").IsValid());
-            Assert.IsFalse(new GuidDiscriminator(Guid.NewGuid(), " "    , null, null, Guid.NewGuid(), "valid").IsValid());
+            Assert.IsFalse(new GuidDiscriminator(Guid.NewGuid(), null   , Guid.NewGuid(), "valid").IsValid());
+            Assert.IsFalse(new GuidDiscriminator(Guid.NewGuid(), ""     , Guid.NewGuid(), "valid").IsValid());
+            Assert.IsFalse(new GuidDiscriminator(Guid.NewGuid(), " "    , Guid.NewGuid(), "valid").IsValid());
 
             // Invalid by TypeId
-            Assert.IsFalse(new GuidDiscriminator(Guid.NewGuid(), "valid", null, null, default(Guid) , "valid").IsValid());
+            Assert.IsFalse(new GuidDiscriminator(Guid.NewGuid(), "valid", default(Guid) , "valid").IsValid());
 
             // Invalid by TypeName
-            Assert.IsFalse(new GuidDiscriminator(Guid.NewGuid(), "valid", null, null, Guid.NewGuid(), null).IsValid());
-            Assert.IsFalse(new GuidDiscriminator(Guid.NewGuid(), "valid", null, null, Guid.NewGuid(), "").IsValid());
-            Assert.IsFalse(new GuidDiscriminator(Guid.NewGuid(), "valid", null, null, Guid.NewGuid(), " ").IsValid());
+            Assert.IsFalse(new GuidDiscriminator(Guid.NewGuid(), "valid", Guid.NewGuid(), null).IsValid());
+            Assert.IsFalse(new GuidDiscriminator(Guid.NewGuid(), "valid", Guid.NewGuid(), "").IsValid());
+            Assert.IsFalse(new GuidDiscriminator(Guid.NewGuid(), "valid", Guid.NewGuid(), " ").IsValid());
 
             // Valid
-            Assert.IsTrue(new GuidDiscriminator(Guid.NewGuid() , "valid", null, null, Guid.NewGuid(), "valid").IsValid());
+            Assert.IsTrue(new GuidDiscriminator(Guid.NewGuid() , "valid", Guid.NewGuid(), "valid").IsValid());
         }
         [TestMethod]
         public void Validate_StringDiscriminator()
@@ -83,16 +84,16 @@ namespace Fuxion.Identity.Test
             var id3 = Guid.NewGuid();
             var comparer = new DiscriminatorEqualityComparer();
             Assert.IsFalse(comparer.Equals(
-                new GuidDiscriminator(id1, null, null, null, id3, null),
-                new GuidDiscriminator(id2, null, null, null, id3, null)),
+                new GuidDiscriminator(id1, null, id3, null),
+                new GuidDiscriminator(id2, null, id3, null)),
                 "The comparison should fail if identifications(Id) differ");
             Assert.IsFalse(comparer.Equals(
-                new GuidDiscriminator(id1, null, null, null, id2, null),
-                new GuidDiscriminator(id1, null, null, null, id3, null)),
+                new GuidDiscriminator(id1, null, id2, null),
+                new GuidDiscriminator(id1, null, id3, null)),
                 "The comparison should fail if type identifications(TypeId) differ");
             Assert.IsTrue(comparer.Equals(
-                new GuidDiscriminator(id1, null, null, null, id3, null),
-                new GuidDiscriminator(id1, null, null, null, id3, null)),
+                new GuidDiscriminator(id1, null, id3, null),
+                new GuidDiscriminator(id1, null, id3, null)),
                 "The comparison should pass if identifications(Id) and type identifications(TypeId) are same");
         }
         [TestMethod]
@@ -114,6 +115,15 @@ namespace Fuxion.Identity.Test
                 new StringDiscriminator(id1, null, null, id3),
                 new StringDiscriminator(id1, null, null, id3)),
                 "The comparison should pass if identifications(Id) and type identifications(TypeId) are same");
+        }
+        [TestMethod]
+        public void GetScopes_RolFiltered()
+        {
+            var p = new Permission(true, Read, new Scope(new StringDiscriminator("California", null, null, "LOCATION"), ScopePropagation.ToMe));
+            var rol = new Rol("test", null, p);
+            var res = rol.GetDiscriminators(Read, new StringDiscriminator("California", null, null, "LOCATION"));
+            //            var res = ide.GetScopes(uJerry, fRead, eTest).ToList();
+            Assert.IsFalse(res.Any());
         }
     }
 }

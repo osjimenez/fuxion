@@ -25,7 +25,7 @@ namespace Fuxion.Identity
         public IPasswordProvider PasswordProvider { get; private set; }
         public IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity> Repository { get; private set; }
         private void WriteConsole(string message, bool endOfMessage) { if (Console != null) Console(message, endOfMessage); }
-        public bool ValidateCredentials(string username, string password)
+        public bool ValidateCredentials(string username, string password, bool changeCurrentIdentity = true)
         {
             WriteConsole($"Validando credenciales\r\n   Usuario: {username}\r\n   Contraseña: {password}\r\n", false);
             if (username == null || password == null)
@@ -40,6 +40,7 @@ namespace Fuxion.Identity
                 return false;
             }
             var res = PasswordProvider.Verify(password, ide.PasswordHash, ide.PasswordSalt);
+            if(changeCurrentIdentity) Current = ide;
             if(res)
             {
                 WriteConsole($"Resultado: VALIDO", true);
@@ -47,7 +48,7 @@ namespace Fuxion.Identity
             }
             return res;
         }
-        public async Task<bool> ValidateCredentialsAsync(string username, string password)
+        public async Task<bool> ValidateCredentialsAsync(string username, string password, bool changeCurrentIdentity = true)
         {
             WriteConsole($"Validando credenciales\r\n   Usuario: {username}\r\n   Contraseña: {password}\r\n", false);
             if (username == null || password == null)
@@ -62,6 +63,7 @@ namespace Fuxion.Identity
                 return false;
             }
             var res = PasswordProvider.Verify(password, ide.PasswordHash, ide.PasswordSalt);
+            if (changeCurrentIdentity) Current = ide;
             WriteConsole($"Resultado: VALIDO", true);
             return res;
         }
@@ -96,16 +98,15 @@ namespace Fuxion.Identity
                 WriteConsole($"Resultado: NO VALIDO - No se ha encontrado una identidad con ese nombre de usuario", true);
                 return false;
             }
-            IPermission den;
-            var res = ide.IsFunctionAssigned(function, discriminators, Console, out den);
+            var res = ide.IsFunctionAssigned(function, discriminators, Console);
             return res;
         }
 
 
 
 
-        public bool IsAuthenticated { get; }
-        public IIdentity Current { get; }
+        public bool IsAuthenticated { get { return Current != null; } }
+        public IIdentity Current { get; private set; }
     }
     public interface IPasswordProvider
     {

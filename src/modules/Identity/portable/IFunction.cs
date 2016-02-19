@@ -6,18 +6,34 @@ using System.Diagnostics;
 using System.Linq;
 namespace Fuxion.Identity
 {
-    public interface IFunction
+    public interface IInclusive<T>
+    {
+        IEnumerable<T> Inclusions { get; }
+    }
+    //public interface IInclusive<T<TId>, TId> : IInclusive
+    //{
+    //    new IEnumerable<T<TId>> Inclusions { get; }
+    //}
+    public interface IExclusive<T>
+    {
+        IEnumerable<T> Exclusions { get; }
+    }
+    //public interface IExclusive<TId> : IExclusive
+    //{
+    //    new IEnumerable<IFunction<TId>> Exclusions { get; }
+    //}
+    public interface IFunction : IInclusive<IFunction>, IExclusive<IFunction>
     {
         object Id { get; }
         string Name { get; }
-        IEnumerable<IFunction> Inclusions { get; }
-        IEnumerable<IFunction> Exclusions { get; }
+        //IEnumerable<IFunction> Inclusions { get; }
+        //IEnumerable<IFunction> Exclusions { get; }
     }
-    public interface IFunction<TId> : IFunction
+    public interface IFunction<TId> : IFunction, IInclusive<IFunction<TId>>, IExclusive<IFunction<TId>>
     {
         new TId Id { get; }
-        new IEnumerable<IFunction<TId>> Inclusions { get; }
-        new IEnumerable<IFunction<TId>> Exclusions { get; }
+        //new IEnumerable<IFunction<TId>> Inclusions { get; }
+        //new IEnumerable<IFunction<TId>> Exclusions { get; }
     }
     public static class FunctionExtensions
     {
@@ -29,23 +45,31 @@ namespace Fuxion.Identity
                 return null;
         }
         public static bool IsValid(this IFunction me) { return !Comparer.AreEquals(me.Id,me.Id?.GetType().GetDefaultValue()) && !string.IsNullOrWhiteSpace(me.Name); }
-        internal static IEnumerable<IFunction> GetAllInclusions(this IFunction function)
+        private static IEnumerable<T> GetAllInclusions<T>(this IInclusive<T> me, List<T> progress)
         {
-            var res = new List<IFunction>();
-            if (function.Inclusions != null)
-            {
-                res.AddRange(function.Inclusions.SelectMany(i => GetAllInclusions(i)));
-            }
+            var res = progress;
+            if (me.Inclusions == null) return res;
+            var fs = me.Inclusions.Except(res).ToList();
+            res.AddRange(fs);
+            foreach (var f in fs) GetAllInclusions((IInclusive<T>)f, res);
             return res;
         }
-        internal static IEnumerable<IFunction> GetAllExclusions(this IFunction function)
+        internal static IEnumerable<T> GetAllInclusions<T>(this IInclusive<T> me)
         {
-            var res = new List<IFunction>();
-            if (function.Inclusions != null)
-            {
-                res.AddRange(function.Inclusions.SelectMany(i => GetAllExclusions(i)));
-            }
+            return GetAllInclusions(me, new List<T>(new[] { (T)me }));
+        }
+        private static IEnumerable<T> GetAllExclusions<T>(this IExclusive<T> me, List<T> progress)
+        {
+            var res = progress;
+            if (me.Exclusions == null) return res;
+            var fs = me.Exclusions.Except(res).ToList();
+            res.AddRange(fs);
+            foreach (var f in fs) GetAllExclusions((IExclusive<T>)f, res);
             return res;
+        }
+        internal static IEnumerable<T> GetAllExclusions<T>(this IExclusive<T> me)
+        {
+            return GetAllExclusions(me, new List<T>(new[] { (T)me }));
         }
     }
     class FunctionEqualityComparer : IEqualityComparer<IFunction>
@@ -70,12 +94,42 @@ namespace Fuxion.Identity
             if (!(obj1 is IFunction) || !(obj2 is IFunction)) return false;
             var fun1 = (IFunction)obj1;
             var fun2 = (IFunction)obj2;
-            // Use 'Equals' to compare the ids
+            // Compare the ids
             return Comparer.AreEquals(fun1.Id, fun2.Id);
         }
     }
     public static class Functions
     {
+        static Functions()
+        {
+            Read = new Function("READ");
+            Edit = new Function("EDIT");
+            Create = new Function("CREATE");
+            Delete = new Function("DELETE");
+            Manage = new Function("MANAGE");
+            Admin = new Function("ADMIN");
+            ((Function)Read).Exclusions = new[] { Edit }.Cast<IFunction<string>>();
+
+            ((Function)Edit).Inclusions = new[] { Read }.Cast<IFunction<string>>();
+            ((Function)Edit).Exclusions = new[] { Create, Delete }.Cast<IFunction<string>>();
+
+            ((Function)Create).Inclusions = new[] { Edit }.Cast<IFunction<string>>();
+            ((Function)Create).Exclusions = new[] { Manage }.Cast<IFunction<string>>();
+
+            ((Function)Delete).Inclusions = new[] { Edit }.Cast<IFunction<string>>();
+            ((Function)Delete).Exclusions = new[] { Manage }.Cast<IFunction<string>>();
+
+            ((Function)Manage).Inclusions = new[] { Create, Delete }.Cast<IFunction<string>>();
+            ((Function)Manage).Exclusions = new[] { Admin }.Cast<IFunction<string>>();
+
+            ((Function)Admin).Inclusions = new[] { Manage }.Cast<IFunction<string>>();
+        }
+        public static IFunction Read { get; private set; }
+        public static IFunction Edit { get; private set; }
+        public static IFunction Create { get; private set; }
+        public static IFunction Delete { get; private set; }
+        public static IFunction Manage { get; private set; }
+        public static IFunction Admin { get; private set; }
         [DebuggerDisplay("{" + nameof(Name) + "}")]
         class Function : IFunction<string>
         {
@@ -90,16 +144,33 @@ namespace Fuxion.Identity
             object IFunction.Id { get { return Id; } }
             public string Name { get; private set; }
 
-            public IEnumerable<IFunction<string>> Inclusions { get; private set; }
-            public IEnumerable<IFunction<string>> Exclusions { get; private set; }
-            IEnumerable<IFunction> IFunction.Inclusions { get { return Inclusions; } }
-            IEnumerable<IFunction> IFunction.Exclusions { get { return Exclusions; } }
+            public IEnumerable<IFunction<string>> Inclusions { get; internal set; }
+            public IEnumerable<IFunction<string>> Exclusions { get; internal set; }
+            //IEnumerable<IFunction> IFunction.Inclusions { get { return Inclusions; } }
+            //IEnumerable<IFunction> IFunction.Exclusions { get { return Exclusions; } }
+
+            IEnumerable<IFunction> IInclusive<IFunction>.Inclusions
+            {
+                get
+                {
+                    return Inclusions;
+                }
+            }
+
+            IEnumerable<IFunction> IExclusive<IFunction>.Exclusions
+            {
+                get
+                {
+                    return Exclusions;
+                }
+            }
         }
-        public static IFunction Read { get { return new Function("READ", null, new[] { (Function)Edit }); } }
-        public static IFunction Edit { get { return new Function("EDIT", new[] { (Function)Read }, new[] { (Function)Create, (Function)Delete }); } }
-        public static IFunction Create { get { return new Function("CREATE", new[] { (Function)Edit }, new[] { (Function)Manage }); } }
-        public static IFunction Delete { get { return new Function("DELETE", new[] { (Function)Edit }, new[] { (Function)Manage }); } }
-        public static IFunction Manage{ get { return new Function("MANAGE", new[] { (Function)Create, (Function)Delete }, new[] { (Function)Admin }); } }
-        public static IFunction Admin { get { return new Function("DELETE", new[] { (Function)Manage }); } }
+        //static IFunction _Read = new Function("READ");
+        //public static IFunction Read { get { return new Function("READ"    , null                       , new[] { (Function)Edit }); } }
+        //public static IFunction Edit { get { return new Function("EDIT"    , new[] { (Function)Read }   , new[] { (Function)Create, (Function)Delete }); } }
+        //public static IFunction Create { get { return new Function("CREATE", new[] { (Function)Edit }   , new[] { (Function)Manage }); } }
+        //public static IFunction Delete { get { return new Function("DELETE", new[] { (Function)Edit }   , new[] { (Function)Manage }); } }
+        //public static IFunction Manage{ get { return new Function("MANAGE" , new[] { (Function)Create   , (Function)Delete }, new[] { (Function)Admin }); } }
+        //public static IFunction Admin { get { return new Function("DELETE" , new[] { (Function)Manage }); } }
     }
 }

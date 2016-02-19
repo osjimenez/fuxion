@@ -7,19 +7,19 @@ using System.Diagnostics;
 
 namespace Fuxion.Identity
 {
-    public interface IDiscriminator
+    public interface IDiscriminator : IInclusive<IDiscriminator>, IExclusive<IDiscriminator>
     {
-        IEnumerable<object> Inclusions { get; }
-        IEnumerable<object> Exclusions { get; }
+        //IEnumerable<object> Inclusions { get; }
+        //IEnumerable<object> Exclusions { get; }
         object TypeId { get; }
         string TypeName { get; }
         object Id { get; }
         string Name { get; }
     }
-    public interface IDiscriminator<TId, TTypeId> : IDiscriminator
+    public interface IDiscriminator<TId, TTypeId> : IDiscriminator, IInclusive<IDiscriminator<TId, TTypeId>>, IExclusive<IDiscriminator<TId, TTypeId>>
     {
-        new IEnumerable<TId> Inclusions { get; }
-        new IEnumerable<TId> Exclusions { get; }
+        //new IEnumerable<TId> Inclusions { get; }
+        //new IEnumerable<TId> Exclusions { get; }
         new TTypeId TypeId { get; }
         new TId Id { get; }
     }
@@ -88,9 +88,11 @@ namespace Fuxion.Identity
         private TypeDiscriminator()
         {
         }
-        public static TypeDiscriminator Create<T>(params Type[] knownTypes) { return Create(typeof(T), knownTypes); }
-        public static TypeDiscriminator Create(Type type, params Type[] knownTypes)
+        public static Type[] KnownTypes { get; set; }
+        public static TypeDiscriminator Create<T>() { return Create(typeof(T)); }
+        public static TypeDiscriminator Create(Type type)
         {
+            if (KnownTypes == null) throw new ArgumentException($"You must set '{nameof(TypeDiscriminator)}.{nameof(KnownTypes)}' before create any discriminator");
             var id = type.GetSignature(true);
             var @base = type.GetTypeInfo().BaseType;
             var bases = new List<Type>();
@@ -106,8 +108,8 @@ namespace Fuxion.Identity
                 Name = GetNameFunction(type),
                 TypeId = "TYPE",
                 TypeName = "TYPE",
-                Inclusions = knownTypes.Where(t => t.GetTypeInfo().IsSubclassOf(type)).Select(t => GetIdFunction(t)),
-                Exclusions = bases.Select(t => GetIdFunction(t)),
+                Inclusions = KnownTypes.Where(t => t.GetTypeInfo().IsSubclassOf(type)).Select(t => Create(t)),
+                Exclusions = bases.Select(t => Create(t)),
             };
             return res;
         }
@@ -131,11 +133,39 @@ namespace Fuxion.Identity
 
         public string TypeName { get; private set; }
 
-        public IEnumerable<string> Inclusions { get; private set; }
-        IEnumerable<object> IDiscriminator.Inclusions { get { return Inclusions; } }
+        public IEnumerable<TypeDiscriminator> Inclusions { get; private set; }
+        public IEnumerable<TypeDiscriminator> Exclusions { get; private set; }
 
-        public IEnumerable<string> Exclusions { get; private set; }
-        IEnumerable<object> IDiscriminator.Exclusions { get { return Exclusions; } }
-        
+        IEnumerable<IDiscriminator> IInclusive<IDiscriminator>.Inclusions
+        {
+            get
+            {
+                return Inclusions;
+            }
+        }
+
+        IEnumerable<IDiscriminator> IExclusive<IDiscriminator>.Exclusions
+        {
+            get
+            {
+                return Exclusions;
+            }
+        }
+
+        IEnumerable<IDiscriminator<string, string>> IInclusive<IDiscriminator<string, string>>.Inclusions
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        IEnumerable<IDiscriminator<string, string>> IExclusive<IDiscriminator<string, string>>.Exclusions
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
     }
 }

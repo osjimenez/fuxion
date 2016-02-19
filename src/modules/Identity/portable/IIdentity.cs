@@ -6,8 +6,12 @@ namespace Fuxion.Identity
 {
     public interface IIdentity : IRol
     {
-        string UserName { get; }
+        object Id { get; }
         byte[] PasswordHash { get; }
         byte[] PasswordSalt { get; }
+    }
+    public interface IIdentity<TId> : IIdentity
+    {
+        TId Id { get; }
     }
 }

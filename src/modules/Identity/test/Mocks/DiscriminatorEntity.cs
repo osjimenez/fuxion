@@ -11,15 +11,31 @@ namespace Fuxion.Identity.Test.Mocks
     [DebuggerDisplay("{" + nameof(Name) + "}")]
     class DiscriminatorEntity : IDiscriminator<string, string>
     {
-        public IEnumerable<string> Exclusions { get { throw new NotImplementedException(); } }
+        public IEnumerable<DiscriminatorEntity> Exclusions { get { throw new NotImplementedException(); } }
         public string Id { get { throw new NotImplementedException(); } }
-        public IEnumerable<string> Inclusions { get { throw new NotImplementedException(); } }
+        public IEnumerable<DiscriminatorEntity> Inclusions { get { throw new NotImplementedException(); } }
         public string Name { get { throw new NotImplementedException(); } }
         public string TypeId { get { throw new NotImplementedException(); } }
-        public string TypeName { get { throw new NotImplementedException(); } }
-        IEnumerable<object> IDiscriminator.Exclusions { get { return Exclusions; } }
-        object IDiscriminator.Id { get { return Id; } }
-        IEnumerable<object> IDiscriminator.Inclusions { get { return Inclusions; } }
         object IDiscriminator.TypeId { get { return TypeId; } }
+        public string TypeName { get { throw new NotImplementedException(); } }
+
+        IEnumerable<IDiscriminator<string, string>> IExclusive<IDiscriminator<string, string>>.Exclusions { get { return Exclusions; } }
+
+        IEnumerable<IDiscriminator> IExclusive<IDiscriminator>.Exclusions { get { return Exclusions; } }
+
+        //IEnumerable<object> IExclusive<object>.Exclusions { get { return Exclusions; } }
+
+        object IDiscriminator.Id { get { return Id; } }
+
+        IEnumerable<IDiscriminator> IInclusive<IDiscriminator>.Inclusions { get { return Inclusions; } }
+
+        IEnumerable<IDiscriminator<string, string>> IInclusive<IDiscriminator<string, string>>.Inclusions
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+        
     }
 }

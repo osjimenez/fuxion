@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using static Fuxion.Identity.Functions;
@@ -9,15 +10,20 @@ namespace Fuxion.Identity.Test.Mocks
 {
     class IdentityRepository : IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity>
     {
+        public IdentityRepository()
+        {
+            TypeDiscriminator.KnownTypes = AppDomain.CurrentDomain.GetAssemblies()
+                                            .SelectMany(a => a.DefinedTypes).ToArray();
+        }
         public bool Exist(string key) { return false; }
         public Task<bool> ExistAsync(string key) { return Task.FromResult(false); }
         public IIdentity Find(string key) {
-            if(key == "root")
+            if (key == "root")
             {
                 return new Identity
                 {
                     Name = "root",
-                    UserName = "root",
+                    Id = "root",
                     PasswordHash = new byte[] { 0x00 },
                     PasswordSalt = new byte[] { 0x00 },
                     Groups = new[]
@@ -27,9 +33,11 @@ namespace Fuxion.Identity.Test.Mocks
                             Name = "rootGroup",
                             Permissions = new[]
                             {
-                                new Permission(true,Read,new []
+                                new Permission(true, Manage, new []
                                 {
-                                    new Scope(TypeDiscriminator.Create<Entity>(), ScopePropagation.ToMe | ScopePropagation.ToInclusions)
+                                    new Scope(
+                                        TypeDiscriminator.Create<Entity>(),
+                                        ScopePropagation.ToMe | ScopePropagation.ToInclusions)
                                 }),
                             }
                         }
