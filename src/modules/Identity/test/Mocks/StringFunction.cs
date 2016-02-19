@@ -17,20 +17,7 @@ namespace Fuxion.Identity.Test.Mocks
 
         public IEnumerable<IFunction<string>> Inclusions { get; private set; }
         public IEnumerable<IFunction<string>> Exclusions { get; private set; }
-        IEnumerable<IFunction> IInclusive<IFunction>.Inclusions
-        {
-            get
-            {
-                return Inclusions;
-            }
-        }
-
-        IEnumerable<IFunction> IExclusive<IFunction>.Exclusions
-        {
-            get
-            {
-                return Inclusions;
-            }
-        }
+        IEnumerable<IFunction> IInclusive<IFunction>.Inclusions { get { return Inclusions; } }
+        IEnumerable<IFunction> IExclusive<IFunction>.Exclusions { get { return Inclusions; } }
     }
 }

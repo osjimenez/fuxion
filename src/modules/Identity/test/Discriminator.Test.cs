@@ -13,6 +13,12 @@ namespace Fuxion.Identity.Test
     [TestClass]
     public class DiscriminatorTest
     {
+        [ClassInitialize]
+        public static void Init(TestContext c)
+        {
+            TypeDiscriminator.KnownTypes = AppDomain.CurrentDomain.GetAssemblies()
+                                            .SelectMany(a => a.DefinedTypes).ToArray();
+        }
         [TestMethod]
         public void Validate_GuidDiscriminator()
         {
@@ -119,11 +125,17 @@ namespace Fuxion.Identity.Test
         [TestMethod]
         public void GetScopes_RolFiltered()
         {
-            var p = new Permission(true, Read, new Scope(new StringDiscriminator("California", null, null, "LOCATION"), ScopePropagation.ToMe));
-            var rol = new Rol("test", null, p);
-            var res = rol.GetDiscriminators(Read, new StringDiscriminator("California", null, null, "LOCATION"));
-            //            var res = ide.GetScopes(uJerry, fRead, eTest).ToList();
-            Assert.IsFalse(res.Any());
+            var rol = new Rol("test", null,
+                new Permission(false, Read,
+                    new Scope(new DiscriminatorEntity {
+                        Id = "test",
+                        Name = "test",
+                        TypeId = "DIS",
+                        TypeName = "DIS"
+                    }, ScopePropagation.ToMe)));
+            var res = rol.GetDiscriminators(Read, new[] { TypeDiscriminator.Create<Entity>() }, (m, _) => Debug.WriteLine(m));
+            Debug.WriteLine($"Se han seleccionado '{res.Count()}' scopes");
+            Assert.IsTrue(res.Any());
         }
     }
 }

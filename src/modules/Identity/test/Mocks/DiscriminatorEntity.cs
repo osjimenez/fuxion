@@ -11,31 +11,23 @@ namespace Fuxion.Identity.Test.Mocks
     [DebuggerDisplay("{" + nameof(Name) + "}")]
     class DiscriminatorEntity : IDiscriminator<string, string>
     {
-        public IEnumerable<DiscriminatorEntity> Exclusions { get { throw new NotImplementedException(); } }
-        public string Id { get { throw new NotImplementedException(); } }
-        public IEnumerable<DiscriminatorEntity> Inclusions { get { throw new NotImplementedException(); } }
-        public string Name { get { throw new NotImplementedException(); } }
-        public string TypeId { get { throw new NotImplementedException(); } }
-        object IDiscriminator.TypeId { get { return TypeId; } }
-        public string TypeName { get { throw new NotImplementedException(); } }
-
-        IEnumerable<IDiscriminator<string, string>> IExclusive<IDiscriminator<string, string>>.Exclusions { get { return Exclusions; } }
-
-        IEnumerable<IDiscriminator> IExclusive<IDiscriminator>.Exclusions { get { return Exclusions; } }
-
-        //IEnumerable<object> IExclusive<object>.Exclusions { get { return Exclusions; } }
-
+        
+        public string Id { get; set; }
         object IDiscriminator.Id { get { return Id; } }
 
-        IEnumerable<IDiscriminator> IInclusive<IDiscriminator>.Inclusions { get { return Inclusions; } }
+        public string Name { get; set; }
 
-        IEnumerable<IDiscriminator<string, string>> IInclusive<IDiscriminator<string, string>>.Inclusions
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
-        
+        public string TypeId { get; set; }
+        object IDiscriminator.TypeId { get { return TypeId; } }
+
+        public string TypeName { get; set; }
+
+        public IEnumerable<DiscriminatorEntity> Inclusions { get { throw new NotImplementedException(); } }
+        IEnumerable<IDiscriminator> IInclusive<IDiscriminator>.Inclusions { get { return Inclusions; } }
+        IEnumerable<IDiscriminator<string, string>> IInclusive<IDiscriminator<string, string>>.Inclusions { get { return Inclusions; } }
+
+        public IEnumerable<DiscriminatorEntity> Exclusions { get { throw new NotImplementedException(); } }
+        IEnumerable<IDiscriminator> IExclusive<IDiscriminator>.Exclusions { get { return Exclusions; } }
+        IEnumerable<IDiscriminator<string, string>> IExclusive<IDiscriminator<string, string>>.Exclusions { get { return Exclusions; } }
     }
 }

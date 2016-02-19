@@ -42,32 +42,35 @@ namespace Fuxion.Identity
                         .Aggregate("", (s2, a2) => s2 + a2 + ",", s2 => s2.Trim(',')) + "],", s => s.Trim(','));
             }
         }
-        private static void PrintPermissions(string label, IEnumerable<IPermission> permissions, int ident = 0)
+        private static void PrintPermissions(string label, IEnumerable<IPermission> permissions, int ident, Action<string, bool> console)
         {
-            Debug.WriteLine(label + ":");
+            Action<string, bool> con = (m, i) => { if (console != null) console(m, i); };
+            con(label + ":", true);
             foreach (var per in permissions)
             {
-                Debug.WriteLine("".PadRight(ident, ' ') +
+                con("".PadRight(ident, ' ') +
                                 //per.Rol.PadRight(permissions.Max(p => p.Rol.Length), ' ') + " , f:" +
                                 per.Function.Name.PadRight(permissions.Max(p => p.Function.Name.Length), ' ') + " , v:" +
                                 per.Value + "".PadRight(per.Value ? 1 : 0, ' ') + " , ss:[" +
                                 per.Scopes.Aggregate("", (str, actual) => str + actual + ",", str => str.Trim(',')) +
-                                "]");
+                                "]", true);
             }
         }
-        public static IEnumerable<DiscriminatorCheckCollection> GetDiscriminators(this IRol me, IFunction function, params IDiscriminator[] discriminators)
+        public static IEnumerable<DiscriminatorCheckCollection> GetDiscriminators(this IRol me, IFunction function, IDiscriminator[] discriminators, Action<string, bool> console)
         {
-            var pers = me.GetPermissions(function, discriminators);
+            Action<string, bool> con = (m, i) => { if (console != null) console(m, i); };
+            con($"GetDiscriminators ...", true);
+            var pers = me.GetPermissions(function, discriminators, con);
             //var pers = GetPermissions(IdentityMembership, function, discriminators);
 
             var granted = pers.Where(p => p.Value);
             var denied = pers.Where(p => !p.Value);
-            Debug.WriteLine("Granted discriminators");
+            con($"Granted discriminators",true);
             foreach (var dis in granted)
-                Debug.WriteLine(" - " + dis);
-            Debug.WriteLine("Denied discriminators");
+                con($" - " + dis, true);
+            con($"Denied discriminators", true);
             foreach (var dis in denied)
-                Debug.WriteLine(" - " + dis);
+                con($" - " + dis, true);
 
             //TODO - Oscar - Hay que desplegar los ids del discriminatorcheck para incluir los padres/hijos segun corresponda por su propagacion
             return granted.Select(p => new DiscriminatorCheckCollection(p.Value,
@@ -81,25 +84,26 @@ namespace Fuxion.Identity
 
         }
         ////        internal IEnumerable<PermissionClaim> GetPermissions(IAuthorizationRol rol, IAuthorizationFunction function, params IAuthorizationDiscriminator[] discriminators)
-        internal static IEnumerable<IPermission> GetPermissions(this IRol me, IFunction function, params IDiscriminator[] discriminators)
+        internal static IEnumerable<IPermission> GetPermissions(this IRol me, IFunction function, IDiscriminator[] discriminators, Action<string, bool> console)
         {
+            Action<string, bool> con = (m, i) => { if (console != null) console(m, i); };
+            con($"   GetPermissions ...", true);
             //if (discriminators.Any(o => string.IsNullOrWhiteSpace(o.Path)))
             //    throw new ArgumentException("All discriminators must have Path so cannot be the root.");
-            Debug.WriteLine("Filtering permissions:\r\n" +
-                //                "   Rols => " + rol.AllMembership().Aggregate("", (s, a) => s + a.Id + " , ", s => s.Trim(',', ' ')) + "\r\n" +
-                //"   Rols => " + membership.Aggregate("", (s, a) => s + a + " , ", s => s.Trim(',', ' ')) + "\r\n" +
-                "   Functions => " + function.GetAllExclusions().Aggregate("", (s, a) => s + a.Id + " , ", s => s.Trim(',', ' ')) + "\r\n" +
-                "   Discriminators => "
-                + discriminators.Aggregate("", (str, actual) => str + actual.TypeId + "-" + actual.Inclusions + " , ", str => str.Trim(',', ' ')));
+            con($"      Filtering permissions:",true);
+            //                "   Rols => " + rol.AllMembership().Aggregate("", (s, a) => s + a.Id + " , ", s => s.Trim(',', ' ')) + "\r\n" +
+            //"   Rols => " + membership.Aggregate("", (s, a) => s + a + " , ", s => s.Trim(',', ' ')) + "\r\n" +
+            con($"         Functions => " + function.GetAllExclusions().Aggregate("", (s, a) => s + a.Id + " , ", s => s.Trim(',', ' ')), true);
+            con($"         Discriminators => " + discriminators.Aggregate("", (str, actual) => str + actual.TypeId + "-" + actual.Inclusions + " , ", str => str.Trim(',', ' ')), true);
             Debug.WriteLine("");
             var permissions = me.Permissions.ToList().AsQueryable();
-            PrintPermissions("Initial permissions", permissions, 3);
+            PrintPermissions("      Initial permissions", permissions, 9, con);
             #region Filter by rol
             //permissions = permissions.Where(p =>
             //    // Exclude permissions for roles that i don't take
             //    membership.Contains(p.Rol)
             //    );
-            //PrintPermissions("After rol filters", permissions, 3);
+            //PrintPermissions("      After rol filters", permissions, 9, con);
             #endregion
             #region Filter by function
             permissions = permissions.Where(p =>
@@ -109,7 +113,7 @@ namespace Fuxion.Identity
                     // Or exclude permissions denied with functions included by me
                     (!p.Value && function.GetAllInclusions().Contains(p.Function, new FunctionEqualityComparer()))
                 );
-            PrintPermissions("After function filters", permissions, 3);
+            PrintPermissions("      After function filters", permissions, 9, con);
             #endregion
             #region Filter by discriminator
             /*
@@ -125,7 +129,7 @@ namespace Fuxion.Identity
             //        // Or exclude permissions denied with functions included by me
             //    (!p.Value && function.AllIncludes().Select(f => f.Id).Contains(p.Function))
             //    );
-            PrintPermissions("After discriminator Id filters", permissions, 3);
+            PrintPermissions("      After discriminator Id filters", permissions, 9, con);
             #endregion
             #region Filter by Path
             var res = new List<IPermission>();
@@ -188,7 +192,7 @@ namespace Fuxion.Identity
                     }
                 }
             }
-            PrintPermissions("After discriminator Path filter", res, 3);
+            PrintPermissions("      After discriminator Path filter", res, 9, con);
             #endregion
             return res;
         }
@@ -262,6 +266,8 @@ namespace Fuxion.Identity
                         + "\nAnd don't match any permission");
             }
         }
+
+        #region Fluent
         public static IRolCan Can(this IRol me, params IFunction[] functions) { return new _RolCan(me, functions); }
         public static IRolFilter<T> Filter<T>(this IRol me, IQueryable<T> source) { return new _RolFilter<T>(me); }
 
@@ -299,6 +305,7 @@ namespace Fuxion.Identity
         //public static IQueryable<T> WhereCan<T>(this IQueryable<T> me, IFunction function) { return null; }
         public static IQueryable<T> WhereCan<T>(this IQueryable<T> me, params IFunction[] functions) { return null; }
         public static IQueryable<T> WhereCanAny<T>(this IQueryable<T> me, params IFunction[] functions) { return null; }
+        #endregion
     }
     class _Discriminator : IDiscriminator
     {
