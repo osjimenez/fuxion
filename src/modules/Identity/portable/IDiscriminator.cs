@@ -25,6 +25,10 @@ namespace Fuxion.Identity
     }
     public static class DiscriminatorExtensions
     {
+        public static string ToOneLineString(this IDiscriminator me)
+        {
+            return $"{me.TypeName} - {me.TypeName}";
+        }
         public static bool IsValid(this IDiscriminator me)
         {
             return
@@ -88,6 +92,8 @@ namespace Fuxion.Identity
         private TypeDiscriminator()
         {
         }
+        public static string DiscriminatorTypeId { get; set; } = "TYPE";
+        public static string DiscriminatorTypeName { get; set; } = "TYPE";
         public static Type[] KnownTypes { get; set; }
         public static TypeDiscriminator Create<T>() { return Create(typeof(T)); }
         public static TypeDiscriminator Create(Type type)
@@ -106,8 +112,8 @@ namespace Fuxion.Identity
             {
                 Id = GetIdFunction(type),
                 Name = GetNameFunction(type),
-                TypeId = "TYPE",
-                TypeName = "TYPE",
+                TypeId = DiscriminatorTypeId,
+                TypeName = DiscriminatorTypeName,
                 Inclusions = KnownTypes.Where(t => t.GetTypeInfo().IsSubclassOf(type)).Select(t => Create(t)),
                 Exclusions = bases.Select(t => Create(t)),
             };
@@ -136,36 +142,13 @@ namespace Fuxion.Identity
         public IEnumerable<TypeDiscriminator> Inclusions { get; private set; }
         public IEnumerable<TypeDiscriminator> Exclusions { get; private set; }
 
-        IEnumerable<IDiscriminator> IInclusive<IDiscriminator>.Inclusions
-        {
-            get
-            {
-                return Inclusions;
-            }
-        }
+        IEnumerable<IDiscriminator> IInclusive<IDiscriminator>.Inclusions { get { return Inclusions; } }
 
-        IEnumerable<IDiscriminator> IExclusive<IDiscriminator>.Exclusions
-        {
-            get
-            {
-                return Exclusions;
-            }
-        }
+        IEnumerable<IDiscriminator> IExclusive<IDiscriminator>.Exclusions { get { return Exclusions; } }
 
-        IEnumerable<IDiscriminator<string, string>> IInclusive<IDiscriminator<string, string>>.Inclusions
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        IEnumerable<IDiscriminator<string, string>> IInclusive<IDiscriminator<string, string>>.Inclusions { get { return Inclusions; } }
 
-        IEnumerable<IDiscriminator<string, string>> IExclusive<IDiscriminator<string, string>>.Exclusions
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        IEnumerable<IDiscriminator<string, string>> IExclusive<IDiscriminator<string, string>>.Exclusions { get { return Exclusions; } }
+        public override string ToString() { return this.ToOneLineString(); }
     }
 }

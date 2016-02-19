@@ -25,7 +25,7 @@ namespace Fuxion.Identity
         public IPasswordProvider PasswordProvider { get; private set; }
         public IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity> Repository { get; private set; }
         private void WriteConsole(string message, bool endOfMessage) { if (Console != null) Console(message, endOfMessage); }
-        public bool ValidateCredentials(string username, string password, bool changeCurrentIdentity = true)
+        public bool Login(string username, string password, bool changeCurrentIdentity = true)
         {
             WriteConsole($"Validando credenciales\r\n   Usuario: {username}\r\n   Contraseña: {password}\r\n", false);
             if (username == null || password == null)
@@ -48,7 +48,7 @@ namespace Fuxion.Identity
             }
             return res;
         }
-        public async Task<bool> ValidateCredentialsAsync(string username, string password, bool changeCurrentIdentity = true)
+        public async Task<bool> LoginAsync(string username, string password, bool changeCurrentIdentity = true)
         {
             WriteConsole($"Validando credenciales\r\n   Usuario: {username}\r\n   Contraseña: {password}\r\n", false);
             if (username == null || password == null)

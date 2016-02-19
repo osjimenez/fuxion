@@ -12,6 +12,6 @@ namespace Fuxion.Identity
     }
     public interface IIdentity<TId> : IIdentity
     {
-        TId Id { get; }
+        new TId Id { get; }
     }
 }

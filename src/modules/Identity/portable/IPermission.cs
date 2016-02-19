@@ -13,6 +13,13 @@ namespace Fuxion.Identity
     }
     public static class PermissionExtensions
     {
+        public static string ToOneLineString(this IPermission per)
+        {
+            return per.Function.Name.PadRight(8, ' ') + " , v:" +
+                per.Value + "".PadRight(per.Value ? 1 : 0, ' ') + " , ss:[" +
+                per.Scopes.Aggregate("", (str, actual) => str + actual + ",", str => str.Trim(',')) +
+                "]";
+        }
         public static bool IsValid(this IPermission me) { return me.Function != null && me.Scopes.Select(s => s.Discriminator.TypeId).Distinct().Count() == me.Scopes.Count(); }
         public static bool Match(this IPermission me, IFunction function, IDiscriminator[] discriminators, Action<string, bool> console)
         {
@@ -35,7 +42,7 @@ namespace Fuxion.Identity
             con($"         Permiso: {me.Value}", true);
             con($"         Mi función: {me.Function.Id}", true);
             con($"         Función objetivo: {function.Id}", true);
-            con($"         Mis inclusiones: {function.GetAllInclusions().Aggregate("", (a, s) => a + " - " + s.Id)}", true);
+            con($"         Mis inclusiones: {me.Function.GetAllInclusions().Aggregate("", (a, s) => a + " - " + s.Id)}", true);
             var comparer = new FunctionEqualityComparer();
             // Si es la misma función, TRUE.
             var byFunc = comparer.Equals(me.Function, function);
@@ -139,6 +146,11 @@ namespace Fuxion.Identity
             Action<string, bool> con = (m, i) => { if (console != null) console(m, i); };
             con($"      MatchByDiscriminatorsPath ...", true);
             con($"         Tengo {me.Scopes.Count()} scopes", true);
+            if (!me.Scopes.Any())
+            {
+                con($"         No tengo scopes", true);
+                return true;
+            }
             // Tenemos que tomar nuestros discriminadores, y comprobarlos contra los discriminadores que me han pasado
             // - Cojo un discriminador y busco el discriminador del mismo tipo en la entrada:
             //    - No hay un discriminador del mismo tipo, pues no encaja

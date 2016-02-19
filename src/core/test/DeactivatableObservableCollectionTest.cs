@@ -4,11 +4,11 @@ using System.Collections.Specialized;
 using Fuxion.Collections.ObjectModel;
 using Xunit;
 
-namespace Waf.Test
+namespace Fuxion.Test
 {
     public class DeactivatableObservableCollectionTest
     {
-
+        // TODO - Oscar - xUnit.net http://blog.ploeh.dk/2010/04/26/WhyImmigratingfromMSTesttoxUnit.net/
         [Fact]
         public void DeactivatableObservableCollection_Add()
         {
