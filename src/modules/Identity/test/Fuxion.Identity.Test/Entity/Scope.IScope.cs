@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Identity.Test.Entity
 {
-    partial class Scope : IScope
+    public partial class Scope : IScope
     {
-        public IDiscriminator Discriminator { get; set; }
-        public ScopePropagation Propagation { get; set; }
+        IDiscriminator IScope.Discriminator { get { return Discriminator; } }
     }
 }

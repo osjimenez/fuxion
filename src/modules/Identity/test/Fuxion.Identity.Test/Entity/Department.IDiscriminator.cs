@@ -1,15 +1,18 @@
 ﻿using System.Collections.Generic;
 namespace Fuxion.Identity.Test.Entity
 {
-    [Discriminator("DEP")]
-    partial class Department : IDiscriminator<string, string>
+    [Discriminator(TypeId)]
+    public partial class Department : IDiscriminator<string, string>
     {
+        const string TypeId = "DEP";
+        protected override object GetTypeId() { return TypeId; }
+
         object IDiscriminator.Id { get { return Id; } }
 
-        public string TypeId { get { return "DEP"; } }
-        object IDiscriminator.TypeId { get { return TypeId; } }
+        string IDiscriminator<string,string>.TypeId { get { return TypeId; } }
+        //object IDiscriminator.TypeId { get { return TypeId; } }
 
-        public string TypeName { get { return TypeId; } }
+        string IDiscriminator.TypeName { get { return TypeId; } }
 
         IEnumerable<IDiscriminator<string, string>> IInclusive<IDiscriminator<string, string>>.Inclusions { get { return Children; } }
         IEnumerable<IDiscriminator> IInclusive<IDiscriminator>.Inclusions { get { return Children; } }

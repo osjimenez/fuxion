@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Fuxion.Identity.Test.Helpers
 
 {
-    class PasswordProvider : IPasswordProvider
+    public class PasswordProvider : IPasswordProvider
     {
         public void Generate(string password, out byte[] salt, out byte[] hash)
         {

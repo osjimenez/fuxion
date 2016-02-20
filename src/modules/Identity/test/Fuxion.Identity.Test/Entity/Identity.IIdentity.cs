@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Identity.Test.Entity
 {
-    partial class Identity : IIdentity<string>
+    public partial class Identity : IIdentity<string>
     {
         object IIdentity.Id { get { return UserName; } }
     }

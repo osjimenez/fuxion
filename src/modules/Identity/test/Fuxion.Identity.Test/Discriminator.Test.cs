@@ -8,7 +8,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Fuxion.Identity.DatabaseTest.Entity;
+using Fuxion.Identity.Test.Entity;
 using static Fuxion.Identity.Functions;
 
 namespace Fuxion.Identity.Test
@@ -130,13 +130,16 @@ namespace Fuxion.Identity.Test
                         Value =true,
                         Function =Read,
                         Scopes =new[] {
-                            new Scope(new Country {
-                                Id = "USA",
-                                Name = "USA",
-                            }, ScopePropagation.ToMe)
+                            new Scope {
+                                Discriminator = new Country {
+                                    Id = "USA",
+                                    Name = "USA",
+                                },
+                                Propagation = ScopePropagation.ToMe
+                            }
                         }
                     }
-                }
+                }.ToList()
             };
             
             var res = rol.GetDiscriminators(Read, new[] { TypeDiscriminator.Create<Location>() }, Printer.Print);

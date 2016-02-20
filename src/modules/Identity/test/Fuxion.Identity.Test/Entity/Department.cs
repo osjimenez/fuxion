@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Fuxion.Identity.Test.Entity
 {
-    partial class Department : Base
+    [Table(nameof(Department))]
+    public partial class Department : Discriminator
     {
-        public string Name { get; set; }
-        public IEnumerable<Department> Children { get; set; }
+        public IList<Department> Children { get; set; }
         public Department Parent { get; set; }
     }
 }

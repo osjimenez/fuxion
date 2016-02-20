@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Identity.Test.Entity
 {
-    partial class Category
+    public partial class Category
     {
     }
 }

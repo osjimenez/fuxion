@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Fuxion.Identity.Functions;
 using Fuxion.Identity.Test.Mocks;
 using Fuxion.Identity.Test.Entity;
-using Fuxion.Identity.DatabaseTest.Entity;
+using static Fuxion.Identity.Test.StaticContext;
 
 namespace Fuxion.Identity.Test
 {
@@ -40,14 +40,14 @@ namespace Fuxion.Identity.Test
                     Function = Read,
                     Scopes = new[] {
                         // Yo tengo 'Department' y 'Location'
-                        new Scope(new GuidDiscriminator(depId, "Sales",  Department, "Department"), 0),
+                        new Scope { Discriminator =  Departments.Sales },
                         //new Scope(new GuidDiscriminator(x(), "", Department, "Department"), 0),
-                        new Scope(new GuidDiscriminator(locId, "",  Location, "Location"), 0)
+                        new Scope { Discriminator = Locations.USA }
                     }
-                }.MatchByDiscriminatorsType(new[] {
+                }.MatchByDiscriminatorsType(new IDiscriminator[] {
+                    Departments.Sales,
+                    Locations.USA
                     // Me presentan 'Department' y 'Location'
-                    new GuidDiscriminator(depId, "Sales", Department, "Department"),
-                    new GuidDiscriminator( locId, "", Location, "Location")
                 }, null));
             // CASE 2
             // Faltan discriminadores, se han presentado una serie de discriminadores, pero este permiso tiene mas, no cumple
@@ -58,12 +58,12 @@ namespace Fuxion.Identity.Test
                     Function = Read,
                     Scopes = new[] {
                         // Yo tengo 'Department' y 'Location'
-                        new Scope(new GuidDiscriminator(x(), "",  Department, "Department" ), 0),
-                        new Scope(new GuidDiscriminator(x(), "",  Location, "Location"), 0)
+                        new Scope { Discriminator = Departments.Acme },
+                        new Scope {Discriminator = Locations.USA }
                     }
                 }.MatchByDiscriminatorsType(new[] {
+                    Departments.Acme
                     // Me presentan 'Department'
-                    new GuidDiscriminator(x(), "", Department, "Department"),
                 }, null));
             // CASE 3
             // Sobran discriminadores, se han presentado más discriminadores que los que aplican en este permiso, se ignorarán,
@@ -75,8 +75,8 @@ namespace Fuxion.Identity.Test
                     Function = Read,
                     Scopes = new[] {
                         // Yo tengo 'Department' y 'Location'
-                        new Scope(new GuidDiscriminator(x(), "", Department, "Department"), 0),
-                        new Scope(new GuidDiscriminator(x(), "", Location, "Location"), 0) }
+                        new Scope {Discriminator = Departments.Acme },
+                        new Scope { Discriminator = Locations.USA } }
                 }.MatchByDiscriminatorsType(new[] {
                     // Me presentan 'Department', 'Location' y 'WorkerClass'
                     new GuidDiscriminator(x(), "",Department, "Department"),
@@ -90,7 +90,7 @@ namespace Fuxion.Identity.Test
                 {
                     Value = true,
                     Function = Read,
-                    Scopes = new IScope[] {
+                    Scopes = new Scope[] {
                         // Yo no tengo nada
                     }
                 }.MatchByDiscriminatorsType(new[]

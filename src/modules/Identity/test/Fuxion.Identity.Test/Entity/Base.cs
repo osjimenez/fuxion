@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Identity.Test.Entity
 {
-    class Base
+    public class Base
     {
         public string Id { get; set; }
     }

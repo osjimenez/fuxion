@@ -1,4 +1,4 @@
-﻿using Fuxion.Identity.DatabaseTest.Entity;
+﻿using Fuxion.Identity.Test.Entity;
 using Fuxion.Identity.Test.Entity;
 using Fuxion.Identity.Test.Helpers;
 using Fuxion.Identity.Test.Mocks;

@@ -1,4 +1,4 @@
-﻿using Fuxion.Identity.DatabaseTest.Entity;
+﻿using Fuxion.Identity.Test.Entity;
 using Fuxion.Identity.Test.Entity;
 using Fuxion.Identity.Test.Helpers;
 using Fuxion.Identity.Test.Mocks;
@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static Fuxion.Identity.Functions;
-using static Fuxion.Identity.Test.IdentityMemoryRepository;
+using static Fuxion.Identity.Test.StaticContext;
 namespace Fuxion.Identity.Test
 {
     [TestClass]

@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Identity.Test.Entity
 {
-    abstract partial class Location : Base
-    {       
-        public string Name { get; set; }
+    public abstract partial class Location : Discriminator
+    {
+        
     }
 }

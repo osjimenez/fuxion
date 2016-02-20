@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Identity.Test.Helpers
 {
-    static class Bootstrapper
+    public static class Bootstrapper
     {
         static bool initialized = false;
         public static void Initialize() {

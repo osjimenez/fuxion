@@ -1,11 +1,13 @@
-﻿using Fuxion.Identity.DatabaseTest.Entity;
+﻿using Fuxion.Identity.Test.Entity;
 using Fuxion.Identity.Test.Entity;
 using Fuxion.Identity.Test.Mocks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Diagnostics;
 using static Fuxion.Identity.Functions;
+using static Fuxion.Identity.Test.StaticContext;
 namespace Fuxion.Identity.Test
 {
     [TestClass]
@@ -55,26 +57,42 @@ namespace Fuxion.Identity.Test
                         Value =true,
                         Function = Read,
                         Scopes =new[]{
-                            new Scope(SanFranciscoDis, ScopePropagation.ToMe)
+                            new Scope {
+                                Discriminator = Locations.SanFrancisco,
+                                Propagation = ScopePropagation.ToMe }
                         }
                     },
                     new Permission {
                         Value =false,
                         Function =Edit,
                         Scopes =new[] {
-                            new Scope(CaliforniaDis, ScopePropagation.ToMe | ScopePropagation.ToInclusions)
+                            new Scope {
+                                Discriminator = Locations.California,
+                                Propagation = ScopePropagation.ToMe | ScopePropagation.ToInclusions }
                         }
                     }
-                }
+                }.ToList()
             }.CheckFunctionAssigned(Read, new[] { SanFranciscoDis }, (m, _) => Debug.WriteLine(m));
 
             Assert.IsFalse(new Rol
             {
                 Id = "oka",
                 Permissions = new[] {
-                    new Permission { Value = true, Function = Edit, Scopes = new[] { new Scope(SanFranciscoDis, ScopePropagation.ToMe) } },
-                    new Permission { Value = false, Function = Edit, Scopes = new[] { new Scope(CaliforniaDis, ScopePropagation.ToMe | ScopePropagation.ToInclusions) } }
-                }
+                    new Permission {
+                        Value = true,
+                        Function = Edit,
+                        Scopes = new[] {
+                            new Scope {
+                                Discriminator = Locations.SanFrancisco,
+                                Propagation = ScopePropagation.ToMe } } },
+                    new Permission {
+                        Value = false,
+                        Function = Edit,
+                        Scopes = new[] {
+                            new Scope {
+                                Discriminator = Locations.California,
+                                Propagation = ScopePropagation.ToMe | ScopePropagation.ToInclusions } } }
+                }.ToList()
             }.IsFunctionAssigned(Edit, new[] { SanFranciscoDis }, (m, _) => Debug.WriteLine(m))
                 , "Tengo:\r\n" +
                     $" - Concedido el permiso para {nameof(Edit)} en {nameof(SanFrancisco)}\r\n" +

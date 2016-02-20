@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Identity.Test.Entity
 {
-    partial class Tag
+    [Discriminator(TypeId)]
+    public partial class Tag
     {
+        const string TypeId = "TAG";
+        protected override object GetTypeId() { return TypeId; }
     }
 }

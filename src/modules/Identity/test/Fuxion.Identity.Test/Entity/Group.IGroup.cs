@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Identity.Test.Entity
 {
-    partial class Group : IGroup
+    public partial class Group : IGroup
     {
-        IEnumerable<IGroup> IRol.Groups { get { return Groups; } }
+        IEnumerable<IGroup> IRol.Groups { get { return RolGroups.Select(rg=>rg.Group); } }
         IEnumerable<IPermission> IRol.Permissions { get { return Permissions; } }
     }
 }

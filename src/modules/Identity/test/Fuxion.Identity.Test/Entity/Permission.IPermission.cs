@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Identity.Test.Entity
 {
-    partial class Permission : IPermission
+    public partial class Permission : IPermission
     {
+        IEnumerable<IScope> IPermission.Scopes { get { return Scopes; } }
     }
 }

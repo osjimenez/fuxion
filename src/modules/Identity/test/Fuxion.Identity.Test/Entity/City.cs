@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Fuxion.Identity.Test.Entity
 {
-    class City : Location
+    [Table(nameof(City))]
+    public class City : Location
     {
         public State State { get; set; }
-        protected override IEnumerable<Location> GetExclusions() { return new[] { State }; }
+        protected override IList<Location> GetExclusions() { return new[] { State }; }
 
-        protected override IEnumerable<Location> GetInclusions() { return new Location[] { }; }
+        protected override IList<Location> GetInclusions() { return new Location[] { }; }
     }
 }
