@@ -123,13 +123,27 @@ namespace Fuxion.Identity
             ((Function)Manage).Exclusions = new[] { Admin }.Cast<IFunction<string>>();
 
             ((Function)Admin).Inclusions = new[] { Manage }.Cast<IFunction<string>>();
+            dic = new Dictionary<string, IFunction>
+            {
+                [((Function)Read).Id] = Read,
+                [((Function)Edit).Id] = Edit,
+                [((Function)Create).Id] = Create,
+                [((Function)Delete).Id] = Delete,
+                [((Function)Manage).Id] = Manage,
+                [((Function)Admin).Id] = Admin,
+            };
         }
+        static Dictionary<string, IFunction> dic;
         public static IFunction Read { get; private set; }
         public static IFunction Edit { get; private set; }
         public static IFunction Create { get; private set; }
         public static IFunction Delete { get; private set; }
         public static IFunction Manage { get; private set; }
         public static IFunction Admin { get; private set; }
+        public static IFunction GetById(string id)
+        {
+            return dic[id];
+        }
         [DebuggerDisplay("{" + nameof(Name) + "}")]
         class Function : IFunction<string>
         {

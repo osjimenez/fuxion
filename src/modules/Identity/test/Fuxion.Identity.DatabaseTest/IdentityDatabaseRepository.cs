@@ -20,28 +20,16 @@ namespace Fuxion.Identity.DatabaseTest
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<RolGroup>()
-                .HasKey(t => new { t.RolId, t.GroupId });
-            //modelBuilder.Entity<PostTag>()
-            //    .HasOne(pt => pt.Post)
-            //    .WithMany(p => p.PostTags)
-            //    .HasForeignKey(pt => pt.PostId);
-
-            //modelBuilder.Entity<PostTag>()
-            //    .HasOne(pt => pt.Tag)
-            //    .WithMany(t => t.PostTags)
-            //    .HasForeignKey(pt => pt.TagId);
-            modelBuilder.Entity<RolGroup>()
-                .HasOne(rg => rg.Rol)
-                .WithMany(rol => rol.RolGroups)
-                .ForeignKey(pt => pt.RolId);
-
-                //.HasForeignKey(pt => pt);
-
-            modelBuilder.Entity<RolGroup>()
-                .HasOne(pt => pt.Group)
-                .WithMany(t => t.RolGroups)
-                .ForeignKey(pt => pt.RolId);
+            //modelBuilder.Entity<RolGroup>()
+            //    .HasKey(t => new { t.RolId, t.GroupId });
+            //modelBuilder.Entity<RolGroup>()
+            //    .HasOne(rg => rg.Rol)
+            //    .WithMany(rol => rol.RolGroups)
+            //    .ForeignKey(pt => pt.RolId);
+            //modelBuilder.Entity<RolGroup>()
+            //    .HasOne(pt => pt.Group)
+            //    .WithMany(t => t.RolGroups)
+            //    .ForeignKey(pt => pt.RolId);
         }
         public DbSet<Test.Entity.Identity> Identity { get; set; }
         public DbSet<Rol> Rols { get; set; }

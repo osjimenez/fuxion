@@ -128,7 +128,7 @@ namespace Fuxion.Identity.Test
                 Permissions = new[] {
                     new Permission {
                         Value =true,
-                        Function =Read,
+                        Function = Read.Id.ToString(),
                         Scopes =new[] {
                             new Scope {
                                 Discriminator = new Country {

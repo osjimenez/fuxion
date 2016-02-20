@@ -80,7 +80,6 @@
     </Compile>
     <Compile Include="Entity\City.cs" />
     <Compile Include="Entity\Country.cs" />
-    <Compile Include="Entity\Demo.cs" />
     <Compile Include="Entity\Department.cs" />
     <Compile Include="Entity\Department.IDiscriminator.cs">
       <DependentUpon>Department.cs</DependentUpon>
@@ -109,7 +108,6 @@
     <Compile Include="Entity\Rol.IRol.cs">
       <DependentUpon>Rol.cs</DependentUpon>
     </Compile>
-    <Compile Include="Entity\RolGroup.cs" />
     <Compile Include="Entity\Scope.cs" />
     <Compile Include="Entity\Scope.IScope.cs">
       <DependentUpon>Scope.cs</DependentUpon>

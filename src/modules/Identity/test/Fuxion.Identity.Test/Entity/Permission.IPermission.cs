@@ -8,6 +8,8 @@ namespace Fuxion.Identity.Test.Entity
 {
     public partial class Permission : IPermission
     {
+        IFunction IPermission.Function { get { return Functions.GetById(Function); } }
+
         IEnumerable<IScope> IPermission.Scopes { get { return Scopes; } }
     }
 }

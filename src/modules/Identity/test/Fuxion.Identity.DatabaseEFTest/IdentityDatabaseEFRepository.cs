@@ -8,9 +8,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static Fuxion.Identity.Test.IdentityMemoryRepository;
-namespace Fuxion.Identity.DatabaseTest
+namespace Fuxion.Identity.DatabaseEFTest
 {
-    class IdentityDatabaseEFRepository : DbContext, IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity>
+    public class IdentityDatabaseEFRepository : DbContext, IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity>
     {
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         //{
@@ -43,7 +43,7 @@ namespace Fuxion.Identity.DatabaseTest
         //        .WithMany(t => t.RolGroups)
         //        .ForeignKey(pt => pt.RolId);
         //}
-        //public DbSet<Test.Entity.Identity> Identity { get; set; }
+        public DbSet<Test.Entity.Identity> Identity { get; set; }
         //public DbSet<Rol> Rols { get; set; }
         //public DbSet<Group> Groups { get; set; }
         //public DbSet<Demo1> Demo1 { get; set; }
@@ -60,7 +60,57 @@ namespace Fuxion.Identity.DatabaseTest
 
         public IIdentity Find(string key)
         {
-            return Identity.Include(i=>i.Permissions).SingleOrDefault(i => i.UserName == key);
+            
+            var ide = Identity.FirstOrDefault(i => i.UserName == key);
+
+            var groupsRef = Entry(ide).Collection(i => i.Groups);
+            if (!groupsRef.IsLoaded) groupsRef.Load();
+            foreach (var gro in ide.Groups) LoadGroupGroups(gro);
+
+            LoadRolPermissions(ide);
+
+            return ide;
+            //return Identity.Include(i=>i.Groups).Include(i=>i.Permissions).SingleOrDefault(i => i.UserName == key);
+        }
+        private void LoadGroupGroups(Group gro)
+        {
+            var @ref = Entry(gro).Collection(g => g.Groups);
+            if (!@ref.IsLoaded) @ref.Load();
+            LoadRolPermissions(gro);
+            foreach (var g in gro.Groups) LoadGroupGroups(g);
+        }
+        private void LoadRolPermissions(Rol rol)
+        {
+            var persRef = Entry(rol).Collection(r => r.Permissions);
+            if (!persRef.IsLoaded) persRef.Load();
+            foreach (var per in rol.Permissions)
+            {
+                var scosRef = Entry(per).Collection(p => p.Scopes);
+                if (!scosRef.IsLoaded) scosRef.Load();
+                foreach (var sco in per.Scopes)
+                {
+                    if (sco is Scope)
+                    {
+                        var domainScope = sco as Scope;
+                        var disRef = Entry(domainScope).Reference(s => s.Discriminator);
+                        if (!disRef.IsLoaded) disRef.Load();
+                        LoadDomainChildren(domainScope.Discriminator);
+                        LoadDomainParents(domainScope.Discriminator);
+                    }
+                }
+            }
+        }
+        private void LoadDomainChildren(Discriminator dom)
+        {
+            var childrenRef = Entry(dom).Collection(d => d.Inclusions);
+            if (!childrenRef.IsLoaded) childrenRef.Load();
+            if(dom.Inclusions != null) foreach (var d in dom.Inclusions) LoadDomainChildren(d);
+        }
+        private void LoadDomainParents(Discriminator dom)
+        {
+            var parentRef = Entry(dom).Collection(d => d.Exclusions);
+            if (!parentRef.IsLoaded) parentRef.Load();
+            if (dom.Exclusions != null) foreach(var d in dom.Exclusions) LoadDomainParents(d);
         }
 
         public async Task<IIdentity> FindAsync(string key)

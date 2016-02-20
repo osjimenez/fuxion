@@ -55,7 +55,7 @@ namespace Fuxion.Identity.Test
                 Permissions = new[] {
                     new Permission {
                         Value =true,
-                        Function = Read,
+                        Function = Read.Id.ToString(),
                         Scopes =new[]{
                             new Scope {
                                 Discriminator = Locations.SanFrancisco,
@@ -64,7 +64,7 @@ namespace Fuxion.Identity.Test
                     },
                     new Permission {
                         Value =false,
-                        Function =Edit,
+                        Function =Edit.Id.ToString(),
                         Scopes =new[] {
                             new Scope {
                                 Discriminator = Locations.California,
@@ -80,14 +80,14 @@ namespace Fuxion.Identity.Test
                 Permissions = new[] {
                     new Permission {
                         Value = true,
-                        Function = Edit,
+                        Function = Edit.Id.ToString(),
                         Scopes = new[] {
                             new Scope {
                                 Discriminator = Locations.SanFrancisco,
                                 Propagation = ScopePropagation.ToMe } } },
                     new Permission {
                         Value = false,
-                        Function = Edit,
+                        Function = Edit.Id.ToString(),
                         Scopes = new[] {
                             new Scope {
                                 Discriminator = Locations.California,

@@ -11,7 +11,7 @@ namespace Fuxion.Identity.Test.Entity
     public partial class Permission : Base
     {
         public Rol Rol { get; set; }
-        public IFunction Function { get; set; }
+        public string Function { get; set; }
         public IList<Scope> Scopes { get; set; }
         public bool Value { get; set; }
         public override string ToString()

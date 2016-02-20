@@ -10,11 +10,6 @@ namespace Fuxion.Identity.Test.Entity
     [Table(nameof(Group))]
     public partial class Group : Rol
     {
-        public ICollection<RolGroup> GroupsRol{ get; set; }
-        [NotMapped]
-        public List<Rol> Rols {
-            get { return GroupsRol?.Select(rg => rg.Rol).ToList(); }
-            set { GroupsRol = value.Select(r => new RolGroup { Rol = r, RolId = r.Id, Group = this, GroupId = Id }).ToList(); }
-        }
+        public IList<Rol> Rols{ get; set; }
     }
 }

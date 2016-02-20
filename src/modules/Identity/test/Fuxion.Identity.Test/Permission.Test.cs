@@ -17,9 +17,9 @@ namespace Fuxion.Identity.Test
         public void WhenPermission_MatchByFunction()
         {
             // Un permiso de concesion para editar algo implicará que tambien puedo leerlo
-            Assert.IsTrue(new Permission { Value = true, Function = Edit }.MatchByFunction(Read, null));
+            Assert.IsTrue(new Permission { Value = true, Function = Edit.Id.ToString() }.MatchByFunction(Read, null));
             // Un permiso de denegación para leer algo implicará que tampoco puedo editarlo
-            Assert.IsTrue(new Permission { Value = false, Function = Read }.MatchByFunction(Edit, null));
+            Assert.IsTrue(new Permission { Value = false, Function = Read.Id.ToString() }.MatchByFunction(Edit, null));
         }
         [TestMethod]
         public void WhenPermission_MatchByDiscriminatorsType()
@@ -37,7 +37,7 @@ namespace Fuxion.Identity.Test
                 new Permission
                 {
                     Value = true,
-                    Function = Read,
+                    Function = Read.Id.ToString(),
                     Scopes = new[] {
                         // Yo tengo 'Department' y 'Location'
                         new Scope { Discriminator =  Departments.Sales },
@@ -55,7 +55,7 @@ namespace Fuxion.Identity.Test
                 new Permission
                 {
                     Value = true,
-                    Function = Read,
+                    Function = Read.Id.ToString(),
                     Scopes = new[] {
                         // Yo tengo 'Department' y 'Location'
                         new Scope { Discriminator = Departments.Acme },
@@ -72,7 +72,7 @@ namespace Fuxion.Identity.Test
                 new Permission
                 {
                     Value = true,
-                    Function = Read,
+                    Function = Read.Id.ToString(),
                     Scopes = new[] {
                         // Yo tengo 'Department' y 'Location'
                         new Scope {Discriminator = Departments.Acme },
@@ -89,7 +89,7 @@ namespace Fuxion.Identity.Test
                 new Permission
                 {
                     Value = true,
-                    Function = Read,
+                    Function = Read.Id.ToString(),
                     Scopes = new Scope[] {
                         // Yo no tengo nada
                     }

@@ -13,14 +13,8 @@ namespace Fuxion.Identity.Test.Entity
     public partial class Rol : Base
     {
         public string Name { get; set; }
-        [NotMapped]
-        public List<Group> Groups
-        {
-            get { return RolGroups?.Select(rg => rg.Group).ToList(); }
-            set { RolGroups = value.Select(g => new RolGroup { Rol = this, RolId = Id, Group = g, GroupId = g.Id }).ToList(); }
-        }
-        public ICollection<RolGroup> RolGroups { get; set; }
-        public List<Permission> Permissions { get; set; }
+        public IList<Group> Groups { get; set; }
+        public IList<Permission> Permissions { get; set; }
 
     }
 }
