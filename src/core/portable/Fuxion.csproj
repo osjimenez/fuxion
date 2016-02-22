@@ -90,7 +90,7 @@
     <Compile Include="Configuration\ConfigurationItem.cs" />
     <Compile Include="Configuration\IConfigurationManager.cs" />
     <Compile Include="EventArgs.cs" />
-    <Compile Include="Linq\Expressions\ExpressionExtensions.cs" />
+    <Compile Include="Linq\Expressions\System-Extensions.cs" />
     <Compile Include="Net\ConnectableNotifier.cs" />
     <Compile Include="Reflection\AttributeMoreThanOneException.cs" />
     <Compile Include="Reflection\AttributeNotFoundException.cs" />

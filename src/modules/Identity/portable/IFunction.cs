@@ -54,7 +54,7 @@ namespace Fuxion.Identity
             foreach (var f in fs) GetAllInclusions((IInclusive<T>)f, res);
             return res;
         }
-        internal static IEnumerable<T> GetAllInclusions<T>(this IInclusive<T> me)
+        public static IEnumerable<T> GetAllInclusions<T>(this IInclusive<T> me)
         {
             return GetAllInclusions(me, new List<T>(new[] { (T)me }));
         }
@@ -67,7 +67,7 @@ namespace Fuxion.Identity
             foreach (var f in fs) GetAllExclusions((IExclusive<T>)f, res);
             return res;
         }
-        internal static IEnumerable<T> GetAllExclusions<T>(this IExclusive<T> me)
+        public static IEnumerable<T> GetAllExclusions<T>(this IExclusive<T> me)
         {
             return GetAllExclusions(me, new List<T>(new[] { (T)me }));
         }

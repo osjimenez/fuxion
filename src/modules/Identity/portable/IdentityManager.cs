@@ -28,7 +28,7 @@ namespace Fuxion.Identity
         public bool Login(string username, string password, bool changeCurrentIdentity = true)
         {
             WriteConsole($"Validando credenciales\r\n   Usuario: {username}\r\n   Contraseña: {password}\r\n", false);
-            if (username == null || password == null)
+            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
             {
                 WriteConsole($"Resultado: NO VALIDO - El nombre de usuario o la contraseña es NULL", true);
                 return false;

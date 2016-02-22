@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-
+using System.Linq;
 namespace Fuxion.Identity
 {
     public interface IScope {
@@ -17,13 +17,13 @@ namespace Fuxion.Identity
         public static IEnumerable<IDiscriminator> AllDiscriminators(this IScope me)
         {
             var res = new List<IDiscriminator>();
-            if (me.Propagation == ScopePropagation.ToExclusions)
-                res.AddRange(me.Discriminator.GetAllInclusions());
-            if (me.Propagation == ScopePropagation.ToMe)
-                res.Add(me.Discriminator);
-            if (me.Propagation == ScopePropagation.ToInclusions)
+            if (me.Propagation.HasFlag(ScopePropagation.ToExclusions))
                 res.AddRange(me.Discriminator.GetAllExclusions());
-            return res;
+            if (me.Propagation.HasFlag(ScopePropagation.ToMe))
+                res.Add(me.Discriminator);
+            if (me.Propagation.HasFlag(ScopePropagation.ToInclusions))
+                res.AddRange(me.Discriminator.GetAllInclusions());
+            return res.Distinct();
         }
     }
 }

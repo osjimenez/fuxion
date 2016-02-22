@@ -56,6 +56,24 @@ namespace Fuxion.Identity
                                 "]", true);
             }
         }
+        public static IEnumerable<IScope> GetScopes(this IRol me, IFunction function, IDiscriminator[] discriminators, Action<int, string> console)
+        {
+            Action<int, string> con = (m, i) => { if (console != null) console(m, i); };
+            con(0, $"GetDiscriminators ...");
+            var pers = me.GetPermissions(function, discriminators, con);
+            //var pers = GetPermissions(IdentityMembership, function, discriminators);
+
+            var granted = pers.Where(p => p.Value);
+            var denied = pers.Where(p => !p.Value);
+            con(0, $"Granted permissions");
+            foreach (var per in granted)
+                con(3, per.ToString());
+            con(0, $"Denied permissions");
+            foreach (var per in denied)
+                con(3, per.ToString());
+
+            return pers.SelectMany(p => p.Scopes);
+        }
         public static IEnumerable<IDiscriminator> GetDiscriminators(this IRol me, IFunction function, IDiscriminator[] discriminators, Action<int, string> console)
         {
             Action<int, string> con = (m, i) => { if (console != null) console(m, i); };
@@ -86,7 +104,8 @@ namespace Fuxion.Identity
             con(9, $"Functions => " + function.GetAllExclusions().Aggregate("", (s, a) => s + a.Id + " , ", s => s.Trim(',', ' ')));
             con(9, $"Discriminators => " + discriminators.Aggregate("", (str, actual) => str + actual + " , ", str => str.Trim(',', ' ')));
             Debug.WriteLine("");
-            var permissions = me.Permissions.ToList().AsQueryable();
+            //var permissions = me.Permissions.ToList().AsQueryable();
+            var permissions = me.AllPermissions();
             con(6, $"Initial permissions:");
             foreach (var per in permissions)
                 con(9, per.ToString());
@@ -196,6 +215,13 @@ namespace Fuxion.Identity
                 con(9, per.ToString());
             //PrintPermissions("      After discriminator Path filter", res, 9, con);
             #endregion
+            return res;
+        }
+        public static IEnumerable<IPermission> AllPermissions(this IRol me)
+        {
+            var res = new List<IPermission>();
+            res.AddRange(me.Permissions);
+            foreach (var gro in me.Groups) res.AddRange(gro.AllPermissions());
             return res;
         }
         private static IPermission[] SearchForDeniedPermissions(this IRol me, IFunction function, IDiscriminator[] discriminators, Action<string, bool> console)

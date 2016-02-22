@@ -62,7 +62,7 @@ namespace Fuxion.Identity.DatabaseEFTest
         {
             
             var ide = Identity.FirstOrDefault(i => i.UserName == key);
-
+            if (ide == null) return null;
             var groupsRef = Entry(ide).Collection(i => i.Groups);
             if (!groupsRef.IsLoaded) groupsRef.Load();
             foreach (var gro in ide.Groups) LoadGroupGroups(gro);

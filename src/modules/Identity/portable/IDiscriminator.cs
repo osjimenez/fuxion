@@ -27,7 +27,7 @@ namespace Fuxion.Identity
     {
         public static string ToOneLineString(this IDiscriminator me)
         {
-            return $"{me.TypeName} - {me.TypeName}";
+            return $"{me.TypeId} - {me.Id}";
         }
         public static bool IsValid(this IDiscriminator me)
         {
@@ -64,14 +64,23 @@ namespace Fuxion.Identity
             return Comparer.AreEquals(dis1.Id, dis2.Id) && Comparer.AreEquals(dis1.TypeId, dis2.TypeId);
         }
     }
+    //[AttributeUsage(AttributeTargets.Class)]
+    //public class DiscriminatorAttribute : Attribute
+    //{
+    //    public DiscriminatorAttribute(string key)
+    //    {
+    //        Key = key;
+    //    }
+    //    public string Key { get; set; }
+    //}
     [AttributeUsage(AttributeTargets.Class)]
     public class DiscriminatorAttribute : Attribute
     {
-        public DiscriminatorAttribute(string key)
+        public DiscriminatorAttribute(object typeId)
         {
-            Key = key;
+            TypeId = typeId;
         }
-        public string Key { get; set; }
+        public object TypeId { get; set; }
     }
     [AttributeUsage(AttributeTargets.Property)]
     public class DiscriminatedByAttribute : Attribute
