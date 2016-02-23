@@ -10,10 +10,11 @@ namespace Fuxion.Identity.Test.Entity
     {
         object IDiscriminator.Id { get { return Id; } }
 
-        object IDiscriminator.TypeId { get; }
+        object IDiscriminator.TypeId { get { return GetTypeId(); } }
         protected abstract object GetTypeId();
 
-        string IDiscriminator.TypeName { get; }
+        string IDiscriminator.TypeName { get { return GetTypeName(); } }
+        protected abstract string GetTypeName();
 
         IEnumerable<IDiscriminator> IExclusive<IDiscriminator>.Exclusions { get { return Exclusions; } }
 

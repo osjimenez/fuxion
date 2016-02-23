@@ -101,5 +101,17 @@ namespace Fuxion.Identity.Test
             //    StringFunctionGraph(), Read, 
             //    TypeDiscriminator.Create<Entity>(AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.DefinedTypes).ToArray()));
         }
+        [TestMethod]
+        public void Predicate()
+        {
+            var rep = new IdentityMemoryRepository();
+            IM.Login("ca_sell", "ca_sell");
+            Printer.PrintAction = message => Debug.WriteLine(message);
+            var pred = IM.Current.FilterPredicate<Order>(Read);
+            var ooo = SellOrders.ToList();
+            var res = SellOrders.Where(pred.Compile());
+            Assert.IsNotNull(res);
+            Assert.IsTrue(res.Count() == 2);
+        }
     }
 }

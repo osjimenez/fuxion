@@ -11,7 +11,8 @@ namespace Fuxion.Identity.Test.Entity
         string IDiscriminator<string,string>.TypeId { get { return "LOC"; } }
         object IDiscriminator.TypeId { get { return ((IDiscriminator<string, string>)this).TypeId; } }
 
-        string IDiscriminator.TypeName { get { return ((IDiscriminator<string, string>)this).TypeId; } }
+        string IDiscriminator.TypeName { get { return GetTypeName(); } }
+        protected override string GetTypeName() { return nameof(Location); }
 
         protected abstract IList<Location> GetInclusions();
         IEnumerable<IDiscriminator<string, string>> IInclusive<IDiscriminator<string, string>>.Inclusions { get { return GetInclusions(); } }

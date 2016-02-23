@@ -10,12 +10,16 @@ namespace Fuxion.Identity.Test.Entity
     [Table(nameof(Order))]
     public class Order : Base
     {
-        public Department Domain { get; set; }
+        public Department Department { get; set; }
         [DiscriminatedBy(typeof(Department))]
-        public string DomainId { get; set; }
+        public string DepartmentId { get; set; }
 
         public City ShipmentCity { get; set; }
-        [DiscriminatedBy(typeof(City))]
+        [DiscriminatedBy(typeof(Location))]
         public string ShipmentCityId { get; set; }
+
+        public City ReceptionCity { get; set; }
+        [DiscriminatedBy(typeof(Location))]
+        public string ReceptionCityId { get; set; }
     }
 }

@@ -11,5 +11,6 @@ namespace Fuxion.Identity.Test.Entity
     {
         const string TypeId = "TAG";
         protected override object GetTypeId() { return TypeId; }
+        protected override string GetTypeName() { return nameof(Tag); }
     }
 }

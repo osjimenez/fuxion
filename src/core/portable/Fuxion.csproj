@@ -51,6 +51,7 @@
     <Compile Include="IApplicationNotificationManager.cs" />
     <Compile Include="Models\IModel.cs" />
     <Compile Include="Events\IEvent.cs" />
+    <Compile Include="Printer.cs" />
     <Compile Include="System-Extensions.cs" />
     <Compile Include="Factories\Factory.cs" />
     <Compile Include="Factories\IFactory.cs" />

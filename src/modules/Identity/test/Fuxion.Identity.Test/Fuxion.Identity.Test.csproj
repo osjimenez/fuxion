@@ -104,14 +104,17 @@
     <Compile Include="Entity\Permission.IPermission.cs">
       <DependentUpon>Permission.cs</DependentUpon>
     </Compile>
+    <Compile Include="Entity\PurchaseOrder.cs" />
     <Compile Include="Entity\Rol.cs" />
     <Compile Include="Entity\Rol.IRol.cs">
       <DependentUpon>Rol.cs</DependentUpon>
     </Compile>
+    <Compile Include="Entity\SellOrder.cs" />
     <Compile Include="Entity\Scope.cs" />
     <Compile Include="Entity\Scope.IScope.cs">
       <DependentUpon>Scope.cs</DependentUpon>
     </Compile>
+    <Compile Include="Entity\Seller.cs" />
     <Compile Include="Entity\State.cs" />
     <Compile Include="Entity\Tag.cs" />
     <Compile Include="Entity\Tag.IDiscriminator.cs">
@@ -128,7 +131,6 @@
     <Compile Include="Mocks\StringDiscriminator.cs" />
     <Compile Include="Mocks\StringFunction.cs" />
     <Compile Include="Permission.Test.cs" />
-    <Compile Include="Helpers\Printer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rol.Test.cs" />
     <Compile Include="Scope.Test.cs" />

@@ -4,6 +4,7 @@ using Fuxion.Identity.Helpers;
 using System.Linq;
 using System.Reflection;
 using System.Diagnostics;
+using System.Linq.Expressions;
 
 namespace Fuxion.Identity
 {
@@ -15,208 +16,277 @@ namespace Fuxion.Identity
     }
     public static class RolExtensions
     {
-        public class DiscriminatorCheck
+        public static IEnumerable<IScope> GetScopes(this IRol me, IFunction function, IDiscriminator[] discriminators)
         {
-            public DiscriminatorCheck(string discriminator, IEnumerable<string> ids)
+            IEnumerable<IScope> res = null;
+            Printer.Ident($"GetScopes ...", () =>
             {
-                Discriminator = discriminator;
-                Ids = ids;
-            }
-            public string Discriminator { get; private set; }
-            public IEnumerable<string> Ids { get; private set; }
-        }
-
-        public class DiscriminatorCheckCollection
-        {
-            public DiscriminatorCheckCollection(bool value, IEnumerable<DiscriminatorCheck> checks)
-            {
-                Value = value;
-                Checks = checks;
-            }
-            public bool Value { get; private set; }
-            public IEnumerable<DiscriminatorCheck> Checks { get; private set; }
-            public override string ToString()
-            {
-                return "Value:" + Value + " , Checks:" + Checks
-                    .Aggregate("", (s, a) => s + a.Discriminator + "[" + a.Ids
-                        .Aggregate("", (s2, a2) => s2 + a2 + ",", s2 => s2.Trim(',')) + "],", s => s.Trim(','));
-            }
-        }
-        private static void PrintPermissions(string label, IEnumerable<IPermission> permissions, int ident, Action<string, bool> console)
-        {
-            Action<string, bool> con = (m, i) => { if (console != null) console(m, i); };
-            con(label + ":", true);
-            foreach (var per in permissions)
-            {
-                con("".PadRight(ident, ' ') +
-                                //per.Rol.PadRight(permissions.Max(p => p.Rol.Length), ' ') + " , f:" +
-                                per.Function.Name.PadRight(permissions.Max(p => p.Function.Name.Length), ' ') + " , v:" +
-                                per.Value + "".PadRight(per.Value ? 1 : 0, ' ') + " , ss:[" +
-                                per.Scopes.Aggregate("", (str, actual) => str + actual + ",", str => str.Trim(',')) +
-                                "]", true);
-            }
-        }
-        public static IEnumerable<IScope> GetScopes(this IRol me, IFunction function, IDiscriminator[] discriminators, Action<int, string> console)
-        {
-            Action<int, string> con = (m, i) => { if (console != null) console(m, i); };
-            con(0, $"GetDiscriminators ...");
-            var pers = me.GetPermissions(function, discriminators, con);
-            //var pers = GetPermissions(IdentityMembership, function, discriminators);
-
-            var granted = pers.Where(p => p.Value);
-            var denied = pers.Where(p => !p.Value);
-            con(0, $"Granted permissions");
-            foreach (var per in granted)
-                con(3, per.ToString());
-            con(0, $"Denied permissions");
-            foreach (var per in denied)
-                con(3, per.ToString());
-
-            return pers.SelectMany(p => p.Scopes);
-        }
-        public static IEnumerable<IDiscriminator> GetDiscriminators(this IRol me, IFunction function, IDiscriminator[] discriminators, Action<int, string> console)
-        {
-            Action<int, string> con = (m, i) => { if (console != null) console(m, i); };
-            con(0, $"GetDiscriminators ...");
-            var pers = me.GetPermissions(function, discriminators, con);
-            //var pers = GetPermissions(IdentityMembership, function, discriminators);
-
-            var granted = pers.Where(p => p.Value);
-            var denied = pers.Where(p => !p.Value);
-            con(0, $"Granted permissions");
-            foreach (var per in granted)
-                con(3, per.ToString());
-            con(0, $"Denied permissions");
-            foreach (var per in denied)
-                con(3, per.ToString());
-
-            return pers.SelectMany(p => p.Scopes.SelectMany(s => s.AllDiscriminators()));
-        }
-        internal static IEnumerable<IPermission> GetPermissions(this IRol me, IFunction function, IDiscriminator[] discriminators, Action<int, string> console)
-        {
-            Action<int, string> con = (m, i) => { if (console != null) console(m, i); };
-            con(3, $"GetPermissions ...");
-            //if (discriminators.Any(o => string.IsNullOrWhiteSpace(o.Path)))
-            //    throw new ArgumentException("All discriminators must have Path so cannot be the root.");
-            con(6, $"Filtering permissions:");
-            //                "   Rols => " + rol.AllMembership().Aggregate("", (s, a) => s + a.Id + " , ", s => s.Trim(',', ' ')) + "\r\n" +
-            //"   Rols => " + membership.Aggregate("", (s, a) => s + a + " , ", s => s.Trim(',', ' ')) + "\r\n" +
-            con(9, $"Functions => " + function.GetAllExclusions().Aggregate("", (s, a) => s + a.Id + " , ", s => s.Trim(',', ' ')));
-            con(9, $"Discriminators => " + discriminators.Aggregate("", (str, actual) => str + actual + " , ", str => str.Trim(',', ' ')));
-            Debug.WriteLine("");
-            //var permissions = me.Permissions.ToList().AsQueryable();
-            var permissions = me.AllPermissions();
-            con(6, $"Initial permissions:");
-            foreach (var per in permissions)
-                con(9, per.ToString());
-            //PrintPermissions("      Initial permissions", permissions, 9, con);
-            #region Filter by rol
-            //permissions = permissions.Where(p =>
-            //    // Exclude permissions for roles that i don't take
-            //    membership.Contains(p.Rol)
-            //    );
-            //PrintPermissions("      After rol filters", permissions, 9, con);
-            #endregion
-            #region Filter by function
-            permissions = permissions.Where(p =>
-                // Exclude permissions granted with functions excluded by me
-                (p.Value && function.GetAllExclusions().Contains(p.Function, new FunctionEqualityComparer()))
-                    ||
-                    // Or exclude permissions denied with functions included by me
-                    (!p.Value && function.GetAllInclusions().Contains(p.Function, new FunctionEqualityComparer()))
-                );
-            con(6, $"After function filter:");
-            foreach (var per in permissions)
-                con(9, per.ToString());
-            //PrintPermissions("      After function filters", permissions, 9, con);
-            #endregion
-            #region Filter by discriminator
-            /*
-             * Casos:
-             *  - Aspect not defined
-             *	- Aspect defined as Root
-             *	- Aspect not defined as Root
-             */
-            //permissions = permissions.Where(p =>
-            //    // Exclude permissions in which some of my discriminators cannot be found
-            //    (p.Value && function.AllExcludes().Select(f => f.Id).Contains(p.Function))
-            //    ||
-            //        // Or exclude permissions denied with functions included by me
-            //    (!p.Value && function.AllIncludes().Select(f => f.Id).Contains(p.Function))
-            //    );
-            con(6, $"After discriminator Id filter:");
-            foreach (var per in permissions)
-                con(9, per.ToString());
-            //PrintPermissions("      After discriminator Id filters", permissions, 9, con);
-            #endregion
-            #region Filter by Path
-            var res = new List<IPermission>();
-            foreach (var dis in discriminators)
-            {
-                var pers = permissions.Where(p => p.Scopes.Any(s => s.Discriminator.TypeId == dis.TypeId));
-                res.AddRange(permissions.Except(pers));
-                foreach (var per in permissions.Where(p => p.Scopes.Any(s => s.Discriminator.TypeId == dis.TypeId)))
-                {
-                    var sco = per.Scopes.Single(s => s.Discriminator.TypeId == dis.TypeId);
-
-                    if (dis.GetAllInclusions().SequenceEqual(sco.Discriminator.GetAllInclusions()))
-                    //if (dis.Path == sco.Discriminator.Path)
-                    {
-                        switch(sco.Propagation)
-                        {
-                            case ScopePropagation.ToMe:
-                            case ScopePropagation.ToInclusions:
-                                res.Add(per);
-                                break;
-                            default:
-                                break;
-                        }
-                        // My id is same of permission scope
-                        //if (sco.PropagateToMe) res.Add(per);
-                        //else if (sco.PropagateToChilds) res.Add(per);
-                    }
-                    else if(!sco.Discriminator.GetAllInclusions().Any() ||
-                            dis.GetAllInclusions().All(i=> sco.Discriminator.GetAllInclusions().Contains(i)) ||
-                            !dis.GetAllInclusions().SequenceEqual(sco.Discriminator.GetAllInclusions()))
-                    //else if ((string.IsNullOrWhiteSpace(sco.DiscriminatorPath) ||
-                    //            dis.Path.StartsWith(sco.DiscriminatorPath)) &&
-                    //            dis.Path != sco.DiscriminatorPath)
-                    {
-                        if (sco.Propagation == ScopePropagation.ToInclusions) res.Add(per);
-                        // My id is child of permission scope
-                        //if (sco.PropagateToChilds) res.Add(per);
-                    }
-                    else if(sco.Discriminator.GetAllInclusions().All(i=>dis.GetAllInclusions().Contains(i)))
-                    //else if (sco.DiscriminatorPath.StartsWith(dis.Path))
-                    {
-                        switch (sco.Propagation)
-                        {
-                            case ScopePropagation.ToMe:
-                            case ScopePropagation.ToInclusions:
-                            case ScopePropagation.ToExclusions:
-                                res.Add(per);
-                                break;
-                            default:
-                                break;
-                        }
-                        // My id is parent of permission scope
-                        //if (sco.PropagateToParents) res.Add(per);
-                        //else if (sco.PropagateToMe) res.Add(per);
-                        //else if (sco.PropagateToChilds) res.Add(per);
-                    }
-                    else
-                    {
-                        permissions = permissions.Except(new[] { per });
-                    }
-                }
-            }
-            con(6, $"After discriminator Path filter:");
-            foreach (var per in permissions)
-                con(9, per.ToString());
-            //PrintPermissions("      After discriminator Path filter", res, 9, con);
-            #endregion
+                var pers = me.GetPermissions(function, discriminators);
+                var granted = pers.Where(p => p.Value);
+                var denied = pers.Where(p => !p.Value);
+                Printer.Print("Granted permissions:");
+                granted.Print(PrintMode.Table);
+                Printer.Print($"Denied permissions");
+                denied.Print(PrintMode.Table);
+                res = pers.SelectMany(p => p.Scopes);
+            });
             return res;
         }
+        internal static IEnumerable<IPermission> GetPermissions(this IRol me, IFunction function, IDiscriminator[] discriminators)
+        {
+            var res = new List<IPermission>();
+            Printer.Ident($"{nameof(GetPermissions)} ...", () =>
+            {
+                Printer.Print($"Filtering permissions:");
+                //                "   Rols => " + rol.AllMembership().Aggregate("", (s, a) => s + a.Id + " , ", s => s.Trim(',', ' ')) + "\r\n" +
+                //"   Rols => " + membership.Aggregate("", (s, a) => s + a + " , ", s => s.Trim(',', ' ')) + "\r\n" +
+                Printer.Print($"Functions => " + function.GetAllExclusions().Aggregate("", (s, a) => s + a.Id + " , ", s => s.Trim(',', ' ')));
+                Printer.Print($"Discriminators:");
+                discriminators.Print(PrintMode.Table);
+                //var permissions = me.Permissions.ToList().AsQueryable();
+                var permissions = me.AllPermissions();
+                Printer.Print("Initial permissions:");
+                permissions.Print(PrintMode.Table);
+                //PrintPermissions("      Initial permissions", permissions, 9, con);
+                #region Filter by rol
+                //permissions = permissions.Where(p =>
+                //    // Exclude permissions for roles that i don't take
+                //    membership.Contains(p.Rol)
+                //    );
+                //PrintPermissions("      After rol filters", permissions, 9, con);
+                #endregion
+                #region Filter by function
+                permissions = permissions.Where(p =>
+                    // Exclude permissions granted with functions excluded by me
+                    (p.Value && function.GetAllExclusions().Contains(p.Function, new FunctionEqualityComparer()))
+                        ||
+                        // Or exclude permissions denied with functions included by me
+                        (!p.Value && function.GetAllInclusions().Contains(p.Function, new FunctionEqualityComparer()))
+                    );
+                Printer.Print($"After function filter:");
+                permissions.Print(PrintMode.Table);
+                #endregion
+                #region Filter by discriminator
+                /*
+                 * Casos:
+                 *  - Aspect not defined
+                 *	- Aspect defined as Root
+                 *	- Aspect not defined as Root
+                 */
+                //permissions = permissions.Where(p =>
+                //    // Exclude permissions in which some of my discriminators cannot be found
+                //    (p.Value && function.AllExcludes().Select(f => f.Id).Contains(p.Function))
+                //    ||
+                //        // Or exclude permissions denied with functions included by me
+                //    (!p.Value && function.AllIncludes().Select(f => f.Id).Contains(p.Function))
+                //    );
+                Printer.Print($"After discriminator Id filter:");
+                permissions.Print(PrintMode.Table);
+                #endregion
+                #region Filter by Path
+                foreach (var dis in discriminators)
+                {
+                    var pers = permissions.Where(p => p.Scopes.Any(s => s.Discriminator.TypeId == dis.TypeId));
+                    res.AddRange(permissions.Except(pers));
+                    foreach (var per in permissions.Where(p => p.Scopes.Any(s => s.Discriminator.TypeId == dis.TypeId)))
+                    {
+                        var sco = per.Scopes.Single(s => s.Discriminator.TypeId == dis.TypeId);
+
+                        if (dis.GetAllInclusions().SequenceEqual(sco.Discriminator.GetAllInclusions()))
+                        //if (dis.Path == sco.Discriminator.Path)
+                        {
+                            switch (sco.Propagation)
+                            {
+                                case ScopePropagation.ToMe:
+                                case ScopePropagation.ToInclusions:
+                                    res.Add(per);
+                                    break;
+                                default:
+                                    break;
+                            }
+                            // My id is same of permission scope
+                            //if (sco.PropagateToMe) res.Add(per);
+                            //else if (sco.PropagateToChilds) res.Add(per);
+                        }
+                        else if (!sco.Discriminator.GetAllInclusions().Any() ||
+                                dis.GetAllInclusions().All(i => sco.Discriminator.GetAllInclusions().Contains(i)) ||
+                                !dis.GetAllInclusions().SequenceEqual(sco.Discriminator.GetAllInclusions()))
+                        //else if ((string.IsNullOrWhiteSpace(sco.DiscriminatorPath) ||
+                        //            dis.Path.StartsWith(sco.DiscriminatorPath)) &&
+                        //            dis.Path != sco.DiscriminatorPath)
+                        {
+                            if (sco.Propagation == ScopePropagation.ToInclusions) res.Add(per);
+                            // My id is child of permission scope
+                            //if (sco.PropagateToChilds) res.Add(per);
+                        }
+                        else if (sco.Discriminator.GetAllInclusions().All(i => dis.GetAllInclusions().Contains(i)))
+                        //else if (sco.DiscriminatorPath.StartsWith(dis.Path))
+                        {
+                            switch (sco.Propagation)
+                            {
+                                case ScopePropagation.ToMe:
+                                case ScopePropagation.ToInclusions:
+                                case ScopePropagation.ToExclusions:
+                                    res.Add(per);
+                                    break;
+                                default:
+                                    break;
+                            }
+                            // My id is parent of permission scope
+                            //if (sco.PropagateToParents) res.Add(per);
+                            //else if (sco.PropagateToMe) res.Add(per);
+                            //else if (sco.PropagateToChilds) res.Add(per);
+                        }
+                        else
+                        {
+                            permissions = permissions.Except(new[] { per });
+                        }
+                    }
+                }
+                Printer.Print($"After discriminator Path filter:");
+                permissions.Print(PrintMode.Table);
+                #endregion
+            });
+            return res;
+        }
+
+
+        private static Expression<Func<TEntity, bool>> BuildForeignKeysContainsPredicate<TEntity, T>(List<T> foreignKeys, PropertyInfo property)
+        {
+            // TODO - Oscar - Este código representa la consulta que habría que hacer en caso de guardar la ruta completa en los recursos 
+            // y solo cargar en el SecuritySchema los id's directamente implicados. Esto es un cambio importante que evitaría tener que cargar
+            // todos los scopes al iniciar sesión, por ejemplo, el usuario root, como tienen permiso para los discriminaodres raiz tiene que cargar
+            // todos los discriminaodres hijos (que son todos) al iniciar sesión.
+
+            // var t1 =
+            // Context.City.Include(c => c.AuthorizationDomain)
+            //     .Where(c => new[] { "ruta1", "ruta2" }.Any(r => c.AuthorizationDomain.Path.StartsWith(r)));
+            // Equivale a:
+            //     .Where(c => foreignKeys.Any(r => c.<property>.Path.StartsWith(r)));
+            var entityParameter = Expression.Parameter(typeof(TEntity));
+            var foreignKeysParameter = Expression.Constant(foreignKeys, typeof(List<T>));
+            var memberExpression = Expression.Property(entityParameter, property);
+            var convertExpression = Expression.Convert(memberExpression, typeof(T));
+            var containsExpression = Expression.Call(foreignKeysParameter, nameof(Enumerable.Contains), new Type[] { }, convertExpression);
+            var result = Expression.Lambda<Func<TEntity, bool>>(containsExpression, entityParameter);
+            if (
+                // TODO - Oscar - Probar que la comprobación de INullable no afecta al resultado. INullable esta en System.Data.SqlTypes.INullable
+                //typeof(INullable).IsAssignableFrom(property.PropertyType) ||
+                (property.PropertyType.GetTypeInfo().IsGenericType &&
+                 property.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>)))
+            {
+                var arg = Expression.Parameter(typeof(TEntity));
+                var prop = Expression.Property(arg, property);
+
+                //var ooo = Expression.Lambda<Func<TEntity, bool>>(
+                //    Expression.NotEqual(prop, Expression.Constant(null, prop.Type)),
+                //    arg);
+                //var invokedExpr = Expression.Invoke(result, ooo.Parameters.Cast<Expression>());
+                //var oooo = Expression.Lambda<Func<TEntity, bool>>(Expression.AndAlso(ooo.Body, invokedExpr), ooo.Parameters);
+                //result = oooo;
+
+                result = Expression.Lambda<Func<TEntity, bool>>(
+                    Expression.NotEqual(prop, Expression.Constant(null, prop.Type)),
+                    arg)
+                    .And(result);
+            }
+            return result;
+        }
+        public static Expression<Func<TEntity, bool>> FilterPredicate<TEntity>(this IRol me, IFunction function)
+        {
+            Expression<Func<TEntity, bool>> exp = null;
+            Printer.Ident($"{nameof(FilterPredicate)} ...", () =>
+            {
+                Printer.Print("Type: " + typeof(TEntity).Name);
+                var scopes = me.GetScopes(function, new[] { TypeDiscriminator.Create(typeof(TEntity)) });
+                Printer.Print("Scopes:");
+                scopes.Print(PrintMode.Table);
+
+                var props = typeof(TEntity).GetTypeInfo().DeclaredProperties
+                    .Where(p => p.GetCustomAttribute<DiscriminatedByAttribute>(true, false, false) != null)
+                    .Select(p => new
+                    {
+                        PropertyInfo = p,
+                        DiscriminatorTypeId =
+                            p.GetCustomAttribute<DiscriminatedByAttribute>(true).Type.GetTypeInfo()
+                                .GetCustomAttribute<DiscriminatorAttribute>(true).TypeId,
+                    });
+                Printer.Print("Properties => " + props.Aggregate("", (str, actual) => $"{str} {actual.PropertyInfo.Name} ({actual.PropertyInfo.PropertyType.GetSignature(false)}),", str => str.Trim(',', ' ')));
+
+                Printer.Print("");
+                Printer.Ident("Starting process ...", () =>
+                {
+                    Printer.Print("(");
+                    foreach (var sco in scopes)
+                    {
+                        //Printer.Print("Scope: " + sco);
+
+
+                        if (exp != null) Printer.Print(")AND(");
+
+                        //Expression<Func<TEntity, bool>> disExp = null;
+                        //var alldis = sco.AllDiscriminators().ToList();
+                        //var alldis2 = sco.Discriminator.GetAllInclusions();
+                        //foreach (var dis in new[] { sco.Discriminator })
+                        //{
+                        //Printer.Print("Discriminator: " + dis);
+
+                        //if (disExp == null) Printer.Print("(");
+                        //if (disExp != null) Printer.Print(")AND(");
+                        Expression<Func<TEntity, bool>> proExp = null;
+                        Printer.Ident(() =>
+                        {
+                            foreach (var pro in props.Where(p => p.DiscriminatorTypeId.Equals(sco.Discriminator.TypeId)))
+                            {
+                                //if (proExp == null)
+                                    Printer.Print("    " +
+                                                    sco.Discriminator.GetAllInclusions().Select(d => d.Id).Aggregate("",
+                                                        (s, a) => s + pro.PropertyInfo.Name + " == " + a + " || ",
+                                                        s => s.Trim('|', ' ')));
+                                
+
+                                var curExp = (Expression<Func<TEntity, bool>>)
+                                    typeof(RolExtensions).GetTypeInfo()
+                                        .DeclaredMethods.Single(m => m.Name == nameof(BuildForeignKeysContainsPredicate))
+                                        .MakeGenericMethod(pro.PropertyInfo.DeclaringType, pro.PropertyInfo.PropertyType)
+                                        .Invoke(null, new object[] {
+                                            typeof(Enumerable).GetTypeInfo().DeclaredMethods
+                                                .Where(m => m.Name == nameof(Enumerable.ToList))
+                                                .Single(m => m.GetParameters().Length == 1)
+                                                .MakeGenericMethod(pro.PropertyInfo.PropertyType)
+                                                .Invoke(null, new object[] {
+                                                    typeof(Enumerable).GetTypeInfo().DeclaredMethods
+                                                    .Where(m => m.Name == nameof(Enumerable.Cast))
+                                                    .Single(m => m.GetParameters().Length == 1)
+                                                    .MakeGenericMethod(pro.PropertyInfo.PropertyType)
+                                                    .Invoke(null,new object[] {
+                                                        sco.Discriminator.GetAllInclusions().Select(d => d.Id)
+                                                    })
+                                                }),
+                                            pro.PropertyInfo
+                                            }
+                                        );
+                                
+                                proExp = (proExp == null ? curExp : proExp.Or(curExp));
+                                if (proExp != null) Printer.Print(") OR (");
+                            }
+                        });
+                        //if (disExp != null) Printer.Print(")");
+                        //disExp = (disExp == null ? proExp : disExp.And(proExp));
+                        //}
+                        if (exp != null) Printer.Print(")");
+                        //exp = (exp == null ? disExp : exp.And(disExp));
+                        exp = (exp == null ? proExp : exp.And(proExp));
+                    }
+                });
+                if (exp == null && !scopes.Any()) exp = Expression.Lambda<Func<TEntity, bool>>(Expression.Constant(false), Expression.Parameter(typeof(TEntity)));
+                Printer.Print("Expression:" + (exp == null ? "null" : exp.ToString()));
+            });
+            return exp;
+        }
+
+
+
         public static IEnumerable<IPermission> AllPermissions(this IRol me)
         {
             var res = new List<IPermission>();
@@ -255,7 +325,7 @@ namespace Fuxion.Identity
                 res = new IPermission[] { };
                 return res;
             }
-            var matchs = permissions.Where(p => p.Match(function, discriminators, con)).ToList();
+            var matchs = permissions.Where(p => p.Match(function, discriminators)).ToList();
             con($"---Encajan: {matchs.Count()} permisos", true);
             // Now, let's go to check that does not match any denegation permission
             res = matchs.Where(p => !p.Value).ToArray();
@@ -277,9 +347,9 @@ namespace Fuxion.Identity
         }
         internal static bool IsFunctionAssigned(this IRol me, IFunction function, IDiscriminator[] discriminators, Action<string, bool> console)
         {
-            return SearchForDeniedPermissions(me,function,discriminators,console) == null;
+            return SearchForDeniedPermissions(me, function, discriminators, console) == null;
         }
-        internal static void CheckFunctionAssigned(this IRol me, IFunction function, IDiscriminator[] discriminators, Action<string,bool> console)
+        internal static void CheckFunctionAssigned(this IRol me, IFunction function, IDiscriminator[] discriminators, Action<string, bool> console)
         {
             var res = me.SearchForDeniedPermissions(function, discriminators, console);
             if (res != null)

@@ -11,26 +11,24 @@ using System.Threading.Tasks;
 using Xunit;
 using static Fuxion.Identity.Functions;
 using static Fuxion.Identity.Test.StaticContext;
+using Xunit.Abstractions;
+
 namespace Fuxion.Identity.DatabaseEFTest
 {
     public class IdentityManagerTest
     {
-        public IdentityManagerTest()
+        private readonly ITestOutputHelper output;
+        public IdentityManagerTest(ITestOutputHelper output)
         {
+            this.output = output;
             TypeDiscriminator.KnownTypes = AppDomain.CurrentDomain.GetAssemblies()
                 .Where(a => a.FullName.StartsWith("Fuxion"))
                 .SelectMany(a => a.DefinedTypes).ToArray();
             var rep = new IdentityDatabaseEFRepository();
             rep.ClearData();
-            // Uncomment EnsureDeleted() call to clear database
-            //rep.Database.EnsureDeleted();
-            //if (rep.Database.EnsureCreated() || !rep.Identity.Any())
-            //{
-            //    var iii = Identities.ToArray();
             rep.Identity.AddRange(Identities);
-            //    rep.AttachRange(Identities);
+            rep.Order.AddRange(SellOrders);
             rep.SaveChanges();
-            //}
         }
         IdentityManager _IdentityManager;
         IdentityManager IM
@@ -38,7 +36,7 @@ namespace Fuxion.Identity.DatabaseEFTest
             get
             {
                 if (_IdentityManager == null)
-                    _IdentityManager = new IdentityManager(new PasswordProvider(), new IdentityDatabaseEFRepository()) { Console = (m, _) => Debug.WriteLine(m) };
+                    _IdentityManager = new IdentityManager(new PasswordProvider(), new IdentityDatabaseEFRepository()) { Console = (m, _) => output.WriteLine(m) };
                 return _IdentityManager;
             }
         }
@@ -78,5 +76,16 @@ namespace Fuxion.Identity.DatabaseEFTest
                     .OfAllTypes<Order, Invoice>());
             return;
         }
+        [Fact]
+        public void Predicate()
+        {
+            var rep = new IdentityDatabaseEFRepository();
+            IM.Login("ca_sell", "ca_sell");
+            Printer.PrintAction = message => output.WriteLine(message);
+            var pred = IM.Current.FilterPredicate<Order>(Read);
+            var res = rep.Order.Where(pred.Compile());
+            Assert.NotNull(res);
+            Assert.True(res.Count() == 2);
         }
+    }
 }

@@ -13,5 +13,9 @@ namespace Fuxion.Identity.Test.Entity
     {
         const string TypeId = "CAT";
         protected override object GetTypeId() { return TypeId; }
+        protected override string GetTypeName() { return nameof(Category); }
+
+        protected override IList<Discriminator> Exclusions { get { return null; } }
+        protected override IList<Discriminator> Inclusions { get { return null; } }
     }
 }

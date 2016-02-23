@@ -142,10 +142,11 @@ namespace Fuxion.Identity.Test
                 }.ToList()
             };
             
-            var res = rol.GetDiscriminators(Read, new[] { TypeDiscriminator.Create<Location>() }, Printer.Print);
-            Printer.Print(0, $"Se han seleccionado '{res.Count()}' scopes:");
+            var res = rol.GetScopes(Read, new[] { TypeDiscriminator.Create<Location>() });
+            Printer.Print($"Se han seleccionado '{res.Count()}' scopes:");
+            Printer.IdentationLevel++;
             foreach (var sco in res)
-                Printer.Print(3, sco.ToString());
+                Printer.Print(sco.ToString());
             Assert.IsTrue(res.Any());
         }
     }

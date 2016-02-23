@@ -7,11 +7,10 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Identity.Test.Entity
 {
-    [Table(nameof(Invoice))]
-    public class Invoice
+    [Table(nameof(SellOrder))]
+    public class SellOrder : Order
     {
-        public Department Department { get; set; }
-        [DiscriminatedBy(typeof(Department))]
-        public string DepartmentId { get; set; }
+        public Seller Seller { get; set; }
+        public string SellerId { get; set; }
     }
 }

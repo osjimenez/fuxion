@@ -15,9 +15,6 @@ namespace Fuxion.Identity.Test
     
     public class IdentityMemoryRepository : IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity>
     {
-        #region Lists
-
-        #endregion
         public bool Exist(string key) { return false; }
         public Task<bool> ExistAsync(string key) { return Task.FromResult(false); }
         public IIdentity Find(string key) { return Identities.FirstOrDefault(i => i.UserName == key); }

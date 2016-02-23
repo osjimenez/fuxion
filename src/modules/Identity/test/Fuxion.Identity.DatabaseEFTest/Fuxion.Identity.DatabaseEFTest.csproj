@@ -78,6 +78,22 @@
     <Compile Include="Migrations\201602200149270_Init2.Designer.cs">
       <DependentUpon>201602200149270_Init2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201602230903474_Order.cs" />
+    <Compile Include="Migrations\201602230903474_Order.Designer.cs">
+      <DependentUpon>201602230903474_Order.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201602231009416_OrderTypes.cs" />
+    <Compile Include="Migrations\201602231009416_OrderTypes.Designer.cs">
+      <DependentUpon>201602231009416_OrderTypes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201602231056434_RemoveInclusionsAndExclusionsFromDiscriminator.cs" />
+    <Compile Include="Migrations\201602231056434_RemoveInclusionsAndExclusionsFromDiscriminator.Designer.cs">
+      <DependentUpon>201602231056434_RemoveInclusionsAndExclusionsFromDiscriminator.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201602231430205_AddSecondLocationDiscriminatorToOrders.cs" />
+    <Compile Include="Migrations\201602231430205_AddSecondLocationDiscriminatorToOrders.Designer.cs">
+      <DependentUpon>201602231430205_AddSecondLocationDiscriminatorToOrders.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -115,6 +131,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201602200149270_Init2.resx">
       <DependentUpon>201602200149270_Init2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602230903474_Order.resx">
+      <DependentUpon>201602230903474_Order.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602231009416_OrderTypes.resx">
+      <DependentUpon>201602231009416_OrderTypes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602231056434_RemoveInclusionsAndExclusionsFromDiscriminator.resx">
+      <DependentUpon>201602231056434_RemoveInclusionsAndExclusionsFromDiscriminator.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602231430205_AddSecondLocationDiscriminatorToOrders.resx">
+      <DependentUpon>201602231430205_AddSecondLocationDiscriminatorToOrders.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

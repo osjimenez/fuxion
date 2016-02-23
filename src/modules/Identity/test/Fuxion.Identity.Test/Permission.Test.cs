@@ -17,9 +17,9 @@ namespace Fuxion.Identity.Test
         public void WhenPermission_MatchByFunction()
         {
             // Un permiso de concesion para editar algo implicará que tambien puedo leerlo
-            Assert.IsTrue(new Permission { Value = true, Function = Edit.Id.ToString() }.MatchByFunction(Read, null));
+            Assert.IsTrue(new Permission { Value = true, Function = Edit.Id.ToString() }.MatchByFunction(Read));
             // Un permiso de denegación para leer algo implicará que tampoco puedo editarlo
-            Assert.IsTrue(new Permission { Value = false, Function = Read.Id.ToString() }.MatchByFunction(Edit, null));
+            Assert.IsTrue(new Permission { Value = false, Function = Read.Id.ToString() }.MatchByFunction(Edit));
         }
         [TestMethod]
         public void WhenPermission_MatchByDiscriminatorsType()
@@ -48,7 +48,7 @@ namespace Fuxion.Identity.Test
                     Departments.Sales,
                     Locations.USA
                     // Me presentan 'Department' y 'Location'
-                }, null));
+                }));
             // CASE 2
             // Faltan discriminadores, se han presentado una serie de discriminadores, pero este permiso tiene mas, no cumple
             Assert.IsFalse(
@@ -64,7 +64,7 @@ namespace Fuxion.Identity.Test
                 }.MatchByDiscriminatorsType(new[] {
                     Departments.Acme
                     // Me presentan 'Department'
-                }, null));
+                }));
             // CASE 3
             // Sobran discriminadores, se han presentado más discriminadores que los que aplican en este permiso, se ignorarán,
             // el permiso cumple
@@ -82,7 +82,7 @@ namespace Fuxion.Identity.Test
                     new GuidDiscriminator(x(), "",Department, "Department"),
                     new GuidDiscriminator(x(), "",Location, "Location"),
                     new GuidDiscriminator(x(), "",WorkerClass, "WorkerClass"),
-                }, null));
+                }));
             // CASE 4
             // Permiso de Root, sin discriminadores
             Assert.IsTrue(
@@ -99,7 +99,7 @@ namespace Fuxion.Identity.Test
                     new GuidDiscriminator(x(), "",  Department, "Department"),
                     new GuidDiscriminator(x(), "",  Location, "Location"),
                     new GuidDiscriminator(x(), "",  WorkerClass, "WorkerClass"),
-                }, null));
+                }));
         }
         [TestMethod]
         public void WhenPermission_MatchByDiscriminatorsPath()

@@ -71,6 +71,42 @@ namespace Fuxion.Identity
         {
             return GetAllExclusions(me, new List<T>(new[] { (T)me }));
         }
+        public static void Print(this IEnumerable<IFunction> me, PrintMode mode)
+        {
+            //switch (mode)
+            //{
+            //    case PrintMode.OneLine:
+            //        break;
+            //    case PrintMode.PropertyList:
+            //        break;
+            //    case PrintMode.Table:
+            //        var value = me.Select(p => p.Value.ToString().Length).Union(new[] { "VALUE".Length }).Max();
+            //        var func = me.Select(p => p.Function.Name.ToString().Length).Union(new[] { "FUNCTION".Length }).Max();
+            //        var disType = me.Select(p => p.Scopes.Max(s => s.Discriminator.TypeName.Length)).Union(new[] { "TYPE".Length }).Max();
+            //        var disName = me.Select(p => p.Scopes.Max(s => s.Discriminator.Name.Length)).Union(new[] { "NAME".Length }).Max();
+            //        var disPro = me.Select(p => p.Scopes.Max(s => s.Propagation.ToString().Length)).Union(new[] { "PROPAGATION".Length }).Max();
+
+            //        Printer.Print("┌" + ("".PadRight(value, '─')) + "┬" + ("".PadRight(func, '─')) + "┬" + ("".PadRight(disType, '─')) + "┬" + ("".PadRight(disName, '─')) + "┬" + ("".PadRight(disPro, '─')) + "┐");
+            //        Printer.Print("│" + ("VALUE".PadRight(value, ' ')) + "│" + ("FUNCTION".PadRight(func, ' ')) + "│" + ("TYPE".PadRight(disType, ' ')) + "│" + ("NAME".PadRight(disName, ' ')) + "│" + ("PROPAGATION".PadRight(disPro, ' ')) + "│");
+            //        Printer.Print("├" + ("".PadRight(value, '─')) + "┼" + ("".PadRight(func, '─')) + "┼" + ("".PadRight(disType, '─')) + "┼" + ("".PadRight(disName, '─')) + "┼" + ("".PadRight(disPro, '─')) + "┤");
+
+            //        foreach (var per in me)
+            //        {
+            //            var list = per.Scopes.ToList();
+            //            for (int i = 0; i < list.Count; i++)
+            //            {
+            //                Printer.Print("│" +
+            //                    ((i == 0 ? per.Value.ToString() : "").PadRight(value, ' ')) + "│" +
+            //                    ((i == 0 ? per.Function.Name : "").PadRight(func, ' ')) + "│" +
+            //                    (list[i].Discriminator.TypeName.PadRight(disType, ' ')) + "│" +
+            //                    (list[i].Discriminator.Name.PadRight(disName, ' ')) + "│" +
+            //                    (list[i].Propagation.ToString().PadRight(disPro, ' ')) + "│");
+            //            }
+            //        }
+            //        Printer.Print("└" + ("".PadRight(value, '─')) + "┴" + ("".PadRight(func, '─')) + "┴" + ("".PadRight(disType, '─')) + "┴" + ("".PadRight(disName, '─')) + "┴" + ("".PadRight(disPro, '─')) + "┘");
+            //        break;
+            //}
+        }
     }
     class FunctionEqualityComparer : IEqualityComparer<IFunction>
     {
