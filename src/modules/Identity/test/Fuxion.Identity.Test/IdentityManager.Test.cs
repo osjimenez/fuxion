@@ -61,45 +61,6 @@ namespace Fuxion.Identity.Test
                     .Can(Create, Delete)
                     .OfAllTypes<Order, Invoice>());
             return;
-            var ent = new Order();
-            // Check if can edit a concrete Entity
-            Assert.IsTrue(
-                IM.Current
-                    .Can(Edit)
-                    .This(ent));
-
-            var ents = new[] { new Order(), new Order() }.AsQueryable();
-            // Check if can edit & delete any of these instances
-            Assert.IsTrue(
-                IM.Current
-                    .Can(Edit, Delete)
-                    .Any(ents));
-            // Check if can read all of these instances
-            Assert.IsTrue(
-                IM.Current
-                    .Can(Read)
-                    .All(ents));
-
-            // Filter with queryable
-            var filtered = IM.Current
-                    .Filter(ents)
-                    .For(Read);
-            filtered = IM.Current
-                    .Filter(ents)
-                    .ForAll(Create, Delete);
-
-            // Filter with extension method
-            filtered = ents.WhereCan(Read, Create); // Can do all functions
-            filtered = ents.WhereCanAny(Read, Create); // Can do one of functions
-
-
-
-            IM.Login("root", "root");
-            //Assert.IsTrue(IdentityManager.Can(Read).In<Entity>());
-
-            //await IdentityManager.CheckFunctionAssignedAsync("root", new 
-            //    StringFunctionGraph(), Read, 
-            //    TypeDiscriminator.Create<Entity>(AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.DefinedTypes).ToArray()));
         }
         [TestMethod]
         public void Predicate()

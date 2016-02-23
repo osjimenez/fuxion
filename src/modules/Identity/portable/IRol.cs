@@ -214,37 +214,23 @@ namespace Fuxion.Identity
                 Printer.Print("Properties => " + props.Aggregate("", (str, actual) => $"{str} {actual.PropertyInfo.Name} ({actual.PropertyInfo.PropertyType.GetSignature(false)}),", str => str.Trim(',', ' ')));
 
                 Printer.Print("");
-                Printer.Ident("Starting process ...", () =>
+                Printer.Ident("Filter:", () =>
                 {
                     Printer.Print("(");
                     foreach (var sco in scopes)
                     {
-                        //Printer.Print("Scope: " + sco);
-
-
-                        if (exp != null) Printer.Print(")AND(");
-
-                        //Expression<Func<TEntity, bool>> disExp = null;
-                        //var alldis = sco.AllDiscriminators().ToList();
-                        //var alldis2 = sco.Discriminator.GetAllInclusions();
-                        //foreach (var dis in new[] { sco.Discriminator })
-                        //{
-                        //Printer.Print("Discriminator: " + dis);
-
-                        //if (disExp == null) Printer.Print("(");
-                        //if (disExp != null) Printer.Print(")AND(");
+                        if (exp != null) Printer.Print("AND(");
                         Expression<Func<TEntity, bool>> proExp = null;
                         Printer.Ident(() =>
                         {
-                            foreach (var pro in props.Where(p => p.DiscriminatorTypeId.Equals(sco.Discriminator.TypeId)))
+                            var propsOfType = props.Where(p => p.DiscriminatorTypeId.Equals(sco.Discriminator.TypeId)).ToList();
+                            for (int i = 0; i < propsOfType.Count; i++)
                             {
-                                //if (proExp == null)
-                                    Printer.Print("    " +
-                                                    sco.Discriminator.GetAllInclusions().Select(d => d.Id).Aggregate("",
-                                                        (s, a) => s + pro.PropertyInfo.Name + " == " + a + " || ",
-                                                        s => s.Trim('|', ' ')));
-                                
-
+                                var pro = propsOfType[i];
+                                Printer.Print("    " +
+                                                sco.Discriminator.GetAllInclusions().Select(d => d.Id).Aggregate("",
+                                                    (s, a) => s + pro.PropertyInfo.Name + " == " + a + " || ",
+                                                    s => s.Trim('|', ' ')));
                                 var curExp = (Expression<Func<TEntity, bool>>)
                                     typeof(RolExtensions).GetTypeInfo()
                                         .DeclaredMethods.Single(m => m.Name == nameof(BuildForeignKeysContainsPredicate))
@@ -266,16 +252,17 @@ namespace Fuxion.Identity
                                             pro.PropertyInfo
                                             }
                                         );
-                                
                                 proExp = (proExp == null ? curExp : proExp.Or(curExp));
-                                if (proExp != null) Printer.Print(") OR (");
+                                if (proExp != null)
+                                {
+                                    if (i == propsOfType.Count -1)
+                                        Printer.Print(")");
+                                    else
+                                        Printer.Print(") OR (");
+                                }
                             }
                         });
-                        //if (disExp != null) Printer.Print(")");
-                        //disExp = (disExp == null ? proExp : disExp.And(proExp));
-                        //}
                         if (exp != null) Printer.Print(")");
-                        //exp = (exp == null ? disExp : exp.And(disExp));
                         exp = (exp == null ? proExp : exp.And(proExp));
                     }
                 });
@@ -284,9 +271,6 @@ namespace Fuxion.Identity
             });
             return exp;
         }
-
-
-
         public static IEnumerable<IPermission> AllPermissions(this IRol me)
         {
             var res = new List<IPermission>();
@@ -401,8 +385,8 @@ namespace Fuxion.Identity
         public static IQueryable<T> ForAll<T>(this IRolFilter<T> me, params IFunction[] functions) { return null; }
 
         //public static IQueryable<T> WhereCan<T>(this IQueryable<T> me, IFunction function) { return null; }
-        public static IQueryable<T> WhereCan<T>(this IQueryable<T> me, params IFunction[] functions) { return null; }
-        public static IQueryable<T> WhereCanAny<T>(this IQueryable<T> me, params IFunction[] functions) { return null; }
+        //public static IQueryable<T> WhereCan<T>(this IQueryable<T> me, params IFunction[] functions) { return null; }
+        //public static IQueryable<T> WhereCanAny<T>(this IQueryable<T> me, params IFunction[] functions) { return null; }
         #endregion
     }
     class _Discriminator : IDiscriminator

@@ -12,15 +12,35 @@ using Xunit;
 using static Fuxion.Identity.Functions;
 using static Fuxion.Identity.Test.StaticContext;
 using Xunit.Abstractions;
+using Fuxion.Factories;
 
 namespace Fuxion.Identity.DatabaseEFTest
 {
+    public class IdentityFactory : IFactory
+    {
+        IdentityManager _IdentityManager;
+        public object Create(Type type)
+        {
+            if (type == typeof(IdentityManager))
+            {
+                if (_IdentityManager == null)
+                    _IdentityManager = new IdentityManager(new PasswordProvider(), new IdentityDatabaseEFRepository());
+                return _IdentityManager;
+            }
+            throw new NotImplementedException();
+        }
+        public IEnumerable<object> GetAllInstances(Type type)
+        {
+            throw new NotImplementedException();
+        }
+    }
     public class IdentityManagerTest
     {
         private readonly ITestOutputHelper output;
         public IdentityManagerTest(ITestOutputHelper output)
         {
             this.output = output;
+            Factory.AddToPipe(new IdentityFactory());
             TypeDiscriminator.KnownTypes = AppDomain.CurrentDomain.GetAssemblies()
                 .Where(a => a.FullName.StartsWith("Fuxion"))
                 .SelectMany(a => a.DefinedTypes).ToArray();
@@ -30,16 +50,8 @@ namespace Fuxion.Identity.DatabaseEFTest
             rep.Order.AddRange(SellOrders);
             rep.SaveChanges();
         }
-        IdentityManager _IdentityManager;
-        IdentityManager IM
-        {
-            get
-            {
-                if (_IdentityManager == null)
-                    _IdentityManager = new IdentityManager(new PasswordProvider(), new IdentityDatabaseEFRepository()) { Console = (m, _) => output.WriteLine(m) };
-                return _IdentityManager;
-            }
-        }
+        //IdentityManager _IdentityManager;
+        IdentityManager IM { get { return Factory.Create<IdentityManager>(); } }
         [Fact]
         public void Login()
         {
@@ -64,12 +76,12 @@ namespace Fuxion.Identity.DatabaseEFTest
             // Login
             if (!IM.IsAuthenticated)
                 Assert.True(IM.Login("root", "root"));
-            // Check if can create & delete objects of type Entity
+            // Check if can create & delete objects of type Order
             Assert.True(
                 IM.Current
                     .Can(Create, Delete)
                     .OfType<Order>());
-            // Check if can create & delete objects of types Entity AND DerivedEntity
+            // Check if can create & delete objects of types Order AND Invoice
             Assert.True(
                 IM.Current
                     .Can(Create, Delete)
@@ -82,8 +94,7 @@ namespace Fuxion.Identity.DatabaseEFTest
             var rep = new IdentityDatabaseEFRepository();
             IM.Login("ca_sell", "ca_sell");
             Printer.PrintAction = message => output.WriteLine(message);
-            var pred = IM.Current.FilterPredicate<Order>(Read);
-            var res = rep.Order.Where(pred.Compile());
+            var res = rep.Order.WhereCan(Read);
             Assert.NotNull(res);
             Assert.True(res.Count() == 2);
         }
