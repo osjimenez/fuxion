@@ -113,7 +113,7 @@ namespace Fuxion.Identity.DatabaseEFTest
         [Theory]
         [InlineData(new object[] { Scenario.Memory })]
         [InlineData(new object[] { Scenario.Database })]
-        public void Predicate(string scenario)
+        public void Filter_TwoDiscriminatorsOfSameType(string scenario)
         {
             Scenario.Load(scenario);
             var im = Factory.Get<IdentityManager>();
@@ -121,14 +121,29 @@ namespace Fuxion.Identity.DatabaseEFTest
 
             Assert.True(im.Login("ca_sell", "ca_sell"), "Login unsuccessfull");
 
-            var res = rep.Order.AuthorizeTo(Read);
+            var res = rep.Demo.AuthorizedTo(Read);
+            Assert.NotNull(res);
+            Assert.True(res.Count() == 1);
+        }
+        [Theory]
+        [InlineData(new object[] { Scenario.Memory })]
+        [InlineData(new object[] { Scenario.Database })]
+        public void Filter_TwoDiscriminators(string scenario)
+        {
+            Scenario.Load(scenario);
+            var im = Factory.Get<IdentityManager>();
+            var rep = Factory.Get<IIdentityTestRepository>();
+
+            Assert.True(im.Login("ca_sell", "ca_sell"), "Login unsuccessfull");
+
+            var res = rep.Order.AuthorizedTo(Read);
             Assert.NotNull(res);
             Assert.True(res.Count() == 2);
         }
         [Theory]
         [InlineData(new object[] { Scenario.Memory })]
         [InlineData(new object[] { Scenario.Database })]
-        public void Predicate2(string scenario)
+        public void Filter_OneDiscriminator(string scenario)
         {
             Scenario.Load(scenario);
             var im = Factory.Get<IdentityManager>();
@@ -136,7 +151,7 @@ namespace Fuxion.Identity.DatabaseEFTest
 
             Assert.True(im.Login("ca_sell", "ca_sell"), "Login unsuccessfull");
 
-            var res = rep.Invoice.AuthorizeTo(Read);
+            var res = rep.Invoice.AuthorizedTo(Read);
             Assert.NotNull(res);
             //Assert.True(res.Count() == 2);
         }

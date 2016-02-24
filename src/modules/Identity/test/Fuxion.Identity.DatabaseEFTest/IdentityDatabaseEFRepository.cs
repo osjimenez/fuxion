@@ -25,14 +25,17 @@ namespace Fuxion.Identity.DatabaseEFTest
             Identity.AddRange(Identities);
             Order.AddRange(SellOrders);
             Invoice.AddRange(Invoices);
+            Demo.AddRange(Demos);
             SaveChanges();
         }
 
         public DbSet<Test.Entity.Identity> Identity { get; set; }
         public DbSet<Order> Order { get; set; }
         public DbSet<Invoice> Invoice { get; set; }
+        public DbSet<Demo> Demo { get; set; }
         IEnumerable<Order> IIdentityTestRepository.Order { get { return Order; } }
         IEnumerable<Invoice> IIdentityTestRepository.Invoice { get { return Invoice; } }
+        IEnumerable<Demo> IIdentityTestRepository.Demo { get { return Demo; } }
 
         public IIdentity Find(string key)
         {

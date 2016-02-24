@@ -68,7 +68,7 @@ namespace Fuxion.Identity.Test
             var rep = new IdentityMemoryTestRepository();
             IM.Login("ca_sell", "ca_sell");
             //var res = SellOrders.WhereCan(Read);
-            var res = SellOrders.AsQueryable().AuthorizeTo(Create, Delete);
+            var res = SellOrders.AuthorizedTo(Create, Delete);
             //Printer.PrintAction = message => Debug.WriteLine(message);
             //var pred = IM.Current.FilterPredicate<Order>(Read);
             //var ooo = SellOrders.ToList();

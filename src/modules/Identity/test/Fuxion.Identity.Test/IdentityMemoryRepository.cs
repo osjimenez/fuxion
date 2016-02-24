@@ -15,11 +15,13 @@ namespace Fuxion.Identity.Test
     public interface IIdentityTestRepository {
         IEnumerable<Order> Order { get; }
         IEnumerable<Invoice> Invoice { get; }
+        IEnumerable<Demo> Demo { get; }
     }
     public class IdentityMemoryTestRepository : IIdentityTestRepository, IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity>
     {
         public IEnumerable<Order> Order { get { return SellOrders; } }
         public IEnumerable<Invoice> Invoice { get { return Invoices; } }
+        public IEnumerable<Demo> Demo { get { return Demos; } }
 
         public bool Exist(string key) { return false; }
         public Task<bool> ExistAsync(string key) { return Task.FromResult(false); }

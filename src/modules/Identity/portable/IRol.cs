@@ -257,49 +257,6 @@ namespace Fuxion.Identity
             });
             return res;
         }
-
-
-        private static Expression<Func<TEntity, bool>> BuildForeignKeysContainsPredicate<TEntity, T>(List<T> foreignKeys, PropertyInfo property)
-        {
-            // TODO - Oscar - Este código representa la consulta que habría que hacer en caso de guardar la ruta completa en los recursos 
-            // y solo cargar en el SecuritySchema los id's directamente implicados. Esto es un cambio importante que evitaría tener que cargar
-            // todos los scopes al iniciar sesión, por ejemplo, el usuario root, como tienen permiso para los discriminaodres raiz tiene que cargar
-            // todos los discriminaodres hijos (que son todos) al iniciar sesión.
-
-            // var t1 =
-            // Context.City.Include(c => c.AuthorizationDomain)
-            //     .Where(c => new[] { "ruta1", "ruta2" }.Any(r => c.AuthorizationDomain.Path.StartsWith(r)));
-            // Equivale a:
-            //     .Where(c => foreignKeys.Any(r => c.<property>.Path.StartsWith(r)));
-            var entityParameter = Expression.Parameter(typeof(TEntity));
-            var foreignKeysParameter = Expression.Constant(foreignKeys, typeof(List<T>));
-            var memberExpression = Expression.Property(entityParameter, property);
-            var convertExpression = Expression.Convert(memberExpression, typeof(T));
-            var containsExpression = Expression.Call(foreignKeysParameter, nameof(Enumerable.Contains), new Type[] { }, convertExpression);
-            var result = Expression.Lambda<Func<TEntity, bool>>(containsExpression, entityParameter);
-            if (
-                // TODO - Oscar - Probar que la comprobación de INullable no afecta al resultado. INullable esta en System.Data.SqlTypes.INullable
-                //typeof(INullable).IsAssignableFrom(property.PropertyType) ||
-                (property.PropertyType.GetTypeInfo().IsGenericType &&
-                 property.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>)))
-            {
-                var arg = Expression.Parameter(typeof(TEntity));
-                var prop = Expression.Property(arg, property);
-
-                //var ooo = Expression.Lambda<Func<TEntity, bool>>(
-                //    Expression.NotEqual(prop, Expression.Constant(null, prop.Type)),
-                //    arg);
-                //var invokedExpr = Expression.Invoke(result, ooo.Parameters.Cast<Expression>());
-                //var oooo = Expression.Lambda<Func<TEntity, bool>>(Expression.AndAlso(ooo.Body, invokedExpr), ooo.Parameters);
-                //result = oooo;
-
-                result = Expression.Lambda<Func<TEntity, bool>>(
-                    Expression.NotEqual(prop, Expression.Constant(null, prop.Type)),
-                    arg)
-                    .And(result);
-            }
-            return result;
-        }
         //internal static Expression<Func<TEntity, bool>> FilterPredicate<TEntity>(this IRol me, IFunction function)
         //{
         //    Expression<Func<TEntity, bool>> exp = null;
@@ -379,19 +336,15 @@ namespace Fuxion.Identity
         //    });
         //    return exp;
         //}
-        internal static Expression<Func<TEntity, bool>> FilterPredicate<TEntity>(this IRol me, IFunction[] functions)
+        internal static Expression<Func<TEntity, bool>> FilterExpression<TEntity>(this IRol me, IFunction[] functions)
         {
-            Expression<Func<TEntity, bool>> exp = null;
-            Printer.Ident($"{nameof(FilterPredicate)} ...", () =>
+            Expression<Func<TEntity, bool>> res = null;
+            Printer.Ident($"{nameof(FilterExpression)} ...", () =>
             {
                 Printer.Print("Type: " + typeof(TEntity).Name);
                 var scopes = me.GetScopes(functions, new[] { TypeDiscriminator.Create(typeof(TEntity)) });
                 Printer.Print("Scopes:");
                 scopes.Print(PrintMode.Table);
-
-                var props1 = typeof(TEntity).GetRuntimeProperties();
-                var props2 = typeof(TEntity).GetRuntimeProperties()
-                                    .Where(p => p.GetCustomAttribute<DiscriminatedByAttribute>(true, false, false) != null);
                 var props = typeof(TEntity).GetRuntimeProperties()
                     .Where(p => p.GetCustomAttribute<DiscriminatedByAttribute>(true, false, false) != null)
                     .Select(p => new
@@ -402,45 +355,53 @@ namespace Fuxion.Identity
                                 .GetCustomAttribute<DiscriminatorAttribute>(true).TypeId,
                     });
                 Printer.Print("Properties => " + props.Aggregate("", (str, actual) => $"{str} {actual.PropertyInfo.Name} ({actual.PropertyInfo.PropertyType.GetSignature(false)}),", str => str.Trim(',', ' ')));
-
                 Printer.Print("");
                 Printer.Ident("Filter:", () =>
                 {
                     Printer.Print("(");
                     foreach (var sco in scopes)
                     {
-                        if (exp != null) Printer.Print("AND(");
+                        if (res != null) Printer.Print("AND(");
                         Expression<Func<TEntity, bool>> proExp = null;
                         Printer.Ident(() =>
                         {
                             var propsOfType = props.Where(p => p.DiscriminatorTypeId.Equals(sco.Discriminator.TypeId)).ToList();
                             for (int i = 0; i < propsOfType.Count; i++)
                             {
-                                var pro = propsOfType[i];
-                                Printer.Print("    " +
-                                                sco.Discriminator.GetAllInclusions().Select(d => d.Id).Aggregate("",
-                                                    (s, a) => s + pro.PropertyInfo.Name + " == " + a + " || ",
-                                                    s => s.Trim('|', ' ')));
-                                var curExp = (Expression<Func<TEntity, bool>>)typeof(RolExtensions).GetTypeInfo()
-                                        .DeclaredMethods.Single(m => m.Name == nameof(BuildForeignKeysContainsPredicate))
-                                        .MakeGenericMethod(typeof(TEntity), pro.PropertyInfo.PropertyType)
-                                        .Invoke(null, new object[] {
-                                            typeof(Enumerable).GetTypeInfo().DeclaredMethods
-                                                .Where(m => m.Name == nameof(Enumerable.ToList))
-                                                .Single(m => m.GetParameters().Length == 1)
-                                                .MakeGenericMethod(pro.PropertyInfo.PropertyType)
-                                                .Invoke(null, new object[] {
-                                                    typeof(Enumerable).GetTypeInfo().DeclaredMethods
+                                var pro = propsOfType[i].PropertyInfo;
+                                
+                                var castMethod = typeof(Enumerable).GetTypeInfo().DeclaredMethods
                                                     .Where(m => m.Name == nameof(Enumerable.Cast))
                                                     .Single(m => m.GetParameters().Length == 1)
-                                                    .MakeGenericMethod(pro.PropertyInfo.PropertyType)
-                                                    .Invoke(null,new object[] {
-                                                        sco.Discriminator.GetAllInclusions().Select(d => d.Id)
-                                                    })
-                                                }),
-                                            pro.PropertyInfo
-                                            }
-                                        );                                    
+                                                    .MakeGenericMethod(pro.PropertyType);
+                                var toListMethod = typeof(Enumerable).GetTypeInfo().DeclaredMethods
+                                                    .Where(m => m.Name == nameof(Enumerable.ToList))
+                                                    .Single(m => m.GetParameters().Length == 1)
+                                                    .MakeGenericMethod(pro.PropertyType);
+                                var containsMethod = typeof(Enumerable).GetTypeInfo().DeclaredMethods
+                                                    .Where(m => m.Name == nameof(Enumerable.Contains))
+                                                    .Single(m => m.GetParameters().Length == 2)
+                                                    .MakeGenericMethod(pro.PropertyType);
+                                var foreignKeys = sco.Discriminator.GetAllInclusions().Select(d => d.Id);
+                                var foreignKeysCasted = castMethod.Invoke(null, new object[] { foreignKeys });
+                                var foreignKeysListed = toListMethod.Invoke(null, new object[] { foreignKeysCasted });
+                                var entityParameter = Expression.Parameter(typeof(TEntity));
+                                var memberExpression = Expression.Property(entityParameter, pro);
+                                var containsExpression = Expression.Call(containsMethod,
+                                    Expression.Constant(foreignKeysListed,foreignKeysListed.GetType()), 
+                                    memberExpression);
+                                var curExp = Expression.Lambda<Func<TEntity, bool>>(containsExpression, entityParameter);
+                                if (
+                                    (pro.PropertyType.GetTypeInfo().IsGenericType &&
+                                     pro.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>)))
+                                {
+                                    var arg = Expression.Parameter(typeof(TEntity));
+                                    var prop = Expression.Property(arg, pro);
+                                    curExp = Expression.Lambda<Func<TEntity, bool>>(
+                                        Expression.NotEqual(prop, Expression.Constant(null, prop.Type)),
+                                        arg)
+                                        .And(curExp);
+                                }                               
                                 proExp = (proExp == null ? curExp : proExp.Or(curExp));
                                 if (proExp != null)
                                 {
@@ -451,15 +412,15 @@ namespace Fuxion.Identity
                                 }
                             }
                         });
-                        if (exp != null) Printer.Print(")");
+                        if (res != null) Printer.Print(")");
                         if(proExp != null)
-                            exp = (exp == null ? proExp : exp.And(proExp));
+                            res = (res == null ? proExp : res.And(proExp));
                     }
                 });
-                if (exp == null && !scopes.Any()) exp = Expression.Lambda<Func<TEntity, bool>>(Expression.Constant(false), Expression.Parameter(typeof(TEntity)));
-                Printer.Print("Expression:" + (exp == null ? "null" : exp.ToString()));
+                if (res == null && !scopes.Any()) res = Expression.Lambda<Func<TEntity, bool>>(Expression.Constant(false), Expression.Parameter(typeof(TEntity)));
+                Printer.Print("Expression:" + (res == null ? "null" : res.ToString()));
             });
-            return exp;
+            return res;
         }
         private static IEnumerable<IPermission> AllPermissions(this IRol me)
         {

@@ -109,6 +109,7 @@
     <Compile Include="Entity\Rol.IRol.cs">
       <DependentUpon>Rol.cs</DependentUpon>
     </Compile>
+    <Compile Include="Entity\Demo.cs" />
     <Compile Include="Entity\SellOrder.cs" />
     <Compile Include="Entity\Scope.cs" />
     <Compile Include="Entity\Scope.IScope.cs">
