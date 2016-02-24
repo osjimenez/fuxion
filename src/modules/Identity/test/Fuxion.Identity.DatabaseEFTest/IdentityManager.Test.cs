@@ -13,6 +13,7 @@ using static Fuxion.Identity.Functions;
 using static Fuxion.Identity.Test.StaticContext;
 using Xunit.Abstractions;
 using Fuxion.Factories;
+using System.Linq.Expressions;
 
 namespace Fuxion.Identity.DatabaseEFTest
 {
@@ -88,10 +89,28 @@ namespace Fuxion.Identity.DatabaseEFTest
                     .OfAllTypes<Order, Invoice>());
             return;
         }
+        private Expression<Func<Order,bool>> Predi()
+        {
+            List<string> foreignKeys = new List<string>(new[] { Locations.SanFrancisco.Id });
+            var property = typeof(Order).GetProperty("ShipmentCityId");
+            var entityParameter = Expression.Parameter(typeof(Order));
+            var foreignKeysParameter = Expression.Constant(foreignKeys, typeof(List<string>));
+            var memberExpression = Expression.Property(entityParameter, property);
+            var convertExpression = Expression.Convert(memberExpression, typeof(string));
+            var containsExpression = Expression.Call(foreignKeysParameter, nameof(Enumerable.Contains), new Type[] { }, convertExpression);
+            var result = Expression.Lambda<Func<Order, bool>>(containsExpression, entityParameter);
+            return result;
+        }
         [Fact]
         public void Predicate()
         {
             var rep = new IdentityDatabaseEFRepository();
+
+            var lll = Predi();
+            //var pp = rep.Order.Where(o => o.ShipmentCityId == Locations.SanFrancisco.Id).ToList();
+            var jajaja = rep.Order.Where(lll).ToList();
+
+
             IM.Login("ca_sell", "ca_sell");
             Printer.PrintAction = message => output.WriteLine(message);
             var res = rep.Order.WhereCan(Read);

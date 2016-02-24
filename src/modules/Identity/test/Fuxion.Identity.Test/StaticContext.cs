@@ -235,7 +235,7 @@ namespace Fuxion.Identity.Test
     {
         public SellOrderList()
         {
-            AddRange(new[] { CA_SellOrder, NY_SellOrder });
+            AddRange(new[] { CA_SellOrder, NY_SellOrder, MAD_SellOrder });
         }
         public SellOrder CA_SellOrder = new SellOrder
         {
@@ -258,6 +258,18 @@ namespace Fuxion.Identity.Test
             ShipmentCityId = Locations.NewYorkCity.Id,
             ReceptionCity = Locations.SanFrancisco,
             ReceptionCityId = Locations.SanFrancisco.Id,
+            Seller = Identities.NewYorkSeller,
+            SellerId = Identities.NewYorkSeller.Id
+        };
+        public SellOrder MAD_SellOrder = new SellOrder
+        {
+            Id = "MAD_SellOrder",
+            Department = Departments.Sales,
+            DepartmentId = Departments.Sales.Id,
+            ShipmentCity = Locations.NewYorkCity,
+            ShipmentCityId = Locations.NewYorkCity.Id,
+            ReceptionCity = Locations.MadridCity,
+            ReceptionCityId = Locations.MadridCity.Id,
             Seller = Identities.NewYorkSeller,
             SellerId = Identities.NewYorkSeller.Id
         };
