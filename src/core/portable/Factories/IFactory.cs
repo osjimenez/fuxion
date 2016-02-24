@@ -6,7 +6,7 @@ namespace Fuxion.Factories
 {
     public interface IFactory
     {
-        object Create(Type type);
-		IEnumerable<object> GetAllInstances(Type type);
+        object Get(Type type);
+		IEnumerable<object> GetMany(Type type);
 	}
 }

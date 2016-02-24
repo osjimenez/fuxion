@@ -21,7 +21,7 @@ namespace Fuxion.ServiceModel.Dispatcher
 		private readonly string _name;
 		//internal protected CompositionContainer Container { get { return Singleton.Get<CompositionContainer>(); } }
         // TODO - Oscar - Comprobar que la factoria funciona aqui
-        internal protected CompositionContainer Container { get { return Factory.Create<CompositionContainer>(); } }
+        internal protected CompositionContainer Container { get { return Factory.Get<CompositionContainer>(); } }
         public object GetInstance(InstanceContext instanceContext, System.ServiceModel.Channels.Message message)
 		{
 			var requiredMetadata = new Dictionary<string, Type>();

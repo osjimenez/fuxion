@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Fuxion.Identity.Test.Entity
 {
     [Table(nameof(Invoice))]
-    public class Invoice
+    public class Invoice : Base
     {
         public Department Department { get; set; }
         [DiscriminatedBy(typeof(Department))]

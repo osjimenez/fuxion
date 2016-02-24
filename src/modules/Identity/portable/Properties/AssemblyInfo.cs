@@ -14,7 +14,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: NeutralResourcesLanguage("en")]
-[assembly: InternalsVisibleTo("Fuxion.Identity.Test")]
+//[assembly: InternalsVisibleTo("Fuxion.Identity.Test")]
 // Version information for an assembly consists of the following four values:
 //
 //      Major Version

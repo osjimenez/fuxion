@@ -11,11 +11,11 @@ namespace Fuxion.Factories
 	{
 		public SimpleInjectorFactory(Container container) { this._container = container; }
 		readonly Container _container;
-		public object Create(Type type)
+		public object Get(Type type)
 		{
 			return _container.GetInstance(type);
 		}
-        public IEnumerable<object> GetAllInstances(Type type)
+        public IEnumerable<object> GetMany(Type type)
         {
             //if (type.GetTypeInfo().IsGenericTypeDefinition)
             //{

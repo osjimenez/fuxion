@@ -231,7 +231,7 @@ namespace Fuxion.Identity.Test
         //public Entity.Identity ExportSeller = new Entity.Identity { Id = "EXP", UserName = "exp", Name = "Exporter" };
         //public Entity.Identity EuropeanExportSeller = new Entity.Identity { Id = "EXP_EU", UserName = "exp_eu", Name = "European exporter" };
     }
-    public class SellOrderList : List<Entity.SellOrder>
+    public class SellOrderList : List<SellOrder>
     {
         public SellOrderList()
         {
@@ -274,6 +274,19 @@ namespace Fuxion.Identity.Test
             SellerId = Identities.NewYorkSeller.Id
         };
     }
+    public class InvoiceList : List<Invoice>
+    {
+        public InvoiceList()
+        {
+            AddRange(new[] { SAL_Invoice });
+        }
+        public Invoice SAL_Invoice = new Invoice
+        {
+            Id = "SAL_Invoice",
+            Department = Departments.Sales,
+            DepartmentId = Departments.Sales.Id,
+        };
+    }
     public class StaticContext
     {
         public static LocationList Locations { get; } = new LocationList();
@@ -281,5 +294,6 @@ namespace Fuxion.Identity.Test
         public static GroupsList Groups { get; } = new GroupsList();
         public static IdentityList Identities { get; } = new IdentityList();
         public static SellOrderList SellOrders { get; } = new SellOrderList();
+        public static InvoiceList Invoices { get; } = new InvoiceList();
     }
 }

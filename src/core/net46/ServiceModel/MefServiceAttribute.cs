@@ -9,6 +9,6 @@ namespace Fuxion.ServiceModel
 	{
         //internal protected CompositionContainer Container { get { return Singleton.Get<CompositionContainer>(); } }
         // TODO - Oscar - Comprobar que la factoria funciona aqui
-        internal protected CompositionContainer Container { get { return Factory.Create<CompositionContainer>(); } }
+        internal protected CompositionContainer Container { get { return Factory.Get<CompositionContainer>(); } }
 	}
 }

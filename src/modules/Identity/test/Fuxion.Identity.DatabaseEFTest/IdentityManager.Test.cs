@@ -14,108 +14,131 @@ using static Fuxion.Identity.Test.StaticContext;
 using Xunit.Abstractions;
 using Fuxion.Factories;
 using System.Linq.Expressions;
+using Xunit.Extensions;
+using System.Security.Permissions;
+using Fuxion.Identity.Test;
+using System.Collections;
+using SimpleInjector;
+using Fuxion.Repositories;
 
 namespace Fuxion.Identity.DatabaseEFTest
 {
-    public class IdentityFactory : IFactory
+    public class Scenario
     {
-        IdentityManager _IdentityManager;
-        public object Create(Type type)
+        public const string Database = nameof(Database);
+        public const string Memory = nameof(Memory);
+        public static void Load(string key)
         {
-            if (type == typeof(IdentityManager))
+            if(key == Memory)
             {
-                if (_IdentityManager == null)
-                    _IdentityManager = new IdentityManager(new PasswordProvider(), new IdentityDatabaseEFRepository());
-                return _IdentityManager;
+                Factory.ClearPipe();
+                var con = new Container();
+                con.RegisterSingleton<IPasswordProvider>(new PasswordProvider());
+                var rep = new IdentityMemoryTestRepository();
+                con.RegisterSingleton<IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity>>(rep);
+                con.RegisterSingleton<IIdentityTestRepository>(rep);
+                con.RegisterSingleton<IdentityManager>();
+                var fac = new SimpleInjectorFactory(con);
+                Factory.AddToPipe(fac);
+            }else if (key == Database)
+            {
+                Factory.ClearPipe();
+                var con = new Container();
+                con.RegisterSingleton<IPasswordProvider>(new PasswordProvider());
+                var rep = new IdentityDatabaseEFTestRepository();
+                rep.InitializeData();
+                con.RegisterSingleton<IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity>>(rep);
+                con.RegisterSingleton<IIdentityTestRepository>(rep);
+                con.RegisterSingleton<IdentityManager>();
+                var fac = new SimpleInjectorFactory(con);
+                Factory.AddToPipe(fac);
             }
-            throw new NotImplementedException();
-        }
-        public IEnumerable<object> GetAllInstances(Type type)
-        {
-            throw new NotImplementedException();
+            else throw new NotImplementedException($"El escenario '{key}' no esta soportado");
         }
     }
     public class IdentityManagerTest
     {
-        private readonly ITestOutputHelper output;
+        //private readonly ITestOutputHelper output;
         public IdentityManagerTest(ITestOutputHelper output)
         {
-            this.output = output;
-            Factory.AddToPipe(new IdentityFactory());
+            Printer.PrintAction = m => output.WriteLine(m);
             TypeDiscriminator.KnownTypes = AppDomain.CurrentDomain.GetAssemblies()
                 .Where(a => a.FullName.StartsWith("Fuxion"))
                 .SelectMany(a => a.DefinedTypes).ToArray();
-            var rep = new IdentityDatabaseEFRepository();
-            rep.ClearData();
-            rep.Identity.AddRange(Identities);
-            rep.Order.AddRange(SellOrders);
-            rep.SaveChanges();
         }
-        //IdentityManager _IdentityManager;
-        IdentityManager IM { get { return Factory.Create<IdentityManager>(); } }
-        [Fact]
-        public void Login()
+        [Theory]
+        [InlineData(new object[] { Scenario.Memory })]
+        [InlineData(new object[] { Scenario.Database })]
+        public void Login(string scenario)
         {
-            var u = Locations.USA;
+            Scenario.Load(scenario);
+            var im = Factory.Get<IdentityManager>();
             // Check when null values
-            Assert.False(IM.Login(null, null));
-            Assert.False(IM.Login("root", null));
-            Assert.False(IM.Login(null, "root"));
+            Assert.False(im.Login(null, null));
+            Assert.False(im.Login("root", null));
+            Assert.False(im.Login(null, "root"));
             // Check when empty values
-            Assert.False(IM.Login("", ""));
-            Assert.False(IM.Login("root", ""));
-            Assert.False(IM.Login("", "root"));
+            Assert.False(im.Login("", ""));
+            Assert.False(im.Login("root", ""));
+            Assert.False(im.Login("", "root"));
             // Check when wrong values
-            Assert.False(IM.Login("wrong", "root"));
-            Assert.False(IM.Login("root", "wrong"));
+            Assert.False(im.Login("wrong", "root"));
+            Assert.False(im.Login("root", "wrong"));
             // Check when success
-            Assert.True(IM.Login("root", "root"));
+            Assert.True(im.Login("root", "root"));
         }
-        [Fact]
-        public void CheckFunctionAssigned()
+        [Theory]
+        [InlineData(new object[] { Scenario.Memory })]
+        [InlineData(new object[] { Scenario.Database })]
+        public void CheckFunctionAssigned(string scenario)
         {
+            Scenario.Load(scenario);
+            var im = Factory.Get<IdentityManager>();
+
             // Login
-            if (!IM.IsAuthenticated)
-                Assert.True(IM.Login("root", "root"));
+            if (!im.IsAuthenticated)
+                Assert.True(im.Login("root", "root"));
             // Check if can create & delete objects of type Order
             Assert.True(
-                IM.Current
+                im.Current
                     .Can(Create, Delete)
                     .OfType<Order>());
             // Check if can create & delete objects of types Order AND Invoice
             Assert.True(
-                IM.Current
+                im.Current
                     .Can(Create, Delete)
                     .OfAllTypes<Order, Invoice>());
             return;
         }
-        private Expression<Func<Order,bool>> Predi()
+        [Theory]
+        [InlineData(new object[] { Scenario.Memory })]
+        [InlineData(new object[] { Scenario.Database })]
+        public void Predicate(string scenario)
         {
-            List<string> foreignKeys = new List<string>(new[] { Locations.SanFrancisco.Id });
-            var property = typeof(Order).GetProperty("ShipmentCityId");
-            var entityParameter = Expression.Parameter(typeof(Order));
-            var foreignKeysParameter = Expression.Constant(foreignKeys, typeof(List<string>));
-            var memberExpression = Expression.Property(entityParameter, property);
-            var convertExpression = Expression.Convert(memberExpression, typeof(string));
-            var containsExpression = Expression.Call(foreignKeysParameter, nameof(Enumerable.Contains), new Type[] { }, convertExpression);
-            var result = Expression.Lambda<Func<Order, bool>>(containsExpression, entityParameter);
-            return result;
-        }
-        [Fact]
-        public void Predicate()
-        {
-            var rep = new IdentityDatabaseEFRepository();
+            Scenario.Load(scenario);
+            var im = Factory.Get<IdentityManager>();
+            var rep = Factory.Get<IIdentityTestRepository>();
 
-            var lll = Predi();
-            //var pp = rep.Order.Where(o => o.ShipmentCityId == Locations.SanFrancisco.Id).ToList();
-            var jajaja = rep.Order.Where(lll).ToList();
+            Assert.True(im.Login("ca_sell", "ca_sell"), "Login unsuccessfull");
 
-
-            IM.Login("ca_sell", "ca_sell");
-            Printer.PrintAction = message => output.WriteLine(message);
-            var res = rep.Order.WhereCan(Read);
+            var res = rep.Order.AuthorizeTo(Read);
             Assert.NotNull(res);
             Assert.True(res.Count() == 2);
+        }
+        [Theory]
+        [InlineData(new object[] { Scenario.Memory })]
+        [InlineData(new object[] { Scenario.Database })]
+        public void Predicate2(string scenario)
+        {
+            Scenario.Load(scenario);
+            var im = Factory.Get<IdentityManager>();
+            var rep = Factory.Get<IIdentityTestRepository>();
+
+            Assert.True(im.Login("ca_sell", "ca_sell"), "Login unsuccessfull");
+
+            var res = rep.Invoice.AuthorizeTo(Read);
+            Assert.NotNull(res);
+            //Assert.True(res.Count() == 2);
         }
     }
 }

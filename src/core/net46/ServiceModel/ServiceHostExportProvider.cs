@@ -14,7 +14,7 @@ namespace Fuxion.ServiceModel
 		private static readonly string MatchContractName = AttributedModelServices.GetContractName(typeof(MefServiceHost));
         //CompositionContainer Container { get { return Singleton.Get<CompositionContainer>(); } }
         // TODO - Oscar - Comprobar que la factoria funciona aqui
-        CompositionContainer Container { get { return Factory.Create<CompositionContainer>(); } }
+        CompositionContainer Container { get { return Factory.Get<CompositionContainer>(); } }
 
 		protected override IEnumerable<Export> GetExportsCore(ImportDefinition importDefinition, AtomicComposition composition)
 		{

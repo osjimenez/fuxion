@@ -21,9 +21,9 @@ namespace Fuxion
             //where TViewModel : IViewModel
         {
             var nots = new List<object>();
-            foreach (var evt in Factory.GetAllInstances(typeof(IAsyncEventProjector)))
+            foreach (var evt in Factory.GetMany(typeof(IAsyncEventProjector)))
                 nots.AddRange(await ((dynamic)evt).ProjectsAsync(@event));
-            foreach (var han in Factory.GetAllInstances(typeof(IAsyncNotificationHandler)))
+            foreach (var han in Factory.GetMany(typeof(IAsyncNotificationHandler)))
             {
                 foreach (var not in nots)
                 {

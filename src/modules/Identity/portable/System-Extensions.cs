@@ -14,11 +14,27 @@ namespace Fuxion.Identity
         {
             return me.Identity as FuxionIdentity;
         }
-        public static IQueryable<TSource> WhereCan<TSource>(this IQueryable<TSource> source, IFunction function)
+        //public static IEnumerable<TSource> WhereCan<TSource>(this IEnumerable<TSource> source, IFunction function)
+        //{
+        //    var im = Factory.Get<IdentityManager>();
+        //    var pre = im.Current.FilterPredicate<TSource>(function);
+        //    return source is IQueryable<TSource>
+        //        ? ((IQueryable<TSource>)source).Where(pre)
+        //        : source.Where(pre.Compile());
+        //}
+        public static IEnumerable<TSource> AuthorizeTo<TSource>(this IEnumerable<TSource> source, params IFunction[] functions)
         {
-            var im = Factory.Create<IdentityManager>();
-            var pre = im.Current.FilterPredicate<TSource>(function);
-            return source.Where(pre);
+            var im = Factory.Get<IdentityManager>();
+            var pre = im.Current.FilterPredicate<TSource>(functions);
+            return source is IQueryable<TSource>
+                ? ((IQueryable<TSource>)source).Where(pre)
+                : source.Where(pre.Compile());
         }
+        //public static IQueryable<TSource> AuthorizeTo<TSource>(this IQueryable<TSource> source, params IFunction[] functions)
+        //{
+        //    var im = Factory.Get<IdentityManager>();
+        //    var pre = im.Current.FilterPredicate<TSource>(functions);
+        //    return source.Where(pre);
+        //}
     }
 }

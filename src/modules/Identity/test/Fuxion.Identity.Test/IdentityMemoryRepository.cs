@@ -12,9 +12,15 @@ using System.Collections;
 using static Fuxion.Identity.Test.StaticContext;
 namespace Fuxion.Identity.Test
 {
-    
-    public class IdentityMemoryRepository : IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity>
+    public interface IIdentityTestRepository {
+        IEnumerable<Order> Order { get; }
+        IEnumerable<Invoice> Invoice { get; }
+    }
+    public class IdentityMemoryTestRepository : IIdentityTestRepository, IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity>
     {
+        public IEnumerable<Order> Order { get { return SellOrders; } }
+        public IEnumerable<Invoice> Invoice { get { return Invoices; } }
+
         public bool Exist(string key) { return false; }
         public Task<bool> ExistAsync(string key) { return Task.FromResult(false); }
         public IIdentity Find(string key) { return Identities.FirstOrDefault(i => i.UserName == key); }

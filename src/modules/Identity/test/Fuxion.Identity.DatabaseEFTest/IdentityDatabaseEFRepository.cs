@@ -7,57 +7,32 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static Fuxion.Identity.Test.IdentityMemoryRepository;
+using static Fuxion.Identity.Test.IdentityMemoryTestRepository;
+using static Fuxion.Identity.Test.StaticContext;
+using Fuxion.Identity.Test;
+using Fuxion.Data;
 namespace Fuxion.Identity.DatabaseEFTest
 {
-    public class IdentityDatabaseEFRepository : DbContext, IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity>
+    public class IdentityDatabaseEFTestRepository : DbContext, IIdentityTestRepository, IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity>
     {
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //public IdentityDatabaseEFTestRepository()
         //{
-        //    //optionsBuilder.UseInMemoryDatabase();
-        //    optionsBuilder.UseSqlServer(@"Data Source=.\sqlexpress;Initial Catalog=FuxionIdentity;Integrated Security=True");
-        //    base.OnConfiguring(optionsBuilder);
+        //    Database.SetInitializer(new DropCreateDatabaseAlways<IdentityDatabaseEFTestRepository>());
         //}
-        //protected override void OnModelCreating(ModelBuilder modelBuilder)
-        //{
-        //    modelBuilder.Entity<RolGroup>()
-        //        .HasKey(t => new { t.RolId, t.GroupId });
-        //    //modelBuilder.Entity<PostTag>()
-        //    //    .HasOne(pt => pt.Post)
-        //    //    .WithMany(p => p.PostTags)
-        //    //    .HasForeignKey(pt => pt.PostId);
+        public void InitializeData()
+        {
+            this.ClearData();
+            Identity.AddRange(Identities);
+            Order.AddRange(SellOrders);
+            Invoice.AddRange(Invoices);
+            SaveChanges();
+        }
 
-        //    //modelBuilder.Entity<PostTag>()
-        //    //    .HasOne(pt => pt.Tag)
-        //    //    .WithMany(t => t.PostTags)
-        //    //    .HasForeignKey(pt => pt.TagId);
-        //    modelBuilder.Entity<RolGroup>()
-        //        .HasOne(rg => rg.Rol)
-        //        .WithMany(rol => rol.RolGroups)
-        //        .ForeignKey(pt => pt.RolId);
-
-        //        //.HasForeignKey(pt => pt);
-
-        //    modelBuilder.Entity<RolGroup>()
-        //        .HasOne(pt => pt.Group)
-        //        .WithMany(t => t.RolGroups)
-        //        .ForeignKey(pt => pt.RolId);
-        //}
         public DbSet<Test.Entity.Identity> Identity { get; set; }
         public DbSet<Order> Order { get; set; }
-        //public DbSet<Rol> Rols { get; set; }
-        //public DbSet<Group> Groups { get; set; }
-        //public DbSet<Demo1> Demo1 { get; set; }
-        //public DbSet<Demo2> Demo2 { get; set; }
-        public bool Exist(string key)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> ExistAsync(string key)
-        {
-            throw new NotImplementedException();
-        }
+        public DbSet<Invoice> Invoice { get; set; }
+        IEnumerable<Order> IIdentityTestRepository.Order { get { return Order; } }
+        IEnumerable<Invoice> IIdentityTestRepository.Invoice { get { return Invoice; } }
 
         public IIdentity Find(string key)
         {
@@ -153,52 +128,15 @@ namespace Fuxion.Identity.DatabaseEFTest
                 }
             }
         }
-        //private void LoadDiscriminatorInclusions(Discriminator dom)
-        //{
-        //    var childrenRef = Entry(dom).Collection(d => d.Inclusions);
-        //    if (!childrenRef.IsLoaded) childrenRef.Load();
-        //    if(dom.Inclusions != null) foreach (var d in dom.Inclusions) LoadDiscriminatorInclusions(d);
-        //}
-        //private void LoadDiscriminatorExclusions(Discriminator dom)
-        //{
-        //    var parentRef = Entry(dom).Collection(d => d.Exclusions);
-        //    if (!parentRef.IsLoaded) parentRef.Load();
-        //    if (dom.Exclusions != null) foreach(var d in dom.Exclusions) LoadDiscriminatorExclusions(d);
-        //}
 
-        public async Task<IIdentity> FindAsync(string key)
-        {
-            return await Identity.SingleOrDefaultAsync(i => i.UserName == key);
-        }
-
-        public IIdentity Get(string key)
-        {
-            return Identity.Single(i => i.UserName == key);
-        }
-
-        public async Task<IIdentity> GetAsync(string key)
-        {
-            return await Identity.SingleAsync(i => i.UserName == key);
-        }
-
-        public void Remove(string key)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task RemoveAsync(string key)
-        {
-            throw new NotImplementedException();
-        }
-
-        public new void Set(string key, IIdentity value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task SetAsync(string key, IIdentity value)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<IIdentity> FindAsync(string key) { return await Identity.SingleOrDefaultAsync(i => i.UserName == key); }
+        public bool Exist(string key) { return Identity.Any(i => i.UserName == key); }
+        public async Task<bool> ExistAsync(string key) { return await Identity.AnyAsync(i => i.UserName == key); }
+        public IIdentity Get(string key) { return Identity.Single(i => i.UserName == key); }
+        public async Task<IIdentity> GetAsync(string key) { return await Identity.SingleAsync(i => i.UserName == key); }
+        public void Remove(string key) { throw new NotImplementedException(); }
+        public Task RemoveAsync(string key) { throw new NotImplementedException(); }
+        public new void Set(string key, IIdentity value) { throw new NotImplementedException(); }
+        public Task SetAsync(string key, IIdentity value) { throw new NotImplementedException(); }
     }
 }

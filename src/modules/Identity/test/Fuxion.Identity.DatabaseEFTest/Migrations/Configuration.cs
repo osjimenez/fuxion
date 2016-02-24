@@ -5,14 +5,14 @@ namespace Fuxion.Identity.DatabaseEFTest.Migrations
     using System.Data.Entity.Migrations;
     using System.Linq;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<Fuxion.Identity.DatabaseEFTest.IdentityDatabaseEFRepository>
+    internal sealed class Configuration : DbMigrationsConfiguration<Fuxion.Identity.DatabaseEFTest.IdentityDatabaseEFTestRepository>
     {
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
         }
 
-        protected override void Seed(Fuxion.Identity.DatabaseEFTest.IdentityDatabaseEFRepository context)
+        protected override void Seed(Fuxion.Identity.DatabaseEFTest.IdentityDatabaseEFTestRepository context)
         {
             //  This method will be called after migrating to the latest version.
 

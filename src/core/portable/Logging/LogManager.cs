@@ -18,7 +18,7 @@ namespace Fuxion.Logging
             if (factory == null)
             {
                 try {
-                    factory = Factory.Create<ILogFactory>();
+                    factory = Factory.Get<ILogFactory>();
                     factory.Initialize();
                 }
                 catch { }

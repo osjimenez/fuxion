@@ -16,10 +16,10 @@ namespace Fuxion
         internal static async Task RaiseAsync(IEvent @event)
         {
             var asyncEventHandlerType = typeof(IAsyncEventHandler<>).MakeGenericType(@event.GetType());
-            foreach (var evt in Factory.GetAllInstances(typeof(IAsyncEventHandler<>).MakeGenericType(@event.GetType())))
+            foreach (var evt in Factory.GetMany(typeof(IAsyncEventHandler<>).MakeGenericType(@event.GetType())))
                 await (Task)asyncEventHandlerType.GetRuntimeMethod("HandleAsync", new[] { @event.GetType() }).Invoke(evt, new object[] { @event });
 
-            foreach (var evt in Factory.GetAllInstances<IAsyncEventHandler>())
+            foreach (var evt in Factory.GetMany<IAsyncEventHandler>())
                 await evt.HandleAsync(@event);
         }
         #endregion
@@ -28,7 +28,7 @@ namespace Fuxion
         //[Log(typeof(ICommand), ApplyToStateMachine = true)]
         public static async Task DoAsync<TCommand>(TCommand command) where TCommand : ICommand
         {
-            var async = Factory.GetAllInstances<IAsyncCommandHandler<TCommand>>();
+            var async = Factory.GetMany<IAsyncCommandHandler<TCommand>>();
             if (async.Count() != 1) throw new NotImplementedException($"{async.Count()} handlers found for command {typeof(TCommand).Name}, no zero and no many supported, only can be one.");
             await async.Single().HandleAsync(command);
         }

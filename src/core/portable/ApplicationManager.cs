@@ -20,20 +20,20 @@ namespace Fuxion
         //[Log(typeof(ICommand), ApplyToStateMachine = true)]
         public static Task DoAsync<TCommand>(TCommand command) where TCommand : ICommand
         {
-            return Factory.Create<IApplicationCommandManager>().DoAsync(command);
+            return Factory.Get<IApplicationCommandManager>().DoAsync(command);
         }
         // TODO - Oscar - Restore PostSharp
         //[Log(ApplyToStateMachine = true)]
         public static Task<IDisposable> SubscribeEventAsync<TAggregate, TEvent>(Action<TEvent> action) where TEvent : IEvent
         {
-            return Factory.Create<IApplicationEventManager>().SubscribeEventAsync<TAggregate, TEvent>(action);
+            return Factory.Get<IApplicationEventManager>().SubscribeEventAsync<TAggregate, TEvent>(action);
         }
         // TODO - Oscar - Restore PostSharp
         //[Log(ApplyToStateMachine = true)]
         public static Task<IDisposable> SubscribeNotificationAsync<TNotification>(Action<TNotification> action) 
             where TNotification : INotification
         {
-            return Factory.Create<IApplicationNotificationManager>().SubscribeNotificationAsync(action);
+            return Factory.Get<IApplicationNotificationManager>().SubscribeNotificationAsync(action);
         }
         internal static void Raise<TEvent>(TEvent @event) where TEvent : IEvent { }
     }

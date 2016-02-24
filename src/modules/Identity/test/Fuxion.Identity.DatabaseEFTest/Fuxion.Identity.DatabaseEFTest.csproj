@@ -41,7 +41,27 @@
       <HintPath>..\..\..\..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Fuxion, Version=0.0.1.430, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\packages\Fuxion.0.0.1-alpha430\lib\net46\Fuxion.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Fuxion-net46, Version=0.0.1.430, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\packages\Fuxion.0.0.1-alpha430\lib\net46\Fuxion-net46.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\packages\Newtonsoft.Json.8.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="SimpleInjector, Version=3.1.2.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\packages\SimpleInjector.3.1.2\lib\net45\SimpleInjector.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Collections.Immutable, Version=1.1.37.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\packages\System.Collections.Immutable.1.1.37\lib\dotnet\System.Collections.Immutable.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -94,6 +114,10 @@
     <Compile Include="Migrations\201602231430205_AddSecondLocationDiscriminatorToOrders.Designer.cs">
       <DependentUpon>201602231430205_AddSecondLocationDiscriminatorToOrders.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201602241502035_Invoice.cs" />
+    <Compile Include="Migrations\201602241502035_Invoice.Designer.cs">
+      <DependentUpon>201602241502035_Invoice.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -105,13 +129,13 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\core\portable\Fuxion.csproj">
-      <Project>{5761cb44-504f-468b-8263-39f59eebbb17}</Project>
-      <Name>Fuxion</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\Data\net46\Fuxion.Data.csproj">
       <Project>{e066329c-2cb6-4edd-ab47-0d7b8129254e}</Project>
       <Name>Fuxion.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\SimpleInjector\portable\SimpleInjector_.csproj">
+      <Project>{dfe9408b-2bb2-4f86-a1c0-2a050d155f82}</Project>
+      <Name>SimpleInjector_</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\portable\Fuxion.Identity.csproj">
       <Project>{b784238c-90aa-49c0-a4cf-419a9af81021}</Project>
@@ -143,6 +167,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201602231430205_AddSecondLocationDiscriminatorToOrders.resx">
       <DependentUpon>201602231430205_AddSecondLocationDiscriminatorToOrders.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602241502035_Invoice.resx">
+      <DependentUpon>201602241502035_Invoice.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

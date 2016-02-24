@@ -22,7 +22,7 @@ namespace Fuxion.Identity.Test
             get
             {
                 if(_IdentityManager == null)
-                    _IdentityManager = new IdentityManager(new PasswordProvider(), new IdentityMemoryRepository()) { Console = (m, _) => Debug.WriteLine(m) };
+                    _IdentityManager = new IdentityManager(new PasswordProvider(), new IdentityMemoryTestRepository()) { Console = (m, _) => Debug.WriteLine(m) };
                 return _IdentityManager;
             }
         }
@@ -65,12 +65,14 @@ namespace Fuxion.Identity.Test
         [TestMethod]
         public void Predicate()
         {
-            var rep = new IdentityMemoryRepository();
+            var rep = new IdentityMemoryTestRepository();
             IM.Login("ca_sell", "ca_sell");
-            Printer.PrintAction = message => Debug.WriteLine(message);
-            var pred = IM.Current.FilterPredicate<Order>(Read);
-            var ooo = SellOrders.ToList();
-            var res = SellOrders.Where(pred.Compile());
+            //var res = SellOrders.WhereCan(Read);
+            var res = SellOrders.AsQueryable().AuthorizeTo(Create, Delete);
+            //Printer.PrintAction = message => Debug.WriteLine(message);
+            //var pred = IM.Current.FilterPredicate<Order>(Read);
+            //var ooo = SellOrders.ToList();
+            //var res = SellOrders.Where(pred.Compile());
             Assert.IsNotNull(res);
             Assert.IsTrue(res.Count() == 2);
         }

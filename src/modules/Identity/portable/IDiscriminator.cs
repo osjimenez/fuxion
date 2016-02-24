@@ -59,7 +59,7 @@ namespace Fuxion.Identity
             }
         }
     }
-    class DiscriminatorEqualityComparer : IEqualityComparer<IDiscriminator>
+    public class DiscriminatorEqualityComparer : IEqualityComparer<IDiscriminator>
     {
         public bool Equals(IDiscriminator x, IDiscriminator y)
         {
