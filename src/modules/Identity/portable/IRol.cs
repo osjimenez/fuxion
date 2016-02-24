@@ -532,21 +532,17 @@ namespace Fuxion.Identity
                 (m, _) => Debug.WriteLine(m)));
             return res;
         }
-        public static bool This<T>(this IRolCan me, T value) { return false; }
-        public static bool Any<T>(this IRolCan me, IEnumerable<T> value) { return false; }
-        public static bool All<T>(this IRolCan me, IEnumerable<T> value) { return false; }
+        //public static bool This<T>(this IRolCan me, T value) { return false; }
+        //public static bool Any<T>(this IRolCan me, IEnumerable<T> value) { return false; }
+        //public static bool All<T>(this IRolCan me, IEnumerable<T> value) { return false; }
 
 
-        public static IRolFilter<T> Filter<T>(this IRol me, IQueryable<T> source) { return new _RolFilter<T>(me); }
-        public static IQueryable<T> For<T>(this IRolFilter<T> me, IFunction function) { return null; }
-        public static IQueryable<T> ForAny<T>(this IRolFilter<T> me, IEnumerable<IFunction> functions) { return null; }
-        public static IQueryable<T> ForAny<T>(this IRolFilter<T> me, params IFunction[] functions) { return null; }
-        public static IQueryable<T> ForAll<T>(this IRolFilter<T> me, IEnumerable<IFunction> functions) { return null; }
-        public static IQueryable<T> ForAll<T>(this IRolFilter<T> me, params IFunction[] functions) { return null; }
-
-        //public static IQueryable<T> WhereCan<T>(this IQueryable<T> me, IFunction function) { return null; }
-        //public static IQueryable<T> WhereCan<T>(this IQueryable<T> me, params IFunction[] functions) { return null; }
-        //public static IQueryable<T> WhereCanAny<T>(this IQueryable<T> me, params IFunction[] functions) { return null; }
+        //public static IRolFilter<T> Filter<T>(this IRol me, IQueryable<T> source) { return new _RolFilter<T>(me); }
+        //public static IQueryable<T> For<T>(this IRolFilter<T> me, IFunction function) { return null; }
+        //public static IQueryable<T> ForAny<T>(this IRolFilter<T> me, IEnumerable<IFunction> functions) { return null; }
+        //public static IQueryable<T> ForAny<T>(this IRolFilter<T> me, params IFunction[] functions) { return null; }
+        //public static IQueryable<T> ForAll<T>(this IRolFilter<T> me, IEnumerable<IFunction> functions) { return null; }
+        //public static IQueryable<T> ForAll<T>(this IRolFilter<T> me, params IFunction[] functions) { return null; }
         #endregion
     }
     class _Discriminator : IDiscriminator

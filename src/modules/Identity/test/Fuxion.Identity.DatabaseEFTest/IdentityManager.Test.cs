@@ -23,48 +23,11 @@ using Fuxion.Repositories;
 
 namespace Fuxion.Identity.DatabaseEFTest
 {
-    public class Scenario
-    {
-        public const string Database = nameof(Database);
-        public const string Memory = nameof(Memory);
-        public static void Load(string key)
-        {
-            if(key == Memory)
-            {
-                Factory.ClearPipe();
-                var con = new Container();
-                con.RegisterSingleton<IPasswordProvider>(new PasswordProvider());
-                var rep = new IdentityMemoryTestRepository();
-                con.RegisterSingleton<IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity>>(rep);
-                con.RegisterSingleton<IIdentityTestRepository>(rep);
-                con.RegisterSingleton<IdentityManager>();
-                var fac = new SimpleInjectorFactory(con);
-                Factory.AddToPipe(fac);
-            }else if (key == Database)
-            {
-                Factory.ClearPipe();
-                var con = new Container();
-                con.RegisterSingleton<IPasswordProvider>(new PasswordProvider());
-                var rep = new IdentityDatabaseEFTestRepository();
-                rep.InitializeData();
-                con.RegisterSingleton<IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity>>(rep);
-                con.RegisterSingleton<IIdentityTestRepository>(rep);
-                con.RegisterSingleton<IdentityManager>();
-                var fac = new SimpleInjectorFactory(con);
-                Factory.AddToPipe(fac);
-            }
-            else throw new NotImplementedException($"El escenario '{key}' no esta soportado");
-        }
-    }
     public class IdentityManagerTest
     {
-        //private readonly ITestOutputHelper output;
         public IdentityManagerTest(ITestOutputHelper output)
         {
             Printer.PrintAction = m => output.WriteLine(m);
-            TypeDiscriminator.KnownTypes = AppDomain.CurrentDomain.GetAssemblies()
-                .Where(a => a.FullName.StartsWith("Fuxion"))
-                .SelectMany(a => a.DefinedTypes).ToArray();
         }
         [Theory]
         [InlineData(new object[] { Scenario.Memory })]
