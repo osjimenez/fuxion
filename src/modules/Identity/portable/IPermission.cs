@@ -30,7 +30,7 @@ namespace Fuxion.Identity
                 var byDiscriminator = me.MatchByDiscriminatorsType(discriminators);
                 var byDiscriminatorPath = me.MatchByDiscriminatorsPath(discriminators);
                 res = byFunction && byDiscriminator && byDiscriminatorPath;
-                Printer.Ident("Resultado del matching:", () =>
+                Printer.Ident($"Resultado del matching => byFunction && byDiscriminator && byDiscriminatorPath: {res}", () =>
                 {
                     Printer.Print($"byFunction: {byFunction}");
                     Printer.Print($"byDiscriminator: {byDiscriminator}");

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
 using static Fuxion.Identity.Functions;
-using static Fuxion.Identity.Test.StaticContext;
+using static Fuxion.Identity.Test.Context;
 namespace Fuxion.Identity.Test
 {
     [TestClass]

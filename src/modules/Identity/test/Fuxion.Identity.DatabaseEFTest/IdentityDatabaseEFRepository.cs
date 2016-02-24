@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static Fuxion.Identity.Test.IdentityMemoryTestRepository;
-using static Fuxion.Identity.Test.StaticContext;
+using static Fuxion.Identity.Test.Context;
 using Fuxion.Identity.Test;
 using Fuxion.Data;
 namespace Fuxion.Identity.DatabaseEFTest
@@ -33,6 +33,13 @@ namespace Fuxion.Identity.DatabaseEFTest
         public DbSet<Order> Order { get; set; }
         public DbSet<Invoice> Invoice { get; set; }
         public DbSet<Demo> Demo { get; set; }
+        public IEnumerable<T> GetByType<T>()
+        {
+            if (typeof(T) == typeof(Order)) return (IEnumerable<T>)Order;
+            if (typeof(T) == typeof(Invoice)) return (IEnumerable<T>)Invoice;
+            if (typeof(T) == typeof(Demo)) return (IEnumerable<T>)Demo;
+            throw new KeyNotFoundException();
+        }
         IEnumerable<Order> IIdentityTestRepository.Order { get { return Order; } }
         IEnumerable<Invoice> IIdentityTestRepository.Invoice { get { return Invoice; } }
         IEnumerable<Demo> IIdentityTestRepository.Demo { get { return Demo; } }

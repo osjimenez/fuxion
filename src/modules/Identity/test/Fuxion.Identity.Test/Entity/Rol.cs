@@ -10,7 +10,7 @@ namespace Fuxion.Identity.Test.Entity
 {
     [DebuggerDisplay("{" + nameof(Name) + "}")]
     [Table(nameof(Rol))]
-    public partial class Rol : Base
+    public abstract partial class Rol : Base
     {
         public string Name { get; set; }
         public IList<Group> Groups { get; set; }

@@ -3,7 +3,7 @@ using Fuxion.Factories;
 using Fuxion.Identity;
 namespace System.Collections.Generic
 {
-    public static class Extensions
+    public static class FuxionExtensions
     {
         public static IEnumerable<TSource> AuthorizedTo<TSource>(this IEnumerable<TSource> source, params IFunction[] functions)
         {

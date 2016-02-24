@@ -9,19 +9,27 @@ using System.Text;
 using System.Threading.Tasks;
 using static Fuxion.Identity.Functions;
 using System.Collections;
-using static Fuxion.Identity.Test.StaticContext;
+using static Fuxion.Identity.Test.Context;
 namespace Fuxion.Identity.Test
 {
     public interface IIdentityTestRepository {
         IEnumerable<Order> Order { get; }
         IEnumerable<Invoice> Invoice { get; }
         IEnumerable<Demo> Demo { get; }
+        IEnumerable<T> GetByType<T>();
     }
     public class IdentityMemoryTestRepository : IIdentityTestRepository, IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity>
     {
         public IEnumerable<Order> Order { get { return SellOrders; } }
         public IEnumerable<Invoice> Invoice { get { return Invoices; } }
         public IEnumerable<Demo> Demo { get { return Demos; } }
+        public IEnumerable<T> GetByType<T>()
+        {
+            if (typeof(T) == typeof(Order)) return (IEnumerable<T>)Order;
+            if (typeof(T) == typeof(Invoice)) return (IEnumerable<T>)Invoice;
+            if (typeof(T) == typeof(Demo)) return (IEnumerable<T>)Demo;
+            throw new KeyNotFoundException();
+        }
 
         public bool Exist(string key) { return false; }
         public Task<bool> ExistAsync(string key) { return Task.FromResult(false); }

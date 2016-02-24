@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Fuxion.Identity.Functions;
 using Fuxion.Identity.Test.Mocks;
 using Fuxion.Identity.Test.Entity;
-using static Fuxion.Identity.Test.StaticContext;
+using static Fuxion.Identity.Test.Context;
 
 namespace Fuxion.Identity.Test
 {

@@ -1,0 +1,152 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Fuxion.Identity.Test.Entity.City" Collapsed="true">
+    <Position X="4" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAABCAAAAA=</HashCode>
+      <FileName>Entity\City.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Entity.Country" Collapsed="true">
+    <Position X="2.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAABCAAAAA=</HashCode>
+      <FileName>Entity\Country.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Entity.Location" Collapsed="true">
+    <Position X="0.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAUAEgAAAsAAAAAABAAAEBCAAAAAAAAgAgAAICAAAAA=</HashCode>
+      <FileName>Entity\Location.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Entity.Base" Collapsed="true">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entity\Base.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Entity.Discriminator" Collapsed="true">
+    <Position X="0.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAUAEgAAAkAAAAAEBAAAAASAAAAAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>Entity\Discriminator.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Entity.Group" Collapsed="true">
+    <Position X="9.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAACAAAAAAAg=</HashCode>
+      <FileName>Entity\Group.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Entity.Category" Collapsed="true">
+    <Position X="2.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAgAAAAAAAAAAAAAAAACAAAAAAAAgAAAAIAAAAAA=</HashCode>
+      <FileName>Entity\Category.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Entity.Demo" Collapsed="true">
+    <Position X="2.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAABCAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIA=</HashCode>
+      <FileName>Entity\Demo.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Entity.Department" Collapsed="true">
+    <Position X="5.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAUAEgAAAgAAAAAABAAEUBCAAAAAAAAgAgAAIAAAAAA=</HashCode>
+      <FileName>Entity\Department.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Entity.Identity" Collapsed="true">
+    <Position X="7.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EACAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Entity\Identity.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Entity.Invoice" Collapsed="true">
+    <Position X="9.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAAAAAAAAAAAEAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entity\Invoice.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Entity.Order" Collapsed="true">
+    <Position X="11" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAABCAAAAQgAAAAAAAAAAAEAAAAAAAAAAAAAAAAIA=</HashCode>
+      <FileName>Entity\Order.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Entity.Permission" Collapsed="true">
+    <Position X="5.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAACAEAAAAAEIAAAAAAgAAAAAhAAAAAAA=</HashCode>
+      <FileName>Entity\Permission.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Entity.PurchaseOrder" Collapsed="true">
+    <Position X="12.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entity\PurchaseOrder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Entity.Rol" Collapsed="true">
+    <Position X="7.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAAAAAAAAAAAAAAAQAAAAAAAAAEACAAAAAAAg=</HashCode>
+      <FileName>Entity\Rol.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Entity.Scope" Collapsed="true">
+    <Position X="4" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAIAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAI=</HashCode>
+      <FileName>Entity\Scope.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Entity.Seller" Collapsed="true">
+    <Position X="7.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entity\Seller.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Entity.SellOrder" Collapsed="true">
+    <Position X="11" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAACAA=</HashCode>
+      <FileName>Entity\SellOrder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Entity.State" Collapsed="true">
+    <Position X="0.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAIAAAAAAAAAAAAAAAAIAAAAAAAAAACAAAAA=</HashCode>
+      <FileName>Entity\State.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Entity.Tag" Collapsed="true">
+    <Position X="4" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAgAAAAAAAAAAAAAAAACAAAAAAAAgAAAAIAAAAAA=</HashCode>
+      <FileName>Entity\Tag.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Consolas" Size="9" />
+</ClassDiagram>
