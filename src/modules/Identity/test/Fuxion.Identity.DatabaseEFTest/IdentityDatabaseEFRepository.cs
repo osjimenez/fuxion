@@ -15,10 +15,6 @@ namespace Fuxion.Identity.DatabaseEFTest
 {
     public class IdentityDatabaseEFTestRepository : DbContext, IIdentityTestRepository, IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity>
     {
-        //public IdentityDatabaseEFTestRepository()
-        //{
-        //    Database.SetInitializer(new DropCreateDatabaseAlways<IdentityDatabaseEFTestRepository>());
-        //}
         public void InitializeData()
         {
             this.ClearData();
@@ -82,10 +78,6 @@ namespace Fuxion.Identity.DatabaseEFTest
         }
         private void LoadDiscriminator(Discriminator discriminator)
         {
-            // Locations (Country, State, City)
-            // Departments
-            // Categories
-            // Tags
             if (discriminator is Country)
             {
                 var statesRef = Entry((Country)discriminator).Collection(c => c.States);
@@ -138,7 +130,6 @@ namespace Fuxion.Identity.DatabaseEFTest
                 }
             }
         }
-
         public async Task<IIdentity> FindAsync(string key) { return await Identity.SingleOrDefaultAsync(i => i.UserName == key); }
         public bool Exist(string key) { return Identity.Any(i => i.UserName == key); }
         public async Task<bool> ExistAsync(string key) { return await Identity.AnyAsync(i => i.UserName == key); }

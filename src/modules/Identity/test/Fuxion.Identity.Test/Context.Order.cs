@@ -14,9 +14,10 @@ namespace Fuxion.Identity.Test
         {
             AddRange(new[] { CA_SellOrder, NY_SellOrder, MAD_SellOrder });
         }
+        public const string CA_SELL_ORDER = nameof(CA_SELL_ORDER);
         public SellOrder CA_SellOrder = new SellOrder
         {
-            Id = "CA_SellOrder",
+            Id = CA_SELL_ORDER,
             Department = Departments.Sales,
             DepartmentId = Departments.Sales.Id,
             ShipmentCity = Locations.SanFrancisco,
@@ -26,9 +27,10 @@ namespace Fuxion.Identity.Test
             Seller = Identities.CaliforniaSeller,
             SellerId = Identities.CaliforniaSeller.Id
         };
+        public const string NY_SELL_ORDER = nameof(NY_SELL_ORDER);
         public SellOrder NY_SellOrder = new SellOrder
         {
-            Id = "NY_SellOrder",
+            Id = NY_SELL_ORDER,
             Department = Departments.Sales,
             DepartmentId = Departments.Sales.Id,
             ShipmentCity = Locations.NewYorkCity,
@@ -38,9 +40,10 @@ namespace Fuxion.Identity.Test
             Seller = Identities.NewYorkSeller,
             SellerId = Identities.NewYorkSeller.Id
         };
+        public const string MAD_SELL_ORDER = nameof(MAD_SELL_ORDER);
         public SellOrder MAD_SellOrder = new SellOrder
         {
-            Id = "MAD_SellOrder",
+            Id = MAD_SELL_ORDER,
             Department = Departments.Sales,
             DepartmentId = Departments.Sales.Id,
             ShipmentCity = Locations.NewYorkCity,

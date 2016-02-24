@@ -64,24 +64,10 @@ namespace Fuxion.Identity.Test
                     }
                 }
             } };
-
-
-            //Salesmen.Groups = new[] { Publishers, Exporters }.ToList();
-            //Exporters.Groups = new[] { EuropeanExporters, AsianExporters }.ToList();
-
-            //AddRange(new[] { Admins, Salesmen, Publishers, Exporters, EuropeanExporters, AsianExporters });
             AddRange(new[] { Admins, CaliforniaSellers, NewYorkSellers });
         }
-
         public Group Admins = new Group { Id = "ADMINS", Name = "Administrators" };
-
         public Group CaliforniaSellers = new Group { Id = "CA_SELLS", Name = "California sellers" };
         public Group NewYorkSellers = new Group { Id = "NY_SELLS", Name = "New York sellers" };
-
-        //public Group Salesmen = new Group { Id = "SALS", Name = "Salesmen" };
-        //public Group Publishers = new Group { Id = "PUBS", Name = "Publishers" };
-        //public Group Exporters = new Group { Id = "EXPS", Name = "Exporters" };
-        //public Group EuropeanExporters = new Group { Id = "EXPS_EU", Name = "European exporters" };
-        //public Group AsianExporters = new Group { Id = "EXPS_AS", Name = "Asian exporters" };
     }
 }

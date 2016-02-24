@@ -10,30 +10,18 @@ namespace Fuxion.Identity
     {
         IEnumerable<T> Inclusions { get; }
     }
-    //public interface IInclusive<T<TId>, TId> : IInclusive
-    //{
-    //    new IEnumerable<T<TId>> Inclusions { get; }
-    //}
     public interface IExclusive<T>
     {
         IEnumerable<T> Exclusions { get; }
     }
-    //public interface IExclusive<TId> : IExclusive
-    //{
-    //    new IEnumerable<IFunction<TId>> Exclusions { get; }
-    //}
     public interface IFunction : IInclusive<IFunction>, IExclusive<IFunction>
     {
         object Id { get; }
         string Name { get; }
-        //IEnumerable<IFunction> Inclusions { get; }
-        //IEnumerable<IFunction> Exclusions { get; }
     }
     public interface IFunction<TId> : IFunction, IInclusive<IFunction<TId>>, IExclusive<IFunction<TId>>
     {
         new TId Id { get; }
-        //new IEnumerable<IFunction<TId>> Inclusions { get; }
-        //new IEnumerable<IFunction<TId>> Exclusions { get; }
     }
     public static class FunctionExtensions
     {
@@ -71,42 +59,6 @@ namespace Fuxion.Identity
         {
             return GetAllExclusions(me, new List<T>(new[] { (T)me }));
         }
-        public static void Print(this IEnumerable<IFunction> me, PrintMode mode)
-        {
-            //switch (mode)
-            //{
-            //    case PrintMode.OneLine:
-            //        break;
-            //    case PrintMode.PropertyList:
-            //        break;
-            //    case PrintMode.Table:
-            //        var value = me.Select(p => p.Value.ToString().Length).Union(new[] { "VALUE".Length }).Max();
-            //        var func = me.Select(p => p.Function.Name.ToString().Length).Union(new[] { "FUNCTION".Length }).Max();
-            //        var disType = me.Select(p => p.Scopes.Max(s => s.Discriminator.TypeName.Length)).Union(new[] { "TYPE".Length }).Max();
-            //        var disName = me.Select(p => p.Scopes.Max(s => s.Discriminator.Name.Length)).Union(new[] { "NAME".Length }).Max();
-            //        var disPro = me.Select(p => p.Scopes.Max(s => s.Propagation.ToString().Length)).Union(new[] { "PROPAGATION".Length }).Max();
-
-            //        Printer.Print("┌" + ("".PadRight(value, '─')) + "┬" + ("".PadRight(func, '─')) + "┬" + ("".PadRight(disType, '─')) + "┬" + ("".PadRight(disName, '─')) + "┬" + ("".PadRight(disPro, '─')) + "┐");
-            //        Printer.Print("│" + ("VALUE".PadRight(value, ' ')) + "│" + ("FUNCTION".PadRight(func, ' ')) + "│" + ("TYPE".PadRight(disType, ' ')) + "│" + ("NAME".PadRight(disName, ' ')) + "│" + ("PROPAGATION".PadRight(disPro, ' ')) + "│");
-            //        Printer.Print("├" + ("".PadRight(value, '─')) + "┼" + ("".PadRight(func, '─')) + "┼" + ("".PadRight(disType, '─')) + "┼" + ("".PadRight(disName, '─')) + "┼" + ("".PadRight(disPro, '─')) + "┤");
-
-            //        foreach (var per in me)
-            //        {
-            //            var list = per.Scopes.ToList();
-            //            for (int i = 0; i < list.Count; i++)
-            //            {
-            //                Printer.Print("│" +
-            //                    ((i == 0 ? per.Value.ToString() : "").PadRight(value, ' ')) + "│" +
-            //                    ((i == 0 ? per.Function.Name : "").PadRight(func, ' ')) + "│" +
-            //                    (list[i].Discriminator.TypeName.PadRight(disType, ' ')) + "│" +
-            //                    (list[i].Discriminator.Name.PadRight(disName, ' ')) + "│" +
-            //                    (list[i].Propagation.ToString().PadRight(disPro, ' ')) + "│");
-            //            }
-            //        }
-            //        Printer.Print("└" + ("".PadRight(value, '─')) + "┴" + ("".PadRight(func, '─')) + "┴" + ("".PadRight(disType, '─')) + "┴" + ("".PadRight(disName, '─')) + "┴" + ("".PadRight(disPro, '─')) + "┘");
-            //        break;
-            //}
-        }
     }
     class FunctionEqualityComparer : IEqualityComparer<IFunction>
     {
@@ -138,12 +90,12 @@ namespace Fuxion.Identity
     {
         static Functions()
         {
-            Read = new Function("READ");
-            Edit = new Function("EDIT");
-            Create = new Function("CREATE");
-            Delete = new Function("DELETE");
-            Manage = new Function("MANAGE");
-            Admin = new Function("ADMIN");
+            Read = new Function(READ);
+            Edit = new Function(EDIT);
+            Create = new Function(CREATE);
+            Delete = new Function(DELETE);
+            Manage = new Function(MANAGE);
+            Admin = new Function(ADMIN);
             ((Function)Read).Exclusions = new[] { Edit }.Cast<IFunction<string>>();
 
             ((Function)Edit).Inclusions = new[] { Read }.Cast<IFunction<string>>();
@@ -170,6 +122,12 @@ namespace Fuxion.Identity
             };
         }
         static Dictionary<string, IFunction> dic;
+        public const string READ = nameof(READ);
+        public const string EDIT = nameof(EDIT);
+        public const string CREATE = nameof(CREATE);
+        public const string DELETE = nameof(DELETE);
+        public const string MANAGE = nameof(MANAGE);
+        public const string ADMIN = nameof(ADMIN);
         public static IFunction Read { get; private set; }
         public static IFunction Edit { get; private set; }
         public static IFunction Create { get; private set; }
@@ -196,9 +154,6 @@ namespace Fuxion.Identity
 
             public IEnumerable<IFunction<string>> Inclusions { get; internal set; }
             public IEnumerable<IFunction<string>> Exclusions { get; internal set; }
-            //IEnumerable<IFunction> IFunction.Inclusions { get { return Inclusions; } }
-            //IEnumerable<IFunction> IFunction.Exclusions { get { return Exclusions; } }
-
             IEnumerable<IFunction> IInclusive<IFunction>.Inclusions
             {
                 get
@@ -206,7 +161,6 @@ namespace Fuxion.Identity
                     return Inclusions;
                 }
             }
-
             IEnumerable<IFunction> IExclusive<IFunction>.Exclusions
             {
                 get
@@ -215,12 +169,5 @@ namespace Fuxion.Identity
                 }
             }
         }
-        //static IFunction _Read = new Function("READ");
-        //public static IFunction Read { get { return new Function("READ"    , null                       , new[] { (Function)Edit }); } }
-        //public static IFunction Edit { get { return new Function("EDIT"    , new[] { (Function)Read }   , new[] { (Function)Create, (Function)Delete }); } }
-        //public static IFunction Create { get { return new Function("CREATE", new[] { (Function)Edit }   , new[] { (Function)Manage }); } }
-        //public static IFunction Delete { get { return new Function("DELETE", new[] { (Function)Edit }   , new[] { (Function)Manage }); } }
-        //public static IFunction Manage{ get { return new Function("MANAGE" , new[] { (Function)Create   , (Function)Delete }, new[] { (Function)Admin }); } }
-        //public static IFunction Admin { get { return new Function("DELETE" , new[] { (Function)Manage }); } }
     }
 }

@@ -11,35 +11,48 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Identity.DatabaseEFTest
 {
-    public class Scenario
+    public static class Scenario
     {
-        public const string Database = nameof(Database);
-        public const string Memory = nameof(Memory);
+        public const string DATABSE = nameof(DATABSE);
+        public const string MEMORY = nameof(MEMORY);
         public static void Load(string key)
         {
             TypeDiscriminator.KnownTypes = AppDomain.CurrentDomain.GetAssemblies()
                 .Where(a => a.FullName.StartsWith("Fuxion"))
                 .SelectMany(a => a.DefinedTypes).ToArray();
             Factory.ClearPipe();
-            var con = new Container();
-            con.RegisterSingleton<IPasswordProvider>(new PasswordProvider());
-            if (key == Memory)
+            if (key == MEMORY)
             {
-                var rep = new IdentityMemoryTestRepository();
-                con.RegisterSingleton<IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity>>(rep);
-                con.RegisterSingleton<IIdentityTestRepository>(rep);
+                if (memoryFactory == null)
+                {
+                    var con = new Container();
+                    con.RegisterSingleton<IPasswordProvider>(new PasswordProvider());
+                    var rep = new IdentityMemoryTestRepository();
+                    con.RegisterSingleton<IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity>>(rep);
+                    con.RegisterSingleton<IIdentityTestRepository>(rep);
+                    con.RegisterSingleton<IdentityManager>();
+                    memoryFactory = new SimpleInjectorFactory(con);
+                }
+                Factory.AddToPipe(memoryFactory);
             }
-            else if (key == Database)
+            else if (key == DATABSE)
             {
-                var rep = new IdentityDatabaseEFTestRepository();
-                rep.InitializeData();
-                con.RegisterSingleton<IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity>>(rep);
-                con.RegisterSingleton<IIdentityTestRepository>(rep);
+                if (databaseFactory == null)
+                {
+                    var con = new Container();
+                    con.RegisterSingleton<IPasswordProvider>(new PasswordProvider());
+                    var rep = new IdentityDatabaseEFTestRepository();
+                    rep.InitializeData();
+                    con.RegisterSingleton<IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity>>(new MemoryKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity>(rep));
+                    con.RegisterSingleton<IIdentityTestRepository>(rep);
+                    con.RegisterSingleton<IdentityManager>();
+                    databaseFactory = new SimpleInjectorFactory(con);
+                }
+                Factory.AddToPipe(databaseFactory);
             }
             else throw new NotImplementedException($"El escenario '{key}' no esta soportado");
-            con.RegisterSingleton<IdentityManager>();
-            var fac = new SimpleInjectorFactory(con);
-            Factory.AddToPipe(fac);
         }
+        static SimpleInjectorFactory memoryFactory;
+        static SimpleInjectorFactory databaseFactory;
     }
 }

@@ -31,11 +31,7 @@ namespace Fuxion.Identity.Test
             NewYorkSeller.PasswordSalt = salt;
             NewYorkSeller.PasswordHash = hash;
 
-            //AddRange(new[] { Root, Seller, Publicist, ExportSeller, EuropeanExportSeller });
             AddRange(new[] { Root, CaliforniaSeller, NewYorkSeller });
-
-            // Sales men
-
         }
 
         public Entity.Identity Root = new Entity.Identity { Id = "ROOT", UserName = "root", Name = "Root" };

@@ -15,9 +15,10 @@ namespace Fuxion.Identity.Test
         {
             AddRange(new[] { Demo1 });
         }
+        public const string DEMO1 = nameof(DEMO1);
         public Demo Demo1 = new Demo
         {
-            Id = nameof(Demo1),
+            Id = DEMO1,
             ReceptionCity = Locations.SanFrancisco,
             ReceptionCityId = Locations.SanFrancisco.Id,
             ShipmentCity = Locations.LosAngeles,

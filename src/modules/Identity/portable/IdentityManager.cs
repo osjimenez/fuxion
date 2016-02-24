@@ -12,7 +12,6 @@ namespace Fuxion.Identity
         public string Key { get; set; }
         public IIdentity Value { get; set; }
     }
-    public delegate void Consolehandle(string message, bool enOfLine);
     public class IdentityManager
     {
         public IdentityManager(IPasswordProvider passwordProvider, IKeyValueRepository<IdentityKeyValueRepositoryValue,string, IIdentity> repository)
@@ -20,6 +19,9 @@ namespace Fuxion.Identity
             PasswordProvider = passwordProvider;
             Repository = repository;
         }
+        public bool IsAuthenticated { get { return Current != null; } }
+        Dictionary<string, IIdentity> cache = new Dictionary<string, IIdentity>();
+        public IIdentity Current { get; private set; }
         public Action<string, bool> Console { get; set; }
         public static IPrincipalProvider PrincipalProvider { get; private set; } = new StaticPrincipalProvider();
         public IPasswordProvider PasswordProvider { get; private set; }
@@ -48,65 +50,6 @@ namespace Fuxion.Identity
             }
             return res;
         }
-        public async Task<bool> LoginAsync(string username, string password, bool changeCurrentIdentity = true)
-        {
-            WriteConsole($"Validando credenciales\r\n   Usuario: {username}\r\n   Contraseña: {password}\r\n", false);
-            if (username == null || password == null)
-            {
-                WriteConsole($"Resultado: NO VALIDO - El nombre de usuario o la contraseña es NULL", true);
-                return false;
-            }
-            var ide = await Repository.FindAsync(username);
-            if (ide == null)
-            {
-                WriteConsole($"Resultado: NO VALIDO - No se ha encontrado una identidad con ese nombre de usuario", true);
-                return false;
-            }
-            var res = PasswordProvider.Verify(password, ide.PasswordHash, ide.PasswordSalt);
-            if (changeCurrentIdentity) Current = ide;
-            WriteConsole($"Resultado: VALIDO", true);
-            return res;
-        }
-        public async Task<bool> CheckFunctionAssignedAsync(string username, IFunction function, params IDiscriminator[] discriminators)
-        {
-            WriteConsole($"Comprobando asignación de funciones\r\n   Usuario: {username}\r\n   Funcion: {function.Name}\r\n   Discriminadores: {discriminators.Aggregate("", (a, c) => $"{a}      {c.Name}\r\n", a => a.Trim('\r', '\n'))}", true);
-            if (username == null)
-            {
-                WriteConsole($"Resultado: NO VALIDO - El nombre de usuario es NULL", true);
-                return false;
-            }
-            var ide = await Repository.FindAsync(username);
-            if (ide == null)
-            {
-                WriteConsole($"Resultado: NO VALIDO - No se ha encontrado una identidad con ese nombre de usuario", true);
-                return false;
-            }
-            ide.CheckFunctionAssigned(function, discriminators, Console);
-            return true;
-        }
-        public bool IsFunctionAssigned(string username, IFunction function, params IDiscriminator[] discriminators)
-        {
-            WriteConsole($"Comprobando asignación de funciones\r\n   Usuario: {username}\r\n   Funcion: {function.Name}\r\n   Discriminadores:\r\n{discriminators.Aggregate("", (a, c) => $"{a}      {c.Name}\r\n", a => a.Trim('\r', '\n'))}", true);
-            if (username == null)
-            {
-                WriteConsole($"Resultado: NO VALIDO - El nombre de usuario es NULL", true);
-                return false;
-            }
-            var ide = Repository.Find(username);
-            if (ide == null)
-            {
-                WriteConsole($"Resultado: NO VALIDO - No se ha encontrado una identidad con ese nombre de usuario", true);
-                return false;
-            }
-            var res = ide.IsFunctionAssigned(function, discriminators, Console);
-            return res;
-        }
-
-
-
-
-        public bool IsAuthenticated { get { return Current != null; } }
-        public IIdentity Current { get; private set; }
     }
     public interface IPasswordProvider
     {
