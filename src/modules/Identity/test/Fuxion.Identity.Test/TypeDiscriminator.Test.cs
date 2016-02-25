@@ -21,9 +21,9 @@ namespace Fuxion.Identity.Test
         {
             TypeDiscriminator.GetIdFunction = type => type.Name;
             TypeDiscriminator.GetNameFunction = type => type.Name.ToUpper();
-            var dis = TypeDiscriminator.Create<Order>();
-            Assert.AreEqual(dis.Id, typeof(Order).Name);
-            Assert.AreEqual(dis.Name, typeof(Order).Name.ToUpper());
+            var dis = TypeDiscriminator.Create<Document>();
+            Assert.AreEqual(dis.Id, typeof(Document).Name);
+            Assert.AreEqual(dis.Name, typeof(Document).Name.ToUpper());
             Assert.AreEqual(dis.TypeId, TypeDiscriminator.DiscriminatorTypeId);
             Assert.AreEqual(dis.TypeName, TypeDiscriminator.DiscriminatorTypeName);
             Assert.AreEqual(dis.Inclusions.Count(), 0);

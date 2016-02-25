@@ -7,8 +7,6 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Identity.Test.Entity
 {
-    [Table(nameof(Seller))]
-    public class Seller : Identity
-    {
-    }
+    [Table(nameof(Creator))]
+    public abstract class Creator : Base { }
 }

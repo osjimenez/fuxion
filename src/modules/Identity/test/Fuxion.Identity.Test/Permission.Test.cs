@@ -40,12 +40,12 @@ namespace Fuxion.Identity.Test
                     Function = Read.Id.ToString(),
                     Scopes = new[] {
                         // Yo tengo 'Department' y 'Location'
-                        new Scope { Discriminator =  Departments.Sales },
+                        new Scope { Discriminator =  Circles.Circle_1 },
                         //new Scope(new GuidDiscriminator(x(), "", Department, "Department"), 0),
                         new Scope { Discriminator = Locations.USA }
                     }
                 }.MatchByDiscriminatorsType(new IDiscriminator[] {
-                    Departments.Sales,
+                    Circles.Circle_1,
                     Locations.USA
                     // Me presentan 'Department' y 'Location'
                 }));
@@ -58,11 +58,11 @@ namespace Fuxion.Identity.Test
                     Function = Read.Id.ToString(),
                     Scopes = new[] {
                         // Yo tengo 'Department' y 'Location'
-                        new Scope { Discriminator = Departments.Acme },
+                        new Scope { Discriminator = Circles.Circle_1 },
                         new Scope {Discriminator = Locations.USA }
                     }
                 }.MatchByDiscriminatorsType(new[] {
-                    Departments.Acme
+                    Circles.Circle_1
                     // Me presentan 'Department'
                 }));
             // CASE 3
@@ -75,7 +75,7 @@ namespace Fuxion.Identity.Test
                     Function = Read.Id.ToString(),
                     Scopes = new[] {
                         // Yo tengo 'Department' y 'Location'
-                        new Scope {Discriminator = Departments.Acme },
+                        new Scope {Discriminator = Circles.Circle_1 },
                         new Scope { Discriminator = Locations.USA } }
                 }.MatchByDiscriminatorsType(new[] {
                     // Me presentan 'Department', 'Location' y 'WorkerClass'

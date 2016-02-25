@@ -8,5 +8,8 @@ using System.Threading.Tasks;
 namespace Fuxion.Identity.Test.Entity
 {
     [Table(nameof(Document))]
-    public abstract class Document : File { }
+    public abstract class Document : File
+    {
+        public IList<Writer> Authors { get; set; }
+    }
 }

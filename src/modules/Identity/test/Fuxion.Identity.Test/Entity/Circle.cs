@@ -10,7 +10,7 @@ namespace Fuxion.Identity.Test.Entity
     [Table(nameof(Circle))]
     public partial class Circle : Discriminator
     {
-        public IList<Circle> Exclusions { get; set; }
-        public IList<Circle> Inclusions { get; set; }
+        public IList<Circle> Excluded { get; set; }
+        public IList<Circle> Included { get; set; }
     }
 }

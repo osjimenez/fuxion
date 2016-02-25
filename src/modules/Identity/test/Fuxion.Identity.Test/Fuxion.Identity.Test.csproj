@@ -73,18 +73,15 @@
     <Compile Include="BaseTestClass.cs" />
     <Compile Include="Context.Album.cs" />
     <Compile Include="Context.Circle.cs" />
-    <Compile Include="Context.Department.cs" />
     <Compile Include="Context.Group.cs" />
     <Compile Include="Context.Identity.cs" />
-    <Compile Include="Context.Invoice.cs" />
     <Compile Include="Context.Location.cs" />
-    <Compile Include="Context.Order.cs" />
     <Compile Include="Context.Song.cs" />
     <Compile Include="Discriminator.Test.cs" />
     <Compile Include="Entity.Test.cs" />
     <Compile Include="Entity\Actor.cs" />
     <Compile Include="Entity\Album.cs" />
-    <Compile Include="Entity\Artist.cs" />
+    <Compile Include="Entity\Creator.cs" />
     <Compile Include="Entity\Base.cs" />
     <Compile Include="Entity\Category.cs" />
     <Compile Include="Entity\Category.IDiscriminator.cs">
@@ -94,10 +91,6 @@
     <Compile Include="Entity\Circle.IDiscriminator.cs" />
     <Compile Include="Entity\City.cs" />
     <Compile Include="Entity\Country.cs" />
-    <Compile Include="Entity\Department.cs" />
-    <Compile Include="Entity\Department.IDiscriminator.cs">
-      <DependentUpon>Department.cs</DependentUpon>
-    </Compile>
     <Compile Include="Entity\Discriminator.cs" />
     <Compile Include="Entity\Discriminator.IDiscriminator.cs" />
     <Compile Include="Entity\ExcelDocument.cs" />
@@ -112,30 +105,24 @@
     <Compile Include="Entity\Identity.IIdentity.cs">
       <DependentUpon>Identity.cs</DependentUpon>
     </Compile>
-    <Compile Include="Entity\Invoice.cs" />
     <Compile Include="Entity\Location.cs" />
     <Compile Include="Entity\Location.IDiscriminator.cs">
       <DependentUpon>Location.cs</DependentUpon>
     </Compile>
     <Compile Include="Entity\Media.cs" />
-    <Compile Include="Entity\Order.cs" />
     <Compile Include="Entity\PdfDocument.cs" />
     <Compile Include="Entity\Permission.cs" />
     <Compile Include="Entity\Permission.IPermission.cs">
       <DependentUpon>Permission.cs</DependentUpon>
     </Compile>
-    <Compile Include="Entity\PurchaseOrder.cs" />
     <Compile Include="Entity\Rol.cs" />
     <Compile Include="Entity\Rol.IRol.cs">
       <DependentUpon>Rol.cs</DependentUpon>
     </Compile>
-    <Compile Include="Entity\Demo.cs" />
-    <Compile Include="Entity\SellOrder.cs" />
     <Compile Include="Entity\Scope.cs" />
     <Compile Include="Entity\Scope.IScope.cs">
       <DependentUpon>Scope.cs</DependentUpon>
     </Compile>
-    <Compile Include="Entity\Seller.cs" />
     <Compile Include="Entity\Singer.cs" />
     <Compile Include="Entity\Software.cs" />
     <Compile Include="Entity\Song.cs" />
@@ -146,6 +133,7 @@
     </Compile>
     <Compile Include="Entity\Document.cs" />
     <Compile Include="Entity\WordDocument.cs" />
+    <Compile Include="Entity\Writer.cs" />
     <Compile Include="Function.Test.cs" />
     <Compile Include="Helpers\Bootstrapper.cs" />
     <Compile Include="IdentityMemoryRepository.cs" />

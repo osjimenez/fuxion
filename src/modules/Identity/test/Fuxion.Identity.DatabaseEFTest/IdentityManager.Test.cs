@@ -59,25 +59,25 @@ namespace Fuxion.Identity.DatabaseEFTest
         #region Check
         [Theory]
         [InlineData(new object[] {
-            "Root can create and delete orders", scenarios,
+            "Root can create and delete documents", scenarios,
             "root", "root",
             new[] { "CREATE", "DELETE" },
-            new[] { typeof(Order) },
-            "Verify that 'root' user can 'Create' and 'Delete' entities of type 'Order'",
+            new[] { typeof(Document) },
+            "Verify that 'root' user can 'Create' and 'Delete' entities of type 'Document'",
             true })]
         [InlineData(new object[] {
             "Root can create and delete orders and invoices", scenarios,
             "root", "root",
             new[] { "CREATE", "DELETE" },
-            new[] { typeof(Order), typeof(Invoice) },
-            "Verify that 'root' user can 'Create' and 'Delete' entities of type 'Order' and 'Invoice'",
+            new[] { typeof(Document), typeof(Circle) },
+            "Verify that 'root' user can 'Create' and 'Delete' entities of type 'Document' and 'Circle'",
             true })]
         [InlineData(new object[] {
-            "California seller can NOT create orders", scenarios,
+            "California seller can NOT create documents", scenarios,
             "ca_sell", "ca_sell",
             new[] { "CREATE" },
-            new[] { typeof(Order) },
-            "Verify that 'California seller' user can NOT 'Create' entities of type 'Order'",
+            new[] { typeof(Document) },
+            "Verify that 'California seller' user can NOT 'Create' entities of type 'Document'",
             false })]
         public void Check(string _, string scenarios, string username, string password, string[] functionsIds, Type[] types, string message, bool expected)
         {
@@ -120,24 +120,24 @@ namespace Fuxion.Identity.DatabaseEFTest
             "Two discriminators of same type", scenarios,
             "ca_sell", "ca_sell",
             new[] { READ },
-            typeof(Demo),
-            new[] { DemoList.DEMO1 },
+            typeof(Circle),
+            new[] { CircleList.CIRCLE_1 },
             false,
             new string[] { } })]
         [InlineData(new object[] {
             "Two discriminators of distinct type", scenarios,
             "ca_sell", "ca_sell",
             new[] { READ },
-            typeof(Order),
-            new[] { SellOrderList.CA_SELL_ORDER, SellOrderList.NY_SELL_ORDER },
+            typeof(Circle),
+            new[] { CircleList.CIRCLE_1, CircleList.CIRCLE_2 },
             false,
             new string[] { } })]
         [InlineData(new object[] {
             "One discriminator", scenarios,
             "ca_sell", "ca_sell",
             new[] { READ },
-            typeof(Invoice),
-            new[] { InvoiceList.SAL_INVOICE },
+            typeof(Circle),
+            new[] { CircleList.CIRCLE_1 },
             false,
             new string[] { } })]
         public void Filter(string _, string scenarios, string username, string password, string[] functionsIds, Type type, string[] expectedIds, bool allowOtherResults, string[] unexpectedIds)
@@ -181,7 +181,7 @@ namespace Fuxion.Identity.DatabaseEFTest
             var im = Factory.Get<IdentityManager>();
             var rep = Factory.Get<IIdentityTestRepository>();
             im.Login("root", "root");
-            Assert.True(im.Current.Can(Read).OfType<Order>());
+            Assert.True(im.Current.Can(Read).OfType<Document>());
             var res = rep.Album.Where(o => o.Songs.AuthorizedTo(Read).Any());
             Printer.Print("res.Count(): " + res.Count());
         }

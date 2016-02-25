@@ -15,11 +15,11 @@ namespace Fuxion.Identity.Test.Entity
         protected override object GetTypeId() { return TypeId; }
         protected override string GetTypeName() { return nameof(Circle); }
 
-        protected override IEnumerable<Discriminator> GetInclusions() { return Inclusions; }
-        IEnumerable<IDiscriminator<string, string>> IInclusive<IDiscriminator<string, string>>.Inclusions { get { return Inclusions; } }
+        protected override IEnumerable<Discriminator> GetInclusions() { return Included; }
+        IEnumerable<IDiscriminator<string, string>> IInclusive<IDiscriminator<string, string>>.Inclusions { get { return Included; } }
 
-        protected override IEnumerable<Discriminator> GetExclusions() { return Exclusions; }
-        IEnumerable<IDiscriminator<string, string>> IExclusive<IDiscriminator<string, string>>.Exclusions { get { return Exclusions; } }
+        protected override IEnumerable<Discriminator> GetExclusions() { return Excluded; }
+        IEnumerable<IDiscriminator<string, string>> IExclusive<IDiscriminator<string, string>>.Exclusions { get { return Excluded; } }
 
 
     }

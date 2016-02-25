@@ -30,7 +30,7 @@ namespace Fuxion.Identity.Test
                     new Scope
                     {
                         Id = Guid.NewGuid().ToString("N"),
-                        Discriminator = Departments.Sales,
+                        Discriminator = Circles.Circle_1,
                         Propagation = ScopePropagation.ToMe | ScopePropagation.ToInclusions
                     },
                     new Scope
@@ -54,7 +54,7 @@ namespace Fuxion.Identity.Test
                     new Scope
                     {
                         Id = Guid.NewGuid().ToString("N"),
-                        Discriminator = Departments.Sales,
+                        Discriminator = Circles.Circle_1,
                         Propagation = ScopePropagation.ToMe | ScopePropagation.ToInclusions
                     },
                     new Scope

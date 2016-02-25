@@ -29,9 +29,6 @@ namespace Fuxion.Identity.DatabaseEFTest
         {
             //context.ClearData();
             context.Identity.AddRange(Identities);
-            context.Order.AddRange(SellOrders);
-            context.Invoice.AddRange(Invoices);
-            context.Demo.AddRange(Demos);
             context.Album.AddRange(Albums);
             context.Song.AddRange(Songs);
             context.Circle.AddRange(Circles);
@@ -52,25 +49,16 @@ namespace Fuxion.Identity.DatabaseEFTest
         }
 
         public DbSet<Test.Entity.Identity> Identity { get; set; }
-        public DbSet<Order> Order { get; set; }
-        public DbSet<Invoice> Invoice { get; set; }
-        public DbSet<Demo> Demo { get; set; }
         public DbSet<Album> Album { get; set; }
         public DbSet<Song> Song { get; set; }
         public DbSet<Circle> Circle { get; set; }
         public IEnumerable<T> GetByType<T>()
         {
-            if (typeof(T) == typeof(Order)) return (IEnumerable<T>)Order;
-            if (typeof(T) == typeof(Invoice)) return (IEnumerable<T>)Invoice;
-            if (typeof(T) == typeof(Demo)) return (IEnumerable<T>)Demo;
             if (typeof(T) == typeof(Album)) return (IEnumerable<T>)Album;
             if (typeof(T) == typeof(Song)) return (IEnumerable<T>)Song;
             if (typeof(T) == typeof(Circle)) return (IEnumerable<T>)Circle;
             throw new KeyNotFoundException();
         }
-        IEnumerable<Order> IIdentityTestRepository.Order { get { return Order; } }
-        IEnumerable<Invoice> IIdentityTestRepository.Invoice { get { return Invoice; } }
-        IEnumerable<Demo> IIdentityTestRepository.Demo { get { return Demo; } }
         IEnumerable<Album> IIdentityTestRepository.Album { get { return Album.Include(a => a.Songs); } }
         IEnumerable<Song> IIdentityTestRepository.Song { get { return Song; } }
         IEnumerable<Circle> IIdentityTestRepository.Circle { get { return Circle; } }
@@ -146,22 +134,6 @@ namespace Fuxion.Identity.DatabaseEFTest
                 {
                     stateRef.Load();
                     LoadDiscriminator(((City)discriminator).State);
-                }
-            }
-            else if (discriminator is Department)
-            {
-                var childrenRef = Entry((Department)discriminator).Collection(d => d.Children);
-                if (!childrenRef.IsLoaded)
-                {
-                    childrenRef.Load();
-                    foreach (var dep in ((Department)discriminator).Children)
-                        LoadDiscriminator(dep);
-                }
-                var parentRef = Entry((Department)discriminator).Reference(d => d.Parent);
-                if (!parentRef.IsLoaded)
-                {
-                    parentRef.Load();
-                    LoadDiscriminator(((Department)discriminator).Parent);
                 }
             }
         }

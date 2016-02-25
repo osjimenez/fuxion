@@ -11,11 +11,11 @@ namespace Fuxion.Identity.Test
     {
         public CircleList()
         {
-            Circle_1.Inclusions = new[] { Circle_2 };
-            Circle_1.Exclusions = new Circle[] { };
+            Circle_1.Included = new[] { Circle_2 };
+            Circle_1.Excluded = new Circle[] { };
 
-            Circle_2.Inclusions = new Circle[] { };
-            Circle_2.Exclusions = new[] { Circle_1 };
+            Circle_2.Included = new Circle[] { };
+            Circle_2.Excluded = new[] { Circle_1 };
 
             AddRange(new[] { Circle_1, Circle_2 });
         }

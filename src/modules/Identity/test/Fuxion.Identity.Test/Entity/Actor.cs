@@ -8,5 +8,5 @@ using System.Threading.Tasks;
 namespace Fuxion.Identity.Test.Entity
 {
     [Table(nameof(Actor))]
-    public class Actor : Artist { }
+    public class Actor : Creator { }
 }
