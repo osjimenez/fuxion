@@ -7,11 +7,8 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Identity.Test.Entity
 {
-    [Table(nameof(Film))]
-    public class Film : Media
+    [Table(nameof(FilmDirector))]
+    public class FilmDirector : Creator
     {
-        public IList<Actor> Actors { get; set; }
-        public IList<Screenwriter> Screenwriters { get; set; }
-        public FilmDirector Director { get; set; }
     }
 }

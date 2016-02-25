@@ -82,9 +82,9 @@
   <ItemGroup>
     <Compile Include="IdentityDatabaseEFRepository.cs" />
     <Compile Include="IdentityManager.Test.cs" />
-    <Compile Include="Migrations\201602251449254_Init.cs" />
-    <Compile Include="Migrations\201602251449254_Init.Designer.cs">
-      <DependentUpon>201602251449254_Init.cs</DependentUpon>
+    <Compile Include="Migrations\201602251943518_Init.cs" />
+    <Compile Include="Migrations\201602251943518_Init.Designer.cs">
+      <DependentUpon>201602251943518_Init.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -123,8 +123,8 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201602251449254_Init.resx">
-      <DependentUpon>201602251449254_Init.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201602251943518_Init.resx">
+      <DependentUpon>201602251943518_Init.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -97,6 +97,7 @@
     <Compile Include="Entity\File.cs" />
     <Compile Include="Entity\FilePackage.cs" />
     <Compile Include="Entity\Film.cs" />
+    <Compile Include="Entity\FilmDirector.cs" />
     <Compile Include="Entity\Group.cs" />
     <Compile Include="Entity\Group.IGroup.cs">
       <DependentUpon>Group.cs</DependentUpon>
@@ -123,6 +124,7 @@
     <Compile Include="Entity\Scope.IScope.cs">
       <DependentUpon>Scope.cs</DependentUpon>
     </Compile>
+    <Compile Include="Entity\Screenwriter.cs" />
     <Compile Include="Entity\Singer.cs" />
     <Compile Include="Entity\Software.cs" />
     <Compile Include="Entity\Song.cs" />

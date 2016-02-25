@@ -17,58 +17,9 @@ namespace Fuxion.Identity.Test
                 Value = true,
                 Scopes = new Scope[] { } // When no scopes specified, this permission apply to any discriminator
             }};
-
-            // California sellers
-            CaliforniaSellers.Groups = new Group[] { };
-            CaliforniaSellers.Permissions = new[] {new Permission
-            {
-                Id = Guid.NewGuid().ToString("N"),
-                Function = Create.Id.ToString(),
-                Value = true,
-                Scopes = new Scope[]
-                {
-                    new Scope
-                    {
-                        Id = Guid.NewGuid().ToString("N"),
-                        Discriminator = Circles.Circle_1,
-                        Propagation = ScopePropagation.ToMe | ScopePropagation.ToInclusions
-                    },
-                    new Scope
-                    {
-                        Id = Guid.NewGuid().ToString("N"),
-                        Discriminator = Locations.California,
-                        Propagation = ScopePropagation.ToMe | ScopePropagation.ToInclusions
-                    }
-                }
-            } };
-
-            // New York sellers
-            NewYorkSellers.Groups = new Group[] { };
-            NewYorkSellers.Permissions = new[] {new Permission
-            {
-                Id = Guid.NewGuid().ToString("N"),
-                Function = Create.Id.ToString(),
-                Value = true,
-                Scopes = new Scope[]
-                {
-                    new Scope
-                    {
-                        Id = Guid.NewGuid().ToString("N"),
-                        Discriminator = Circles.Circle_1,
-                        Propagation = ScopePropagation.ToMe | ScopePropagation.ToInclusions
-                    },
-                    new Scope
-                    {
-                        Id = Guid.NewGuid().ToString("N"),
-                        Discriminator = Locations.NewYork,
-                        Propagation = ScopePropagation.ToMe | ScopePropagation.ToInclusions
-                    }
-                }
-            } };
-            AddRange(new[] { Admins, CaliforniaSellers, NewYorkSellers });
+            
+            AddRange(new[] { Admins });
         }
         public Group Admins = new Group { Id = "ADMINS", Name = "Administrators" };
-        public Group CaliforniaSellers = new Group { Id = "CA_SELLS", Name = "California sellers" };
-        public Group NewYorkSellers = new Group { Id = "NY_SELLS", Name = "New York sellers" };
     }
 }

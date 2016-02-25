@@ -161,7 +161,7 @@
   <Class Name="Fuxion.Identity.Test.Entity.Film" Collapsed="true">
     <Position X="7.5" Y="8.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAABAAAACAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Entity\Film.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -201,7 +201,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Fuxion.Identity.Test.Entity.Writer" Collapsed="true">
-    <Position X="6" Y="13.25" Width="1.5" />
+    <Position X="5.75" Y="13.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Entity\Writer.cs</FileName>
@@ -214,6 +214,20 @@
       <FileName>Entity\Discriminator.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Entity.Screenwriter" Collapsed="true">
+    <Position X="7.5" Y="13.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entity\Screenwriter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Entity.FilmDirector" Collapsed="true">
+    <Position X="9.25" Y="13.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entity\FilmDirector.cs</FileName>
+    </TypeIdentifier>
   </Class>
   <Font Name="Consolas" Size="9" />
 </ClassDiagram>

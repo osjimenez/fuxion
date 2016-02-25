@@ -30,6 +30,36 @@ namespace Fuxion.Identity.DatabaseEFTest.Migrations
                 .Index(t => t.Document_Id);
             
             CreateTable(
+                "dbo.Actor",
+                c => new
+                    {
+                        Id = c.String(nullable: false, maxLength: 128),
+                        Film_Id = c.String(maxLength: 128),
+                    })
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.Film", t => t.Film_Id)
+                .Index(t => t.Film_Id);
+            
+            CreateTable(
+                "dbo.FilmDirector",
+                c => new
+                    {
+                        Id = c.String(nullable: false, maxLength: 128),
+                    })
+                .PrimaryKey(t => t.Id);
+            
+            CreateTable(
+                "dbo.Screenwriter",
+                c => new
+                    {
+                        Id = c.String(nullable: false, maxLength: 128),
+                        Film_Id = c.String(maxLength: 128),
+                    })
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.Film", t => t.Film_Id)
+                .Index(t => t.Film_Id);
+            
+            CreateTable(
                 "dbo.Discriminator",
                 c => new
                     {
@@ -238,10 +268,13 @@ namespace Fuxion.Identity.DatabaseEFTest.Migrations
                 c => new
                     {
                         Id = c.String(nullable: false, maxLength: 128),
+                        Director_Id = c.String(maxLength: 128),
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.Media", t => t.Id)
-                .Index(t => t.Id);
+                .ForeignKey("dbo.FilmDirector", t => t.Director_Id)
+                .Index(t => t.Id)
+                .Index(t => t.Director_Id);
             
             CreateTable(
                 "dbo.Group",
@@ -321,6 +354,7 @@ namespace Fuxion.Identity.DatabaseEFTest.Migrations
             DropForeignKey("dbo.City", "Id", "dbo.Discriminator");
             DropForeignKey("dbo.Category", "Id", "dbo.Discriminator");
             DropForeignKey("dbo.Group", "Id", "dbo.Rol");
+            DropForeignKey("dbo.Film", "Director_Id", "dbo.FilmDirector");
             DropForeignKey("dbo.Film", "Id", "dbo.Media");
             DropForeignKey("dbo.Software", "Id", "dbo.FilePackage");
             DropForeignKey("dbo.WordDocument", "Id", "dbo.Document");
@@ -344,6 +378,8 @@ namespace Fuxion.Identity.DatabaseEFTest.Migrations
             DropForeignKey("dbo.CircleCircles", "Circle_Id", "dbo.Circle");
             DropForeignKey("dbo.SongAlbums", "Album_Id", "dbo.Album");
             DropForeignKey("dbo.SongAlbums", "Song_Id", "dbo.Song");
+            DropForeignKey("dbo.Screenwriter", "Film_Id", "dbo.Film");
+            DropForeignKey("dbo.Actor", "Film_Id", "dbo.Film");
             DropForeignKey("dbo.File", "FilePackage_Id", "dbo.FilePackage");
             DropForeignKey("dbo.Writer", "Document_Id", "dbo.Document");
             DropIndex("dbo.Tag", new[] { "Id" });
@@ -354,6 +390,7 @@ namespace Fuxion.Identity.DatabaseEFTest.Migrations
             DropIndex("dbo.City", new[] { "Id" });
             DropIndex("dbo.Category", new[] { "Id" });
             DropIndex("dbo.Group", new[] { "Id" });
+            DropIndex("dbo.Film", new[] { "Director_Id" });
             DropIndex("dbo.Film", new[] { "Id" });
             DropIndex("dbo.Software", new[] { "Id" });
             DropIndex("dbo.WordDocument", new[] { "Id" });
@@ -377,6 +414,8 @@ namespace Fuxion.Identity.DatabaseEFTest.Migrations
             DropIndex("dbo.Scope", new[] { "Permission_Id" });
             DropIndex("dbo.Scope", new[] { "Discriminator_Id" });
             DropIndex("dbo.Permission", new[] { "Rol_Id" });
+            DropIndex("dbo.Screenwriter", new[] { "Film_Id" });
+            DropIndex("dbo.Actor", new[] { "Film_Id" });
             DropIndex("dbo.Writer", new[] { "Document_Id" });
             DropIndex("dbo.File", new[] { "FilePackage_Id" });
             DropTable("dbo.Tag");
@@ -404,6 +443,9 @@ namespace Fuxion.Identity.DatabaseEFTest.Migrations
             DropTable("dbo.Permission");
             DropTable("dbo.Rol");
             DropTable("dbo.Discriminator");
+            DropTable("dbo.Screenwriter");
+            DropTable("dbo.FilmDirector");
+            DropTable("dbo.Actor");
             DropTable("dbo.Writer");
             DropTable("dbo.File");
         }

@@ -13,7 +13,7 @@ namespace Fuxion.Identity.DatabaseEFTest.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201602251449254_Init"; }
+            get { return "201602251943518_Init"; }
         }
         
         string IMigrationMetadata.Source

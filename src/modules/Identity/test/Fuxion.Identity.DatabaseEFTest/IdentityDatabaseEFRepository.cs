@@ -27,11 +27,11 @@ namespace Fuxion.Identity.DatabaseEFTest
         }
         protected override void Seed(IdentityDatabaseEFTestRepository context)
         {
-            //context.ClearData();
             context.Identity.AddRange(Identities);
             context.Album.AddRange(Albums);
             context.Song.AddRange(Songs);
             context.Circle.AddRange(Circles);
+            context.Group.AddRange(Groups);
             context.SaveChanges();
             base.Seed(context);
         }
@@ -52,16 +52,19 @@ namespace Fuxion.Identity.DatabaseEFTest
         public DbSet<Album> Album { get; set; }
         public DbSet<Song> Song { get; set; }
         public DbSet<Circle> Circle { get; set; }
+        public DbSet<Group> Group { get; set; }
         public IEnumerable<T> GetByType<T>()
         {
             if (typeof(T) == typeof(Album)) return (IEnumerable<T>)Album;
             if (typeof(T) == typeof(Song)) return (IEnumerable<T>)Song;
             if (typeof(T) == typeof(Circle)) return (IEnumerable<T>)Circle;
+            if (typeof(T) == typeof(Group)) return (IEnumerable<T>)Group;
             throw new KeyNotFoundException();
         }
         IEnumerable<Album> IIdentityTestRepository.Album { get { return Album.Include(a => a.Songs); } }
         IEnumerable<Song> IIdentityTestRepository.Song { get { return Song; } }
         IEnumerable<Circle> IIdentityTestRepository.Circle { get { return Circle; } }
+        IEnumerable<Group> IIdentityTestRepository.Group { get { return Group; } }
 
         public IIdentity Find(string key)
         {
