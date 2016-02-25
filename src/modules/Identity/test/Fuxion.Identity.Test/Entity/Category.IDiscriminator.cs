@@ -8,5 +8,7 @@ namespace Fuxion.Identity.Test.Entity
 {
     public partial class Category
     {
+        protected override IEnumerable<Discriminator> GetInclusions() { return null; }
+        protected override IEnumerable<Discriminator> GetExclusions() { return null; }
     }
 }

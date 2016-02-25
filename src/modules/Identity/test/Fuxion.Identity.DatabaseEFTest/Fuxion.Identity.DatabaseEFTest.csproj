@@ -82,37 +82,17 @@
   <ItemGroup>
     <Compile Include="IdentityDatabaseEFRepository.cs" />
     <Compile Include="IdentityManager.Test.cs" />
-    <Compile Include="Migrations\201602200105434_Init.cs" />
-    <Compile Include="Migrations\201602200105434_Init.Designer.cs">
-      <DependentUpon>201602200105434_Init.cs</DependentUpon>
+    <Compile Include="Migrations\201602251324519_Init.cs" />
+    <Compile Include="Migrations\201602251324519_Init.Designer.cs">
+      <DependentUpon>201602251324519_Init.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201602200149270_Init2.cs" />
-    <Compile Include="Migrations\201602200149270_Init2.Designer.cs">
-      <DependentUpon>201602200149270_Init2.cs</DependentUpon>
+    <Compile Include="Migrations\201602251326206_AlbumsInSong.cs" />
+    <Compile Include="Migrations\201602251326206_AlbumsInSong.Designer.cs">
+      <DependentUpon>201602251326206_AlbumsInSong.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201602230903474_Order.cs" />
-    <Compile Include="Migrations\201602230903474_Order.Designer.cs">
-      <DependentUpon>201602230903474_Order.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201602231009416_OrderTypes.cs" />
-    <Compile Include="Migrations\201602231009416_OrderTypes.Designer.cs">
-      <DependentUpon>201602231009416_OrderTypes.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201602231056434_RemoveInclusionsAndExclusionsFromDiscriminator.cs" />
-    <Compile Include="Migrations\201602231056434_RemoveInclusionsAndExclusionsFromDiscriminator.Designer.cs">
-      <DependentUpon>201602231056434_RemoveInclusionsAndExclusionsFromDiscriminator.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201602231430205_AddSecondLocationDiscriminatorToOrders.cs" />
-    <Compile Include="Migrations\201602231430205_AddSecondLocationDiscriminatorToOrders.Designer.cs">
-      <DependentUpon>201602231430205_AddSecondLocationDiscriminatorToOrders.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201602241502035_Invoice.cs" />
-    <Compile Include="Migrations\201602241502035_Invoice.Designer.cs">
-      <DependentUpon>201602241502035_Invoice.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201602241845014_Demo.cs" />
-    <Compile Include="Migrations\201602241845014_Demo.Designer.cs">
-      <DependentUpon>201602241845014_Demo.cs</DependentUpon>
+    <Compile Include="Migrations\201602251401567_All.cs" />
+    <Compile Include="Migrations\201602251401567_All.Designer.cs">
+      <DependentUpon>201602251401567_All.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -151,29 +131,14 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201602200105434_Init.resx">
-      <DependentUpon>201602200105434_Init.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201602251324519_Init.resx">
+      <DependentUpon>201602251324519_Init.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201602200149270_Init2.resx">
-      <DependentUpon>201602200149270_Init2.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201602251326206_AlbumsInSong.resx">
+      <DependentUpon>201602251326206_AlbumsInSong.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201602230903474_Order.resx">
-      <DependentUpon>201602230903474_Order.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201602231009416_OrderTypes.resx">
-      <DependentUpon>201602231009416_OrderTypes.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201602231056434_RemoveInclusionsAndExclusionsFromDiscriminator.resx">
-      <DependentUpon>201602231056434_RemoveInclusionsAndExclusionsFromDiscriminator.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201602231430205_AddSecondLocationDiscriminatorToOrders.resx">
-      <DependentUpon>201602231430205_AddSecondLocationDiscriminatorToOrders.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201602241502035_Invoice.resx">
-      <DependentUpon>201602241502035_Invoice.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201602241845014_Demo.resx">
-      <DependentUpon>201602241845014_Demo.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201602251401567_All.resx">
+      <DependentUpon>201602251401567_All.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

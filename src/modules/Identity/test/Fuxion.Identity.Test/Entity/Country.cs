@@ -12,7 +12,7 @@ namespace Fuxion.Identity.Test.Entity
     {
         public IList<State> States { get; set; }
 
-        protected override IList<Location> GetExclusions() { return new Location[] { }; }
-        protected override IList<Location> GetInclusions() { return States.Cast<Location>().ToList(); }
+        protected override IEnumerable<Location> GetLocationExclusions() { return new Location[] { }; }
+        protected override IEnumerable<Location> GetLocationInclusions() { return States.Cast<Location>().ToList(); }
     }
 }

@@ -37,14 +37,19 @@ namespace Fuxion.Identity
                 case PrintMode.PropertyList:
                     break;
                 case PrintMode.Table:
-                    var type = me.Max(s => s.Discriminator.TypeName.Length);
-                    var name = me.Max(s => s.Discriminator.Name.Length);
-                    var pro = me.Max(s => s.Propagation.ToString().Length);
-                    Printer.Print("┌" + ("".PadRight(type, '─')) + "┬" + ("".PadRight(name, '─')) + "┬" + ("".PadRight(pro, '─')) + "┐");
-                    Printer.Print("│" + "TYPE".PadRight(type, ' ') + "│" + "NAME".PadRight(name, ' ') + "│" + "PROPAGATION".PadRight(pro, ' ') + "│");
-                    Printer.Print("├" + ("".PadRight(type, '─')) + "┼" + ("".PadRight(name, '─')) + "┼" + ("".PadRight(pro, '─')) + "┤");
-                    foreach (var sco in me) Printer.Print("│" + sco.Discriminator.TypeName.PadRight(type, ' ') + "│" + sco.Discriminator.Name.PadRight(name, ' ') + "│" + sco.Propagation.ToString().PadRight(pro, ' ') + "│");
-                    Printer.Print("└" + ("".PadRight(type, '─')) + "┴" + ("".PadRight(name, '─')) + "┴" + ("".PadRight(pro, '─')) + "┘");
+                    var typeLength = new[] { "TYPE".Length }.Concat(me.Select(p => p.Discriminator.TypeName.Length)).Max();
+                    var nameLength = new[] { "NAME".Length }.Concat(me.Select(p => p.Discriminator.Name.Length)).Max();
+                    var propagationLength = new[] { "PROPAGATION".Length }.Concat(me.Select(p => p.Propagation.ToString().Length)).Max();
+
+
+                    //var type = me.Max(s => s.Discriminator.TypeName.Length);
+                    //var name = me.Max(s => s.Discriminator.Name.Length);
+                    //var pro = me.Max(s => s.Propagation.ToString().Length);
+                    Printer.Print("┌" + ("".PadRight(typeLength, '─')) + "┬" + ("".PadRight(nameLength, '─')) + "┬" + ("".PadRight(propagationLength, '─')) + "┐");
+                    Printer.Print("│" + "TYPE".PadRight(typeLength, ' ') + "│" + "NAME".PadRight(nameLength, ' ') + "│" + "PROPAGATION".PadRight(propagationLength, ' ') + "│");
+                    Printer.Print("├" + ("".PadRight(typeLength, '─')) + "┼" + ("".PadRight(nameLength, '─')) + "┼" + ("".PadRight(propagationLength, '─')) + "┤");
+                    foreach (var sco in me) Printer.Print("│" + sco.Discriminator.TypeName.PadRight(typeLength, ' ') + "│" + sco.Discriminator.Name.PadRight(nameLength, ' ') + "│" + sco.Propagation.ToString().PadRight(propagationLength, ' ') + "│");
+                    Printer.Print("└" + ("".PadRight(typeLength, '─')) + "┴" + ("".PadRight(nameLength, '─')) + "┴" + ("".PadRight(propagationLength, '─')) + "┘");
                     break;
             }
         }

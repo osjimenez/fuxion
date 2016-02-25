@@ -71,19 +71,27 @@
   </Choose>
   <ItemGroup>
     <Compile Include="BaseTestClass.cs" />
+    <Compile Include="Context.Album.cs" />
+    <Compile Include="Context.Circle.cs" />
     <Compile Include="Context.Department.cs" />
     <Compile Include="Context.Group.cs" />
     <Compile Include="Context.Identity.cs" />
     <Compile Include="Context.Invoice.cs" />
     <Compile Include="Context.Location.cs" />
     <Compile Include="Context.Order.cs" />
+    <Compile Include="Context.Song.cs" />
     <Compile Include="Discriminator.Test.cs" />
     <Compile Include="Entity.Test.cs" />
+    <Compile Include="Entity\Actor.cs" />
+    <Compile Include="Entity\Album.cs" />
+    <Compile Include="Entity\Artist.cs" />
     <Compile Include="Entity\Base.cs" />
     <Compile Include="Entity\Category.cs" />
     <Compile Include="Entity\Category.IDiscriminator.cs">
       <DependentUpon>Category.cs</DependentUpon>
     </Compile>
+    <Compile Include="Entity\Circle.cs" />
+    <Compile Include="Entity\Circle.IDiscriminator.cs" />
     <Compile Include="Entity\City.cs" />
     <Compile Include="Entity\Country.cs" />
     <Compile Include="Entity\Department.cs" />
@@ -92,6 +100,10 @@
     </Compile>
     <Compile Include="Entity\Discriminator.cs" />
     <Compile Include="Entity\Discriminator.IDiscriminator.cs" />
+    <Compile Include="Entity\ExcelDocument.cs" />
+    <Compile Include="Entity\File.cs" />
+    <Compile Include="Entity\FilePackage.cs" />
+    <Compile Include="Entity\Film.cs" />
     <Compile Include="Entity\Group.cs" />
     <Compile Include="Entity\Group.IGroup.cs">
       <DependentUpon>Group.cs</DependentUpon>
@@ -105,7 +117,9 @@
     <Compile Include="Entity\Location.IDiscriminator.cs">
       <DependentUpon>Location.cs</DependentUpon>
     </Compile>
+    <Compile Include="Entity\Media.cs" />
     <Compile Include="Entity\Order.cs" />
+    <Compile Include="Entity\PdfDocument.cs" />
     <Compile Include="Entity\Permission.cs" />
     <Compile Include="Entity\Permission.IPermission.cs">
       <DependentUpon>Permission.cs</DependentUpon>
@@ -122,11 +136,16 @@
       <DependentUpon>Scope.cs</DependentUpon>
     </Compile>
     <Compile Include="Entity\Seller.cs" />
+    <Compile Include="Entity\Singer.cs" />
+    <Compile Include="Entity\Software.cs" />
+    <Compile Include="Entity\Song.cs" />
     <Compile Include="Entity\State.cs" />
     <Compile Include="Entity\Tag.cs" />
     <Compile Include="Entity\Tag.IDiscriminator.cs">
       <DependentUpon>Tag.cs</DependentUpon>
     </Compile>
+    <Compile Include="Entity\Document.cs" />
+    <Compile Include="Entity\WordDocument.cs" />
     <Compile Include="Function.Test.cs" />
     <Compile Include="Helpers\Bootstrapper.cs" />
     <Compile Include="IdentityMemoryRepository.cs" />

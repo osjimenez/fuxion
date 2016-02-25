@@ -13,7 +13,7 @@ namespace Fuxion.Identity.Test.Entity
         public IList<City> Cities { get; set; }
         public Country Country { get; set; }
 
-        protected override IList<Location> GetExclusions() { return new[] { Country }; }
-        protected override IList<Location> GetInclusions() { return Cities.Cast<Location>().ToList(); }
+        protected override IEnumerable<Location> GetLocationExclusions() { return new[] { Country }; }
+        protected override IEnumerable<Location> GetLocationInclusions() { return Cities.Cast<Location>().ToList(); }
     }
 }

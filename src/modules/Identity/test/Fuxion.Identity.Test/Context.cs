@@ -34,5 +34,8 @@ namespace Fuxion.Identity.Test
         public static SellOrderList SellOrders { get; } = new SellOrderList();
         public static InvoiceList Invoices { get; } = new InvoiceList();
         public static DemoList Demos { get; } = new DemoList();
+        public static SongList Songs { get; } = new SongList();
+        public static AlbumList Albums { get; } = new AlbumList();
+        public static CircleList Circles { get; } = new CircleList();
     }
 }

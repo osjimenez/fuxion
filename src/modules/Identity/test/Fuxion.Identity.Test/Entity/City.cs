@@ -11,8 +11,9 @@ namespace Fuxion.Identity.Test.Entity
     public class City : Location
     {
         public State State { get; set; }
-        protected override IList<Location> GetExclusions() { return new[] { State }; }
 
-        protected override IList<Location> GetInclusions() { return new Location[] { }; }
+        protected override IEnumerable<Location> GetLocationExclusions() { return new[] { State }; }
+
+        protected override IEnumerable<Location> GetLocationInclusions() { return new Location[] { }; }
     }
 }

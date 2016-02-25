@@ -10,11 +10,12 @@ namespace Fuxion.Identity.Test
         public GroupsList()
         {
             // Admins
+            Admins.Groups = new Group[] { };
             Admins.Permissions = new[] { new Permission {
                 Id = Guid.NewGuid().ToString("N"),
                 Function = Admin.Id.ToString(),
                 Value = true,
-                Scopes = new Scope[] { } // When no scopes specified, this permission apply to any entity
+                Scopes = new Scope[] { } // When no scopes specified, this permission apply to any discriminator
             }};
 
             // California sellers

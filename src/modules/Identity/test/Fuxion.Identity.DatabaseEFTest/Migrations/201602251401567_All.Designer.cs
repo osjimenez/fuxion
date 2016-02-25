@@ -7,13 +7,13 @@ namespace Fuxion.Identity.DatabaseEFTest.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class Init : IMigrationMetadata
+    public sealed partial class All : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(Init));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(All));
         
         string IMigrationMetadata.Id
         {
-            get { return "201602200105434_Init"; }
+            get { return "201602251401567_All"; }
         }
         
         string IMigrationMetadata.Source

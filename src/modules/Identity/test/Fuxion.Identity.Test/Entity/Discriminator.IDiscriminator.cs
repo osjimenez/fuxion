@@ -16,8 +16,10 @@ namespace Fuxion.Identity.Test.Entity
         string IDiscriminator.TypeName { get { return GetTypeName(); } }
         protected abstract string GetTypeName();
 
-        IEnumerable<IDiscriminator> IExclusive<IDiscriminator>.Exclusions { get { return Exclusions; } }
+        protected abstract IEnumerable<Discriminator> GetExclusions();
+        IEnumerable<IDiscriminator> IExclusive<IDiscriminator>.Exclusions { get { return GetExclusions(); } }
 
-        IEnumerable<IDiscriminator> IInclusive<IDiscriminator>.Inclusions { get { return Inclusions; } }
+        protected abstract IEnumerable<Discriminator> GetInclusions();
+        IEnumerable<IDiscriminator> IInclusive<IDiscriminator>.Inclusions { get { return GetInclusions(); } }
     }
 }

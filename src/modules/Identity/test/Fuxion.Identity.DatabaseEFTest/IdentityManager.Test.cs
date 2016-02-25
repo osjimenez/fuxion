@@ -8,16 +8,23 @@ using static Fuxion.Identity.Functions;
 using Xunit.Abstractions;
 using Fuxion.Factories;
 using Fuxion.Identity.Test;
+using System.Data.Entity;
+using System.Diagnostics;
+
 namespace Fuxion.Identity.DatabaseEFTest
 {
     public class IdentityManagerTest
     {
         public IdentityManagerTest(ITestOutputHelper output)
         {
-            Printer.PrintAction = m => output.WriteLine(m);
+            Printer.PrintAction = m =>
+            {
+                Debug.WriteLine(m);
+                output.WriteLine(m);
+            };
         }
 #if DEBUG
-        public const string scenarios = MEMORY+"·"+DATABSE;
+        public const string scenarios = MEMORY+"·"+DATABASE;
 #else
         public const string scenarios = MEMORY+"·"+DATABSE;
 #endif
@@ -156,5 +163,27 @@ namespace Fuxion.Identity.DatabaseEFTest
             }
         }
         #endregion
+        [Fact]
+        public void DemoTest()
+        {
+            Load(MEMORY);
+            var im = Factory.Get<IdentityManager>();
+            var rep = Factory.Get<IIdentityTestRepository>();
+            im.Login("ca_sell", "ca_sell");
+            //Assert.True(im.Current.Can(Read).OfType<Order>());
+            var res = rep.Album.Where(o => o.Songs.AuthorizedTo(Edit).Any());
+            Printer.Print("res.Count(): " + res.Count());
+        }
+        [Fact]
+        public void DemoTest2()
+        {
+            Load(DATABASE);
+            var im = Factory.Get<IdentityManager>();
+            var rep = Factory.Get<IIdentityTestRepository>();
+            im.Login("root", "root");
+            Assert.True(im.Current.Can(Read).OfType<Order>());
+            var res = rep.Album.Where(o => o.Songs.AuthorizedTo(Read).Any());
+            Printer.Print("res.Count(): " + res.Count());
+        }
     }
 }

@@ -16,7 +16,6 @@ namespace Fuxion.Identity
     }
     public static class RolExtensions
     {
-        public static IEnumerable<IScope> GetScopes(this IRol me, IFunction function, IDiscriminator[] discriminators) { return GetScopes(me, new[] { function }, discriminators); }
         public static IEnumerable<IScope> GetScopes(this IRol me, IFunction[] functions, IDiscriminator[] discriminators)
         {
             IEnumerable<IScope> res = null;
@@ -220,7 +219,16 @@ namespace Fuxion.Identity
                             res = (res == null ? proExp : res.And(proExp));
                     }
                 });
-                if (res == null && !scopes.Any()) res = Expression.Lambda<Func<TEntity, bool>>(Expression.Constant(false), Expression.Parameter(typeof(TEntity)));
+                if (res == null && !scopes.Any())
+                {
+                    if (me.GetPermissions(functions, new[] { TypeDiscriminator.Create(typeof(TEntity)) }).Any())
+                    {
+                        res = Expression.Lambda<Func<TEntity, bool>>(Expression.Constant(true), Expression.Parameter(typeof(TEntity)));
+                    }
+                    else {
+                        res = Expression.Lambda<Func<TEntity, bool>>(Expression.Constant(false), Expression.Parameter(typeof(TEntity)));
+                    }
+                }
                 Printer.Print("Expression:" + (res == null ? "null" : res.ToString()));
             });
             return res;

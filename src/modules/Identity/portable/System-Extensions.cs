@@ -9,6 +9,7 @@ namespace System.Collections.Generic
         {
             var im = Factory.Get<IdentityManager>();
             var pre = im.Current.FilterExpression<TSource>(functions);
+            if (pre == null) return source;
             return source is IQueryable<TSource>
                 ? ((IQueryable<TSource>)source).Where(pre)
                 : source.Where(pre.Compile());

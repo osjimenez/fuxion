@@ -13,7 +13,7 @@ namespace Fuxion.Identity.DatabaseEFTest
 {
     public static class Scenario
     {
-        public const string DATABSE = nameof(DATABSE);
+        public const string DATABASE = nameof(DATABASE);
         public const string MEMORY = nameof(MEMORY);
         public static void Load(string key)
         {
@@ -35,14 +35,14 @@ namespace Fuxion.Identity.DatabaseEFTest
                 }
                 Factory.AddToPipe(memoryFactory);
             }
-            else if (key == DATABSE)
+            else if (key == DATABASE)
             {
                 if (databaseFactory == null)
                 {
                     var con = new Container();
                     con.RegisterSingleton<IPasswordProvider>(new PasswordProvider());
                     var rep = new IdentityDatabaseEFTestRepository();
-                    rep.InitializeData();
+                    rep.Initialize();
                     con.RegisterSingleton<IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity>>(new MemoryKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity>(rep));
                     con.RegisterSingleton<IIdentityTestRepository>(rep);
                     con.RegisterSingleton<IdentityManager>();

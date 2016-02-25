@@ -219,33 +219,44 @@ namespace Fuxion.Identity
                 case PrintMode.PropertyList:
                     break;
                 case PrintMode.Table:
-                    var value = me.Select(p => p.Value.ToString().Length).Union(new[] { "VALUE".Length }).Max();
-                    var func = me.Select(p => p.Function.Name.ToString().Length).Union(new[] { "FUNCTION".Length }).Max();
-                    var disType = me.Select(p => p.Scopes.Max(s => s.Discriminator.TypeName.Length)).Union(new[] { "TYPE".Length }).Max();
-                    var disName = me.Select(p => p.Scopes.Max(s => s.Discriminator.Name.Length)).Union(new[] { "NAME".Length }).Max();
-                    var disPro = me.Select(p => p.Scopes.Max(s => s.Propagation.ToString().Length)).Union(new[] { "PROPAGATION".Length }).Max();
+                    var valueLength = me.Select(p => p.Value.ToString().Length).Union(new[] { "VALUE".Length }).Max();
+                    var functionLength = me.Select(p => p.Function.Name.ToString().Length).Union(new[] { "FUNCTION".Length }).Max();
+                    var typeLength = new[] { "TYPE".Length }.Concat(me.SelectMany(p => p.Scopes.Select(s => s.Discriminator.TypeName.Length))).Max();
+                    var nameLength = new[] { "NAME".Length }.Concat(me.SelectMany(p => p.Scopes.Select(s => s.Discriminator.Name.Length))).Max();
+                    var propagationLength = new[] { "PROPAGATION".Length }.Concat(me.SelectMany(p => p.Scopes.Select(s => s.Propagation.ToString().Length))).Max();
 
-                    Printer.Print("┌" + ("".PadRight(value, '─')) + "┬" + ("".PadRight(func, '─')) + "┬" + ("".PadRight(disType, '─')) + "┬" + ("".PadRight(disName, '─')) + "┬" + ("".PadRight(disPro, '─')) + "┐");
+                    Printer.Print("┌" + ("".PadRight(valueLength, '─')) + "┬" + ("".PadRight(functionLength, '─')) + "┬" + ("".PadRight(typeLength, '─')) + "┬" + ("".PadRight(nameLength, '─')) + "┬" + ("".PadRight(propagationLength, '─')) + "┐");
                     if (me.Any())
                     {
-                        Printer.Print("│" + ("VALUE".PadRight(value, ' ')) + "│" + ("FUNCTION".PadRight(func, ' ')) + "│" + ("TYPE".PadRight(disType, ' ')) + "│" + ("NAME".PadRight(disName, ' ')) + "│" + ("PROPAGATION".PadRight(disPro, ' ')) + "│");
-                        Printer.Print("├" + ("".PadRight(value, '─')) + "┼" + ("".PadRight(func, '─')) + "┼" + ("".PadRight(disType, '─')) + "┼" + ("".PadRight(disName, '─')) + "┼" + ("".PadRight(disPro, '─')) + "┤");
+                        Printer.Print("│" + ("VALUE".PadRight(valueLength, ' ')) + "│" + ("FUNCTION".PadRight(functionLength, ' ')) + "│" + ("TYPE".PadRight(typeLength, ' ')) + "│" + ("NAME".PadRight(nameLength, ' ')) + "│" + ("PROPAGATION".PadRight(propagationLength, ' ')) + "│");
+                        Printer.Print("├" + ("".PadRight(valueLength, '─')) + "┼" + ("".PadRight(functionLength, '─')) + "┼" + ("".PadRight(typeLength, '─')) + "┼" + ("".PadRight(nameLength, '─')) + "┼" + ("".PadRight(propagationLength, '─')) + "┤");
                     }
 
                     foreach(var per in me)
                     {
                         var list = per.Scopes.ToList();
-                        for (int i = 0; i < list.Count; i++)
+                        if (list.Count == 0)
                         {
                             Printer.Print("│" +
-                                ((i == 0 ? per.Value.ToString() : "").PadRight(value, ' ')) + "│" +
-                                ((i == 0 ? per.Function.Name : "").PadRight(func, ' ')) + "│" +
-                                (list[i].Discriminator.TypeName.PadRight(disType, ' ')) + "│" +
-                                (list[i].Discriminator.Name.PadRight(disName, ' ')) + "│" +
-                                (list[i].Propagation.ToString().PadRight(disPro, ' ')) + "│");
+                                    per.Value.ToString().PadRight(valueLength, ' ') + "│" +
+                                    per.Function.Name.PadRight(functionLength, ' ') + "│" +
+                                    ("".PadRight(typeLength, ' ')) + "│" +
+                                    ("".PadRight(nameLength, ' ')) + "│" +
+                                    ("".PadRight(propagationLength, ' ')) + "│");
+                        }
+                        else {
+                            for (int i = 0; i < list.Count; i++)
+                            {
+                                Printer.Print("│" +
+                                    ((i == 0 ? per.Value.ToString() : "").PadRight(valueLength, ' ')) + "│" +
+                                    ((i == 0 ? per.Function.Name : "").PadRight(functionLength, ' ')) + "│" +
+                                    (list[i].Discriminator.TypeName.PadRight(typeLength, ' ')) + "│" +
+                                    (list[i].Discriminator.Name.PadRight(nameLength, ' ')) + "│" +
+                                    (list[i].Propagation.ToString().PadRight(propagationLength, ' ')) + "│");
+                            }
                         }
                     }
-                    Printer.Print("└" + ("".PadRight(value, '─')) + "┴" + ("".PadRight(func, '─')) + "┴" + ("".PadRight(disType, '─')) + "┴" + ("".PadRight(disName, '─')) + "┴" + ("".PadRight(disPro, '─')) + "┘");
+                    Printer.Print("└" + ("".PadRight(valueLength, '─')) + "┴" + ("".PadRight(functionLength, '─')) + "┴" + ("".PadRight(typeLength, '─')) + "┴" + ("".PadRight(nameLength, '─')) + "┴" + ("".PadRight(propagationLength, '─')) + "┘");
                     break;
             }
         }

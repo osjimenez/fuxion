@@ -13,8 +13,8 @@ namespace Fuxion.Identity.Test.Entity
     public abstract partial class Discriminator : Base
     {
         public string Name { get; set; }
-        abstract protected IList<Discriminator> Exclusions { get; }
-        abstract protected IList<Discriminator> Inclusions { get; }
+        //abstract protected IList<Discriminator> Exclusions { get; }
+        //abstract protected IList<Discriminator> Inclusions { get; }
 
         public override string ToString() { return this.ToOneLineString(); }
     }
