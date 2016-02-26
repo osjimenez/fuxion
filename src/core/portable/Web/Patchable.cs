@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 namespace Fuxion.Web
 {
@@ -11,6 +12,17 @@ namespace Fuxion.Web
     {
         private readonly IDictionary<PropertyInfo, object> _changedProperties = new Dictionary<PropertyInfo, object>();
         public IEnumerable<string> ChangedPropertyNames { get { return _changedProperties.Keys.Select(p => p.Name); } }
+        public bool TryGetChangedPropertyValue<TProperty>(Expression<Func<T, TProperty>> exp, out TProperty value)
+        {
+            if (!_changedProperties.Keys.Any(k => k.Name == exp.GetMemberName()))
+            {
+                value = default(TProperty);
+                return false;
+            }
+            var pro = _changedProperties.Single(p => p.Key.Name == exp.GetMemberName());
+            value = (TProperty)CastValue(typeof(TProperty), pro.Value);
+            return true;
+        }
         public override bool TrySetMember(SetMemberBinder binder, object value)
         {
             var pro = typeof(T).GetRuntimeProperty(binder.Name);
@@ -41,11 +53,11 @@ namespace Fuxion.Web
                 }
                 else
                 {
-                    t.Key.SetValue(obj, PatchProperty(t.Key.PropertyType, t.Value));
+                    t.Key.SetValue(obj, CastValue(t.Key.PropertyType, t.Value));
                 }
             }
         }
-        private object PatchProperty(Type type, object value)
+        private object CastValue(Type type, object value)
         {
             var isNullable = type.IsSubclassOfRawGeneric(typeof(Nullable<>));
             var valueType = isNullable ? type.GetTypeInfo().GenericTypeArguments.First() : type;

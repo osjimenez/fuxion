@@ -26,7 +26,7 @@ namespace Fuxion.Identity.DatabaseEFTest
 #if DEBUG
         public const string scenarios = MEMORY+"·"+DATABASE;
 #else
-        public const string scenarios = MEMORY+"·"+DATABSE;
+        public const string scenarios = MEMORY;//+"·"+DATABASE;
 #endif
         #region Login
         [Theory]
@@ -155,7 +155,15 @@ namespace Fuxion.Identity.DatabaseEFTest
                     Assert.True(im.Login(username, password), $"Login fail unexpected: username<{username}> password<{password}>");
                     var strArgs = $"\r\nscenario<{scenario}>\r\nusername<{username}>";
                     var dbSet = typeof(IIdentityTestRepository).GetMethod("GetByType").MakeGenericMethod(type).Invoke(rep, null);
-                    var res = (IEnumerable<object>)typeof(FuxionExtensions).GetMethod("AuthorizedTo").MakeGenericMethod(type).Invoke(null, new object[] { dbSet, functions });
+                    IEnumerable<object> res = null;
+                    if (dbSet is IQueryable)
+                        res = (IQueryable<object>)typeof(FuxionExtensions).GetMethods()
+                        .Where(m => m.Name == "AuthorizedTo" && m.GetParameters().First().ParameterType.GetGenericTypeDefinition() == typeof(IQueryable<>))
+                        .First().MakeGenericMethod(type).Invoke(null, new object[] { dbSet, functions });
+                    else
+                        res = (IEnumerable<object>)typeof(FuxionExtensions).GetMethods()
+                        .Where(m => m.Name == "AuthorizedTo" && m.GetParameters().First().ParameterType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+                        .First().MakeGenericMethod(type).Invoke(null, new object[] { dbSet, functions });
                     var list = res.ToList().Cast<Base>();
                     if (allowOtherResults)
                         Assert.True(list.Any(e => expectedIds.Contains(e.Id)), $"Some expected ids '{expectedIds.Aggregate("", (a, c) => a + c + "·")}' not found");

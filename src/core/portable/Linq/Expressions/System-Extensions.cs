@@ -19,7 +19,18 @@ namespace System.Linq.Expressions
 			else
 				throw new ArgumentException("La expresión lambda debe ser de tipo 'MemberExpression' o 'UnaryExpression'.");
 		}
-		public static PropertyInfo GetPropertyInfo<T>(this Expression<Func<T>> expression)
+        public static string GetMemberName<TInstance, TMember>(this Expression<Func<TInstance, TMember>> expression)
+        {
+            if (expression.NodeType != ExpressionType.Lambda)
+                throw new ArgumentException("La expresión debe ser una lambda", "expression");
+            if (expression.Body is MemberExpression)
+                return (expression.Body as MemberExpression).Member.Name;
+            else if (expression.Body is UnaryExpression)
+                return ((MemberExpression)((UnaryExpression)expression.Body).Operand).Member.Name;
+            else
+                throw new ArgumentException("La expresión lambda debe ser de tipo 'MemberExpression' o 'UnaryExpression'.");
+        }
+        public static PropertyInfo GetPropertyInfo<T>(this Expression<Func<T>> expression)
 		{
 			if (expression.NodeType != ExpressionType.Lambda)
 				throw new ArgumentException("La expresión debe ser una lambda", "expression");

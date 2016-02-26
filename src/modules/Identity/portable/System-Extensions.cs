@@ -14,5 +14,12 @@ namespace System.Collections.Generic
                 ? ((IQueryable<TSource>)source).Where(pre)
                 : source.Where(pre.Compile());
         }
+        public static IQueryable<TSource> AuthorizedTo<TSource>(this IQueryable<TSource> source, params IFunction[] functions)
+        {
+            var im = Factory.Get<IdentityManager>();
+            var pre = im.Current.FilterExpression<TSource>(functions);
+            if (pre == null) return source;
+            return source.Where(pre);
+        }
     }
 }
