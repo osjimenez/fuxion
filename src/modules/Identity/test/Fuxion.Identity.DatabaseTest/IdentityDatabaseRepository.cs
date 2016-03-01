@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static Fuxion.Identity.Test.IdentityMemoryRepository;
+using static Fuxion.Identity.Test.IdentityMemoryTestRepository;
 namespace Fuxion.Identity.DatabaseTest
 {
     class IdentityDatabaseRepository : DbContext, IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity>
