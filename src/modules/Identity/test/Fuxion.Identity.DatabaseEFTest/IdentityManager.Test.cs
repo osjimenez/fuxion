@@ -26,7 +26,7 @@ namespace Fuxion.Identity.DatabaseEFTest
 #if DEBUG
         public const string scenarios = MEMORY+"·"+DATABASE;
 #else
-        public const string scenarios = MEMORY;//+"·"+DATABASE;
+        public const string scenarios = MEMORY+"·"+DATABASE;
 #endif
         #region Login
         [Theory]

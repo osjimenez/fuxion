@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Fuxion.Identity.Helpers;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -59,5 +60,33 @@ namespace Fuxion.Identity
         OneLine,
         PropertyList,
         Table
+    }
+    public class ScopeEqualityComparer : IEqualityComparer<IScope>
+    {
+        DiscriminatorEqualityComparer disCom = new DiscriminatorEqualityComparer();
+        public bool Equals(IScope x, IScope y)
+        {
+            return AreEquals(x, y);
+        }
+
+        public int GetHashCode(IScope obj)
+        {
+            if (obj == null) return 0;
+            return disCom.GetHashCode(obj.Discriminator) ^ obj.Propagation.GetHashCode();
+        }
+        bool AreEquals(object obj1, object obj2)
+        {
+            // If both are NULL, return TRUE
+            if (Equals(obj1, null) && Equals(obj2, null)) return true;
+            // If some of them is null, return FALSE
+            if (Equals(obj1, null) || Equals(obj2, null)) return false;
+            // If any of them are of other type, return FALSE
+            if (!(obj1 is IScope) || !(obj2 is IScope)) return false;
+            var sco1 = (IScope)obj1;
+            var sco2 = (IScope)obj2;
+            // Use 'Equals' to compare the ids
+            return disCom.Equals(sco1.Discriminator,sco2.Discriminator) &&
+                Comparer.AreEquals(sco1.Propagation, sco2.Propagation);
+        }
     }
 }

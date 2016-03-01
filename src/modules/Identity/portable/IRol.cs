@@ -69,14 +69,12 @@ namespace Fuxion.Identity
                     var res = new List<IPermission>();
                     foreach (var dis in discriminators)
                     {
-                        //permissions = permissions.Where(p => !p.Scopes.Any(s => s.Discriminator.TypeId == dis.TypeId));
-                        var pers = permissions.Where(p => p.Scopes.Any(s => s.Discriminator.TypeId == dis.TypeId));
+                        var pers = permissions.Where(p => p.Scopes.Any(s => s.Discriminator.TypeId == dis.TypeId) || !p.Scopes.Any());
+                        Printer.Ident("pers:", () => pers.Print(PrintMode.Table));
                         res.AddRange(permissions.Except(pers));
-
                         foreach (var per in permissions.Where(p => p.Scopes.Any(s => s.Discriminator.TypeId == dis.TypeId)))
                         {
                             var sco = per.Scopes.Single(s => s.Discriminator.TypeId == dis.TypeId);
-
                             if (dis.GetAllInclusions().SequenceEqual(sco.Discriminator.GetAllInclusions()))
                             {
                                 switch (sco.Propagation)
@@ -115,7 +113,8 @@ namespace Fuxion.Identity
                             }
                         }
                     }
-                    permissions = permissions.Except(res);
+                    Printer.Ident("Permissions to exclude:", () => res.Print(PrintMode.Table));
+                    permissions = permissions.Except(res, new PermissionEqualityComparer());
                     permissions.Print(PrintMode.Table);
                 });
                 #endregion
