@@ -22,30 +22,30 @@ namespace Fuxion.Identity
         public bool IsAuthenticated { get { return Current != null; } }
         Dictionary<string, IIdentity> cache = new Dictionary<string, IIdentity>();
         public IIdentity Current { get; private set; }
-        public Action<string, bool> Console { get; set; }
+        //public Action<string, bool> Console { get; set; }
         public static IPrincipalProvider PrincipalProvider { get; private set; } = new StaticPrincipalProvider();
         public IPasswordProvider PasswordProvider { get; private set; }
         public IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity> Repository { get; private set; }
-        private void WriteConsole(string message, bool endOfMessage) { if (Console != null) Console(message, endOfMessage); }
+        //private void WriteConsole(string message, bool endOfMessage) { if (Console != null) Console(message, endOfMessage); }
         public bool Login(string username, string password, bool changeCurrentIdentity = true)
         {
-            WriteConsole($"Validando credenciales\r\n   Usuario: {username}\r\n   Contraseña: {password}\r\n", false);
+            Printer.Print($"Validando credenciales\r\n   Usuario: {username}\r\n   Contraseña: {password}\r\n");
             if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
             {
-                WriteConsole($"Resultado: NO VALIDO - El nombre de usuario o la contraseña es NULL", true);
+                Printer.Print($"Resultado: NO VALIDO - El nombre de usuario o la contraseña es NULL");
                 return false;
             }
             var ide = Repository.Find(username);
             if (ide == null)
             {
-                WriteConsole($"Resultado: NO VALIDO - No se ha encontrado una identidad con ese nombre de usuario", true);
+                Printer.Print($"Resultado: NO VALIDO - No se ha encontrado una identidad con ese nombre de usuario");
                 return false;
             }
             var res = PasswordProvider.Verify(password, ide.PasswordHash, ide.PasswordSalt);
-            if(changeCurrentIdentity) Current = ide;
-            if(res)
+            if (changeCurrentIdentity) Current = ide;
+            if (res)
             {
-                WriteConsole($"Resultado: VALIDO", true);
+                Printer.Print($"Resultado: VALIDO");
                 PrincipalProvider.SetPrincipal(new FuxionPrincipal(ide));
             }
             return res;
