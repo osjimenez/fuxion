@@ -17,6 +17,7 @@ namespace Fuxion.Identity.Test
         IEnumerable<Song> Song { get; }
         IEnumerable<Circle> Circle { get; }
         IEnumerable<Group> Group { get; }
+        IEnumerable<Document> Document { get; }
         IEnumerable<T> GetByType<T>();
     }
     public class IdentityMemoryTestRepository : IIdentityTestRepository, IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity>
@@ -25,6 +26,7 @@ namespace Fuxion.Identity.Test
         public IEnumerable<Song> Song { get { return Songs; } }
         public IEnumerable<Circle> Circle { get { return Circles; } }
         public IEnumerable<Group> Group { get { return Groups; } }
+        public IEnumerable<Document> Document { get { return Documents; } }
 
         public IEnumerable<T> GetByType<T>()
         {

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Identity.Test.Entity
 {
+    [Discriminator(TypeId)]
     public partial class Circle : IDiscriminator<string, string>
     {
         const string TypeId = "CIR";

@@ -11,5 +11,8 @@ namespace Fuxion.Identity.Test.Entity
     public abstract class Document : File
     {
         public IList<Writer> Authors { get; set; }
+
+        [DiscriminatedBy(typeof(Circle))]
+        public string CircleId { get; set; }
     }
 }

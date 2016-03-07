@@ -73,6 +73,7 @@
     <Compile Include="BaseTestClass.cs" />
     <Compile Include="Context.Album.cs" />
     <Compile Include="Context.Circle.cs" />
+    <Compile Include="Context.Document.cs" />
     <Compile Include="Context.Group.cs" />
     <Compile Include="Context.Identity.cs" />
     <Compile Include="Context.Location.cs" />

@@ -17,5 +17,6 @@ namespace Fuxion.Identity.Test
         public static IdentityList Identities { get; } = new IdentityList();
         public static SongList Songs { get; } = new SongList();
         public static AlbumList Albums { get; } = new AlbumList();
+        public static DocumentList Documents { get; } = new DocumentList();
     }
 }

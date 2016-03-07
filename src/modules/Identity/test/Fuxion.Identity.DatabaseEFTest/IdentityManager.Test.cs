@@ -179,9 +179,10 @@ namespace Fuxion.Identity.DatabaseEFTest
             Load(MEMORY);
             var im = Factory.Get<IdentityManager>();
             var rep = Factory.Get<IIdentityTestRepository>();
-            im.Login("ca_sell", "ca_sell");
+            im.Login("cus", "cus");
+            var res = rep.Document.AuthorizedTo(Read);
             //Assert.True(im.Current.Can(Read).OfType<Order>());
-            var res = rep.Album.Where(o => o.Songs.AuthorizedTo(Edit).Any());
+            //var res = rep.Album.Where(o => o.Songs.AuthorizedTo(Edit).Any());
             Printer.Print("res.Count(): " + res.Count());
         }
         [Fact]

@@ -66,12 +66,12 @@ namespace Fuxion.Identity
                 #region Filter by discriminator propagation
                 Printer.Ident("After filter by discriminator propagation", () =>
                 {
-                    var res = new List<IPermission>();
+                    var toExclude = new List<IPermission>();
                     foreach (var dis in discriminators)
                     {
-                        var pers = permissions.Where(p => p.Scopes.Any(s => s.Discriminator.TypeId == dis.TypeId) || !p.Scopes.Any());
-                        Printer.Ident("pers:", () => pers.Print(PrintMode.Table));
-                        res.AddRange(permissions.Except(pers));
+                        var permissionsOfType = permissions.Where(p => p.Scopes.Any(s => s.Discriminator.TypeId == dis.TypeId) || !p.Scopes.Any());
+                        Printer.Ident("permissionsOfType:", () => permissionsOfType.Print(PrintMode.Table));
+                        //toExclude.AddRange(permissions.Except(permissionsOfType));
                         foreach (var per in permissions.Where(p => p.Scopes.Any(s => s.Discriminator.TypeId == dis.TypeId)))
                         {
                             var sco = per.Scopes.Single(s => s.Discriminator.TypeId == dis.TypeId);
@@ -81,7 +81,7 @@ namespace Fuxion.Identity
                                 {
                                     case ScopePropagation.ToMe:
                                     case ScopePropagation.ToInclusions:
-                                        res.Add(per);
+                                        toExclude.Add(per);
                                         break;
                                     default:
                                         break;
@@ -92,7 +92,7 @@ namespace Fuxion.Identity
                                     !dis.GetAllInclusions().SequenceEqual(sco.Discriminator.GetAllInclusions()))
                             {
                                 if (sco.Propagation == ScopePropagation.ToInclusions)
-                                    res.Add(per);
+                                    toExclude.Add(per);
                             }
                             else if (sco.Discriminator.GetAllInclusions().All(i => dis.GetAllInclusions().Contains(i)))
                             {
@@ -101,7 +101,7 @@ namespace Fuxion.Identity
                                     case ScopePropagation.ToMe:
                                     case ScopePropagation.ToInclusions:
                                     case ScopePropagation.ToExclusions:
-                                        res.Add(per);
+                                        toExclude.Add(per);
                                         break;
                                     default:
                                         break;
@@ -113,8 +113,8 @@ namespace Fuxion.Identity
                             }
                         }
                     }
-                    Printer.Ident("Permissions to exclude:", () => res.Print(PrintMode.Table));
-                    permissions = permissions.Except(res, new PermissionEqualityComparer());
+                    Printer.Ident("Permissions to exclude:", () => toExclude.Print(PrintMode.Table));
+                    permissions = permissions.Except(toExclude, new PermissionEqualityComparer());
                     permissions.Print(PrintMode.Table);
                 });
                 #endregion

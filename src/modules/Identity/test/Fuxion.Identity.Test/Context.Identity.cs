@@ -18,9 +18,32 @@ namespace Fuxion.Identity.Test
             Root.PasswordSalt = salt;
             Root.PasswordHash = hash;
 
-            AddRange(new[] { Root });
+            Customer.Groups = new Group[] { };
+            Customer.Permissions = new[]
+            {
+                new Permission
+                {
+                    Value = true,
+                    Function = READ,
+                    Rol = Customer,
+                    Scopes = new[]
+                    {
+                        new Scope
+                        {
+                            Discriminator = Circles.Circle_1,
+                            Propagation = ScopePropagation.ToMe
+                        }
+                    }
+                }
+            };
+            pp.Generate("cus", out salt, out hash);
+            Customer.PasswordSalt = salt;
+            Customer.PasswordHash = hash;
+
+            AddRange(new[] { Root, Customer });
         }
 
         public Entity.Identity Root = new Entity.Identity { Id = "ROOT", UserName = "root", Name = "Root" };
+        public Entity.Identity Customer = new Entity.Identity { Id = "CUS", UserName = "cus", Name = "Customer" };
     }
 }
