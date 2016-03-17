@@ -45,6 +45,7 @@
     <Compile Include="Commands\ICommand.cs" />
     <Compile Include="Commands\ICommandHandler.cs" />
     <Compile Include="DomainManager.cs" />
+    <Compile Include="EventHandler.cs" />
     <Compile Include="Events\EventAttribute.cs" />
     <Compile Include="Events\EventBatch.cs" />
     <Compile Include="Events\IAsyncEventHandler.cs" />
