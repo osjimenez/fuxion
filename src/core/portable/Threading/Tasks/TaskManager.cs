@@ -67,9 +67,16 @@ namespace Fuxion.Threading.Tasks
 		public static TResult WaitResult<TResult>(this Task<TResult> task) { return WaitResult(task, TimeSpan.Zero); }
 		public static TResult WaitResult<TResult>(this Task<TResult> task, TimeSpan timeout)
 		{
-			if (timeout == TimeSpan.Zero) task.Wait();
-			else task.Wait(timeout);
-			return task.Result;
+            try {
+                if (timeout == TimeSpan.Zero) task.Wait();
+                else task.Wait(timeout);
+                return task.Result;
+            }catch(AggregateException aex)
+            {
+                aex = aex.Flatten();
+                if (aex.InnerExceptions.Count == 1) throw aex.InnerException;
+                throw aex;
+            }
 		}
 	    public static void Sleep(this Task task, TimeSpan timeout)
 	    {
