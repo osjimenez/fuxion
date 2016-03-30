@@ -11,6 +11,7 @@ public class BuildTask : Microsoft.Build.Utilities.Task
 {
     public override bool Execute()
     {
+        
         switch (TargetName)
         {
             case "BeforeBuild":

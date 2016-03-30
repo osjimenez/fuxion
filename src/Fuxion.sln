@@ -17,6 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{ABD253
 		.build\Fuxion.Build.dll = .build\Fuxion.Build.dll
 		.build\Fuxion.Build.targets = .build\Fuxion.Build.targets
 		.build\Fuxion.Data.ver = .build\Fuxion.Data.ver
+		.build\Fuxion.Domain.ver = .build\Fuxion.Domain.ver
 		.build\Fuxion.Identity.ver = .build\Fuxion.Identity.ver
 		.build\Fuxion.SimpleInjector.ver = .build\Fuxion.SimpleInjector.ver
 		.build\Fuxion.ver = .build\Fuxion.ver
@@ -50,6 +51,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion.Identity.DatabaseTest", "modules\Identity\Test\Fuxion.Identity.DatabaseTest\Fuxion.Identity.DatabaseTest.csproj", "{D2FC2951-253D-48C0-9E12-6CDB577E4AA2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion.Identity.DatabaseEFTest", "modules\Identity\test\Fuxion.Identity.DatabaseEFTest\Fuxion.Identity.DatabaseEFTest.csproj", "{C9D0F0DE-95F0-4C09-BF56-FA4E729FA0A9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "domain", "domain", "{70B77439-9ADE-4981-BDC6-019CDA33AA76}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion.Domain", "domain\portable\Fuxion.Domain.csproj", "{AEFC0B32-3C2A-4FA2-9E23-F56D75CA3EB2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -239,6 +244,22 @@ Global
 		{C9D0F0DE-95F0-4C09-BF56-FA4E729FA0A9}.Release|x64.Build.0 = Release|Any CPU
 		{C9D0F0DE-95F0-4C09-BF56-FA4E729FA0A9}.Release|x86.ActiveCfg = Release|Any CPU
 		{C9D0F0DE-95F0-4C09-BF56-FA4E729FA0A9}.Release|x86.Build.0 = Release|Any CPU
+		{AEFC0B32-3C2A-4FA2-9E23-F56D75CA3EB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AEFC0B32-3C2A-4FA2-9E23-F56D75CA3EB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AEFC0B32-3C2A-4FA2-9E23-F56D75CA3EB2}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{AEFC0B32-3C2A-4FA2-9E23-F56D75CA3EB2}.Debug|ARM.Build.0 = Debug|Any CPU
+		{AEFC0B32-3C2A-4FA2-9E23-F56D75CA3EB2}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{AEFC0B32-3C2A-4FA2-9E23-F56D75CA3EB2}.Debug|x64.Build.0 = Debug|Any CPU
+		{AEFC0B32-3C2A-4FA2-9E23-F56D75CA3EB2}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{AEFC0B32-3C2A-4FA2-9E23-F56D75CA3EB2}.Debug|x86.Build.0 = Debug|Any CPU
+		{AEFC0B32-3C2A-4FA2-9E23-F56D75CA3EB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AEFC0B32-3C2A-4FA2-9E23-F56D75CA3EB2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AEFC0B32-3C2A-4FA2-9E23-F56D75CA3EB2}.Release|ARM.ActiveCfg = Release|Any CPU
+		{AEFC0B32-3C2A-4FA2-9E23-F56D75CA3EB2}.Release|ARM.Build.0 = Release|Any CPU
+		{AEFC0B32-3C2A-4FA2-9E23-F56D75CA3EB2}.Release|x64.ActiveCfg = Release|Any CPU
+		{AEFC0B32-3C2A-4FA2-9E23-F56D75CA3EB2}.Release|x64.Build.0 = Release|Any CPU
+		{AEFC0B32-3C2A-4FA2-9E23-F56D75CA3EB2}.Release|x86.ActiveCfg = Release|Any CPU
+		{AEFC0B32-3C2A-4FA2-9E23-F56D75CA3EB2}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -260,6 +281,7 @@ Global
 		{9BD1DC06-35AA-4696-A6D8-46E1435D5C7E} = {ED2E703A-7204-4A18-8DB4-D47D845849AA}
 		{D2FC2951-253D-48C0-9E12-6CDB577E4AA2} = {9BD1DC06-35AA-4696-A6D8-46E1435D5C7E}
 		{C9D0F0DE-95F0-4C09-BF56-FA4E729FA0A9} = {9BD1DC06-35AA-4696-A6D8-46E1435D5C7E}
+		{AEFC0B32-3C2A-4FA2-9E23-F56D75CA3EB2} = {70B77439-9ADE-4981-BDC6-019CDA33AA76}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		EnterpriseLibraryConfigurationToolBinariesPathV6 = packages\EnterpriseLibrary.TransientFaultHandling.6.0.1304.0\lib\portable-net45+win+wp8;packages\EnterpriseLibrary.TransientFaultHandling.Data.6.0.1304.1\lib\NET45

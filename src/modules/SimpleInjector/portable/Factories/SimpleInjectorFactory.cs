@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using SimpleInjector;
 using System.Reflection;
-using Fuxion.Notifications;
 using System.Linq;
 
 namespace Fuxion.Factories

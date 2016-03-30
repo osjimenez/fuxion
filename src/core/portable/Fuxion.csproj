@@ -38,20 +38,9 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="ApplicationManager.cs" />
     <Compile Include="Collections\Generic\GenericEqualityComparer.cs" />
     <Compile Include="Collections\ObjectModel\DeactivatableObservableCollection.cs" />
-    <Compile Include="Commands\CommandAttribute.cs" />
-    <Compile Include="Commands\ICommand.cs" />
-    <Compile Include="Commands\ICommandHandler.cs" />
-    <Compile Include="DomainManager.cs" />
     <Compile Include="EventHandler.cs" />
-    <Compile Include="Events\EventAttribute.cs" />
-    <Compile Include="Events\EventBatch.cs" />
-    <Compile Include="Events\IAsyncEventHandler.cs" />
-    <Compile Include="IApplicationNotificationManager.cs" />
-    <Compile Include="Models\IModel.cs" />
-    <Compile Include="Events\IEvent.cs" />
     <Compile Include="Printer.cs" />
     <Compile Include="System-Extensions.cs" />
     <Compile Include="Factories\Factory.cs" />
@@ -61,8 +50,6 @@
     <Compile Include="Math\Graph\Graph.cs" />
     <Compile Include="Math\Graph\GraphCyclicException.cs" />
     <Compile Include="Math\Graph\Vertex.cs" />
-    <Compile Include="IApplicationCommandManager.cs" />
-    <Compile Include="IApplicationEventManager.cs" />
     <Compile Include="InvalidStateException.cs" />
     <Compile Include="IValidatable.cs" />
     <Compile Include="Logging\ILog.cs" />
@@ -71,23 +58,11 @@
     <Compile Include="Logging\LogManager.cs" />
     <Compile Include="Logging\NullLog.cs" />
     <Compile Include="Logging\WrapLog.cs" />
-    <Compile Include="Notifications\IAsyncEventProjector.cs" />
-    <Compile Include="Notifications\INotification.cs" />
-    <Compile Include="Notifications\INotificationHandler.cs" />
-    <Compile Include="Notifications\NotificationAttribute.cs" />
-    <Compile Include="ProjectionManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Aggregate.cs" />
-    <Compile Include="Repositories\AggregateAlreadyExistException.cs" />
-    <Compile Include="Repositories\AggregateNotFoundException.cs" />
-    <Compile Include="Repositories\AggregateRepository.cs" />
     <Compile Include="Repositories\HandlerNotFoundException.cs" />
-    <Compile Include="IAggregate.cs" />
     <Compile Include="Repositories\IKeyValueEntry.cs" />
     <Compile Include="Repositories\IKeyValueRepository.cs" />
-    <Compile Include="Repositories\IModelRepository.cs" />
     <Compile Include="Repositories\KeyValueEntry.cs" />
-    <Compile Include="Repositories\MemoryAggregateRepository.cs" />
     <Compile Include="Repositories\MemoryKeyValueRepository.cs" />
     <Compile Include="Configuration\ConfigurationItem.cs" />
     <Compile Include="Configuration\IConfigurationManager.cs" />
