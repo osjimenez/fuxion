@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion", "core\portable\Fuxion.csproj", "{5761CB44-504F-468B-8263-39F59EEBBB17}"
 EndProject
@@ -19,6 +19,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{ABD253
 		.build\Fuxion.Data.ver = .build\Fuxion.Data.ver
 		.build\Fuxion.Domain.ver = .build\Fuxion.Domain.ver
 		.build\Fuxion.Identity.ver = .build\Fuxion.Identity.ver
+		.build\Fuxion.Log4net.ver = .build\Fuxion.Log4net.ver
 		.build\Fuxion.SimpleInjector.ver = .build\Fuxion.SimpleInjector.ver
 		.build\Fuxion.ver = .build\Fuxion.ver
 		.build\Fuxion.Web.ver = .build\Fuxion.Web.ver
@@ -55,6 +56,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "domain", "domain", "{70B77439-9ADE-4981-BDC6-019CDA33AA76}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion.Domain", "domain\portable\Fuxion.Domain.csproj", "{AEFC0B32-3C2A-4FA2-9E23-F56D75CA3EB2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Log4net", "Log4net", "{A9C7E09B-4FBA-400D-9DD6-D04BEB8120EE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion.Log4net", "modules\Log4net\net46\Fuxion.Log4net.csproj", "{1CF0E88A-CD3D-4D49-8650-F5F7FF3A1334}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -260,6 +265,22 @@ Global
 		{AEFC0B32-3C2A-4FA2-9E23-F56D75CA3EB2}.Release|x64.Build.0 = Release|Any CPU
 		{AEFC0B32-3C2A-4FA2-9E23-F56D75CA3EB2}.Release|x86.ActiveCfg = Release|Any CPU
 		{AEFC0B32-3C2A-4FA2-9E23-F56D75CA3EB2}.Release|x86.Build.0 = Release|Any CPU
+		{1CF0E88A-CD3D-4D49-8650-F5F7FF3A1334}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CF0E88A-CD3D-4D49-8650-F5F7FF3A1334}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1CF0E88A-CD3D-4D49-8650-F5F7FF3A1334}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{1CF0E88A-CD3D-4D49-8650-F5F7FF3A1334}.Debug|ARM.Build.0 = Debug|Any CPU
+		{1CF0E88A-CD3D-4D49-8650-F5F7FF3A1334}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1CF0E88A-CD3D-4D49-8650-F5F7FF3A1334}.Debug|x64.Build.0 = Debug|Any CPU
+		{1CF0E88A-CD3D-4D49-8650-F5F7FF3A1334}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1CF0E88A-CD3D-4D49-8650-F5F7FF3A1334}.Debug|x86.Build.0 = Debug|Any CPU
+		{1CF0E88A-CD3D-4D49-8650-F5F7FF3A1334}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1CF0E88A-CD3D-4D49-8650-F5F7FF3A1334}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1CF0E88A-CD3D-4D49-8650-F5F7FF3A1334}.Release|ARM.ActiveCfg = Release|Any CPU
+		{1CF0E88A-CD3D-4D49-8650-F5F7FF3A1334}.Release|ARM.Build.0 = Release|Any CPU
+		{1CF0E88A-CD3D-4D49-8650-F5F7FF3A1334}.Release|x64.ActiveCfg = Release|Any CPU
+		{1CF0E88A-CD3D-4D49-8650-F5F7FF3A1334}.Release|x64.Build.0 = Release|Any CPU
+		{1CF0E88A-CD3D-4D49-8650-F5F7FF3A1334}.Release|x86.ActiveCfg = Release|Any CPU
+		{1CF0E88A-CD3D-4D49-8650-F5F7FF3A1334}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -282,6 +303,8 @@ Global
 		{D2FC2951-253D-48C0-9E12-6CDB577E4AA2} = {9BD1DC06-35AA-4696-A6D8-46E1435D5C7E}
 		{C9D0F0DE-95F0-4C09-BF56-FA4E729FA0A9} = {9BD1DC06-35AA-4696-A6D8-46E1435D5C7E}
 		{AEFC0B32-3C2A-4FA2-9E23-F56D75CA3EB2} = {70B77439-9ADE-4981-BDC6-019CDA33AA76}
+		{A9C7E09B-4FBA-400D-9DD6-D04BEB8120EE} = {943161B7-5FFB-4700-99C0-7E8BFF4E15FC}
+		{1CF0E88A-CD3D-4D49-8650-F5F7FF3A1334} = {A9C7E09B-4FBA-400D-9DD6-D04BEB8120EE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		EnterpriseLibraryConfigurationToolBinariesPathV6 = packages\EnterpriseLibrary.TransientFaultHandling.6.0.1304.0\lib\portable-net45+win+wp8;packages\EnterpriseLibrary.TransientFaultHandling.Data.6.0.1304.1\lib\NET45

@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>Fuxion.Log4net</id>
+    <version>###version###</version>
+    <title>Fuxion Log4net</title>
+    <authors>Waf Estructuras Digitales, Oscar Jimenez, Asier Tarancón</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Fuxion library for Log4net logging.</description>
+    <releaseNotes />
+    <iconUrl>https://raw.githubusercontent.com/waf-es/Fuxion/develop/res/logo/fuxion.png</iconUrl>
+    <projectUrl>https://github.com/waf-es/Fuxion</projectUrl>
+    <licenseUrl>https://raw.githubusercontent.com/waf-es/Fuxion/develop/LICENSE</licenseUrl>
+    <dependencies>
+      <dependency id="Fuxion" version="0.0.1-alpha434" />
+      <dependency id="log4net" version="2.0.5" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="bin\Release\Fuxion.Log4net.dll" target="lib\net46\Fuxion.Log4net.dll" />
+    <file src="bin\Release\Fuxion.Log4net.pdb" target="lib\net46\Fuxion.Log4net.pdb" />
+	  <file src="bin\Release\log4net.config" target="content\log4net.config" />
+    <file src="bin\Release\install.Waf.Logging.Log4net.ps1" target="tools\install.ps1" />
+  </files>
+</package>
