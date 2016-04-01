@@ -9,7 +9,12 @@ namespace Fuxion.Logging
 {
 	public class Log4netFactory : MarshalByRefObject,  ILogFactory
 	{
-		private static readonly WrapperMap s_wrapperMap = new WrapperMap(new WrapperCreationHandler(WrapperCreationHandler));
+        public Log4netFactory(string configFileName = null)
+        {
+            this.configFileName = configFileName ?? "log4net.config";
+        }
+        string configFileName;
+        private static readonly WrapperMap s_wrapperMap = new WrapperMap(new WrapperCreationHandler(WrapperCreationHandler));
 		private static ILoggerWrapper WrapperCreationHandler(ILogger logger) { return new Log4netLog(logger); }
 		private static ILog4netLog WrapLogger(ILogger logger) { return (ILog4netLog)s_wrapperMap.GetWrapper(logger); }
 		public ILog Create(Type declaringType)
@@ -21,7 +26,7 @@ namespace Fuxion.Logging
         {
             XmlConfigurator.ConfigureAndWatch(
                 new FileInfo(
-                    Path.GetDirectoryName(this.GetType().Assembly.Location) + @"\log4net.config"));
+                    Path.GetDirectoryName(this.GetType().Assembly.Location) + $@"\{configFileName}"));
         }
 	}
 }
