@@ -41,6 +41,8 @@
     <Compile Include="Collections\Generic\GenericEqualityComparer.cs" />
     <Compile Include="Collections\ObjectModel\DeactivatableObservableCollection.cs" />
     <Compile Include="EventHandler.cs" />
+    <Compile Include="Factories\FunctionFactory.cs" />
+    <Compile Include="Factories\InstanceFactory.cs" />
     <Compile Include="Printer.cs" />
     <Compile Include="System-Extensions.cs" />
     <Compile Include="Factories\Factory.cs" />
