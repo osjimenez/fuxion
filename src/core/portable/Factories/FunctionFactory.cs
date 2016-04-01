@@ -8,8 +8,8 @@ namespace Fuxion.Factories
 {
     public class FunctionFactory<T> : IFactory
     {
-        public FunctionFactory(Func<T> createInstanceFunction) { this.createInstanceFunction = createInstanceFunction; }
-        public FunctionFactory(Func<IEnumerable<T>> createInstancesFunction) { this.createInstancesFunction = createInstancesFunction; }
+        public FunctionFactory(Func<T> createInstanceFunction) { this.createInstanceFunction = createInstanceFunction; instanceSetted = true; }
+        public FunctionFactory(Func<IEnumerable<T>> createInstancesFunction) { this.createInstancesFunction = createInstancesFunction; instancesSetted = true; }
         bool instanceSetted = false;
         Func<T> createInstanceFunction;
         bool instancesSetted = false;
