@@ -90,5 +90,20 @@ namespace System
             return false;
         }
         #endregion
+        #region TimeSpan
+        public static string ToTimeString(this TimeSpan ts)
+        {
+            string res = "";
+            if (ts.Days > 0) res += ts.Days + "d ";
+            if (ts.Hours > 0) res += ts.Hours + "h ";
+            if (ts.Minutes > 0) res += ts.Minutes + "m ";
+            if (ts.Seconds > 0) res += ts.Seconds + "s ";
+            if (ts.Milliseconds > 0) res += ts.Milliseconds + "ms ";
+            //if (ts.Ticks > 0) res += ts.Ticks + " ticks ";
+            res = res.Trim();
+            if (string.IsNullOrWhiteSpace(res)) res = "0ms";
+            return res;
+        }
+        #endregion
     }
 }

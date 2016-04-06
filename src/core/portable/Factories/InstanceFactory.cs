@@ -16,11 +16,13 @@ namespace Fuxion.Factories
         IEnumerable<T> instances;
         public object Get(Type type)
         {
+            if (typeof(T) != type) throw new NotImplementedException();
             if (!instanceSetted) throw new NotImplementedException();
             return instance;
         }
         public IEnumerable<object> GetMany(Type type)
         {
+            if (typeof(T) != type) throw new NotImplementedException();
             if (!instancesSetted) throw new NotImplementedException();
             return (IEnumerable<object>)instances;
         }
