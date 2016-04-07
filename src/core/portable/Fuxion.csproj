@@ -75,6 +75,7 @@
     <Compile Include="Reflection\AttributeNotFoundException.cs" />
     <Compile Include="Reflection\System-Extensions.cs" />
     <Compile Include="Threading\Locker.cs" />
+    <Compile Include="Threading\Tasks\System-Extensions.cs" />
     <Compile Include="Threading\Tasks\TaskManager.cs" />
     <Compile Include="Web\Patchable.cs" />
     <Compile Include="Xml\XElementExtensions.cs" />

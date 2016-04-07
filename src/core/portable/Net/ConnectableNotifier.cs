@@ -213,8 +213,8 @@ namespace Fuxion.Net
 						IsDisconnectCancellationRequested = false;						
 						//log.Verbose(string.Format("({0}) NUEVA TARE DE DESCONEXION ... ", Thread.CurrentThread.ManagedThreadId));
 						State = ConnectionState.Closing;
-						//log.Verbose(string.Format("({0}) ESPERANDO CANCELACION DE CONEXION ... ", Thread.CurrentThread.ManagedThreadId));
-						TaskManager.CancelAndWait(false, connectionTask, keepAliveTask);
+                        //log.Verbose(string.Format("({0}) ESPERANDO CANCELACION DE CONEXION ... ", Thread.CurrentThread.ManagedThreadId));
+                        new[] { connectionTask, keepAliveTask }.CancelAndWait(false);
 					    try
 					    {
 					        OnDisconnect();

@@ -21,75 +21,18 @@ namespace Fuxion.Threading.Tasks
 			tasks.Write(l => l.Add(entry));
             //tasks.Write(l => l.Add(entry));
 		}
-	    private static ITaskManagerEntry SearchEntry(Task task, bool throwExceptionIfNotFound = true)
-		{
-			//Busco entre las tareas administradas cual tiene el id
-			var res = tasks.Read(l => l.FirstOrDefault(e => e.Task == task));
-			//Compruebo si se encontró y debo lanzar una excepción
-			if (res == null && throwExceptionIfNotFound)
+        internal static ITaskManagerEntry SearchEntry(Task task, bool throwExceptionIfNotFound = true)
+        {
+            //Busco entre las tareas administradas cual tiene el id
+            var res = tasks.Read(l => l.FirstOrDefault(e => e.Task == task));
+            //Compruebo si se encontró y debo lanzar una excepción
+            if (res == null && throwExceptionIfNotFound)
                 throw new ArgumentException("La tarea no esta administrada por el TaskManager." + task.CreationOptions.ToString()); // TODO ALMU: QUITAR "+task.CreationOptions.ToString()"
-			return res;
-		}
-		public static void Cancel(this Task task, bool throwExceptionIfNotRunning = true)
-		{
-			//Busco la entrada de la tarea
-			var entry = SearchEntry(task, throwExceptionIfNotRunning);
-			if (entry != null)
-			{
-				//Cancelo la tarea
-				entry.Cancel();
-				//Si la tarea esta dormida la despierto para que se pueda cancelar
-				if (entry.IsSleeping) entry.AutoResetEvent.Set();
-			}
-		}
-        public static void CancelAndWait(this Task task, bool throwExceptionIfNotRunning = true) { CancelAndWait(throwExceptionIfNotRunning, task); }
-        public static void CancelAndWait(params Task[] tasks) { CancelAndWait(true, tasks); }
-		public static void CancelAndWait(bool throwExceptionIfNotRunning, params Task[] tasks)
-		{
-			foreach (var task in tasks)
-				task.Cancel(throwExceptionIfNotRunning);
-			Task.WaitAll(tasks.Where(t => t != null).ToArray());
-		}
-		public static void OnCancel(this Task task, Action<object,EventArgs> action)
-		{
-			SearchEntry(task, true).Canceled += (s, e) => action.Invoke(s, e);
-		}
-		public static bool IsCancellationRequested(this Task task, bool throwExceptionIfNotRunning = false)
-		{
-			var item = tasks.Read(l => l.FirstOrDefault(i => i.Task == task));
-			if (item != null)
-			{
-				return item.IsCancellationRequested;
-			} else
-                if (throwExceptionIfNotRunning) throw new ArgumentException("IsCancellationRequested: La tarea no esta administrada por el TaskManager." + task.CreationOptions.ToString()); // TODO ALMU: QUITAR "IsCancellationRequested:" Y "task.CreationOptions.ToString()"
-				else return false;
-		}
-		public static TResult WaitResult<TResult>(this Task<TResult> task) { return WaitResult(task, TimeSpan.Zero); }
-		public static TResult WaitResult<TResult>(this Task<TResult> task, TimeSpan timeout)
-		{
-            try {
-                if (timeout == TimeSpan.Zero) task.Wait();
-                else task.Wait(timeout);
-                return task.Result;
-            }catch(AggregateException aex)
-            {
-                aex = aex.Flatten();
-                if (aex.InnerExceptions.Count == 1) throw aex.InnerException;
-                throw aex;
-            }
-		}
-	    public static void Sleep(this Task task, TimeSpan timeout)
-	    {
-	        var entry = SearchEntry(task);
-	        //if (entry != null)
-	        //{
-	        entry.IsSleeping = true;
-	        entry.AutoResetEvent.WaitOne(timeout);
-	        entry.IsSleeping = false;
-	        //} else throw new InvalidOperationException("No se puede usar Sleep en una tarea que no es administrada por el TaskManager.");
-	    }
-	    #region Action
-		private static ITaskManagerEntry CreateEntry(Action action, TaskScheduler scheduler = null, TaskCreationOptions options = default(TaskCreationOptions))
+            return res;
+        }
+
+        #region Action
+        private static ITaskManagerEntry CreateEntry(Action action, TaskScheduler scheduler = null, TaskCreationOptions options = default(TaskCreationOptions))
 		{
 			var entry = new ActionTaskManagerEntry(action, scheduler, options);
 			AddEntry(entry);
@@ -554,7 +497,7 @@ namespace Fuxion.Threading.Tasks
         public static Task<TResult> StartNew<T1, T2, T3, T4, T5, T6, TResult>(Func<T1, T2, T3, T4, T5, T6, TResult> func, T1 param1, T2 param2, T3 param3, T4 param4, T5 param5, T6 param6, TaskScheduler scheduler) { return StartNew(func, param1, param2, param3, param4, param5, param6, scheduler, default(TaskCreationOptions)); }
         public static Task<TResult> StartNew<T1, T2, T3, T4, T5, T6, TResult>(Func<T1, T2, T3, T4, T5, T6, TResult> func, T1 param1, T2 param2, T3 param3, T4 param4, T5 param5, T6 param6, TaskCreationOptions options) { return StartNew(func, param1, param2, param3, param4, param5, param6, null, options); }
         #endregion
-		interface ITaskManagerEntry
+		internal interface ITaskManagerEntry
 		{
 			Task Task { get; }
 			bool IsCancellationRequested { get; }
