@@ -13,7 +13,10 @@ namespace Fuxion.Logging
         public Log4netFactory(string configFilePath = null)
         {
             if (configFilePath == null)
-                this.configFilePath = Path.GetDirectoryName(GetType().Assembly.Location) + $@"\{configFilePath}";
+            {
+                var entryPath = Assembly.GetEntryAssembly().Location;
+                this.configFilePath = entryPath + ".log4net";
+            }
             else
                 this.configFilePath = configFilePath;
         }
