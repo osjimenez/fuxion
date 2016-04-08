@@ -17,8 +17,8 @@ namespace Fuxion.Factories
         public static void AddToPipe(IFactory factory) { _pipe = _pipe.Add(factory); }
         public static void InsertToPipe(int index, IFactory factory) { _pipe = _pipe.Insert(index, factory); }
         public static void ClearPipe() { _pipe = _pipe.Clear(); }
-        public static T Get<T>() { return (T)Get(typeof(T)); }
-        public static object Get(Type type)
+        public static T Get<T>(bool createDefaultInstanceIfAllFactoriesFail = true) { return (T)Get(typeof(T), createDefaultInstanceIfAllFactoriesFail); }
+        public static object Get(Type type, bool createDefaultInstanceIfAllFactoriesFail = true)
         {
             // TODO - Oscar - Collect all factory exceptions and if any factory can create the instance, can return a good documented aggregateexception or similar
             foreach (var fac in _pipe)
@@ -30,7 +30,9 @@ namespace Fuxion.Factories
                 catch { }
             }
             try {
-                return Activator.CreateInstance(type);
+                if(createDefaultInstanceIfAllFactoriesFail)
+                    return Activator.CreateInstance(type);
+                throw new NotSupportedException($"Cannot create instance of type '{type.Name}'");
             }catch(Exception)
             {
                 Debug.WriteLine("");

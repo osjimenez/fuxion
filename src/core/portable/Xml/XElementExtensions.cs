@@ -18,7 +18,7 @@ namespace System.Xml
 				{
 					var xmlSerializer = new XmlSerializer(typeof(T));
 					xmlSerializer.Serialize(streamWriter, obj);
-                    return XElement.Parse(Encoding.Unicode.GetString(memoryStream.ToArray(), 0, (int)memoryStream.Length));
+                    return XElement.Parse(Encoding.UTF8.GetString(memoryStream.ToArray(), 0, (int)memoryStream.Length));
 				}
 			}
 		}
@@ -30,14 +30,14 @@ namespace System.Xml
 				{
 					var xmlSerializer = new XmlSerializer(type);
 					xmlSerializer.Serialize(streamWriter, obj);
-                    return XElement.Parse(Encoding.Unicode.GetString(memoryStream.ToArray(), 0, (int)memoryStream.Length));
+                    return XElement.Parse(Encoding.UTF8.GetString(memoryStream.ToArray(), 0, (int)memoryStream.Length));
                 }
 			}
 		}
 		public static T FromXElement<T>(this XElement xElement)
 		{
             var str = xElement.ToString();
-            using (var memoryStream = new MemoryStream(Encoding.Unicode.GetBytes(str.ToCharArray())))
+            using (var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(str.ToCharArray())))
             {
                 var xmlSerializer = new XmlSerializer(typeof(T));
                 return (T)xmlSerializer.Deserialize(memoryStream);

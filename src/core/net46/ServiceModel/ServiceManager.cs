@@ -12,7 +12,7 @@ namespace Fuxion.ServiceModel
 	{
         //public CompositionContainer Container { get { return Singleton.Get<CompositionContainer>(); } }
         // TODO - Oscar - Comprobar que la factoria funciona aqui
-        public CompositionContainer Container { get { return Factory.Get<CompositionContainer>(); } }
+        public CompositionContainer Container { get { return Factory.Get<CompositionContainer>(false); } }
 		public ServiceManager()//CompositionContainer container)
 		{
 			if (Container == null) throw new ArgumentNullException("Container", "El contenedor 'CompositionContainer' debe estar agregado al 'Waf.Sigleton' para que el administrador de servicios pueda crear las instancias mediante MEF.");

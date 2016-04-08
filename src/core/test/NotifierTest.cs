@@ -31,6 +31,14 @@ namespace Fuxion.Test
     }
     public class NotifierMock : Notifier<NotifierMock>
     {
+        #region Protected
+        protected int Integer_Protected_AutoImplemented_WithoutDefault_RaiseAlways_NotLocked
+        {
+            get { return GetValue<int>(); }
+            set { SetValue(value, false); }
+        }
+        public void ChangeProtected(int value) { Integer_Protected_AutoImplemented_WithoutDefault_RaiseAlways_NotLocked = value; }
+        #endregion
         #region Integer_AutoImplemented
         public int Integer_AutoImplemented_WithoutDefault_RaiseAlways_Locked
         {
@@ -264,8 +272,15 @@ namespace Fuxion.Test
         }
         #endregion
     }
+    public class DerivedNotifierMock : NotifierMock { }
     public class Notifier_Test
     {
+        [Fact]
+        public void ProtectedPropertyTest()
+        {
+            var o = new DerivedNotifierMock();
+            o.ChangeProtected(1);
+        }
         #region Variables
         //private static TestContext context;
         private NotifierMock mock;
