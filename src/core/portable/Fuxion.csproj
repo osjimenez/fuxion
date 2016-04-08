@@ -44,6 +44,7 @@
     <Compile Include="Factories\FunctionFactory.cs" />
     <Compile Include="Factories\InstanceFactory.cs" />
     <Compile Include="Printer.cs" />
+    <Compile Include="Singleton.cs" />
     <Compile Include="System-Extensions.cs" />
     <Compile Include="Factories\Factory.cs" />
     <Compile Include="Factories\IFactory.cs" />
