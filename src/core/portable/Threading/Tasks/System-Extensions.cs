@@ -21,7 +21,7 @@ namespace Fuxion.Threading.Tasks
                 if (entry.IsSleeping) entry.AutoResetEvent.Set();
             }
         }
-        public static void CancelAndWait(this Task task, bool throwExceptionIfNotRunning = true) { task.CancelAndWait(throwExceptionIfNotRunning); }
+        public static void CancelAndWait(this Task task, bool throwExceptionIfNotRunning = true) { new[] { task }.CancelAndWait(throwExceptionIfNotRunning); }
 
 
         public static void CancelAndWait(this IEnumerable<Task> tasks, bool throwExceptionIfNotRunning = true) {

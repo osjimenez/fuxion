@@ -23,8 +23,8 @@ namespace Fuxion.ServiceModel
 		public uint OpenTimeout { get; set; }
 		public uint ReceiveTimeout { get; set; }
 		public uint SendTimeout { get; set; }
-
-		protected internal virtual ServiceEndpoint CreateEndpoint(ContractDescription description, IMefServiceMetadata meta)
+        public string DnsName { get; set; }
+        protected internal virtual ServiceEndpoint CreateEndpoint(ContractDescription description, IMefServiceMetadata meta)
 		{
 			var bin = CreateBinding(meta);
 			bin.CloseTimeout = CloseTimeout == 0 ? TimeSpan.MaxValue : TimeSpan.FromSeconds(CloseTimeout);
@@ -32,8 +32,12 @@ namespace Fuxion.ServiceModel
 			bin.ReceiveTimeout = ReceiveTimeout == 0 ? TimeSpan.MaxValue : TimeSpan.FromSeconds(ReceiveTimeout);
 			bin.SendTimeout = SendTimeout == 0 ? TimeSpan.MaxValue : TimeSpan.FromSeconds(SendTimeout);
 			var uri = CreateUri(bin.Scheme, meta);
-			var address = new EndpointAddress(uri);
-			return new ServiceEndpoint(description, bin, address);
+            EndpointAddress address;
+            if (string.IsNullOrWhiteSpace(DnsName))
+                address = new EndpointAddress(uri);
+            else
+                address = new EndpointAddress(uri, new DnsEndpointIdentity(DnsName));
+            return new ServiceEndpoint(description, bin, address);
 		}
 		protected abstract Binding CreateBinding(IMefServiceMetadata meta);
 		protected virtual Uri CreateUri(string scheme, IMefServiceMetadata meta)

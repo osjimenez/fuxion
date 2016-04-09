@@ -201,7 +201,7 @@ namespace Fuxion.ComponentModel
                 oldValue = GetValue<T>(propertyName: propertyName);
             else
             {
-                oldValue = (T)GetType().GetRuntimeProperty(propertyName).GetValue(this, null);
+                oldValue = (T)GetType().GetTypeInfo().GetAllProperties().Single(p => p.Name == propertyName).GetValue(this, null);
                 //oldValue = (T)GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static).GetValue(this, null);
             }
             if (raiseOnlyIfNotEquals && EqualityComparer<T>.Default.Equals(oldValue, newValue))
@@ -249,7 +249,7 @@ namespace Fuxion.ComponentModel
             else
             {
                 // oldLockerValue = new ValueLocker<T>((T)GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static).GetValue(this, null));
-                oldLockerValue = new ValueLocker<T>((T)GetType().GetRuntimeProperty(propertyName).GetValue(this, null));
+                oldLockerValue = new ValueLocker<T>((T)GetType().GetTypeInfo().GetAllProperties().Single(p => p.Name == propertyName).GetValue(this, null));
                 PropertiesDictionary = PropertiesDictionary.Add(propertyName, oldLockerValue);
             }
             if (raiseOnlyIfNotEquals && ((oldLockerValue == null && value == null) || EqualityComparer<T>.Default.Equals(oldLockerValue.ObjectLocked, value)))
@@ -327,7 +327,7 @@ namespace Fuxion.ComponentModel
         {
             string memberName = expression.GetMemberName();
             //PropertyInfo prop = GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic).FirstOrDefault(p => p.Name == memberName);
-            PropertyInfo prop = GetType().GetRuntimeProperty(memberName);
+            PropertyInfo prop = GetType().GetTypeInfo().GetAllProperties().Single(p => p.Name == memberName);
             if (prop == null) throw new ArgumentException("No se ha encontrado la propiedad '" + memberName + "' en el tipo '" + GetType().Name + "'.");
             OnRaisePropertyChanged(memberName, previousValue, actualValue);
         }
