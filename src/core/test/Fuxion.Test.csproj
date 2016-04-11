@@ -39,6 +39,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Moq, Version=4.2.1510.2205, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Moq.4.2.1510.2205\lib\net40\Moq.dll</HintPath>
       <Private>True</Private>
@@ -86,6 +87,7 @@
     <Compile Include="LogTest.cs" />
     <Compile Include="MemoryKeyValueRepositoryTest.cs" />
     <Compile Include="NotifierTest.cs" />
+    <Compile Include="Patchable.cs" />
     <Compile Include="ToJsonTest.cs" />
     <Compile Include="ViewModelTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -102,6 +104,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="xunit.runner.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
