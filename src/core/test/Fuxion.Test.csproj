@@ -88,6 +88,7 @@
     <Compile Include="MemoryKeyValueRepositoryTest.cs" />
     <Compile Include="NotifierTest.cs" />
     <Compile Include="Patchable.cs" />
+    <Compile Include="Singleton.cs" />
     <Compile Include="ToJsonTest.cs" />
     <Compile Include="ViewModelTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
