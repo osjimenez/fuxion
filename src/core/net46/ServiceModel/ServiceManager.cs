@@ -27,7 +27,10 @@ namespace Fuxion.ServiceModel
 		public IEnumerable<MefServiceHost> Services { get; private set; }
 		public void OpenAllServices()
 		{
-			foreach (var ser in Services) if (ser.State != CommunicationState.Opened && ser.State != CommunicationState.Opening) ser.Open();
+			foreach (var ser in Services)
+                if (ser.State != CommunicationState.Opened 
+                    && ser.State != CommunicationState.Opening)
+                    ser.Open();
 		}
 	}
 }

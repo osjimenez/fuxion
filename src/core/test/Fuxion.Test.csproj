@@ -49,6 +49,8 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
       <HintPath>..\..\packages\xunit.abstractions.2.0.0\lib\net35\xunit.abstractions.dll</HintPath>
       <Private>True</Private>
@@ -88,6 +90,7 @@
     <Compile Include="MemoryKeyValueRepositoryTest.cs" />
     <Compile Include="NotifierTest.cs" />
     <Compile Include="Patchable.cs" />
+    <Compile Include="ServiceManager.cs" />
     <Compile Include="Singleton.cs" />
     <Compile Include="ToJsonTest.cs" />
     <Compile Include="ViewModelTest.cs" />
@@ -97,6 +100,10 @@
     <ProjectReference Include="..\..\modules\Log4net\net46\Fuxion.Log4net.csproj">
       <Project>{1cf0e88a-cd3d-4d49-8650-f5f7ff3a1334}</Project>
       <Name>Fuxion.Log4net</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\net46\Fuxion-net46.csproj">
+      <Project>{b16111a4-cdf6-40e8-9bee-1d5806543cb0}</Project>
+      <Name>Fuxion-net46</Name>
     </ProjectReference>
     <ProjectReference Include="..\portable\Fuxion.csproj">
       <Project>{5761cb44-504f-468b-8263-39f59eebbb17}</Project>
