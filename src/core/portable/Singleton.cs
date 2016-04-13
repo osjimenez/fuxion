@@ -126,7 +126,7 @@ namespace Fuxion
                 if (obj is SingletonKey)
                 {
                     var key = obj as SingletonKey;
-                    return key.Type == Type && key.Key.Equals(Key);
+                    return key.Type == Type && (key.Key == null || (key.Key != null && key.Key.Equals(Key)));
                 }
                 return false;
             }
