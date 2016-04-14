@@ -35,6 +35,12 @@ namespace System
         public static object FromJson(this string me, Type type) { return JsonConvert.DeserializeObject(me, type); }
         public static T CloneWithJson<T>(this T me) { return FromJson<T>(me.ToJson()); } //return (T)JsonConvert.DeserializeObject(JsonConvert.SerializeObject(me, me.GetType(), new JsonSerializerSettings()), me.GetType());
         #endregion
+        #region Transform
+        public static TResult Transform<TSource, TResult>(this TSource me, Func<TSource, TResult> transformFunction)
+        {
+            return transformFunction(me);
+        }
+        #endregion
         #region Reflections
         public static string GetFullNameWithAssemblyName(this Type me) { return $"{me.AssemblyQualifiedName.Split(',').Take(2).Aggregate("", (a, n) => a + ", " + n, a => a.Trim(' ', ','))}"; }
         public static string GetSignature(this Type type, bool useFullNames)
