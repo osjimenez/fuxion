@@ -55,7 +55,7 @@
     <Compile Include="Collections\WeakCollection.cs" />
     <Compile Include="Configuration\EncryptedFileConfiguration.cs" />
     <Compile Include="Configuration\FileConfiguration.cs" />
-    <Compile Include="Extensions.cs" />
+    <Compile Include="System-Extensions.cs" />
     <Compile Include="Net\DispatcherConnectableNotifier.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Runtime\InteropServices\SafeGCHandle.cs" />

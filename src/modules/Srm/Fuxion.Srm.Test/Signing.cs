@@ -6,18 +6,32 @@ using PCLCrypto;
 using System.Text;
 using System.Diagnostics;
 using Xunit.Abstractions;
+using System.Linq;
 
 namespace Fuxion.Srm.Test
 {
-    public class SignTest
+    public class Signing
     {
-        public SignTest(ITestOutputHelper output)
+        public Signing(ITestOutputHelper output)
         {
             this.output = output;
         }
         ITestOutputHelper output;
-        [Fact]
-        public void TestMethod1()
+        [Theory]
+        [InlineData]
+        public void Sign_ExportKey()
+        {
+            var k = AsymmetricKeyAlgorithmProvider.OpenAlgorithm(AsymmetricAlgorithm.RsaSignPssSha512).CreateKeyPair(2048);
+            var full = k.Export();
+            var @public = k.ExportPublicKey();
+            var pars = k.ExportParameters(true);
+            output.WriteLine($"key exported with lenght of '{full.Length}' bytes");
+            var imported = AsymmetricKeyAlgorithmProvider.OpenAlgorithm(AsymmetricAlgorithm.RsaSignPssSha512).ImportKeyPair(full);
+        }
+        //[Fact]
+        [Theory]
+        [InlineData]
+        public void Sign_FirstApproach()
         {
             var input = new DataToSign { IntegerValue = 137, StringValue = "fuxion :)", DateTimeOffsetValue = DateTimeOffset.Now };
             var json = input.ToJson();
