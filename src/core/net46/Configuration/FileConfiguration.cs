@@ -7,10 +7,12 @@ using System.Reflection;
 using System.Text;
 using System.Xml.Linq;
 using System.Xml;
+using System.ComponentModel.Composition;
+
 namespace Fuxion.Configuration
 {
-    //[Export(typeof(IConfigurationManager))]
-    //[PartCreationPolicy(CreationPolicy.Shared)]
+    [Export(typeof(IConfigurationManager))]
+    [PartCreationPolicy(CreationPolicy.Shared)]
     public class FileConfiguration : IConfigurationManager
     {
         public FileConfiguration()

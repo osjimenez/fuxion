@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Microsoft.CSharp.RuntimeBinder;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,6 +7,8 @@ using System.Dynamic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.CompilerServices;
+
 namespace Fuxion.Web
 {
     public sealed class Patchable<T> : DynamicObject where T : class
@@ -27,7 +30,10 @@ namespace Fuxion.Web
         {
             var pro = typeof(T).GetRuntimeProperty(binder.Name);
             if (pro != null)
+            {
                 _changedProperties.Add(pro, value);
+                return true;
+            }
             return base.TrySetMember(binder, value);
         }
         public void Patch(T obj)
@@ -71,6 +77,28 @@ namespace Fuxion.Web
             if (value != null && isNullable)
                 res = Activator.CreateInstance(typeof(Nullable<>).MakeGenericType(valueType), res);
             return res;
+        }
+        public object GetMember(string propName)
+        {
+            var binder = Binder.GetMember(CSharpBinderFlags.None,
+                  propName, this.GetType(),
+                  new List<CSharpArgumentInfo>{
+                       CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.None, null)});
+            var callsite = CallSite<Func<CallSite, object, object>>.Create(binder);
+
+            return callsite.Target(callsite, this);
+        }
+
+        public void SetMember(string propName, object val)
+        {
+            var binder = Binder.SetMember(CSharpBinderFlags.None,
+                   propName, this.GetType(),
+                   new List<CSharpArgumentInfo>{
+                       CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.None, null),
+                       CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.None, null)});
+            var callsite = CallSite<Func<CallSite, object, object, object>>.Create(binder);
+
+            callsite.Target(callsite, this, val);
         }
     }
 }
