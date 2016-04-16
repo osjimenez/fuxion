@@ -29,7 +29,7 @@ namespace System.Reflection
 				throw new AttributeNotFoundException(member, typeof(TAttribute));
 			return att;
 		}
-		public static bool HasCustomAttribute<TAttribute>(this MemberInfo member, bool inherit = true, bool exceptionIfMoreThanOne = true) where TAttribute : Attribute
+        public static bool HasCustomAttribute<TAttribute>(this MemberInfo member, bool inherit = true, bool exceptionIfMoreThanOne = true) where TAttribute : Attribute
 		{
 			var att = member.GetCustomAttribute<TAttribute>(inherit, false, exceptionIfMoreThanOne);
 			return att != null;

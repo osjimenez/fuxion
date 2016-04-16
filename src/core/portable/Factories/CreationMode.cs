@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Factories
 {
-    public class FactoryCreationException : FuxionException
+    public enum CreationMode
     {
-        public FactoryCreationException(string message) : base(message) { }
+        Single,
+        Multiple,
+        Both
     }
 }

@@ -1,0 +1,13 @@
+﻿[
+  {
+    "Data": {
+      "Content": {
+        "ExpirationUtcTime": "2016-05-16T18:12:26.1471329Z",
+        "HardwareId": "baea3230-49c0-49c0-b603-7fee4f945328",
+        "ProductId": "fd20e06d-2711-434a-922a-5e04b22a6742",
+        "SignatureUtcTime": "2016-04-16T18:12:26.2757196Z"
+      }
+    },
+    "Signature": "Rsoj/3iUNvQm+1vDCl0lCSodxEY+M3wi36QtDYW4NxZU8aNPGhELJ4/yNwBY6CAUh0g2NmzoedOCzjGU8dUidMW11cUCFWCWtXG77Y9PBjg9iGfVYjTB+q23PyRD+/fco1T5v/6oGtedNblWrZJwEU7iugVpMf3r3b9TuIXM/NzIm6SyZS/dMmITwUEAappR/sj/gHR91qM2KlToLaPOIE1F8uF80DANpM7F8dfNp07MzocXOC6/kILEmr5Hx8qRqh+3vT+e9Ec5BhMCQGk2odQoL/6WuH7dumXGUnVIj1+jha1a48vveun6T5OsDgRE7fUcuJIV4zoRIprqBRbE+w=="
+  }
+]

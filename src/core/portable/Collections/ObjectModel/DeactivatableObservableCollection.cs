@@ -76,11 +76,11 @@ namespace Fuxion.Collections.ObjectModel
 		{
 			if (originalList == null || subtituteList == null)
 				throw new ArgumentNullException("list");
-			if (!originalList.All(o => this.Contains(o))) throw new ArgumentException("Alguno de los elementos de la lista de origen no esta en la colección.");
+			if (!originalList.All(o => this.Contains(o))) throw new ArgumentException("Some elements of the original list aren't in collection.");
 			var oriList = originalList.ToList();
 			var subList = subtituteList.ToList();
-			if (oriList.Count != subList.Count) throw new ArgumentException("El tamaño de las listas de origen y sustitución no pueden ser distintos.");
-			if (oriList.Count == 0) throw new ArgumentException("Las listas de elementos no pueden estar vacias.");
+			if (oriList.Count != subList.Count) throw new ArgumentException("Original and substitute lists size cannot be differ.");
+			if (oriList.Count == 0) throw new ArgumentException("Original and substitute lists cannot be empty.");
 			suppressNotification = true;
 			for (int i = 0; i < oriList.Count; i++)
 				this[this.IndexOf(oriList[i])] = subList[i];

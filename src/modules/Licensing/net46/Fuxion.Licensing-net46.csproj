@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{1CF0E88A-CD3D-4D49-8650-F5F7FF3A1334}</ProjectGuid>
+    <ProjectGuid>{639F2C3A-1CA1-4F20-AD1B-E446624ACA9F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Fuxion.Log4net</RootNamespace>
-    <AssemblyName>Fuxion.Log4net</AssemblyName>
+    <RootNamespace>Fuxion.Licensing_net46</RootNamespace>
+    <AssemblyName>Fuxion.Licensing-net46</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -30,8 +30,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -44,30 +44,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Logging\ILog4netLog.cs" />
-    <Compile Include="Logging\Log4netFactory.cs" />
-    <Compile Include="Logging\Log4netLog.cs" />
-    <Compile Include="Logging\TcpAppender.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Fuxion.Log4net.nuspec">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Fuxion.Log4net.version" />
-    <None Include="install.Waf.Logging.Log4net.ps1">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="log4net.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\core\portable\Fuxion.csproj">
-      <Project>{5761cb44-504f-468b-8263-39f59eebbb17}</Project>
-      <Name>Fuxion</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -77,15 +57,4 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <PropertyGroup>
-    <BuildPath>$(SolutionDir).build\</BuildPath>
-    <NugetPath>$(BuildPath)nuget\nuget.exe</NugetPath>
-  </PropertyGroup>
-  <Import Project="$(BuildPath)Fuxion.Build.Targets" />
-  <Target Name="BeforeBuild" Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <BuildTask TargetName="BeforeBuild" NugetPath="$(NugetPath)" />
-  </Target>
-  <Target Name="AfterBuild" Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <BuildTask TargetName="AfterBuild" NugetPath="$(NugetPath)" />
-  </Target>
 </Project>

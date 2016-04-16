@@ -27,8 +27,8 @@ public class BuildTask : Microsoft.Build.Utilities.Task
     }
     [Required]
     public string TargetName { get; set; }
-    [Required]
-    public string VersionFile { get; set; }
+    //[Required]
+    //public string VersionFile { get; set; }
     [Required]
     public string NugetPath { get; set; }
     private void BeforeBuild()
@@ -98,12 +98,14 @@ public class BuildTask : Microsoft.Build.Utilities.Task
                 if (proc.ExitCode != 0)
                     Log.LogError("NuGet exit code: " + proc.ExitCode);
             }
-            //File.Delete(nuspecTempPath);
+            File.Delete(nuspecTempPath);
         }
     }
     private Version GetVersion()
     {
-        return new Version(File.ReadAllText(Path.Combine(Path.GetDirectoryName(BuildEngine.ProjectFileOfTaskNode), VersionFile)));
+        var projectFile = BuildEngine.ProjectFileOfTaskNode;
+        var versionFilePath = Directory.GetFiles(Path.GetDirectoryName(projectFile), "*.version", SearchOption.TopDirectoryOnly).First();
+        return new Version(File.ReadAllText(Path.Combine(Path.GetDirectoryName(BuildEngine.ProjectFileOfTaskNode), versionFilePath)));
     }
     private static string VersionToSemanticVersion(Version version)
     {

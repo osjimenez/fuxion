@@ -27,7 +27,6 @@
     AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll" >
     <ParameterGroup>
       <TargetName ParameterType="System.String" Required="true" />
-      <VersionFile ParameterType="System.String" Required="true" />
       <NugetPath ParameterType="System.String" Required="true" />
     </ParameterGroup>
     <Task>

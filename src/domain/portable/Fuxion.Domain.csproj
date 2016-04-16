@@ -63,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Fuxion.Domain.nuspec" />
+    <None Include="Fuxion.Domain.version" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\core\portable\Fuxion.csproj">
@@ -85,10 +86,9 @@
   <Import Project="$(BuildPath)Fuxion.Build.Targets" />
   <Target Name="BeforeBuild" Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <!--<Exec Command="$(SolutionDir).build\nuget\NuGet update $(ProjectDir)packages.config -Prerelease -Id Fuxion -Source $(SolutionDir).build\nuget\source" />-->
-    <BuildTask TargetName="BeforeBuild" VersionFile="$(BuildPath)Fuxion.Domain.ver" NugetPath="$(NugetPath)" />
+    <BuildTask TargetName="BeforeBuild" NugetPath="$(NugetPath)" />
   </Target>
   <Target Name="AfterBuild" Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <BuildTask TargetName="AfterBuild" VersionFile="$(BuildPath)Fuxion.Domain.ver" NugetPath="$(NugetPath)" />
-    <BuildTask TargetName="AfterBuild" VersionFile="$(BuildPath)Fuxion.Domain.ver" NugetPath="$(NugetPath)" />
+    <BuildTask TargetName="AfterBuild" NugetPath="$(NugetPath)" />
   </Target>
 </Project>

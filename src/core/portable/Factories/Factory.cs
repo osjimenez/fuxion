@@ -7,7 +7,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using System.Reflection;
 namespace Fuxion.Factories
 {
     public static class Factory
@@ -15,11 +15,13 @@ namespace Fuxion.Factories
         private static ImmutableList<IFactory> _pipe = new IFactory[] { }.ToImmutableList();
         public static bool ReturnDefaultValueIfCanNotBeCreated { get; set; } = true;
         public static void AddToPipe(IFactory factory) { _pipe = _pipe.Add(factory); }
+        public static void RemoveFromPipe(IFactory factory) { _pipe = _pipe.Remove(factory); }
         public static void InsertToPipe(int index, IFactory factory) { _pipe = _pipe.Insert(index, factory); }
         public static void ClearPipe() { _pipe = _pipe.Clear(); }
         public static T Get<T>(bool createDefaultInstanceIfAllFactoriesFail = true) { return (T)Get(typeof(T), createDefaultInstanceIfAllFactoriesFail); }
         public static object Get(Type type, bool createDefaultInstanceIfAllFactoriesFail = true)
         {
+            object res = null;
             // TODO - Oscar - Collect all factory exceptions and if any factory can create the instance, can return a good documented aggregateexception or similar
             foreach (var fac in _pipe)
             {
@@ -29,15 +31,27 @@ namespace Fuxion.Factories
                 }
                 catch { }
             }
-            try {
-                if(createDefaultInstanceIfAllFactoriesFail)
-                    return Activator.CreateInstance(type);
-                throw new NotSupportedException($"Cannot create instance of type '{type.Name}'");
-            }catch(Exception)
+
+            var ti = type.GetTypeInfo();
+            if (ti.IsInterface)
             {
-                Debug.WriteLine("");
-                throw;
+                var att = ti.GetCustomAttribute<FactoryDefaultImplementationAttribute>(false, false);
+                if (att != null)
+                    try
+                    {
+                        return Activator.CreateInstance(att.Type);
+                    }
+                    catch { }
             }
+            if (createDefaultInstanceIfAllFactoriesFail)
+                try
+                {
+                    return Activator.CreateInstance(type);
+                }
+                catch { }
+            if (res == null)
+                throw new FactoryCreationException($"Cannot create instance of type '{type.Name}'");
+            return res;
         }
         public static IEnumerable<T> GetMany<T>() { return _pipe.SelectMany(fac => fac.GetMany(typeof(T)).Cast<T>()); }
         public static IEnumerable<object> GetMany(Type type) { return _pipe.SelectMany(fac => fac.GetMany(type)); }

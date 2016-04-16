@@ -13,7 +13,7 @@
     <licenseUrl>https://raw.githubusercontent.com/waf-es/Fuxion/develop/LICENSE</licenseUrl>
     <dependencies>
       <dependency id="Fuxion" version="0.0.1" />
-      <dependency id="SimpleInjector" version="3.1.2" />
+      <dependency id="SimpleInjector" version="3.1.3" />
     </dependencies>
   </metadata>
   <files>
