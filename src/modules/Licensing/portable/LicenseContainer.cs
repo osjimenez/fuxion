@@ -15,7 +15,6 @@ namespace Fuxion.Licensing
         public string Comment { get; set; }
         public string Signature { get; set; }
         public JRaw License { get; set; }
-
         public LicenseContainer SetLicense(License license) { License = new JRaw(license.ToJson(Formatting.None)); return this; }
         public T LicenseAs<T>() where T : License
         {
@@ -28,8 +27,9 @@ namespace Fuxion.Licensing
                 License.Value.ToString().FromJson<T>();
                 return true;
             }
-            catch
+            catch(Exception ex)
             {
+                Debug.WriteLine("" + ex.Message);
                 return false;
             }
         }

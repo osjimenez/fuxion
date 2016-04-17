@@ -34,7 +34,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="ExpirationLicense.cs" />
+    <Compile Include="KeyLicenseConstraint.cs" />
+    <Compile Include="LicenseConstraint.cs" />
     <Compile Include="IHardwareIdProvider.cs" />
     <Compile Include="ILicenseStore.cs" />
     <Compile Include="ILicenseProvider.cs" />
@@ -45,6 +46,7 @@
     <Compile Include="LicenseRequest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="LicensingManager.cs" />
+    <Compile Include="TimeLimitLicenseConstraint.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">

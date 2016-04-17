@@ -30,9 +30,11 @@ namespace Fuxion.Licensing.Test
         [Fact]
         public void LicenseContainer_Serialization()
         {
-            var hardwareId = Guid.NewGuid();
-            var productId = Guid.NewGuid();
-            var lic = new LicenseMock(hardwareId, productId);//, DateTime.UtcNow, DateTime.UtcNow);
+            var hardwareId = Guid.NewGuid().ToString();
+            var productId = Guid.NewGuid().ToString();
+            var lic = new LicenseMock();//, DateTime.UtcNow, DateTime.UtcNow);
+            lic.SetHarwareId(hardwareId);
+            lic.SetProductId(productId);
             var con = new LicenseContainer
             {
                 Signature = "signature"
@@ -45,6 +47,14 @@ namespace Fuxion.Licensing.Test
             var con2 = json.FromJson<LicenseContainer>();
             var json2 = con2.ToJson();
             output.WriteLine(json2);
+            Assert.Equal(json, json2);
+            Assert.True(con2.LicenseIs<LicenseMock>());
+            var lic2 = con2.LicenseAs<LicenseMock>();
+            Assert.NotNull(lic2);
+            Assert.Equal(lic.HardwareId.Key, lic2.HardwareId.Key);
+            Assert.Equal(lic.ProductId.Key, lic2.ProductId.Key);
+
+            //Assert.Equal(con2.LicenseAs<LicenseMock>(), lic);
 
             var time = new Random((int)DateTime.Now.Ticks).Next(500, 1500);
             output.WriteLine("Time: " + time);
@@ -54,51 +64,25 @@ namespace Fuxion.Licensing.Test
             var json3 = con3.ToJson();
             output.WriteLine(json3);
 
-            Assert.Equal(json, json2);
             Assert.Equal(json, json3);
-            Assert.True(con.LicenseIs<LicenseMock>());
-            Assert.NotNull(con.LicenseAs<LicenseMock>());
+            Assert.Equal(json2, json3);
+            Assert.True(con3.LicenseIs<LicenseMock>());
+            var lic3 = con3.LicenseAs<LicenseMock>();
+            Assert.NotNull(lic3);
+            Assert.Equal(lic.HardwareId.Key, lic3.HardwareId.Key);
+            Assert.Equal(lic.ProductId.Key, lic3.ProductId.Key);
 
-        }
-        [Fact]
-        public void LicenseContainer_Serialization2()
-        {
-            var hardwareId = Guid.NewGuid();
-            var productId = Guid.NewGuid();
-            var lic = new DeactivationLicense();//, DateTime.UtcNow, DateTime.UtcNow);
-            var con = new LicenseContainer
-            {
-                Signature = "signature"
-            }.SetLicense(lic);
-            output.WriteLine("ToJson:");
-            var json = con.ToJson();
-            output.WriteLine(json);
-
-            output.WriteLine("FromJson:");
-            var con2 = json.FromJson<LicenseContainer>();
-            var json2 = con2.ToJson();
-            output.WriteLine(json2);
-
-            var time = new Random((int)DateTime.Now.Ticks).Next(500, 1500);
-            output.WriteLine("Time: " + time);
-            Thread.Sleep(time);
-            output.WriteLine("FromJson timed:");
-            var con3 = json.FromJson<LicenseContainer>();
-            var json3 = con3.ToJson();
-            output.WriteLine(json3);
-
-            Assert.Equal(json, json2);
-            Assert.Equal(json, json3);
-            Assert.True(con.LicenseIs<DeactivationLicense>());
-            Assert.NotNull(con.LicenseAs<DeactivationLicense>());
+            //Assert.Equal(con3.LicenseAs<LicenseMock>(), lic);
 
         }
         [Fact]
         public void LicenseContainer_Signing()
         {
-            var hardwareId = Guid.NewGuid();
-            var productId = Guid.NewGuid();
-            var lic = new LicenseMock(hardwareId, productId);
+            var hardwareId = Guid.NewGuid().ToString();
+            var productId = Guid.NewGuid().ToString();
+            var lic = new LicenseMock();
+            lic.SetHarwareId(hardwareId);
+            lic.SetProductId(productId);
             var con = LicenseContainer.Sign(lic, LicensingManagerTest.FULL_KEY);
             output.WriteLine("ToJson:");
             output.WriteLine(con.ToJson());
@@ -109,9 +93,11 @@ namespace Fuxion.Licensing.Test
         [Fact]
         public void LicenseContainer_Comment()
         {
-            var hardwareId = Guid.NewGuid();
-            var productId = Guid.NewGuid();
-            var lic = new LicenseMock(hardwareId, productId);
+            var hardwareId = Guid.NewGuid().ToString();
+            var productId = Guid.NewGuid().ToString();
+            var lic = new LicenseMock();
+            lic.SetHarwareId(hardwareId);
+            lic.SetProductId(productId);
             var con = LicenseContainer.Sign(lic, LicensingManagerTest.FULL_KEY);
             con.Comment = "Original comment";
             output.WriteLine("Original ToJson:");
