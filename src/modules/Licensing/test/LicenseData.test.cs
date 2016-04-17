@@ -20,19 +20,21 @@ namespace Fuxion.Licensing.Test
         {
             var hardwareId = Guid.NewGuid();
             var productId = Guid.NewGuid();
-            var content = new LicenseMock(
-            
-             hardwareId,
-            productId
-            );
-            //var ld = new LicenseData(content);
-            //output.WriteLine("ToJson:");
-            //var json = ld.ToJson();
-            //output.WriteLine(json);
-            //output.WriteLine("FromJson:");
-            //var ld2 = json.FromJson<LicenseData>();
-            //var json2 = ld2.ToJson();
-            //output.WriteLine(json2);
+            var lic = new LicenseMock(hardwareId, productId);//, DateTime.UtcNow, DateTime.UtcNow);
+            var data = new LicenseData(lic);
+            var con = new LicenseContainer
+            {
+                Data = data,
+                Signature = "signature"
+            };
+            output.WriteLine("ToJson:");
+            var json = con.ToJson();
+            output.WriteLine(json);
+
+            output.WriteLine("FromJson:");
+            var con2 = json.FromJson<LicenseContainer>();
+            var json2 = con2.ToJson();
+            output.WriteLine(json2);
 
         }
     }

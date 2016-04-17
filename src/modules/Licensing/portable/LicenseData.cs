@@ -11,14 +11,15 @@ namespace Fuxion.Licensing
 {
     //[JsonConverter(typeof(LicenseDataConverter))]
     //[JsonConverter(typeof(RawJsonConverter))]
-    internal class LicenseData
+    public class LicenseData
     {
         public LicenseData() { }
         public LicenseData(License content)
         {
             //var type = content.GetType();
             //Content = content;
-            Content = new JRaw(content.ToJson(Formatting.None));
+            var json = content.ToJson(Formatting.None);
+            Content = new JRaw(json);
         }
         //License _Content;
         //[JsonIgnore]
@@ -79,7 +80,7 @@ namespace Fuxion.Licensing
         {
             //return JObject.Load(reader).ToObject(objectType);
 
-            var data = existingValue as LicenseData ?? new LicenseData();
+            var data = existingValue as LicenseData ?? new LicenseData(null);
 
             while (reader.Read())
             {

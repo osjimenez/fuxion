@@ -23,6 +23,22 @@ namespace Fuxion.Licensing.Test
         internal const string PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAl50el2YU/QKI1FJ53NO+MINLtPEQWC2fL+RLWlIhgcrB/wiBeYBh/J3NFQxmMB/nUoOPrFZ1BJ960iR+fzZDkrivEBxKn1GpR6UIabjU7lUK7zQIXbh4no4AnYuMDIikDD0k118xgNlWkT57lBzTcTDMsXxer9cPQcE4iRFt03nIK14JP0HkDOvKoQqYDAp5WYTtczoyWVj9/XIGlGopVlxBZnbkceflHarDfyKDwlbgZelFuydSYYynVz/90HJXBddnNf4pnm9D32P1jF0iqa9q2tnOh8r7aK/xzL0nWgfSipZVHSnQEbNr6RS3wWtc22PAzP5y1yNGXw4gAQAPkwIDAQAB";
         internal const string HARDWARE_ID = "{BAEA3230-49C0-49C0-B603-7FEE4F945328}";
         internal const string PRODUCT_ID = "{FD20E06D-2711-434A-922A-5E04B22A6742}";
+
+        //internal IEnumerable<LicenseContainer> 
+        internal const string JSON = @"
+        [{
+	        ""Data"": {
+		        ""Content"": {
+			        ""DeactivationUtcTime"": ""2016-05-17T12:13:55.2770984Z"",
+			        ""ExpirationUtcTime"": ""2017-04-17T12:13:55.2770984Z"",
+			        ""HardwareId"": ""baea3230-49c0-49c0-b603-7fee4f945328"",
+			        ""ProductId"": ""fd20e06d-2711-434a-922a-5e04b22a6742"",
+			        ""SignatureUtcTime"": ""2016-04-17T12:13:55.4066696Z""
+		        }
+	        },
+	        ""Signature"": ""Y5GGg+o6Ed9PDpvqc9aifcZj0Nm4wov4HYM4S6cR+VtaTjnx2OC0A4LM0HDKg04XwTqyxQ+Lza3+64iTKKqdIimQwAhP8uwdT/njxgNujbl1idkIUTYAYPO/32yZ3lyUoreZPynqmIWeGYSPtgS0ZnSmp5C5FPnj07yTGKiMXPjtWM0oXjCKfmB5PveYNdqrNeXbUoE1H0R8JKYc6M+/PYMV4lWwG2KvJ15yhsyTyqJp/7CNsnTANeZS3TY6YYfYjzzDzxrkJsUAmF3+qvoUZNB03Bk9Poo+EYexMW+bcG79zKjVGbJ99872yCpA2hDQc5A5k2t1elzAKr3MMnTgQg==""
+        }]";
+
         ITestOutputHelper output;
         internal static LicensingManager GetManager(bool withFullKey = false)
         {
@@ -80,7 +96,6 @@ namespace Fuxion.Licensing.Test
             man.Store.Add(lic);
             var tp = Factory.Get<ITimeProvider>(false) as TimeProviderMock;
             tp.SetOffset(TimeSpan.FromDays(offsetDays));
-            //var man = new LicensingManager(new LicenseStoreMock());
             // Validate content
             if (expectedValidation)
                 man.Validate<LicenseMock>(PUBLIC_KEY, true);

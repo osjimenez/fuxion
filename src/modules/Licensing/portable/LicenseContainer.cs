@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,25 @@ namespace Fuxion.Licensing
 {
     public class LicenseContainer
     {
-        internal LicenseData Data { get; set; }
+        public LicenseData Data { get; set; }
         public string Signature { get; set; }
+
+        //public JRaw Content { get; set; }
+        //public T ContentAs<T>()
+        //{
+        //    return Content.Value.ToString().FromJson<T>();
+        //}
+        //public bool ContentIs<T>()
+        //{
+        //    try
+        //    {
+        //        Content.Value.ToString().FromJson<T>();
+        //        return true;
+        //    }
+        //    catch
+        //    {
+        //        return false;
+        //    }
+        //}
     }
 }
