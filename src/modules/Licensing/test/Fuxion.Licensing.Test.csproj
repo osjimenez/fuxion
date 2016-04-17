@@ -101,7 +101,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="LicenseData.test.cs" />
+    <Compile Include="LicenseContainer.test.cs" />
     <Compile Include="LicensingManager.test.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

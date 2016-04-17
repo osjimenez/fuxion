@@ -40,17 +40,16 @@ namespace Fuxion.Licensing
         {
             try
             {
-                ICryptographicKey currentKey = AsymmetricKeyAlgorithmProvider.OpenAlgorithm(AsymmetricAlgorithm.RsaSignPssSha512).ImportPublicKey(key);
                 string validationMessage = null;
-                var lics = Store.Query()
-                    .Where(l =>
-                        CryptographicEngine.VerifySignature(currentKey, Encoding.Unicode.GetBytes(l.Data.ToJson(Formatting.Indented, new JsonSerializerSettings())), Convert.FromBase64String(l.Signature))
+                var cons = Store.Query()
+                    .Where(c =>
+                        c.VerifySignature(key)
                         && 
-                        l.Data.ContentIs<T>());
-                if (!lics.Any())
+                        c.LicenseIs<T>());
+                if (!cons.Any())
                     throw new LicenseValidationException($"Couldn't find any license of type '{typeof(T).Name}'");
-                lics.Any(l => l.Data.ContentAs<T>().Validate(out validationMessage));
-                if (!Store.Query().Any(l => l.Data.ContentIs<T>()  && l.Data.ContentAs<T>().Validate(out validationMessage)))
+                cons.Any(l => l.LicenseAs<T>().Validate(out validationMessage));
+                if (!Store.Query().Any(l => l.LicenseIs<T>()  && l.LicenseAs<T>().Validate(out validationMessage)))
                     throw new LicenseValidationException(validationMessage);
                 return true;
             }
@@ -59,23 +58,6 @@ namespace Fuxion.Licensing
                 if (throwExceptionIfNotValidate) throw;
                 return false;
             }
-        }        
-        public static LicenseContainer Sign(License content, string key) { return Sign(content, Convert.FromBase64String(key)); }
-        public static LicenseContainer Sign(License content, byte[] key)
-        {
-            ICryptographicKey currentKey = AsymmetricKeyAlgorithmProvider.OpenAlgorithm(AsymmetricAlgorithm.RsaSignPssSha512).ImportKeyPair(key);
-            //if (currentKey == null || !isFullKey) throw new InvalidKeyException($"You must provide a full key before sign licenses. Use '{nameof(SetKey)}' method.");
-            content.SignatureUtcTime = DateTime.UtcNow;
-            var data = new LicenseData(content);
-            var sign = CryptographicEngine.Sign(currentKey, Encoding.Unicode.GetBytes(data.ToJson(Formatting.Indented)));
-            var lic = new LicenseContainer
-            {
-                Data = data,
-                Signature = Convert.ToBase64String(sign)
-            };
-            return lic;
-        }        
+        }       
     }
-
-
 }

@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 using static Fuxion.Licensing.LicensingManager;
+using static Fuxion.Licensing.LicenseContainer;
 namespace Fuxion.Licensing.Test
 {
     public class LicensingManagerTest
@@ -112,8 +113,8 @@ namespace Fuxion.Licensing.Test
             HardwareId = hardwareId;
             ProductId = productId;
         }
-        public DateTime DeactivationUtcTime { get; set; }
-        public DateTime ExpirationUtcTime { get; set; }
+        public DateTime DeactivationUtcTime { get; private set; }
+        public DateTime ExpirationUtcTime { get; private set; }
         public Guid HardwareId { get; private set; }
         public Guid ProductId { get; private set; }
         protected override bool Validate(out string validationMessage)

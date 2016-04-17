@@ -1,14 +1,13 @@
 ﻿[
   {
-    "Data": {
-      "Content": {
-        "DeactivationUtcTime": "2016-05-17T12:35:18.9949965Z",
-        "ExpirationUtcTime": "2017-04-17T12:35:18.9949965Z",
-        "HardwareId": "baea3230-49c0-49c0-b603-7fee4f945328",
-        "ProductId": "fd20e06d-2711-434a-922a-5e04b22a6742",
-        "SignatureUtcTime": "2016-04-17T12:35:19.1210805Z"
-      }
-    },
-    "Signature": "Cd8+ZvH/brnPb7CUvJdpT/JqCWtbNg0ixf8cCnPcVyQnfTGrg77VPZ5NQwaKFdixErtujZb3bVxqTje+T3bFl1a8SCnA0XaspxeVW8Kpg2v1nBF0NKJFjGHP2aNwjpTBf6ZpF1UQuEzLQTdml+0uid3Y9VlqlnjapV6zdktlapC8UW/9kzuSApxIhxniyiFC6GXN5Y9UyHztrHEGRfKx7acCYPYTtgMxUZ3izL4UaJsWnQevnBhsAJsuu95ShooH+YEC1ryMvvO9BLoHbFHeFTBlVuAY3crzQ2lHUgy2fA9v7gk2EAvrL8ZnTXvWHqYNVuJclWtr1BsMEdgOmp5lig=="
+    "Comment": null,
+    "Signature": "AADDQvoZzsapUHQn5gDliwuBbSTBfwGWcApaseXM4505b096oscUzw+zDNAeIJmfkmNUc4KU9VX8Y/Jj/NQsJxhPwZOFW/6cyYposhJ5Ie2s6LWaeGgc60ZQbXwLyZth8KkAHdLPxBFPg83y60v44+UoODamAnLUlX98O6J6w7/IiEsnAlv5aW37HdrI3C5M9MmJXp1QURaSIamBPusscwrWkAHTybxg5o0EquOAGAOWSdfwlp26KBBCEUJVXS7FQowd93W89ohiiCh9VcNdpecCrZN+FYev3JLBeVMmCwvvCkLkvaQdOP5Z4bPd1BczT7vULc5IPW2DwHa9YvvSyA==",
+    "License": {
+      "DeactivationUtcTime": "2016-05-17T14:45:44.679589Z",
+      "ExpirationUtcTime": "2017-04-17T14:45:44.679589Z",
+      "HardwareId": "baea3230-49c0-49c0-b603-7fee4f945328",
+      "ProductId": "fd20e06d-2711-434a-922a-5e04b22a6742",
+      "SignatureUtcTime": "2016-04-17T14:45:44.679589Z"
+    }
   }
 ]
