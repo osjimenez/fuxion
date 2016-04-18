@@ -22,7 +22,7 @@ namespace Fuxion.Factories
         public static object Get(Type type, bool createDefaultInstanceIfAllFactoriesFail = true)
         {
             object res = null;
-            // TODO - Oscar - Collect all factory exceptions and if any factory can create the instance, can return a good documented aggregateexception or similar
+            // TODO - Oscar - Collect all factory exceptions and if no factory can create the instance, can return a good documented aggregateexception or similar
             foreach (var fac in _pipe)
             {
                 try
