@@ -9,5 +9,6 @@ namespace Fuxion.Factories
     public class FactoryCreationException : FuxionException
     {
         public FactoryCreationException(string message) : base(message) { }
+        public FactoryCreationException(string message, Exception innerException) : base(message, innerException) { }
     }
 }

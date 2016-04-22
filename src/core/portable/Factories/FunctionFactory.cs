@@ -6,26 +6,31 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Factories
 {
-    public class FunctionFactory<T> : IFactory
+    public class FunctionFactory<T> : ICheckableFactory
     {
-        public FunctionFactory(Func<T> createInstanceFunction) { this.createInstanceFunction = createInstanceFunction; instanceSetted = true; }
-        public FunctionFactory(Func<IEnumerable<T>> createInstancesFunction) { this.createInstancesFunction = createInstancesFunction; instancesSetted = true; }
-        bool instanceSetted = false;
+        public FunctionFactory(Func<T> createInstanceFunction) { this.createInstanceFunction = createInstanceFunction; }
+        public FunctionFactory(Func<IEnumerable<T>> createInstancesFunction) { this.createInstancesFunction = createInstancesFunction; }
         Func<T> createInstanceFunction;
-        bool instancesSetted = false;
         Func<IEnumerable<T>> createInstancesFunction;
         public object Get(Type type)
         {
             if (typeof(T) != type) throw new FactoryCreationException($"FunctionFactory<{typeof(T).Name}> only give instances of type '{typeof(T).Name}'");
-            if (!instanceSetted) throw new FactoryCreationException($"This FunctionFactory<> only create single objects. Use '{nameof(GetMany)}' method to obtain multiple instances.");
+            if (createInstanceFunction == null) throw new FactoryCreationException($"This FunctionFactory<> only create single objects. Use '{nameof(GetMany)}' method to obtain multiple instances.");
             return createInstanceFunction();
         }
-
         public IEnumerable<object> GetMany(Type type)
         {
             if (typeof(T) != type) throw new FactoryCreationException($"FunctionFactory<{typeof(T).Name}> only give instances of type '{typeof(T).Name}'");
-            if (!instancesSetted) throw new FactoryCreationException($"This FunctionFactory<> only create multiple objects. Use '{nameof(Get)}' method to obtain an instance.");
+            if (createInstancesFunction == null) throw new FactoryCreationException($"This FunctionFactory<> only create multiple objects. Use '{nameof(Get)}' method to obtain an instance.");
             return (IEnumerable<object>)createInstancesFunction();
+        }
+        public bool CheckGet(Type type)
+        {
+            return typeof(T) == type && createInstanceFunction != null;
+        }
+        public bool CheckGetMany(Type type)
+        {
+            return typeof(T) == type && createInstancesFunction != null;
         }
     }
 

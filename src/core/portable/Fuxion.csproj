@@ -45,6 +45,7 @@
     <Compile Include="Factories\FactoryCreationException.cs" />
     <Compile Include="Factories\FactoryDefaultImplementationAttribute.cs" />
     <Compile Include="Factories\FunctionFactory.cs" />
+    <Compile Include="Factories\ICheckableFactory.cs" />
     <Compile Include="Factories\InstanceFactory.cs" />
     <Compile Include="Printer.cs" />
     <Compile Include="Singleton.cs" />
