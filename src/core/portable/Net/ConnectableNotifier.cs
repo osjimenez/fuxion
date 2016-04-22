@@ -131,7 +131,7 @@ namespace Fuxion.Net
 		public event EventHandler<EventArgs<bool>> IsConnectedChanged;
 		public bool IsConnected { get { return State == ConnectionState.Opened; } }
 		Task connectionTask;
-		protected abstract void OnConnect();
+		protected abstract Task OnConnect();
 		public async Task Connect()
 		{
 			//log.Verbose(string.Format("({0}) LLAMANDO CONNECT con estado {1}", Thread.CurrentThread.ManagedThreadId, State));
@@ -144,7 +144,7 @@ namespace Fuxion.Net
 				case ConnectionState.Closed:
 					LastConnectionAttemptErrorMessage = null;
 					State = ConnectionState.Opening;
-					connectionTask = TaskManager.Create(() =>
+					connectionTask = TaskManager.Create(async () =>
 					{
 						IsConnectCancellationRequested = false;						
 						//log.Verbose(string.Format("({0}) NUEVA TAREA DE CONEXION ... ", Thread.CurrentThread.ManagedThreadId));
@@ -153,7 +153,7 @@ namespace Fuxion.Net
 							//log.Verbose(string.Format("({0}) INTENTANDO CONECTAR ... ", Thread.CurrentThread.ManagedThreadId));
 							try
 							{
-								OnConnect();
+								await OnConnect();
 								LastConnectionAttemptErrorMessage = null;
 								StartKeepAlive();
 								State = ConnectionState.Opened;
@@ -192,7 +192,7 @@ namespace Fuxion.Net
 		#region Disconnect
 	    protected bool IsDisconnectCancellationRequested { get { return GetValue<bool>(); } set { SetValue(value); } }
 	    Task disconnectionTask;
-		protected abstract void OnDisconnect();
+		protected abstract Task OnDisconnect();
 		public async Task Disconnect() { await Disconnect(false); }
 		protected async Task Disconnect(bool isFaultedConnection)
 		{
@@ -208,7 +208,7 @@ namespace Fuxion.Net
 				case ConnectionState.Opening:
 				case ConnectionState.Opened:
 					//disconnectionToken = new CancellationTokenSource();
-					disconnectionTask = TaskManager.Create(() =>
+					disconnectionTask = TaskManager.Create(async () =>
 					{
 						IsDisconnectCancellationRequested = false;						
 						//log.Verbose(string.Format("({0}) NUEVA TARE DE DESCONEXION ... ", Thread.CurrentThread.ManagedThreadId));
@@ -217,7 +217,7 @@ namespace Fuxion.Net
                         new[] { connectionTask, keepAliveTask }.CancelAndWait(false);
 					    try
 					    {
-					        OnDisconnect();
+					        await OnDisconnect();
 					    }
 					    catch(Exception ex) {
 					        log.Error("Error '" + ex.GetType().Name + "' en el método 'OnDisconnect': " + ex.Message, ex);
@@ -264,7 +264,7 @@ namespace Fuxion.Net
 	        set { SetValue(value); }
 	    }
 		Task keepAliveTask;
-		protected virtual void OnKeepAlive() { }
+		protected virtual Task OnKeepAlive() { return Task.FromResult(0); }
         //private async Task StartKeepAlive()
         private void StartKeepAlive()
 		{
@@ -273,7 +273,7 @@ namespace Fuxion.Net
 			//Comprobar si la tarea esta ya en ejecución
             if (keepAliveTask != null && keepAliveTask.Status == TaskStatus.Running) return; //await keepAliveTask;
             
-			keepAliveTask = TaskManager.Create(() =>
+			keepAliveTask = TaskManager.Create(async () =>
 			{
 				IsKeepAliveCancellationRequested = false;
 				
@@ -281,7 +281,7 @@ namespace Fuxion.Net
 				{
 					keepAliveTask.Sleep(KeepAliveInterval);
 					if (IsKeepAliveCancellationRequested) break;
-				    try { OnKeepAlive(); }
+				    try { await OnKeepAlive(); }
 				    catch (Exception ex) {
 				        log.Error("Error '" + ex.GetType().Name + "' en el método 'OnKeepAlive': " + ex.Message, ex);
 				        Disconnect(true);
