@@ -83,6 +83,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="ConnectableNotifier.test.cs" />
     <Compile Include="DeactivatableObservableCollectionTest.cs" />
     <Compile Include="Factory.test.cs" />
     <Compile Include="GenericEqualityComparerTest.cs" />
@@ -92,6 +93,7 @@
     <Compile Include="Patchable.cs" />
     <Compile Include="ServiceManager.cs" />
     <Compile Include="Singleton.cs" />
+    <Compile Include="TaskManager.test.cs" />
     <Compile Include="ToJsonTest.cs" />
     <Compile Include="Transform.cs" />
     <Compile Include="ViewModelTest.cs" />
