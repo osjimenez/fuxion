@@ -1,4 +1,5 @@
 ﻿using Fuxion.Threading;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -9,6 +10,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using System.Threading;
+using System.Xml.Serialization;
 
 namespace Fuxion.ComponentModel
 {
@@ -320,6 +322,8 @@ namespace Fuxion.ComponentModel
         #endregion
 
         #region RaisePropertyChanged
+        [XmlIgnore]
+        [JsonIgnore]
         public INotifierSynchronizer Synchronizer { get; set; }
         protected void RaisePropertyChanged<T>(Expression<Func<object>> expression, T previousValue, T actualValue)
         {
