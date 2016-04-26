@@ -33,7 +33,7 @@ namespace Fuxion.Factories
                         if ((fac as ICheckableFactory).CheckGet(type))
                             return fac.Get(type);
                     }
-                    else fac.Get(type);
+                    else return fac.Get(type);
                 }
                 catch (Exception ex)
                 {
