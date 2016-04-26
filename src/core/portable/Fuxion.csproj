@@ -40,6 +40,7 @@
   <ItemGroup>
     <Compile Include="Collections\Generic\GenericEqualityComparer.cs" />
     <Compile Include="Collections\ObjectModel\DeactivatableObservableCollection.cs" />
+    <Compile Include="ComponentModel\INotifierSynchronizer.cs" />
     <Compile Include="EventHandler.cs" />
     <Compile Include="Factories\CreationMode.cs" />
     <Compile Include="Factories\FactoryCreationException.cs" />
@@ -47,6 +48,9 @@
     <Compile Include="Factories\FunctionFactory.cs" />
     <Compile Include="Factories\ICheckableFactory.cs" />
     <Compile Include="Factories\InstanceFactory.cs" />
+    <Compile Include="Net\ConnectionMode.cs" />
+    <Compile Include="Net\ConnectionState.cs" />
+    <Compile Include="Net\IConnectableNotifier.cs" />
     <Compile Include="Printer.cs" />
     <Compile Include="Singleton.cs" />
     <Compile Include="System-Extensions.cs" />

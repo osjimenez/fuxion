@@ -66,6 +66,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion.Licensing-net46", "m
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion.Licensing.Test", "modules\Licensing\test\Fuxion.Licensing.Test.csproj", "{3C4DB006-A025-4A7D-92B4-1DC638D7A71F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sketches", "sketches", "{D73E328B-68C4-499C-9532-A7D9ACC4F186}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoWpf", "sketches\DemoWpf\DemoWpf.csproj", "{66FCC1D4-F7F6-4A76-B3C3-CC1924C1CF88}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -334,6 +338,22 @@ Global
 		{3C4DB006-A025-4A7D-92B4-1DC638D7A71F}.Release|x64.Build.0 = Release|Any CPU
 		{3C4DB006-A025-4A7D-92B4-1DC638D7A71F}.Release|x86.ActiveCfg = Release|Any CPU
 		{3C4DB006-A025-4A7D-92B4-1DC638D7A71F}.Release|x86.Build.0 = Release|Any CPU
+		{66FCC1D4-F7F6-4A76-B3C3-CC1924C1CF88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66FCC1D4-F7F6-4A76-B3C3-CC1924C1CF88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66FCC1D4-F7F6-4A76-B3C3-CC1924C1CF88}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{66FCC1D4-F7F6-4A76-B3C3-CC1924C1CF88}.Debug|ARM.Build.0 = Debug|Any CPU
+		{66FCC1D4-F7F6-4A76-B3C3-CC1924C1CF88}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{66FCC1D4-F7F6-4A76-B3C3-CC1924C1CF88}.Debug|x64.Build.0 = Debug|Any CPU
+		{66FCC1D4-F7F6-4A76-B3C3-CC1924C1CF88}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{66FCC1D4-F7F6-4A76-B3C3-CC1924C1CF88}.Debug|x86.Build.0 = Debug|Any CPU
+		{66FCC1D4-F7F6-4A76-B3C3-CC1924C1CF88}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66FCC1D4-F7F6-4A76-B3C3-CC1924C1CF88}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66FCC1D4-F7F6-4A76-B3C3-CC1924C1CF88}.Release|ARM.ActiveCfg = Release|Any CPU
+		{66FCC1D4-F7F6-4A76-B3C3-CC1924C1CF88}.Release|ARM.Build.0 = Release|Any CPU
+		{66FCC1D4-F7F6-4A76-B3C3-CC1924C1CF88}.Release|x64.ActiveCfg = Release|Any CPU
+		{66FCC1D4-F7F6-4A76-B3C3-CC1924C1CF88}.Release|x64.Build.0 = Release|Any CPU
+		{66FCC1D4-F7F6-4A76-B3C3-CC1924C1CF88}.Release|x86.ActiveCfg = Release|Any CPU
+		{66FCC1D4-F7F6-4A76-B3C3-CC1924C1CF88}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -364,6 +384,7 @@ Global
 		{C7406922-3198-42D8-80EB-31574B33FC96} = {6A71A6F6-DAEF-4095-B9F1-FCD677D6AE23}
 		{639F2C3A-1CA1-4F20-AD1B-E446624ACA9F} = {6A71A6F6-DAEF-4095-B9F1-FCD677D6AE23}
 		{3C4DB006-A025-4A7D-92B4-1DC638D7A71F} = {02A06801-1B84-466C-84EE-E71F1D62EE26}
+		{66FCC1D4-F7F6-4A76-B3C3-CC1924C1CF88} = {D73E328B-68C4-499C-9532-A7D9ACC4F186}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		EnterpriseLibraryConfigurationToolBinariesPathV6 = packages\EnterpriseLibrary.TransientFaultHandling.6.0.1304.0\lib\portable-net45+win+wp8;packages\EnterpriseLibrary.TransientFaultHandling.Data.6.0.1304.1\lib\NET45

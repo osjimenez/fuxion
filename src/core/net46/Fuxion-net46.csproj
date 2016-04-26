@@ -56,7 +56,6 @@
     <Compile Include="Configuration\EncryptedFileConfiguration.cs" />
     <Compile Include="Configuration\FileConfiguration.cs" />
     <Compile Include="System-Extensions.cs" />
-    <Compile Include="Net\DispatcherConnectableNotifier.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Runtime\InteropServices\SafeGCHandle.cs" />
     <Compile Include="Security\HardwareId.cs" />
@@ -74,7 +73,7 @@
     <Compile Include="ServiceModel\ServiceManager.cs" />
     <Compile Include="ServiceModel\TcpEndpointAttribute.cs" />
     <Compile Include="WeakReference.cs" />
-    <Compile Include="Windows\Threading\DispatcherNotifier.cs" />
+    <Compile Include="Windows\Threading\DispatcherSynchronizer.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\portable\Fuxion.csproj">

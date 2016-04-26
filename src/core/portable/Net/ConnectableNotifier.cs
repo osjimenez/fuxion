@@ -8,32 +8,6 @@ using Fuxion.Threading.Tasks;
 
 namespace Fuxion.Net
 {
-	public enum ConnectionMode
-	{
-		Manual,
-		Automatic
-	}
-	public enum ConnectionState
-	{
-		Created,
-		Opening,
-		Opened,
-		Closing,
-		Closed,
-		Faulted
-	}
-	public interface IConnectableNotifier<TConnectableNotifier> : INotifier<TConnectableNotifier> where TConnectableNotifier : IConnectableNotifier<TConnectableNotifier>
-	{
-		TimeSpan AutomaticConnectionModeRetryInterval { get; set; }
-		ConnectionMode ConnectMode { get; set; }
-		ConnectionState State { get; }
-		event EventHandler<EventArgs<bool>> IsConnectedChanged;
-		bool IsConnected { get; }
-		Task Connect();
-		Task Disconnect();
-		TimeSpan KeepAliveInterval { get; set; }
-		bool IsKeepAliveEnable { get; set; }
-	}
 	public abstract class ConnectableNotifier<TConnectableNotifier> : Notifier<TConnectableNotifier>, IConnectableNotifier<TConnectableNotifier>
         where TConnectableNotifier : class, IConnectableNotifier<TConnectableNotifier>
 	{
@@ -61,20 +35,13 @@ namespace Fuxion.Net
                     if (p.PreviousValue == ConnectionState.Opened || p.ActualValue == ConnectionState.Opened)
                     {
                         RaisePropertyChanged(() => IsConnected, p.PreviousValue == ConnectionState.Opened, p.ActualValue == ConnectionState.Opened);
-                        if (IsConnectedChanged != null)
-                            IsConnectedChanged(this, new EventArgs<bool>(p.ActualValue == ConnectionState.Opened));
+                        if (Synchronizer != null)
+                            Synchronizer.Invoke(actualValue => IsConnectedChanged?.Invoke(this, new EventArgs<bool>(actualValue == ConnectionState.Opened)), p.ActualValue);
+                        else
+                            IsConnectedChanged?.Invoke(this, new EventArgs<bool>(p.ActualValue == ConnectionState.Opened));
                     }
                 });
 		    };
-            //PropertyChanging += (s, e) =>
-            //{
-            //    e.Case(() => State, p =>
-            //    {
-            //        //Si cambia el estado hacia o desde Opened abrá que disparar el evento IsConnectedChanged
-            //        if (IsConnectedChanged != null && (p.ActualValue == ConnectionState.Opened || p.FutureValue == ConnectionState.Opened))
-            //            IsConnectedChanged(this, new EventArgs<bool>(p.FutureValue == ConnectionState.Opened));
-            //    });
-            //};
 		}
 	    private ILog log = LogManager.Create<ConnectableNotifier<TConnectableNotifier>>();
 		protected void ConnectionPropertyChanged()
@@ -116,7 +83,6 @@ namespace Fuxion.Net
 	        get { return GetLockedValue(() => ConnectionState.Created); }
 	        private set { SetLockedValue(value); }
 	    }
-
 	    #region Connect
         public string LastConnectionAttemptErrorMessage
         {
@@ -265,7 +231,6 @@ namespace Fuxion.Net
 	    }
 		Task keepAliveTask;
 		protected virtual Task OnKeepAlive() { return Task.FromResult(0); }
-        //private async Task StartKeepAlive()
         private void StartKeepAlive()
 		{
 			//Comprobar si el keep alive esta habilitado

@@ -319,26 +319,23 @@ namespace Fuxion.ComponentModel
         }
         #endregion
 
-
-
-
         #region RaisePropertyChanged
+        public INotifierSynchronizer Synchronizer { get; set; }
         protected void RaisePropertyChanged<T>(Expression<Func<object>> expression, T previousValue, T actualValue)
         {
             string memberName = expression.GetMemberName();
-            //PropertyInfo prop = GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic).FirstOrDefault(p => p.Name == memberName);
             PropertyInfo prop = GetType().GetTypeInfo().GetAllProperties().Single(p => p.Name == memberName);
             if (prop == null) throw new ArgumentException("No se ha encontrado la propiedad '" + memberName + "' en el tipo '" + GetType().Name + "'.");
             OnRaisePropertyChanged(memberName, previousValue, actualValue);
         }
         protected virtual void OnRaisePropertyChanged<T>(string propertyName, T previousValue, T actualValue)
         {
-            PropertyChangedEventHandler propertyChangedEvent = PropertyChangedEvent;
-            if (propertyChangedEvent != null)
-                propertyChangedEvent(this, new PropertyChangedEventArgs(propertyName));
-            NotifierPropertyChangedEventHandler<TNotifier> propertyChanged = PropertyChanged;
-            if (propertyChanged != null)
-                propertyChanged(this as TNotifier, new NotifierPropertyChangedEventArgs<TNotifier>(propertyName, (TNotifier)(INotifier<TNotifier>)this, previousValue, actualValue));
+            var action = new Action<string, T, T>((pro, pre, act) => {
+                PropertyChangedEvent?.Invoke(this, new PropertyChangedEventArgs(pro));
+                PropertyChanged?.Invoke(this as TNotifier, new NotifierPropertyChangedEventArgs<TNotifier>(pro, (TNotifier)(INotifier<TNotifier>)this, pre, act));
+            });
+            if (Synchronizer != null) Synchronizer.Invoke(action, propertyName, previousValue, actualValue);
+            else action(propertyName, previousValue, actualValue);
         }
         #endregion
     }

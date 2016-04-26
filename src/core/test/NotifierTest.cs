@@ -386,7 +386,7 @@ namespace Fuxion.Test
             //context.WriteLine("Se han comprobado " + properties.Count() + " propiedades de tipo '" + typeof(T).Name + "'");
         }
         [Fact]
-        public void PreviousValueIsDefaultValue()
+        public void PreviousValueIsDefaultValue2()
         {
             var props = mock.GetType().GetProperties().AsQueryable().Where(p => p.Name.Contains("WithDefault"));
             PreviousValueIsDefaultValue(222, 111, props.Where(p => p.PropertyType == typeof(int)).ToArray());
@@ -484,7 +484,7 @@ namespace Fuxion.Test
             //context.WriteLine("Se han comprobado " + properties.Count() + " propiedades de tipo '" + typeof(T).Name + "'");
         }
         [Fact]
-        public void RaiseOnChangeOrAlways()
+        public void RaiseOnChangeOrAlways2()
         {
             var props = mock.GetType().GetProperties().AsQueryable();
             RaiseOnChangeOrAlways(999, props.Where(p => p.PropertyType == typeof(int)).ToArray());
