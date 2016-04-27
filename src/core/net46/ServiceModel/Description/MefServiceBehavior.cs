@@ -12,7 +12,7 @@ using Fuxion.ServiceModel.Dispatcher;
 
 namespace Fuxion.ServiceModel.Description
 {
-	public class MefServiceBehavior : IServiceBehavior
+    public class MefServiceBehavior : IServiceBehavior
 	{
 		private readonly string _name;
 		public MefServiceBehavior(string name)
