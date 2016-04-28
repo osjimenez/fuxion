@@ -100,7 +100,7 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
-    <None Include="Resources\Waf Services Self-Signed.pfx" />
+    <None Include="Resources\Fuxion.pfx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -119,6 +119,7 @@
       <Name>SimpleInjector_</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -59,5 +59,15 @@ namespace DemoWpf.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Fuxion {
+            get {
+                object obj = ResourceManager.GetObject("Fuxion", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }

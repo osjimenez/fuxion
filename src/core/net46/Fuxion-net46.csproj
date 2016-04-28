@@ -57,6 +57,7 @@
     <Compile Include="Configuration\FileConfiguration.cs" />
     <Compile Include="ServiceModel\Description\FactoryBehaviorAttribute.cs" />
     <Compile Include="ServiceModel\Dispatcher\FactoryInstanceProvider.cs" />
+    <Compile Include="ServiceModel\ServiceBuilder.cs" />
     <Compile Include="ServiceModel\System-Extensions.cs" />
     <Compile Include="System-Extensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
