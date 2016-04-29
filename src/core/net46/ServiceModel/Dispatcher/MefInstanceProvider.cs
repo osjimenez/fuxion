@@ -8,10 +8,12 @@ using System.ServiceModel;
 using System.ServiceModel.Dispatcher;
 using Fuxion.Logging;
 using Fuxion.Factories;
+using System.ServiceModel.Description;
+using System.ServiceModel.Channels;
 
 namespace Fuxion.ServiceModel.Dispatcher
 {
-	public class MefInstanceProvider : IInstanceProvider
+    public class MefInstanceProvider : IInstanceProvider
 	{
 		public MefInstanceProvider(string name)
 		{

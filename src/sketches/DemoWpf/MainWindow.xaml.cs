@@ -1,10 +1,20 @@
 ﻿using Fuxion.ComponentModel;
+using Fuxion.Factories;
+using Fuxion.ServiceModel;
 using Fuxion.Threading.Tasks;
 using Fuxion.Windows.Threading;
+using SimpleInjector;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IdentityModel.Selectors;
 using System.Linq;
+using System.Security.Authentication;
+using System.Security.Cryptography.X509Certificates;
+using System.ServiceModel;
+using System.ServiceModel.Channels;
+using System.ServiceModel.Description;
+using System.ServiceModel.Security;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,11 +33,70 @@ namespace DemoWpf
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, IFactoryServiceCallback
     {
         public MainWindow()
         {
             InitializeComponent();
+            ConfigureFactory();
+            Debug.WriteLine($"{Thread.CurrentThread.ManagedThreadId} - Window created");
+        }
+        private void ConfigureFactory()
+        {
+            Container con = new Container();
+            con.Register<ToInject>();
+            Factory.AddToPipe(new SimpleInjectorFactory(con));
+        }
+        //class ServiceValidator : UserNamePasswordValidator
+        //{
+        //    public override void Validate(string userName, string password)
+        //    {
+        //    }
+        //}
+        //class CertificateValidator : X509CertificateValidator
+        //{
+        //    public override void Validate(X509Certificate2 certificate) {
+
+        //    }
+        //}
+        public async void HostService_Click(object sender, RoutedEventArgs args)
+        {
+            await ServiceBuilder.Host<FactoryService>()
+                .DefaultTcpSecurizedHost<IFactoryService>(
+                    6666, "FactoryService",
+                    new X509Certificate2(Properties.Resources.Fuxion, "fuxion"),
+                    (username, password) =>
+                    {
+                        if (username != "username" || password != "password")
+                        {
+                            throw new AuthenticationException("Invalid username or password");
+                        }
+                    })
+                .OpenAsync(afterOpenAction: _ => Debug.WriteLine($"{Thread.CurrentThread.ManagedThreadId} - Service host opened"));
+        }
+        public async void ProxyService_Click(object sender, RoutedEventArgs args)
+        {
+            var proxy = await ServiceBuilder.Proxy<IFactoryService>(this)
+                .DefaultTcpSecurizedProxy(6666, "FactoryService", "fuxion.demo", "username", "password", "0DFF4D21124E15D8B3365B03E65AE4B9F4A52FF3")
+                .OpenAsync(afterOpenAction: _ => Debug.WriteLine($"{Thread.CurrentThread.ManagedThreadId} - Proxy opened"));
+            //proxy.Echo();
+            proxy.Ping();
+            Debug.WriteLine($"{Thread.CurrentThread.ManagedThreadId} - Proxy ping call completed");
+
+            /*
+             * To allow the self signed certificate must add this to app.config or web.config
+            <configuration>
+                <runtime>
+                    <AppContextSwitchOverrides value="Switch.System.IdentityModel.DisableMultipleDNSEntriesInSANCertificate=true" /> 
+                </runtime>
+            </configuration>
+            */
+
+            return;
+        }
+        public void Pong()
+        {
+            Debug.WriteLine($"{Thread.CurrentThread.ManagedThreadId} - PONG");
         }
         public async void Synchronizer_Click(object sender, RoutedEventArgs args)
         {
@@ -42,13 +111,15 @@ namespace DemoWpf
                 });
             };
             not.Integer = 2;
-            var task = TaskManager.StartNew(() => {
+            var task = TaskManager.StartNew(() =>
+            {
                 Debug.WriteLine($"Task started in Thread '{Thread.CurrentThread.ManagedThreadId}'");
                 not.Integer = 3;
             });
             await task;
-            not.SetSynchronizer(new DispatcherSynchronizer());
-            task = TaskManager.StartNew(() => {
+            not.Synchronizer = new DispatcherSynchronizer();
+            task = TaskManager.StartNew(() =>
+            {
                 Debug.WriteLine($"Task started in Thread '{Thread.CurrentThread.ManagedThreadId}'");
                 not.Integer = 4;
             });
@@ -60,7 +131,6 @@ namespace DemoWpf
     }
     public class SynchronizableNotifierMock : Notifier<SynchronizableNotifierMock>
     {
-        internal void SetSynchronizer(INotifierSynchronizer value) { Synchronizer = value; }
         public int Integer { get { return GetValue(() => 0); } set { SetValue(value); } }
     }
 }

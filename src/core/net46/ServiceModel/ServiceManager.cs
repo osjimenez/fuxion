@@ -5,6 +5,15 @@ using System.ComponentModel.Composition.Hosting;
 using System.Linq;
 using System.ServiceModel;
 using Fuxion.Factories;
+using System.Threading.Tasks;
+using System.ServiceModel.Channels;
+using System.ServiceModel.Description;
+using System.Collections.ObjectModel;
+using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
+using System.ServiceModel.Security;
+using System.IdentityModel.Selectors;
+using Fuxion.Threading.Tasks;
 
 namespace Fuxion.ServiceModel
 {
@@ -32,5 +41,5 @@ namespace Fuxion.ServiceModel
                     && ser.State != CommunicationState.Opening)
                     ser.Open();
 		}
-	}
+    }
 }

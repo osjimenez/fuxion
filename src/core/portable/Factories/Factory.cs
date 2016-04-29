@@ -66,9 +66,9 @@ namespace Fuxion.Factories
             if (res == null)
             {
                 if (exceptions.Any())
-                    throw new FactoryCreationException($"Cannot create instance of type '{type.Name}'", new AggregateException(exceptions));
+                    throw new FactoryCreationException($"Factory cannot create instance of type '{type.Name}'", new AggregateException(exceptions));
                 else
-                    throw new FactoryCreationException($"Cannot create instance of type '{type.Name}'");
+                    throw new FactoryCreationException($"Factory cannot create instance of type '{type.Name}'");
             }
             return res;
         }

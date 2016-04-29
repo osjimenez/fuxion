@@ -347,29 +347,29 @@ namespace Fuxion.Identity
         #endregion
         #endregion
     }
-    class _Discriminator : IDiscriminator
-    {
-        public IEnumerable<_Discriminator> Exclusions { get; set; }
-        public object Id { get; set; }
-        public IEnumerable<_Discriminator> Inclusions { get; set; }
-        public string Name { get; set; }
-        public object TypeId { get; set; }
-        public string TypeName { get; set; }
-        IEnumerable<IDiscriminator> IExclusive<IDiscriminator>.Exclusions
-        {
-            get
-            {
-                return Exclusions;
-            }
-        }
-        IEnumerable<IDiscriminator> IInclusive<IDiscriminator>.Inclusions
-        {
-            get
-            {
-                return Inclusions;
-            }
-        }
-    }
+    //class _Discriminator : IDiscriminator
+    //{
+    //    public IEnumerable<_Discriminator> Exclusions { get; set; }
+    //    public object Id { get; set; }
+    //    public IEnumerable<_Discriminator> Inclusions { get; set; }
+    //    public string Name { get; set; }
+    //    public object TypeId { get; set; }
+    //    public string TypeName { get; set; }
+    //    IEnumerable<IDiscriminator> IExclusive<IDiscriminator>.Exclusions
+    //    {
+    //        get
+    //        {
+    //            return Exclusions;
+    //        }
+    //    }
+    //    IEnumerable<IDiscriminator> IInclusive<IDiscriminator>.Inclusions
+    //    {
+    //        get
+    //        {
+    //            return Inclusions;
+    //        }
+    //    }
+    //}
     public interface IRolCan { }
     public interface IRolEnsureCan { }
     class _RolCan : IRolCan, IRolEnsureCan
