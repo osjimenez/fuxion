@@ -72,20 +72,16 @@ namespace DemoWpf
                             throw new AuthenticationException("Invalid username or password");
                         }
                     })
-                .OpenAsync(afterOpenAction: h => Debug.WriteLine($"{Thread.CurrentThread.ManagedThreadId} - Service host opened"));
+                .OpenAsync(afterOpenAction: _ => Debug.WriteLine($"{Thread.CurrentThread.ManagedThreadId} - Service host opened"));
         }
-        public void ProxyService_Click(object sender, RoutedEventArgs args)
+        public async void ProxyService_Click(object sender, RoutedEventArgs args)
         {
-            var proxy = ServiceBuilder.Proxy<IFactoryService>(this)
-                .DefaultTcpSecurizedProxy(6666, "FactoryService", "fuxion.demo", "username", "password", "0DFF4D21124E15D8B3365B03E65AE4B9F4A52FF3",
-                    bin => bin.OpenTimeout = TimeSpan.FromMinutes(5)
-                    ,b => b.OpenTimeout(TimeSpan.FromMinutes(5)))
-                .Create();
-            
-            Debug.WriteLine($"{Thread.CurrentThread.ManagedThreadId} - Proxy created");
+            var proxy = await ServiceBuilder.Proxy<IFactoryService>(this)
+                .DefaultTcpSecurizedProxy(6666, "FactoryService", "fuxion.demo", "username", "password", "0DFF4D21124E15D8B3365B03E65AE4B9F4A52FF3")
+                .OpenAsync(afterOpenAction: _ => Debug.WriteLine($"{Thread.CurrentThread.ManagedThreadId} - Proxy opened"));
             //proxy.Echo();
             proxy.Ping();
-            Debug.WriteLine($"{Thread.CurrentThread.ManagedThreadId} - Proxy call completed");
+            Debug.WriteLine($"{Thread.CurrentThread.ManagedThreadId} - Proxy ping call completed");
 
             /*
              * To allow the self signed certificate must add this to app.config or web.config

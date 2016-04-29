@@ -42,61 +42,162 @@ namespace Fuxion.ServiceModel
             action(cre);
             return me;
         }
-        public static ServiceHost Create(this IHost me)
-        {
-            return (me as _Host).ServiceHost;
-        }
-        public static ServiceHost Open(this IHost me, Action<ServiceHost> beforeOpenAction = null, Action<ServiceHost> afterOpenAction = null)
-        {
-            var host = me.Create();
-            beforeOpenAction?.Invoke(host);
-            host.Open();
-            afterOpenAction?.Invoke(host);
-            return host;
-        }
-        public static Task<ServiceHost> OpenAsync(this IHost me, Action<ServiceHost> beforeOpenAction = null, Action<ServiceHost> afterOpenAction = null)
-        {
-            return TaskManager.StartNew((iHost, before, after) => iHost.Open(before, after), me, beforeOpenAction, afterOpenAction);
-        }
         public static IHost ConfigureHost(this IHost me, Action<ServiceHost> action)
         {
             action((me as _Host).ServiceHost);
             return me;
         }
-        public static IHost DefaultTcpUnsecureHost<TContract>(this IHost me, int port, string path)
+        public static IHost DefaultTcpUnsecureHost<TContract>(this IHost me, int port, string path,
+            Func<ITcpBinding, ITcpBinding> configureTcpBinding = null,
+            Func<IServiceCredentials, IServiceCredentials> configureServiceCredentials = null)
         {
-            return me.AddEndpoint(e => e
-                        .WithContractOfType<TContract>()
-                        .WithTcpBinding(b => b
-                            .SecurityMode(System.ServiceModel.SecurityMode.None))
-                        .WithAddress($"net.tcp://localhost:{port}/{path}"));
+            var host = me.AddEndpoint(e => {
+                e = e.WithContractOfType<TContract>();
+                e = e.WithTcpBinding(b => {
+                    b = b.SecurityMode(System.ServiceModel.SecurityMode.None);
+                    if (configureTcpBinding != null)
+                        b = configureTcpBinding(b);
+                });
+                e = e.WithAddress($"net.tcp://localhost:{port}/{path}");
+            });
+            host = host.WithCredentials(c => {
+                if (configureServiceCredentials != null)
+                    c = configureServiceCredentials(c);
+            });
+            return host;
         }
-        public static IHost DefaultTcpSecurizedHost<TContract>(this IHost me, int port, string path, X509Certificate2 certificate, Action<string,string> userNamePasswordValidationAction)
+        public static IHost DefaultTcpSecurizedHost<TContract>(this IHost me, int port, string path, X509Certificate2 certificate, 
+            Action<string,string> userNamePasswordValidationAction,
+            Func<ITcpBinding, ITcpBinding> configureTcpBinding = null,
+            Func<IServiceCredentials, IServiceCredentials> configureServiceCredentials = null)
         {
-            return me.AddEndpoint(e => e
-                        .WithContractOfType<TContract>()
-                        .WithTcpBinding(b => b
-                            .MaxBufferPoolSize(524288)
-                            .MaxBufferSize(int.MaxValue)
-                            .MaxConnections(10)
-                            .MaxReceivedMessageSize(int.MaxValue)
-                            .ReaderQuotas_MaxBytesPerRead(int.MaxValue)
-                            .ReaderQuotas_MaxArrayLength(16384)
-                            .ReaderQuotas_MaxStringContentLength(8192)
-                            .SecurityMode(System.ServiceModel.SecurityMode.Message)
-                            .ClientCredentialType(MessageCredentialType.UserName)
-                            .TransferMode(System.ServiceModel.TransferMode.Buffered)
-                            .LocalClientMaxClockSkew(TimeSpan.FromDays(1))
-                            .LocalServiceMaxClockSkew(TimeSpan.FromDays(1))
-                            .CloseTimeout(TimeSpan.FromMinutes(1))
-                            .OpenTimeout(TimeSpan.FromMinutes(1))
-                            .ReceiveTimeout(TimeSpan.FromMinutes(1))
-                            .SendTimeout(TimeSpan.FromMinutes(1)))
-                        .WithAddress($"net.tcp://localhost:{port}/{path}"))
-                    .WithCredentials(c => c
-                        .ServiceCertificate(certificate)
-                        .UserNamePasswordValidationMode(System.ServiceModel.Security.UserNamePasswordValidationMode.Custom)
-                        .CustomUserNamePasswordValidator(userNamePasswordValidationAction));
+            var host = me.AddEndpoint(e =>
+            {
+                e = e.WithContractOfType<TContract>();
+                e = e.WithTcpBinding(b =>
+                {
+                    b = b.SecurityMode(System.ServiceModel.SecurityMode.Message);
+                    b = b.ClientCredentialType(MessageCredentialType.UserName);
+                    if (configureTcpBinding != null)
+                        b = configureTcpBinding(b);
+                });
+                e = e.WithAddress($"net.tcp://localhost:{port}/{path}");
+            });
+            host = host.WithCredentials(c => {
+                c = c.ServiceCertificate(certificate);
+                c = c.UserNamePasswordValidationMode(System.ServiceModel.Security.UserNamePasswordValidationMode.Custom);
+                c = c.CustomUserNamePasswordValidator(userNamePasswordValidationAction);
+                if (configureServiceCredentials != null)
+                    c = configureServiceCredentials(c);
+            });
+            return host;
+        }
+        public static ServiceHost Create(this IHost me)
+        {
+            return (me as _Host).ServiceHost;
+        }
+        public static ServiceHost Open(this IHost me, TimeSpan? timeout = null, Action<ServiceHost> beforeOpenAction = null, Action<ServiceHost> afterOpenAction = null)
+        {
+            var host = me.Create();
+            beforeOpenAction?.Invoke(host);
+            if (timeout != null && timeout.HasValue) host.Open(timeout.Value);
+            else host.Open();
+            afterOpenAction?.Invoke(host);
+            return host;
+        }
+        public static Task<ServiceHost> OpenAsync(this IHost me, TimeSpan? timeout = null, Action<ServiceHost> beforeOpenAction = null, Action<ServiceHost> afterOpenAction = null)
+        {
+            return TaskManager.StartNew((iHost, time, before, after) => iHost.Open(time, before, after), me, timeout, beforeOpenAction, afterOpenAction);
+        }
+        #endregion
+        #region Proxy
+        public static IProxy<TContract> AddEndpoint<TContract>(this IProxy<TContract> me, Action<IEndpoint> action)
+        {
+            var end = new _Endpoint();
+            action(end);
+            var pro = (me as _Proxy<TContract>);
+            pro.ChannelFactory = pro.callbackInstance == null
+                ? new ChannelFactory<TContract>(end.ServiceEndpoint)
+                : new DuplexChannelFactory<TContract>(pro.callbackInstance, end.ServiceEndpoint);
+            return me;
+        }
+        public static IProxy<TContract> WithCredentials<TContract>(this IProxy<TContract> me, Action<IClientCredentials> action)
+        {
+            var proxy = (me as _Proxy<TContract>);
+            var cre = new _ClientCredentials
+            {
+                ClientCredentials = proxy.ChannelFactory.Credentials
+            };
+            action(cre);
+            return me;
+        }
+        public static IProxy<TContract> ConfigureChannelFactory<TContract>(this IProxy<TContract> me, Action<ChannelFactory<TContract>> action)
+        {
+            action((me as _Proxy<TContract>).ChannelFactory);
+            return me;
+        }
+        public static IProxy<TContract> DefaultTcpUnsecureProxy<TContract>(this IProxy<TContract> me, int port, string path,
+            Func<ITcpBinding, ITcpBinding> configureTcpBinding = null,
+            Func<IClientCredentials, IClientCredentials> configureClientCredentials = null)
+        {
+            var proxy = me.AddEndpoint(e => {
+                e = e.WithContractOfType<TContract>();
+                e = e.WithTcpBinding(b => {
+                    b = b.SecurityMode(System.ServiceModel.SecurityMode.None);
+                    if (configureTcpBinding != null)
+                        b = configureTcpBinding(b);
+                });
+                e = e.WithAddress($"net.tcp://localhost:{port}/{path}");
+            });
+            proxy = proxy.WithCredentials(c => {
+                if (configureClientCredentials != null)
+                    c = configureClientCredentials(c);
+            });
+            return proxy;
+        }
+        public static IProxy<TContract> DefaultTcpSecurizedProxy<TContract>(this IProxy<TContract> me,
+            int port, string path, string dnsName, string username, string password, string certificateThumbprint,
+            Func<ITcpBinding, ITcpBinding> configureTcpBinding = null,
+            Func<IClientCredentials, IClientCredentials> configureClientCredentials = null)
+        {
+            var proxy = me.AddEndpoint(e => {
+                e = e.WithContractOfType<TContract>();
+                e = e.WithTcpBinding(b => {
+                    b = b.ClientCredentialType(MessageCredentialType.UserName);
+                    b = b.SecurityMode(System.ServiceModel.SecurityMode.Message);
+                    if (configureTcpBinding != null)
+                        b = configureTcpBinding(b);
+                });
+                e = e.WithAddress($"net.tcp://localhost:{port}/{path}", dnsName);
+            });
+            proxy = proxy.WithCredentials(c => {
+                c = c.UserName(username);
+                c = c.Password(password);
+                c = c.ServiceCertificate_ValidationMode(X509CertificateValidationMode.Custom);
+                c = c.ServiceCertificate_CustomCertificateValidator(certificateThumbprint);
+                if (configureClientCredentials != null)
+                    c = configureClientCredentials(c);
+            });
+            return proxy;
+        }
+        public static TContract Create<TContract>(this IProxy<TContract> me)
+        {
+            return (me as _Proxy<TContract>).ChannelFactory.CreateChannel();
+        }
+        public static TContract Open<TContract>(this IProxy<TContract> me, TimeSpan? timeout = null, Action<TContract> beforeOpenAction = null, Action<TContract> afterOpenAction = null)
+        {
+            var chan = (me as _Proxy<TContract>).ChannelFactory.CreateChannel();
+            beforeOpenAction?.Invoke(chan);
+            if (timeout != null && timeout.HasValue)
+                ((IClientChannel)chan).Open(timeout.Value);
+            else
+                ((IClientChannel)chan).Open();
+            afterOpenAction?.Invoke(chan);
+            return chan;
+        }
+        public static Task<TContract> OpenAsync<TContract>(this IProxy<TContract> me, TimeSpan? timeout = null, Action<TContract> beforeOpenAction = null, Action<TContract> afterOpenAction = null)
+        {
+            return TaskManager.StartNew((iProxy, time, before, after) => iProxy.Open(time, before, after), me, timeout, beforeOpenAction, afterOpenAction);
         }
         #endregion
         #region Endpoint
@@ -224,86 +325,6 @@ namespace Fuxion.ServiceModel
         {
             (me as _TcpBinding).ConfigureTcpBindingAction = action;
             return me;
-        }
-        #endregion
-        #region Proxy
-        public static IProxy<TContract> AddEndpoint<TContract>(this IProxy<TContract> me, Action<IEndpoint> action)
-        {
-            var end = new _Endpoint();
-            action(end);
-            var pro = (me as _Proxy<TContract>);
-            pro.ChannelFactory = pro.callbackInstance == null
-                ? new ChannelFactory<TContract>(end.ServiceEndpoint)
-                : new DuplexChannelFactory<TContract>(pro.callbackInstance, end.ServiceEndpoint);
-            return me;
-        }
-        public static IProxy<TContract> WithCredentials<TContract>(this IProxy<TContract> me, Action<IClientCredentials> action)
-        {
-            var proxy = (me as _Proxy<TContract>);
-            var cre = new _ClientCredentials
-            {
-                ClientCredentials = proxy.ChannelFactory.Credentials
-            };
-            action(cre);
-            return me;
-        }
-        public static TContract Create<TContract>(this IProxy<TContract> me)
-        {
-            return (me as _Proxy<TContract>).ChannelFactory.CreateChannel();
-        }
-        public static IProxy<TContract> ConfigureChannelFactory<TContract>(this IProxy<TContract> me, Action<ChannelFactory<TContract>> action)
-        {
-            action((me as _Proxy<TContract>).ChannelFactory);
-            return me;
-        }
-        public static IProxy<TContract> DefaultTcpUnsecureProxy<TContract>(this IProxy<TContract> me, int port, string path)
-        {
-            return me.AddEndpoint(e => e
-                        .WithContractOfType<TContract>()
-                        .WithTcpBinding(b => b
-                            .SecurityMode(System.ServiceModel.SecurityMode.None))
-                        .WithAddress($"net.tcp://localhost:{port}/{path}"));
-        }
-        public static IProxy<TContract> DefaultTcpSecurizedProxy<TContract>(this IProxy<TContract> me, 
-            int port, string path, string dnsName, string username, string password, string certificateThumbprint,
-            Action<NetTcpBinding> configureTcpBinding = null, Func<ITcpBinding, ITcpBinding> configureTcpBinding2 = null)
-        {
-            me.AddEndpoint(e => {
-                e = e.WithContractOfType<TContract>();
-                e = e.WithTcpBinding(b => {
-                    b = b.ClientCredentialType(MessageCredentialType.UserName)
-                        .SecurityMode(System.ServiceModel.SecurityMode.Message);
-                    b = configureTcpBinding2(b);
-                });
-            });
-
-            return me.AddEndpoint(e => e
-                    .WithContractOfType<TContract>()
-                    .WithTcpBinding(b => b
-                        //.MaxBufferPoolSize(524288)
-                        //.MaxBufferSize(int.MaxValue)
-                        //.MaxConnections(10)
-                        //.MaxReceivedMessageSize(int.MaxValue)
-                        //.ReaderQuotas_MaxBytesPerRead(int.MaxValue)
-                        //.ReaderQuotas_MaxArrayLength(16384)
-                        //.ReaderQuotas_MaxStringContentLength(8192)
-                        //.TransferMode(System.ServiceModel.TransferMode.Buffered)
-                        //.LocalClientMaxClockSkew(TimeSpan.FromDays(1))
-                        //.LocalServiceMaxClockSkew(TimeSpan.FromDays(1))
-                        //.CloseTimeout(TimeSpan.FromMinutes(1))
-                        //.OpenTimeout(TimeSpan.FromMinutes(1))
-                        //.ReceiveTimeout(TimeSpan.FromMinutes(1))
-                        //.SendTimeout(TimeSpan.FromMinutes(1))
-                        .ClientCredentialType(MessageCredentialType.UserName)
-                        .SecurityMode(System.ServiceModel.SecurityMode.Message)
-                        .ConfigureTcpBinding(configureTcpBinding))
-                    .WithAddress($"net.tcp://localhost:{port}/{path}", dnsName)) // DnsName must be match with certificate subject CN
-                .ConfigureChannelFactory(fac => { })
-                .WithCredentials(c => c
-                    .UserName(username)
-                    .Password(password)
-                    .ServiceCertificate_ValidationMode(X509CertificateValidationMode.Custom)
-                    .ServiceCertificate_CustomCertificateValidator(certificateThumbprint));
         }
         #endregion
         #region ServiceCredentials
