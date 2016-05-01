@@ -23,7 +23,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
+    <Optimize>false</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -47,7 +47,15 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Fuxion.Licensing-net46.nuspec" />
+    <None Include="Fuxion.Licensing.version" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\portable\Fuxion.Licensing.csproj">
+      <Project>{c7406922-3198-42d8-80eb-31574b33fc96}</Project>
+      <Name>Fuxion.Licensing</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -57,4 +65,14 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup>
+    <FuxionTasksPath>$(SolutionDir).build\</FuxionTasksPath>
+  </PropertyGroup>
+  <Import Project="$(FuxionTasksPath)Fuxion.Build.Targets" />
+  <Target Name="BeforeBuild" Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <BuildTask TargetName="BeforeBuild" NugetPath="$(FuxionTasksPath)nuget\nuget.exe" />
+  </Target>
+  <Target Name="AfterBuild" Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <BuildTask TargetName="AfterBuild" NugetPath="$(FuxionTasksPath)nuget\nuget.exe" />
+  </Target>
 </Project>
