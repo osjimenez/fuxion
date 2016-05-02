@@ -9,18 +9,28 @@ using System.Xml;
 
 namespace Fuxion.Configuration
 {
-    public class EncryptedFileConfiguration : IConfigurationManager
+    public class XmlFileConfiguration : IConfigurationManager
     {
-        public EncryptedFileConfiguration()
+        string path;
+        public string Path
         {
-            if (File.Exists(path))
+            get
             {
-                var xdoc = XDocument.Load(path);
-                foreach (var e in xdoc.Root.Elements("ConfigurationItem"))
-                    elements.Add(new Guid(e.Attribute("id").Value), e.Descendants().First());
+                if (!string.IsNullOrWhiteSpace(path)) return path;
+                var ass = Assembly.GetEntryAssembly() ?? Assembly.GetAssembly(typeof(XmlFileConfiguration));
+                return System.IO.Path.Combine(System.IO.Path.GetDirectoryName(ass.Location), "config.xml");
+            }
+            set {
+                path = value;
+                Clear();
+                if (File.Exists(value))
+                {
+                    var xdoc = XDocument.Load(value);
+                    foreach (var e in xdoc.Root.Elements("ConfigurationItem"))
+                        elements.Add(new Guid(e.Attribute("id").Value), e.Descendants().First());
+                }
             }
         }
-        static string path = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + @"\config.bin";
         public bool Save()
         {
             DumpObjects();
@@ -31,12 +41,13 @@ namespace Fuxion.Configuration
                             new XAttribute("id", pair.Key),
                             pair.Value));
             }
-
-            //EncryptedData edElement = new EncryptedData();
-            //edElement.Type = EncryptedXml.XmlEncElementUrl;
-
-            xdoc.Save(path);
+            xdoc.Save(Path);
             return true;
+        }
+        public void Clear()
+        {
+            elements.Clear();
+            objects.Clear();
         }
         private void DumpObjects()
         {
@@ -62,6 +73,7 @@ namespace Fuxion.Configuration
             {
                 var res = new TConfigurationItem();
                 elements.Add(res.ConfigurationItemId, res.ToXElement<TConfigurationItem>());
+                objects.Add(id, res);
                 return res;
             }
         }
@@ -72,14 +84,14 @@ namespace Fuxion.Configuration
         public TConfigurationItem Reset<TConfigurationItem>() where TConfigurationItem : ConfigurationItem<TConfigurationItem>, new()
         {
             var newConfig = new TConfigurationItem();
-            //Si esta instanciado lo destruyo
+            // If is already instantiated, destroy it
             if (objects.ContainsKey(newConfig.ConfigurationItemId)) objects.Remove(newConfig.ConfigurationItemId);
-            //Si esta en los elementos lo destroyo
+            // If is in elements, destroy it
             if (elements.ContainsKey(newConfig.ConfigurationItemId)) elements.Remove(newConfig.ConfigurationItemId);
-            //Ahora creo un nuevo elemento
+            // Create new and return it
             elements.Add(newConfig.ConfigurationItemId, newConfig.ToXElement<TConfigurationItem>());
-            //Obtengo el objeto y lo devuelvo
             return Get<TConfigurationItem>();
         }
+
     }
 }

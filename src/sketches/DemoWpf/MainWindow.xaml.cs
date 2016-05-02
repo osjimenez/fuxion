@@ -1,4 +1,5 @@
 ﻿using Fuxion.ComponentModel;
+using Fuxion.Configuration;
 using Fuxion.Factories;
 using Fuxion.ServiceModel;
 using Fuxion.Threading.Tasks;
@@ -30,13 +31,29 @@ using System.Windows.Shapes;
 
 namespace DemoWpf
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
+    public class ConfigurationMock : ConfigurationItem<ConfigurationMock>
+    {
+        public override Guid ConfigurationItemId { get { return Guid.Parse("{7476B8AD-E6EB-4379-89D3-A5777013E9D1}"); } }
+        public string Args { get { return GetValue(() => "DefaultArgs"); } set { SetValue(value); } }
+        public string Args2 { get { return GetValue(() => "DefaultArgs2"); } set { SetValue(value); } }
+        public int Vamos { get { return GetValue(() => 10); } set { SetValue(value); } }
+    }
     public partial class MainWindow : Window, IFactoryServiceCallback
     {
         public MainWindow()
         {
+            XmlFileConfiguration f = new XmlFileConfiguration {
+                Path = "config2.xml"
+            };
+            f.Clear();
+            f.Reset<ConfigurationMock>();
+            f.Save();
+            var cm = f.Get<ConfigurationMock>();
+            cm.Args = "Demo";
+            cm.Args2 = "Demo2";
+            cm.Vamos = 123;
+            f.Save();
+
             InitializeComponent();
             ConfigureFactory();
             Debug.WriteLine($"{Thread.CurrentThread.ManagedThreadId} - Window created");

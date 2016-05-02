@@ -10,23 +10,23 @@ namespace Fuxion.Logging
 	public class Log4netFactory : MarshalByRefObject,  ILogFactory
 	{
         public Log4netFactory() { }
-        string configFilePath;
-        public string ConfigFilePath {
+        string configurationFilePath;
+        public string ConfigurationFilePath {
             get
             {
-                if (!string.IsNullOrWhiteSpace(configFilePath)) return configFilePath;
+                if (!string.IsNullOrWhiteSpace(configurationFilePath)) return configurationFilePath;
                 var ass = Assembly.GetEntryAssembly() ?? Assembly.GetAssembly(typeof(Log4netFactory));
-                var entryAssemblyPath = $"{ass.Location}.log4net";
-                if (File.Exists(entryAssemblyPath))
-                    return entryAssemblyPath;
+                var assemblyBasedPath = $"{ass.Location}.log4net";
+                if (File.Exists(assemblyBasedPath))
+                    return assemblyBasedPath;
                 return Path.Combine(Path.GetDirectoryName(ass.Location), "log4net.config");
             }
-            set { configFilePath = value; }
+            set { configurationFilePath = value; }
         }
         private static readonly WrapperMap s_wrapperMap = new WrapperMap(new WrapperCreationHandler(WrapperCreationHandler));
 		private static ILoggerWrapper WrapperCreationHandler(ILogger logger) { return new Log4netLog(logger); }
 		private static ILog4netLog WrapLogger(ILogger logger) { return (ILog4netLog)s_wrapperMap.GetWrapper(logger); }
         public ILog Create(Type declaringType) { return WrapLogger(LoggerManager.GetLogger(Assembly.GetCallingAssembly(), declaringType.FullName)); }
-        public void Initialize() { XmlConfigurator.ConfigureAndWatch(new FileInfo(ConfigFilePath)); }
+        public void Initialize() { XmlConfigurator.ConfigureAndWatch(new FileInfo(ConfigurationFilePath)); }
 	}
 }

@@ -36,7 +36,6 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.IdentityModel" />
@@ -53,29 +52,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Collections\WeakCollection.cs" />
-    <Compile Include="Configuration\EncryptedFileConfiguration.cs" />
-    <Compile Include="Configuration\FileConfiguration.cs" />
+    <Compile Include="Configuration\XmlFileConfiguration.cs" />
     <Compile Include="ServiceModel\Description\FactoryBehaviorAttribute.cs" />
     <Compile Include="ServiceModel\Dispatcher\FactoryInstanceProvider.cs" />
     <Compile Include="ServiceModel\ServiceBuilder.cs" />
-    <Compile Include="ServiceModel\System-Extensions.cs" />
     <Compile Include="System-Extensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Runtime\InteropServices\SafeGCHandle.cs" />
     <Compile Include="Security\HardwareId.cs" />
-    <Compile Include="ServiceModel\Description\MefServiceBehavior.cs" />
-    <Compile Include="ServiceModel\Dispatcher\MefInstanceProvider.cs" />
-    <Compile Include="ServiceModel\ExportServiceAttribute.cs" />
-    <Compile Include="ServiceModel\HttpEndpointAttribute.cs" />
-    <Compile Include="ServiceModel\IMefService.cs" />
-    <Compile Include="ServiceModel\IMefServiceMetadata.cs" />
-    <Compile Include="ServiceModel\MefEndpointAttribute.cs" />
-    <Compile Include="ServiceModel\MefServiceAttribute.cs" />
-    <Compile Include="ServiceModel\MefServiceHost.cs" />
-    <Compile Include="ServiceModel\MefServiceHostAttribute.cs" />
-    <Compile Include="ServiceModel\ServiceHostExportProvider.cs" />
-    <Compile Include="ServiceModel\ServiceManager.cs" />
-    <Compile Include="ServiceModel\TcpEndpointAttribute.cs" />
     <Compile Include="WeakReference.cs" />
     <Compile Include="Windows\Threading\DispatcherSynchronizer.cs" />
   </ItemGroup>
