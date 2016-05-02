@@ -136,7 +136,7 @@ namespace Fuxion.ServiceModel
             action((me as _Proxy<TContract>).ChannelFactory);
             return me;
         }
-        public static IProxy<TContract> DefaultTcpUnsecureProxy<TContract>(this IProxy<TContract> me, int port, string path,
+        public static IProxy<TContract> DefaultTcpUnsecureProxy<TContract>(this IProxy<TContract> me, string host, int port, string path,
             Func<ITcpBinding, ITcpBinding> configureTcpBinding = null,
             Func<IClientCredentials, IClientCredentials> configureClientCredentials = null)
         {
@@ -147,7 +147,7 @@ namespace Fuxion.ServiceModel
                     if (configureTcpBinding != null)
                         b = configureTcpBinding(b);
                 });
-                e = e.WithAddress($"net.tcp://localhost:{port}/{path}");
+                e = e.WithAddress($"net.tcp://{host}:{port}/{path}");
             });
             proxy = proxy.WithCredentials(c => {
                 if (configureClientCredentials != null)
@@ -156,7 +156,7 @@ namespace Fuxion.ServiceModel
             return proxy;
         }
         public static IProxy<TContract> DefaultTcpSecurizedProxy<TContract>(this IProxy<TContract> me,
-            int port, string path, string dnsName, string username, string password, string certificateThumbprint,
+            string host, int port, string path, string dnsName, string username, string password, string certificateThumbprint,
             Func<ITcpBinding, ITcpBinding> configureTcpBinding = null,
             Func<IClientCredentials, IClientCredentials> configureClientCredentials = null)
         {
@@ -168,7 +168,7 @@ namespace Fuxion.ServiceModel
                     if (configureTcpBinding != null)
                         b = configureTcpBinding(b);
                 });
-                e = e.WithAddress($"net.tcp://localhost:{port}/{path}", dnsName);
+                e = e.WithAddress($"net.tcp://{host}:{port}/{path}", dnsName);
             });
             proxy = proxy.WithCredentials(c => {
                 c = c.UserName(username);

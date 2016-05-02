@@ -77,7 +77,7 @@ namespace DemoWpf
         public async void ProxyService_Click(object sender, RoutedEventArgs args)
         {
             var proxy = await ServiceBuilder.Proxy<IFactoryService>(this)
-                .DefaultTcpSecurizedProxy(6666, "FactoryService", "fuxion.demo", "username", "password", "0DFF4D21124E15D8B3365B03E65AE4B9F4A52FF3")
+                .DefaultTcpSecurizedProxy("localhost", 6666, "FactoryService", "fuxion.demo", "username", "password", "0DFF4D21124E15D8B3365B03E65AE4B9F4A52FF3")
                 .OpenAsync(afterOpenAction: _ => Debug.WriteLine($"{Thread.CurrentThread.ManagedThreadId} - Proxy opened"));
             //proxy.Echo();
             proxy.Ping();
