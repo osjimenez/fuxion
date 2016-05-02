@@ -70,6 +70,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sketches", "sketches", "{D7
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoWpf", "sketches\DemoWpf\DemoWpf.csproj", "{66FCC1D4-F7F6-4A76-B3C3-CC1924C1CF88}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{BBBD5819-E0DC-4292-8140-4CB12CF05425}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion.Log4net.Test", "modules\Log4net\test\Fuxion.Log4net.Test.csproj", "{226DCE27-90D1-4C9B-BBFA-C5A09CAA230E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -354,6 +358,22 @@ Global
 		{66FCC1D4-F7F6-4A76-B3C3-CC1924C1CF88}.Release|x64.Build.0 = Release|Any CPU
 		{66FCC1D4-F7F6-4A76-B3C3-CC1924C1CF88}.Release|x86.ActiveCfg = Release|Any CPU
 		{66FCC1D4-F7F6-4A76-B3C3-CC1924C1CF88}.Release|x86.Build.0 = Release|Any CPU
+		{226DCE27-90D1-4C9B-BBFA-C5A09CAA230E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{226DCE27-90D1-4C9B-BBFA-C5A09CAA230E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{226DCE27-90D1-4C9B-BBFA-C5A09CAA230E}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{226DCE27-90D1-4C9B-BBFA-C5A09CAA230E}.Debug|ARM.Build.0 = Debug|Any CPU
+		{226DCE27-90D1-4C9B-BBFA-C5A09CAA230E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{226DCE27-90D1-4C9B-BBFA-C5A09CAA230E}.Debug|x64.Build.0 = Debug|Any CPU
+		{226DCE27-90D1-4C9B-BBFA-C5A09CAA230E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{226DCE27-90D1-4C9B-BBFA-C5A09CAA230E}.Debug|x86.Build.0 = Debug|Any CPU
+		{226DCE27-90D1-4C9B-BBFA-C5A09CAA230E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{226DCE27-90D1-4C9B-BBFA-C5A09CAA230E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{226DCE27-90D1-4C9B-BBFA-C5A09CAA230E}.Release|ARM.ActiveCfg = Release|Any CPU
+		{226DCE27-90D1-4C9B-BBFA-C5A09CAA230E}.Release|ARM.Build.0 = Release|Any CPU
+		{226DCE27-90D1-4C9B-BBFA-C5A09CAA230E}.Release|x64.ActiveCfg = Release|Any CPU
+		{226DCE27-90D1-4C9B-BBFA-C5A09CAA230E}.Release|x64.Build.0 = Release|Any CPU
+		{226DCE27-90D1-4C9B-BBFA-C5A09CAA230E}.Release|x86.ActiveCfg = Release|Any CPU
+		{226DCE27-90D1-4C9B-BBFA-C5A09CAA230E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -385,6 +405,8 @@ Global
 		{639F2C3A-1CA1-4F20-AD1B-E446624ACA9F} = {6A71A6F6-DAEF-4095-B9F1-FCD677D6AE23}
 		{3C4DB006-A025-4A7D-92B4-1DC638D7A71F} = {02A06801-1B84-466C-84EE-E71F1D62EE26}
 		{66FCC1D4-F7F6-4A76-B3C3-CC1924C1CF88} = {D73E328B-68C4-499C-9532-A7D9ACC4F186}
+		{BBBD5819-E0DC-4292-8140-4CB12CF05425} = {A9C7E09B-4FBA-400D-9DD6-D04BEB8120EE}
+		{226DCE27-90D1-4C9B-BBFA-C5A09CAA230E} = {BBBD5819-E0DC-4292-8140-4CB12CF05425}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		EnterpriseLibraryConfigurationToolBinariesPathV6 = packages\EnterpriseLibrary.TransientFaultHandling.6.0.1304.0\lib\portable-net45+win+wp8;packages\EnterpriseLibrary.TransientFaultHandling.Data.6.0.1304.1\lib\NET45

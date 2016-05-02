@@ -19,7 +19,7 @@ namespace Fuxion.Test
         public void Demo()
         {
             var fac = new Mock<ILogFactory>();
-            Factory.AddToPipe(new FunctionFactory<ILogFactory>(() => new Log4netFactory("log4net.config")));
+            Factory.AddToPipe(new FunctionFactory<ILogFactory>(() => new Log4netFactory()));
 
 
             Factory.AddToPipe(new FunctionFactory<IDemo>(() => new Demo()));
