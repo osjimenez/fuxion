@@ -23,7 +23,7 @@ namespace Fuxion.Net
                             "El valor de '" + s.GetMemberName(() => s.KeepAliveInterval) + "' no puede ser cero o negativo, para deshabilitar el KeepAlive establezca la propiedad '" + s.GetMemberName(() => s.IsKeepAliveEnable) + "' en False.",
                             s.GetMemberName(() => s.KeepAliveInterval));
                 });
-                e.Case(() => ConnectMode, p =>
+                e.Case(() => ConnectionMode, p =>
                 {
                     //Si cambia el modo de conexión a automática y no estoy conectado o conectando debo llamar a Connect
                     if (p.ActualValue == ConnectionMode.Automatic && State != ConnectionState.Opened && State != ConnectionState.Opening)
@@ -57,11 +57,11 @@ namespace Fuxion.Net
 				case ConnectionState.Opened:
 				case ConnectionState.Closing:
 					//log.Verbose("SE HA CAMBIADO UNA PROPIEDAD DE CONEXION Y SE DEBE VOLVER A CONECTAR");
-			        var actualConnectMode = ConnectMode;
+			        var actualConnectMode = ConnectionMode;
                     Disconnect().ContinueWith((task) =>
                     {
                         if (actualConnectMode == ConnectionMode.Automatic)
-                            ConnectMode = ConnectionMode.Automatic;
+                            ConnectionMode = ConnectionMode.Automatic;
                         else
                             Connect();
                     });
@@ -73,7 +73,7 @@ namespace Fuxion.Net
             get { return GetValue<TimeSpan>(() => TimeSpan.FromSeconds(5)); }
             set { SetValue(value); }
         }
-		public ConnectionMode ConnectMode
+		public ConnectionMode ConnectionMode
 		{
             get { return GetLockedValue(() => ConnectionMode.Manual); }
 			set { SetLockedValue(value); }
@@ -129,7 +129,7 @@ namespace Fuxion.Net
                                 log.Error("Error '" + ex.GetType().Name + "' en el método 'OnConnect': " + ex.Message, ex);
 								LastConnectionAttemptErrorMessage = ex.Message;
 								//log.Verbose(string.Format("({0}) CONNECTION ERROR '{1}': {2}", Thread.CurrentThread.ManagedThreadId, ex.GetType().Name, ex.Message));
-								if (ConnectMode == ConnectionMode.Manual)
+								if (ConnectionMode == ConnectionMode.Manual)
 								{
 									State = ConnectionState.Faulted;
 									break;
@@ -193,12 +193,12 @@ namespace Fuxion.Net
 					        if (isFaultedConnection)
 					        {
 					            State = ConnectionState.Faulted;
-					            if (ConnectMode == ConnectionMode.Automatic)
+					            if (ConnectionMode == ConnectionMode.Automatic)
 					                Connect();
 					        }
 					        else
 					        {
-					            ConnectMode = ConnectionMode.Manual;
+					            ConnectionMode = ConnectionMode.Manual;
 					            State = ConnectionState.Closed;
 					        }
 					    }

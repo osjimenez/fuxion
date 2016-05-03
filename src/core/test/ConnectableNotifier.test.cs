@@ -19,7 +19,7 @@ namespace Fuxion.Test
         [Fact]
         public void Connectable_First() {
             var con = new ConnectableNotifierMock(output);
-            con.ConnectMode = ConnectionMode.Automatic;
+            con.ConnectionMode = ConnectionMode.Automatic;
             while (!con.IsConnected) { }
             Assert.Equal(con.Counter, 1);
         }
@@ -27,7 +27,7 @@ namespace Fuxion.Test
         public void Connectable_NestedTask()
         {
             var con = new ConnectableNotifierMock(output);
-            con.ConnectMode = ConnectionMode.Automatic;
+            con.ConnectionMode = ConnectionMode.Automatic;
             while (!con.IsConnected) { }
             Assert.Equal(con.Counter, 1);
         }

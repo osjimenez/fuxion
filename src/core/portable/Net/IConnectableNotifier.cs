@@ -10,7 +10,7 @@ namespace Fuxion.Net
     public interface IConnectableNotifier<TConnectableNotifier> : INotifier<TConnectableNotifier> where TConnectableNotifier : IConnectableNotifier<TConnectableNotifier>
     {
         TimeSpan AutomaticConnectionModeRetryInterval { get; set; }
-        ConnectionMode ConnectMode { get; set; }
+        ConnectionMode ConnectionMode { get; set; }
         ConnectionState State { get; }
         event EventHandler<EventArgs<bool>> IsConnectedChanged;
         bool IsConnected { get; }
