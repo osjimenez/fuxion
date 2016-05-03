@@ -1,6 +1,7 @@
 ﻿using Fuxion.Threading.Tasks;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IdentityModel.Selectors;
 using System.Linq;
 using System.Security.Authentication;
@@ -20,8 +21,8 @@ namespace Fuxion.ServiceModel
         public static IHost Host<TService>() { return new _Host(typeof(TService)); }
         public static IProxy<TContract> Proxy<TContract>() { return new _Proxy<TContract>(e => new ChannelFactory<TContract>(e)); }
         public static IProxy<TContract> Proxy<TContract>(object callbackInstance) { return new _Proxy<TContract>(callbackInstance, (i, e) => new DuplexChannelFactory<TContract>(callbackInstance)); }
-        public static IProxy<TContract> Proxy<TContract>(object callbackInstance, Func<object, ServiceEndpoint, ChannelFactory<TContract>> createCustomChannelFactoryFunction) { return new _Proxy<TContract>(callbackInstance, createCustomChannelFactoryFunction); }
-        public static IProxy<TContract> Proxy<TContract>(Func<ServiceEndpoint, ChannelFactory<TContract>> createCustomDuplexChannelFactoryFunction) { return new _Proxy<TContract>(createCustomDuplexChannelFactoryFunction); }
+        public static IProxy<TContract> Proxy<TContract>(Func<ServiceEndpoint, ChannelFactory<TContract>> createCustomChannelFactoryFunction) { return new _Proxy<TContract>(createCustomChannelFactoryFunction); }
+        public static IProxy<TContract> Proxy<TContract>(object callbackInstance, Func<object, ServiceEndpoint, ChannelFactory<TContract>> createCustomDuplexChannelFactoryFunction) { return new _Proxy<TContract>(callbackInstance, createCustomDuplexChannelFactoryFunction); }
         #endregion
     }
     public static class ServiceBuilderFluent
@@ -186,12 +187,18 @@ namespace Fuxion.ServiceModel
         }
         public static TContract Open<TContract>(this IProxy<TContract> me, TimeSpan? timeout = null, Action<TContract> beforeOpenAction = null, Action<TContract> afterOpenAction = null)
         {
-            var chan = (me as _Proxy<TContract>).ChannelFactory.CreateChannel();
+            var fac = (me as _Proxy<TContract>).ChannelFactory;
+            var chan = fac.CreateChannel();
+            Debug.WriteLine($"chan type is '{chan.GetType().Name}' and is assignable = '{typeof(ICommunicationObject).IsAssignableFrom(chan.GetType())}'");
+            Debug.WriteLine($"chan type is '{chan.GetType().Name}' and is assignable = '{chan.GetType().IsAssignableFrom(typeof(ICommunicationObject))}'");
+            Debug.WriteLine($"chan type is '{chan.GetType().Name}' and is assignable = '{chan is ICommunicationObject}'");
             beforeOpenAction?.Invoke(chan);
             if (timeout != null && timeout.HasValue)
-                ((IClientChannel)chan).Open(timeout.Value);
+                ((ICommunicationObject)chan).Open(timeout.Value);
             else
-                ((IClientChannel)chan).Open();
+            {
+                ((ICommunicationObject)chan).Open();
+            }
             afterOpenAction?.Invoke(chan);
             return chan;
         }

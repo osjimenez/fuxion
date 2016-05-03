@@ -53,11 +53,11 @@
   <ItemGroup>
     <Compile Include="Collections\WeakCollection.cs" />
     <Compile Include="Configuration\XmlFileConfiguration.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceModel\Description\FactoryBehaviorAttribute.cs" />
     <Compile Include="ServiceModel\Dispatcher\FactoryInstanceProvider.cs" />
     <Compile Include="ServiceModel\ServiceBuilder.cs" />
     <Compile Include="System-Extensions.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Runtime\InteropServices\SafeGCHandle.cs" />
     <Compile Include="Security\HardwareId.cs" />
     <Compile Include="WeakReference.cs" />
@@ -74,6 +74,7 @@
     <None Include="Fuxion.version" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

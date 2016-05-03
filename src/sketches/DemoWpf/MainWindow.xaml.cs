@@ -99,11 +99,22 @@ namespace DemoWpf
 
             //var proxy = await ServiceBuilder.Proxy((endpoint) => new CustomDuplexChannelFactory<IFactoryService>(this, endpoint))
 
-            var proxy = await ServiceBuilder.Proxy(this, (instance, endpoint) => new CustomDuplexChannelFactory<IFactoryService>(instance, endpoint))
+            var proxy = ServiceBuilder.Proxy(this, (instance, endpoint) => new CustomDuplexChannelFactory<IFactoryService>(instance, endpoint))
                 .DefaultTcpSecurizedProxy("localhost", 6666, "FactoryService", "fuxion.demo", "username", "password", "0DFF4D21124E15D8B3365B03E65AE4B9F4A52FF3")
-                .OpenAsync(afterOpenAction: _ => Debug.WriteLine($"{Thread.CurrentThread.ManagedThreadId} - Proxy opened"));
-            //proxy.Echo();
+                .Create();
+            //.OpenAsync(afterOpenAction: _ => Debug.WriteLine($"{Thread.CurrentThread.ManagedThreadId} - Proxy opened"));
+
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+            ((ICommunicationObject)proxy).Open();
+            Debug.WriteLine("Open WATCH: " + sw.ElapsedMilliseconds);
+
+
+            sw.Restart();
             proxy.Ping();
+            Debug.WriteLine("Ping WATCH: " + sw.ElapsedMilliseconds);
+
+
             Debug.WriteLine($"{Thread.CurrentThread.ManagedThreadId} - Proxy ping call completed");
 
             /*
