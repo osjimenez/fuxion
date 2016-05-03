@@ -18,8 +18,10 @@ namespace Fuxion.ServiceModel
     {
         #region Static methods
         public static IHost Host<TService>() { return new _Host(typeof(TService)); }
-        public static IProxy<TContract> Proxy<TContract>() { return new _Proxy<TContract>(); }
-        public static IProxy<TContract> Proxy<TContract>(object callbackInstance) { return new _Proxy<TContract>(callbackInstance); }
+        public static IProxy<TContract> Proxy<TContract>() { return new _Proxy<TContract>(e => new ChannelFactory<TContract>(e)); }
+        public static IProxy<TContract> Proxy<TContract>(object callbackInstance) { return new _Proxy<TContract>(callbackInstance, (i, e) => new DuplexChannelFactory<TContract>(callbackInstance)); }
+        public static IProxy<TContract> Proxy<TContract>(object callbackInstance, Func<object, ServiceEndpoint, ChannelFactory<TContract>> createCustomChannelFactoryFunction) { return new _Proxy<TContract>(callbackInstance, createCustomChannelFactoryFunction); }
+        public static IProxy<TContract> Proxy<TContract>(Func<ServiceEndpoint, ChannelFactory<TContract>> createCustomDuplexChannelFactoryFunction) { return new _Proxy<TContract>(createCustomDuplexChannelFactoryFunction); }
         #endregion
     }
     public static class ServiceBuilderFluent
@@ -116,9 +118,7 @@ namespace Fuxion.ServiceModel
             var end = new _Endpoint();
             action(end);
             var pro = (me as _Proxy<TContract>);
-            pro.ChannelFactory = pro.callbackInstance == null
-                ? new ChannelFactory<TContract>(end.ServiceEndpoint)
-                : new DuplexChannelFactory<TContract>(pro.callbackInstance, end.ServiceEndpoint);
+            pro.SetEndpoint(end.ServiceEndpoint);
             return me;
         }
         public static IProxy<TContract> WithCredentials<TContract>(this IProxy<TContract> me, Action<IClientCredentials> action)
@@ -429,14 +429,26 @@ namespace Fuxion.ServiceModel
     }
     class _Proxy<TContract> : IProxy<TContract>
     {
-        public _Proxy(object callbackInstance)
+        public _Proxy(Func<ServiceEndpoint, ChannelFactory<TContract>> createCustomChannelFactoryFunction)
         {
-            this.callbackInstance = callbackInstance;
-            ChannelFactory = new DuplexChannelFactory<TContract>(callbackInstance);
+            CreateCustomChannelFactoryFunction = createCustomChannelFactoryFunction;
         }
-        internal object callbackInstance;
-        public _Proxy() { }
-        public ChannelFactory<TContract> ChannelFactory { get; set; } = new ChannelFactory<TContract>();
+        public _Proxy(object callbackInstance, Func<object, ServiceEndpoint, ChannelFactory<TContract>> createCustomDuplexChannelFactoryFunction)
+        {
+            CallbackInstance = callbackInstance;
+            CreateCustomDuplexChannelFactoryFunction = createCustomDuplexChannelFactoryFunction;
+        }
+        internal object CallbackInstance { get; set; }
+        internal Func<ServiceEndpoint, ChannelFactory<TContract>> CreateCustomChannelFactoryFunction { get; set; }
+        internal Func<object, ServiceEndpoint, ChannelFactory<TContract>> CreateCustomDuplexChannelFactoryFunction { get; set; }
+        public ChannelFactory<TContract> ChannelFactory { get; set; }
+        public void SetEndpoint(ServiceEndpoint endpoint)
+        {
+            if (CallbackInstance != null)
+                ChannelFactory = CreateCustomDuplexChannelFactoryFunction(CallbackInstance, endpoint);
+            else
+                ChannelFactory = CreateCustomChannelFactoryFunction(endpoint);
+        }
     }
     class _Endpoint : IEndpoint
     {

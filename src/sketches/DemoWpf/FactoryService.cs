@@ -1,9 +1,11 @@
-﻿using Fuxion.ServiceModel.Description;
+﻿using Fuxion.Logging;
+using Fuxion.ServiceModel.Description;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.ServiceModel;
+using System.ServiceModel.Description;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -41,5 +43,13 @@ namespace DemoWpf
     public class ToInject
     {
 
+    }
+    public class CustomDuplexChannelFactory<T> : DuplexChannelFactory<T>
+    {
+        public CustomDuplexChannelFactory(object callbackContext, ServiceEndpoint endpoint) : base(callbackContext, endpoint)
+        {
+            log.Notice("CustomDuplexChannelFactory CREATED :)");
+        }
+        ILog log = LogManager.Create<CustomDuplexChannelFactory<T>>();
     }
 }

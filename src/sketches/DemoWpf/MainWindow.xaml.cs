@@ -1,4 +1,5 @@
-﻿using Fuxion.ComponentModel;
+﻿using DemoWpf;
+using Fuxion.ComponentModel;
 using Fuxion.Configuration;
 using Fuxion.Factories;
 using Fuxion.ServiceModel;
@@ -42,17 +43,17 @@ namespace DemoWpf
     {
         public MainWindow()
         {
-            XmlFileConfiguration f = new XmlFileConfiguration {
-                Path = "config2.xml"
-            };
-            f.Clear();
-            f.Reset<ConfigurationMock>();
-            f.Save();
-            var cm = f.Get<ConfigurationMock>();
-            cm.Args = "Demo";
-            cm.Args2 = "Demo2";
-            cm.Vamos = 123;
-            f.Save();
+            //XmlFileConfiguration f = new XmlFileConfiguration {
+            //    Path = "config2.xml"
+            //};
+            //f.Clear();
+            //f.Reset<ConfigurationMock>();
+            //f.Save();
+            //var cm = f.Get<ConfigurationMock>();
+            //cm.Args = "Demo";
+            //cm.Args2 = "Demo2";
+            //cm.Vamos = 123;
+            //f.Save();
 
             InitializeComponent();
             ConfigureFactory();
@@ -93,7 +94,12 @@ namespace DemoWpf
         }
         public async void ProxyService_Click(object sender, RoutedEventArgs args)
         {
-            var proxy = await ServiceBuilder.Proxy<IFactoryService>(this)
+            //var proxy = await ServiceBuilder.Proxy<IFactoryService>(this)
+            //var proxy = await ServiceBuilder.Proxy(new CustomDuplexChannelFactory<IFactoryService>(this))
+
+            //var proxy = await ServiceBuilder.Proxy((endpoint) => new CustomDuplexChannelFactory<IFactoryService>(this, endpoint))
+
+            var proxy = await ServiceBuilder.Proxy(this, (instance, endpoint) => new CustomDuplexChannelFactory<IFactoryService>(instance, endpoint))
                 .DefaultTcpSecurizedProxy("localhost", 6666, "FactoryService", "fuxion.demo", "username", "password", "0DFF4D21124E15D8B3365B03E65AE4B9F4A52FF3")
                 .OpenAsync(afterOpenAction: _ => Debug.WriteLine($"{Thread.CurrentThread.ManagedThreadId} - Proxy opened"));
             //proxy.Echo();
