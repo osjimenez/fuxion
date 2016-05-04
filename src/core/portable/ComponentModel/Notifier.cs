@@ -2,7 +2,6 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
@@ -165,13 +164,13 @@ namespace Fuxion.ComponentModel
         {
             // El constructor no será invocado al deserializar la clase porque se utiliza el método FormatterServices.GetUninitializedObject
             // y este crea el objeto sin estado, no se llamará al constructor ni se crearán las instancias de los campos de la clase.
-            PropertiesDictionary = ImmutableDictionary.Create<string, object>();
+            PropertiesDictionary = new Dictionary<string, object>();
         }
         [OnDeserializing]
         public void OnDeserializing(StreamingContext context)
         {
             //Este método será llamado al deserializar la clase en vez del contructor
-            PropertiesDictionary = ImmutableDictionary.Create<string, object>();
+            PropertiesDictionary = new Dictionary<string, object>();
         }
         #region Events
         event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged { add { PropertyChangedEvent += value; } remove { PropertyChangedEvent -= value; } }
@@ -181,7 +180,7 @@ namespace Fuxion.ComponentModel
         //private event PropertyChangingEventHandler PropertyChangingEvent;
         #endregion
         #region Set&Get Value
-        private volatile ImmutableDictionary<string, object> PropertiesDictionary;
+        private volatile Dictionary<string, object> PropertiesDictionary;
         protected T GetValue<T>(Func<T> defaultValueFunction = null, [CallerMemberName] string propertyName = null)
         {
             if (propertyName == null) throw new ArgumentNullException(nameof(propertyName));
@@ -191,7 +190,7 @@ namespace Fuxion.ComponentModel
             else
             {
                 value = defaultValueFunction == null ? default(T) : defaultValueFunction.Invoke();
-                PropertiesDictionary = PropertiesDictionary.SetItem(propertyName, value);
+                PropertiesDictionary[propertyName] = value;
             }
             return value;
         }
@@ -209,7 +208,7 @@ namespace Fuxion.ComponentModel
             if (raiseOnlyIfNotEquals && EqualityComparer<T>.Default.Equals(oldValue, newValue))
                 return false;
             //if (!OnRaisePropertyChanging(propertyName, oldValue, newValue)) return false;
-            PropertiesDictionary = PropertiesDictionary.SetItem(propertyName, newValue);
+            PropertiesDictionary[propertyName] = newValue;
             OnRaisePropertyChanged(propertyName, oldValue, newValue);
             return true;
         }
@@ -221,7 +220,7 @@ namespace Fuxion.ComponentModel
                 return (ValueLocker<T>)objValue;
             T defaultValue = defaultValueFunction == null ? default(T) : defaultValueFunction.Invoke();
             var defaultLocker = new ValueLocker<T>(defaultValue);
-            PropertiesDictionary.SetItem(propertyName, defaultLocker);
+            PropertiesDictionary[propertyName] = defaultLocker;
             return defaultLocker;
         }
         protected T GetLockedValue<T>(Func<T> defaultValueFunction = null, [CallerMemberName] string propertyName = null) where T : struct { return OnGetLockedValue(defaultValueFunction, propertyName); }
@@ -252,7 +251,7 @@ namespace Fuxion.ComponentModel
             {
                 // oldLockerValue = new ValueLocker<T>((T)GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static).GetValue(this, null));
                 oldLockerValue = new ValueLocker<T>((T)GetType().GetTypeInfo().GetAllProperties().Single(p => p.Name == propertyName).GetValue(this, null));
-                PropertiesDictionary = PropertiesDictionary.Add(propertyName, oldLockerValue);
+                PropertiesDictionary.Add(propertyName, oldLockerValue);
             }
             if (raiseOnlyIfNotEquals && ((oldLockerValue == null && value == null) || EqualityComparer<T>.Default.Equals(oldLockerValue.ObjectLocked, value)))
                 return false;
