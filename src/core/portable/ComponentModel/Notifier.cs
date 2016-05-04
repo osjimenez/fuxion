@@ -156,6 +156,7 @@ namespace Fuxion.ComponentModel
     {
         new event NotifierPropertyChangedEventHandler<TNotifier> PropertyChanged;
     }
+    [DataContract(IsReference = true)]
     public abstract class Notifier<TNotifier> : INotifier<TNotifier> where TNotifier : class, INotifier<TNotifier>
     //public abstract class Notifier<TNotifier> : INotifyPropertyChanged
         //where TNotifier : Notifier<TNotifier>
