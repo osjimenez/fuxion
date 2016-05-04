@@ -104,6 +104,7 @@ public class BuildTask : Microsoft.Build.Utilities.Task
     private Version GetVersion()
     {
         var projectFile = BuildEngine.ProjectFileOfTaskNode;
+        
         var versionFilePath = Directory.GetFiles(Path.GetDirectoryName(projectFile), "*.version", SearchOption.TopDirectoryOnly).First();
         return new Version(File.ReadAllText(Path.Combine(Path.GetDirectoryName(BuildEngine.ProjectFileOfTaskNode), versionFilePath)));
     }

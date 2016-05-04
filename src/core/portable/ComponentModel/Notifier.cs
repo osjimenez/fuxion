@@ -252,7 +252,7 @@ namespace Fuxion.ComponentModel
             {
                 // oldLockerValue = new ValueLocker<T>((T)GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static).GetValue(this, null));
                 oldLockerValue = new ValueLocker<T>((T)GetType().GetTypeInfo().GetAllProperties().Single(p => p.Name == propertyName).GetValue(this, null));
-                PropertiesDictionary.Add(propertyName, oldLockerValue);
+                PropertiesDictionary[propertyName] = oldLockerValue;
             }
             if (raiseOnlyIfNotEquals && ((oldLockerValue == null && value == null) || EqualityComparer<T>.Default.Equals(oldLockerValue.ObjectLocked, value)))
                 return false;
