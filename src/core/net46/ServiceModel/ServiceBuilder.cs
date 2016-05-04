@@ -25,7 +25,7 @@ namespace Fuxion.ServiceModel
         public static IProxy<TContract> Proxy<TContract>(object callbackInstance, Func<object, ServiceEndpoint, ChannelFactory<TContract>> createCustomDuplexChannelFactoryFunction) { return new _Proxy<TContract>(callbackInstance, createCustomDuplexChannelFactoryFunction); }
         #endregion
     }
-    public static class ServiceBuilderFluent
+    public static class ServiceBuilderFluentExtensions
     { 
         #region Host
         public static IHost AddEndpoint(this IHost me, Action<IEndpoint> action)
