@@ -11,6 +11,10 @@ namespace Fuxion.Configuration
 {
     public class XmlFileConfiguration : IConfigurationManager
     {
+        public XmlFileConfiguration()
+        {
+            Load();
+        }
         string path;
         public string Path
         {
@@ -18,17 +22,21 @@ namespace Fuxion.Configuration
             {
                 if (!string.IsNullOrWhiteSpace(path)) return path;
                 var ass = Assembly.GetEntryAssembly() ?? Assembly.GetAssembly(typeof(XmlFileConfiguration));
-                return System.IO.Path.Combine(System.IO.Path.GetDirectoryName(ass.Location), "config.xml");
+                return path = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(ass.Location), "config.xml");
             }
             set {
                 path = value;
                 Clear();
-                if (File.Exists(value))
-                {
-                    var xdoc = XDocument.Load(value);
-                    foreach (var e in xdoc.Root.Elements("ConfigurationItem"))
-                        elements.Add(new Guid(e.Attribute("id").Value), e.Descendants().First());
-                }
+                Load();
+            }
+        }
+        private void Load()
+        {
+            if (File.Exists(Path))
+            {
+                var xdoc = XDocument.Load(Path);
+                foreach (var e in xdoc.Root.Elements("ConfigurationItem"))
+                    elements.Add(new Guid(e.Attribute("id").Value), e.Descendants().First());
             }
         }
         public bool Save()

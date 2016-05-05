@@ -11,12 +11,30 @@ namespace Fuxion.Test
     public class XmlFileConfigurationTest
     {
         [Fact]
-        public void XmlFileConfiguration_First()
+        public void XmlFileConfiguration_Load()
         {
             XmlFileConfiguration f = new XmlFileConfiguration();
             var cm = f.Get<ConfigurationMock>();
             cm.String = "Test";
             f.Save();
+
+            XmlFileConfiguration f2 = new XmlFileConfiguration();
+            var cm2 = f2.Get<ConfigurationMock>();
+
+            Assert.Equal(cm.String, cm2.String);
+        }
+        [Fact]
+        public void XmlFileConfiguration_CustomPath()
+        {
+            XmlFileConfiguration f = new XmlFileConfiguration { Path = "myConfig.xml" };
+            var cm = f.Get<ConfigurationMock>();
+            cm.String = "Test";
+            f.Save();
+
+            XmlFileConfiguration f2 = new XmlFileConfiguration { Path = "myConfig.xml" };
+            var cm2 = f2.Get<ConfigurationMock>();
+
+            Assert.Equal(cm.String, cm2.String);
         }
     }
     public class ConfigurationMock : ConfigurationItem<ConfigurationMock>
