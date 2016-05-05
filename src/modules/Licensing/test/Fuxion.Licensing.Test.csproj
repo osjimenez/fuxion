@@ -101,8 +101,12 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Const.cs" />
     <Compile Include="LicenseContainer.test.cs" />
+    <Compile Include="Mocks\LicenseMock.cs" />
+    <Compile Include="LicenseStore.test.cs" />
     <Compile Include="LicensingManager.test.cs" />
+    <Compile Include="Mocks\LicenseStoreMock.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

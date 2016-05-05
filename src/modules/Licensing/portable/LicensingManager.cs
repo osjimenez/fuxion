@@ -49,9 +49,9 @@ namespace Fuxion.Licensing
                 if (!cons.Any())
                     throw new LicenseValidationException($"Couldn't find any license of type '{typeof(T).Name}'");
                 //cons.Any(l => l.LicenseAs<T>().Validate(out validationMessage));
-                var o1 = Store.Query().First().LicenseIs<T>();
-                var oo = Store.Query().First().LicenseAs<T>();
-                var o2 = oo.Validate(out validationMessage);
+                //var o1 = Store.Query().First().LicenseIs<T>();
+                //var oo = Store.Query().First().LicenseAs<T>();
+                //var o2 = oo.Validate(out validationMessage);
                 if (!Store.Query().Any(l => l.LicenseIs<T>()  && l.LicenseAs<T>().Validate(out validationMessage)))
                     throw new LicenseValidationException(validationMessage);
                 return true;

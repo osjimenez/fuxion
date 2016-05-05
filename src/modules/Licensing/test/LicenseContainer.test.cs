@@ -1,4 +1,5 @@
 ﻿using Fuxion.Factories;
+using Fuxion.Licensing.Test.Mocks;
 using Newtonsoft.Json;
 using PCLCrypto;
 using SimpleInjector;
@@ -13,6 +14,7 @@ using Xunit.Abstractions;
 using static PCLCrypto.WinRTCrypto;
 namespace Fuxion.Licensing.Test
 {
+    [Collection("Licensing")]
     public class LicenseContainerTest
     {
         public LicenseContainerTest(ITestOutputHelper output)
@@ -83,12 +85,12 @@ namespace Fuxion.Licensing.Test
             var lic = new LicenseMock();
             lic.SetHarwareId(hardwareId);
             lic.SetProductId(productId);
-            var con = LicenseContainer.Sign(lic, LicensingManagerTest.FULL_KEY);
+            var con = LicenseContainer.Sign(lic, Const.FULL_KEY);
             output.WriteLine("ToJson:");
             output.WriteLine(con.ToJson());
             output.WriteLine("License.ToJson:");
             output.WriteLine(con.License.ToJson());
-            Assert.True(con.VerifySignature(LicensingManagerTest.PUBLIC_KEY));
+            Assert.True(con.VerifySignature(Const.PUBLIC_KEY));
         }
         [Fact]
         public void LicenseContainer_Comment()
@@ -98,13 +100,13 @@ namespace Fuxion.Licensing.Test
             var lic = new LicenseMock();
             lic.SetHarwareId(hardwareId);
             lic.SetProductId(productId);
-            var con = LicenseContainer.Sign(lic, LicensingManagerTest.FULL_KEY);
+            var con = LicenseContainer.Sign(lic, Const.FULL_KEY);
             con.Comment = "Original comment";
             output.WriteLine("Original ToJson:");
             output.WriteLine(con.ToJson());
-            Assert.True(con.VerifySignature(LicensingManagerTest.PUBLIC_KEY));
+            Assert.True(con.VerifySignature(Const.PUBLIC_KEY));
             con.Comment = "Change comment";
-            Assert.True(con.VerifySignature(LicensingManagerTest.PUBLIC_KEY));
+            Assert.True(con.VerifySignature(Const.PUBLIC_KEY));
             output.WriteLine("Changed ToJson:");
             output.WriteLine(con.ToJson());
         }
