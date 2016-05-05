@@ -1,4 +1,5 @@
-﻿using Fuxion.Threading;
+﻿using Fuxion.Factories;
+using Fuxion.Threading;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -158,20 +159,20 @@ namespace Fuxion.ComponentModel
     }
     [DataContract(IsReference = true)]
     public abstract class Notifier<TNotifier> : INotifier<TNotifier> where TNotifier : class, INotifier<TNotifier>
-    //public abstract class Notifier<TNotifier> : INotifyPropertyChanged
-        //where TNotifier : Notifier<TNotifier>
     {
         protected Notifier()
         {
             // El constructor no será invocado al deserializar la clase porque se utiliza el método FormatterServices.GetUninitializedObject
             // y este crea el objeto sin estado, no se llamará al constructor ni se crearán las instancias de los campos de la clase.
             PropertiesDictionary = new Dictionary<string, object>();
+            Synchronizer = Factory.Get<INotifierSynchronizer>();
         }
         [OnDeserializing]
         public void OnDeserializing(StreamingContext context)
         {
             //Este método será llamado al deserializar la clase en vez del contructor
             PropertiesDictionary = new Dictionary<string, object>();
+            Synchronizer = Factory.Get<INotifierSynchronizer>();
         }
         #region Events
         event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged { add { PropertyChangedEvent += value; } remove { PropertyChangedEvent -= value; } }
