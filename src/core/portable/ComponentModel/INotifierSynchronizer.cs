@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Fuxion.Factories;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Fuxion.ComponentModel
 {
+    [FactoryDefaultImplementation(typeof(DefaultNotifierSynchronizer))]
     public interface INotifierSynchronizer
     {
         #region Invoke Actions

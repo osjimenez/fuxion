@@ -43,6 +43,7 @@
     </Compile>
     <Compile Include="Collections\Generic\GenericEqualityComparer.cs" />
     <Compile Include="Collections\ObjectModel\DeactivatableObservableCollection.cs" />
+    <Compile Include="ComponentModel\DefaultNotifierSynchronizer.cs" />
     <Compile Include="ComponentModel\INotifierSynchronizer.cs" />
     <Compile Include="EventHandler.cs" />
     <Compile Include="Factories\CreationMode.cs" />
