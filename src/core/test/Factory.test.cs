@@ -11,7 +11,7 @@ namespace Fuxion.Test
     public class FactoryTest
     {
         [Fact]
-        public void InstanceFactory_First()
+        public void Factory_InstanceFactory_Same()
         {
             var instance = new DefaultImplementation { Value = 123 };
             Factory.AddToPipe(new InstanceFactory<DefaultImplementation>(instance));
@@ -20,7 +20,7 @@ namespace Fuxion.Test
             Assert.Equal(res, instance);
         }
         [Fact]
-        public void FunctionFactory_First()
+        public void Factory_FunctionFactory_NotSame()
         {
             var instance = new DefaultImplementation { Value = 123 };
             Factory.AddToPipe(new FunctionFactory<DefaultImplementation>(() => new DefaultImplementation { Value = 123 }));
@@ -29,7 +29,7 @@ namespace Fuxion.Test
             Assert.Equal(res, instance);
         }
         [Fact]
-        public void FactoryDefaultImplementationAttribute()
+        public void Factory_DefaultImplementationAttribute()
         {
             var res = Factory.Get<IDefaultImplemented>(false);
             Assert.NotNull(res);
