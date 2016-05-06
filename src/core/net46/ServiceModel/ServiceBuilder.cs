@@ -139,7 +139,8 @@ namespace Fuxion.ServiceModel
         }
         public static IProxy<TContract> DefaultTcpUnsecureProxy<TContract>(this IProxy<TContract> me, string host, int port, string path,
             Func<ITcpBinding, ITcpBinding> configureTcpBinding = null,
-            Func<IClientCredentials, IClientCredentials> configureClientCredentials = null)
+            Func<IClientCredentials, IClientCredentials> configureClientCredentials = null,
+            Action<ChannelFactory<TContract>> configureChannelFactory = null)
         {
             var proxy = me.AddEndpoint(e => {
                 e = e.WithContractOfType<TContract>();
@@ -154,12 +155,14 @@ namespace Fuxion.ServiceModel
                 if (configureClientCredentials != null)
                     c = configureClientCredentials(c);
             });
+            configureChannelFactory?.Invoke((proxy as _Proxy<TContract>).ChannelFactory);
             return proxy;
         }
         public static IProxy<TContract> DefaultTcpSecurizedProxy<TContract>(this IProxy<TContract> me,
             string host, int port, string path, string dnsName, string username, string password, string certificateThumbprint,
             Func<ITcpBinding, ITcpBinding> configureTcpBinding = null,
-            Func<IClientCredentials, IClientCredentials> configureClientCredentials = null)
+            Func<IClientCredentials, IClientCredentials> configureClientCredentials = null,
+            Action<ChannelFactory<TContract>> configureChannelFactory = null)
         {
             var proxy = me.AddEndpoint(e => {
                 e = e.WithContractOfType<TContract>();
@@ -179,6 +182,7 @@ namespace Fuxion.ServiceModel
                 if (configureClientCredentials != null)
                     c = configureClientCredentials(c);
             });
+            configureChannelFactory?.Invoke((proxy as _Proxy<TContract>).ChannelFactory);
             return proxy;
         }
         public static TContract Create<TContract>(this IProxy<TContract> me)
@@ -278,6 +282,11 @@ namespace Fuxion.ServiceModel
         }
         #endregion
         #region TcpBinding
+        public static TBinding InactivityTimeout<TBinding>(this TBinding me, TimeSpan inactivityTimeout) where TBinding : IBinding
+        {
+            (me as _TcpBinding).InactivityTimeout = inactivityTimeout;
+            return me;
+        }
         public static ITcpBinding MaxBufferSize(this ITcpBinding me, int maxBufferSize)
         {
             (me as _TcpBinding).MaxBufferSize = maxBufferSize;
@@ -482,6 +491,7 @@ namespace Fuxion.ServiceModel
         {
             Binding bin;
             var tcpBin = new NetTcpBinding();
+            tcpBin.ReliableSession.InactivityTimeout = InactivityTimeout;
             tcpBin.MaxBufferPoolSize = MaxBufferPoolSize;
             tcpBin.MaxBufferSize = MaxBufferSize;
             tcpBin.MaxConnections = MaxConnections;
@@ -514,6 +524,7 @@ namespace Fuxion.ServiceModel
             return bin;
         }
 
+        public TimeSpan InactivityTimeout { get; set; } = TimeSpan.FromMinutes(10);
         public long MaxBufferPoolSize { get; set; } = 524288;
         public int MaxBufferSize { get; set; } = 65536;
         public int MaxConnections { get; set; } = 10;
