@@ -12,6 +12,7 @@ using System.ServiceModel.Description;
 using System.ServiceModel.Security;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace Fuxion.ServiceModel
 {
@@ -48,6 +49,76 @@ namespace Fuxion.ServiceModel
         public static IHost ConfigureHost(this IHost me, Action<ServiceHost> action)
         {
             action((me as _Host).ServiceHost);
+            return me;
+        }
+        public static IHost InstanceContextmode(this IHost me, InstanceContextMode mode)
+        {
+            (me as _Host).ServiceHost.Description.Behaviors.Find<ServiceBehaviorAttribute>().InstanceContextMode = mode;
+            return me;
+        }
+        public static IHost IncludeExceptionDetailInFaults(this IHost me, bool includeExceptionDetailInFaults)
+        {
+            (me as _Host).ServiceHost.Description.Behaviors.Find<ServiceBehaviorAttribute>().IncludeExceptionDetailInFaults = includeExceptionDetailInFaults;
+            return me;
+        }
+        public static IHost AddressFilterMode(this IHost me, AddressFilterMode mode)
+        {
+            (me as _Host).ServiceHost.Description.Behaviors.Find<ServiceBehaviorAttribute>().AddressFilterMode = mode;
+            return me;
+        }
+        public static IHost AutomaticSessionShutdown(this IHost me, bool automaticSessionShutdown)
+        {
+            (me as _Host).ServiceHost.Description.Behaviors.Find<ServiceBehaviorAttribute>().AutomaticSessionShutdown = automaticSessionShutdown;
+            return me;
+        }
+        public static IHost ConcurrencyMode(this IHost me, ConcurrencyMode mode)
+        {
+            (me as _Host).ServiceHost.Description.Behaviors.Find<ServiceBehaviorAttribute>().ConcurrencyMode = mode;
+            return me;
+        }
+        public static IHost EnsureOrderedDispatch(this IHost me, bool ensureOrderedDispatch)
+        {
+            (me as _Host).ServiceHost.Description.Behaviors.Find<ServiceBehaviorAttribute>().EnsureOrderedDispatch = ensureOrderedDispatch;
+            return me;
+        }
+        public static IHost IgnoreExtensionDataObject(this IHost me, bool ignoreExtensionDataObject)
+        {
+            (me as _Host).ServiceHost.Description.Behaviors.Find<ServiceBehaviorAttribute>().IgnoreExtensionDataObject = ignoreExtensionDataObject;
+            return me;
+        }
+        public static IHost MaxItemsInObjectGraph(this IHost me, int maxItemsInObjectGraph)
+        {
+            (me as _Host).ServiceHost.Description.Behaviors.Find<ServiceBehaviorAttribute>().MaxItemsInObjectGraph = maxItemsInObjectGraph;
+            return me;
+        }
+        public static IHost ReleaseServiceInstanceOnTransactionComplete(this IHost me, bool releaseServiceInstanceOnTransactionComplete)
+        {
+            (me as _Host).ServiceHost.Description.Behaviors.Find<ServiceBehaviorAttribute>().ReleaseServiceInstanceOnTransactionComplete = releaseServiceInstanceOnTransactionComplete;
+            return me;
+        }
+        public static IHost TransactionAutoCompleteOnSessionClose(this IHost me, bool transactionAutoCompleteOnSessionClose)
+        {
+            (me as _Host).ServiceHost.Description.Behaviors.Find<ServiceBehaviorAttribute>().TransactionAutoCompleteOnSessionClose = transactionAutoCompleteOnSessionClose;
+            return me;
+        }
+        public static IHost TransactionIsolationLevel(this IHost me, IsolationLevel level)
+        {
+            (me as _Host).ServiceHost.Description.Behaviors.Find<ServiceBehaviorAttribute>().TransactionIsolationLevel = level;
+            return me;
+        }
+        public static IHost TransactionTimeout(this IHost me, string transactionTimeout)
+        {
+            (me as _Host).ServiceHost.Description.Behaviors.Find<ServiceBehaviorAttribute>().TransactionTimeout = transactionTimeout;
+            return me;
+        }
+        public static IHost UseSynchronizationContext(this IHost me, bool useSynchronizationContext)
+        {
+            (me as _Host).ServiceHost.Description.Behaviors.Find<ServiceBehaviorAttribute>().UseSynchronizationContext = useSynchronizationContext;
+            return me;
+        }
+        public static IHost ValidateMustUnderstand(this IHost me, bool validateMustUnderstand)
+        {
+            (me as _Host).ServiceHost.Description.Behaviors.Find<ServiceBehaviorAttribute>().ValidateMustUnderstand = validateMustUnderstand;
             return me;
         }
         public static IHost DefaultTcpUnsecureHost<TContract>(this IHost me, int port, string path,
