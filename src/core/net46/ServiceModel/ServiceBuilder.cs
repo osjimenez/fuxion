@@ -51,7 +51,7 @@ namespace Fuxion.ServiceModel
             action((me as _Host).ServiceHost);
             return me;
         }
-        public static IHost InstanceContextmode(this IHost me, InstanceContextMode mode)
+        public static IHost InstanceContextMode(this IHost me, InstanceContextMode mode)
         {
             (me as _Host).ServiceHost.Description.Behaviors.Find<ServiceBehaviorAttribute>().InstanceContextMode = mode;
             return me;
