@@ -53,9 +53,8 @@ namespace Fuxion.Threading.Tasks
         public void Cancel()
         {
             CancellationTokenSource.Cancel();
-            if (Canceled != null) Canceled(this, EventArgs.Empty);
+            Canceled?.Invoke(this, EventArgs.Empty);
         }
-
     }
     class ActionTaskManagerEntry : TaskManagerEntry
     {

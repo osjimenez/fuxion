@@ -140,7 +140,7 @@ namespace Fuxion.Net
 						//log.Verbose(string.Format("({0}) FIN DE TAREA DE CONEXION ... ", Thread.CurrentThread.ManagedThreadId));
 					});
 
-                    connectionTask.OnCancel((s, e) => { IsConnectCancellationRequested = true; });
+                    connectionTask.OnCancel(() => { IsConnectCancellationRequested = true; });
 			        connectionTask.Start();
 					await connectionTask;
 					break;
@@ -180,7 +180,7 @@ namespace Fuxion.Net
 						//log.Verbose(string.Format("({0}) NUEVA TARE DE DESCONEXION ... ", Thread.CurrentThread.ManagedThreadId));
 						State = ConnectionState.Closing;
                         //log.Verbose(string.Format("({0}) ESPERANDO CANCELACION DE CONEXION ... ", Thread.CurrentThread.ManagedThreadId));
-                        new[] { connectionTask, keepAliveTask }.CancelAndWait(false);
+                        new[] { connectionTask, keepAliveTask }.CancelAndWait(throwExceptionIfNotRunning: false);
 					    try
 					    {
 					        await OnDisconnect();
@@ -204,7 +204,7 @@ namespace Fuxion.Net
 					    }
 					    //log.Verbose(string.Format("({0}) FIN DE TAREA DE DESCONEXION ... ", Thread.CurrentThread.ManagedThreadId));
 					});
-                    disconnectionTask.OnCancel((s, e) => { IsDisconnectCancellationRequested = true; });
+                    disconnectionTask.OnCancel(() => { IsDisconnectCancellationRequested = true; });
 			        disconnectionTask.Start();
 					await disconnectionTask;
 					break;
@@ -254,7 +254,7 @@ namespace Fuxion.Net
 				}
 			});
 
-            keepAliveTask.OnCancel((s, e) => { IsKeepAliveCancellationRequested = true; });
+            keepAliveTask.OnCancel(() => { IsKeepAliveCancellationRequested = true; });
             keepAliveTask.Start();
             //await keepAliveTask;
 		}

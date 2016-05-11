@@ -22,17 +22,19 @@ namespace System.Threading.Tasks
                 if (entry.IsSleeping) entry.AutoResetEvent.Set();
             }
         }
-        public static void CancelAndWait(this Task task, bool throwExceptionIfNotRunning = true) { new[] { task }.CancelAndWait(throwExceptionIfNotRunning); }
-
-
-        public static void CancelAndWait(this IEnumerable<Task> tasks, bool throwExceptionIfNotRunning = true) {
+        public static void CancelAndWait(this Task task, TimeSpan timeout = default(TimeSpan), bool throwExceptionIfNotRunning = true) { new[] { task }.CancelAndWait(timeout, throwExceptionIfNotRunning); }
+        public static void CancelAndWait(this IEnumerable<Task> tasks, TimeSpan timeout = default(TimeSpan), bool throwExceptionIfNotRunning = true) {
             foreach (var task in tasks)
                 task.Cancel(throwExceptionIfNotRunning);
-            Task.WaitAll(tasks.Where(t => t != null).ToArray());
+            if (timeout != default(TimeSpan))
+                Task.WaitAll(tasks.Where(t => t != null).ToArray(), timeout);
+            else
+                Task.WaitAll(tasks.Where(t => t != null).ToArray());
         }
-        public static void OnCancel(this Task task, Action<object, EventArgs> action)
+
+        public static void OnCancel(this Task task, Action action)
         {
-            TaskManager.SearchEntry(task, true).Canceled += (s, e) => action.Invoke(s, e);
+            TaskManager.SearchEntry(task, true).Canceled += (s, e) => action();
         }
         public static bool IsCancellationRequested(this Task task, bool throwExceptionIfNotRunning = false)
         {
@@ -49,16 +51,18 @@ namespace System.Threading.Tasks
         {
             try
             {
-                if (timeout == TimeSpan.Zero) task.Wait();
+                if (timeout == default(TimeSpan)) task.Wait();
                 else task.Wait(timeout);
                 return task.Result;
             }
             catch (AggregateException aex)
             {
-                aex = aex.Flatten();
-                if (aex.InnerExceptions.Count == 1) throw aex.InnerException;
                 if (rethrowException)
+                {
+                    aex = aex.Flatten();
+                    if (aex.InnerExceptions.Count == 1) throw aex.InnerException;
                     throw aex;
+                }
                 else
                     return default(TResult);
             }
