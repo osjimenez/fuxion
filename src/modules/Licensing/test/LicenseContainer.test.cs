@@ -26,7 +26,7 @@ namespace Fuxion.Licensing.Test
             con.RegisterSingleton<IHardwareIdProvider>(new HardwareIdProviderMock());
             con.RegisterSingleton<ITimeProvider>(new TimeProviderMock());
             con.Register<LicensingManager>();
-            Factory.AddToPipe(new SimpleInjectorFactory(con));
+            Factory.AddInjector(new SimpleInjectorFactoryInjector(con));
         }
         ITestOutputHelper output;
         [Fact]

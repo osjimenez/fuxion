@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Fuxion.Factories
 {
-    public interface IFactory
+    public interface IFactoryInjector
     {
         object Get(Type type);
 		IEnumerable<object> GetMany(Type type);

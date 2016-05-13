@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Factories
 {
-    public class InstanceFactory<T> : ICheckableFactory
+    public class InstanceInjector<T> : ICheckableInjector
     {
-        public InstanceFactory(T instance) { this.instance = instance; }
-        public InstanceFactory(IEnumerable<T> instances) { this.instances = instances; }
+        public InstanceInjector(T instance) { this.instance = instance; }
+        public InstanceInjector(IEnumerable<T> instances) { this.instances = instances; }
         T instance;
         IEnumerable<T> instances;
         public object Get(Type type)

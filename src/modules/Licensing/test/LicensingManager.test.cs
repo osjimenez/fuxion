@@ -22,14 +22,14 @@ namespace Fuxion.Licensing.Test
         public LicensingManagerTest(ITestOutputHelper output)
         {
             this.output = output;
-            Factory.ClearPipe();
+            Factory.RemoveAllInjectors();
             var con = new Container();
             con.RegisterSingleton<ILicenseProvider>(new LicenseProviderMock());
             con.RegisterSingleton<ILicenseStore>(new LicenseStoreMock());
             con.RegisterSingleton<IHardwareIdProvider>(new HardwareIdProviderMock());
             con.RegisterSingleton<ITimeProvider>(new TimeProviderMock());
             con.Register<LicensingManager>();
-            Factory.AddToPipe(new SimpleInjectorFactory(con));
+            Factory.AddInjector(new SimpleInjectorFactoryInjector(con));
         }
         ITestOutputHelper output;
         internal static LicensingManager GetManager(bool withFullKey = false)

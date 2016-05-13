@@ -63,7 +63,7 @@ namespace DemoWpf
         {
             Container con = new Container();
             con.Register<ToInject>();
-            Factory.AddToPipe(new SimpleInjectorFactory(con));
+            Factory.AddInjector(new SimpleInjectorFactoryInjector(con));
         }
         //class ServiceValidator : UserNamePasswordValidator
         //{

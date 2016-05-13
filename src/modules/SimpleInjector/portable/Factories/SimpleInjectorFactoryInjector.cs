@@ -6,9 +6,9 @@ using System.Linq;
 
 namespace Fuxion.Factories
 {
-	public class SimpleInjectorFactory : IFactory
+	public class SimpleInjectorFactoryInjector : IFactoryInjector
 	{
-		public SimpleInjectorFactory(Container container) { this._container = container; }
+		public SimpleInjectorFactoryInjector(Container container) { this._container = container; }
 		readonly Container _container;
 		public object Get(Type type)
 		{

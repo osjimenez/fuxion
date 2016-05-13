@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DateTime2Convention.cs" />
     <Compile Include="TrackAttributes.cs" />
     <Compile Include="ColumnAnnotationAttribute.cs" />
     <Compile Include="Extensions.cs" />

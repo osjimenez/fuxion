@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Factories
 {
-    public interface ICheckableFactory : IFactory
+    public interface ICheckableInjector : IFactoryInjector
     {
         bool CheckGet(Type type);
         bool CheckGetMany(Type type);

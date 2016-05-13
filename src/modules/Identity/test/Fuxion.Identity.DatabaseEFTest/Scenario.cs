@@ -20,7 +20,7 @@ namespace Fuxion.Identity.DatabaseEFTest
             TypeDiscriminator.KnownTypes = AppDomain.CurrentDomain.GetAssemblies()
                 .Where(a => a.FullName.StartsWith("Fuxion"))
                 .SelectMany(a => a.DefinedTypes).ToArray();
-            Factory.ClearPipe();
+            Factory.RemoveAllInjectors();
             if (key == MEMORY)
             {
                 if (memoryFactory == null)
@@ -31,9 +31,9 @@ namespace Fuxion.Identity.DatabaseEFTest
                     con.RegisterSingleton<IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity>>(rep);
                     con.RegisterSingleton<IIdentityTestRepository>(rep);
                     con.RegisterSingleton<IdentityManager>();
-                    memoryFactory = new SimpleInjectorFactory(con);
+                    memoryFactory = new SimpleInjectorFactoryInjector(con);
                 }
-                Factory.AddToPipe(memoryFactory);
+                Factory.AddInjector(memoryFactory);
             }
             else if (key == DATABASE)
             {
@@ -46,13 +46,13 @@ namespace Fuxion.Identity.DatabaseEFTest
                     con.RegisterSingleton<IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity>>(new MemoryKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity>(rep));
                     con.RegisterSingleton<IIdentityTestRepository>(rep);
                     con.RegisterSingleton<IdentityManager>();
-                    databaseFactory = new SimpleInjectorFactory(con);
+                    databaseFactory = new SimpleInjectorFactoryInjector(con);
                 }
-                Factory.AddToPipe(databaseFactory);
+                Factory.AddInjector(databaseFactory);
             }
             else throw new NotImplementedException($"El escenario '{key}' no esta soportado");
         }
-        static SimpleInjectorFactory memoryFactory;
-        static SimpleInjectorFactory databaseFactory;
+        static SimpleInjectorFactoryInjector memoryFactory;
+        static SimpleInjectorFactoryInjector databaseFactory;
     }
 }

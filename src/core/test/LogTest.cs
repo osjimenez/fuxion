@@ -19,10 +19,10 @@ namespace Fuxion.Test
         public void Demo()
         {
             var fac = new Mock<ILogFactory>();
-            Factory.AddToPipe(new FunctionFactory<ILogFactory>(() => new Log4netFactory()));
+            Factory.AddInjector(new FunctionInjector<ILogFactory>(() => new Log4netFactory()));
 
 
-            Factory.AddToPipe(new FunctionFactory<IDemo>(() => new Demo()));
+            Factory.AddInjector(new FunctionInjector<IDemo>(() => new Demo()));
 
             var demo = Factory.Get<IDemo>();
             var log = LogManager.Create<LogTest>();

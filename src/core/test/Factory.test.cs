@@ -14,7 +14,7 @@ namespace Fuxion.Test
         public void Factory_InstanceFactory_Same()
         {
             var instance = new DefaultImplementation { Value = 123 };
-            Factory.AddToPipe(new InstanceFactory<DefaultImplementation>(instance));
+            Factory.AddInjector(new InstanceInjector<DefaultImplementation>(instance));
             var res = Factory.Get<DefaultImplementation>();
             Assert.Same(res, instance);
             Assert.Equal(res, instance);
@@ -23,7 +23,7 @@ namespace Fuxion.Test
         public void Factory_FunctionFactory_NotSame()
         {
             var instance = new DefaultImplementation { Value = 123 };
-            Factory.AddToPipe(new FunctionFactory<DefaultImplementation>(() => new DefaultImplementation { Value = 123 }));
+            Factory.AddInjector(new FunctionInjector<DefaultImplementation>(() => new DefaultImplementation { Value = 123 }));
             var res = Factory.Get<DefaultImplementation>();
             Assert.NotSame(res, instance);
             Assert.Equal(res, instance);
