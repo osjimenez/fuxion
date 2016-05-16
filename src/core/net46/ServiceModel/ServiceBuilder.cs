@@ -21,7 +21,7 @@ namespace Fuxion.ServiceModel
         #region Static methods
         public static IHost Host<TService>() { return new _Host(typeof(TService)); }
         public static IProxy<TContract> Proxy<TContract>() { return new _Proxy<TContract>(e => new ChannelFactory<TContract>(e)); }
-        public static IProxy<TContract> Proxy<TContract>(object callbackInstance) { return new _Proxy<TContract>(callbackInstance, (i, e) => new DuplexChannelFactory<TContract>(callbackInstance)); }
+        public static IProxy<TContract> Proxy<TContract>(object callbackInstance) { return new _Proxy<TContract>(callbackInstance, (i, e) => new DuplexChannelFactory<TContract>(callbackInstance, e)); }
         public static IProxy<TContract> Proxy<TContract>(Func<ServiceEndpoint, ChannelFactory<TContract>> createCustomChannelFactoryFunction) { return new _Proxy<TContract>(createCustomChannelFactoryFunction); }
         public static IProxy<TContract> Proxy<TContract>(object callbackInstance, Func<object, ServiceEndpoint, ChannelFactory<TContract>> createCustomDuplexChannelFactoryFunction) { return new _Proxy<TContract>(callbackInstance, createCustomDuplexChannelFactoryFunction); }
         #endregion
