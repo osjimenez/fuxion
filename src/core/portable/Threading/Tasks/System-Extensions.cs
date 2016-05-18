@@ -67,15 +67,21 @@ namespace System.Threading.Tasks
                     return default(TResult);
             }
         }
-        public static void Sleep(this Task task, TimeSpan timeout)
+        public static void Sleep(this Task task, TimeSpan timeout, TimeSpan checkCancellationRequestInterval = default(TimeSpan))
         {
             var entry = TaskManager.SearchEntry(task);
-            //if (entry != null)
-            //{
             entry.IsSleeping = true;
-            entry.AutoResetEvent.WaitOne(timeout);
+            if(checkCancellationRequestInterval == default(TimeSpan))
+                entry.AutoResetEvent.WaitOne(timeout);
+            else
+            {
+                var limit = DateTime.Now.Add(timeout);
+                while(DateTime.Now < limit || entry.IsCancellationRequested)
+                {
+                    entry.AutoResetEvent.WaitOne(checkCancellationRequestInterval);
+                }
+            }
             entry.IsSleeping = false;
-            //} else throw new InvalidOperationException("No se puede usar Sleep en una tarea que no es administrada por el TaskManager.");
         }
     }
 }

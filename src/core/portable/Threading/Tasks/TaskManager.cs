@@ -26,7 +26,7 @@ namespace Fuxion.Threading.Tasks
             var res = tasks.Read(l => l.FirstOrDefault(e => e.Task == task));
             //Compruebo si se encontró y debo lanzar una excepción
             if (res == null && throwExceptionIfNotFound)
-                throw new ArgumentException("La tarea no esta administrada por el TaskManager." + task.CreationOptions.ToString()); // TODO ALMU: QUITAR "+task.CreationOptions.ToString()"
+                throw new ArgumentException("Task wasn't created with TaskManager.");
             return res;
         }
 
