@@ -41,6 +41,7 @@
     <Compile Include="..\net46\Properties\AssemblyInfo.cs">
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Collections\Generic\GenericComparer.cs" />
     <Compile Include="Collections\Generic\GenericEqualityComparer.cs" />
     <Compile Include="Collections\ObjectModel\DeactivatableObservableCollection.cs" />
     <Compile Include="ComponentModel\DefaultNotifierSynchronizer.cs" />
