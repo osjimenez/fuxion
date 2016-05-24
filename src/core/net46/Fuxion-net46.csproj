@@ -66,11 +66,15 @@
     <Compile Include="Runtime\InteropServices\SafeGCHandle.cs" />
     <Compile Include="Security\HardwareId.cs" />
     <Compile Include="WeakReference.cs" />
+    <Compile Include="Windows\Data\BooleanToNegateBooleanConverter.cs" />
     <Compile Include="Windows\Data\BooleanToVisibilityConverter.cs" />
     <Compile Include="Windows\Data\BooleanToVisibilityMultiConverter.cs" />
     <Compile Include="Windows\Data\IListCountToVisibilityConverter.cs" />
     <Compile Include="Windows\Data\NullToBooleanConverter.cs" />
     <Compile Include="Windows\Data\NullToVisibilityConverter.cs" />
+    <Compile Include="Windows\Data\StringToFontFamilyConverter.cs" />
+    <Compile Include="Windows\Data\TimeSpanToStringConverter.cs" />
+    <Compile Include="Windows\Data\WindowStateToVisibilityConverter.cs" />
     <Compile Include="Windows\Threading\DispatcherSynchronizer.cs" />
   </ItemGroup>
   <ItemGroup>

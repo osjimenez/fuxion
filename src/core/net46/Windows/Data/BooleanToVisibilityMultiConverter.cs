@@ -43,7 +43,7 @@ namespace Fuxion.Windows.Data
         }
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
-            throw new NotImplementedException("Method 'ConvertBack' is not implemented");
+            throw new NotImplementedException($"Method '{nameof(ConvertBack)}' is not implemented");
         }
     }
 }
