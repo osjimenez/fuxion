@@ -69,6 +69,7 @@
     <Compile Include="Windows\Data\BooleanToNegateBooleanConverter.cs" />
     <Compile Include="Windows\Data\BooleanToVisibilityConverter.cs" />
     <Compile Include="Windows\Data\BooleanToVisibilityMultiConverter.cs" />
+    <Compile Include="Windows\Data\GenericConverter.cs" />
     <Compile Include="Windows\Data\IListCountToVisibilityConverter.cs" />
     <Compile Include="Windows\Data\NullToBooleanConverter.cs" />
     <Compile Include="Windows\Data\NullToVisibilityConverter.cs" />

@@ -21,7 +21,7 @@ namespace Fuxion.Windows.Data
                 if ((value as IList).Count == 0) return ZeroValue;
                 return NotZeroValue;
             }
-            throw new NotSupportedException($"The value '{value}' is not supported for 'Convert' method");
+            throw new NotSupportedException($"The value '{value}' is not supported for '{nameof(Convert)}' method");
         }
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {

@@ -323,6 +323,7 @@ namespace Fuxion.ComponentModel
         #endregion
 
         #region RaisePropertyChanged
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [XmlIgnore]
         [JsonIgnore]
         public INotifierSynchronizer Synchronizer { get; set; }
