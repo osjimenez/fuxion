@@ -13,6 +13,8 @@ namespace Fuxion.ComponentModel
         public Task Invoke(Action action)
         {
             action();
+            
+            
             return Task.FromResult(0);
         }
 

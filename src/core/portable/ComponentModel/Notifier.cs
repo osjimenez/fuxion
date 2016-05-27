@@ -327,6 +327,10 @@ namespace Fuxion.ComponentModel
         [XmlIgnore]
         [JsonIgnore]
         public INotifierSynchronizer Synchronizer { get; set; }
+        //[EditorBrowsable(EditorBrowsableState.Never)]
+        [XmlIgnore]
+        [JsonIgnore]
+        protected bool UseSynchronizerOnRaisePropertyChanged { get { return GetValue(() => true); } set { SetValue(value); } }
         protected void RaisePropertyChanged<T>(Expression<Func<object>> expression, T previousValue, T actualValue)
         {
             string memberName = expression.GetMemberName();
@@ -340,7 +344,7 @@ namespace Fuxion.ComponentModel
                 PropertyChangedEvent?.Invoke(this, new PropertyChangedEventArgs(pro));
                 PropertyChanged?.Invoke(this as TNotifier, new NotifierPropertyChangedEventArgs<TNotifier>(pro, (TNotifier)(INotifier<TNotifier>)this, pre, act));
             });
-            if (Synchronizer != null) Synchronizer.Invoke(action, propertyName, previousValue, actualValue);
+            if (UseSynchronizerOnRaisePropertyChanged && Synchronizer != null) Synchronizer.Invoke(action, propertyName, previousValue, actualValue);
             else action(propertyName, previousValue, actualValue);
         }
         #endregion

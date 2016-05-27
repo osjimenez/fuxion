@@ -85,6 +85,7 @@
   <ItemGroup>
     <Compile Include="ConnectableNotifier.test.cs" />
     <Compile Include="DeactivatableObservableCollectionTest.cs" />
+    <Compile Include="DispatcherSynchronizer.test.cs" />
     <Compile Include="Factory.test.cs" />
     <Compile Include="GenericEqualityComparerTest.cs" />
     <Compile Include="LogTest.cs" />
