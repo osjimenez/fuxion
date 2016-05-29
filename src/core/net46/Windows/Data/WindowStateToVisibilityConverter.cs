@@ -9,7 +9,7 @@ using System.Windows.Data;
 
 namespace Fuxion.Windows.Data
 {
-    public class WindowStateToVisibilityConverter : IValueConverter
+    public class WindowStateToVisibilityConverter : GenericConverter<WindowState,Visibility>
     {
         public WindowStateToVisibilityConverter()
         {
@@ -20,11 +20,9 @@ namespace Fuxion.Windows.Data
         public Visibility MaximizedValue { get; set; }
         public Visibility MinimizedValue { get; set; }
         public Visibility NormalValue { get; set; }
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public override Visibility Convert(WindowState source, object parameter, CultureInfo culture)
         {
-            if (!(value is WindowState)) return null;
-            var state = (WindowState)value;
-            switch (state)
+            switch (source)
             {
                 case WindowState.Maximized:
                     return MaximizedValue;
@@ -33,12 +31,8 @@ namespace Fuxion.Windows.Data
                 case WindowState.Normal:
                     return NormalValue;
                 default:
-                    throw new NotSupportedException($"The value '{state}' is not supported");
+                    throw new NotSupportedException($"The value '{source}' is not supported");
             }
-        }
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException($"Method '{nameof(ConvertBack)}' is not implemented");
         }
     }
 }

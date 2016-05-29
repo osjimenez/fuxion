@@ -4,17 +4,17 @@
     <id>Fuxion.Domain</id>
     <version>###version###</version>
     <title>Fuxion Domain</title>
-    <authors>Waf Estructuras Digitales, Oscar Jimenez, Asier Tarancón</authors>
+    <authors>Oscar Jimenez, Waf Estructuras Digitales</authors>
     <description>Fuxion library for DDD</description>
     <releaseNotes />
     <summary/>
     <language/>
-    <iconUrl>https://raw.githubusercontent.com/waf-es/Fuxion/develop/res/logo/fuxion.png</iconUrl>
-    <projectUrl>https://github.com/waf-es/Fuxion</projectUrl>
-    <licenseUrl>https://raw.githubusercontent.com/waf-es/Fuxion/develop/LICENSE</licenseUrl>
+    <iconUrl>https://raw.githubusercontent.com/osjimenez/Fuxion/develop/res/logo/fuxion.png</iconUrl>
+    <projectUrl>https://github.com/osjimenez/Fuxion</projectUrl>
+    <licenseUrl>https://raw.githubusercontent.com/osjimenez/Fuxion/develop/LICENSE</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <dependencies>
-      <dependency id="Fuxion" version="0.0.3-alpha047" />
+      <dependency id="Fuxion" version="0.0.3-alpha078" />
     </dependencies>
     <references/>
     <frameworkAssemblies/>

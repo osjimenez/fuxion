@@ -8,23 +8,15 @@ using System.Windows.Data;
 
 namespace Fuxion.Windows.Data
 {
-    public class BooleanToNegateBooleanConverter : IValueConverter
+    public class BooleanToNegateBooleanConverter : GenericConverter<bool, bool>
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public override bool Convert(bool source, object parameter, CultureInfo culture)
         {
-            if (value is bool)
-            {
-                return !((bool)value);
-            }
-            throw new NotSupportedException($"The value '{value}' is not supported for '{nameof(Convert)}' method");
+            return !source;
         }
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public override bool ConvertBack(bool result, object parameter, CultureInfo culture)
         {
-            if (value is bool)
-            {
-                return !((bool)value);
-            }
-            throw new NotSupportedException($"The value '{value}' is not supported for '{nameof(ConvertBack)}' method");
+            return !result;
         }
     }
 }

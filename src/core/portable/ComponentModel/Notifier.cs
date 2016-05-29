@@ -62,7 +62,7 @@ namespace Fuxion.ComponentModel
             Action<NotifierPropertyChangedCaseEventArgs<TNotifier, TValue>> action)
         {
             if (propertyName == PropertyName)
-                action.Invoke(
+                action(
                     new NotifierPropertyChangedCaseEventArgs<TNotifier, TValue>(
                         Notifier,
                         (TValue)PreviousValue,
@@ -81,7 +81,7 @@ namespace Fuxion.ComponentModel
             Action<NotifierPropertyChangedCaseEventArgs<TNotifier, TValue>> action)
         {
             if (expression.GetMemberName() == PropertyName)
-                action.Invoke(
+                action(
                     new NotifierPropertyChangedCaseEventArgs<TNotifier, TValue>(
                         Notifier,
                         (TValue)PreviousValue,
@@ -102,7 +102,7 @@ namespace Fuxion.ComponentModel
             foreach (var exp in expressions)
                 if (exp.GetMemberName() == PropertyName)
                 {
-                    action.Invoke(
+                    action(
                         new NotifierPropertyChangedCaseEventArgs<TNotifier, TValue>(
                             Notifier,
                             (TValue)PreviousValue,
@@ -126,7 +126,7 @@ namespace Fuxion.ComponentModel
             {
                 if (pn == PropertyName)
                 {
-                    action.Invoke(
+                    action(
                         new NotifierPropertyChangedCaseEventArgs<TNotifier, TValue>(
                             Notifier,
                             (TValue)PreviousValue,
@@ -191,7 +191,7 @@ namespace Fuxion.ComponentModel
             if (PropertiesDictionary.TryGetValue(propertyName, out objValue)) value = (T)objValue;
             else
             {
-                value = defaultValueFunction == null ? default(T) : defaultValueFunction.Invoke();
+                value = defaultValueFunction == null ? default(T) : defaultValueFunction();
                 PropertiesDictionary[propertyName] = value;
             }
             return value;
@@ -220,7 +220,7 @@ namespace Fuxion.ComponentModel
             object objValue;
             if (PropertiesDictionary.TryGetValue(propertyName, out objValue))
                 return (ValueLocker<T>)objValue;
-            T defaultValue = defaultValueFunction == null ? default(T) : defaultValueFunction.Invoke();
+            T defaultValue = defaultValueFunction == null ? default(T) : defaultValueFunction();
             var defaultLocker = new ValueLocker<T>(defaultValue);
             PropertiesDictionary[propertyName] = defaultLocker;
             return defaultLocker;
@@ -344,9 +344,54 @@ namespace Fuxion.ComponentModel
                 PropertyChangedEvent?.Invoke(this, new PropertyChangedEventArgs(pro));
                 PropertyChanged?.Invoke(this as TNotifier, new NotifierPropertyChangedEventArgs<TNotifier>(pro, (TNotifier)(INotifier<TNotifier>)this, pre, act));
             });
-            if (UseSynchronizerOnRaisePropertyChanged && Synchronizer != null) Synchronizer.Invoke(action, propertyName, previousValue, actualValue);
+            if (UseSynchronizerOnRaisePropertyChanged && Synchronizer != null) Synchronizer.Invoke(action, propertyName, previousValue, actualValue).Wait();
             else action(propertyName, previousValue, actualValue);
         }
         #endregion
+
+        #region Binding
+        public INotifierBinding<TNotifier,TProperty> Binding<TProperty>(Expression<Func<TProperty>> sourcePropertyExpression)
+        {
+            return new NotifierBinding<TNotifier, TProperty>
+            {
+                Notifier = this,
+                SourcePropertyExpression = sourcePropertyExpression
+            };
+        }
+        #endregion
+    }
+    public interface INotifierBinding<TNotifier, TProperty> where TNotifier : class, INotifier<TNotifier>
+    {
+
+    }
+    class NotifierBinding<TNotifier, TProperty> : INotifierBinding<TNotifier, TProperty> where TNotifier : class, INotifier<TNotifier>
+    {
+        public Notifier<TNotifier> Notifier { get; set; }
+        public Expression<Func<TProperty>> SourcePropertyExpression { get; set; }
+    }
+    public static class INotifierBindingExtensions {
+        public static void OneWayTo<TNotifier, TProperty>(this INotifierBinding<TNotifier, TProperty> me, object target, Expression<Func<TProperty>> targetPropertyExpression) where TNotifier : class, INotifier<TNotifier>
+        {
+            var not = me as NotifierBinding<TNotifier, TProperty>;
+            not.Notifier.PropertyChanged += (s, e) => e.Case(not.SourcePropertyExpression, a => targetPropertyExpression.GetPropertyInfo().SetValue(target, a.ActualValue));
+            targetPropertyExpression.GetPropertyInfo().SetValue(target, not.SourcePropertyExpression.GetPropertyInfo().GetValue(not.Notifier));
+        }
+        public static void OneWayTo<TNotifier, TProperty, TTargetProperty>(this INotifierBinding<TNotifier, TProperty> me, object target,
+            Expression<Func<TTargetProperty>> targetPropertyExpression,
+            Func<TProperty,TTargetProperty> transformFuction) where TNotifier : class, INotifier<TNotifier>
+        {
+            var not = me as NotifierBinding<TNotifier, TProperty>;
+            not.Notifier.PropertyChanged += (s, e) => e.Case(not.SourcePropertyExpression, a => targetPropertyExpression.GetPropertyInfo().SetValue(target, transformFuction(a.ActualValue)));
+            targetPropertyExpression.GetPropertyInfo().SetValue(target, transformFuction((TProperty)not.SourcePropertyExpression.GetPropertyInfo().GetValue(not.Notifier)));
+        }
+        public static void TwoWayTo<TNotifier, TProperty, TTargetNotifier>(this INotifierBinding<TNotifier, TProperty> me, INotifier<TTargetNotifier> target, Expression<Func<TProperty>> targetPropertyExpression) 
+            where TNotifier : class, INotifier<TNotifier>
+            where TTargetNotifier : class, INotifier<TTargetNotifier>
+        {
+            var not = me as NotifierBinding<TNotifier, TProperty>;
+            not.Notifier.PropertyChanged += (s, e) => e.Case(not.SourcePropertyExpression, a => targetPropertyExpression.GetPropertyInfo().SetValue(target, a.ActualValue));
+            target.PropertyChanged += (s, e) => e.Case(targetPropertyExpression, a => not.SourcePropertyExpression.GetPropertyInfo().SetValue(not.Notifier, a.ActualValue));
+            targetPropertyExpression.GetPropertyInfo().SetValue(target, not.SourcePropertyExpression.GetPropertyInfo().GetValue(not.Notifier));
+        }
     }
 }

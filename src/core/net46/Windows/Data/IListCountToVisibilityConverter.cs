@@ -10,10 +10,15 @@ using System.Windows.Data;
 
 namespace Fuxion.Windows.Data
 {
-    public sealed class IListCountToVisibilityConverter : IValueConverter
+    public sealed class IListCountToVisibilityConverter : GenericConverter<IList,Visibility>
     {
         public Visibility ZeroValue { get; set; } = Visibility.Collapsed;
         public Visibility NotZeroValue { get; set; } = Visibility.Visible;
+        public override Visibility Convert(IList source, object parameter, CultureInfo culture)
+        {
+            if (source.Count == 0) return ZeroValue;
+            return NotZeroValue;
+        }
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if(value is IList)
@@ -27,5 +32,7 @@ namespace Fuxion.Windows.Data
         {
             throw new NotImplementedException($"Method '{nameof(ConvertBack)}' is not implemented");
         }
+
+
     }
 }

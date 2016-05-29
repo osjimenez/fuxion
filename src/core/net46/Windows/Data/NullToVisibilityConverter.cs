@@ -9,24 +9,19 @@ using System.Windows.Data;
 
 namespace Fuxion.Windows.Data
 {
-    public class NullToVisibilityConverter : IValueConverter
+    public class NullToVisibilityConverter : GenericConverter<object, Visibility>
     {
         public Visibility NullValue { get; set; } = Visibility.Collapsed;
         public Visibility NotNullValue { get; set; } = Visibility.Visible;
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+
+        public override Visibility Convert(object source, object parameter, CultureInfo culture)
         {
-            if (value == null)
-                return NullValue;
-            else
-                return NotNullValue;
+            return source == null ? NullValue : NotNullValue;
         }
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public override object ConvertBack(Visibility result, object parameter, CultureInfo culture)
         {
-            if (value is Visibility)
-            {
-                if ((Visibility)value == NullValue) return null;
-            }
-            throw new NotSupportedException($"The value '{value}' is not supported for 'ConvertBack' method");
+            if (result == NullValue) return null;
+            throw new NotSupportedException($"The value '{result}' is not supported for 'ConvertBack' method");
         }
     }
 }

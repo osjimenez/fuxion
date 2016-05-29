@@ -20,9 +20,9 @@ namespace Fuxion.Windows.Data
             TrueValue = Visibility.Visible;
             FalseValue = Visibility.Collapsed;
         }
-        public MultiBooleanConverterMode Mode { get; set; }
-        public Visibility TrueValue { get; set; }
-        public Visibility FalseValue { get; set; }
+        public MultiBooleanConverterMode Mode { get; set; } = MultiBooleanConverterMode.AllTrue;
+        public Visibility TrueValue { get; set; } = Visibility.Visible;
+        public Visibility FalseValue { get; set; } = Visibility.Collapsed;
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             if (!values.All(v => v is bool)) throw new NotSupportedException($"Not all values are booleans");

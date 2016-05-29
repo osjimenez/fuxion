@@ -9,27 +9,20 @@ using System.Windows.Data;
 
 namespace Fuxion.Windows.Data
 {
-    public class BooleanToVisibilityConverter : IValueConverter
+    public class BooleanToVisibilityConverter : GenericConverter<bool,Visibility>
     {
         public Visibility TrueValue { get; set; } = Visibility.Visible;
         public Visibility FalseValue { get; set; } = Visibility.Collapsed;
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+
+        public override Visibility Convert(bool source, object parameter, CultureInfo culture)
         {
-            if (value is bool)
-                if ((bool)value)
-                    return TrueValue;
-                else
-                    return FalseValue;
-            throw new NotSupportedException($"The value '{value}' is not supported for '{nameof(Convert)}' method");
+            return source ? TrueValue : FalseValue;
         }
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public override bool ConvertBack(Visibility result, object parameter, CultureInfo culture)
         {
-            if (value is Visibility)
-            {
-                if ((Visibility)value == TrueValue) return true;
-                if ((Visibility)value == FalseValue) return false;
-            }
-            throw new NotSupportedException($"The value '{value}' is not supported for '{nameof(ConvertBack)}' method");
+            if (result == TrueValue) return true;
+            if (result == FalseValue) return false;
+            throw new NotSupportedException($"The value '{result}' is not supported for '{nameof(ConvertBack)}' method");
         }
     }
 }

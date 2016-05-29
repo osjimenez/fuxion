@@ -16,6 +16,10 @@ namespace Fuxion.Licensing.Test.Mocks
             licenses = JsonConvert.DeserializeObject<LicenseContainer[]>(File.ReadAllText("licenses.json")).ToList();
         }
         List<LicenseContainer> licenses;
+
+        public event EventHandler<EventArgs<LicenseContainer>> LicenseAdded;
+        public event EventHandler<EventArgs<LicenseContainer>> LicenseRemoved;
+
         public IQueryable<LicenseContainer> Query() { return licenses.AsQueryable(); }
         public void Add(LicenseContainer license) { licenses.Add(license); }
         public bool Remove(LicenseContainer license) { return licenses.Remove(license); }

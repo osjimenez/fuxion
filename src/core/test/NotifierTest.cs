@@ -554,5 +554,50 @@ namespace Fuxion.Test
             Assert.True(passed);
         }
         #endregion
+        #region Binding
+        [Fact]
+        public void Notifier_Binding_OneWay()
+        {
+            var source = new NotifierMock();
+            var target = new NotifierMock();
+            source.Integer_AutoImplemented_WithDefault_RaiseOnChange_NotLocked = 111;
+            source.Binding(() => source.Integer_AutoImplemented_WithDefault_RaiseOnChange_NotLocked).OneWayTo(target, () => target.Integer_AutoImplemented_WithDefault_RaiseOnChange_NotLocked);
+            // Check that the target property will set with source property value
+            Assert.Equal(111, target.Integer_AutoImplemented_WithDefault_RaiseOnChange_NotLocked);
+            source.Integer_AutoImplemented_WithDefault_RaiseOnChange_NotLocked = 123;
+            Assert.Equal(123, target.Integer_AutoImplemented_WithDefault_RaiseOnChange_NotLocked);
+        }
+        [Fact]
+        public void Notifier_Binding_OneWay_WithTransformation()
+        {
+            var source = new NotifierMock();
+            var target = new NotifierMock();
+            source.Integer_AutoImplemented_WithDefault_RaiseOnChange_NotLocked = 111;
+            source.Binding(() => source.Integer_AutoImplemented_WithDefault_RaiseOnChange_NotLocked).OneWayTo(target, () => target.String_AutoImplemented_WithDefault_RaiseOnChange_NotLocked, i => i.ToString());
+            // Check that the target property will set with source property value
+            Assert.Equal(111.ToString(), target.String_AutoImplemented_WithDefault_RaiseOnChange_NotLocked);
+            source.Integer_AutoImplemented_WithDefault_RaiseOnChange_NotLocked = 123;
+            Assert.Equal(123.ToString(), target.String_AutoImplemented_WithDefault_RaiseOnChange_NotLocked);
+        }
+        [Fact]
+        public void Notifier_Binding_TwoWay()
+        {
+            var source = new NotifierMock();
+            var target = new NotifierMock();
+            source.Integer_AutoImplemented_WithDefault_RaiseOnChange_NotLocked = 111;
+            source.Binding(() => source.Integer_AutoImplemented_WithDefault_RaiseOnChange_NotLocked)
+                .TwoWayTo(target, () => target.Integer_AutoImplemented_WithDefault_RaiseOnChange_NotLocked);
+            // Check that the target property will set with source property value
+            Assert.Equal(111, target.Integer_AutoImplemented_WithDefault_RaiseOnChange_NotLocked);
+
+            source.Integer_AutoImplemented_WithDefault_RaiseOnChange_NotLocked = 123;
+            // Check that the bind works in source=>target direction
+            Assert.Equal(123, target.Integer_AutoImplemented_WithDefault_RaiseOnChange_NotLocked);
+
+            target.Integer_AutoImplemented_WithDefault_RaiseOnChange_NotLocked = 321;
+            // Check that the bind works in target=>source direction
+            Assert.Equal(321, source.Integer_AutoImplemented_WithDefault_RaiseOnChange_NotLocked);
+        }
+        #endregion
     }
 }

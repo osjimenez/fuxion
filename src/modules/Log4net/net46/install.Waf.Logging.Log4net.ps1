@@ -15,6 +15,7 @@ $target.BeforeTargets = "AfterBuild"
 $task = $target.AddTask("Move")
 $task.SetParameter("SourceFiles", "`$(OutputPath)log4net.config")
 $task.SetParameter("DestinationFiles", "`$(OutputPath)`$(AssemblyName).exe.log4net")
+$task.ContinueOnError = "true"
 # $task.SetParameter("ContinueOnError", "`true")
 $project.Save()
 

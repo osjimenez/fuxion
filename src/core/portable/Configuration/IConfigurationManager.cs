@@ -7,6 +7,8 @@ namespace Fuxion.Configuration
 {
     public interface IConfigurationManager
     {
+        event EventHandler Saved;
+        event EventHandler Cleared;
         bool Save();
         void Clear();
         TConfigurationItem Get<TConfigurationItem>() where TConfigurationItem : ConfigurationItem<TConfigurationItem>, new();

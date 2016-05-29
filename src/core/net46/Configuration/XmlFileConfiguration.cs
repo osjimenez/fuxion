@@ -15,6 +15,8 @@ namespace Fuxion.Configuration
         {
             Load();
         }
+        public event EventHandler Saved;
+        public event EventHandler Cleared;
         string path;
         public string Path
         {
@@ -50,12 +52,14 @@ namespace Fuxion.Configuration
                             pair.Value));
             }
             xdoc.Save(Path);
+            Saved?.Invoke(this, EventArgs.Empty);
             return true;
         }
         public void Clear()
         {
             elements.Clear();
             objects.Clear();
+            Cleared?.Invoke(this, EventArgs.Empty);
         }
         private void DumpObjects()
         {
