@@ -7,8 +7,8 @@
     <ProjectGuid>{639F2C3A-1CA1-4F20-AD1B-E446624ACA9F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Fuxion.Licensing_net46</RootNamespace>
-    <AssemblyName>Fuxion.Licensing-net46</AssemblyName>
+    <RootNamespace>Fuxion.Licensing</RootNamespace>
+    <AssemblyName>Fuxion.Licensing-net461</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

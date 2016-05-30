@@ -24,11 +24,11 @@
     <!--<developmentDependency/>-->
   </metadata>
   <files>
-    <file src="bin\Release\Fuxion.Licensing.dll" target="lib\portable-net4+sl5+netcore45+wpa81+wp8\Fuxion.Licensing.dll" />
-    <file src="bin\Release\Fuxion.Licensing.pdb" target="lib\portable-net4+sl5+netcore45+wpa81+wp8\Fuxion.Licensing.pdb" />
+    <file src="bin\Release\Fuxion.Licensing.dll" target="lib\portable-net45+netcore50+win8+wp81+wpa81\Fuxion.Licensing.dll" />
+    <file src="bin\Release\Fuxion.Licensing.pdb" target="lib\portable-net45+netcore50+win8+wp81+wpa81\Fuxion.Licensing.pdb" />
     <file src="bin\Release\Fuxion.Licensing.dll" target="lib\net461\Fuxion.Licensing.dll" />
     <file src="bin\Release\Fuxion.Licensing.pdb" target="lib\net461\Fuxion.Licensing.pdb" />
-    <file src="bin\Release\Fuxion.Licensing-net46.dll" target="lib\net461\Fuxion.Licensing-net46.dll" />
-    <file src="bin\Release\Fuxion.Licensing-net46.pdb" target="lib\net461\Fuxion.Licensing-net46.pdb" />
+    <file src="bin\Release\Fuxion.Licensing-net461.dll" target="lib\net461\Fuxion.Licensing-net461.dll" />
+    <file src="bin\Release\Fuxion.Licensing-net461.pdb" target="lib\net461\Fuxion.Licensing-net461.pdb" />
   </files>
 </package>
