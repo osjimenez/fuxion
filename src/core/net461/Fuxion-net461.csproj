@@ -72,7 +72,6 @@
     <Compile Include="Windows\Data\ConnectionStateToVisibilityConverter.cs" />
     <Compile Include="Windows\Data\GenericConverter.cs" />
     <Compile Include="Windows\Data\IListCountToVisibilityConverter.cs" />
-    <Compile Include="Windows\Data\MathConverter.cs" />
     <Compile Include="Windows\Data\NullToBooleanConverter.cs" />
     <Compile Include="Windows\Data\NullToVisibilityConverter.cs" />
     <Compile Include="Windows\Data\StringToFontFamilyConverter.cs" />
