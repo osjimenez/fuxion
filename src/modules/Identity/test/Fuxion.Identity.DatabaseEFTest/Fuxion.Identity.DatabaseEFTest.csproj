@@ -102,9 +102,13 @@
       <Project>{5761cb44-504f-468b-8263-39f59eebbb17}</Project>
       <Name>Fuxion</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Data\net46\Fuxion.Data.csproj">
+    <ProjectReference Include="..\..\..\Data\net461\Fuxion.Data.csproj">
       <Project>{e066329c-2cb6-4edd-ab47-0d7b8129254e}</Project>
       <Name>Fuxion.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Log4net\net461\Fuxion.Log4net.csproj">
+      <Project>{1cf0e88a-cd3d-4d49-8650-f5f7ff3a1334}</Project>
+      <Name>Fuxion.Log4net</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\SimpleInjector\portable\SimpleInjector_.csproj">
       <Project>{dfe9408b-2bb2-4f86-a1c0-2a050d155f82}</Project>
