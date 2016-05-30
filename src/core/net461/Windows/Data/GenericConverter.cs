@@ -16,6 +16,9 @@ namespace Fuxion.Windows.Data
             // value must be TSource, call Convert
             if (value is TSource)
                 return Convert((TSource)value, parameter, culture);
+            // value is null and TSource is nullable, call Convert
+            if (value == null && typeof(TSource).IsClass || (typeof(TSource).IsGenericType && typeof(TSource).GetGenericTypeDefinition() == typeof(Nullable<>)))
+                return Convert((TSource)value, parameter, culture);
             // value is null and TResult is nullable, return null
             if (value == null && typeof(TResult).IsClass || (typeof(TResult).IsGenericType && typeof(TResult).GetGenericTypeDefinition() == typeof(Nullable<>)))
                 return null;
@@ -30,6 +33,9 @@ namespace Fuxion.Windows.Data
         {
             // value must be TSource, call ConvertBack
             if (value is TResult)
+                return ConvertBack((TResult)value, parameter, culture);
+            // value is null and TResult is nullable, call ConvertBack
+            if (value == null && typeof(TResult).IsClass || (typeof(TResult).IsGenericType && typeof(TResult).GetGenericTypeDefinition() == typeof(Nullable<>)))
                 return ConvertBack((TResult)value, parameter, culture);
             // value is null and Tsource is nullable, return null
             if (typeof(TSource).IsClass || (typeof(TSource).IsGenericType && typeof(TSource).GetGenericTypeDefinition() == typeof(Nullable<>)))
