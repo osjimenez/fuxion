@@ -35,8 +35,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="SimpleInjector, Version=3.1.4.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\SimpleInjector.3.1.4\lib\net45\SimpleInjector.dll</HintPath>
+    <Reference Include="SimpleInjector, Version=3.1.5.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\SimpleInjector.3.1.5\lib\net45\SimpleInjector.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -106,6 +106,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\core\net461\Fuxion-net461.csproj">
+      <Project>{b16111a4-cdf6-40e8-9bee-1d5806543cb0}</Project>
+      <Name>Fuxion-net461</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\core\portable\Fuxion.csproj">
       <Project>{5761cb44-504f-468b-8263-39f59eebbb17}</Project>
       <Name>Fuxion</Name>
