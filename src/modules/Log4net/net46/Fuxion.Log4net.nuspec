@@ -12,14 +12,14 @@
     <projectUrl>https://github.com/osjimenez/Fuxion</projectUrl>
     <licenseUrl>https://raw.githubusercontent.com/osjimenez/Fuxion/develop/LICENSE</licenseUrl>
     <dependencies>
-      <dependency id="Fuxion" version="0.0.3-alpha078" />
+      <dependency id="Fuxion" version="0.0.3-alpha080" />
       <dependency id="log4net" version="2.0.5" />
-      <dependency id="NuGetPowerTools" version="0.26" />
+      <dependency id="NuGetPowerTools" version="0.29.0" />
     </dependencies>
   </metadata>
   <files>
-    <file src="bin\Release\Fuxion.Log4net.dll" target="lib\net46\Fuxion.Log4net.dll" />
-    <file src="bin\Release\Fuxion.Log4net.pdb" target="lib\net46\Fuxion.Log4net.pdb" />
+    <file src="bin\Release\Fuxion.Log4net.dll" target="lib\net461\Fuxion.Log4net.dll" />
+    <file src="bin\Release\Fuxion.Log4net.pdb" target="lib\net461\Fuxion.Log4net.pdb" />
 	  <file src="bin\Release\log4net.config" target="content\log4net.config" />
     <file src="bin\Release\install.Waf.Logging.Log4net.ps1" target="tools\install.ps1" />
   </files>

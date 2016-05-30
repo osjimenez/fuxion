@@ -105,10 +105,6 @@
       <Project>{1cf0e88a-cd3d-4d49-8650-f5f7ff3a1334}</Project>
       <Name>Fuxion.Log4net</Name>
     </ProjectReference>
-    <ProjectReference Include="..\net46\Fuxion-net46.csproj">
-      <Project>{b16111a4-cdf6-40e8-9bee-1d5806543cb0}</Project>
-      <Name>Fuxion-net46</Name>
-    </ProjectReference>
     <ProjectReference Include="..\portable\Fuxion.csproj">
       <Project>{5761cb44-504f-468b-8263-39f59eebbb17}</Project>
       <Name>Fuxion</Name>

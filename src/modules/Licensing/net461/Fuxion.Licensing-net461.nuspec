@@ -14,7 +14,7 @@
     <licenseUrl>https://raw.githubusercontent.com/osjimenez/Fuxion/develop/LICENSE</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <dependencies>
-      <dependency id="Fuxion" version="0.0.3-alpha078" />
+      <dependency id="Fuxion" version="0.0.3-alpha080" />
       <dependency id="PCLCrypto" version="2.0.147" />
       <dependency id="Newtonsoft.Json" version="8.0.3" />
     </dependencies>
@@ -26,9 +26,9 @@
   <files>
     <file src="bin\Release\Fuxion.Licensing.dll" target="lib\portable-net4+sl5+netcore45+wpa81+wp8\Fuxion.Licensing.dll" />
     <file src="bin\Release\Fuxion.Licensing.pdb" target="lib\portable-net4+sl5+netcore45+wpa81+wp8\Fuxion.Licensing.pdb" />
-    <file src="bin\Release\Fuxion.Licensing.dll" target="lib\net46\Fuxion.Licensing.dll" />
-    <file src="bin\Release\Fuxion.Licensing.pdb" target="lib\net46\Fuxion.Licensing.pdb" />
-    <file src="bin\Release\Fuxion.Licensing-net46.dll" target="lib\net46\Fuxion.Licensing-net46.dll" />
-    <file src="bin\Release\Fuxion.Licensing-net46.pdb" target="lib\net46\Fuxion.Licensing-net46.pdb" />
+    <file src="bin\Release\Fuxion.Licensing.dll" target="lib\net461\Fuxion.Licensing.dll" />
+    <file src="bin\Release\Fuxion.Licensing.pdb" target="lib\net461\Fuxion.Licensing.pdb" />
+    <file src="bin\Release\Fuxion.Licensing-net46.dll" target="lib\net461\Fuxion.Licensing-net46.dll" />
+    <file src="bin\Release\Fuxion.Licensing-net46.pdb" target="lib\net461\Fuxion.Licensing-net46.pdb" />
   </files>
 </package>
