@@ -38,7 +38,7 @@ namespace Fuxion.Windows.Threading
             else // I'm in another thread than dispatcher, runs asynchronously
             {
                 var ope = Dispatcher.BeginInvoke(method, args);
-                return ope.Task.ContinueWith((t, o) => ((Task<TResult>)o).Result, ope, TaskContinuationOptions.ExecuteSynchronously);
+                return ope.Task.ContinueWith((t, o) => ((TResult)((DispatcherOperation)o).Result), ope, TaskContinuationOptions.ExecuteSynchronously);
             }
         }
         #region Invoke Actions
