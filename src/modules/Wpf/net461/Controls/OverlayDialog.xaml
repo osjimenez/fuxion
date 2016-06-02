@@ -1,0 +1,100 @@
+﻿<UserControl x:Class="Fuxion.Windows.Controls.OverlayDialog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Fuxion.Windows.Controls"
+             xmlns:helpers="clr-namespace:Fuxion.Windows.Helpers"
+             xmlns:data="clr-namespace:Fuxion.Windows.Data"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300"
+            
+             x:Name="me"
+             
+             Width="{Binding DialogWidth}" MaxWidth="{Binding DialogMaxWidth}" MinWidth="{Binding DialogMinWidth}"
+             Height="{Binding DialogHeight}" MaxHeight="{Binding DialogMaxHeight}" MinHeight="{Binding DialogMinHeight}">
+    <UserControl.Resources>
+        <data:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+        <data:IListCountToVisibilityConverter x:Key="IListCountToVisibilityConverter"/>
+        <data:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </UserControl.Resources>
+    <Border Name="border" BorderThickness="2" BorderBrush="Red" Background="White">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Rectangle x:Name="accentBox" Width="8" Height="32" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-1 20 0 0" Fill="Red" />
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition />
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="{Binding Title}" Margin="35 10 20 0" FontSize="28" FontWeight="Light" VerticalAlignment="Top" HorizontalAlignment="Left" TextTrimming="CharacterEllipsis"/>
+                <!--<Grid Grid.Row="1" >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition />
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>-->
+
+                <!--<ScrollViewer Grid.Row="1" Background="Transparent" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" MaxHeight="200" BorderThickness="0">
+          <TextBlock TextWrapping="WrapWithOverflow" Margin="20,10" Text="{Binding Content}" MaxWidth="400" MinWidth="300"
+                     Foreground="{StaticResource StrongBrush}"
+                      Visibility="{Binding Content, Converter={StaticResource NullToVisibilityConverter}}"/>
+        </ScrollViewer>-->
+
+                <ContentControl Grid.Row="2" Content="{Binding Content}" Margin="10"
+                        Visibility="{Binding Content, Converter={StaticResource NullToVisibilityConverter}}"/>
+
+
+
+                <!--<ContentControl Grid.Row="2" 
+                                    Background="Blue"
+                                    Margin="10" BorderThickness="2" BorderBrush="Aquamarine"
+                                    Padding="40">
+                        <TextBlock>Hola cara cola</TextBlock>
+                    </ContentControl>-->
+
+                <ItemsControl Name="ic" Grid.Row="3" ItemsSource="{Binding Buttons}" HorizontalAlignment="Right" Margin="10"
+                        Visibility="{Binding Buttons, Converter={StaticResource IListCountToVisibilityConverter}}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Content="{Binding Text}" IsEnabled="{Binding IsEnabled}" IsCancel="{Binding IsCancel}"
+                                 IsDefault="{Binding IsDefault}" Command="{Binding Command}" CommandParameter="{Binding DataContext, ElementName=me}"
+                                 helpers:FocusHelper.SetKeyboardFocusOnLoad="{Binding IsDefault}"
+                                 Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <Button.Width>
+                                    <PriorityBinding>
+                                        <Binding Path="Width" />
+                                        <Binding Path="DataContext.ButtonsWidth" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}" />
+                                    </PriorityBinding>
+                                </Button.Width>
+                                <Button.MinWidth>
+                                    <PriorityBinding>
+                                        <Binding Path="MinWidth" />
+                                        <Binding Path="DataContext.ButtonsMinWidth" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}" />
+                                    </PriorityBinding>
+                                </Button.MinWidth>
+                                <Button.MaxWidth>
+                                    <PriorityBinding>
+                                        <Binding Path="MaxWidth" />
+                                        <Binding Path="DataContext.ButtonsMaxWidth" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}" />
+                                    </PriorityBinding>
+                                </Button.MaxWidth>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <!--</Grid>-->
+            </Grid>
+        </Grid>
+    </Border>
+</UserControl>

@@ -7,13 +7,16 @@
         xmlns:fuxion="fuxion"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
-    <Window.Resources>
-        <fuxion:NullToBooleanConverter x:Key="oka" NullValue="True" />
-        <fuxion:BooleanToVisibilityConverter x:Key="oka2" TrueValue="Visible" FalseValue="Hidden"/>
-    </Window.Resources>
+  <Window.Resources>
+    <fuxion:NullToBooleanConverter x:Key="oka" NullValue="True" />
+    <fuxion:BooleanToVisibilityConverter x:Key="oka2" TrueValue="Visible" FalseValue="Hidden"/>
+  </Window.Resources>
+  <Grid>
     <StackPanel>
-        <Button Click="Synchronizer_Click" Content="Synchronizer"/>
-        <Button Click="HostService_Click" Content="Host Factory injected service"/>
-        <Button Click="ProxyService_Click" Content="Proxy to Factory injected service"/>
+      <Button Click="Synchronizer_Click" Content="Synchronizer"/>
+      <Button Click="HostService_Click" Content="Host Factory injected service"/>
+      <Button Click="ProxyService_Click" Content="Proxy to Factory injected service"/>
     </StackPanel>
+    <fuxion:Overlay x:Name="OverlayControl"/>
+  </Grid>
 </Window>

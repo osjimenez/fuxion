@@ -4,19 +4,17 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{66FCC1D4-F7F6-4A76-B3C3-CC1924C1CF88}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <ProjectGuid>{25B99E1D-A3BA-42F3-B4BF-B6C76E6D84E4}</ProjectGuid>
+    <OutputType>library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DemoWpf</RootNamespace>
-    <AssemblyName>DemoWpf</AssemblyName>
+    <RootNamespace>Fuxion.Windows</RootNamespace>
+    <AssemblyName>Fuxion.Windows</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -26,7 +24,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -35,15 +32,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="SimpleInjector, Version=3.1.5.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\SimpleInjector.3.1.5\lib\net45\SimpleInjector.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.IdentityModel" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -58,29 +48,14 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </ApplicationDefinition>
-    <Page Include="MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Compile Include="App.xaml.cs">
-      <DependentUpon>App.xaml</DependentUpon>
-      <SubType>Code</SubType>
+    <Compile Include="Controls\Overlay.xaml.cs">
+      <DependentUpon>Overlay.xaml</DependentUpon>
     </Compile>
-    <Compile Include="FactoryService.cs" />
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
+    <Compile Include="Controls\OverlayDialog.xaml.cs">
+      <DependentUpon>OverlayDialog.xaml</DependentUpon>
     </Compile>
-    <Page Include="ResDictionary.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
+    <Compile Include="Controls\OverlayManager.cs" />
+    <Compile Include="Helpers\FocusHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -94,40 +69,69 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="Resources\Strings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Strings.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\Strings.es-ES.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Strings.es-ES.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Data\BooleanToNegateBooleanConverter.cs" />
+    <Compile Include="Data\BooleanToVisibilityConverter.cs" />
+    <Compile Include="Data\BooleanToVisibilityMultiConverter.cs" />
+    <Compile Include="Data\ConnectionStateToVisibilityConverter.cs" />
+    <Compile Include="Data\GenericConverter.cs" />
+    <Compile Include="Data\IListCountToVisibilityConverter.cs" />
+    <Compile Include="Data\NullToBooleanConverter.cs" />
+    <Compile Include="Data\NullToVisibilityConverter.cs" />
+    <Compile Include="Data\StringToFontFamilyConverter.cs" />
+    <Compile Include="Data\TimeSpanToStringConverter.cs" />
+    <Compile Include="Data\WindowStateToVisibilityConverter.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="packages.config" />
+    <EmbeddedResource Include="Resources\Strings.es-ES.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Strings.es-ES.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Strings.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="Fuxion.Windows.nuspec">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Fuxion.Windows.version" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
-    <None Include="Resources\Fuxion.pfx" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\core\net461\Fuxion-net461.csproj">
+    <ProjectReference Include="..\..\..\core\net461\Fuxion-net461.csproj">
       <Project>{b16111a4-cdf6-40e8-9bee-1d5806543cb0}</Project>
       <Name>Fuxion-net461</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\core\portable\Fuxion.csproj">
+    <ProjectReference Include="..\..\..\core\portable\Fuxion.csproj">
       <Project>{5761cb44-504f-468b-8263-39f59eebbb17}</Project>
       <Name>Fuxion</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\modules\SimpleInjector\portable\SimpleInjector_.csproj">
-      <Project>{dfe9408b-2bb2-4f86-a1c0-2a050d155f82}</Project>
-      <Name>SimpleInjector_</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\modules\Wpf\net461\Fuxion.Windows.csproj">
-      <Project>{25b99e1d-a3ba-42f3-b4bf-b6c76e6d84e4}</Project>
-      <Name>Fuxion.Windows</Name>
-    </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Page Include="Controls\Overlay.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\OverlayDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -136,4 +140,14 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup>
+    <FuxionTasksPath>$(SolutionDir).build\</FuxionTasksPath>
+  </PropertyGroup>
+  <Import Project="$(FuxionTasksPath)Fuxion.Build.Targets" />
+  <Target Name="BeforeBuild" Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <BuildTask TargetName="BeforeBuild" NugetPath="$(FuxionTasksPath)nuget\nuget.exe" />
+  </Target>
+  <Target Name="AfterBuild" Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <BuildTask TargetName="AfterBuild" NugetPath="$(FuxionTasksPath)nuget\nuget.exe" />
+  </Target>
 </Project>

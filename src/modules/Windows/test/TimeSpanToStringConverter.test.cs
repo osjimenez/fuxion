@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Fuxion.Test
+namespace Fuxion.Windows.Test
 {
     public class TimeSpanToStringConverterTest
     {

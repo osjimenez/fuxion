@@ -1,4 +1,4 @@
-﻿using Fuxion.Resources;
+﻿using Fuxion.Windows.Resources;
 using System;
 using System.Collections.Generic;
 using System.Globalization;

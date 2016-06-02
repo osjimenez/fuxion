@@ -167,6 +167,7 @@ namespace Fuxion.ComponentModel
             PropertiesDictionary = new Dictionary<string, object>();
             Synchronizer = Factory.Get<INotifierSynchronizer>();
         }
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [OnDeserializing]
         public void OnDeserializing(StreamingContext context)
         {

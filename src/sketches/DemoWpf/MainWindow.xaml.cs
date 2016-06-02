@@ -4,6 +4,7 @@ using Fuxion.Configuration;
 using Fuxion.Factories;
 using Fuxion.ServiceModel;
 using Fuxion.Threading.Tasks;
+using Fuxion.Windows.Controls;
 using Fuxion.Windows.Threading;
 using SimpleInjector;
 using System;
@@ -43,6 +44,29 @@ namespace DemoWpf
     {
         public MainWindow()
         {
+            InitializeComponent();
+
+            Factory.AddInjector(new InstanceInjector<OverlayManager>(new OverlayManager(OverlayControl)));
+            var man = Factory.Get<OverlayManager>();
+            man.ShowOverlay(new OverlayDialogData
+            {
+                //Content = "Contenido",
+                Title = "Titulo",
+                Buttons = new[]
+                {
+                    new OverlayDialogButton
+                    {
+                        Text = "SI",
+                        //OnCommand = data=> { data.}
+                    },
+                    new OverlayDialogButton
+                    {
+                        Text = "NO"
+                    }
+                }
+            });
+
+
             //XmlFileConfiguration f = new XmlFileConfiguration {
             //    Path = "config2.xml"
             //};
@@ -55,7 +79,7 @@ namespace DemoWpf
             //cm.Vamos = 123;
             //f.Save();
 
-            InitializeComponent();
+
             ConfigureFactory();
             Debug.WriteLine($"{Thread.CurrentThread.ManagedThreadId} - Window created");
         }
