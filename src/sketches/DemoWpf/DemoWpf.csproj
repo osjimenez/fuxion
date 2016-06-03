@@ -122,7 +122,7 @@
       <Project>{dfe9408b-2bb2-4f86-a1c0-2a050d155f82}</Project>
       <Name>SimpleInjector_</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\modules\Wpf\net461\Fuxion.Windows.csproj">
+    <ProjectReference Include="..\..\modules\Windows\net461\Fuxion.Windows.csproj">
       <Project>{25b99e1d-a3ba-42f3-b4bf-b6c76e6d84e4}</Project>
       <Name>Fuxion.Windows</Name>
     </ProjectReference>

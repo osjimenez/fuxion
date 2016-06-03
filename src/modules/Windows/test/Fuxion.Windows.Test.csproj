@@ -84,7 +84,7 @@
       <Project>{5761cb44-504f-468b-8263-39f59eebbb17}</Project>
       <Name>Fuxion</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Wpf\net461\Fuxion.Windows.csproj">
+    <ProjectReference Include="..\net461\Fuxion.Windows.csproj">
       <Project>{25b99e1d-a3ba-42f3-b4bf-b6c76e6d84e4}</Project>
       <Name>Fuxion.Windows</Name>
     </ProjectReference>
