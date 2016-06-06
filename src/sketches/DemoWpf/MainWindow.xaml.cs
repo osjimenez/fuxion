@@ -48,23 +48,24 @@ namespace DemoWpf
 
             Factory.AddInjector(new InstanceInjector<OverlayManager>(new OverlayManager(OverlayControl)));
             var man = Factory.Get<OverlayManager>();
-            man.ShowOverlay(new OverlayDialogData
-            {
-                //Content = "Contenido",
-                Title = "Titulo",
-                Buttons = new[]
-                {
-                    new OverlayDialogButton
-                    {
-                        Text = "SI",
-                        //OnCommand = data=> { data.}
-                    },
-                    new OverlayDialogButton
-                    {
-                        Text = "NO"
-                    }
-                }
-            });
+            man.ShowOverlay(OverlayData<MockControl>.CreateDefault(new MockControl()));
+            //man.ShowOverlay(new OverlayDialogData
+            //{
+            //    //Content = "Contenido",
+            //    Title = "Titulo",
+            //    Buttons = new[]
+            //    {
+            //        new OverlayDialogButton
+            //        {
+            //            Text = "SI",
+            //            //OnCommand = data=> { data.}
+            //        },
+            //        new OverlayDialogButton
+            //        {
+            //            Text = "NO"
+            //        }
+            //    }
+            //});
 
 
             //XmlFileConfiguration f = new XmlFileConfiguration {

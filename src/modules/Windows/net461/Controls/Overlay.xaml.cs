@@ -28,11 +28,17 @@ namespace Fuxion.Windows.Controls
         }
         private void GoToOverlayed()
         {
-            VisualStateManager.GoToState(this, "Overlayed", true);
+            activeControl.Visibility = Visibility.Visible;
+            backgroundBorder.Visibility = Visibility.Visible;
+            backgroundBorder.Opacity = 0.8;
+            //VisualStateManager.GoToState(this, "Overlayed", true);
         }
         private void GoToNotOverlayed()
         {
-            VisualStateManager.GoToState(this, "NotOverlayed", true);
+            activeControl.Visibility = Visibility.Collapsed;
+            backgroundBorder.Visibility = Visibility.Collapsed;
+            backgroundBorder.Opacity = 0;
+            //VisualStateManager.GoToState(this, "NotOverlayed", true);
         }
         ObservableCollection<UIElement> _Children = new ObservableCollection<UIElement>();
         public ObservableCollection<UIElement> Children

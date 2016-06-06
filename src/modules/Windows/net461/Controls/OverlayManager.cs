@@ -47,44 +47,50 @@ namespace Fuxion.Windows.Controls
         TControl control;
         UIElement IOverlayData.OverlayControl { get { return control; } }
         TControl IOverlayData<TControl>.OverlayControl { get { return control; } }
+        public static IOverlayData<TControl> CreateDefault(TControl control) { return new InternalOverlayData<TControl>(control); }
     }
-    public enum OverlayDialogType
+    class InternalOverlayData<TControl> : OverlayData<TControl>
+        where TControl : FrameworkElement
     {
-        Normal,
-        Validation,
-        Error
+        public InternalOverlayData(TControl control) : base(control) { }
     }
-    public class OverlayDialogButton : Notifier<OverlayDialogButton>
-    {
-        public string Text { get { return GetValue<string>(); } set { SetValue(value); } }
-        public bool IsCancel { get { return GetValue<bool>(); } set { SetValue(value); } }
-        public bool IsDefault { get { return GetValue<bool>(); } set { SetValue(value); } }
-        public bool IsEnabled { get { return GetValue(() => true); } set { SetValue(value); } }
-        public bool IsVisible { get { return GetValue(() => true); } set { SetValue(value); } }
-        public double? MinWidth { get { return GetValue<double?>(); } set { SetValue(value); } }
-        public double? MaxWidth { get { return GetValue<double?>(); } set { SetValue(value); } }
-        public double? Width { get { return GetValue<double?>(); } set { SetValue(value); } }
-        public ICommand Command { get { return GetValue<ICommand>(); } set { SetValue(value); } }
-        public Action<OverlayDialogData> OnCommand { get { return GetValue<Action<OverlayDialogData>>(); } set { SetValue(value); } }
-    }
-    public class OverlayDialogData : OverlayData<OverlayDialog>
-    {
-        public OverlayDialogData():base(new OverlayDialog()) { }
-        //public override FrameworkElement ContentControl { get { return new OverlayDialog(this); } }
-        public string Title { get { return GetValue<string>(); } set { SetValue(value); } }
-        public OverlayDialogType Type { get { return GetValue<OverlayDialogType>(); } set { SetValue(value); } }
+    //public enum OverlayDialogType
+    //{
+    //    Normal,
+    //    Validation,
+    //    Error
+    //}
+    //public class OverlayDialogButton : Notifier<OverlayDialogButton>
+    //{
+    //    public string Text { get { return GetValue<string>(); } set { SetValue(value); } }
+    //    public bool IsCancel { get { return GetValue<bool>(); } set { SetValue(value); } }
+    //    public bool IsDefault { get { return GetValue<bool>(); } set { SetValue(value); } }
+    //    public bool IsEnabled { get { return GetValue(() => true); } set { SetValue(value); } }
+    //    public bool IsVisible { get { return GetValue(() => true); } set { SetValue(value); } }
+    //    public double? MinWidth { get { return GetValue<double?>(); } set { SetValue(value); } }
+    //    public double? MaxWidth { get { return GetValue<double?>(); } set { SetValue(value); } }
+    //    public double? Width { get { return GetValue<double?>(); } set { SetValue(value); } }
+    //    public ICommand Command { get { return GetValue<ICommand>(); } set { SetValue(value); } }
+    //    public Action<OverlayDialogData> OnCommand { get { return GetValue<Action<OverlayDialogData>>(); } set { SetValue(value); } }
+    //}
+    //public class OverlayDialogData : OverlayData<OverlayDialog>
+    //{
+    //    public OverlayDialogData():base(new OverlayDialog()) { }
+    //    //public override FrameworkElement ContentControl { get { return new OverlayDialog(this); } }
+    //    public string Title { get { return GetValue<string>(); } set { SetValue(value); } }
+    //    public OverlayDialogType Type { get { return GetValue<OverlayDialogType>(); } set { SetValue(value); } }
 
-        public double? DialogMinWidth { get { return GetValue<double?>(); } set { SetValue(value); } }
-        public double? DialogMaxWidth { get { return GetValue<double?>(); } set { SetValue(value); } }
-        public double? DialogWidth { get { return GetValue<double?>(); } set { SetValue(value); } }
-        public double? DialogMinHeight { get { return GetValue<double?>(); } set { SetValue(value); } }
-        public double? DialogMaxHeight { get { return GetValue<double?>(); } set { SetValue(value); } }
-        public double? DialogHeight { get { return GetValue<double?>(); } set { SetValue(value); } }
-        public double? ButtonsMaxWidth { get { return GetValue<double?>(); } set { SetValue(value); } }
-        public double? ButtonsMinWidth { get { return GetValue<double?>(); } set { SetValue(value); } }
-        public double? ButtonsWidth { get { return GetValue<double?>(); } set { SetValue(value); } }
-        public IEnumerable<OverlayDialogButton> Buttons { get { return GetValue(() => Enumerable.Empty<OverlayDialogButton>()); } set { SetValue(value); } }
-        //public OverlayButtonDefaultDataTemplate OverlayButtonDataTemplate { get { return GetValue(() => Enumerable.Empty<OverlayDialogButton>()); } set { SetValue(value); } }
-        //public FrameworkElement DialogControl { get { return GetValue<FrameworkElement>(); } set { SetValue(value); } }
-    }
+        //    public double? DialogMinWidth { get { return GetValue<double?>(); } set { SetValue(value); } }
+        //    public double? DialogMaxWidth { get { return GetValue<double?>(); } set { SetValue(value); } }
+        //    public double? DialogWidth { get { return GetValue<double?>(); } set { SetValue(value); } }
+        //    public double? DialogMinHeight { get { return GetValue<double?>(); } set { SetValue(value); } }
+        //    public double? DialogMaxHeight { get { return GetValue<double?>(); } set { SetValue(value); } }
+        //    public double? DialogHeight { get { return GetValue<double?>(); } set { SetValue(value); } }
+        //    public double? ButtonsMaxWidth { get { return GetValue<double?>(); } set { SetValue(value); } }
+        //    public double? ButtonsMinWidth { get { return GetValue<double?>(); } set { SetValue(value); } }
+        //    public double? ButtonsWidth { get { return GetValue<double?>(); } set { SetValue(value); } }
+        //    public IEnumerable<OverlayDialogButton> Buttons { get { return GetValue(() => Enumerable.Empty<OverlayDialogButton>()); } set { SetValue(value); } }
+        //    //public OverlayButtonDefaultDataTemplate OverlayButtonDataTemplate { get { return GetValue(() => Enumerable.Empty<OverlayDialogButton>()); } set { SetValue(value); } }
+        //    //public FrameworkElement DialogControl { get { return GetValue<FrameworkElement>(); } set { SetValue(value); } }
+        //}
 }
