@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Fuxion.Factories;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Principal;
@@ -8,12 +9,13 @@ using System.Threading.Tasks;
 namespace Fuxion.Identity
 {
     // TODO - Oscar - http://geeks.ms/blogs/etomas/archive/2014/12/19/securizando-tus-servicios-webapi-usando-owin.aspx
+    [FactoryDefaultImplementation(typeof(StaticPrincipalProvider))]
     public interface IPrincipalProvider
     {
         void SetPrincipal(IPrincipal principal);
         IPrincipal GetPrincipal();
     }
-    class StaticPrincipalProvider : IPrincipalProvider
+    public class StaticPrincipalProvider : IPrincipalProvider
     {
         static IPrincipal staticPrincipal;
         public IPrincipal GetPrincipal()

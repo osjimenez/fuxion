@@ -55,6 +55,8 @@
       <DependentUpon>OverlayDialog.xaml</DependentUpon>
     </None>
     <Compile Include="Controls\OverlayManager.cs" />
+    <Compile Include="Data\NullableBooleanToVisibilityConverter.cs" />
+    <Compile Include="Data\TypeMatchToVisibilityConverter.cs" />
     <Compile Include="Helpers\FocusHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

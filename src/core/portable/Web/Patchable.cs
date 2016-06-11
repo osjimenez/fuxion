@@ -13,7 +13,7 @@ namespace Fuxion.Web
 {
     public sealed class Patchable<T> : DynamicObject where T : class
     {
-        private readonly IDictionary<PropertyInfo, object> _changedProperties = new Dictionary<PropertyInfo, object>();
+        private IDictionary<PropertyInfo, object> _changedProperties = new Dictionary<PropertyInfo, object>();
         public IEnumerable<string> ChangedPropertyNames { get { return _changedProperties.Keys.Select(p => p.Name); } }
         public bool TryGetChangedPropertyValue<TProperty>(Expression<Func<T, TProperty>> exp, out TProperty value)
         {
@@ -99,6 +99,19 @@ namespace Fuxion.Web
             var callsite = CallSite<Func<CallSite, object, object, object>>.Create(binder);
 
             callsite.Target(callsite, this, val);
+        }
+        public Patchable<R> ToPatchable<R>() where R : class
+        {
+            var res = new Patchable<R>();
+            var dic = new Dictionary<PropertyInfo, object>();
+            foreach (var pair in _changedProperties)
+            {
+                var pro = typeof(R).GetRuntimeProperty(pair.Key.Name);
+                if (pro == null) throw new InvalidCastException($"Property '{pair.Key.Name}' cannot be trasfered to type '{typeof(R).Name}'");
+                dic.Add(pro, pair.Value);
+            }
+            res._changedProperties = dic;
+            return res;
         }
     }
 }

@@ -37,7 +37,7 @@ namespace System
             return JsonConvert.SerializeObject(me, formatting); }
         public static T FromJson<T>(this string me, JsonSerializerSettings settings = null) { return (T)JsonConvert.DeserializeObject(me, typeof(T), settings); }
         public static object FromJson(this string me, Type type) { return JsonConvert.DeserializeObject(me, type); }
-        public static T CloneWithJson<T>(this T me) { return FromJson<T>(me.ToJson()); } //return (T)JsonConvert.DeserializeObject(JsonConvert.SerializeObject(me, me.GetType(), new JsonSerializerSettings()), me.GetType());
+        public static T CloneWithJson<T>(this T me) { return (T)FromJson(me.ToJson(), me.GetType()); }
         #endregion
         #region Transform
         public static TResult Transform<TSource, TResult>(this TSource me, Func<TSource, TResult> transformFunction)

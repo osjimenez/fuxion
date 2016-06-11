@@ -144,5 +144,9 @@ namespace System.Reflection
                 typeInfo = typeInfo.BaseType?.GetTypeInfo();
             }
         }
+        public static bool IsNullable(this TypeInfo me)
+        {
+            return me.IsClass || me.IsGenericType && me.GetGenericTypeDefinition() == typeof(Nullable<>);
+        }
     }
 }

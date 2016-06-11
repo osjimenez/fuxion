@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,16 +15,17 @@ namespace Fuxion.Identity
     }
     public class IdentityManager
     {
-        public IdentityManager(IPasswordProvider passwordProvider, IKeyValueRepository<IdentityKeyValueRepositoryValue,string, IIdentity> repository)
+        public IdentityManager(IPasswordProvider passwordProvider, IKeyValueRepository<IdentityKeyValueRepositoryValue,string, IIdentity> repository)//, IPrincipalProvider principalProvider)
         {
             PasswordProvider = passwordProvider;
             Repository = repository;
+            //PrincipalProvider = principalProvider;
         }
         public bool IsAuthenticated { get { return Current != null; } }
-        Dictionary<string, IIdentity> cache = new Dictionary<string, IIdentity>();
+        //Dictionary<string, IIdentity> cache = new Dictionary<string, IIdentity>();
         public IIdentity Current { get; private set; }
         //public Action<string, bool> Console { get; set; }
-        public static IPrincipalProvider PrincipalProvider { get; private set; } = new StaticPrincipalProvider();
+        public static IPrincipalProvider PrincipalProvider { get; private set; }
         public IPasswordProvider PasswordProvider { get; private set; }
         public IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity> Repository { get; private set; }
         //private void WriteConsole(string message, bool endOfMessage) { if (Console != null) Console(message, endOfMessage); }
@@ -46,9 +48,13 @@ namespace Fuxion.Identity
             if (res)
             {
                 Printer.Print($"Resultado: VALIDO");
-                PrincipalProvider.SetPrincipal(new FuxionPrincipal(ide));
+                //PrincipalProvider.SetPrincipal(new FuxionPrincipal(ide));
             }
             return res;
+        }
+        public void Logout()
+        {
+            Current = null;
         }
     }
     public interface IPasswordProvider

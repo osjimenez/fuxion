@@ -88,6 +88,7 @@
     <Compile Include="DispatcherSynchronizer.test.cs" />
     <Compile Include="Factory.test.cs" />
     <Compile Include="GenericEqualityComparerTest.cs" />
+    <Compile Include="Json.test.cs" />
     <Compile Include="LogTest.cs" />
     <Compile Include="MemoryKeyValueRepositoryTest.cs" />
     <Compile Include="NotifierTest.cs" />
