@@ -66,19 +66,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{BBBD5819-E
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion.Log4net.Test", "modules\Log4net\test\Fuxion.Log4net.Test.csproj", "{226DCE27-90D1-4C9B-BBFA-C5A09CAA230E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion.Web-net461", "modules\Web\net461\Fuxion.Web-net461.csproj", "{B407F038-98E7-40BD-9F46-DC52A854CB9D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion.Web-net45", "modules\Web\net45\Fuxion.Web-net45.csproj", "{B407F038-98E7-40BD-9F46-DC52A854CB9D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion.Licensing-net461", "modules\Licensing\net461\Fuxion.Licensing-net461.csproj", "{639F2C3A-1CA1-4F20-AD1B-E446624ACA9F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion.Licensing-net45", "modules\Licensing\net45\Fuxion.Licensing-net45.csproj", "{639F2C3A-1CA1-4F20-AD1B-E446624ACA9F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion-net45", "core\net45\Fuxion-net45.csproj", "{B16111A4-CDF6-40E8-9BEE-1D5806543CB0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion.Data", "modules\Data\net461\Fuxion.Data.csproj", "{E066329C-2CB6-4EDD-AB47-0D7B8129254E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion.Data", "modules\Data\net45\Fuxion.Data.csproj", "{E066329C-2CB6-4EDD-AB47-0D7B8129254E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion.Log4net", "modules\Log4net\net461\Fuxion.Log4net.csproj", "{1CF0E88A-CD3D-4D49-8650-F5F7FF3A1334}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoUWP", "sketches\DemoUWP\DemoUWP.csproj", "{8F7C4A8F-94E2-44CA-ACF5-D12CD5CEF43C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion.Windows", "modules\Windows\net461\Fuxion.Windows.csproj", "{25B99E1D-A3BA-42F3-B4BF-B6C76E6D84E4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion.Windows", "modules\Windows\net45\Fuxion.Windows.csproj", "{25B99E1D-A3BA-42F3-B4BF-B6C76E6D84E4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Windows", "Windows", "{3D8F0482-E13F-4701-A59B-4359A1614CEE}"
 EndProject

@@ -14,7 +14,7 @@
     <licenseUrl>https://raw.githubusercontent.com/osjimenez/Fuxion/develop/LICENSE</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <dependencies>
-      <dependency id="Fuxion" version="0.0.3-alpha080" />
+      <dependency id="Fuxion" version="0.0.3-alpha091" />
       <dependency id="Microsoft.AspNet.Mvc" version="5.2.3" />
       <dependency id="Microsoft.AspNet.WebApi.Core" version="5.2.3" />
     </dependencies>
@@ -26,9 +26,9 @@
   <files>
     <file src="bin\Release\Fuxion.Web.dll" target="lib\portable-net45+netcore50+win8+wp81+wpa81\Fuxion.Web.dll" />
     <file src="bin\Release\Fuxion.Web.pdb" target="lib\portable-net45+netcore50+win8+wp81+wpa81\Fuxion.Web.pdb" />
-    <file src="bin\Release\Fuxion.Web.dll" target="lib\net461\Fuxion.Web.dll" />
-    <file src="bin\Release\Fuxion.Web.pdb" target="lib\net461\Fuxion.Web.pdb" />
-    <file src="bin\Release\Fuxion.Web-net461.dll" target="lib\net461\Fuxion.Web-net461.dll" />
-    <file src="bin\Release\Fuxion.Web-net461.pdb" target="lib\net461\Fuxion.Web-net461.pdb" />
+    <file src="bin\Release\Fuxion.Web.dll" target="lib\net45\Fuxion.Web.dll" />
+    <file src="bin\Release\Fuxion.Web.pdb" target="lib\net45\Fuxion.Web.pdb" />
+    <file src="bin\Release\Fuxion.Web-net45.dll" target="lib\net45\Fuxion.Web-net45.dll" />
+    <file src="bin\Release\Fuxion.Web-net45.pdb" target="lib\net45\Fuxion.Web-net45.pdb" />
   </files>
 </package>

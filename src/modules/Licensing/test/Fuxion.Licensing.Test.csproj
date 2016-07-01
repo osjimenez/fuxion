@@ -38,8 +38,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="PCLCrypto, Version=2.0.0.0, Culture=neutral, PublicKeyToken=d4421c8a4786956c, processorArchitecture=MSIL">
@@ -62,8 +62,8 @@
       <HintPath>..\..\..\packages\PInvoke.Windows.Core.0.3.2\lib\portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10\PInvoke.Windows.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SimpleInjector, Version=3.1.5.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\SimpleInjector.3.1.5\lib\net45\SimpleInjector.dll</HintPath>
+    <Reference Include="SimpleInjector, Version=3.2.0.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\SimpleInjector.3.2.0\lib\net45\SimpleInjector.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -131,9 +131,9 @@
       <Project>{dfe9408b-2bb2-4f86-a1c0-2a050d155f82}</Project>
       <Name>SimpleInjector_</Name>
     </ProjectReference>
-    <ProjectReference Include="..\net461\Fuxion.Licensing-net461.csproj">
+    <ProjectReference Include="..\net45\Fuxion.Licensing-net45.csproj">
       <Project>{639f2c3a-1ca1-4f20-ad1b-e446624aca9f}</Project>
-      <Name>Fuxion.Licensing-net461</Name>
+      <Name>Fuxion.Licensing-net45</Name>
     </ProjectReference>
     <ProjectReference Include="..\portable\Fuxion.Licensing.csproj">
       <Project>{c7406922-3198-42d8-80eb-31574b33fc96}</Project>

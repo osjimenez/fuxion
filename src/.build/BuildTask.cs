@@ -57,24 +57,36 @@ public class BuildTask : Microsoft.Build.Utilities.Task
                 .Replace("###version###", semanticVersion));
 
             var nugetDefaultOutputPath = @"bin\Nuget";
-            var nugetOutputPaths = new[] { @"bin\Nuget" };
+            var nugetOutputPaths = new List<string>();
             if (File.Exists(nugetDefaultOutputPath))
             {
                 nugetOutputPaths = File.ReadAllLines(nugetDefaultOutputPath)
                     .Select(p => Path.IsPathRooted(p) ? p : Path.Combine(Path.GetDirectoryName(projectFile), p))
-                    .ToArray();
+                    .ToList();
             }
             else if (!Directory.Exists(nugetDefaultOutputPath))
             {
                 Directory.CreateDirectory(nugetDefaultOutputPath);
-                nugetOutputPaths = new[] { nugetDefaultOutputPath };
+                nugetOutputPaths.Add(nugetDefaultOutputPath);
             }
             else
             {
-                nugetOutputPaths = new[] { nugetDefaultOutputPath };
+                nugetOutputPaths.Add(nugetDefaultOutputPath);
+            }
+            var dir = new DirectoryInfo(Path.GetDirectoryName(projectFile));
+            while(dir != null)
+            {
+                var outputFile = dir.GetFiles().FirstOrDefault(f => f.Name == "NuGet.output");
+                if(outputFile != null)
+                {
+                    nugetOutputPaths.AddRange(File.ReadAllLines(outputFile.FullName)
+                        .Select(p => Path.IsPathRooted(p) ? p : Path.Combine(Path.GetDirectoryName(projectFile), p)));
+                }
+                dir = dir.Parent;
             }
             foreach (var outputPath in nugetOutputPaths)
             {
+                if (!Directory.Exists(outputPath)) Directory.CreateDirectory(outputPath);
                 ProcessStartInfo psi = new ProcessStartInfo(new DirectoryInfo(nugetPath).FullName, "pack " + nuspecTempPath + " -OutputDirectory " + outputPath);
                 psi.CreateNoWindow = true;
                 psi.UseShellExecute = false;

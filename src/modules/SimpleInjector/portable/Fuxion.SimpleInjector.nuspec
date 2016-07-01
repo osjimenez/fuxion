@@ -12,8 +12,8 @@
     <projectUrl>https://github.com/osjimenez/Fuxion</projectUrl>
     <licenseUrl>https://raw.githubusercontent.com/osjimenez/Fuxion/develop/LICENSE</licenseUrl>
     <dependencies>
-      <dependency id="Fuxion" version="0.0.3-alpha080" />
-      <dependency id="SimpleInjector" version="3.1.5" />
+      <dependency id="Fuxion" version="0.0.3-alpha091" />
+      <dependency id="SimpleInjector" version="3.2.0" />
     </dependencies>
   </metadata>
   <files>

@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
-    <id>Fuxion.Windows</id>
+    <id>Fuxion.Data</id>
     <version>###version###</version>
-    <title>Fuxion.Windows</title>
+    <title>Fuxion Data</title>
     <authors>Oscar Jimenez, Waf Estructuras Digitales</authors>
-    <description>Fuxion Windows (prototype)</description>
+    <description>Fuxion library for data access.</description>
     <releaseNotes />
     <summary/>
     <language/>
@@ -14,7 +14,8 @@
     <licenseUrl>https://raw.githubusercontent.com/osjimenez/Fuxion/develop/LICENSE</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <dependencies>
-      <dependency id="Fuxion" version="0.0.3-alpha085" />
+      <dependency id="Fuxion" version="0.0.3-alpha091" />
+      <dependency id="EntityFramework" version="6.1.3" />
     </dependencies>
     <references/>
     <frameworkAssemblies/>
@@ -22,7 +23,7 @@
     <!--<developmentDependency/>-->
   </metadata>
   <files>
-    <file src="bin\Release\Fuxion.Windows.dll" target="lib\net461\Fuxion.Windows.dll" />
-    <file src="bin\Release\Fuxion.Windows.pdb" target="lib\net461\Fuxion.Windows.pdb" />
+    <file src="bin\Release\Fuxion.Data.dll" target="lib\net45\Fuxion.Data.dll" />
+    <file src="bin\Release\Fuxion.Data.pdb" target="lib\net45\Fuxion.Data.pdb" />
   </files>
 </package>

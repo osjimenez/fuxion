@@ -4,12 +4,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Fuxion.Data")]
+[assembly: AssemblyTitle("Fuxion.Web")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Fuxion.Data")]
-[assembly: AssemblyCopyright("")]
+[assembly: AssemblyProduct("Fuxion.Web")]
+[assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 // Setting ComVisible to false makes the types in this assembly not visible 
@@ -17,7 +17,7 @@ using System.Runtime.InteropServices;
 // COM, set the ComVisible attribute to true on that type.
 [assembly: ComVisible(false)]
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("e066329c-2cb6-4edd-ab47-0d7b8129254e")]
+[assembly: Guid("b407f038-98e7-40bd-9f46-dc52a854cb9d")]
 // Version information for an assembly consists of the following four values:
 //
 //      Major Version
@@ -28,6 +28,6 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.0.1.8")]
-[assembly: AssemblyFileVersion("0.0.1.8")]
-[assembly: AssemblyInformationalVersion("0.0.1-alpha008")]
+[assembly: AssemblyVersion("0.0.1.15")]
+[assembly: AssemblyFileVersion("0.0.1.15")]
+[assembly: AssemblyInformationalVersion("0.0.1-alpha015")]
