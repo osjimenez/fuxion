@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion", "core\portable\Fuxion.csproj", "{5761CB44-504F-468B-8263-39F59EEBBB17}"
 EndProject
@@ -70,7 +70,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion.Web-net461", "module
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion.Licensing-net461", "modules\Licensing\net461\Fuxion.Licensing-net461.csproj", "{639F2C3A-1CA1-4F20-AD1B-E446624ACA9F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion-net461", "core\net461\Fuxion-net461.csproj", "{B16111A4-CDF6-40E8-9BEE-1D5806543CB0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion-net45", "core\net45\Fuxion-net45.csproj", "{B16111A4-CDF6-40E8-9BEE-1D5806543CB0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion.Data", "modules\Data\net461\Fuxion.Data.csproj", "{E066329C-2CB6-4EDD-AB47-0D7B8129254E}"
 EndProject
