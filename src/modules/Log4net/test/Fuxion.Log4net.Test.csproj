@@ -94,7 +94,7 @@
       <Project>{dfe9408b-2bb2-4f86-a1c0-2a050d155f82}</Project>
       <Name>SimpleInjector_</Name>
     </ProjectReference>
-    <ProjectReference Include="..\net461\Fuxion.Log4net.csproj">
+    <ProjectReference Include="..\net45\Fuxion.Log4net.csproj">
       <Project>{1cf0e88a-cd3d-4d49-8650-f5f7ff3a1334}</Project>
       <Name>Fuxion.Log4net</Name>
     </ProjectReference>
