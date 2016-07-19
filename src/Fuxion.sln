@@ -74,7 +74,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion-net45", "core\net45\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion.Data", "modules\Data\net45\Fuxion.Data.csproj", "{E066329C-2CB6-4EDD-AB47-0D7B8129254E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion.Log4net", "modules\Log4net\net461\Fuxion.Log4net.csproj", "{1CF0E88A-CD3D-4D49-8650-F5F7FF3A1334}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion.Log4net", "modules\Log4net\net45\Fuxion.Log4net.csproj", "{1CF0E88A-CD3D-4D49-8650-F5F7FF3A1334}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoUWP", "sketches\DemoUWP\DemoUWP.csproj", "{8F7C4A8F-94E2-44CA-ACF5-D12CD5CEF43C}"
 EndProject

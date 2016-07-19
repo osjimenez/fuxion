@@ -102,7 +102,7 @@
     <Compile Include="XmlFileConfiguration.test.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\modules\Log4net\net461\Fuxion.Log4net.csproj">
+    <ProjectReference Include="..\..\modules\Log4net\net45\Fuxion.Log4net.csproj">
       <Project>{1cf0e88a-cd3d-4d49-8650-f5f7ff3a1334}</Project>
       <Name>Fuxion.Log4net</Name>
     </ProjectReference>
