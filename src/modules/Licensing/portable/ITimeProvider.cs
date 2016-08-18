@@ -8,15 +8,16 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Licensing
 {
-    [FactoryDefaultImplementation(typeof(DefaultTimeProvider))]
-    public interface ITimeProvider
-    {
-        DateTime GetUtcNow();
-    }
-    public class DefaultTimeProvider : ITimeProvider
-    {
-        public DateTime GetUtcNow() { return DateTime.UtcNow; }
-    }
+    //[FactoryDefaultImplementation(typeof(DefaultTimeProvider))]
+    //public interface ITimeProvider
+    //{
+    //    DateTime GetUtcNow();
+    //}
+    //public class DefaultTimeProvider : ITimeProvider
+    //{
+    //    public DateTime GetUtcNow() { return DateTime.UtcNow; }
+    //}
+
     //public class InternetTimeProvider : ITimeProvider
     //{
     //    public void Demo()

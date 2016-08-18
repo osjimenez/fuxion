@@ -57,6 +57,7 @@
   <ItemGroup>
     <Compile Include="Collections\WeakCollection.cs" />
     <Compile Include="Configuration\XmlFileConfiguration.cs" />
+    <Compile Include="InternetTimeProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reflection\System-Extensions.cs" />
     <Compile Include="ServiceModel\Description\FactoryBehaviorAttribute.cs" />

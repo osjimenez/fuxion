@@ -93,6 +93,7 @@
     <Compile Include="Threading\Tasks\System-Extensions.cs" />
     <Compile Include="Threading\Tasks\TaskManager.cs" />
     <Compile Include="Threading\Tasks\TaskManagerEntry.cs" />
+    <Compile Include="TimeProvider.cs" />
     <Compile Include="Web\Patchable.cs" />
     <Compile Include="Xml\XElementExtensions.cs" />
     <Compile Include="Windows\DelegateCommand.cs" />

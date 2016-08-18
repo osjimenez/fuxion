@@ -108,6 +108,11 @@ namespace Fuxion.Licensing.Test
         {
             Offset = offset;
         }
+
+        public DateTimeOffset GetUtcNowWithOffset()
+        {
+            return DateTimeOffset.UtcNow.Add(Offset);
+        }
     }
     public class LicenseRequestMock : LicenseRequest
     {
