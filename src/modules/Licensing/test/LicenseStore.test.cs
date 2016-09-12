@@ -13,6 +13,7 @@ using static Fuxion.Licensing.LicensingManager;
 using static Fuxion.Licensing.LicenseContainer;
 using Fuxion.Licensing.Test.Mocks;
 using Fuxion.Factories;
+using Fuxion.Test;
 
 namespace Fuxion.Licensing.Test
 {
@@ -27,7 +28,7 @@ namespace Fuxion.Licensing.Test
             con.RegisterSingleton<ILicenseProvider>(new LicenseProviderMock());
             con.RegisterSingleton<ILicenseStore>(new LicenseStoreMock());
             con.RegisterSingleton<IHardwareIdProvider>(new HardwareIdProviderMock());
-            con.RegisterSingleton<ITimeProvider>(new TimeProviderMock());
+            con.RegisterSingleton<ITimeProvider>(new MockTimeProvider());
             con.Register<LicensingManager>();
             Factory.AddInjector(new SimpleInjectorFactoryInjector(con));
         }
@@ -53,7 +54,7 @@ namespace Fuxion.Licensing.Test
                 ProductId = productId
             });
             man.Store.Add(lic);
-            var tp = Factory.Get<ITimeProvider>() as TimeProviderMock;
+            var tp = Factory.Get<ITimeProvider>() as MockTimeProvider;
             output.WriteLine($"Current offset is '{tp.Offset}'");
             tp.SetOffset(TimeSpan.FromDays(offsetDays));
             output.WriteLine($"After set offset is '{tp.Offset}'");

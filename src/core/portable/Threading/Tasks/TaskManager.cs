@@ -345,7 +345,7 @@ namespace Fuxion.Threading.Tasks
         }
         public static Task<TResult> Create<TResult>(Func<Task<TResult>> func, TaskScheduler scheduler = null, TaskCreationOptions options = default(TaskCreationOptions))
         {
-            return (Task<TResult>)CreateEntry(new Func<TResult>(() => func().WaitResult())).Task;
+            return (Task<TResult>)CreateEntry(new Func<TResult>(() => func().Result)).Task;
         }
         public static Task<TResult> StartNew<TResult>(Func<TResult> func, TaskScheduler scheduler = null, TaskCreationOptions options = default(TaskCreationOptions))
         {
@@ -378,7 +378,7 @@ namespace Fuxion.Threading.Tasks
         }
         public static Task<TResult> Create<T, TResult>(Func<T, Task<TResult>> asyncFunc, T param, TaskScheduler scheduler = null, TaskCreationOptions options = default(TaskCreationOptions))
         {
-            return (Task<TResult>)CreateEntry(new Func<T, TResult>(p => asyncFunc(p).WaitResult()), param, scheduler, options).Task;
+            return (Task<TResult>)CreateEntry(new Func<T, TResult>(p => asyncFunc(p).Result), param, scheduler, options).Task;
         }
         public static Task<TResult> StartNew<T, TResult>(Func<T, TResult> func, T param, TaskScheduler scheduler = null, TaskCreationOptions options = default(TaskCreationOptions))
         {
@@ -413,7 +413,7 @@ namespace Fuxion.Threading.Tasks
         }
         public static Task<TResult> Create<T1, T2, TResult>(Func<T1, T2, Task<TResult>> asyncFunc, T1 param1, T2 param2, TaskScheduler scheduler = null, TaskCreationOptions options = default(TaskCreationOptions))
         {
-            return (Task<TResult>)CreateEntry(new Func<T1, T2, TResult>((p1, p2) => asyncFunc(p1, p2).WaitResult()), param1, param2, scheduler, options).Task;
+            return (Task<TResult>)CreateEntry(new Func<T1, T2, TResult>((p1, p2) => asyncFunc(p1, p2).Result), param1, param2, scheduler, options).Task;
         }
         public static Task<TResult> StartNew<T1, T2, TResult>(Func<T1, T2, TResult> func, T1 param1, T2 param2, TaskScheduler scheduler = null, TaskCreationOptions options = default(TaskCreationOptions))
         {
@@ -447,7 +447,7 @@ namespace Fuxion.Threading.Tasks
         }
         public static Task<TResult> Create<T1, T2, T3, TResult>(Func<T1, T2, T3, Task<TResult>> asyncFunc, T1 param1, T2 param2, T3 param3, TaskScheduler scheduler = null, TaskCreationOptions options = default(TaskCreationOptions))
         {
-            return (Task<TResult>)CreateEntry(new Func<T1, T2, T3, TResult>((p1, p2, p3) => asyncFunc(p1, p2, p3).WaitResult()), param1, param2, param3, scheduler, options).Task;
+            return (Task<TResult>)CreateEntry(new Func<T1, T2, T3, TResult>((p1, p2, p3) => asyncFunc(p1, p2, p3).Result), param1, param2, param3, scheduler, options).Task;
         }
         public static Task<TResult> StartNew<T1, T2, T3, TResult>(Func<T1, T2, T3, TResult> func, T1 param1, T2 param2, T3 param3, TaskScheduler scheduler = null, TaskCreationOptions options = default(TaskCreationOptions))
         {
@@ -481,7 +481,7 @@ namespace Fuxion.Threading.Tasks
         }
         public static Task<TResult> Create<T1, T2, T3, T4, TResult>(Func<T1, T2, T3, T4, Task<TResult>> asyncFunc, T1 param1, T2 param2, T3 param3, T4 param4, TaskScheduler scheduler = null, TaskCreationOptions options = default(TaskCreationOptions))
         {
-            return (Task<TResult>)CreateEntry(new Func<T1, T2, T3, T4, TResult>((p1, p2, p3, p4) => asyncFunc(p1, p2, p3, p4).WaitResult()), param1, param2, param3, param4, scheduler, options).Task;
+            return (Task<TResult>)CreateEntry(new Func<T1, T2, T3, T4, TResult>((p1, p2, p3, p4) => asyncFunc(p1, p2, p3, p4).Result), param1, param2, param3, param4, scheduler, options).Task;
         }
         public static Task<TResult> StartNew<T1, T2, T3, T4, TResult>(Func<T1, T2, T3, T4, TResult> func, T1 param1, T2 param2, T3 param3, T4 param4, TaskScheduler scheduler = null, TaskCreationOptions options = default(TaskCreationOptions))
         {
@@ -515,7 +515,7 @@ namespace Fuxion.Threading.Tasks
         }
         public static Task<TResult> Create<T1, T2, T3, T4, T5, TResult>(Func<T1, T2, T3, T4, T5, Task<TResult>> asyncFunc, T1 param1, T2 param2, T3 param3, T4 param4, T5 param5, TaskScheduler scheduler = null, TaskCreationOptions options = default(TaskCreationOptions))
         {
-            return (Task<TResult>)CreateEntry(new Func<T1, T2, T3, T4, T5, TResult>((p1, p2, p3, p4, p5) => asyncFunc(p1, p2, p3, p4, p5).WaitResult()), param1, param2, param3, param4, param5, scheduler, options).Task;
+            return (Task<TResult>)CreateEntry(new Func<T1, T2, T3, T4, T5, TResult>((p1, p2, p3, p4, p5) => asyncFunc(p1, p2, p3, p4, p5).Result), param1, param2, param3, param4, param5, scheduler, options).Task;
         }
         public static Task<TResult> StartNew<T1, T2, T3, T4, T5, TResult>(Func<T1, T2, T3, T4, T5, TResult> func, T1 param1, T2 param2, T3 param3, T4 param4, T5 param5, TaskScheduler scheduler = null, TaskCreationOptions options = default(TaskCreationOptions))
         {
@@ -549,7 +549,7 @@ namespace Fuxion.Threading.Tasks
         }
         public static Task<TResult> Create<T1, T2, T3, T4, T5, T6, TResult>(Func<T1, T2, T3, T4, T5, T6, Task<TResult>> asyncFunc, T1 param1, T2 param2, T3 param3, T4 param4, T5 param5, T6 param6, TaskScheduler scheduler = null, TaskCreationOptions options = default(TaskCreationOptions))
         {
-            return (Task<TResult>)CreateEntry(new Func<T1, T2, T3, T4, T5, T6, TResult>((p1, p2, p3, p4, p5, p6) => asyncFunc(p1, p2, p3, p4, p5, p6).WaitResult()), param1, param2, param3, param4, param5, param6, scheduler, options).Task;
+            return (Task<TResult>)CreateEntry(new Func<T1, T2, T3, T4, T5, T6, TResult>((p1, p2, p3, p4, p5, p6) => asyncFunc(p1, p2, p3, p4, p5, p6).Result), param1, param2, param3, param4, param5, param6, scheduler, options).Task;
         }
         public static Task<TResult> StartNew<T1, T2, T3, T4, T5, T6, TResult>(Func<T1, T2, T3, T4, T5, T6, TResult> func, T1 param1, T2 param2, T3 param3, T4 param4, T5 param5, T6 param6, TaskScheduler scheduler = null, TaskCreationOptions options = default(TaskCreationOptions))
         {
@@ -583,7 +583,7 @@ namespace Fuxion.Threading.Tasks
         }
         public static Task<TResult> Create<T1, T2, T3, T4, T5, T6, T7, TResult>(Func<T1, T2, T3, T4, T5, T6, T7, Task<TResult>> asyncFunc, T1 param1, T2 param2, T3 param3, T4 param4, T5 param5, T6 param6, T7 param7, TaskScheduler scheduler = null, TaskCreationOptions options = default(TaskCreationOptions))
         {
-            return (Task<TResult>)CreateEntry(new Func<T1, T2, T3, T4, T5, T6, T7, TResult>((p1, p2, p3, p4, p5, p6, p7) => asyncFunc(p1, p2, p3, p4, p5, p6, p7).WaitResult()), param1, param2, param3, param4, param5, param6, param7, scheduler, options).Task;
+            return (Task<TResult>)CreateEntry(new Func<T1, T2, T3, T4, T5, T6, T7, TResult>((p1, p2, p3, p4, p5, p6, p7) => asyncFunc(p1, p2, p3, p4, p5, p6, p7).Result), param1, param2, param3, param4, param5, param6, param7, scheduler, options).Task;
         }
         public static Task<TResult> StartNew<T1, T2, T3, T4, T5, T6, T7, TResult>(Func<T1, T2, T3, T4, T5, T6, T7, TResult> func, T1 param1, T2 param2, T3 param3, T4 param4, T5 param5, T6 param6, T7 param7, TaskScheduler scheduler = null, TaskCreationOptions options = default(TaskCreationOptions))
         {
@@ -617,7 +617,7 @@ namespace Fuxion.Threading.Tasks
         }
         public static Task<TResult> Create<T1, T2, T3, T4, T5, T6, T7, T8, TResult>(Func<T1, T2, T3, T4, T5, T6, T7, T8, Task<TResult>> asyncFunc, T1 param1, T2 param2, T3 param3, T4 param4, T5 param5, T6 param6, T7 param7, T8 param8, TaskScheduler scheduler = null, TaskCreationOptions options = default(TaskCreationOptions))
         {
-            return (Task<TResult>)CreateEntry(new Func<T1, T2, T3, T4, T5, T6, T7, T8, TResult>((p1, p2, p3, p4, p5, p6, p7, p8) => asyncFunc(p1, p2, p3, p4, p5, p6, p7, p8).WaitResult()), param1, param2, param3, param4, param5, param6, param7, param8, scheduler, options).Task;
+            return (Task<TResult>)CreateEntry(new Func<T1, T2, T3, T4, T5, T6, T7, T8, TResult>((p1, p2, p3, p4, p5, p6, p7, p8) => asyncFunc(p1, p2, p3, p4, p5, p6, p7, p8).Result), param1, param2, param3, param4, param5, param6, param7, param8, scheduler, options).Task;
         }
         public static Task<TResult> StartNew<T1, T2, T3, T4, T5, T6, T7, T8, TResult>(Func<T1, T2, T3, T4, T5, T6, T7, T8, TResult> func, T1 param1, T2 param2, T3 param3, T4 param4, T5 param5, T6 param6, T7 param7, T8 param8, TaskScheduler scheduler = null, TaskCreationOptions options = default(TaskCreationOptions))
         {

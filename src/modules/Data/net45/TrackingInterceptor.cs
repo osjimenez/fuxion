@@ -71,7 +71,7 @@ namespace Fuxion.Data
                     {
                         clauses.Add(DbExpressionBuilder.SetClause(deleteCommand.Target.Variable.Property(bitColumn), DbExpression.FromBoolean(true)));
                         if (dateColumn != null)
-                            clauses.Add(DbExpressionBuilder.SetClause(deleteCommand.Target.Variable.Property(dateColumn), DbExpression.FromDateTimeOffset(TimeZoneInfo.ConvertTime(timeProvider.GetUtcNowWithOffset().Add(_dateTimeAdjustment), getCurrentTimeZoneFunction()))));
+                            clauses.Add(DbExpressionBuilder.SetClause(deleteCommand.Target.Variable.Property(dateColumn), DbExpression.FromDateTimeOffset(TimeZoneInfo.ConvertTime(timeProvider.NowOffsetted().Add(_dateTimeAdjustment), getCurrentTimeZoneFunction()))));
                         if (identityColumn != null)
                             clauses.Add(DbExpressionBuilder.SetClause(deleteCommand.Target.Variable.Property(identityColumn), DbExpression.FromString(getCurrentIdentityFunction())));
                     }
@@ -102,7 +102,7 @@ namespace Fuxion.Data
                     RemoveClause(clauses, ColumnAnnotationAttribute.GetColumnName<TrackModifiedDateAttribute>(insertCommand.Target.VariableType.EdmType));
                     RemoveClause(clauses, ColumnAnnotationAttribute.GetColumnName<TrackModifiedIdentityAttribute>(insertCommand.Target.VariableType.EdmType));
                     if (dateColumn != null)
-                        AddOrReplaceClause(clauses, DbExpressionBuilder.SetClause(insertCommand.Target.Variable.Property(dateColumn), DbExpression.FromDateTimeOffset(TimeZoneInfo.ConvertTime(timeProvider.GetUtcNowWithOffset().Add(_dateTimeAdjustment), getCurrentTimeZoneFunction()))));
+                        AddOrReplaceClause(clauses, DbExpressionBuilder.SetClause(insertCommand.Target.Variable.Property(dateColumn), DbExpression.FromDateTimeOffset(TimeZoneInfo.ConvertTime(timeProvider.NowOffsetted().Add(_dateTimeAdjustment), getCurrentTimeZoneFunction()))));
                     if (identityColumn != null)
                         AddOrReplaceClause(clauses, DbExpressionBuilder.SetClause(insertCommand.Target.Variable.Property(identityColumn), DbExpression.FromString(getCurrentIdentityFunction())));
                     if (dateColumn != null || (identityColumn != null))
@@ -138,7 +138,7 @@ namespace Fuxion.Data
                         RemoveClause(clauses, ColumnAnnotationAttribute.GetColumnName<TrackCreatedDateAttribute>(updateCommand.Target.VariableType.EdmType));
                         RemoveClause(clauses, ColumnAnnotationAttribute.GetColumnName<TrackCreatedIdentityAttribute>(updateCommand.Target.VariableType.EdmType));
                         if (dateColumn != null)
-                            AddOrReplaceClause(clauses, DbExpressionBuilder.SetClause(updateCommand.Target.Variable.Property(dateColumn), DbExpression.FromDateTimeOffset(TimeZoneInfo.ConvertTime(timeProvider.GetUtcNowWithOffset().Add(_dateTimeAdjustment), getCurrentTimeZoneFunction()))));
+                            AddOrReplaceClause(clauses, DbExpressionBuilder.SetClause(updateCommand.Target.Variable.Property(dateColumn), DbExpression.FromDateTimeOffset(TimeZoneInfo.ConvertTime(timeProvider.NowOffsetted().Add(_dateTimeAdjustment), getCurrentTimeZoneFunction()))));
                         if (identityColumn != null)
                             AddOrReplaceClause(clauses, DbExpressionBuilder.SetClause(updateCommand.Target.Variable.Property(identityColumn), DbExpression.FromString(getCurrentIdentityFunction())));
                     }

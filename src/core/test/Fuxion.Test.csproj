@@ -87,19 +87,26 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="AntiBackTimeProviderTest.cs" />
+    <Compile Include="AverageTimeProviderTest.cs" />
     <Compile Include="ConnectableNotifier.test.cs" />
+    <Compile Include="CustomizableTimeProvider.test.cs" />
     <Compile Include="DeactivatableObservableCollectionTest.cs" />
     <Compile Include="DispatcherSynchronizer.test.cs" />
     <Compile Include="Factory.test.cs" />
     <Compile Include="GenericEqualityComparerTest.cs" />
+    <Compile Include="Helpers\ITimeProviderExtensions.cs" />
+    <Compile Include="Helpers\MockTimeProvider.cs" />
+    <Compile Include="InternetTimeProvider.test.cs" />
     <Compile Include="Json.test.cs" />
     <Compile Include="LogTest.cs" />
     <Compile Include="MemoryKeyValueRepositoryTest.cs" />
     <Compile Include="NotifierTest.cs" />
     <Compile Include="Patchable.cs" />
+    <Compile Include="RemoveOutliersTest.cs" />
     <Compile Include="Singleton.cs" />
     <Compile Include="TaskManager.test.cs" />
-    <Compile Include="TimeProvider.cs" />
+    <Compile Include="DefaultTimeProvider.test.cs" />
     <Compile Include="ToJsonTest.cs" />
     <Compile Include="Transform.cs" />
     <Compile Include="ViewModelTest.cs" />

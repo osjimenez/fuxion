@@ -14,12 +14,20 @@ namespace Fuxion
     [FactoryDefaultImplementation(typeof(DefaultTimeProvider))]
     public interface ITimeProvider
     {
-        DateTime GetUtcNow();
-        DateTimeOffset GetUtcNowWithOffset();
+        DateTime Now();
+        DateTimeOffset NowOffsetted();
+        DateTime UtcNow();
+    }
+    public interface IAsyncTimeProvider
+    {
+        Task<DateTime> NowAsync();
+        Task<DateTimeOffset> NowOffsettedAsync();
+        Task<DateTime> UtcNowAsync();
     }
     public class DefaultTimeProvider : ITimeProvider
     {
-        public DateTime GetUtcNow() { return DateTime.UtcNow; }
-        public DateTimeOffset GetUtcNowWithOffset() { return DateTimeOffset.Now.ToUniversalTime(); }
+        public DateTime Now() { return DateTime.Now; }
+        public DateTimeOffset NowOffsetted() { return DateTimeOffset.Now; }
+        public DateTime UtcNow() { return DateTime.UtcNow; }
     }
 }

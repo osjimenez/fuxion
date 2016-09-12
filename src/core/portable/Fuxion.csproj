@@ -41,8 +41,10 @@
     <Compile Include="..\net45\Properties\AssemblyInfo.cs">
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="AntiBackTimeProvider.cs" />
     <Compile Include="Collections\Generic\GenericComparer.cs" />
     <Compile Include="Collections\Generic\GenericEqualityComparer.cs" />
+    <Compile Include="Collections\Generic\System-ext.cs" />
     <Compile Include="Collections\ObjectModel\DeactivatableObservableCollection.cs" />
     <Compile Include="ComponentModel\DefaultNotifierSynchronizer.cs" />
     <Compile Include="ComponentModel\INotifierSynchronizer.cs" />
@@ -110,6 +112,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Threading\Tasks\Task info.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

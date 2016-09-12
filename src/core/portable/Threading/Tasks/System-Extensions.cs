@@ -44,13 +44,14 @@ namespace System.Threading.Tasks
                 return item.IsCancellationRequested;
             }
             else
-                if (throwExceptionIfNotRunning) throw new ArgumentException("IsCancellationRequested: La tarea no esta administrada por el TaskManager." + task.CreationOptions.ToString()); // TODO ALMU: QUITAR "IsCancellationRequested:" Y "task.CreationOptions.ToString()"
+                if (throwExceptionIfNotRunning) throw new ArgumentException("IsCancellationRequested: La tarea no esta administrada por el TaskManager." + task.CreationOptions.ToString());
             else return false;
         }
         public static TResult WaitResult<TResult>(this Task<TResult> task, TimeSpan timeout = default(TimeSpan), bool rethrowException = true)
         {
             try
             {
+                var tt = task.ConfigureAwait(false);
                 if (timeout == default(TimeSpan)) task.Wait();
                 else task.Wait(timeout);
                 return task.Result;

@@ -1,5 +1,6 @@
 ﻿using Fuxion.Factories;
 using Fuxion.Licensing.Test.Mocks;
+using Fuxion.Test;
 using Newtonsoft.Json;
 using PCLCrypto;
 using SimpleInjector;
@@ -24,7 +25,7 @@ namespace Fuxion.Licensing.Test
             con.RegisterSingleton<ILicenseProvider>(new LicenseProviderMock());
             con.RegisterSingleton<ILicenseStore>(new LicenseStoreMock());
             con.RegisterSingleton<IHardwareIdProvider>(new HardwareIdProviderMock());
-            con.RegisterSingleton<ITimeProvider>(new TimeProviderMock());
+            con.RegisterSingleton<ITimeProvider>(new MockTimeProvider());
             con.Register<LicensingManager>();
             Factory.AddInjector(new SimpleInjectorFactoryInjector(con));
         }

@@ -117,7 +117,7 @@ namespace DemoWpf
                     })
                 .OpenAsync(afterOpenAction: _ => Debug.WriteLine($"{Thread.CurrentThread.ManagedThreadId} - Service host opened"));
         }
-        public async void ProxyService_Click(object sender, RoutedEventArgs args)
+        public void ProxyService_Click(object sender, RoutedEventArgs args)
         {
             //var proxy = await ServiceBuilder.Proxy<IFactoryService>(this)
             //var proxy = await ServiceBuilder.Proxy(new CustomDuplexChannelFactory<IFactoryService>(this))

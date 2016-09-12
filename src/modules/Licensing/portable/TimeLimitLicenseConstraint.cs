@@ -14,7 +14,7 @@ namespace Fuxion.Licensing
         public new bool Validate(out string validationMessage) {
             var res = base.Validate(out validationMessage);
             var tp = Factory.Get<ITimeProvider>();
-            if (tp.GetUtcNow() > Value)
+            if (tp.UtcNow() > Value)
             {
                 validationMessage = "Time limit expired";
                 res = false;

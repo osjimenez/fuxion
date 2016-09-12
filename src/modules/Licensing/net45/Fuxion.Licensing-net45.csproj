@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AntiTamperedTimeProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -53,6 +54,14 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\core\net45\Fuxion-net45.csproj">
+      <Project>{b16111a4-cdf6-40e8-9bee-1d5806543cb0}</Project>
+      <Name>Fuxion-net45</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\core\portable\Fuxion.csproj">
+      <Project>{5761CB44-504F-468B-8263-39F59EEBBB17}</Project>
+      <Name>Fuxion</Name>
+    </ProjectReference>
     <ProjectReference Include="..\portable\Fuxion.Licensing.csproj">
       <Project>{c7406922-3198-42d8-80eb-31574b33fc96}</Project>
       <Name>Fuxion.Licensing</Name>

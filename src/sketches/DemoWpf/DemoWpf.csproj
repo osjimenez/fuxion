@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{66FCC1D4-F7F6-4A76-B3C3-CC1924C1CF88}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DemoWpf</RootNamespace>
     <AssemblyName>DemoWpf</AssemblyName>
@@ -34,7 +34,18 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="SimpleInjector, Version=3.2.0.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
       <HintPath>..\..\packages\SimpleInjector.3.2.0\lib\net45\SimpleInjector.dll</HintPath>
       <Private>True</Private>
@@ -62,6 +73,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="TimeProvider.xaml.cs">
+      <DependentUpon>TimeProvider.xaml</DependentUpon>
+    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -80,6 +94,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ResDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TimeProvider.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -105,6 +123,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="log4net.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -125,6 +146,22 @@
       <Project>{5761cb44-504f-468b-8263-39f59eebbb17}</Project>
       <Name>Fuxion</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\core\test\Fuxion.Test.csproj">
+      <Project>{8d2242c6-d7d3-403c-b39d-8877ab8e745a}</Project>
+      <Name>Fuxion.Test</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\modules\Licensing\net45\Fuxion.Licensing-net45.csproj">
+      <Project>{639f2c3a-1ca1-4f20-ad1b-e446624aca9f}</Project>
+      <Name>Fuxion.Licensing-net45</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\modules\Licensing\portable\Fuxion.Licensing.csproj">
+      <Project>{c7406922-3198-42d8-80eb-31574b33fc96}</Project>
+      <Name>Fuxion.Licensing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\modules\Log4net\net45\Fuxion.Log4net.csproj">
+      <Project>{1cf0e88a-cd3d-4d49-8650-f5f7ff3a1334}</Project>
+      <Name>Fuxion.Log4net</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\modules\SimpleInjector\portable\SimpleInjector_.csproj">
       <Project>{dfe9408b-2bb2-4f86-a1c0-2a050d155f82}</Project>
       <Name>SimpleInjector_</Name>
@@ -136,6 +173,9 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="Fuxion-Log4net-Rename-Config-File" BeforeTargets="AfterBuild">
+    <Move SourceFiles="$(OutputPath)log4net.config" DestinationFiles="$(OutputPath)$(AssemblyName).exe.log4net" ContinueOnError="true" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

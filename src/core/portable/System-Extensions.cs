@@ -172,4 +172,106 @@ namespace System
         }
         #endregion
     }
+    public static class DateTimeExtensions
+    {
+        // TODO - Average for DateTimeOffset
+        public static DateTime AverageDateTime(this IEnumerable<DateTime> me)
+        {
+            var list = me.ToList();
+            double temp = 0D;
+            for (int i = 0; i < list.Count; i++)
+            {
+                temp += list[i].Ticks / (double)list.Count;
+            }
+            return new DateTime((long)temp);
+        }
+        public static DateTimeOffset AverageDateTime(this IEnumerable<DateTimeOffset> me)
+        {
+            var list = me.ToList();
+            double temp = 0D;
+            for (int i = 0; i < list.Count; i++)
+            {
+                temp += list[i].Ticks / (double)list.Count;
+            }
+            return new DateTimeOffset(new DateTime((long)temp));
+        }
+        // TODO - Remove outliers: http://www.ehow.com/how_5201412_calculate-outliers.html
+        public static IEnumerable<int> RemoveOutliers(this IEnumerable<int> list, Action<string> outputConsole = null)
+        {
+            return list.Select(i => (long)i).RemoveOutliers(outputConsole).Select(i => (int)i);
+        }
+        public static IEnumerable<DateTime> RemoveOutliers(this IEnumerable<DateTime> list, Action<string> outputConsole = null)
+        {
+            return list.Select(i => i.Ticks).RemoveOutliers(outputConsole).Select(t => new DateTime(t));
+        }
+        public static IEnumerable<long> RemoveOutliers(this IEnumerable<long> list, Action<string> outputConsole = null)
+        {
+            // Sort data in ascending
+            var l = list.OrderBy(_ => _).ToList();
+            // Calculate median
+            double median;
+            if (l.Count % 2 == 0) // if even number of elements, average two in the middle
+                median = l.Skip((l.Count / 2) - 1).Take(2).Average();
+            else // if odd number of elements, take center
+                median = l.Skip(l.Count / 2).First();
+            // Find the upper quartile Q2
+            // http://estadisticapasoapaso.blogspot.com.es/2011/09/los-cuartiles.html
+            // Qk = k (N/4)
+            // q1 = 1 (N/4)
+            // q2 = 2 (N/4)
+            var getQuartileFunction = new Func<int,double>(q => {
+                var pos = q * ((double)l.Count / 4);
+                var @int = ((int)pos) - 1;
+                var div = pos % 1;
+                var r = (double)l[@int];
+                if (div > 0) r += (div * (l[@int + 1] - l[@int]));
+                return r;
+            });
+
+            double firstQuartilePossition = 1 * (l.Count / 4);
+            double q1 = getQuartileFunction(1);
+            double q2 = getQuartileFunction(2);
+            double q3 = getQuartileFunction(3);
+            double q4 = getQuartileFunction(4);
+
+            var iq = q3 - q1;
+            var mildOutlierRange = iq * 1.5;
+            var upperMildOutlierValue = q3 + mildOutlierRange;
+            var lowerMildOutlierValue = q1 - mildOutlierRange;
+            var extremeOutlierRange = iq * 3;
+            var upperExtremeOutlierValue = q3 + extremeOutlierRange;
+            var lowerExtremeOutlierValue = q1 - extremeOutlierRange;
+
+            var res = l.Where(v => v < upperMildOutlierValue && v > lowerMildOutlierValue).ToList();
+            var outliers = l.Where(v => v >= upperMildOutlierValue || v <= lowerMildOutlierValue).ToList();
+
+            outputConsole?.Invoke("Original values:");
+            foreach (var i in l)
+                outputConsole?.Invoke("  - " + i);
+            outputConsole?.Invoke("");
+            outputConsole?.Invoke("Q1 => "+getQuartileFunction(1));
+            outputConsole?.Invoke("Q2 => " + getQuartileFunction(2));
+            outputConsole?.Invoke("Q3 => " + getQuartileFunction(3));
+            outputConsole?.Invoke("Q4 => " + getQuartileFunction(4));
+            outputConsole?.Invoke("");
+            outputConsole?.Invoke("Interquartile range: " + iq);
+            outputConsole?.Invoke("Mild outlier range: " + mildOutlierRange);
+            outputConsole?.Invoke("Extreme outlier range: " + extremeOutlierRange);
+            outputConsole?.Invoke("Upper mild outlier limit: " + upperMildOutlierValue);
+            outputConsole?.Invoke("Lower mild outlier limit: " + lowerMildOutlierValue);
+            outputConsole?.Invoke("Upper extreme outlier limit: " + upperExtremeOutlierValue);
+            outputConsole?.Invoke("Lower extreme outlier limit: " + lowerExtremeOutlierValue);
+            outputConsole?.Invoke("");
+            outputConsole?.Invoke("Outliers:");
+            foreach (var i in outliers)
+                outputConsole?.Invoke("  - " + i);
+            outputConsole?.Invoke("");
+            outputConsole?.Invoke("Result values:");
+            foreach (var i in res)
+                outputConsole?.Invoke("  - " + i);
+
+            return res;
+        }
+        
+    }
 }

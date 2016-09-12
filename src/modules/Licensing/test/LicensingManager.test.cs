@@ -13,6 +13,7 @@ using Xunit.Abstractions;
 using static Fuxion.Licensing.LicensingManager;
 using static Fuxion.Licensing.LicenseContainer;
 using Fuxion.Licensing.Test.Mocks;
+using Fuxion.Test;
 
 namespace Fuxion.Licensing.Test
 {
@@ -27,7 +28,7 @@ namespace Fuxion.Licensing.Test
             con.RegisterSingleton<ILicenseProvider>(new LicenseProviderMock());
             con.RegisterSingleton<ILicenseStore>(new LicenseStoreMock());
             con.RegisterSingleton<IHardwareIdProvider>(new HardwareIdProviderMock());
-            con.RegisterSingleton<ITimeProvider>(new TimeProviderMock());
+            con.RegisterSingleton<ITimeProvider>(new MockTimeProvider());
             con.Register<LicensingManager>();
             Factory.AddInjector(new SimpleInjectorFactoryInjector(con));
         }
@@ -77,7 +78,7 @@ namespace Fuxion.Licensing.Test
                 ProductId = productId
             });
             man.Store.Add(lic);
-            var tp = Factory.Get<ITimeProvider>(false) as TimeProviderMock;
+            var tp = Factory.Get<ITimeProvider>(false) as MockTimeProvider;
             tp.SetOffset(TimeSpan.FromDays(offsetDays));
             // Validate content
             if (expectedValidation)
@@ -97,23 +98,7 @@ namespace Fuxion.Licensing.Test
         }
     }
     
-    public class TimeProviderMock : ITimeProvider
-    {
-        public DateTime GetUtcNow()
-        {
-            return DateTime.UtcNow.Add(Offset);
-        }
-        public TimeSpan Offset { get; private set; }
-        public void SetOffset(TimeSpan offset)
-        {
-            Offset = offset;
-        }
 
-        public DateTimeOffset GetUtcNowWithOffset()
-        {
-            return DateTimeOffset.UtcNow.Add(Offset);
-        }
-    }
     public class LicenseRequestMock : LicenseRequest
     {
         public string HardwareId { get; set; }
