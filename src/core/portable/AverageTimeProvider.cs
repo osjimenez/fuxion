@@ -93,7 +93,7 @@ namespace Fuxion
             public ITimeProvider Provider { get; set; }
             public bool CanFail { get; set; }
             public bool IsRandomized { get; set; }
-            public Task<DateTime> Task { get; set; }
+            internal Task<DateTime> Task { get; set; }
         }
     }
 }

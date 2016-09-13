@@ -8,22 +8,20 @@ namespace Fuxion
 {
     public class MockTimeProvider : ITimeProvider
     {
+        public bool MustFail { get; set; }
         public TimeSpan Offset { get; private set; }
         public void SetOffset(TimeSpan offset)
         {
             Offset = offset;
         }
-        public DateTime Now()
+        private DateTime GetUtc()
         {
-            return DateTime.Now.Add(Offset);
-        }
-        public DateTimeOffset NowOffsetted()
-        {
-            return DateTimeOffset.Now.Add(Offset);
-        }
-        public DateTime UtcNow()
-        {
+            if (MustFail) throw new MockTimeProviderException();
             return DateTime.UtcNow.Add(Offset);
         }
+        public DateTime Now() { return GetUtc().ToLocalTime(); }
+        public DateTimeOffset NowOffsetted() { return GetUtc().ToLocalTime(); }
+        public DateTime UtcNow() { return GetUtc(); }
     }
+    public class MockTimeProviderException : FuxionException { }
 }

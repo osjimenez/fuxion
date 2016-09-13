@@ -15,7 +15,7 @@ namespace Fuxion.Test
             this.output = output;
         }
         ITestOutputHelper output;
-        [Fact]
+        //[Fact]
         public void CustomizableTimeProvider_CheckConsistency()
         {
             new CustomizableTimeProvider().CheckConsistency(output);

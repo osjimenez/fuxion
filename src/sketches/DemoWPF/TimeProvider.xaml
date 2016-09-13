@@ -7,10 +7,11 @@
         mc:Ignorable="d"
         Title="TimeProvider" Height="300" Width="300">
     <StackPanel>
-        <Button Content="Run" Click="Button_Click"/>
-        <WrapPanel>
-            <TextBlock Text="Days offset" />
-            <TextBox Name="OffsetTextBox" Text="0" />
+        <Button Content="Run" Click="Button_Click" Margin="10" />
+        <WrapPanel Margin="10">
+            <TextBlock Text="Days offset" Margin="0,0,10,0"/>
+            <TextBox Name="OffsetTextBox" Text="0" MinWidth="30"/>
         </WrapPanel>
+        <CheckBox Name="MustFailCheckBox" Content="Must fail" />
     </StackPanel>
 </Window>

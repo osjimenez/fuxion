@@ -37,7 +37,7 @@ namespace DemoWpf
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            System.Console.Clear();
+            Console.Clear();
             try
             {
                 //var atp = new AverageTimeProvider
@@ -59,16 +59,20 @@ namespace DemoWpf
                         p.MaxFailsPerTry = 0;
                         p.RandomizedProvidersPerTry = 1;
                         p.Log = LogManager.Create<AverageTimeProvider>();
-                        p.AddProvider(new MockTimeProvider().Transform(p2=> { p2.SetOffset(TimeSpan.FromMilliseconds(5)); return p2; }));
+                        p.AddProvider(new MockTimeProvider
+                        {
+                            MustFail = MustFailCheckBox.IsChecked ?? false
+                        });
                         return p;
                     }),
                     new AntiBackTimeProvider(new RegistryStorageTimeProvider())
                     {
                         Log = LogManager.Create<AntiBackTimeProvider>(),
-                        TimeProvider = new MockTimeProvider().Transform(p2 =>
+                        TimeProvider = new MockTimeProvider().Transform(mock =>
                         {
-                            p2.SetOffset(TimeSpan.FromDays(int.Parse(OffsetTextBox.Text)));
-                            return p2;
+                            mock.SetOffset(TimeSpan.FromDays(int.Parse(OffsetTextBox.Text)));
+                            //mock.MustFail = MustFailCheckBox.IsChecked ?? false;
+                            return mock;
                         })
                     })
                 {
