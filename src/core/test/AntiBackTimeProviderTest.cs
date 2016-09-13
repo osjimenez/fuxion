@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Fuxion.Test.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -39,13 +40,15 @@ namespace Fuxion.Test
         public void AntiBackTimeProvider_BackTimeException()
         {
             var mock = new MockTimeProvider();
-            var attp = new AntiBackTimeProvider(new RegistryStorageTimeProvider().Transform(s =>
+            var abtp = new AntiBackTimeProvider(new RegistryStorageTimeProvider().Transform(s =>
                     {
                         s.SaveUtcTime(DateTime.UtcNow);
                         return s;
                     }));
+            abtp.TimeProvider = mock;
+            abtp.Log = new xUnitLog(output);
             mock.SetOffset(TimeSpan.FromDays(-1));
-            Assert.Throws<BackTimeException>(() => attp.UtcNow());
+            Assert.Throws<BackTimeException>(() => abtp.UtcNow());
         }
 
     }

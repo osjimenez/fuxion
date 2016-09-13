@@ -18,7 +18,7 @@ namespace Fuxion.Threading.Tasks
             TaskCreationOptions = options;
         }
 
-        private ILog log = LogManager.Create(typeof(TaskManager));
+        private ILog log = LogManager.Create(typeof(TaskManagerEntry));
         Task _Task;
         public Task Task
         {

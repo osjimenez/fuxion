@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Fuxion.Test.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -31,6 +32,7 @@ namespace Fuxion.Licensing.Test
         {
             var atp = new AverageTimeProvider
             {
+                Log = new xUnitLog(output),
                 MaxFailsPerTry = 1,
                 RandomizedProvidersPerTry = WebServersAddresses.Length
             };
@@ -40,7 +42,10 @@ namespace Fuxion.Licensing.Test
                 ServerType = InternetTimeServerType.Web,
                 Timeout = TimeSpan.FromSeconds(5)
             })) atp.AddProvider(pro, true, true);
-            new AntiTamperedTimeProvider(atp, new AntiBackTimeProvider())
+            new AntiTamperedTimeProvider(atp, new AntiBackTimeProvider
+            {
+                Log = new xUnitLog(output)
+            })
                 .CheckConsistency(output);
         }
     }

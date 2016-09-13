@@ -97,6 +97,7 @@
     <Compile Include="GenericEqualityComparerTest.cs" />
     <Compile Include="Helpers\ITimeProviderExtensions.cs" />
     <Compile Include="Helpers\MockTimeProvider.cs" />
+    <Compile Include="Helpers\xUnitLog.cs" />
     <Compile Include="InternetTimeProvider.test.cs" />
     <Compile Include="Json.test.cs" />
     <Compile Include="LogTest.cs" />

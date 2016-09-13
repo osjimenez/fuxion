@@ -16,7 +16,7 @@ namespace Fuxion.Test
         }
         ITestOutputHelper output;
         [Fact]
-        public void CheckConsistency()
+        public void InternetTimeProvider_CheckConsistency()
         {
             new InternetTimeProvider().CheckConsistency(output);
         }

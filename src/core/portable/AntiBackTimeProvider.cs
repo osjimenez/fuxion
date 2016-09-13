@@ -35,6 +35,9 @@ namespace Fuxion
                 throw new NoStoredTimeValueException();
             if (now < last)
                 throw new BackTimeException();
+            Log?.Notice("now => " + now);
+            Log?.Notice("last => " + last);
+
             foreach (var s in storages)
             {
                 try

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Fuxion.Test.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -77,7 +78,7 @@ namespace Fuxion.Test
             "http://www.twitter.com",
         };
         [Fact]
-        public async Task CheckConsistency()
+        public void AverageTimeProvider_CheckConsistency()
         {
             new AverageTimeProvider()
                 .Transform(p => {
@@ -88,8 +89,9 @@ namespace Fuxion.Test
                             ServerType = InternetTimeServerType.Web,
                             Timeout = TimeSpan.FromSeconds(15)
                         });
-                    p.RandomizedProvidersPerTry = 5;
-                    p.MaxFailsPerTry = 0;
+                    p.Log = new xUnitLog(output);
+                    p.RandomizedProvidersPerTry = 3;
+                    p.MaxFailsPerTry = 3;
                     return p;
                 })
                 .CheckConsistency(output);

@@ -37,6 +37,7 @@ namespace DemoWpf
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            System.Console.Clear();
             try
             {
                 //var atp = new AverageTimeProvider
@@ -55,8 +56,10 @@ namespace DemoWpf
                     new AverageTimeProvider()
                     .Transform(p=>
                     {
+                        p.MaxFailsPerTry = 0;
+                        p.RandomizedProvidersPerTry = 1;
                         p.Log = LogManager.Create<AverageTimeProvider>();
-                        p.AddProvider(new DefaultTimeProvider());
+                        p.AddProvider(new MockTimeProvider().Transform(p2=> { p2.SetOffset(TimeSpan.FromMilliseconds(5)); return p2; }));
                         return p;
                     }),
                     new AntiBackTimeProvider(new RegistryStorageTimeProvider())

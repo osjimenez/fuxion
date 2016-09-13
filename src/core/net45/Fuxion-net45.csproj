@@ -55,7 +55,6 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AverageTimeProvider.cs" />
     <Compile Include="Collections\WeakCollection.cs" />
     <Compile Include="Configuration\XmlFileConfiguration.cs" />
     <Compile Include="InternetTimeProvider.cs" />
