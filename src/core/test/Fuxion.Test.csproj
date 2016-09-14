@@ -107,7 +107,7 @@
     <Compile Include="RemoveOutliersTest.cs" />
     <Compile Include="Singleton.cs" />
     <Compile Include="TaskManager.test.cs" />
-    <Compile Include="DefaultTimeProvider.test.cs" />
+    <Compile Include="LocalMachineTimeProvider.test.cs" />
     <Compile Include="ToJsonTest.cs" />
     <Compile Include="Transform.cs" />
     <Compile Include="ViewModelTest.cs" />

@@ -10,17 +10,17 @@ using Xunit.Abstractions;
 
 namespace Fuxion.Test
 {
-    public class DefaultTimeProviderTest
+    public class LocalMachineTimeProviderTest
     {
-        public DefaultTimeProviderTest(ITestOutputHelper output)
+        public LocalMachineTimeProviderTest(ITestOutputHelper output)
         {
             this.output = output;
         }
         ITestOutputHelper output;
         [Fact]
-        public void DefaultTimeProvider_CheckConsistency()
+        public void LocalMachineTimeProvider_CheckConsistency()
         {
-            new DefaultTimeProvider().CheckConsistency(output);
+            new LocalMachinneTimeProvider().CheckConsistency(output);
         }
     }
 }

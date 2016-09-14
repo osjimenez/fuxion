@@ -43,13 +43,11 @@
     <Compile Include="ILicenseStore.cs" />
     <Compile Include="ILicenseProvider.cs" />
     <Compile Include="LicenseValidationException.cs" />
-    <Compile Include="ITimeProvider.cs" />
     <Compile Include="LicenseContainer.cs" />
     <Compile Include="License.cs" />
     <Compile Include="LicenseRequest.cs" />
     <Compile Include="LicensingManager.cs" />
     <Compile Include="TimeLimitLicenseConstraint.cs" />
-    <Compile Include="VerifiedTimeProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">

@@ -56,6 +56,7 @@
     <Compile Include="Factories\FunctionInjector.cs" />
     <Compile Include="Factories\ICheckableInjector.cs" />
     <Compile Include="Factories\InstanceInjector.cs" />
+    <Compile Include="LocalMachinneTimeProvider.cs" />
     <Compile Include="Net\ConnectionMode.cs" />
     <Compile Include="Net\ConnectionState.cs" />
     <Compile Include="Net\IConnectableNotifier.cs" />
@@ -96,7 +97,7 @@
     <Compile Include="Threading\Tasks\System-Extensions.cs" />
     <Compile Include="Threading\Tasks\TaskManager.cs" />
     <Compile Include="Threading\Tasks\TaskManagerEntry.cs" />
-    <Compile Include="TimeProvider.cs" />
+    <Compile Include="ITimeProvider.cs" />
     <Compile Include="Web\Patchable.cs" />
     <Compile Include="Xml\XElementExtensions.cs" />
     <Compile Include="Windows\DelegateCommand.cs" />

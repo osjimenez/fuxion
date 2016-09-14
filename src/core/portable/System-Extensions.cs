@@ -174,7 +174,6 @@ namespace System
     }
     public static class DateTimeExtensions
     {
-        // TODO - Average for DateTimeOffset
         public static DateTime AverageDateTime(this IEnumerable<DateTime> me)
         {
             var list = me.ToList();

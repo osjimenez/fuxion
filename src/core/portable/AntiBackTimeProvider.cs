@@ -17,7 +17,7 @@ namespace Fuxion
         StorageTimeProvider[] storages;
 
         public ILog Log { get; set; }
-        public ITimeProvider TimeProvider { get; set; } = new DefaultTimeProvider();
+        public ITimeProvider TimeProvider { get; set; } = new LocalMachinneTimeProvider();
         
         private DateTime GetUtc()
         {

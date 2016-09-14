@@ -68,7 +68,7 @@ namespace Fuxion
                 var r = ents
                     .Where(en => en.Task.Exception == null)
                     .Select(en => en.Task.Result)
-                    .RemoveOutliers(m => Log.Debug(m))
+                    .RemoveOutliers(m => Log?.Debug(m))
                     .AverageDateTime();
                 Log?.Notice("Result: " + r);
                 return r;

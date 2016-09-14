@@ -109,7 +109,6 @@
     <Compile Include="LicensingManager.test.cs" />
     <Compile Include="Mocks\LicenseStoreMock.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="VerifiedTimeProvider.test.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="licenses.json">
