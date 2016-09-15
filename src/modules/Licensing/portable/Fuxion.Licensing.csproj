@@ -37,6 +37,7 @@
     <Compile Include="..\net45\Properties\AssemblyInfo.cs">
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="AntiTamperedTimeProvider.cs" />
     <Compile Include="KeyLicenseConstraint.cs" />
     <Compile Include="LicenseConstraint.cs" />
     <Compile Include="IHardwareIdProvider.cs" />

@@ -1,7 +1,6 @@
 ﻿using Fuxion;
 using Fuxion.Logging;
 using Fuxion.Threading.Tasks;
-using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -44,12 +43,12 @@ namespace Fuxion.Licensing
         public ILog Log { get; set; }
         public ITimeProvider ReliableTimeProvider { get; set; }
         public AntiBackTimeProvider AntiBackTimeProvider { get; set; }
-        DateTime? LastUtcVerifiedTime { get; set; }
         // TODO - Define a margin to move time and review possible tamper scenarios
         private DateTime GetUtc()
         {
             DateTime? antiBack = null;
             DateTime? reliable = null;
+            Exception exception = null;
             try
             {
                 reliable = ReliableTimeProvider.UtcNow();
@@ -58,6 +57,7 @@ namespace Fuxion.Licensing
             }
             catch (Exception ex)
             {
+                exception = ex;
                 Log?.Error($"Error '{ex.GetType().Name}' in ReliableTimeProvider: {ex.Message}", ex);
             }
             try
@@ -65,17 +65,23 @@ namespace Fuxion.Licensing
                 antiBack = AntiBackTimeProvider.UtcNow();
                 Log?.Info("Anti-back provider get time successfully");
             }
-            catch (Exception ex){
+            //catch (NoStoredTimeValueException nstvex) { exception = nstvex; }
+            //catch (BackTimeException btex) { exception = btex; }
+            catch (Exception ex)
+            {
+                exception = ex;
                 Log?.Error($"Error '{ex.GetType().Name}' in AntiBackProvider: {ex.Message}", ex);
             }
             if (reliable != null || antiBack != null)
                 return (reliable ?? antiBack).Value;
-            throw new TamperedTimeException();
+            throw new TamperedTimeException(exception);
         }
         
         public DateTime Now() { return GetUtc().ToLocalTime(); }
         public DateTimeOffset NowOffsetted() { return GetUtc().ToLocalTime(); }
         public DateTime UtcNow() { return GetUtc(); }
     }
-    public class TamperedTimeException : FuxionException { }
+    public class TamperedTimeException : FuxionException {
+        public TamperedTimeException(Exception innerException) : base(null, innerException) { }
+    }
 }

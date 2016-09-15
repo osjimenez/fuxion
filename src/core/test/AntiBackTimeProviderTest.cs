@@ -52,7 +52,7 @@ namespace Fuxion.Test
         }
 
     }
-    public class MockStorageTimeProvider : StorageTimeProvider
+    public class MockStorageTimeProvider : StoredTimeProvider
     {
         DateTime value;
         public override DateTime GetUtcTime()
