@@ -87,8 +87,9 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="AntiBackTimeProviderTest.cs" />
-    <Compile Include="AverageTimeProviderTest.cs" />
+    <Compile Include="AntiBackTimeProvider.test.cs" />
+    <Compile Include="AverageTimeProvider.test.cs" />
+    <Compile Include="CachedTimeProvider.test.cs" />
     <Compile Include="ConnectableNotifier.test.cs" />
     <Compile Include="CustomizableTimeProvider.test.cs" />
     <Compile Include="DeactivatableObservableCollectionTest.cs" />

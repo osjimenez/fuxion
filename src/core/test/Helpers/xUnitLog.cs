@@ -8,9 +8,9 @@ using Xunit.Abstractions;
 
 namespace Fuxion.Test.Helpers
 {
-    public class xUnitLog : ILog
+    public class XunitLog : ILog
     {
-        public xUnitLog(ITestOutputHelper output)
+        public XunitLog(ITestOutputHelper output)
         {
             this.output = output;
         }

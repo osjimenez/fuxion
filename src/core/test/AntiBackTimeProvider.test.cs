@@ -29,7 +29,7 @@ namespace Fuxion.Test
         [Fact]
         public void RegistryStorageTimeProvider_CheckConsistency()
         {
-            new AntiBackTimeProvider(new RegistryStorageTimeProvider().Transform(s =>
+            new AntiBackTimeProvider(new RegistryStoredTimeProvider().Transform(s =>
                 {
                     s.SaveUtcTime(DateTime.UtcNow);
                     return s;
@@ -40,13 +40,13 @@ namespace Fuxion.Test
         public void AntiBackTimeProvider_BackTimeException()
         {
             var mock = new MockTimeProvider();
-            var abtp = new AntiBackTimeProvider(new RegistryStorageTimeProvider().Transform(s =>
+            var abtp = new AntiBackTimeProvider(new RegistryStoredTimeProvider().Transform(s =>
                     {
                         s.SaveUtcTime(DateTime.UtcNow);
                         return s;
                     }));
             abtp.TimeProvider = mock;
-            abtp.Log = new xUnitLog(output);
+            abtp.Log = new XunitLog(output);
             mock.SetOffset(TimeSpan.FromDays(-1));
             Assert.Throws<BackTimeException>(() => abtp.UtcNow());
         }

@@ -65,7 +65,7 @@ namespace DemoWpf
                         });
                         return p;
                     }),
-                    new AntiBackTimeProvider(new RegistryStorageTimeProvider())
+                    new AntiBackTimeProvider(new RegistryStoredTimeProvider())
                     {
                         Log = LogManager.Create<AntiBackTimeProvider>(),
                         TimeProvider = new MockTimeProvider().Transform(mock =>

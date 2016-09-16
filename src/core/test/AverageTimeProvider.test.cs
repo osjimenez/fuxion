@@ -89,7 +89,7 @@ namespace Fuxion.Test
                             ServerType = InternetTimeServerType.Web,
                             Timeout = TimeSpan.FromSeconds(15)
                         });
-                    p.Log = new xUnitLog(output);
+                    p.Log = new XunitLog(output);
                     p.RandomizedProvidersPerTry = 3;
                     p.MaxFailsPerTry = 3;
                     return p;

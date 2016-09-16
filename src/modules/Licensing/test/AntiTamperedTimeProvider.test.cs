@@ -32,7 +32,7 @@ namespace Fuxion.Licensing.Test
         {
             var atp = new AverageTimeProvider
             {
-                Log = new xUnitLog(output),
+                Log = new XunitLog(output),
                 MaxFailsPerTry = 1,
                 RandomizedProvidersPerTry = WebServersAddresses.Length
             };
@@ -44,7 +44,7 @@ namespace Fuxion.Licensing.Test
             })) atp.AddProvider(pro, true, true);
             new AntiTamperedTimeProvider(atp, new AntiBackTimeProvider
             {
-                Log = new xUnitLog(output)
+                Log = new XunitLog(output)
             })
                 .CheckConsistency(output);
         }

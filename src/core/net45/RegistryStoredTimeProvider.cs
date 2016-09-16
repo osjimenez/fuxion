@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Fuxion
 {
-    public class RegistryStorageTimeProvider : StoredTimeProvider
+    public class RegistryStoredTimeProvider : StoredTimeProvider
     {
         public string Key { get; set; } = @"Software\Fuxion\RegistryStorageTimeProvider";
         public string Value { get; set; } = "Value";

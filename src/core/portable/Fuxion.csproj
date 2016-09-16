@@ -43,6 +43,7 @@
     </Compile>
     <Compile Include="AntiBackTimeProvider.cs" />
     <Compile Include="AverageTimeProvider.cs" />
+    <Compile Include="CachedTimeProvider.cs" />
     <Compile Include="Collections\Generic\GenericComparer.cs" />
     <Compile Include="Collections\Generic\GenericEqualityComparer.cs" />
     <Compile Include="Collections\Generic\System-ext.cs" />
