@@ -203,10 +203,11 @@ namespace System
         {
             return list.Select(i => i.Ticks).RemoveOutliers(outputConsole: outputConsole).Select(t => new DateTime(t));
         }
-        public static IEnumerable<long> RemoveOutliers(this IEnumerable<long> list, double interquartileOutlierValueRangeFactor = 1.5, Action<string> outputConsole = null)
+        public static IEnumerable<long> RemoveOutliers(this IEnumerable<long> me, double interquartileOutlierValueRangeFactor = 1.5, Action<string> outputConsole = null)
         {
+            if (!me.Any()) return me;
             // Sort data in ascending
-            var l = list.OrderBy(_ => _).ToList();
+            var l = me.OrderBy(_ => _).ToList();
             // Calculate median
             double median;
             if (l.Count % 2 == 0) // if even number of elements, average two in the middle

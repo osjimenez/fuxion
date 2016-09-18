@@ -6,9 +6,6 @@ using System.Threading.Tasks;
 using Fuxion.Logging;
 namespace Fuxion.Threading.Tasks
 {
-    /// <summary>
-    /// Clase estática para la administración de tareas concurrentes
-    /// </summary>
     public static class TaskManager
     {
         readonly static RefLocker<List<ITaskManagerEntry>> tasks = new RefLocker<List<ITaskManagerEntry>>(new List<ITaskManagerEntry>());

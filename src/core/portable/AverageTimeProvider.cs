@@ -35,7 +35,6 @@ namespace Fuxion
 
                 foreach (var en in ents)
                     en.Task = TaskManager.StartNew(p => p.Provider.UtcNow(), en);
-                Log?.Debug($@"Selected servers: {ents.Aggregate("", (a, c) => a + "\r\n - " + c.Provider)}");
                 DateTime[] results = null;
                 try
                 {
@@ -53,22 +52,14 @@ namespace Fuxion
                     else
                         Log?.Warn($"Provider '{en.Provider}' failed with error '{en.Task.Exception.GetType().Name}': " + en.Task.Exception.Message, en.Task.Exception);
                 }
-                var fails = ents.Where(p => !p.CanFail && p.Task.Exception != null).ToList();
-                if (fails.Count > 0)
-                {
-                    foreach (var fail in fails)
-                        Log?.Error($"The provider '{fail.Provider}' fail, and is marked as 'cannot fail'.");
-                    throw new Exception("A provider that could not fail eventually failed");
-                }
-
-                var failCount = fails.Count;
-                if (failCount > MaxFailsPerTry)
-                    throw new Exception($"Failed {failCount} providers when the maximun to fail is {MaxFailsPerTry}");
+                var fails = ents.Where(p => p.Task.Exception != null).ToList();
+                if (fails.Count > MaxFailsPerTry)
+                    throw new Exception($"Failed {fails.Count} providers when the maximun to fail is {MaxFailsPerTry}");
 
                 var r = ents
                     .Where(en => en.Task.Exception == null)
                     .Select(en => en.Task.Result)
-                    .RemoveOutliers(m => Log?.Debug(m))
+                    .RemoveOutliers()
                     .AverageDateTime();
                 Log?.Notice("Result: " + r);
                 return r;
@@ -80,7 +71,7 @@ namespace Fuxion
         {
             Providers.Add(new Entry
             {
-                CanFail = canFail,
+                //CanFail = canFail,
                 IsRandomized = isRandomized,
                 Provider = provider
             });
@@ -91,9 +82,11 @@ namespace Fuxion
         class Entry
         {
             public ITimeProvider Provider { get; set; }
-            public bool CanFail { get; set; }
+            //public bool CanFail { get; set; }
             public bool IsRandomized { get; set; }
             internal Task<DateTime> Task { get; set; }
+
+            public override string ToString() { return Provider.ToString(); }
         }
     }
 }

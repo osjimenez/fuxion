@@ -18,7 +18,8 @@ namespace Fuxion
 
         public ILog Log { get; set; }
         public ITimeProvider TimeProvider { get; set; } = new LocalMachinneTimeProvider();
-        
+        public TimeSpan MaximumRangeOfDeviation { get; set; } = TimeSpan.FromMinutes(1);
+
         private DateTime GetUtc()
         {
             var now = TimeProvider.UtcNow();
@@ -35,7 +36,7 @@ namespace Fuxion
             }).DefaultIfEmpty().Min();
             if (stored == null)
                 throw new NoStoredTimeValueException();
-            if (now < stored)
+            if (now.Add(MaximumRangeOfDeviation) < stored)
                 throw new BackTimeException(stored.Value, now);
             Log?.Notice("now => " + now);
             Log?.Notice("stored => " + stored);

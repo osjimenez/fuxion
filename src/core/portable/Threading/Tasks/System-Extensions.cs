@@ -23,13 +23,17 @@ namespace System.Threading.Tasks
             }
         }
         public static void CancelAndWait(this Task task, TimeSpan timeout = default(TimeSpan), bool throwExceptionIfNotRunning = true) { new[] { task }.CancelAndWait(timeout, throwExceptionIfNotRunning); }
-        public static void CancelAndWait(this IEnumerable<Task> tasks, TimeSpan timeout = default(TimeSpan), bool throwExceptionIfNotRunning = true) {
-            foreach (var task in tasks)
+        public static void CancelAndWait(this IEnumerable<Task> me, TimeSpan timeout = default(TimeSpan), bool throwExceptionIfNotRunning = true) {
+            foreach (var task in me)
                 task.Cancel(throwExceptionIfNotRunning);
-            if (timeout != default(TimeSpan))
-                Task.WaitAll(tasks.Where(t => t != null).ToArray(), timeout);
-            else
-                Task.WaitAll(tasks.Where(t => t != null).ToArray());
+            try
+            {
+                if (timeout != default(TimeSpan))
+                    Task.WaitAll(me.Where(t => t != null && !t.IsCanceled).ToArray(), timeout);
+                else
+                    Task.WaitAll(me.Where(t => t != null && !t.IsCanceled).ToArray());
+            }
+            catch (TaskCanceledException) { }
         }
 
         public static void OnCancel(this Task task, Action action)
