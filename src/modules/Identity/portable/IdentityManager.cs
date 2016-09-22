@@ -19,16 +19,12 @@ namespace Fuxion.Identity
         {
             PasswordProvider = passwordProvider;
             Repository = repository;
-            //PrincipalProvider = principalProvider;
         }
         public bool IsAuthenticated { get { return Current != null; } }
-        //Dictionary<string, IIdentity> cache = new Dictionary<string, IIdentity>();
         public IIdentity Current { get; private set; }
-        //public Action<string, bool> Console { get; set; }
         public static IPrincipalProvider PrincipalProvider { get; private set; }
         public IPasswordProvider PasswordProvider { get; private set; }
         public IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity> Repository { get; private set; }
-        //private void WriteConsole(string message, bool endOfMessage) { if (Console != null) Console(message, endOfMessage); }
         public bool Login(string username, string password, bool changeCurrentIdentity = true)
         {
             Printer.Print($"Validando credenciales\r\n   Usuario: {username}\r\n   Contraseña: {password}\r\n");
@@ -48,7 +44,6 @@ namespace Fuxion.Identity
             if (res)
             {
                 Printer.Print($"Resultado: VALIDO");
-                //PrincipalProvider.SetPrincipal(new FuxionPrincipal(ide));
             }
             return res;
         }
