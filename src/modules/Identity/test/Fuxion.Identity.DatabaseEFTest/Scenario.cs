@@ -26,6 +26,7 @@ namespace Fuxion.Identity.DatabaseEFTest
                 if (memoryFactory == null)
                 {
                     var con = new Container();
+                    con.RegisterSingleton<ICurrentUserNameProvider>(new AlwaysRootCurrentUserNameProvider());
                     con.RegisterSingleton<IPasswordProvider>(new PasswordProvider());
                     var rep = new IdentityMemoryTestRepository();
                     con.RegisterSingleton<IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity>>(rep);
@@ -40,10 +41,11 @@ namespace Fuxion.Identity.DatabaseEFTest
                 if (databaseFactory == null)
                 {
                     var con = new Container();
+                    con.RegisterSingleton<ICurrentUserNameProvider>(new AlwaysRootCurrentUserNameProvider());
                     con.RegisterSingleton<IPasswordProvider>(new PasswordProvider());
                     var rep = new IdentityDatabaseEFTestRepository();
                     rep.Initialize();
-                    con.RegisterSingleton<IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity>>(new MemoryKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity>(rep));
+                    con.RegisterSingleton<IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity>>(new MemoryCachedKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity>(rep));
                     con.RegisterSingleton<IIdentityTestRepository>(rep);
                     con.RegisterSingleton<IdentityManager>();
                     databaseFactory = new SimpleInjectorFactoryInjector(con);

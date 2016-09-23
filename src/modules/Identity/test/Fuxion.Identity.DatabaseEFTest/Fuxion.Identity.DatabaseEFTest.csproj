@@ -80,6 +80,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AlwaysRootCurrentUserNameProvider.cs" />
     <Compile Include="IdentityDatabaseEFRepository.cs" />
     <Compile Include="IdentityManager.Test.cs" />
     <Compile Include="Migrations\201602251943518_Init.cs" />

@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Repositories
 {
-    public class MemoryKeyValueRepository<TKeyValueEntry, TKey, TValue> : IKeyValueRepository<TKeyValueEntry, TKey, TValue>
+    public class MemoryCachedKeyValueRepository<TKeyValueEntry, TKey, TValue> : IKeyValueRepository<TKeyValueEntry, TKey, TValue>
         where TKeyValueEntry : IKeyValueEntry<TKey, TValue>
     {
-        public MemoryKeyValueRepository(IKeyValueRepository<TKeyValueEntry, TKey, TValue> originRepository)
+        public MemoryCachedKeyValueRepository(IKeyValueRepository<TKeyValueEntry, TKey, TValue> originRepository)
         {
             _origin = originRepository;
         }

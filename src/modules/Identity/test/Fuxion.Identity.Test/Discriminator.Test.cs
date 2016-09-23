@@ -122,7 +122,7 @@ namespace Fuxion.Identity.Test
         [TestMethod]
         public void GetScopes_RolFiltered()
         {
-            Assert.Fail("Refactor pending");
+            Assert.Inconclusive("Refactor pending");
             //var rol = new Rol
             //{
             //    Id = "Tom",

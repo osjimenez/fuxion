@@ -16,7 +16,7 @@ namespace Fuxion.Identity.Test
         [TestMethod]
         public void GetDiscriminators()
         {
-            Assert.Fail("Pending refactoring");
+            Assert.Inconclusive("Pending refactoring");
             //var entity = new Mocks.Entity { DisId = "test" };
             //var type = typeof(Mocks.Entity);
             //var disProps = type.GetProperties()

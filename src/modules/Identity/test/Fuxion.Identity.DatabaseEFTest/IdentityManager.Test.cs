@@ -24,7 +24,7 @@ namespace Fuxion.Identity.DatabaseEFTest
             };
         }
 #if DEBUG
-        public const string scenarios = MEMORY+"·"+DATABASE;
+        public const string scenarios = MEMORY;//+"·"+DATABASE;
 #else
         public const string scenarios = MEMORY+"·"+DATABASE;
 #endif
@@ -101,13 +101,13 @@ namespace Fuxion.Identity.DatabaseEFTest
                     var strArgs = $"\r\nscenario<{scenario}>\r\nusername<{username}>\r\nfunctions<{functions.Aggregate("", (a, c) => a + c.Name + "·")}>\r\ntypes<{types.Aggregate("", (a, c) => a + c.Name + "·")}>";
                     if (expected)
                         Assert.True(
-                            im.Current
+                            im.GetCurrent()
                                 .Can(functions)
                                 .OfAllTypes(types)
                             , $"Function assignment failed unexpected: {strArgs}");
                     else
                         Assert.False(
-                            im.Current
+                            im.GetCurrent()
                                 .Can(functions)
                                 .OfAllTypes(types)
                             , $"Function assignment success unexpected: {strArgs}");
@@ -192,7 +192,7 @@ namespace Fuxion.Identity.DatabaseEFTest
             var im = Factory.Get<IdentityManager>();
             var rep = Factory.Get<IIdentityTestRepository>();
             im.Login("root", "root");
-            Assert.True(im.Current.Can(Read).OfType<Document>());
+            Assert.True(im.GetCurrent().Can(Read).OfType<Document>());
             var res = rep.Album.Where(o => o.Songs.AuthorizedTo(Read).Any());
             Printer.Print("res.Count(): " + res.Count());
         }

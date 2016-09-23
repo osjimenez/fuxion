@@ -36,7 +36,7 @@ namespace Fuxion.Identity.DatabaseTest
             get
             {
                 if (_IdentityManager == null)
-                    _IdentityManager = new IdentityManager(new PasswordProvider(), new IdentityDatabaseRepository());
+                    _IdentityManager = new IdentityManager(new PasswordProvider(), null, new IdentityDatabaseRepository());
                 return _IdentityManager;
             }
         }

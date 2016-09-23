@@ -26,8 +26,8 @@ namespace Fuxion.Identity.Test
             Assert.AreEqual(dis.Name, typeof(Document).Name.ToUpper());
             Assert.AreEqual(dis.TypeId, TypeDiscriminator.DiscriminatorTypeId);
             Assert.AreEqual(dis.TypeName, TypeDiscriminator.DiscriminatorTypeName);
-            Assert.AreEqual(dis.Inclusions.Count(), 0);
-            Assert.AreEqual(dis.Exclusions.Count(), 1);
+            Assert.AreEqual(dis.Inclusions.Count(), 3);
+            Assert.AreEqual(dis.Exclusions.Count(), 2);
 
         }
     }

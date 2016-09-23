@@ -15,14 +15,20 @@ namespace Fuxion.Identity
     }
     public class IdentityManager
     {
-        public IdentityManager(IPasswordProvider passwordProvider, IKeyValueRepository<IdentityKeyValueRepositoryValue,string, IIdentity> repository)//, IPrincipalProvider principalProvider)
+        public IdentityManager(IPasswordProvider passwordProvider, ICurrentUserNameProvider currentUserNameProvider, IKeyValueRepository<IdentityKeyValueRepositoryValue,string, IIdentity> repository)//, IPrincipalProvider principalProvider)
         {
             PasswordProvider = passwordProvider;
+            CurrentUserNameProvider = currentUserNameProvider;
             Repository = repository;
         }
-        public bool IsAuthenticated { get { return Current != null; } }
-        public IIdentity Current { get; private set; }
-        public static IPrincipalProvider PrincipalProvider { get; private set; }
+        //public bool IsAuthenticated { get { return Current != null; } }
+        //public IIdentity Current { get; private set; }
+        public IIdentity GetCurrent()
+        {
+            return Repository.Find(CurrentUserNameProvider.GetCurrentUserName());
+        }
+        public ICurrentUserNameProvider CurrentUserNameProvider { get; private set; }
+        //public static IPrincipalProvider PrincipalProvider { get; private set; }
         public IPasswordProvider PasswordProvider { get; private set; }
         public IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity> Repository { get; private set; }
         public bool Login(string username, string password, bool changeCurrentIdentity = true)
@@ -40,17 +46,17 @@ namespace Fuxion.Identity
                 return false;
             }
             var res = PasswordProvider.Verify(password, ide.PasswordHash, ide.PasswordSalt);
-            if (changeCurrentIdentity) Current = ide;
+            //if (changeCurrentIdentity) Current = ide;
             if (res)
             {
                 Printer.Print($"Resultado: VALIDO");
             }
             return res;
         }
-        public void Logout()
-        {
-            Current = null;
-        }
+        //public void Logout()
+        //{
+        //    Current = null;
+        //}
     }
     public interface IPasswordProvider
     {
@@ -60,5 +66,9 @@ namespace Fuxion.Identity
     public interface IStorageProvider
     {
         IQueryable<IIdentity> Identities { get; }
+    }
+    public interface ICurrentUserNameProvider
+    {
+        string GetCurrentUserName();
     }
 }

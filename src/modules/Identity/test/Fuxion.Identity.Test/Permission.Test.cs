@@ -75,7 +75,7 @@ namespace Fuxion.Identity.Test
                     Function = Read.Id.ToString(),
                     Scopes = new[] {
                         // Yo tengo 'Department' y 'Location'
-                        new Scope {Discriminator = Circles.Circle_1 },
+                        new Scope { Discriminator = Circles.Circle_1 },
                         new Scope { Discriminator = Locations.USA } }
                 }.MatchByDiscriminatorsType(new[] {
                     // Me presentan 'Department', 'Location' y 'WorkerClass'
@@ -104,7 +104,7 @@ namespace Fuxion.Identity.Test
         [TestMethod]
         public void WhenPermission_MatchByDiscriminatorsPath()
         {
-            Assert.Fail("Pending refactor code");
+            Assert.Inconclusive("Pending refactor code");
 
             //var LocationType = Guid.NewGuid();
             //var USA = Guid.NewGuid();
@@ -115,7 +115,7 @@ namespace Fuxion.Identity.Test
             //var USADiscriminator = new GuidDiscriminator(USA, "USA", new Guid[] { California, SanFrancisco }, new Guid[] { }, LocationType, "LocationType");
             //var SanFranciscoDiscriminator = new GuidDiscriminator(SanFrancisco, "SanFrancisco", new Guid[] { }, new Guid[] { California, SanFrancisco }, LocationType, "LocationType");
             // CASE 1 - Propagation to parents
-            var propagation = ScopePropagation.ToExclusions;
+            //var propagation = ScopePropagation.ToExclusions;
             //Assert.IsFalse(
             //    new Permission(true, Read,
             //        new Scope(CaliforniaDiscriminator, propagation)
@@ -187,7 +187,7 @@ namespace Fuxion.Identity.Test
         [TestMethod]
         public void WhenPermission_Match()
         {
-            Assert.Fail("Pending refactor code");
+            Assert.Inconclusive("Pending refactor code");
 
             //var LocationType = Guid.NewGuid();
             //var USA = Guid.NewGuid();
@@ -230,7 +230,7 @@ namespace Fuxion.Identity.Test
         [TestMethod]
         public void WhenPermission_Match2()
         {
-            Assert.Fail("Pending refactor code");
+            Assert.Inconclusive("Pending refactor code");
 
             //var LocationType ="LocationType";
             //var USA = "USA";
