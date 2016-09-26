@@ -84,7 +84,7 @@
     <Compile Include="Repositories\IKeyValueEntry.cs" />
     <Compile Include="Repositories\IKeyValueRepository.cs" />
     <Compile Include="Repositories\KeyValueEntry.cs" />
-    <Compile Include="Repositories\MemoryKeyValueRepository.cs" />
+    <Compile Include="Repositories\MemoryCachedKeyValueRepository.cs" />
     <Compile Include="Configuration\ConfigurationItem.cs" />
     <Compile Include="Configuration\IConfigurationManager.cs" />
     <Compile Include="EventArgs.cs" />

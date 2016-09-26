@@ -68,6 +68,7 @@ namespace Fuxion.Repositories
         }
         public TValue Find(TKey key)
         {
+            if (key == null) return default(TValue);
             if (dic.ContainsKey(key)) return dic[key].Value;
             var res = new MemoryKeyValueRepositoryValue<TValue>();
             try
