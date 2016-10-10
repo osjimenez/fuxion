@@ -103,13 +103,13 @@ namespace Fuxion.Identity.DatabaseEFTest
                         Assert.True(
                             im.GetCurrent()
                                 .Can(functions)
-                                .OfAllTypes(types)
+                                .AllTypes(types)
                             , $"Function assignment failed unexpected: {strArgs}");
                     else
                         Assert.False(
                             im.GetCurrent()
                                 .Can(functions)
-                                .OfAllTypes(types)
+                                .AllTypes(types)
                             , $"Function assignment success unexpected: {strArgs}");
                 });
             }
@@ -192,7 +192,7 @@ namespace Fuxion.Identity.DatabaseEFTest
             var im = Factory.Get<IdentityManager>();
             var rep = Factory.Get<IIdentityTestRepository>();
             im.Login("root", "root");
-            Assert.True(im.GetCurrent().Can(Read).OfType<Document>());
+            Assert.True(im.GetCurrent().Can(Read).Type<Document>());
             var res = rep.Album.Where(o => o.Songs.AuthorizedTo(Read).Any());
             Printer.Print("res.Count(): " + res.Count());
         }

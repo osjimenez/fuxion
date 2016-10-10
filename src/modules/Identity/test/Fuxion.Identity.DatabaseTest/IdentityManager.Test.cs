@@ -61,6 +61,10 @@ namespace Fuxion.Identity.DatabaseTest
         [Fact]
         public void CheckFunctionAssigned()
         {
+            var r1 = IM.GetCurrent().Can(Read).Type<Document>();
+            IM.GetCurrent().EnsureCan(Read).Type<Document>();
+            var r2 = IM.GetCurrent().Can(Read).AllInstances<Document>(null, null, null, null, null, null);
+            IM.GetCurrent().EnsureCan(Read).AnyInstance<Document>(null, null, null, null, null, null);
             // Login
             //if (!IM.IsAuthenticated)
             //    Assert.True(IM.Login("root", "root"));
@@ -76,5 +80,5 @@ namespace Fuxion.Identity.DatabaseTest
             //        .OfAllTypes<Order, Invoice>());
             return;
         }
-        }
+    }
 }

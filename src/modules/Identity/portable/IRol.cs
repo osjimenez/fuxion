@@ -291,91 +291,98 @@ namespace Fuxion.Identity
         {
             return SearchForDeniedPermissions(me, function, discriminators, console) == null;
         }
-        internal static void CheckFunctionAssigned(this IRol me, IFunction function, IDiscriminator[] discriminators, Action<string, bool> console)
-        {
-            var res = me.SearchForDeniedPermissions(function, discriminators, console);
-            if (res != null)
-            {
-                if (res.Any())
-                    throw new UnauthorizedAccessException($"The function {function.Name} was requested for these discriminators:"
-                        + discriminators.Aggregate("", (a, n) => $"{a}\n - {n.TypeName} = {n.Name}")
-                        + "\nAnd have been matched in:\n" + res.First());
-                else
-                    throw new UnauthorizedAccessException($"The function {function.Name} was requested for these discriminators:"
-                        + discriminators.Aggregate("", (a, n) => $"{a}\r\n - {n.TypeName} = {n.Name}")
-                        + "\nAnd don't match any permission");
-            }
-        }
+        //internal static void CheckFunctionAssigned(this IRol me, IFunction function, IDiscriminator[] discriminators, Action<string, bool> console)
+        //{
+        //    var res = me.SearchForDeniedPermissions(function, discriminators, console);
+        //    if (res != null)
+        //    {
+        //        if (res.Any())
+        //            throw new UnauthorizedAccessException($"The function {function.Name} was requested for these discriminators:"
+        //                + discriminators.Aggregate("", (a, n) => $"{a}\n - {n.TypeName} = {n.Name}")
+        //                + "\nAnd have been matched in:\n" + res.First());
+        //        else
+        //            throw new UnauthorizedAccessException($"The function {function.Name} was requested for these discriminators:"
+        //                + discriminators.Aggregate("", (a, n) => $"{a}\r\n - {n.TypeName} = {n.Name}")
+        //                + "\nAnd don't match any permission");
+        //    }
+        //}
 
         #region Fluent
         #region IRol
-        public static IRolCan Can(this IRol me, params IFunction[] functions) { return new _RolCan(me, functions); }
-        public static IRolEnsureCan EnsureCan(this IRol me, params IFunction[] functions) { return new _RolCan(me, functions); }
+        public static IRolCan Can(this IRol me, params IFunction[] functions) { return new _RolCan(me, functions, false); }
+        public static IRolEnsureCan EnsureCan(this IRol me, params IFunction[] functions) { return new _RolCan(me, functions, true); }
         #endregion
-        #region IRolCan
-        public static bool OfType<T>(this IRolCan me)
+        #region Can().Type's
+        // Only one type
+        public static bool Type(this IRolCan me, Type type) { return CheckTypes((_RolCan)me, true, type); }
+        public static void Type(this IRolEnsureCan me, Type type) { CheckTypes((_RolCan)me, true, type); }
+        public static bool Type<T>(this IRolCan me) { return CheckTypes((_RolCan)me, true, typeof(T)); }
+        public static void Type<T>(this IRolEnsureCan me) { CheckTypes((_RolCan)me, true, typeof(T)); }
+        // Two types
+        public static bool AllTypes<T1, T2>(this IRolCan me) { return CheckTypes((_RolCan)me, true, typeof(T1), typeof(T2)); }
+        public static void AllTypes<T1, T2>(this IRolEnsureCan me) { CheckTypes((_RolCan)me, true, typeof(T1), typeof(T2)); }
+        public static bool AnyType<T1, T2>(this IRolCan me) { return CheckTypes((_RolCan)me, false, typeof(T1), typeof(T2)); }
+        public static void AnyType<T1, T2>(this IRolEnsureCan me) { CheckTypes((_RolCan)me, false, typeof(T1), typeof(T2)); }
+        // Three types
+        public static bool AllTypes<T1, T2, T3>(this IRolCan me) { return CheckTypes((_RolCan)me, true, typeof(T1), typeof(T2), typeof(T3)); }
+        public static void AllTypes<T1, T2, T3>(this IRolEnsureCan me) { CheckTypes((_RolCan)me, true, typeof(T1), typeof(T2), typeof(T3)); }
+        public static bool AnyType<T1, T2, T3>(this IRolCan me) { return CheckTypes((_RolCan)me, false, typeof(T1), typeof(T2), typeof(T3)); }
+        public static void AnyType<T1, T2, T3>(this IRolEnsureCan me) { CheckTypes((_RolCan)me, false, typeof(T1), typeof(T2), typeof(T3)); }
+        // Many types
+        public static bool AllTypes(this IRolCan me, params Type[] types) { return CheckTypes((_RolCan)me, true, types); }
+        public static void AllTypes(this IRolEnsureCan me, params Type[] types) { CheckTypes((_RolCan)me, true, types); }
+        public static bool AnyType(this IRolCan me, params Type[] types) { return CheckTypes((_RolCan)me, false, types); }
+        public static void AnyType(this IRolEnsureCan me, params Type[] types) { CheckTypes((_RolCan)me, false, types); }
+        // -------------------------- IMPLEMENTATION
+        private static bool CheckTypes(_RolCan me, bool forAll, params Type[] types)
         {
-            return OfAllTypes(me, typeof(T));
-        }
-        public static bool OfAllTypes<T1, T2>(this IRolCan me)
-        {
-            return OfAllTypes(me, typeof(T1), typeof(T2));
-        }
-        public static bool OfAllTypes<T1, T2, T3>(this IRolCan me)
-        {
-            return OfAllTypes(me, typeof(T1), typeof(T2), typeof(T3));
-        }
-        public static bool OfAllTypes(this IRolCan me, params Type[] types)
-        {
-            var r = me as _RolCan;
-            var res = types.All(t => r.Rol.IsFunctionAssigned(
-                r.Functions.First(),
-                new[] { TypeDiscriminator.Create(t) },
-                (m, _) => Debug.WriteLine(m)));
+            var res = forAll
+                ? types.All(t => me.Rol.IsFunctionAssigned(
+                    me.Functions.First(),
+                    new[] { TypeDiscriminator.Create(t) },
+                    (m, _) => Debug.WriteLine(m)))
+                : types.Any(t => me.Rol.IsFunctionAssigned(
+                    me.Functions.First(),
+                    new[] { TypeDiscriminator.Create(t) },
+                    (m, _) => Debug.WriteLine(m)));
+            if (me.ThrowExceptionIfCannot && !res)
+                throw new UnauthorizedAccessException($"The rol '{me.Rol.Name}' cannot '{me.Functions.Aggregate("", (a, c) => a + c.Name + "·", a => a.Trim('·'))}' for the given types '{types}'");
             return res;
         }
         #endregion
-        #region IRolEnsureCan
-        public static void This<T>(this IRolEnsureCan me, T value) { me.These<T>(new[] { value }); }
-        public static void These<T>(this IRolEnsureCan me, IEnumerable<T> values) { me.These(values.ToArray()); }
-        public static void These<T>(this IRolEnsureCan me, params T[] values) {
-            var r = me as _RolCan;
-            r.Rol.FilterExpression<T>(r.Functions);
-            if (!values.AuthorizedTo(r.Functions).Any())
-                throw new UnauthorizedAccessException($"The rol '{r.Rol.Name}' cannot '{r.Functions.Aggregate("", (a, c) => a + c.Name + "·", a => a.Trim('·'))}' for the given instances '{values}'");
+        #region Can().Instance's
+        // One instance
+        public static bool Instance<T>(this IRolCan me, T value) { return CheckInstances((_RolCan)me, true, new[] { value }); }
+        public static void Instance<T>(this IRolEnsureCan me, T value) { CheckInstances((_RolCan)me, true, new[] { value }); }
+        // Many instances
+        public static bool AllInstances<T>(this IRolCan me, params T[] values) { return CheckInstances((_RolCan)me, true, values); }
+        public static void AllInstances<T>(this IRolEnsureCan me, params T[] values) { CheckInstances((_RolCan)me, true, values); }
+        public static bool AnyInstance<T>(this IRolCan me, params T[] values) { return CheckInstances((_RolCan)me, false, values); }
+        public static void AnyInstance<T>(this IRolEnsureCan me, params T[] values) { CheckInstances((_RolCan)me, false, values); }
+        // -------------------------- IMPLEMENTATION
+        private static bool CheckInstances<T>(_RolCan me, bool forAll, params T[] values)
+        {
+            me.Rol.FilterExpression<T>(me.Functions);
+            var res = forAll ? values.AuthorizedTo(me.Functions).Count() == values.Count() : values.AuthorizedTo(me.Functions).Any();
+            if (me.ThrowExceptionIfCannot && !res)
+                throw new UnauthorizedAccessException($"The rol '{me.Rol.Name}' cannot '{me.Functions.Aggregate("", (a, c) => a + c.Name + "·", a => a.Trim('·'))}' for the given instances '{values}'");
+            return res;
         }
         #endregion
         #endregion
     }
-    //class _Discriminator : IDiscriminator
-    //{
-    //    public IEnumerable<_Discriminator> Exclusions { get; set; }
-    //    public object Id { get; set; }
-    //    public IEnumerable<_Discriminator> Inclusions { get; set; }
-    //    public string Name { get; set; }
-    //    public object TypeId { get; set; }
-    //    public string TypeName { get; set; }
-    //    IEnumerable<IDiscriminator> IExclusive<IDiscriminator>.Exclusions
-    //    {
-    //        get
-    //        {
-    //            return Exclusions;
-    //        }
-    //    }
-    //    IEnumerable<IDiscriminator> IInclusive<IDiscriminator>.Inclusions
-    //    {
-    //        get
-    //        {
-    //            return Inclusions;
-    //        }
-    //    }
-    //}
     public interface IRolCan { }
     public interface IRolEnsureCan { }
     class _RolCan : IRolCan, IRolEnsureCan
     {
-        public _RolCan(IRol rol, IFunction[] functions) { Rol = rol; Functions = functions; }
+        public _RolCan(IRol rol, IFunction[] functions, bool throwExceptionIfCannot)
+        {
+            Rol = rol;
+            Functions = functions;
+            ThrowExceptionIfCannot = throwExceptionIfCannot;
+        }
         public IRol Rol { get; set; }
         public IFunction[] Functions { get; set; }
+        public bool ThrowExceptionIfCannot { get; set; }
     }
 }
