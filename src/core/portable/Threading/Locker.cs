@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Fuxion.Logging;
+using System;
 using System.Threading;
 namespace Fuxion.Threading
 {
@@ -17,6 +18,7 @@ namespace Fuxion.Threading
 		public BaseLocker(TObjectLocked objectLocked, LockRecursionPolicy recursionPolicy = LockRecursionPolicy.NoRecursion) { this.objectLocked = objectLocked; }
 		ReaderWriterLockSlim _ReaderWriterLockSlim = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 		TObjectLocked objectLocked;
+        ILog log = LogManager.Create<BaseLocker<TObjectLocked>>();
 		public TObjectLocked ObjectLocked
 		{
 			get { return Read(obj => obj); }
@@ -29,29 +31,73 @@ namespace Fuxion.Threading
 		}
 		public void Read(Action<TObjectLocked> action)
 		{
-			_ReaderWriterLockSlim.EnterReadLock();
-			action.Invoke(objectLocked);
-			_ReaderWriterLockSlim.ExitReadLock();
+            try
+            {
+                _ReaderWriterLockSlim.EnterReadLock();
+                action.Invoke(objectLocked);
+            }
+            catch (Exception ex)
+            {
+                log.Error($"Error '{ex.GetType().Name}' in Locker.Read: {ex.Message}", ex);
+                throw;
+            }
+            finally
+            {
+                _ReaderWriterLockSlim.ExitReadLock();
+            }
 		}
 		public TResult Read<TResult>(Func<TObjectLocked, TResult> func)
 		{
-			_ReaderWriterLockSlim.EnterReadLock();
-			TResult res = func.Invoke(objectLocked);
-			_ReaderWriterLockSlim.ExitReadLock();
-			return res;
+            try
+            {
+                _ReaderWriterLockSlim.EnterReadLock();
+                TResult res = func.Invoke(objectLocked);
+                return res;
+            }
+            catch (Exception ex)
+            {
+                log.Error($"Error '{ex.GetType().Name}' in Locker.Read: {ex.Message}", ex);
+                throw;
+            }
+            finally
+            {
+                _ReaderWriterLockSlim.ExitReadLock();
+            }
 		}
 		public void Write(Action<TObjectLocked> action)
 		{
-			_ReaderWriterLockSlim.EnterWriteLock();
-			action.Invoke(objectLocked);
-			_ReaderWriterLockSlim.ExitWriteLock();
+            try
+            {
+                _ReaderWriterLockSlim.EnterWriteLock();
+                action.Invoke(objectLocked);
+            }
+            catch (Exception ex)
+            {
+                log.Error($"Error '{ex.GetType().Name}' in Locker.Write: {ex.Message}", ex);
+                throw;
+            }
+            finally
+            {
+                _ReaderWriterLockSlim.ExitWriteLock();
+            }
 		}
 		public TResult Write<TResult>(Func<TObjectLocked, TResult> func)
 		{
-			_ReaderWriterLockSlim.EnterWriteLock();
-			TResult res = func.Invoke(objectLocked);
-			_ReaderWriterLockSlim.ExitWriteLock();
-			return res;
+            try
+            {
+                _ReaderWriterLockSlim.EnterWriteLock();
+                TResult res = func.Invoke(objectLocked);
+                return res;
+            }
+            catch (Exception ex)
+            {
+                log.Error($"Error '{ex.GetType().Name}' in Locker.Write: {ex.Message}", ex);
+                throw;
+            }
+            finally
+            {
+                _ReaderWriterLockSlim.ExitWriteLock();
+            }
 		}
 	}
 	public class ValueLocker<TObjectLocked> : BaseLocker<TObjectLocked>
