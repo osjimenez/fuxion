@@ -42,7 +42,7 @@ namespace System.Threading.Tasks
         }
         public static bool IsCancellationRequested(this Task task, bool throwExceptionIfNotRunning = false)
         {
-            var item = TaskManager.SearchEntry(task);
+            var item = TaskManager.SearchEntry(task, throwExceptionIfNotRunning);
             if (item != null)
             {
                 return item.IsCancellationRequested;
