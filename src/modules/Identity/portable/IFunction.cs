@@ -19,7 +19,7 @@ namespace Fuxion.Identity
         object Id { get; }
         string Name { get; }
     }
-    public interface IFunction<TId> : IFunction, IInclusive<IFunction<TId>>, IExclusive<IFunction<TId>>
+    public interface IFunction<TId> : IFunction, IInclusive<IFunction>, IExclusive<IFunction>
     {
         new TId Id { get; }
     }
@@ -90,38 +90,38 @@ namespace Fuxion.Identity
     {
         static Functions()
         {
-            Read = new Function(READ);
-            Edit = new Function(EDIT);
-            Create = new Function(CREATE);
-            Delete = new Function(DELETE);
-            Manage = new Function(MANAGE);
-            Admin = new Function(ADMIN);
-            ((Function)Read).Exclusions = new[] { Edit }.Cast<IFunction<string>>();
+            Read = new Function<string>(READ);
+            Edit = new Function<string>(EDIT);
+            Create = new Function<string>(CREATE);
+            Delete = new Function<string>(DELETE);
+            Manage = new Function<string>(MANAGE);
+            Admin = new Function<string>(ADMIN);
+            ((Function<string>)Read).Exclusions = new[] { Edit }.Cast<IFunction<string>>();
 
-            ((Function)Edit).Inclusions = new[] { Read }.Cast<IFunction<string>>();
-            ((Function)Edit).Exclusions = new[] { Create, Delete }.Cast<IFunction<string>>();
+            ((Function<string>)Edit).Inclusions = new[] { Read }.Cast<IFunction<string>>();
+            ((Function<string>)Edit).Exclusions = new[] { Create, Delete }.Cast<IFunction<string>>();
 
-            ((Function)Create).Inclusions = new[] { Edit }.Cast<IFunction<string>>();
-            ((Function)Create).Exclusions = new[] { Manage }.Cast<IFunction<string>>();
+            ((Function<string>)Create).Inclusions = new[] { Edit }.Cast<IFunction<string>>();
+            ((Function<string>)Create).Exclusions = new[] { Manage }.Cast<IFunction<string>>();
 
-            ((Function)Delete).Inclusions = new[] { Edit }.Cast<IFunction<string>>();
-            ((Function)Delete).Exclusions = new[] { Manage }.Cast<IFunction<string>>();
+            ((Function<string>)Delete).Inclusions = new[] { Edit }.Cast<IFunction<string>>();
+            ((Function<string>)Delete).Exclusions = new[] { Manage }.Cast<IFunction<string>>();
 
-            ((Function)Manage).Inclusions = new[] { Create, Delete }.Cast<IFunction<string>>();
-            ((Function)Manage).Exclusions = new[] { Admin }.Cast<IFunction<string>>();
+            ((Function<string>)Manage).Inclusions = new[] { Create, Delete }.Cast<IFunction<string>>();
+            ((Function<string>)Manage).Exclusions = new[] { Admin }.Cast<IFunction<string>>();
 
-            ((Function)Admin).Inclusions = new[] { Manage }.Cast<IFunction<string>>();
-            dic = new Dictionary<string, IFunction>
+            ((Function<string>)Admin).Inclusions = new[] { Manage }.Cast<IFunction<string>>();
+            dic = new Dictionary<object, IFunction>
             {
-                [((Function)Read).Id] = Read,
-                [((Function)Edit).Id] = Edit,
-                [((Function)Create).Id] = Create,
-                [((Function)Delete).Id] = Delete,
-                [((Function)Manage).Id] = Manage,
-                [((Function)Admin).Id] = Admin,
+                [((Function<string>)Read).Id] = Read,
+                [((Function<string>)Edit).Id] = Edit,
+                [((Function<string>)Create).Id] = Create,
+                [((Function<string>)Delete).Id] = Delete,
+                [((Function<string>)Manage).Id] = Manage,
+                [((Function<string>)Admin).Id] = Admin,
             };
         }
-        static Dictionary<string, IFunction> dic;
+        static Dictionary<object, IFunction> dic;
         public const string READ = nameof(READ);
         public const string EDIT = nameof(EDIT);
         public const string CREATE = nameof(CREATE);
@@ -138,22 +138,26 @@ namespace Fuxion.Identity
         {
             return dic[id];
         }
-        [DebuggerDisplay("{" + nameof(Name) + "}")]
-        class Function : IFunction<string>
+        public static IFunction AddCustom<T>(T id, IEnumerable<IFunction> inclusions = null, IEnumerable<IFunction> exclusions = null)
         {
-            public Function(string id, IEnumerable<Function> inclusions = null, IEnumerable<Function> exclusions = null)
+            return dic[id] = new Function<T>(id, inclusions, exclusions);
+        }
+        [DebuggerDisplay("{" + nameof(Name) + "}")]
+        class Function<T> : IFunction<T>
+        {
+            public Function(T id, IEnumerable<IFunction> inclusions = null, IEnumerable<IFunction> exclusions = null)
             {
                 Id = id;
-                Name = id;
+                Name = id.ToString();
                 Inclusions = inclusions;
                 Exclusions = exclusions;
             }
-            public string Id { get; private set; }
+            public T Id { get; private set; }
             object IFunction.Id { get { return Id; } }
             public string Name { get; private set; }
 
-            public IEnumerable<IFunction<string>> Inclusions { get; internal set; }
-            public IEnumerable<IFunction<string>> Exclusions { get; internal set; }
+            public IEnumerable<IFunction> Inclusions { get; internal set; }
+            public IEnumerable<IFunction> Exclusions { get; internal set; }
             IEnumerable<IFunction> IInclusive<IFunction>.Inclusions
             {
                 get
@@ -169,5 +173,37 @@ namespace Fuxion.Identity
                 }
             }
         }
+
+        //[DebuggerDisplay("{" + nameof(Name) + "}")]
+        //class Function : IFunction<string>
+        //{
+        //    public Function(string id, IEnumerable<IFunction<string>> inclusions = null, IEnumerable<IFunction<string>> exclusions = null)
+        //    {
+        //        Id = id;
+        //        Name = id;
+        //        Inclusions = inclusions;
+        //        Exclusions = exclusions;
+        //    }
+        //    public string Id { get; private set; }
+        //    object IFunction.Id { get { return Id; } }
+        //    public string Name { get; private set; }
+
+        //    public IEnumerable<IFunction<string>> Inclusions { get; internal set; }
+        //    public IEnumerable<IFunction<string>> Exclusions { get; internal set; }
+        //    IEnumerable<IFunction> IInclusive<IFunction>.Inclusions
+        //    {
+        //        get
+        //        {
+        //            return Inclusions;
+        //        }
+        //    }
+        //    IEnumerable<IFunction> IExclusive<IFunction>.Exclusions
+        //    {
+        //        get
+        //        {
+        //            return Exclusions;
+        //        }
+        //    }
+        //}
     }
 }

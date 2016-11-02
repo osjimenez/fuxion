@@ -39,6 +39,9 @@ namespace Fuxion.Identity.Test
             Assert.AreEqual(Read.GetAllExclusions().Count(), 6, "Read should exclude 6 functions");
             Assert.AreEqual(Edit.GetAllInclusions().Count(), 2, "Edit should include 2 function");
             Assert.AreEqual(Edit.GetAllExclusions().Count(), 5, "Edit should exclude 5 functions");
+            var Custom = AddCustom("CUSTOM", new[] { Read }, new[] { Manage });
+            Assert.AreEqual(Custom.GetAllInclusions().Count(), 2, "Custom should include 1 function");
+            Assert.AreEqual(Custom.GetAllExclusions().Count(), 3, "Custom should exclude 3 functions");
         }
 
         //[TestMethod]

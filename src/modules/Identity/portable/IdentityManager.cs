@@ -27,6 +27,8 @@ namespace Fuxion.Identity
         {
             return Repository.Find(CurrentUserNameProvider.GetCurrentUserName());
         }
+        public event EventHandler<EventArgs<IIdentity>> CurrentChanged;
+        public void RaiseCurrentChanged() { CurrentChanged?.Invoke(this, new EventArgs<IIdentity>(GetCurrent())); }
         public ICurrentUserNameProvider CurrentUserNameProvider { get; private set; }
         //public static IPrincipalProvider PrincipalProvider { get; private set; }
         public IPasswordProvider PasswordProvider { get; private set; }
@@ -70,5 +72,11 @@ namespace Fuxion.Identity
     public interface ICurrentUserNameProvider
     {
         string GetCurrentUserName();
+    }
+    public class GenericCurrentUserNameProvider : ICurrentUserNameProvider
+    {
+        public GenericCurrentUserNameProvider(Func<string> getCurrentUsernameFunction) { this.getCurrentUsernameFunction = getCurrentUsernameFunction; }
+        Func<string> getCurrentUsernameFunction;
+        public string GetCurrentUserName() { return getCurrentUsernameFunction(); }
     }
 }
