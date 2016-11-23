@@ -50,6 +50,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CascadeDeleteAttribute.cs" />
+    <Compile Include="CascadeDeleteAttributeConvention.cs" />
     <Compile Include="DateTime2Convention.cs" />
     <Compile Include="TrackAttributes.cs" />
     <Compile Include="ColumnAnnotationAttribute.cs" />
