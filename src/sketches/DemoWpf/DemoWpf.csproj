@@ -38,6 +38,18 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Fuxion, Version=0.0.3.97, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Fuxion.0.0.3-alpha097\lib\net45\Fuxion.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Fuxion-net45, Version=0.0.3.97, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Fuxion.0.0.3-alpha097\lib\net45\Fuxion-net45.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Fuxion.Log4net, Version=0.0.3.11, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Fuxion.Log4net.0.0.3-alpha011\lib\net45\Fuxion.Log4net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>
@@ -138,14 +150,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\core\net45\Fuxion-net45.csproj">
-      <Project>{b16111a4-cdf6-40e8-9bee-1d5806543cb0}</Project>
-      <Name>Fuxion-net45</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\core\portable\Fuxion.csproj">
-      <Project>{5761cb44-504f-468b-8263-39f59eebbb17}</Project>
-      <Name>Fuxion</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\core\test\Fuxion.Test.csproj">
       <Project>{8d2242c6-d7d3-403c-b39d-8877ab8e745a}</Project>
       <Name>Fuxion.Test</Name>
@@ -157,10 +161,6 @@
     <ProjectReference Include="..\..\modules\Licensing\portable\Fuxion.Licensing.csproj">
       <Project>{c7406922-3198-42d8-80eb-31574b33fc96}</Project>
       <Name>Fuxion.Licensing</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\modules\Log4net\net45\Fuxion.Log4net.csproj">
-      <Project>{1cf0e88a-cd3d-4d49-8650-f5f7ff3a1334}</Project>
-      <Name>Fuxion.Log4net</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\modules\SimpleInjector\portable\SimpleInjector_.csproj">
       <Project>{dfe9408b-2bb2-4f86-a1c0-2a050d155f82}</Project>

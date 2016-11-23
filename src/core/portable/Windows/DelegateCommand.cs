@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Windows.Data;
 using System.Windows.Input;
 namespace Fuxion.Windows
 {
@@ -26,11 +27,7 @@ namespace Fuxion.Windows
         }
         public void RaiseCanExecuteChanged()
         {
-            var handlers = CanExecuteChanged;
-            if (handlers != null)
-            {
-                handlers(this, EventArgs.Empty);
-            }
+            CanExecuteChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 }

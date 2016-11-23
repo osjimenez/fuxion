@@ -73,9 +73,6 @@
     <Compile Include="TimeSpanToStringConverter.test.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\..\core\net45\Fuxion-net45.csproj">
       <Project>{b16111a4-cdf6-40e8-9bee-1d5806543cb0}</Project>
       <Name>Fuxion-net45</Name>
@@ -88,6 +85,9 @@
       <Project>{25b99e1d-a3ba-42f3-b4bf-b6c76e6d84e4}</Project>
       <Name>Fuxion.Windows</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

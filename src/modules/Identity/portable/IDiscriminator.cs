@@ -132,10 +132,14 @@ namespace Fuxion.Identity
             var id = type.GetSignature(true);
             var @base = type.GetTypeInfo().BaseType;
             var bases = new List<Type>();
-            while (@base != typeof(object))
+            while (@base != null && @base != typeof(object))
             {
-                bases.Add(@base);
-                @base = @base.GetTypeInfo().BaseType;
+                if (KnownTypes.Contains(@base))
+                {
+                    bases.Add(@base);
+                    @base = @base.GetTypeInfo().BaseType;
+                }
+                else @base = null;
             }
             bases.Reverse();
             var res = new TypeDiscriminator
