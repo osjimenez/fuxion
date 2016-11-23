@@ -22,7 +22,7 @@ namespace System.Threading.Tasks
                 if (entry.IsSleeping) entry.AutoResetEvent.Set();
             }
         }
-        public static void CancelAndWait(this Task task, TimeSpan timeout = default(TimeSpan), bool throwExceptionIfNotRunning = true) { new[] { task }.CancelAndWait(timeout, throwExceptionIfNotRunning); }
+        public static void CancelAndWait(this Task task, TimeSpan timeout = default(TimeSpan), bool throwExceptionIfNotRunning = true)  => new[] { task }.CancelAndWait(timeout, throwExceptionIfNotRunning);
         public static void CancelAndWait(this IEnumerable<Task> me, TimeSpan timeout = default(TimeSpan), bool throwExceptionIfNotRunning = true) {
             foreach (var task in me)
                 task.Cancel(throwExceptionIfNotRunning);
@@ -36,10 +36,7 @@ namespace System.Threading.Tasks
             catch (TaskCanceledException) { }
         }
 
-        public static void OnCancel(this Task task, Action action)
-        {
-            TaskManager.SearchEntry(task, true).Canceled += (s, e) => action();
-        }
+        public static void OnCancel(this Task task, Action action) => TaskManager.SearchEntry(task, true).Canceled += (s, e) => action();
         public static bool IsCancellationRequested(this Task task, bool throwExceptionIfNotRunning = false)
         {
             var item = TaskManager.SearchEntry(task, throwExceptionIfNotRunning);

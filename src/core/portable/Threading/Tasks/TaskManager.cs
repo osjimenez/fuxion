@@ -35,13 +35,10 @@ namespace Fuxion.Threading.Tasks
             return entry;
         }
         public static Task Create(Action action, TaskScheduler scheduler = null, TaskCreationOptions options = default(TaskCreationOptions))
-        {
-            return CreateEntry(action, scheduler, options).Task;
-        }
+            => CreateEntry(action, scheduler, options).Task;
+        
         public static Task Create(Func<Task> asyncAction, TaskScheduler scheduler = null, TaskCreationOptions options = default(TaskCreationOptions))
-        {
-            return CreateEntry(new Action(() => asyncAction().Wait()), scheduler, options).Task;
-        }
+            => CreateEntry(new Action(() => asyncAction().Wait()), scheduler, options).Task;
         public static Task StartNew(Action action, TaskScheduler scheduler = null, TaskCreationOptions options = default(TaskCreationOptions))
         {
             var task = Create(action, scheduler, options);

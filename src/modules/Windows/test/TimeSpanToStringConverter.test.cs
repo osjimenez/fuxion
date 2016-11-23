@@ -25,8 +25,8 @@ namespace Fuxion.Windows.Test
         {
             var con = new TimeSpanToStringConverter();
             con.Mode = TimeSpanToStringMode.PerElements;
-            con.NumberOfElements = 3;
-            output.WriteLine($"3.18:53:58.1234567 => {con.Convert(TimeSpan.Parse("3.18:53:58.1234567"), null, CultureInfo.CurrentCulture)}");
+            //con.NumberOfElements = 3;
+            output.WriteLine($"1.18:53:58.1234567 => {con.Convert(TimeSpan.Parse("1.18:53:58.1234567"), null, CultureInfo.CurrentCulture)}");
             output.WriteLine($"0.18:53:58.1234567 => {con.Convert(TimeSpan.Parse("0.18:53:58.1234567"), null, CultureInfo.CurrentCulture)}");
             output.WriteLine($"0.00:53:58.1234567 => {con.Convert(TimeSpan.Parse("0.00:53:58.1234567"), null, CultureInfo.CurrentCulture)}");
         }
