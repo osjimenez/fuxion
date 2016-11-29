@@ -19,27 +19,22 @@ namespace Fuxion.Windows.Threading
         }
         public DispatcherSynchronizer(Dispatcher dispatcher) : this() { Dispatcher = dispatcher; }
         public Dispatcher Dispatcher { get; set; }
-
         private Task InvokeActionDelegate(Delegate method, params object[] args)
         {
-            if (Dispatcher == null) // No dispatcher, runs method direct and dynamically
+            // No dispatcher or i'm in the same thread of dispatcher, runs synchronously
+            if (Dispatcher == null || Dispatcher.CheckAccess())
                 return Task.FromResult(method.DynamicInvoke(args));
-            if (Dispatcher.CheckAccess()) // I'm in the same thread of dispatcher, runs synchronously
-                return Task.FromResult(Dispatcher.Invoke(method, args));
-            else // I'm in another thread than dispatcher, runs asynchronously
-                return Dispatcher.BeginInvoke(method, args).Task;
+            // I'm in another thread than dispatcher, runs asynchronously
+            return Dispatcher.BeginInvoke(method, args).Task;
         }
         private Task<TResult> InvokeFuncDelegate<TResult>(Delegate method, params object[] args)
         {
-            if (Dispatcher == null) // No dispatcher, runs method direct and dynamically
+            // No dispatcher or i'm in the same thread of dispatcher, runs synchronously
+            if (Dispatcher == null || Dispatcher.CheckAccess())
                 return Task.FromResult((TResult)method.DynamicInvoke(args));
-            if (Dispatcher.CheckAccess()) // I'm in the same thread of dispatcher, runs synchronously
-                return Task.FromResult((TResult)Dispatcher.Invoke(method, args));
-            else // I'm in another thread than dispatcher, runs asynchronously
-            {
-                var ope = Dispatcher.BeginInvoke(method, args);
-                return ope.Task.ContinueWith((t, o) => ((TResult)((DispatcherOperation)o).Result), ope, TaskContinuationOptions.ExecuteSynchronously);
-            }
+            // I'm in another thread than dispatcher, runs asynchronously
+            var ope = Dispatcher.BeginInvoke(method, args);
+            return ope.Task.ContinueWith((t, o) => ((TResult)((DispatcherOperation)o).Result), ope, TaskContinuationOptions.ExecuteSynchronously);
         }
         #region Invoke Actions
         public async Task Invoke(Action action) { await InvokeActionDelegate(action); }
