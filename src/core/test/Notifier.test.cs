@@ -31,6 +31,13 @@ namespace Fuxion.Test
     }
     public class NotifierMock : Notifier<NotifierMock>
     {
+        #region Virtual
+        public int Integer_Virtual_AutoImplemented_WithoutDefault_RaiseOnChange_NotLocked
+        {
+            get { return GetValue<int>(); }
+            set { SetValue(value, false); }
+        }
+        #endregion
         #region Protected
         protected int Integer_Protected_AutoImplemented_WithoutDefault_RaiseAlways_NotLocked
         {
@@ -272,7 +279,15 @@ namespace Fuxion.Test
         }
         #endregion
     }
-    public class DerivedNotifierMock : NotifierMock { }
+    public class DerivedNotifierMock : NotifierMock {
+        #region Virtual
+        public new int Integer_Virtual_AutoImplemented_WithoutDefault_RaiseOnChange_NotLocked
+        {
+            get { return GetValue<int>(); }
+            set { SetValue(value, false); }
+        }
+        #endregion
+    }
     public class Notifier_Test
     {
         [Fact]
@@ -283,7 +298,7 @@ namespace Fuxion.Test
         }
         #region Variables
         //private static TestContext context;
-        private NotifierMock mock;
+        private DerivedNotifierMock mock;
         private const string PROPERTY_CHANGED = "PropertyChanged";
         private const string PROPERTY_CHANGED_BASE = "PropertyChangedBase";
         //private const string PROPERTY_CHANGING = "PropertyChanging";
@@ -312,7 +327,7 @@ namespace Fuxion.Test
                 //counters.Add(pro.Name + "_" + PROPERTY_READ, 0);
             }
             //Crear el notificador
-            mock = new NotifierMock();
+            mock = new DerivedNotifierMock();
             //Registrar los eventos del notificador para incrementar los contadores
             //mock.PropertyChanging += (n, e) => IncrementCounter(e.PropertyName, PROPERTY_CHANGING);
             //(mock as INotifyPropertyChanging).PropertyChanging += (s, e) => IncrementCounter(e.PropertyName, PROPERTY_CHANGING_BASE);
@@ -558,8 +573,8 @@ namespace Fuxion.Test
         [Fact]
         public void Notifier_Binding_OneWay()
         {
-            var source = new NotifierMock();
-            var target = new NotifierMock();
+            var source = new DerivedNotifierMock();
+            var target = new DerivedNotifierMock();
             source.Integer_AutoImplemented_WithDefault_RaiseOnChange_NotLocked = 111;
             source.Binding(() => source.Integer_AutoImplemented_WithDefault_RaiseOnChange_NotLocked).OneWayTo(target, () => target.Integer_AutoImplemented_WithDefault_RaiseOnChange_NotLocked);
             // Check that the target property will set with source property value
@@ -570,8 +585,8 @@ namespace Fuxion.Test
         [Fact]
         public void Notifier_Binding_OneWay_WithTransformation()
         {
-            var source = new NotifierMock();
-            var target = new NotifierMock();
+            var source = new DerivedNotifierMock();
+            var target = new DerivedNotifierMock();
             source.Integer_AutoImplemented_WithDefault_RaiseOnChange_NotLocked = 111;
             source.Binding(() => source.Integer_AutoImplemented_WithDefault_RaiseOnChange_NotLocked).OneWayTo(target, () => target.String_AutoImplemented_WithDefault_RaiseOnChange_NotLocked, i => i.ToString());
             // Check that the target property will set with source property value
@@ -582,8 +597,8 @@ namespace Fuxion.Test
         [Fact]
         public void Notifier_Binding_TwoWay()
         {
-            var source = new NotifierMock();
-            var target = new NotifierMock();
+            var source = new DerivedNotifierMock();
+            var target = new DerivedNotifierMock();
             source.Integer_AutoImplemented_WithDefault_RaiseOnChange_NotLocked = 111;
             source.Binding(() => source.Integer_AutoImplemented_WithDefault_RaiseOnChange_NotLocked)
                 .TwoWayTo(target, () => target.Integer_AutoImplemented_WithDefault_RaiseOnChange_NotLocked);
@@ -599,5 +614,14 @@ namespace Fuxion.Test
             Assert.Equal(321, source.Integer_AutoImplemented_WithDefault_RaiseOnChange_NotLocked);
         }
         #endregion
+        [Fact]
+        public void Notifier_VirtualProperty()
+        {
+            var mock = new DerivedNotifierMock();
+            //(mock as NotifierMock).Integer_Virtual_AutoImplemented_WithoutDefault_RaiseOnChange_NotLocked = 123;
+            mock.Integer_Virtual_AutoImplemented_WithoutDefault_RaiseOnChange_NotLocked = 123;
+
+            Assert.Equal(123, mock.Integer_Virtual_AutoImplemented_WithoutDefault_RaiseOnChange_NotLocked);
+        }
     }
 }

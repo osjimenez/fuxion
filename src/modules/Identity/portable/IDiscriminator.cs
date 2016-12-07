@@ -129,7 +129,7 @@ namespace Fuxion.Identity
         public static TypeDiscriminator Create(Type type)
         {
             if (KnownTypes == null) throw new ArgumentException($"You must set '{nameof(TypeDiscriminator)}.{nameof(KnownTypes)}' before create any discriminator");
-            var id = type.GetSignature(true);
+            //var id = type.GetSignature(true);
             var @base = type.GetTypeInfo().BaseType;
             var bases = new List<Type>();
             while (@base != null && @base != typeof(object))
