@@ -9,13 +9,13 @@ namespace Fuxion.Web
     public class ServiceException : FuxionException
     {
         public ServiceException(ErrorResponse response)
-            : base(response.UserMessages != null
-                  ? response.UserMessages.Aggregate("", (p, a) => a + "\r\n" + p, a => a.Trim('\r', '\n'))
-                  : response.UserMessagesTitle)
+            : base(response.Messages != null
+                  ? response.Messages.Aggregate("", (p, a) => a + "\r\n" + p, a => a.Trim('\r', '\n'))
+                  : response.Title)
         {
             Response = response;
-            Title = response.UserMessagesTitle;
-            Messages = response.UserMessages;
+            Title = response.Title;
+            Messages = response.Messages;
         }
         public ServiceException(string title, IEnumerable<string> messages)
             : base(messages != null

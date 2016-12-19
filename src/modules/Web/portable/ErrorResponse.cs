@@ -11,11 +11,11 @@ namespace Fuxion.Web
         public ErrorResponse() { }
         public ErrorResponse(string userMessageTitle, IEnumerable<string> userMessages)
         {
-            UserMessagesTitle = userMessageTitle;
-            UserMessages = userMessages;
+            Title = userMessageTitle;
+            Messages = userMessages;
         }
-        public string UserMessagesTitle { get; set; }
-        public IEnumerable<string> UserMessages { get; set; }
+        public string Title { get; set; }
+        public IEnumerable<string> Messages { get; set; }
         public static ErrorResponse Create(Exception ex, string userMessageTitle, IEnumerable<string> userMessages, string debugMessage)
         {
             return ex != null
