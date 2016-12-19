@@ -13,6 +13,18 @@ namespace Fuxion.Identity
         public string Key { get; set; }
         public IIdentity Value { get; set; }
     }
+    //public class IdentityManagerRepository
+    //{
+    //    public IdentityManagerRepository(
+    //        IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity> identityRepository
+    //        )
+    //    {
+    //        this.identityRepository = identityRepository;
+    //    }
+    //    IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity> identityRepository;
+    //    public IIdentity Find(string username) { return identityRepository.Find(username); }
+    //    public IEnumerable<IRol> GetRols() { return identityRepository.Find(username); }
+    //}
     public class IdentityManager
     {
         public IdentityManager(IPasswordProvider passwordProvider, ICurrentUserNameProvider currentUserNameProvider, IKeyValueRepository<IdentityKeyValueRepositoryValue,string, IIdentity> repository)//, IPrincipalProvider principalProvider)
@@ -21,19 +33,13 @@ namespace Fuxion.Identity
             CurrentUserNameProvider = currentUserNameProvider;
             Repository = repository;
         }
-        //public bool IsAuthenticated { get { return Current != null; } }
-        //public IIdentity Current { get; private set; }
-        public IIdentity GetCurrent()
-        {
-            return Repository.Find(CurrentUserNameProvider.GetCurrentUserName());
-        }
+        public IIdentity GetCurrent() => Repository.Find(CurrentUserNameProvider.GetCurrentUserName());
         public event EventHandler<EventArgs<IIdentity>> CurrentChanged;
         public void RaiseCurrentChanged() { CurrentChanged?.Invoke(this, new EventArgs<IIdentity>(GetCurrent())); }
         public ICurrentUserNameProvider CurrentUserNameProvider { get; private set; }
-        //public static IPrincipalProvider PrincipalProvider { get; private set; }
         public IPasswordProvider PasswordProvider { get; private set; }
         public IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity> Repository { get; private set; }
-        public bool Login(string username, string password, bool changeCurrentIdentity = true)
+        public bool Login(string username, string password)
         {
             Printer.Print($"Validando credenciales\r\n   Usuario: {username}\r\n   Contraseña: {password}\r\n");
             if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
@@ -48,7 +54,6 @@ namespace Fuxion.Identity
                 return false;
             }
             var res = PasswordProvider.Verify(password, ide.PasswordHash, ide.PasswordSalt);
-            //if (changeCurrentIdentity) Current = ide;
             if (res)
             {
                 Printer.Print($"Resultado: VALIDO");

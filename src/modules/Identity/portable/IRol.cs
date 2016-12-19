@@ -238,7 +238,7 @@ namespace Fuxion.Identity
         }
         private static IPermission[] SearchForDeniedPermissions(this IRol me, IFunction function, IDiscriminator[] discriminators, Action<string, bool> console)
         {
-            Action<string, bool> con = (m, i) => { if (console != null) console(m, i); };
+            Action<string, bool> con = (m, i) => { console?.Invoke(m, i); };
             con($"SearchForDeniedPermissions:", true);
             con($"---Rol: {me.Name}", true);
             con($"---Funcion: {function.Name}", true);

@@ -103,7 +103,7 @@
     <Compile Include="Json.test.cs" />
     <Compile Include="LogTest.cs" />
     <Compile Include="MemoryKeyValueRepositoryTest.cs" />
-    <Compile Include="NotifierTest.cs" />
+    <Compile Include="Notifier.test.cs" />
     <Compile Include="Patchable.cs" />
     <Compile Include="RemoveOutliersTest.cs" />
     <Compile Include="Singleton.cs" />

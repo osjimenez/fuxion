@@ -115,13 +115,17 @@ namespace Fuxion.Identity
         }
         public Type Type { get; set; }
     }
+    [AttributeUsage(AttributeTargets.Class,AllowMultiple = false, Inherited = false)]
+    public class TypeDiscriminatorAttribute :Attribute
+    {
+        public TypeDiscriminatorAttribute(string id) { Id = id; }
+        public string Id { get; set; }
+    }
     [Discriminator("TYPE")]
     [DebuggerDisplay("{" + nameof(Name) + "}")]
     public class TypeDiscriminator : IDiscriminator<string, string>
     {
-        private TypeDiscriminator()
-        {
-        }
+        private TypeDiscriminator() { }
         public static string DiscriminatorTypeId { get; set; } = "TYPE";
         public static string DiscriminatorTypeName { get; set; } = "TYPE";
         public static Type[] KnownTypes { get; set; }
@@ -129,7 +133,7 @@ namespace Fuxion.Identity
         public static TypeDiscriminator Create(Type type)
         {
             if (KnownTypes == null) throw new ArgumentException($"You must set '{nameof(TypeDiscriminator)}.{nameof(KnownTypes)}' before create any discriminator");
-            var id = type.GetSignature(true);
+            //var id = type.GetSignature(true);
             var @base = type.GetTypeInfo().BaseType;
             var bases = new List<Type>();
             while (@base != null && @base != typeof(object))
@@ -153,6 +157,54 @@ namespace Fuxion.Identity
             };
             return res;
         }
+
+
+
+
+        class Entry
+        {
+            public Type Type { get; set; }
+            public TypeDiscriminator Discriminator { get; set; }
+        }
+        static List<Entry> entries = new List<Entry>();
+        public static void Register(params Type[] types)
+        {
+            foreach(var type in types)
+            {
+                // Calculo el id para este tipo
+                var id = GetIdFunction(type);
+                if(FromId(id) != null) throw new Dup
+
+                // Creo la entrada con el tipo
+                var ent = new Entry { Type = type };
+
+                var inclusions = entries.Where(e => e.Type.GetTypeInfo().IsSubclassOf(type)).Select(e => e.Discriminator);
+                var exclusions = entries.Where(e => type.GetTypeInfo().IsSubclassOf(e.Type)).Select(e => e.Discriminator);
+
+                ent.Discriminator = new TypeDiscriminator
+                {
+                    Id = GetIdFunction(type),
+                    Name = GetNameFunction(type),
+                    TypeId = DiscriminatorTypeId,
+                    TypeName = DiscriminatorTypeName,
+                    Inclusions = inclusions,
+                    Exclusions = exclusions
+                };
+                entries.Add(ent);
+            }
+        }
+        public static void ClearAllRegisters() => entries.Clear();
+        public static TypeDiscriminator FromType<T>() => FromType(typeof(T));
+        public static TypeDiscriminator FromType(Type type)
+        {
+            var ent = entries.FirstOrDefault(e => e.Type == type);
+            if (ent == null) throw new KeyNotFoundException($"The type '{type.FullName}' was not registered. Use '{nameof(TypeDiscriminator)}.{nameof(Register)}' to register it.");
+            return ent.Discriminator;
+        }
+        public static TypeDiscriminator FromId(string id)
+        {
+            return entries.FirstOrDefault(e => e.Discriminator.Id == id)?.Discriminator;
+        }
         //public static TypeDiscriminator Create(string typeFullName, params Assembly[] assemblies)
         //{
         //    //var asss = AppDomain.CurrentDomain.GetAssemblies();
@@ -160,7 +212,12 @@ namespace Fuxion.Identity
         //    var ass = assemblies.FirstOrDefault(a => a.GetName().Name == assName);
         //    return Create(ass.GetType(typeFullName));
         //}
-        public static Func<Type, string> GetIdFunction { get; set; } = type => type.GetSignature(true);
+        public static Func<Type, string> GetIdFunction { get; set; } = type =>
+        {
+            var att = type.GetTypeInfo().GetCustomAttribute<TypeDiscriminatorAttribute>(false, false, true);
+            if (att != null) return att.Id;
+            return type.GetSignature(true);
+        };
         public static Func<Type, string> GetNameFunction { get; set; } = type => type.Name;
 
         public string Id { get; private set; }

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 namespace Fuxion.Identity.Test
 {
-    public class LocationList : List<Location>
+    public class LocationList : List<Entity.Location>
     {
         public LocationList()
         {
@@ -24,7 +24,7 @@ namespace Fuxion.Identity.Test
             Madrid.Cities = new[] { MadridCity };
             MadridCity.State = Madrid;
 
-            AddRange(new Location[] { USA, California, SanFrancisco, LosAngeles, NewYork, NewYorkCity, Spain, Madrid, MadridCity });
+            AddRange(new Entity.Location[] { USA, California, SanFrancisco, LosAngeles, NewYork, NewYorkCity, Spain, Madrid, MadridCity });
         }
         public Country USA = new Country { Id = "US", Name = "USA" };
 

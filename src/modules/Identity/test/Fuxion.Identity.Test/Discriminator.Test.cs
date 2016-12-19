@@ -8,7 +8,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Fuxion.Identity.Test.Entity;
 using static Fuxion.Identity.Functions;
 
 namespace Fuxion.Identity.Test
