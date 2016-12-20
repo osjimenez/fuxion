@@ -9,25 +9,25 @@ namespace Fuxion.Web
     public class DebugErrorResponse : ErrorResponse
     {
         public DebugErrorResponse() { }
-        internal DebugErrorResponse(Exception ex, string userMessageTitle, IEnumerable<string> userMessages, string debugMessage)
-            : base(userMessageTitle, userMessages)
+        internal DebugErrorResponse(Exception ex, string title, IEnumerable<string> messages, string debugMessage)
+            : base(title, messages)
         {
             InnerExceptions = new List<DebugErrorResponse>();
             DebugMessage = debugMessage;
-            Type = ex.GetType().FullName;
-            Message = ex.Message;
-            StackTrace = ex.StackTrace.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+            ExceptionType = ex.GetType().FullName;
+            ExceptionMessage = ex.Message;
+            ExceptionStackTrace = ex.StackTrace.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
             var aux = ex.InnerException;
             while (aux != null)
             {
-                InnerExceptions.Add(new DebugErrorResponse(aux, "", null, null));
+                InnerExceptions.Add(new DebugErrorResponse(aux, title, messages, debugMessage));
                 aux = aux.InnerException;
             }
         }
         public string DebugMessage { get; set; }
-        public string Type { get; set; }
-        public string Message { get; set; }
-        public string[] StackTrace { get; set; }
+        public string ExceptionType { get; set; }
+        public string ExceptionMessage { get; set; }
+        public string[] ExceptionStackTrace { get; set; }
         public List<DebugErrorResponse> InnerExceptions { get; set; }
     }
 }

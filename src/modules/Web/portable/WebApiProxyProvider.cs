@@ -70,7 +70,7 @@ namespace Fuxion.Web
                     try
                     {
                         var response = JsonConvert.DeserializeObject<DebugErrorResponse>(ex.Call.ErrorResponseBody);
-                        if (response.StackTrace == null)
+                        if (response.ExceptionStackTrace == null)
                             throw new ServiceException(JsonConvert.DeserializeObject<ErrorResponse>(ex.Call.ErrorResponseBody));
                         throw new ServiceException(response);
                     }
