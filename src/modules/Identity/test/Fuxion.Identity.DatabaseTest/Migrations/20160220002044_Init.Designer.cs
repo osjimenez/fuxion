@@ -1,9 +1,9 @@
 using System;
-using Microsoft.Data.Entity;
-using Microsoft.Data.Entity.Infrastructure;
-using Microsoft.Data.Entity.Metadata;
-using Microsoft.Data.Entity.Migrations;
 using Fuxion.Identity.DatabaseTest;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Fuxion.Identity.DatabaseTest.Migrations
 {
@@ -14,8 +14,8 @@ namespace Fuxion.Identity.DatabaseTest.Migrations
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
-                .Annotation("ProductVersion", "7.0.0-beta8-15964")
-                .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "7.0.0-beta8-15964")
+                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Fuxion.Identity.Test.Entity.Discriminator", b =>
                 {
@@ -25,7 +25,7 @@ namespace Fuxion.Identity.DatabaseTest.Migrations
 
                     b.HasKey("Id");
 
-                    b.Annotation("Relational:TableName", "Discriminator");
+                    b.HasAnnotation("Relational:TableName", "Discriminator");
                 });
 
             modelBuilder.Entity("Fuxion.Identity.Test.Entity.Group", b =>
@@ -36,7 +36,7 @@ namespace Fuxion.Identity.DatabaseTest.Migrations
 
                     b.HasKey("Id");
 
-                    b.Annotation("Relational:TableName", "Group");
+                    b.HasAnnotation("Relational:TableName", "Group");
                 });
 
             modelBuilder.Entity("Fuxion.Identity.Test.Entity.Identity", b =>
@@ -53,7 +53,7 @@ namespace Fuxion.Identity.DatabaseTest.Migrations
 
                     b.HasKey("Id");
 
-                    b.Annotation("Relational:TableName", "Identity");
+                    b.HasAnnotation("Relational:TableName", "Identity");
                 });
 
             modelBuilder.Entity("Fuxion.Identity.Test.Entity.Permission", b =>
@@ -68,7 +68,7 @@ namespace Fuxion.Identity.DatabaseTest.Migrations
 
                     b.HasKey("Id");
 
-                    b.Annotation("Relational:TableName", "Permission");
+                    b.HasAnnotation("Relational:TableName", "Permission");
                 });
 
             modelBuilder.Entity("Fuxion.Identity.Test.Entity.Rol", b =>
@@ -78,8 +78,7 @@ namespace Fuxion.Identity.DatabaseTest.Migrations
                     b.Property<string>("Name");
 
                     b.HasKey("Id");
-
-                    b.Annotation("Relational:TableName", "Rol");
+                    b. HasAnnotation("Relational:TableName", "Rol");
                 });
 
             modelBuilder.Entity("Fuxion.Identity.Test.Entity.RolGroup", b =>
@@ -105,40 +104,40 @@ namespace Fuxion.Identity.DatabaseTest.Migrations
 
                     b.HasKey("Id");
 
-                    b.Annotation("Relational:TableName", "Scope");
+                    b.HasAnnotation("Relational:TableName", "Scope");
                 });
 
             modelBuilder.Entity("Fuxion.Identity.Test.Entity.Permission", b =>
                 {
                     b.HasOne("Fuxion.Identity.Test.Entity.Identity")
                         .WithMany()
-                        .ForeignKey("IdentityId");
+                        .HasForeignKey("IdentityId");
 
                     b.HasOne("Fuxion.Identity.Test.Entity.Rol")
                         .WithMany()
-                        .ForeignKey("RolId");
+                        .HasForeignKey("RolId");
                 });
 
             modelBuilder.Entity("Fuxion.Identity.Test.Entity.RolGroup", b =>
                 {
                     b.HasOne("Fuxion.Identity.Test.Entity.Identity")
                         .WithMany()
-                        .ForeignKey("IdentityId");
+                        .HasForeignKey("IdentityId");
 
                     b.HasOne("Fuxion.Identity.Test.Entity.Group")
                         .WithMany()
-                        .ForeignKey("RolId");
+                        .HasForeignKey("RolId");
                 });
 
             modelBuilder.Entity("Fuxion.Identity.Test.Entity.Scope", b =>
                 {
                     b.HasOne("Fuxion.Identity.Test.Entity.Discriminator")
                         .WithMany()
-                        .ForeignKey("DiscriminatorId");
+                        .HasForeignKey("DiscriminatorId");
 
                     b.HasOne("Fuxion.Identity.Test.Entity.Permission")
                         .WithMany()
-                        .ForeignKey("PermissionId");
+                        .HasForeignKey("PermissionId");
                 });
         }
     }

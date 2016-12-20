@@ -7,15 +7,17 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Identity.Test.Entity
 {
-    [Discriminator(TypeId)]
+    [Discriminator("CAT")]
     [Table(nameof(Category))]
-    public partial class Category : Discriminator
+    public class Category : Discriminator
     {
-        const string TypeId = "CAT";
-        protected override object GetTypeId() { return TypeId; }
-        protected override string GetTypeName() { return nameof(Category); }
+        public Category Parent { get; set; }
+        public IEnumerable<Category> Children { get; set; }
 
-        //protected override IList<Discriminator> Exclusions { get { return null; } }
-        //protected override IList<Discriminator> Inclusions { get { return null; } }
+        protected sealed override string GetTypeId() => "CAT";
+        protected sealed override string GetTypeName() => nameof(Category);
+
+        protected override IEnumerable<Discriminator> GetInclusions() => Children;
+        protected override IEnumerable<Discriminator> GetExclusions() => new[] { Parent };
     }
 }

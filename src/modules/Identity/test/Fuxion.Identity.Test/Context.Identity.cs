@@ -12,7 +12,22 @@ namespace Fuxion.Identity.Test
             IPasswordProvider pp = new PasswordProvider();
             // Root
             Root.Groups = new[] { Groups.Admins };
-            Root.Permissions = new Permission[] { };
+            Root.Permissions = new Permission[] {
+                new Permission
+                {
+                    Value = true,
+                    Function = READ,
+                    Rol = Root,
+                    //Scopes = new[]
+                    //{
+                    //    new Scope
+                    //    {
+                    //        Discriminator = Circles.Circle_2,
+                    //        Propagation = ScopePropagation.ToMe
+                    //    }
+                    //}
+                }
+            };
             byte[] salt, hash;
             pp.Generate("root", out salt, out hash);
             Root.PasswordSalt = salt;
@@ -26,14 +41,14 @@ namespace Fuxion.Identity.Test
                     Value = true,
                     Function = READ,
                     Rol = Customer,
-                    Scopes = new[]
-                    {
-                        new Scope
-                        {
-                            Discriminator = Circles.Circle_1,
-                            Propagation = ScopePropagation.ToMe
-                        }
-                    }
+                    //Scopes = new[]
+                    //{
+                    //    new Scope
+                    //    {
+                    //        Discriminator = Circles.Circle_1,
+                    //        Propagation = ScopePropagation.ToMe
+                    //    }
+                    //}
                 }
             };
             pp.Generate("cus", out salt, out hash);

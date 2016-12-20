@@ -17,7 +17,7 @@ namespace Fuxion.Identity.Test
         public Document Doc_1 = new WordDocument
         {
             Id = DOC_1,
-            CircleId = Circles.Circle_1.Id
+            //CircleId = Circles.Circle_1.Id
         };
     }
 }

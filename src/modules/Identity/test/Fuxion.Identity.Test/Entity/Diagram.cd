@@ -1,36 +1,35 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="Fuxion.Identity.Test.Entity.City" Collapsed="true">
-    <Position X="5.75" Y="4.5" Width="1.5" />
+    <Position X="5.75" Y="4.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAACAAgAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
       <FileName>Entity\City.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Fuxion.Identity.Test.Entity.Country" Collapsed="true">
-    <Position X="4" Y="4.5" Width="1.5" />
+    <Position X="4" Y="4.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAACAAgAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
       <FileName>Entity\Country.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Fuxion.Identity.Test.Entity.Location" Collapsed="true">
-    <Position X="2.25" Y="3.25" Width="1.5" />
+    <Position X="2.25" Y="3" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAUAEAAAAsAAACAAhAAAEBAAAAAAAAAgAgAAICAAAAA=</HashCode>
+      <HashCode>AAEAAAAAAIAAACAAgAAAAAAAAAAAAAAAAAAAICAAAAA=</HashCode>
       <FileName>Entity\Location.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" />
   </Class>
   <Class Name="Fuxion.Identity.Test.Entity.Base" Collapsed="true">
     <Position X="0.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Entity\Base.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Fuxion.Identity.Test.Entity.Group" Collapsed="true">
-    <Position X="4" Y="10.75" Width="1.5" />
+    <Position X="4" Y="7" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAACAAAAAAAg=</HashCode>
       <FileName>Entity\Group.cs</FileName>
@@ -38,14 +37,14 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Fuxion.Identity.Test.Entity.Category" Collapsed="true">
-    <Position X="7.5" Y="3.25" Width="1.5" />
+    <Position X="7.5" Y="3" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAEAAAAAAIAAAAAAAAAAAAAAAAAAAAAgAAAAICAAAAA=</HashCode>
+      <HashCode>AAEAAAAAAIAAAAAAAAAEQAAAAAAAAAAAAAAAICAAAAA=</HashCode>
       <FileName>Entity\Category.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Fuxion.Identity.Test.Entity.Identity" Collapsed="true">
-    <Position X="2.25" Y="10.75" Width="1.5" />
+    <Position X="2.25" Y="7" Width="1.5" />
     <TypeIdentifier>
       <HashCode>EACAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
       <FileName>Entity\Identity.cs</FileName>
@@ -53,7 +52,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Fuxion.Identity.Test.Entity.Permission" Collapsed="true">
-    <Position X="14.5" Y="1.75" Width="1.5" />
+    <Position X="5.75" Y="1.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAACAEAAAAAEIAAAAAAgAAAAAhAAAAAAA=</HashCode>
       <FileName>Entity\Permission.cs</FileName>
@@ -61,7 +60,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Fuxion.Identity.Test.Entity.Rol" Collapsed="true">
-    <Position X="2.25" Y="9.5" Width="1.5" />
+    <Position X="2.25" Y="5.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAEAAAAAAAAAAAAAAAAQAAAAAAAAAEACAAAAAAAg=</HashCode>
       <FileName>Entity\Rol.cs</FileName>
@@ -69,7 +68,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Fuxion.Identity.Test.Entity.Scope" Collapsed="true">
-    <Position X="12.75" Y="1.75" Width="1.5" />
+    <Position X="7.5" Y="1.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AIAAAAAIAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAI=</HashCode>
       <FileName>Entity\Scope.cs</FileName>
@@ -77,45 +76,37 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Fuxion.Identity.Test.Entity.State" Collapsed="true">
-    <Position X="2.25" Y="4.5" Width="1.5" />
+    <Position X="2.25" Y="4.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>EAAAAAAAAAAAACAAgAAAAAAAAAIAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Entity\State.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Fuxion.Identity.Test.Entity.Tag" Collapsed="true">
-    <Position X="9.25" Y="3.25" Width="1.5" />
+    <Position X="9.25" Y="3" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAEAAAAAAIAAAAAAAAAAAAAAAAAAAAAgAAAAICAAAAA=</HashCode>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
       <FileName>Entity\Tag.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Fuxion.Identity.Test.Entity.Circle" Collapsed="true">
-    <Position X="11" Y="3.25" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAEAAAAAAIAACAAAAAAAEhAAAAAAAAAgAAAAICAAAAg=</HashCode>
-      <FileName>Entity\Circle.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
-  </Class>
   <Class Name="Fuxion.Identity.Test.Entity.Song" Collapsed="true">
-    <Position X="9.25" Y="8.25" Width="1.5" />
+    <Position X="9.25" Y="10.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACIAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAA=</HashCode>
       <FileName>Entity\Song.cs</FileName>
       <NewMemberFileName>Entity\Demo.cs</NewMemberFileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Fuxion.Identity.Test.Entity.Album" Collapsed="true">
-    <Position X="11" Y="8.25" Width="1.5" />
+    <Position X="11" Y="10.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAIAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Entity\Album.cs</FileName>
       <NewMemberFileName>Entity\Demo.cs</NewMemberFileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Fuxion.Identity.Test.Entity.File" Collapsed="true">
-    <Position X="2.25" Y="5.75" Width="1.5" />
+    <Position X="2.25" Y="8.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Entity\File.cs</FileName>
@@ -123,110 +114,110 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Fuxion.Identity.Test.Entity.Media" Collapsed="true">
-    <Position X="7.5" Y="7" Width="1.5" />
+    <Position X="7.5" Y="9.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Entity\Media.cs</FileName>
       <NewMemberFileName>Entity\Demo.cs</NewMemberFileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Fuxion.Identity.Test.Entity.Actor" Collapsed="true">
-    <Position X="2.25" Y="13.25" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Entity\Actor.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Fuxion.Identity.Test.Entity.Creator" Collapsed="true">
-    <Position X="2.25" Y="12" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Entity\Creator.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="Fuxion.Identity.Test.Entity.Document" Collapsed="true">
-    <Position X="2.25" Y="7" Width="1.5" />
+    <Position X="2.25" Y="9.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Entity\Document.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Fuxion.Identity.Test.Entity.ExcelDocument" Collapsed="true">
-    <Position X="4" Y="8.25" Width="1.5" />
+    <Position X="4" Y="10.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Entity\ExcelDocument.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Fuxion.Identity.Test.Entity.Film" Collapsed="true">
-    <Position X="7.5" Y="8.25" Width="1.5" />
+    <Position X="7.5" Y="10.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAABAAAACAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Entity\Film.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Fuxion.Identity.Test.Entity.PdfDocument" Collapsed="true">
-    <Position X="5.75" Y="8.25" Width="1.5" />
+    <Position X="5.75" Y="10.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Entity\PdfDocument.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Fuxion.Identity.Test.Entity.Singer" Collapsed="true">
-    <Position X="4" Y="13.25" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Entity\Singer.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="Fuxion.Identity.Test.Entity.Software" Collapsed="true">
-    <Position X="12.75" Y="8.25" Width="1.5" />
+    <Position X="12.75" Y="10.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Entity\Software.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Fuxion.Identity.Test.Entity.WordDocument" Collapsed="true">
-    <Position X="2.25" Y="8.25" Width="1.5" />
+    <Position X="2.25" Y="10.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Entity\WordDocument.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Fuxion.Identity.Test.Entity.FilePackage" Collapsed="true">
-    <Position X="11" Y="7" Width="1.5" />
+    <Position X="11" Y="9.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIA=</HashCode>
       <FileName>Entity\FilePackage.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Fuxion.Identity.Test.Entity.Writer" Collapsed="true">
-    <Position X="5.75" Y="13.25" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Entity\Writer.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="Fuxion.Identity.Test.Entity.Discriminator" Collapsed="true">
     <Position X="2.25" Y="1.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAUAEAAAAsAAAAAEBAAAAAQAAAAAAAAAAAAAICAAAAA=</HashCode>
+      <HashCode>AAUAEAAAAsAACAAEBAAAEBAAAAAAAAAAAAAAICAAAAA=</HashCode>
       <FileName>Entity\Discriminator.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Fuxion.Identity.Test.Entity.Screenwriter" Collapsed="true">
-    <Position X="7.5" Y="13.25" Width="1.5" />
+  <Class Name="Fuxion.Identity.Test.Entity.Person" Collapsed="true">
+    <Position X="5.75" Y="5.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Entity\Screenwriter.cs</FileName>
+      <HashCode>EAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entity\Person.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Fuxion.Identity.Test.Entity.FilmDirector" Collapsed="true">
-    <Position X="9.25" Y="13.25" Width="1.5" />
+  <Class Name="Fuxion.Identity.Test.Entity.Skill" Collapsed="true">
+    <Position X="7.5" Y="5.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Entity\FilmDirector.cs</FileName>
+      <FileName>Entity\Skill.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Entity.ActorSkill" Collapsed="true">
+    <Position X="7.5" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entity\Skill.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Entity.FilmDirectorSkill" Collapsed="true">
+    <Position X="12.75" Y="7" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entity\Skill.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Entity.SingerSkill" Collapsed="true">
+    <Position X="9.25" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entity\Skill.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Entity.WriterSkill" Collapsed="true">
+    <Position X="11" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entity\Skill.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Font Name="Consolas" Size="9" />

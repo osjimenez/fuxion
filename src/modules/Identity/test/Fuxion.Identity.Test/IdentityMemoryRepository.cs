@@ -15,7 +15,7 @@ namespace Fuxion.Identity.Test
     public interface IIdentityTestRepository {
         IEnumerable<Album> Album { get; }
         IEnumerable<Song> Song { get; }
-        IEnumerable<Circle> Circle { get; }
+        //IEnumerable<Circle> Circle { get; }
         IEnumerable<Group> Group { get; }
         IEnumerable<Document> Document { get; }
         IEnumerable<T> GetByType<T>();
@@ -24,16 +24,16 @@ namespace Fuxion.Identity.Test
     {
         public IEnumerable<Album> Album { get { return Albums; } }
         public IEnumerable<Song> Song { get { return Songs; } }
-        public IEnumerable<Circle> Circle { get { return Circles; } }
+        //public IEnumerable<Circle> Circle { get { return Circles; } }
         public IEnumerable<Group> Group { get { return Groups; } }
         public IEnumerable<Document> Document { get { return Documents; } }
 
         public IEnumerable<T> GetByType<T>()
         {
-            if (typeof(T) == typeof(Album)) return (IEnumerable<T>)Album;
-            if (typeof(T) == typeof(Song)) return (IEnumerable<T>)Song;
-            if (typeof(T) == typeof(Circle)) return (IEnumerable<T>)Circle;
-            if (typeof(T) == typeof(Group)) return (IEnumerable<T>)Group;
+            if (typeof(T) == typeof(Album))  return (IEnumerable<T>)Album;
+            if (typeof(T) == typeof(Song))   return (IEnumerable<T>)Song;
+            //if (typeof(T) == typeof(Circle)) return (IEnumerable<T>)Circle;
+            if (typeof(T) == typeof(Group))  return (IEnumerable<T>)Group;
             throw new KeyNotFoundException();
         }
 

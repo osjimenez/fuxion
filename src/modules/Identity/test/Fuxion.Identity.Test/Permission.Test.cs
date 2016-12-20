@@ -1,110 +1,121 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Fuxion.Identity.Functions;
 using Fuxion.Identity.Test.Mocks;
 using Fuxion.Identity.Test.Entity;
 using static Fuxion.Identity.Test.Context;
+using Xunit;
 
 namespace Fuxion.Identity.Test
 {
-
-    [TestClass]
     public class PermissionTest : BaseTestClass
     {
+        [Fact]
+        public void Oka()
+        {
+            var per = new Permission
+            {
+                Id="oka",
+                Function=ADMIN,
+                Value=true,
+                
+            };
+            
+        }
         //GuidFunctionGraph functions = new GuidFunctionGraph();
-        [TestMethod]
+        [Fact]
         public void WhenPermission_MatchByFunction()
         {
             // Un permiso de concesion para editar algo implicará que tambien puedo leerlo
-            Assert.IsTrue(new Permission { Value = true, Function = Edit.Id.ToString() }.MatchByFunction(Read));
+            Assert.True(new Permission { Value = true, Function = Edit.Id.ToString() }.MatchByFunction(Read));
             // Un permiso de denegación para leer algo implicará que tampoco puedo editarlo
-            Assert.IsTrue(new Permission { Value = false, Function = Read.Id.ToString() }.MatchByFunction(Edit));
+            Assert.True(new Permission { Value = false, Function = Read.Id.ToString() }.MatchByFunction(Edit));
         }
-        [TestMethod]
+        [Fact(Skip = "Deactivated")]
         public void WhenPermission_MatchByDiscriminatorsType()
         {
-            var Department = Guid.NewGuid();
-            var Location = Guid.NewGuid();
-            var WorkerClass = Guid.NewGuid();
+            //var Department = Guid.NewGuid();
+            //var Location = Guid.NewGuid();
+            //var WorkerClass = Guid.NewGuid();
 
-            Func<Guid> x = () => Guid.NewGuid(); // x() representa cualquier valor, no es relevante
-            var depId = x();
-            var locId = x();
-            // CASE 1
-            // Los discriminadores encajan exacatamente, el permiso cumple
-            Assert.IsTrue(
-                new Permission
-                {
-                    Value = true,
-                    Function = Read.Id.ToString(),
-                    Scopes = new[] {
-                        // Yo tengo 'Department' y 'Location'
-                        new Scope { Discriminator =  Circles.Circle_1 },
-                        //new Scope(new GuidDiscriminator(x(), "", Department, "Department"), 0),
-                        new Scope { Discriminator = Locations.USA }
-                    }
-                }.MatchByDiscriminatorsType(new IDiscriminator[] {
-                    Circles.Circle_1,
-                    Locations.USA
-                    // Me presentan 'Department' y 'Location'
-                }));
-            // CASE 2
-            // Faltan discriminadores, se han presentado una serie de discriminadores, pero este permiso tiene mas, no cumple
-            Assert.IsFalse(
-                new Permission
-                {
-                    Value = true,
-                    Function = Read.Id.ToString(),
-                    Scopes = new[] {
-                        // Yo tengo 'Department' y 'Location'
-                        new Scope { Discriminator = Circles.Circle_1 },
-                        new Scope {Discriminator = Locations.USA }
-                    }
-                }.MatchByDiscriminatorsType(new[] {
-                    Circles.Circle_1
-                    // Me presentan 'Department'
-                }));
-            // CASE 3
-            // Sobran discriminadores, se han presentado más discriminadores que los que aplican en este permiso, se ignorarán,
-            // el permiso cumple
-            Assert.IsTrue(
-                new Permission
-                {
-                    Value = true,
-                    Function = Read.Id.ToString(),
-                    Scopes = new[] {
-                        // Yo tengo 'Department' y 'Location'
-                        new Scope { Discriminator = Circles.Circle_1 },
-                        new Scope { Discriminator = Locations.USA } }
-                }.MatchByDiscriminatorsType(new[] {
-                    // Me presentan 'Department', 'Location' y 'WorkerClass'
-                    new GuidDiscriminator(x(), "",Department, "Department"),
-                    new GuidDiscriminator(x(), "",Location, "Location"),
-                    new GuidDiscriminator(x(), "",WorkerClass, "WorkerClass"),
-                }));
-            // CASE 4
-            // Permiso de Root, sin discriminadores
-            Assert.IsTrue(
-                new Permission
-                {
-                    Value = true,
-                    Function = Read.Id.ToString(),
-                    Scopes = new Scope[] {
-                        // Yo no tengo nada
-                    }
-                }.MatchByDiscriminatorsType(new[]
-                {
-                    // Me presentan 'Department', 'Location' y 'WorkerClass'
-                    new GuidDiscriminator(x(), "",  Department, "Department"),
-                    new GuidDiscriminator(x(), "",  Location, "Location"),
-                    new GuidDiscriminator(x(), "",  WorkerClass, "WorkerClass"),
-                }));
+            //Func<Guid> x = () => Guid.NewGuid(); // x() representa cualquier valor, no es relevante
+            //// CASE 1
+            //// Los discriminadores encajan exacatamente, el permiso cumple
+            //Assert.True(
+            //    new Permission
+            //    {
+            //        Value = true,
+            //        Function = Read.Id.ToString(),
+            //        Scopes = new[] {
+            //            // Yo tengo 'Department' y 'Location'
+            //            new Scope { Discriminator =  Circles.Circle_1 },
+            //            //new Scope(new GuidDiscriminator(x(), "", Department, "Department"), 0),
+            //            new Scope { Discriminator = Locations.USA }
+            //        }
+            //    }.MatchByDiscriminatorsType(new IDiscriminator[] {
+            //        Circles.Circle_1,
+            //        Locations.USA
+            //        // Me presentan 'Department' y 'Location'
+            //    }));
+            //// CASE 2
+            //// Faltan discriminadores, se han presentado una serie de discriminadores, pero este permiso tiene mas, no cumple
+            //Assert.False(
+            //    new Permission
+            //    {
+            //        Value = true,
+            //        Function = Read.Id.ToString(),
+            //        Scopes = new[] {
+            //            // Yo tengo 'Department' y 'Location'
+            //            new Scope { Discriminator = Circles.Circle_1 },
+            //            new Scope { Discriminator = Locations.USA }
+            //        }
+            //    }.MatchByDiscriminatorsType(new[] {
+            //        Circles.Circle_1
+            //        // Me presentan 'Department'
+            //    }));
+            //// CASE 3
+            //// Sobran discriminadores, se han presentado más discriminadores que los que aplican en este permiso, se ignorarán,
+            //// el permiso cumple
+            //Assert.True(
+            //    new Permission
+            //    {
+            //        Value = true,
+            //        Function = Read.Id.ToString(),
+            //        Scopes = new[] {
+            //            // Yo tengo 'Department' y 'Location'
+            //            new Scope { Discriminator = Circles.Circle_1 },
+            //            new Scope { Discriminator = Locations.USA } }
+            //    }.MatchByDiscriminatorsType(new IDiscriminator[] {
+            //        // Me presentan 'Department', 'Location' y 'WorkerClass'
+            //        Circles.Circle_1,
+            //        Locations.USA,
+                    
+            //        //new GuidDiscriminator(x(), "",Department, "CIR"),
+            //        //new GuidDiscriminator(x(), "",Location, "Location"),
+            //        //new GuidDiscriminator(x(), "",WorkerClass, "WorkerClass"),
+            //    }));
+            //// CASE 4
+            //// Permiso de Root, sin discriminadores
+            //Assert.True(
+            //    new Permission
+            //    {
+            //        Value = true,
+            //        Function = Read.Id.ToString(),
+            //        Scopes = new Scope[] {
+            //            // Yo no tengo nada
+            //        }
+            //    }.MatchByDiscriminatorsType(new[]
+            //    {
+            //        // Me presentan 'Department', 'Location' y 'WorkerClass'
+            //        new GuidDiscriminator(x(), "",  Department, "Department"),
+            //        new GuidDiscriminator(x(), "",  Location, "Location"),
+            //        new GuidDiscriminator(x(), "",  WorkerClass, "WorkerClass"),
+            //    }));
         }
-        [TestMethod]
+        [Fact(Skip = "Deactivated")]
         public void WhenPermission_MatchByDiscriminatorsPath()
         {
-            Assert.Inconclusive("Pending refactor code");
+            //Assert.Inconclusive("Pending refactor code");
 
             //var LocationType = Guid.NewGuid();
             //var USA = Guid.NewGuid();
@@ -184,10 +195,10 @@ namespace Fuxion.Identity.Test
         //GuidDiscriminator CaliforniaDiscriminator = new GuidDiscriminator(California, "California", new[] { SanFrancisco }, new[] { USA }, LocationType, "LocationType");
         //GuidDiscriminator USADiscriminator = new GuidDiscriminator(USA, "USA", new { CaliforniaDiscriminator, SanFranciscoDiscriminator }, new Guid[] { }, LocationType, "LocationType");
         //GuidDiscriminator SanFranciscoDiscriminator = new GuidDiscriminator(SanFrancisco, "SanFrancisco", new Guid[] { }, new Guid[] { California, SanFrancisco }, LocationType, "LocationType");
-        [TestMethod]
+        [Fact(Skip = "Deactivated")]
         public void WhenPermission_Match()
         {
-            Assert.Inconclusive("Pending refactor code");
+            //Assert.Inconclusive("Pending refactor code");
 
             //var LocationType = Guid.NewGuid();
             //var USA = Guid.NewGuid();
@@ -227,10 +238,10 @@ namespace Fuxion.Identity.Test
             //    $"Si tengo permiso para {nameof(Edit)} en {nameof(California)} y se propaga {propagation}." +
             //    $"¿Debería poder {nameof(Read)} en {nameof(SanFrancisco)}? => SI");
         }
-        [TestMethod]
+        [Fact(Skip = "Deactivated")]
         public void WhenPermission_Match2()
         {
-            Assert.Inconclusive("Pending refactor code");
+            //Assert.Inconclusive("Pending refactor code");
 
             //var LocationType ="LocationType";
             //var USA = "USA";

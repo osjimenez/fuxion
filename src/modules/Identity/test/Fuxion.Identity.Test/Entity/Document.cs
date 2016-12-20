@@ -10,9 +10,9 @@ namespace Fuxion.Identity.Test.Entity
     [Table(nameof(Document))]
     public abstract class Document : File
     {
-        public IList<Writer> Authors { get; set; }
+        //public IList<Writer> Authors { get; set; }
 
-        [DiscriminatedBy(typeof(Circle))]
-        public string CircleId { get; set; }
+        //[DiscriminatedBy(typeof(Circle))]
+        //public string CircleId { get; set; }
     }
 }

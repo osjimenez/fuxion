@@ -16,9 +16,9 @@ namespace Fuxion.Identity.DatabaseTest
     {
         public IdentityManagerTest()
         {
-            TypeDiscriminator.KnownTypes = AppDomain.CurrentDomain.GetAssemblies()
-                .Where(a => a.FullName.StartsWith("Fuxion"))
-                .SelectMany(a => a.DefinedTypes).ToArray();
+            //TypeDiscriminator.KnownTypes = AppDomain.CurrentDomain.GetAssemblies()
+            //    .Where(a => a.FullName.StartsWith("Fuxion"))
+            //    .SelectMany(a => a.DefinedTypes).ToArray();
             var rep = new IdentityDatabaseRepository();
             // Uncomment EnsureDeleted() call to clear database
             //rep.Database.EnsureDeleted();

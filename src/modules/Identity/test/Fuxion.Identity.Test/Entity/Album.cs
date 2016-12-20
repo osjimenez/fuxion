@@ -11,6 +11,5 @@ namespace Fuxion.Identity.Test.Entity
     public class Album : FilePackage
     {
         public IList<Song> Songs { get; set; }
-        public IList<Circle> ShareWith { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Fuxion.Factories;
 using Fuxion.Identity.Test;
+using Fuxion.Identity.Test.Entity;
 using Fuxion.Identity.Test.Helpers;
 using Fuxion.Repositories;
 using SimpleInjector;
@@ -17,9 +18,9 @@ namespace Fuxion.Identity.DatabaseEFTest
         public const string MEMORY = nameof(MEMORY);
         public static void Load(string key)
         {
-            TypeDiscriminator.KnownTypes = AppDomain.CurrentDomain.GetAssemblies()
-                .Where(a => a.FullName.StartsWith("Fuxion"))
-                .SelectMany(a => a.DefinedTypes).ToArray();
+            //TypeDiscriminator.KnownTypes = AppDomain.CurrentDomain.GetAssemblies()
+            //    .Where(a => a.FullName.StartsWith("Fuxion"))
+            //    .SelectMany(a => a.DefinedTypes).ToArray();
             Factory.RemoveAllInjectors();
             if (key == MEMORY)
             {
@@ -32,6 +33,11 @@ namespace Fuxion.Identity.DatabaseEFTest
                     con.RegisterSingleton<IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity>>(rep);
                     con.RegisterSingleton<IIdentityTestRepository>(rep);
                     con.RegisterSingleton<IdentityManager>();
+
+                    var fac = new TypeDiscriminatorFactory();
+                    fac.RegisterTree<Base>(typeof(Base).Assembly.DefinedTypes.ToArray());
+                    con.RegisterSingleton(fac);
+
                     memoryFactory = new SimpleInjectorFactoryInjector(con);
                 }
                 Factory.AddInjector(memoryFactory);
@@ -48,6 +54,11 @@ namespace Fuxion.Identity.DatabaseEFTest
                     con.RegisterSingleton<IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity>>(new MemoryCachedKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity>(rep));
                     con.RegisterSingleton<IIdentityTestRepository>(rep);
                     con.RegisterSingleton<IdentityManager>();
+
+                    var fac = new TypeDiscriminatorFactory();
+                    fac.RegisterTree<Base>(typeof(Base).Assembly.DefinedTypes.ToArray());
+                    con.RegisterSingleton(fac);
+
                     databaseFactory = new SimpleInjectorFactoryInjector(con);
                 }
                 Factory.AddInjector(databaseFactory);

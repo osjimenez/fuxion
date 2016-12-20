@@ -6,9 +6,14 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Identity.Test.Entity
 {
+    [Discriminator("LOC")]
     public abstract partial class Location : Discriminator
     {
-        //protected override IList<Discriminator> Exclusions { get { return GetExclusions().Cast<Discriminator>().ToList(); } }
-        //protected override IList<Discriminator> Inclusions { get { return GetInclusions().Cast<Discriminator>().ToList(); } }
+        protected sealed override string GetTypeId() => "LOC";
+        protected sealed override string GetTypeName() => nameof(Location);
+        protected sealed override IEnumerable<Discriminator> GetExclusions() => GetLocationExclusions();
+        protected abstract IEnumerable<Location> GetLocationExclusions();
+        protected sealed override IEnumerable<Discriminator> GetInclusions() => GetLocationInclusions();
+        protected abstract IEnumerable<Location> GetLocationInclusions();
     }
 }

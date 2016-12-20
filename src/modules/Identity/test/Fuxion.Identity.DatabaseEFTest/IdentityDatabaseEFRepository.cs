@@ -30,7 +30,7 @@ namespace Fuxion.Identity.DatabaseEFTest
             context.Identity.AddRange(Identities);
             context.Album.AddRange(Albums);
             context.Song.AddRange(Songs);
-            context.Circle.AddRange(Circles);
+            //context.Circle.AddRange(Circles);
             context.Group.AddRange(Groups);
             context.Document.AddRange(Documents);
             context.SaveChanges();
@@ -52,21 +52,21 @@ namespace Fuxion.Identity.DatabaseEFTest
         public DbSet<Test.Entity.Identity> Identity { get; set; }
         public DbSet<Album> Album { get; set; }
         public DbSet<Song> Song { get; set; }
-        public DbSet<Circle> Circle { get; set; }
+        //public DbSet<Circle> Circle { get; set; }
         public DbSet<Group> Group { get; set; }
         public DbSet<Document> Document { get; set; }
         public IEnumerable<T> GetByType<T>()
         {
             if (typeof(T) == typeof(Album)) return (IEnumerable<T>)Album;
             if (typeof(T) == typeof(Song)) return (IEnumerable<T>)Song;
-            if (typeof(T) == typeof(Circle)) return (IEnumerable<T>)Circle;
+            //if (typeof(T) == typeof(Circle)) return (IEnumerable<T>)Circle;
             if (typeof(T) == typeof(Group)) return (IEnumerable<T>)Group;
             if (typeof(T) == typeof(Document)) return (IEnumerable<T>)Document;
             throw new KeyNotFoundException();
         }
         IEnumerable<Album> IIdentityTestRepository.Album { get { return Album.Include(a => a.Songs); } }
         IEnumerable<Song> IIdentityTestRepository.Song { get { return Song; } }
-        IEnumerable<Circle> IIdentityTestRepository.Circle { get { return Circle; } }
+        //IEnumerable<Circle> IIdentityTestRepository.Circle { get { return Circle; } }
         IEnumerable<Group> IIdentityTestRepository.Group { get { return Group; } }
         IEnumerable<Document> IIdentityTestRepository.Document { get { return Document; } }
 

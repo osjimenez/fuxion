@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Diagnostics;
 using System.Linq.Expressions;
+using Fuxion.Factories;
 
 namespace Fuxion.Identity
 {
@@ -128,7 +129,7 @@ namespace Fuxion.Identity
             Printer.Ident($"{nameof(FilterExpression)} ...", () =>
             {
                 Printer.Print("Type: " + typeof(TEntity).Name);
-                var scopes = me.GetScopes(functions, new[] { TypeDiscriminator.Create(typeof(TEntity)) }).ToList();
+                var scopes = me.GetScopes(functions, new[] { Factory.Get<TypeDiscriminatorFactory>().FromType(typeof(TEntity)) }).ToList();
                 Printer.Print("Scopes:");
                 scopes.Print(PrintMode.Table);
                 var props = typeof(TEntity).GetRuntimeProperties()
@@ -210,7 +211,7 @@ namespace Fuxion.Identity
                 });
                 if (res == null && !scopes.Any())
                 {
-                    if (me.GetPermissions(functions, new[] { TypeDiscriminator.Create(typeof(TEntity)) }).Any())
+                    if (me.GetPermissions(functions, new[] { Factory.Get<TypeDiscriminatorFactory>().FromType(typeof(TEntity)) }).Any())
                     {
                         res = Expression.Lambda<Func<TEntity, bool>>(Expression.Constant(true), Expression.Parameter(typeof(TEntity)));
                     }
@@ -339,11 +340,11 @@ namespace Fuxion.Identity
             var res = forAll
                 ? types.All(t => me.Rol.IsFunctionAssigned(
                     me.Functions.First(),
-                    new[] { TypeDiscriminator.Create(t) },
+                    new[] { Factory.Get<TypeDiscriminatorFactory>().FromType(t) },
                     (m, _) => Debug.WriteLine(m)))
                 : types.Any(t => me.Rol.IsFunctionAssigned(
                     me.Functions.First(),
-                    new[] { TypeDiscriminator.Create(t) },
+                    new[] { Factory.Get<TypeDiscriminatorFactory>().FromType(t) },
                     (m, _) => Debug.WriteLine(m)));
             if (me.ThrowExceptionIfCannot && !res)
                 throw new UnauthorizedAccessException($"The rol '{me.Rol.Name}' cannot '{me.Functions.Aggregate("", (a, c) => a + c.Name + "·", a => a.Trim('·'))}' for the given types '{types}'");

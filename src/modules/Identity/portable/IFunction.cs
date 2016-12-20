@@ -140,7 +140,16 @@ namespace Fuxion.Identity
         }
         public static IFunction AddCustom<T>(T id, IEnumerable<IFunction> inclusions = null, IEnumerable<IFunction> exclusions = null)
         {
-            return dic[id] = new Function<T>(id, inclusions, exclusions);
+            var me = new Function<T>(id, inclusions, exclusions);
+            if (inclusions != null)
+                foreach (var inc in inclusions)
+                    ((Function<T>)dic[inc.Id]).Exclusions = ((Function<T>)dic[inc.Id]).Exclusions.Union(new[] { me });
+                    //((Function<T>)inc).Exclusions = inc.Exclusions.Union(new[] { inc });
+            if (exclusions != null)
+                foreach (var inc in exclusions)
+                    ((Function<T>)dic[inc.Id]).Inclusions = ((Function<T>)dic[inc.Id]).Inclusions.Union(new[] { me });
+                    //((Function<T>)inc).Inclusions = inc.Inclusions.Union(new[] { me });
+            return dic[id] = me;
         }
         [DebuggerDisplay("{" + nameof(Name) + "}")]
         class Function<T> : IFunction<T>

@@ -10,8 +10,8 @@ namespace Fuxion.Identity.Test.Entity
     [Table(nameof(Film))]
     public class Film : Media
     {
-        public IList<Actor> Actors { get; set; }
-        public IList<Screenwriter> Screenwriters { get; set; }
-        public FilmDirector Director { get; set; }
+        //public IList<Actor> Actors { get; set; }
+        //public IList<Screenwriter> Screenwriters { get; set; }
+        //public FilmDirector Director { get; set; }
     }
 }

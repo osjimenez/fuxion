@@ -10,6 +10,6 @@ namespace Fuxion.Identity.Test.Entity
     [Table(nameof(Song))]
     public class Song : Media {
         public IList<Album> Albums { get; set; }
-        public IList<Circle> ShareWith { get; set; }
+        //public IList<Circle> ShareWith { get; set; }
     }
 }
