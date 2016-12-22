@@ -8,13 +8,15 @@ using System.Threading.Tasks;
 namespace Fuxion.Identity.Test.Entity
 {
     [Table(nameof(Scope))]
-    public partial class Scope : Base
+    public class Scope : Base, IScope
     {
-        public Discriminator Discriminator { get; set; }
+        public IDiscriminator Discriminator { get; set; }
         public ScopePropagation Propagation { get; set; }
         public override string ToString()
         {
             return this.ToOneLineString();
         }
+
+        IDiscriminator IScope.Discriminator { get { return Discriminator; } }
     }
 }

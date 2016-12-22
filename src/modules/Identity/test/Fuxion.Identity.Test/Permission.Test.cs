@@ -10,18 +10,6 @@ namespace Fuxion.Identity.Test
 {
     public class PermissionTest : BaseTestClass
     {
-        [Fact]
-        public void Oka()
-        {
-            var per = new Permission
-            {
-                Id="oka",
-                Function=ADMIN,
-                Value=true,
-                
-            };
-            
-        }
         //GuidFunctionGraph functions = new GuidFunctionGraph();
         [Fact]
         public void WhenPermission_MatchByFunction()

@@ -22,11 +22,11 @@ namespace Fuxion.Identity.Test
     }
     public class IdentityMemoryTestRepository : IIdentityTestRepository, IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity>
     {
-        public IEnumerable<Album> Album { get { return Albums; } }
-        public IEnumerable<Song> Song { get { return Songs; } }
+        public IEnumerable<Album> Album { get { return Context.File.Package.Album.GetAll(); } }
+        public IEnumerable<Song> Song { get { return Context.File.Media.Song.GetAll(); } }
         //public IEnumerable<Circle> Circle { get { return Circles; } }
-        public IEnumerable<Group> Group { get { return Groups; } }
-        public IEnumerable<Document> Document { get { return Documents; } }
+        public IEnumerable<Group> Group { get { return Context.Rol.Group.GetAll(); } }
+        public IEnumerable<Document> Document { get { return Context.File.Document.GetAll(); } }
 
         public IEnumerable<T> GetByType<T>()
         {
@@ -38,11 +38,11 @@ namespace Fuxion.Identity.Test
         }
 
         public bool Exist(string key) { return false; }
-        public Task<bool> ExistAsync(string key) { return Task.FromResult(false); }
-        public IIdentity Find(string key) { return Identities.FirstOrDefault(i => i.UserName == key); }
+        public Task<bool> ExistAsync(string key) { return Task.FromResult(Exist(key)); }
+        public IIdentity Find(string key) { return Context.Rol.Identity.GetAll().FirstOrDefault(i => i.UserName == key); }
         public Task<IIdentity> FindAsync(string key) { return Task.FromResult(Find(key)); }
         public IIdentity Get(string key) { return null; }
-        public Task<IIdentity> GetAsync(string key) { return Task.FromResult<IIdentity>(null); }
+        public Task<IIdentity> GetAsync(string key) { return Task.FromResult(Get(key)); }
         public void Remove(string key) { }
         public Task RemoveAsync(string key) { return Task.CompletedTask; }
         public void Set(string key, IIdentity value) { }

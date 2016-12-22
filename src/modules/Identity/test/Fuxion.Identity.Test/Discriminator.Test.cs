@@ -118,36 +118,5 @@ namespace Fuxion.Identity.Test
                 new StringDiscriminator(id1, null, null, id3)),
                 "The comparison should pass if identifications(Id) and type identifications(TypeId) are same");
         }
-        [TestMethod]
-        public void GetScopes_RolFiltered()
-        {
-            Assert.Inconclusive("Refactor pending");
-            //var rol = new Rol
-            //{
-            //    Id = "Tom",
-            //    Permissions = new[] {
-            //        new Permission {
-            //            Value =true,
-            //            Function = Read.Id.ToString(),
-            //            Scopes =new[] {
-            //                new Scope {
-            //                    Discriminator = new Country {
-            //                        Id = "USA",
-            //                        Name = "USA",
-            //                    },
-            //                    Propagation = ScopePropagation.ToMe
-            //                }
-            //            }
-            //        }
-            //    }.ToList()
-            //};
-            
-            //var res = rol.GetScopes(Read, new[] { TypeDiscriminator.Create<Location>() });
-            //Printer.Print($"Se han seleccionado '{res.Count()}' scopes:");
-            //Printer.IdentationLevel++;
-            //foreach (var sco in res)
-            //    Printer.Print(sco.ToString());
-            //Assert.IsTrue(res.Any());
-        }
     }
 }

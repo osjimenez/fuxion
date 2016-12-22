@@ -11,7 +11,7 @@ namespace Fuxion.Identity
         IDiscriminator Discriminator { get; }
         ScopePropagation Propagation { get; }
     }
-    public static class ScopeExtensions
+    public static class IScope_Extensions
     {
         public static string ToOneLineString(this IScope me)
         {
@@ -54,12 +54,6 @@ namespace Fuxion.Identity
                     break;
             }
         }
-    }
-    public enum PrintMode
-    {
-        OneLine,
-        PropertyList,
-        Table
     }
     public class ScopeEqualityComparer : IEqualityComparer<IScope>
     {

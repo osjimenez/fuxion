@@ -341,11 +341,11 @@ namespace Fuxion.Identity
                 ? types.All(t => me.Rol.IsFunctionAssigned(
                     me.Functions.First(),
                     new[] { Factory.Get<TypeDiscriminatorFactory>().FromType(t) },
-                    (m, _) => Debug.WriteLine(m)))
+                    (m, _) => Printer.Print(m)))
                 : types.Any(t => me.Rol.IsFunctionAssigned(
                     me.Functions.First(),
                     new[] { Factory.Get<TypeDiscriminatorFactory>().FromType(t) },
-                    (m, _) => Debug.WriteLine(m)));
+                    (m, _) => Printer.Print(m)));
             if (me.ThrowExceptionIfCannot && !res)
                 throw new UnauthorizedAccessException($"The rol '{me.Rol.Name}' cannot '{me.Functions.Aggregate("", (a, c) => a + c.Name + "·", a => a.Trim('·'))}' for the given types '{types}'");
             return res;

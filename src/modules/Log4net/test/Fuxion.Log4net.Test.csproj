@@ -38,8 +38,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="SimpleInjector, Version=3.2.0.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\SimpleInjector.3.2.0\lib\net45\SimpleInjector.dll</HintPath>
+    <Reference Include="SimpleInjector, Version=3.3.2.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\SimpleInjector.3.3.2\lib\net45\SimpleInjector.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -90,9 +90,9 @@
       <Project>{5761cb44-504f-468b-8263-39f59eebbb17}</Project>
       <Name>Fuxion</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\SimpleInjector\portable\SimpleInjector_.csproj">
+    <ProjectReference Include="..\..\SimpleInjector\portable\Fuxion.SimpleInjector.csproj">
       <Project>{dfe9408b-2bb2-4f86-a1c0-2a050d155f82}</Project>
-      <Name>SimpleInjector_</Name>
+      <Name>Fuxion.SimpleInjector</Name>
     </ProjectReference>
     <ProjectReference Include="..\net45\Fuxion.Log4net.csproj">
       <Project>{1cf0e88a-cd3d-4d49-8650-f5f7ff3a1334}</Project>

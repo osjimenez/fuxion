@@ -38,6 +38,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="SimpleInjector, Version=3.3.2.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\packages\SimpleInjector.3.3.2\lib\net45\SimpleInjector.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
@@ -71,55 +75,17 @@
   </Choose>
   <ItemGroup>
     <Compile Include="BaseTestClass.cs" />
-    <Compile Include="Context.Album.cs" />
-    <Compile Include="Context.Document.cs" />
-    <Compile Include="Context.Group.cs" />
-    <Compile Include="Context.Identity.cs" />
-    <Compile Include="Context.Location.cs" />
-    <Compile Include="Context.Song.cs" />
+    <Compile Include="Context.Test.cs" />
     <Compile Include="Discriminator.Test.cs" />
     <Compile Include="Entity.Test.cs" />
-    <Compile Include="Entity\Album.cs" />
     <Compile Include="Entity\Base.cs" />
-    <Compile Include="Entity\Category.cs" />
-    <Compile Include="Entity\City.cs" />
-    <Compile Include="Entity\Country.cs" />
     <Compile Include="Entity\Discriminator.cs" />
-    <Compile Include="Entity\ExcelDocument.cs" />
     <Compile Include="Entity\Skill.cs" />
     <Compile Include="Entity\File.cs" />
-    <Compile Include="Entity\FilePackage.cs" />
-    <Compile Include="Entity\Film.cs" />
-    <Compile Include="Entity\Group.cs" />
-    <Compile Include="Entity\Group.IGroup.cs">
-      <DependentUpon>Group.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Entity\Identity.cs" />
-    <Compile Include="Entity\Identity.IIdentity.cs">
-      <DependentUpon>Identity.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Entity\Location.cs" />
-    <Compile Include="Entity\Media.cs" />
-    <Compile Include="Entity\PdfDocument.cs" />
     <Compile Include="Entity\Permission.cs" />
-    <Compile Include="Entity\Permission.IPermission.cs">
-      <DependentUpon>Permission.cs</DependentUpon>
-    </Compile>
     <Compile Include="Entity\Person.cs" />
     <Compile Include="Entity\Rol.cs" />
-    <Compile Include="Entity\Rol.IRol.cs">
-      <DependentUpon>Rol.cs</DependentUpon>
-    </Compile>
     <Compile Include="Entity\Scope.cs" />
-    <Compile Include="Entity\Scope.IScope.cs">
-      <DependentUpon>Scope.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Entity\Software.cs" />
-    <Compile Include="Entity\Song.cs" />
-    <Compile Include="Entity\State.cs" />
-    <Compile Include="Entity\Tag.cs" />
-    <Compile Include="Entity\Document.cs" />
-    <Compile Include="Entity\WordDocument.cs" />
     <Compile Include="Function.Test.cs" />
     <Compile Include="Helpers\Bootstrapper.cs" />
     <Compile Include="IdentityMemoryRepository.cs" />
@@ -141,6 +107,10 @@
     <ProjectReference Include="..\..\..\..\core\portable\Fuxion.csproj">
       <Project>{5761cb44-504f-468b-8263-39f59eebbb17}</Project>
       <Name>Fuxion</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\SimpleInjector\portable\Fuxion.SimpleInjector.csproj">
+      <Project>{dfe9408b-2bb2-4f86-a1c0-2a050d155f82}</Project>
+      <Name>Fuxion.SimpleInjector</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\portable\Fuxion.Identity.csproj">
       <Project>{b784238c-90aa-49c0-a4cf-419a9af81021}</Project>

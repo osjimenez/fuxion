@@ -11,6 +11,6 @@ namespace Fuxion.Identity.Test.Entity
     public abstract class Base
     {
         public string Id { get; set; }
-        public string Name { get; set; }
+        public virtual string Name { get; set; }
     }
 }

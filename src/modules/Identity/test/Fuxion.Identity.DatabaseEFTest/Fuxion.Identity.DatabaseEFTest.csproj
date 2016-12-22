@@ -45,8 +45,8 @@
       <HintPath>..\..\..\..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SimpleInjector, Version=3.2.0.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\packages\SimpleInjector.3.2.0\lib\net45\SimpleInjector.dll</HintPath>
+    <Reference Include="SimpleInjector, Version=3.3.2.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\packages\SimpleInjector.3.3.2\lib\net45\SimpleInjector.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -111,9 +111,9 @@
       <Project>{1cf0e88a-cd3d-4d49-8650-f5f7ff3a1334}</Project>
       <Name>Fuxion.Log4net</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\SimpleInjector\portable\SimpleInjector_.csproj">
+    <ProjectReference Include="..\..\..\SimpleInjector\portable\Fuxion.SimpleInjector.csproj">
       <Project>{dfe9408b-2bb2-4f86-a1c0-2a050d155f82}</Project>
-      <Name>SimpleInjector_</Name>
+      <Name>Fuxion.SimpleInjector</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\portable\Fuxion.Identity.csproj">
       <Project>{b784238c-90aa-49c0-a4cf-419a9af81021}</Project>

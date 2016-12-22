@@ -46,17 +46,20 @@
     <Compile Include="FunctionGraph.cs" />
     <Compile Include="FuxionPrincipal.cs" />
     <Compile Include="Helpers\Comparer.cs" />
+    <Compile Include="ICurrentUserNameProvider.cs" />
     <Compile Include="IdentityManager.cs" />
     <Compile Include="IDiscriminator.cs" />
     <Compile Include="IFunction.cs" />
     <Compile Include="IGroup.cs" />
     <Compile Include="IIdentity.cs" />
+    <Compile Include="IPasswordProvider.cs" />
     <Compile Include="IPermission.cs" />
     <Compile Include="IRol.cs" />
     <Compile Include="IScope.cs" />
+    <Compile Include="PrintMode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScopePropagation.cs" />
-    <Compile Include="System-Extensions.cs" />
+    <Compile Include="System_Extensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\core\portable\Fuxion.csproj">

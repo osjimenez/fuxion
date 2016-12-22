@@ -58,8 +58,8 @@
       <HintPath>..\..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SimpleInjector, Version=3.2.0.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\SimpleInjector.3.2.0\lib\net45\SimpleInjector.dll</HintPath>
+    <Reference Include="SimpleInjector, Version=3.3.2.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\SimpleInjector.3.3.2\lib\net45\SimpleInjector.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -162,9 +162,9 @@
       <Project>{c7406922-3198-42d8-80eb-31574b33fc96}</Project>
       <Name>Fuxion.Licensing</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\modules\SimpleInjector\portable\SimpleInjector_.csproj">
+    <ProjectReference Include="..\..\modules\SimpleInjector\portable\Fuxion.SimpleInjector.csproj">
       <Project>{dfe9408b-2bb2-4f86-a1c0-2a050d155f82}</Project>
-      <Name>SimpleInjector_</Name>
+      <Name>Fuxion.SimpleInjector</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\modules\Windows\net45\Fuxion.Windows.csproj">
       <Project>{25b99e1d-a3ba-42f3-b4bf-b6c76e6d84e4}</Project>

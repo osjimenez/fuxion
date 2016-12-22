@@ -27,12 +27,12 @@ namespace Fuxion.Identity.DatabaseEFTest
         }
         protected override void Seed(IdentityDatabaseEFTestRepository context)
         {
-            context.Identity.AddRange(Identities);
-            context.Album.AddRange(Albums);
-            context.Song.AddRange(Songs);
+            //context.Identity.AddRange(Identities);
+            //context.Album.AddRange(Albums);
+            //context.Song.AddRange(Songs);
             //context.Circle.AddRange(Circles);
-            context.Group.AddRange(Groups);
-            context.Document.AddRange(Documents);
+            //context.Group.AddRange(Groups);
+            //context.Document.AddRange(Documents);
             context.SaveChanges();
             base.Seed(context);
         }
@@ -106,7 +106,7 @@ namespace Fuxion.Identity.DatabaseEFTest
                 }
             }
         }
-        private void LoadDiscriminator(Discriminator discriminator)
+        private void LoadDiscriminator(IDiscriminator discriminator)
         {
             if (discriminator is Country)
             {
@@ -159,7 +159,7 @@ namespace Fuxion.Identity.DatabaseEFTest
         }
         public void Remove(string key) { throw new NotImplementedException(); }
         public Task RemoveAsync(string key) { throw new NotImplementedException(); }
-        public new void Set(string key, IIdentity value) { throw new NotImplementedException(); }
+        public void Set(string key, IIdentity value) { throw new NotImplementedException(); }
         public Task SetAsync(string key, IIdentity value) { throw new NotImplementedException(); }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Fuxion.Identity;
+using Fuxion.Identity.Test;
 using Fuxion.Identity.Test.Entity;
 using Fuxion.Identity.Test.Helpers;
 using System;
@@ -24,9 +25,10 @@ namespace Fuxion.Identity.DatabaseTest
             //rep.Database.EnsureDeleted();
             if (rep.Database.EnsureCreated() || !rep.Identity.Any())
             {
-                var iii = Identities.ToArray();
-                rep.Identity.AddRange(Identities);
-                rep.AttachRange(Identities);
+                var ides = Context.Rol.Identity.GetAll();
+                var iii = ides.ToArray();
+                rep.Identity.AddRange(ides);
+                rep.AttachRange(ides);
                 rep.SaveChanges();
             }
         }
@@ -41,22 +43,21 @@ namespace Fuxion.Identity.DatabaseTest
             }
         }
         [Fact]
-        public void Login()
+        public void CheckCredentials()
         {
-            var u = Locations.USA;
             // Check when null values
-            Assert.False(IM.Login(null, null));
-            Assert.False(IM.Login("root", null));
-            Assert.False(IM.Login(null, "root"));
+            Assert.False(IM.CheckCredentials(null, null));
+            Assert.False(IM.CheckCredentials("root", null));
+            Assert.False(IM.CheckCredentials(null, "root"));
             // Check when empty values
-            Assert.False(IM.Login("", ""));
-            Assert.False(IM.Login("root", ""));
-            Assert.False(IM.Login("", "root"));
+            Assert.False(IM.CheckCredentials("", ""));
+            Assert.False(IM.CheckCredentials("root", ""));
+            Assert.False(IM.CheckCredentials("", "root"));
             // Check when wrong values
-            Assert.False(IM.Login("wrong", "root"));
-            Assert.False(IM.Login("root", "wrong"));
+            Assert.False(IM.CheckCredentials("wrong", "root"));
+            Assert.False(IM.CheckCredentials("root", "wrong"));
             // Check when success
-            Assert.True(IM.Login("root", "root"));
+            Assert.True(IM.CheckCredentials("root", "root"));
         }
         [Fact]
         public void CheckFunctionAssigned()

@@ -24,7 +24,7 @@ namespace Fuxion.Identity.Test.Entity
 
     }
 
-    public class FilmDirectorSkill : Skill
+    public class DirectorSkill : Skill
     {
 
     }

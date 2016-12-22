@@ -49,9 +49,9 @@ namespace Fuxion.Identity.DatabaseEFTest
                     Load(scenario);
                     var im = Factory.Get<IdentityManager>();
                     if (expected)
-                        Assert.True(im.Login(username, password), $"Login fail unexpected: username<{username}> password<{password}>");
+                        Assert.True(im.CheckCredentials(username, password), $"Login fail unexpected: username<{username}> password<{password}>");
                     else
-                        Assert.False(im.Login(username, password), $"Login success unexpected: username<{username}> password<{password}>");
+                        Assert.False(im.CheckCredentials(username, password), $"Login success unexpected: username<{username}> password<{password}>");
                 });
             }
         }
@@ -91,7 +91,7 @@ namespace Fuxion.Identity.DatabaseEFTest
                     Load(scenario);
                     var im = Factory.Get<IdentityManager>();
                     var functions = functionsIds.Select(id => GetById(id)).ToArray();
-                    Assert.True(im.Login(username, password), $"Login fail unexpected: username<{username}> password<{password}>");
+                    Assert.True(im.CheckCredentials(username, password), $"Login fail unexpected: username<{username}> password<{password}>");
                     Printer.Ident("Parameters:", () =>
                     {
                         Printer.Print($"Username: {username}");
@@ -152,16 +152,16 @@ namespace Fuxion.Identity.DatabaseEFTest
                     var im = Factory.Get<IdentityManager>();
                     var functions = functionsIds.Select(id => GetById(id)).ToArray();
                     var rep = Factory.Get<IIdentityTestRepository>();
-                    Assert.True(im.Login(username, password), $"Login fail unexpected: username<{username}> password<{password}>");
+                    Assert.True(im.CheckCredentials(username, password), $"Login fail unexpected: username<{username}> password<{password}>");
                     var strArgs = $"\r\nscenario<{scenario}>\r\nusername<{username}>";
                     var dbSet = typeof(IIdentityTestRepository).GetMethod("GetByType").MakeGenericMethod(type).Invoke(rep, null);
                     IEnumerable<object> res = null;
                     if (dbSet is IQueryable)
-                        res = (IQueryable<object>)typeof(FuxionExtensions).GetMethods()
+                        res = (IQueryable<object>)typeof(System_Extensions).GetMethods()
                         .Where(m => m.Name == "AuthorizedTo" && m.GetParameters().First().ParameterType.GetGenericTypeDefinition() == typeof(IQueryable<>))
                         .First().MakeGenericMethod(type).Invoke(null, new object[] { dbSet, functions });
                     else
-                        res = (IEnumerable<object>)typeof(FuxionExtensions).GetMethods()
+                        res = (IEnumerable<object>)typeof(System_Extensions).GetMethods()
                         .Where(m => m.Name == "AuthorizedTo" && m.GetParameters().First().ParameterType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
                         .First().MakeGenericMethod(type).Invoke(null, new object[] { dbSet, functions });
                     var list = res.ToList().Cast<Base>();
@@ -179,7 +179,7 @@ namespace Fuxion.Identity.DatabaseEFTest
             Load(MEMORY);
             var im = Factory.Get<IdentityManager>();
             var rep = Factory.Get<IIdentityTestRepository>();
-            im.Login("cus", "cus");
+            im.CheckCredentials("cus", "cus");
             var res = rep.Document.AuthorizedTo(Read);
             //Assert.True(im.Current.Can(Read).OfType<Order>());
             //var res = rep.Album.Where(o => o.Songs.AuthorizedTo(Edit).Any());
@@ -191,7 +191,7 @@ namespace Fuxion.Identity.DatabaseEFTest
             Load(MEMORY);
             var im = Factory.Get<IdentityManager>();
             var rep = Factory.Get<IIdentityTestRepository>();
-            im.Login("root", "root");
+            im.CheckCredentials("root", "root");
             Assert.True(im.GetCurrent().Can(Read).Type<Document>());
             var res = rep.Album.Where(o => o.Songs.AuthorizedTo(Read).Any());
             Printer.Print("res.Count(): " + res.Count());

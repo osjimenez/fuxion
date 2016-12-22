@@ -39,7 +39,7 @@ namespace Fuxion.Identity
         public ICurrentUserNameProvider CurrentUserNameProvider { get; private set; }
         public IPasswordProvider PasswordProvider { get; private set; }
         public IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity> Repository { get; private set; }
-        public bool Login(string username, string password)
+        public bool CheckCredentials(string username, string password)
         {
             Printer.Print($"Validando credenciales\r\n   Usuario: {username}\r\n   Contraseña: {password}\r\n");
             if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
@@ -64,24 +64,5 @@ namespace Fuxion.Identity
         //{
         //    Current = null;
         //}
-    }
-    public interface IPasswordProvider
-    {
-        bool Verify(string password, byte[] hash, byte[] salt);
-        void Generate(string password, out byte[] salt, out byte[] hash);
-    }
-    public interface IStorageProvider
-    {
-        IQueryable<IIdentity> Identities { get; }
-    }
-    public interface ICurrentUserNameProvider
-    {
-        string GetCurrentUserName();
-    }
-    public class GenericCurrentUserNameProvider : ICurrentUserNameProvider
-    {
-        public GenericCurrentUserNameProvider(Func<string> getCurrentUsernameFunction) { this.getCurrentUsernameFunction = getCurrentUsernameFunction; }
-        Func<string> getCurrentUsernameFunction;
-        public string GetCurrentUserName() { return getCurrentUsernameFunction(); }
     }
 }
