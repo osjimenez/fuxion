@@ -95,40 +95,15 @@ namespace Fuxion.Math.Graph
     public class StronglyConnectedComponent<T> : IEnumerable<Vertex<T>>
     {
         private LinkedList<Vertex<T>> list;
-
-        public StronglyConnectedComponent()
-        {
-            list = new LinkedList<Vertex<T>>();
-        }
-
-        public StronglyConnectedComponent(IEnumerable<Vertex<T>> collection)
-        {
-            list = new LinkedList<Vertex<T>>(collection);
-        }
-
-        public void Add(Vertex<T> vertex)
-        {
-            list.AddLast(vertex);
-        }
-
-        public IEnumerator<Vertex<T>> GetEnumerator()
-        {
-            return list.GetEnumerator();
-        }
-
-        public int Count
-        {
-            get
-            {
-                return list.Count;
-            }
-        }
-
+        public StronglyConnectedComponent() { list = new LinkedList<Vertex<T>>(); }
+        public StronglyConnectedComponent(IEnumerable<Vertex<T>> collection) { list = new LinkedList<Vertex<T>>(collection); }
+        public void Add(Vertex<T> vertex)=>list.AddLast(vertex);
+        public IEnumerator<Vertex<T>> GetEnumerator()=>list.GetEnumerator();
+        public int Count { get { return list.Count; } }
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
             return list.GetEnumerator();
         }
-
         public bool IsCycle { get { return list.Count > 1; } }
     }
     /// <summary>
@@ -141,7 +116,6 @@ namespace Fuxion.Math.Graph
         private StronglyConnectedComponentList<T> stronglyConnectedComponents;
         private Stack<Vertex<T>> stack;
         private int index;
-
         /// <summary>
         /// Calculates the sets of strongly connected vertices.
         /// </summary>
@@ -161,7 +135,6 @@ namespace Fuxion.Math.Graph
             }
             return stronglyConnectedComponents;
         }
-
         private void StrongConnect(Vertex<T> v)
         {
             v.Index = index;
@@ -199,48 +172,13 @@ namespace Fuxion.Math.Graph
     public class StronglyConnectedComponentList<T> : IEnumerable<StronglyConnectedComponent<T>>
     {
         private LinkedList<StronglyConnectedComponent<T>> collection;
-
-        public StronglyConnectedComponentList()
-        {
-            collection = new LinkedList<StronglyConnectedComponent<T>>();
-        }
-
-        public StronglyConnectedComponentList(IEnumerable<StronglyConnectedComponent<T>> collection)
-        {
-            this.collection = new LinkedList<StronglyConnectedComponent<T>>(collection);
-        }
-
-        public void Add(StronglyConnectedComponent<T> scc)
-        {
-            collection.AddLast(scc);
-        }
-
-        public int Count
-        {
-            get
-            {
-                return collection.Count;
-            }
-        }
-
-        public IEnumerator<StronglyConnectedComponent<T>> GetEnumerator()
-        {
-            return collection.GetEnumerator();
-        }
-
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return collection.GetEnumerator();
-        }
-
-        public IEnumerable<StronglyConnectedComponent<T>> IndependentComponents()
-        {
-            return this.Where(c => !c.IsCycle);
-        }
-
-        public IEnumerable<StronglyConnectedComponent<T>> Cycles()
-        {
-            return this.Where(c => c.IsCycle);
-        }
+        public StronglyConnectedComponentList() { collection = new LinkedList<StronglyConnectedComponent<T>>(); }
+        public StronglyConnectedComponentList(IEnumerable<StronglyConnectedComponent<T>> collection) { this.collection = new LinkedList<StronglyConnectedComponent<T>>(collection); }
+        public void Add(StronglyConnectedComponent<T> scc)=>collection.AddLast(scc);
+        public int Count { get { return collection.Count; } }
+        public IEnumerator<StronglyConnectedComponent<T>> GetEnumerator()=>collection.GetEnumerator();
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()=>collection.GetEnumerator();
+        public IEnumerable<StronglyConnectedComponent<T>> IndependentComponents()=>this.Where(c => !c.IsCycle);
+        public IEnumerable<StronglyConnectedComponent<T>> Cycles()=> this.Where(c => c.IsCycle);
     }
 }

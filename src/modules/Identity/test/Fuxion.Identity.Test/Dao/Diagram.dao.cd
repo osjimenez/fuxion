@@ -1,220 +1,226 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Class Name="Fuxion.Identity.Test.Entity.Base" Collapsed="true">
+  <Class Name="Fuxion.Identity.Test.Dao.BaseDao" Collapsed="true">
     <Position X="0.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAACAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Entity\Base.cs</FileName>
+      <FileName>Dao\Base.dao.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Fuxion.Identity.Test.Entity.Group" Collapsed="true">
+  <Class Name="Fuxion.Identity.Test.Dao.GroupDao" Collapsed="true">
     <Position X="4" Y="7" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAACAAAAAAAg=</HashCode>
-      <FileName>Entity\Rol.cs</FileName>
+      <FileName>Dao\Rol.dao.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Fuxion.Identity.Test.Entity.Identity" Collapsed="true">
+  <Class Name="Fuxion.Identity.Test.Dao.IdentityDao" Collapsed="true">
     <Position X="2.25" Y="7" Width="1.5" />
     <TypeIdentifier>
       <HashCode>EACAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
-      <FileName>Entity\Rol.cs</FileName>
+      <FileName>Dao\Rol.dao.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Fuxion.Identity.Test.Entity.Permission" Collapsed="true">
+  <Class Name="Fuxion.Identity.Test.Dao.PermissionDao" Collapsed="true">
     <Position X="5.75" Y="1.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAACAEAAAAAEIAAAAAAgAAAAAhAAAAAAA=</HashCode>
-      <FileName>Entity\Permission.cs</FileName>
+      <HashCode>AAAAAAAAAAAAACAEAAAAAEYAAAAAAgAAAAAhAAAAAAA=</HashCode>
+      <FileName>Dao\Permission.dao.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Fuxion.Identity.Test.Entity.Rol" Collapsed="true">
+  <Class Name="Fuxion.Identity.Test.Dao.RolDao" Collapsed="true">
     <Position X="2.25" Y="5.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAEACAAAAAAAg=</HashCode>
-      <FileName>Entity\Rol.cs</FileName>
+      <FileName>Dao\Rol.dao.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Fuxion.Identity.Test.Entity.Scope" Collapsed="true">
+  <Class Name="Fuxion.Identity.Test.Dao.ScopeDao" Collapsed="true">
     <Position X="7.5" Y="1.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AIAAAAAIAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAI=</HashCode>
-      <FileName>Entity\Scope.cs</FileName>
+      <FileName>Dao\Scope.dao.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Fuxion.Identity.Test.Entity.File" Collapsed="true">
+  <Class Name="Fuxion.Identity.Test.Dao.FileDao" Collapsed="true">
     <Position X="2.25" Y="8.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Entity\File.cs</FileName>
-      <NewMemberFileName>Entity\Demo.cs</NewMemberFileName>
+      <FileName>Dao\File.dao.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Fuxion.Identity.Test.Entity.Discriminator" Collapsed="true">
+  <Class Name="Fuxion.Identity.Test.Dao.DiscriminatorDao" Collapsed="true">
     <Position X="2.25" Y="1.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAUAEAAAAsAACAAEBAAAEBAAAAAAAAAAAAAAICAAAAA=</HashCode>
-      <FileName>Entity\Discriminator.cs</FileName>
+      <FileName>Dao\Discriminator.dao.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Fuxion.Identity.Test.Entity.Person" Collapsed="true">
+  <Class Name="Fuxion.Identity.Test.Dvo.PersonDvo" Collapsed="true">
     <Position X="5.75" Y="5.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>EAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Entity\Person.cs</FileName>
+      <FileName>Dvo\Person.dvo.cs</FileName>
+      <NewMemberFileName>Dao\Person.dao.cs</NewMemberFileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Fuxion.Identity.Test.Entity.Skill" Collapsed="true">
+  <Class Name="Fuxion.Identity.Test.Dvo.SkillDvo&lt;TSkill&gt;" Collapsed="true">
     <Position X="7.5" Y="5.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Entity\Skill.cs</FileName>
+      <HashCode>AAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAA=</HashCode>
+      <FileName>Dvo\Skill.dvo.cs</FileName>
+      <NewMemberFileName>Dao\Skill.dao.cs</NewMemberFileName>
     </TypeIdentifier>
+    <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Fuxion.Identity.Test.Entity.ActorSkill" Collapsed="true">
+  <Class Name="Fuxion.Identity.Test.Dvo.ActorSkillDvo" Collapsed="true">
     <Position X="7.5" Y="7" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Entity\Skill.cs</FileName>
+      <FileName>Dvo\Skill.dvo.cs</FileName>
+      <NewMemberFileName>Dao\Skill.dao.cs</NewMemberFileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Fuxion.Identity.Test.Entity.DirectorSkill" Collapsed="true">
+  <Class Name="Fuxion.Identity.Test.Dvo.DirectorSkillDvo" Collapsed="true">
     <Position X="12.75" Y="7" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Entity\Skill.cs</FileName>
+      <FileName>Dvo\Skill.dvo.cs</FileName>
+      <NewMemberFileName>Dao\Skill.dao.cs</NewMemberFileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Fuxion.Identity.Test.Entity.SingerSkill" Collapsed="true">
+  <Class Name="Fuxion.Identity.Test.Dvo.SingerSkillDvo" Collapsed="true">
     <Position X="9.25" Y="7" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Entity\Skill.cs</FileName>
+      <FileName>Dvo\Skill.dvo.cs</FileName>
+      <NewMemberFileName>Dao\Skill.dao.cs</NewMemberFileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Fuxion.Identity.Test.Entity.WriterSkill" Collapsed="true">
+  <Class Name="Fuxion.Identity.Test.Dvo.WriterSkillDvo" Collapsed="true">
     <Position X="11" Y="7" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Entity\Skill.cs</FileName>
+      <FileName>Dvo\Skill.dvo.cs</FileName>
+      <NewMemberFileName>Dao\Skill.dao.cs</NewMemberFileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Fuxion.Identity.Test.Entity.Location" Collapsed="true">
+  <Class Name="Fuxion.Identity.Test.Dao.LocationDao" Collapsed="true">
     <Position X="2.25" Y="3" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAEAAAAAAIAAACAAgAAAAAAAAAAAAAAAAAAAICAAAAA=</HashCode>
-      <FileName>Entity\Discriminator.cs</FileName>
+      <FileName>Dao\Discriminator.dao.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Fuxion.Identity.Test.Entity.State" Collapsed="true">
+  <Class Name="Fuxion.Identity.Test.Dao.StateDao" Collapsed="true">
     <Position X="2.25" Y="4.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>EAAAAAAAAAAAACAAgAAAAAAAAAIAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Entity\Discriminator.cs</FileName>
+      <FileName>Dao\Discriminator.dao.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Fuxion.Identity.Test.Entity.Country" Collapsed="true">
+  <Class Name="Fuxion.Identity.Test.Dao.CountryDao" Collapsed="true">
     <Position X="4" Y="4.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAACAAgAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
-      <FileName>Entity\Discriminator.cs</FileName>
+      <FileName>Dao\Discriminator.dao.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Fuxion.Identity.Test.Entity.City" Collapsed="true">
+  <Class Name="Fuxion.Identity.Test.Dao.CityDao" Collapsed="true">
     <Position X="5.75" Y="4.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAACAAgAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
-      <FileName>Entity\Discriminator.cs</FileName>
+      <FileName>Dao\Discriminator.dao.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Fuxion.Identity.Test.Entity.Category" Collapsed="true">
+  <Class Name="Fuxion.Identity.Test.Dao.CategoryDao" Collapsed="true">
     <Position X="7.5" Y="3" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAEAAAAAAIAAAAAAAAAEQAAAAAAAAAAAAAAAICAAAAA=</HashCode>
-      <FileName>Entity\Discriminator.cs</FileName>
+      <FileName>Dao\Discriminator.dao.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Fuxion.Identity.Test.Entity.Tag" Collapsed="true">
+  <Class Name="Fuxion.Identity.Test.Dao.TagDao" Collapsed="true">
     <Position X="9.25" Y="3" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
-      <FileName>Entity\Discriminator.cs</FileName>
+      <FileName>Dao\Discriminator.dao.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Fuxion.Identity.Test.Entity.Document" Collapsed="true">
+  <Class Name="Fuxion.Identity.Test.Dao.DocumentDao" Collapsed="true">
     <Position X="2.25" Y="9.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Entity\File.cs</FileName>
+      <FileName>Dao\File.dao.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Fuxion.Identity.Test.Entity.PdfDocument" Collapsed="true">
+  <Class Name="Fuxion.Identity.Test.Dao.PdfDocumentDao" Collapsed="true">
     <Position X="5.75" Y="10.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Entity\File.cs</FileName>
+      <FileName>Dao\File.dao.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Fuxion.Identity.Test.Entity.ExcelDocument" Collapsed="true">
+  <Class Name="Fuxion.Identity.Test.Dao.ExcelDocumentDao" Collapsed="true">
     <Position X="4" Y="10.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Entity\File.cs</FileName>
+      <FileName>Dao\File.dao.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Fuxion.Identity.Test.Entity.WordDocument" Collapsed="true">
+  <Class Name="Fuxion.Identity.Test.Dao.WordDocumentDao" Collapsed="true">
     <Position X="2.25" Y="10.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Entity\File.cs</FileName>
+      <FileName>Dao\File.dao.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Fuxion.Identity.Test.Entity.Media" Collapsed="true">
+  <Class Name="Fuxion.Identity.Test.Dao.MediaDao" Collapsed="true">
     <Position X="7.5" Y="9.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Entity\File.cs</FileName>
+      <FileName>Dao\File.dao.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Fuxion.Identity.Test.Entity.Film" Collapsed="true">
+  <Class Name="Fuxion.Identity.Test.Dao.FilmDao" Collapsed="true">
     <Position X="7.5" Y="10.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Entity\File.cs</FileName>
+      <FileName>Dao\File.dao.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Fuxion.Identity.Test.Entity.Song" Collapsed="true">
+  <Class Name="Fuxion.Identity.Test.Dao.SongDao" Collapsed="true">
     <Position X="9.25" Y="10.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAA=</HashCode>
-      <FileName>Entity\File.cs</FileName>
+      <FileName>Dao\File.dao.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Fuxion.Identity.Test.Entity.Package" Collapsed="true">
+  <Class Name="Fuxion.Identity.Test.Dao.PackageDao" Collapsed="true">
     <Position X="11" Y="9.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIA=</HashCode>
-      <FileName>Entity\File.cs</FileName>
+      <FileName>Dao\File.dao.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Fuxion.Identity.Test.Entity.Album" Collapsed="true">
+  <Class Name="Fuxion.Identity.Test.Dao.AlbumDao" Collapsed="true">
     <Position X="11" Y="10.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Entity\File.cs</FileName>
+      <FileName>Dao\File.dao.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Fuxion.Identity.Test.Entity.Software" Collapsed="true">
+  <Class Name="Fuxion.Identity.Test.Dao.SoftwareDao" Collapsed="true">
     <Position X="12.75" Y="10.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Entity\File.cs</FileName>
+      <FileName>Dao\File.dao.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Font Name="Consolas" Size="9" />

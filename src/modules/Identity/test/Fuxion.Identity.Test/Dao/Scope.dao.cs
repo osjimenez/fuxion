@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Fuxion.Identity.Test.Entity
+namespace Fuxion.Identity.Test.Dao
 {
-    [Table(nameof(Scope))]
-    public class Scope : Base, IScope
+    [Table(nameof(ScopeDao))]
+    public class ScopeDao : BaseDao, IScope
     {
         public IDiscriminator Discriminator { get; set; }
         public ScopePropagation Propagation { get; set; }

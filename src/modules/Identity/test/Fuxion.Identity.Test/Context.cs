@@ -1,5 +1,5 @@
 ﻿using Fuxion.Factories;
-using Fuxion.Identity.Test.Entity;
+using Fuxion.Identity.Test.Dao;
 using Fuxion.Identity.Test.Helpers;
 using System;
 using System.Collections.Generic;
@@ -36,7 +36,7 @@ namespace Fuxion.Identity.Test
 
         #region Discriminator
         public static DiscriminatorContext Discriminator { get; } = new DiscriminatorContext();
-        public class DiscriminatorContext : Context<Discriminator>
+        public class DiscriminatorContext : Context<DiscriminatorDao>
         {
             public DiscriminatorContext()
             {
@@ -51,29 +51,29 @@ namespace Fuxion.Identity.Test
                 public CountryContext Country { get; } = new CountryContext();
                 public class CountryContext
                 {
-                    static Country Create(string name, Action<Country> configureAction = null)
+                    static CountryDao Create(string name, Action<Dao.CountryDao> configureAction = null)
                     {
-                        var res = new Country { Id = name, Name = name };
+                        var res = new Dao.CountryDao { Id = name, Name = name };
                         configureAction?.Invoke(res);
                         return res;
                     }
-                    public Country Usa { get; } = Create(nameof(Usa));//, c => c.States = new[] { Discriminator.Location.State.California });
-                    public Country Spain { get; } = Create(nameof(Spain));
+                    public CountryDao Usa { get; } = Create(nameof(Usa));//, c => c.States = new[] { Discriminator.Location.State.California });
+                    public CountryDao Spain { get; } = Create(nameof(Spain));
                 }
                 #endregion
                 #region State
                 public StateContext State { get; } = new StateContext();
                 public class StateContext
                 {
-                    static State Create(string name, Action<State> configureAction = null)
+                    static StateDao Create(string name, Action<StateDao> configureAction = null)
                     {
-                        var res = new State { Id = name, Name = name };
+                        var res = new StateDao { Id = name, Name = name };
                         configureAction?.Invoke(res);
                         return res;
                     }
-                    public State California { get; } = Create(nameof(California));//, s => s.Country = Discriminator.Location.Country.Usa);
-                    public State NewYork { get; } = Create(nameof(NewYork));
-                    public State Madrid { get; } = Create(nameof(Madrid));
+                    public StateDao California { get; } = Create(nameof(California));//, s => s.Country = Discriminator.Location.Country.Usa);
+                    public StateDao NewYork { get; } = Create(nameof(NewYork));
+                    public StateDao Madrid { get; } = Create(nameof(Madrid));
                 }
                 #endregion
                 #region City
@@ -101,11 +101,11 @@ namespace Fuxion.Identity.Test
         {
             #region Identity
             public IdentityContext Identity { get; } = new IdentityContext();
-            public class IdentityContext : Context<Entity.Identity>
+            public class IdentityContext : Context<Dao.IdentityDao>
             {
-                static Entity.Identity Create(string name, Action<Entity.Identity> configureAction = null)
+                static Dao.IdentityDao Create(string name, Action<Dao.IdentityDao> configureAction = null)
                 {
-                    var res = new Entity.Identity { Id = name, UserName = name, Name = name };
+                    var res = new Dao.IdentityDao { Id = name, UserName = name, Name = name };
                     byte[] salt, hash;
                     new PasswordProvider().Generate("test", out salt, out hash);
                     res.PasswordHash = hash;
@@ -115,46 +115,46 @@ namespace Fuxion.Identity.Test
                     return res;
                 }
 
-                public Entity.Identity Root { get; } = Create(nameof(Root), ide =>
+                public Dao.IdentityDao Root { get; } = Create(nameof(Root), ide =>
                     {
                         ide.Groups = new[] { Rol.Group.Admins };
-                        ide.Permissions = new Permission[] {
-                            new Permission
+                        ide.Permissions = new PermissionDao[] {
+                            new PermissionDao
                             {
                                 Value = true,
                                 Function = ADMIN,
                                 Rol = ide,
                             },
-                            new Permission
+                            new PermissionDao
                             {
                                 Value = true,
                                 Function = ADMIN,
                                 Rol = ide,
                                 Scopes = new[]
                                 {
-                                    new Scope {
-                                        Discriminator = Factory.Get<TypeDiscriminatorFactory>().FromType<Entity.Identity>(),
+                                    new ScopeDao {
+                                        Discriminator = Factory.Get<TypeDiscriminatorFactory>().FromType<Dao.IdentityDao>(),
                                         Propagation = ScopePropagation.ToMe
                                     }
                                 }
                             },
                         };
                     });
-                public Entity.Identity Customer { get; } = Create(nameof(Customer));
-                public Entity.Identity FilmManager { get; } = Create(nameof(FilmManager));
+                public Dao.IdentityDao Customer { get; } = Create(nameof(Customer));
+                public Dao.IdentityDao FilmManager { get; } = Create(nameof(FilmManager));
             }
             #endregion
             #region Group
             public GroupContext Group { get; } = new GroupContext();
-            public class GroupContext : Context<Group>
+            public class GroupContext : Context<GroupDao>
             {
-                static Group Create(string name, Action<Group> configureAction = null)
+                static GroupDao Create(string name, Action<GroupDao> configureAction = null)
                 {
-                    var res = new Group { Id = name, Name = name };
+                    var res = new GroupDao { Id = name, Name = name };
                     configureAction?.Invoke(res);
                     return res;
                 }
-                public Group Admins { get; } = Create(nameof(Admins));
+                public GroupDao Admins { get; } = Create(nameof(Admins));
             }
             #endregion
         }
@@ -194,21 +194,21 @@ namespace Fuxion.Identity.Test
         {
             #region Document
             public DocumentContext Document { get; } = new DocumentContext();
-            public class DocumentContext : Context<Document>
+            public class DocumentContext : Context<DocumentDao>
             {
-                public override IEnumerable<Document> GetAll() => Word.GetAll().Cast<Document>().Union(Excel.GetAll()).Union(Pdf.GetAll());
+                public override IEnumerable<DocumentDao> GetAll() => Word.GetAll().Cast<DocumentDao>().Union(Excel.GetAll()).Union(Pdf.GetAll());
 
                 #region Word
                 public WordDocumentContext Word { get; } = new WordDocumentContext();
-                public class WordDocumentContext : Context<WordDocument> { }
+                public class WordDocumentContext : Context<WordDocumentDao> { }
                 #endregion
                 #region Excel
                 public ExcelDocumentContext Excel { get; } = new ExcelDocumentContext();
-                public class ExcelDocumentContext : Context<ExcelDocument> { }
+                public class ExcelDocumentContext : Context<ExcelDocumentDao> { }
                 #endregion
                 #region Pdf
                 public PdfDocumentContext Pdf { get; } = new PdfDocumentContext();
-                public class PdfDocumentContext : Context<PdfDocument> { }
+                public class PdfDocumentContext : Context<PdfDocumentDao> { }
                 #endregion
             }
             #endregion
@@ -222,7 +222,7 @@ namespace Fuxion.Identity.Test
                 #endregion
                 #region Song
                 public SongContext Song { get; } = new SongContext();
-                public class SongContext : Context<Song> { }
+                public class SongContext : Context<SongDao> { }
                 #endregion
             }
             #endregion
@@ -232,15 +232,15 @@ namespace Fuxion.Identity.Test
             {
                 #region Album
                 public AlbumContext Album { get; } = new AlbumContext();
-                public class AlbumContext : Context<Album>
+                public class AlbumContext : Context<AlbumDao>
                 {
-                    static Album Create(string name, Action<Album> configureAction = null)
+                    static AlbumDao Create(string name, Action<AlbumDao> configureAction = null)
                     {
-                        var res = new Album { Id = name, Name = name };
+                        var res = new AlbumDao { Id = name, Name = name };
                         configureAction?.Invoke(res);
                         return res;
                     }
-                    public Album Album1 { get; } = Create(nameof(Album1));
+                    public AlbumDao Album1 { get; } = Create(nameof(Album1));
                 }
                 #endregion
                 #region Software

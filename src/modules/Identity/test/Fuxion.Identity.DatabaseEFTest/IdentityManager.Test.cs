@@ -1,4 +1,4 @@
-﻿using Fuxion.Identity.Test.Entity;
+﻿using Fuxion.Identity.Test.Dao;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,7 +62,7 @@ namespace Fuxion.Identity.DatabaseEFTest
             "Root can create and delete documents", scenarios,
             "root", "root",
             new[] { "CREATE", "DELETE" },
-            new[] { typeof(Document) },
+            new[] { typeof(DocumentDao) },
             "Verify that 'root' user can 'Create' and 'Delete' entities of type 'Document'",
             true })]
         //[InlineData(new object[] {
@@ -76,7 +76,7 @@ namespace Fuxion.Identity.DatabaseEFTest
             "Root can create documents", scenarios,
             "root", "root",
             new[] { "CREATE" },
-            new[] { typeof(Document) },
+            new[] { typeof(DocumentDao) },
             "Verify that 'California seller' user can NOT 'Create' entities of type 'Document'",
             true })]
         public void Check(string _, string scenarios, string username, string password, string[] functionsIds, Type[] types, string message, bool expected)
@@ -164,7 +164,7 @@ namespace Fuxion.Identity.DatabaseEFTest
                         res = (IEnumerable<object>)typeof(System_Extensions).GetMethods()
                         .Where(m => m.Name == "AuthorizedTo" && m.GetParameters().First().ParameterType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
                         .First().MakeGenericMethod(type).Invoke(null, new object[] { dbSet, functions });
-                    var list = res.ToList().Cast<Base>();
+                    var list = res.ToList().Cast<Test.Dao.BaseDao>();
                     if (allowOtherResults)
                         Assert.True(list.Any(e => expectedIds.Contains(e.Id)), $"Some expected ids '{expectedIds.Aggregate("", (a, c) => a + c + "·")}' not found");
                     else
@@ -192,7 +192,7 @@ namespace Fuxion.Identity.DatabaseEFTest
             var im = Factory.Get<IdentityManager>();
             var rep = Factory.Get<IIdentityTestRepository>();
             im.CheckCredentials("root", "root");
-            Assert.True(im.GetCurrent().Can(Read).Type<Document>());
+            Assert.True(im.GetCurrent().Can(Read).Type<DocumentDao>());
             var res = rep.Album.Where(o => o.Songs.AuthorizedTo(Read).Any());
             Printer.Print("res.Count(): " + res.Count());
         }

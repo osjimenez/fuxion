@@ -1,4 +1,4 @@
-﻿using Fuxion.Identity.Test.Entity;
+﻿using Fuxion.Identity.Test.Dao;
 using Fuxion.Repositories;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
@@ -49,26 +49,26 @@ namespace Fuxion.Identity.DatabaseEFTest
             Database.Initialize(true);
         }
 
-        public DbSet<Test.Entity.Identity> Identity { get; set; }
-        public DbSet<Album> Album { get; set; }
-        public DbSet<Song> Song { get; set; }
+        public DbSet<Test.Dao.IdentityDao> Identity { get; set; }
+        public DbSet<AlbumDao> Album { get; set; }
+        public DbSet<SongDao> Song { get; set; }
         //public DbSet<Circle> Circle { get; set; }
-        public DbSet<Group> Group { get; set; }
-        public DbSet<Document> Document { get; set; }
+        public DbSet<GroupDao> Group { get; set; }
+        public DbSet<DocumentDao> Document { get; set; }
         public IEnumerable<T> GetByType<T>()
         {
-            if (typeof(T) == typeof(Album)) return (IEnumerable<T>)Album;
-            if (typeof(T) == typeof(Song)) return (IEnumerable<T>)Song;
+            if (typeof(T) == typeof(AlbumDao)) return (IEnumerable<T>)Album;
+            if (typeof(T) == typeof(SongDao)) return (IEnumerable<T>)Song;
             //if (typeof(T) == typeof(Circle)) return (IEnumerable<T>)Circle;
-            if (typeof(T) == typeof(Group)) return (IEnumerable<T>)Group;
-            if (typeof(T) == typeof(Document)) return (IEnumerable<T>)Document;
+            if (typeof(T) == typeof(GroupDao)) return (IEnumerable<T>)Group;
+            if (typeof(T) == typeof(DocumentDao)) return (IEnumerable<T>)Document;
             throw new KeyNotFoundException();
         }
-        IEnumerable<Album> IIdentityTestRepository.Album { get { return Album.Include(a => a.Songs); } }
-        IEnumerable<Song> IIdentityTestRepository.Song { get { return Song; } }
+        IEnumerable<AlbumDao> IIdentityTestRepository.Album { get { return Album.Include(a => a.Songs); } }
+        IEnumerable<SongDao> IIdentityTestRepository.Song { get { return Song; } }
         //IEnumerable<Circle> IIdentityTestRepository.Circle { get { return Circle; } }
-        IEnumerable<Group> IIdentityTestRepository.Group { get { return Group; } }
-        IEnumerable<Document> IIdentityTestRepository.Document { get { return Document; } }
+        IEnumerable<GroupDao> IIdentityTestRepository.Group { get { return Group; } }
+        IEnumerable<DocumentDao> IIdentityTestRepository.Document { get { return Document; } }
 
         public IIdentity Find(string key)
         {
@@ -83,14 +83,14 @@ namespace Fuxion.Identity.DatabaseEFTest
 
             return ide;
         }
-        private void LoadGroups(Rol rol)
+        private void LoadGroups(RolDao rol)
         {
             var @ref = Entry(rol).Collection(g => g.Groups);
             if (!@ref.IsLoaded) @ref.Load();
             LoadPermissions(rol);
             foreach (var g in rol.Groups) LoadGroups(g);
         }
-        private void LoadPermissions(Rol rol)
+        private void LoadPermissions(RolDao rol)
         {
             var persRef = Entry(rol).Collection(r => r.Permissions);
             if (!persRef.IsLoaded) persRef.Load();
@@ -108,39 +108,39 @@ namespace Fuxion.Identity.DatabaseEFTest
         }
         private void LoadDiscriminator(IDiscriminator discriminator)
         {
-            if (discriminator is Country)
+            if (discriminator is Test.Dao.CountryDao)
             {
-                var statesRef = Entry((Country)discriminator).Collection(c => c.States);
+                var statesRef = Entry((Test.Dao.CountryDao)discriminator).Collection(c => c.States);
                 if (!statesRef.IsLoaded)
                 {
                     statesRef.Load();
-                    foreach (var sta in ((Country)discriminator).States)
+                    foreach (var sta in ((Test.Dao.CountryDao)discriminator).States)
                         LoadDiscriminator(sta);
                 }
             }
-            else if (discriminator is State)
+            else if (discriminator is StateDao)
             {
-                var citiesRef = Entry((State)discriminator).Collection(s => s.Cities);
+                var citiesRef = Entry((StateDao)discriminator).Collection(s => s.Cities);
                 if (!citiesRef.IsLoaded)
                 {
                     citiesRef.Load();
-                    foreach (var cit in ((State)discriminator).Cities)
+                    foreach (var cit in ((StateDao)discriminator).Cities)
                         LoadDiscriminator(cit);
                 }
-                var countryRef = Entry((State)discriminator).Reference(s => s.Country);
+                var countryRef = Entry((StateDao)discriminator).Reference(s => s.Country);
                 if (!countryRef.IsLoaded)
                 {
                     countryRef.Load();
-                    LoadDiscriminator(((State)discriminator).Country);
+                    LoadDiscriminator(((StateDao)discriminator).Country);
                 }
             }
-            else if (discriminator is City)
+            else if (discriminator is Test.Dao.CityDao)
             {
-                var stateRef = Entry((City)discriminator).Reference(c => c.State);
+                var stateRef = Entry((Test.Dao.CityDao)discriminator).Reference(c => c.State);
                 if (!stateRef.IsLoaded)
                 {
                     stateRef.Load();
-                    LoadDiscriminator(((City)discriminator).State);
+                    LoadDiscriminator(((Test.Dao.CityDao)discriminator).State);
                 }
             }
         }

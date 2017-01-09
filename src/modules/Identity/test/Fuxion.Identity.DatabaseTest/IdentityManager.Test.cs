@@ -1,6 +1,6 @@
 ﻿using Fuxion.Identity;
 using Fuxion.Identity.Test;
-using Fuxion.Identity.Test.Entity;
+using Fuxion.Identity.Test.Dao;
 using Fuxion.Identity.Test.Helpers;
 using System;
 using System.Collections.Generic;
@@ -62,10 +62,10 @@ namespace Fuxion.Identity.DatabaseTest
         [Fact]
         public void CheckFunctionAssigned()
         {
-            var r1 = IM.GetCurrent().Can(Read).Type<Document>();
-            IM.GetCurrent().EnsureCan(Read).Type<Document>();
-            var r2 = IM.GetCurrent().Can(Read).AllInstances<Document>(null, null, null, null, null, null);
-            IM.GetCurrent().EnsureCan(Read).AnyInstance<Document>(null, null, null, null, null, null);
+            var r1 = IM.GetCurrent().Can(Read).Type<DocumentDao>();
+            IM.GetCurrent().EnsureCan(Read).Type<DocumentDao>();
+            var r2 = IM.GetCurrent().Can(Read).AllInstances<DocumentDao>(null, null, null, null, null, null);
+            IM.GetCurrent().EnsureCan(Read).AnyInstance<DocumentDao>(null, null, null, null, null, null);
             // Login
             //if (!IM.IsAuthenticated)
             //    Assert.True(IM.Login("root", "root"));

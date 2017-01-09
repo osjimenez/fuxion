@@ -1,4 +1,4 @@
-﻿using Fuxion.Identity.Test.Entity;
+﻿using Fuxion.Identity.Test.Dao;
 using Fuxion.Identity.Test.Helpers;
 using Fuxion.Repositories;
 using System;
@@ -13,27 +13,27 @@ using static Fuxion.Identity.Test.Context;
 namespace Fuxion.Identity.Test
 {
     public interface IIdentityTestRepository {
-        IEnumerable<Album> Album { get; }
-        IEnumerable<Song> Song { get; }
+        IEnumerable<AlbumDao> Album { get; }
+        IEnumerable<SongDao> Song { get; }
         //IEnumerable<Circle> Circle { get; }
-        IEnumerable<Group> Group { get; }
-        IEnumerable<Document> Document { get; }
+        IEnumerable<GroupDao> Group { get; }
+        IEnumerable<DocumentDao> Document { get; }
         IEnumerable<T> GetByType<T>();
     }
     public class IdentityMemoryTestRepository : IIdentityTestRepository, IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity>
     {
-        public IEnumerable<Album> Album { get { return Context.File.Package.Album.GetAll(); } }
-        public IEnumerable<Song> Song { get { return Context.File.Media.Song.GetAll(); } }
+        public IEnumerable<AlbumDao> Album { get { return Context.File.Package.Album.GetAll(); } }
+        public IEnumerable<SongDao> Song { get { return Context.File.Media.Song.GetAll(); } }
         //public IEnumerable<Circle> Circle { get { return Circles; } }
-        public IEnumerable<Group> Group { get { return Context.Rol.Group.GetAll(); } }
-        public IEnumerable<Document> Document { get { return Context.File.Document.GetAll(); } }
+        public IEnumerable<GroupDao> Group { get { return Context.Rol.Group.GetAll(); } }
+        public IEnumerable<DocumentDao> Document { get { return Context.File.Document.GetAll(); } }
 
         public IEnumerable<T> GetByType<T>()
         {
-            if (typeof(T) == typeof(Album))  return (IEnumerable<T>)Album;
-            if (typeof(T) == typeof(Song))   return (IEnumerable<T>)Song;
+            if (typeof(T) == typeof(AlbumDao))  return (IEnumerable<T>)Album;
+            if (typeof(T) == typeof(SongDao))   return (IEnumerable<T>)Song;
             //if (typeof(T) == typeof(Circle)) return (IEnumerable<T>)Circle;
-            if (typeof(T) == typeof(Group))  return (IEnumerable<T>)Group;
+            if (typeof(T) == typeof(GroupDao))  return (IEnumerable<T>)Group;
             throw new KeyNotFoundException();
         }
 

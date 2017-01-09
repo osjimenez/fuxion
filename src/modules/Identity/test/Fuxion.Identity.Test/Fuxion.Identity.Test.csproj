@@ -77,15 +77,21 @@
     <Compile Include="BaseTestClass.cs" />
     <Compile Include="Context.Test.cs" />
     <Compile Include="Discriminator.Test.cs" />
+    <Compile Include="Dto\Base.dto.cs" />
+    <Compile Include="Dto\Discriminator.dto.cs" />
+    <Compile Include="Dvo\Discriminator.dvo.cs" />
+    <Compile Include="Dvo\File.dvo.cs" />
+    <Compile Include="Dvo\Person.dvo.cs" />
+    <Compile Include="Dvo\Skill.dvo.cs" />
     <Compile Include="Entity.Test.cs" />
-    <Compile Include="Entity\Base.cs" />
-    <Compile Include="Entity\Discriminator.cs" />
-    <Compile Include="Entity\Skill.cs" />
-    <Compile Include="Entity\File.cs" />
-    <Compile Include="Entity\Permission.cs" />
-    <Compile Include="Entity\Person.cs" />
-    <Compile Include="Entity\Rol.cs" />
-    <Compile Include="Entity\Scope.cs" />
+    <Compile Include="Dao\Base.dao.cs" />
+    <Compile Include="Dao\Discriminator.dao.cs" />
+    <Compile Include="Dao\Skill.dao.cs" />
+    <Compile Include="Dao\File.dao.cs" />
+    <Compile Include="Dao\Permission.dao.cs" />
+    <Compile Include="Dao\Person.dao.cs" />
+    <Compile Include="Dao\Rol.dao.cs" />
+    <Compile Include="Dao\Scope.dao.cs" />
     <Compile Include="Function.Test.cs" />
     <Compile Include="Helpers\Bootstrapper.cs" />
     <Compile Include="IdentityMemoryRepository.cs" />
@@ -95,13 +101,14 @@
     <Compile Include="Mocks\GuidStringDiscriminator.cs" />
     <Compile Include="Mocks\StringDiscriminator.cs" />
     <Compile Include="Mocks\StringFunction.cs" />
-    <Compile Include="Model\Base.cs" />
+    <Compile Include="Dvo\Base.dvo.cs" />
     <Compile Include="Permission.Test.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rol.Test.cs" />
     <Compile Include="Scope.Test.cs" />
     <Compile Include="Context.cs" />
     <Compile Include="TypeDiscriminator.Test.cs" />
+    <Compile Include="TypeDiscriminatorIds.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\core\portable\Fuxion.csproj">
@@ -119,12 +126,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="Entity\Diagram.cd" />
+    <None Include="Dao\Diagram.dao.cd" />
+    <None Include="Dvo\Diagram.dvo.cd" />
     <None Include="packages.config" />
     <None Include="xunit.runner.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

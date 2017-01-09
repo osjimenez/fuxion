@@ -1,5 +1,5 @@
-﻿using Fuxion.Identity.Test.Entity;
-using Fuxion.Identity.Test.Entity;
+﻿using Fuxion.Identity.Test.Dao;
+using Fuxion.Identity.Test.Dao;
 using Fuxion.Identity.Test.Mocks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;

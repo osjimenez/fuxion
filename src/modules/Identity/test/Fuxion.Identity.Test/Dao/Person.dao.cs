@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Fuxion.Identity.Test.Entity
+namespace Fuxion.Identity.Test.Dao
 {
-    public class Person : Base
+    public class PersonDao : BaseDao
     {
-        public IList<Skill> Skills { get; set; }
+        public IList<SkillDao> Skills { get; set; }
     }
 }

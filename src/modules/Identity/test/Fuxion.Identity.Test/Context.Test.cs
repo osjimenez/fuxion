@@ -1,5 +1,5 @@
 ﻿using Fuxion.Factories;
-using Fuxion.Identity.Test.Entity;
+using Fuxion.Identity.Test.Dao;
 using SimpleInjector;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -24,7 +24,7 @@ namespace Fuxion.Identity.Test
             // TypeDiscriminators
             c.RegisterSingleton(new TypeDiscriminatorFactory().Transform(fac =>
             {
-                fac.RegisterTree<Base>(typeof(Base).Assembly.DefinedTypes.ToArray());
+                fac.RegisterTree<BaseDao>(typeof(BaseDao).Assembly.DefinedTypes.ToArray());
                 return fac;
             }));
             // IdentityManager
@@ -48,7 +48,7 @@ namespace Fuxion.Identity.Test
         {
             var r = Context.Rol;
             Context.RunConfigurationActions();
-            Assert.True(Context.Rol.Identity.Root.Can(Create).Type<Album>());
+            Assert.True(Context.Rol.Identity.Root.Can(Create).Type<AlbumDao>());
         }
         [Fact]
         public void AuthorizeToAdmin()

@@ -1,5 +1,7 @@
 ﻿using Fuxion.ComponentModel;
-using Fuxion.Identity.Test.Entity;
+using Fuxion.Identity.Test.Dao;
+using Fuxion.Identity.Test.Dto;
+using Fuxion.Identity.Test.Dvo;
 using Fuxion.Identity.Test.Helpers;
 using Fuxion.Identity.Test.Mocks;
 using System;
@@ -19,34 +21,49 @@ namespace Fuxion.Identity.Test
         public void RegisterTree()
         {
             var fac = new TypeDiscriminatorFactory();
-
-            fac.RegisterTree<Base>(typeof(Base).Assembly.DefinedTypes.ToArray());
-            var dis = fac.FromType<Document>();
-            Assert.Equal(dis.Inclusions.Count(), 3);
-            Assert.Equal(dis.Exclusions.Count(), 2);
-
-            fac.ClearAllRegisters();
-
-            fac.RegisterTree<File>(typeof(File).Assembly.DefinedTypes.ToArray());
-            dis = fac.FromType<Document>();
-
-            Assert.Equal(dis.Inclusions.Count(), 3);
-            Assert.Equal(dis.Exclusions.Count(), 1);
+            // Register from Base
+            fac.RegisterTree<Dao.BaseDao>(typeof(Dao.BaseDao).Assembly.DefinedTypes.ToArray());
+            var dis = fac.FromType<DocumentDao>();
+            Assert.Equal(3, dis.Inclusions.Count());
+            Assert.Equal(1, dis.Exclusions.Count());
 
             fac.ClearAllRegisters();
+            // Register from File
+            fac.RegisterTree<FileDao>(typeof(FileDao).Assembly.DefinedTypes.ToArray());
+            dis = fac.FromType<DocumentDao>();
 
+            Assert.Equal(3, dis.Inclusions.Count());
+            Assert.Equal(1, dis.Exclusions.Count());
+
+            fac.ClearAllRegisters();
+            fac.AllowMoreThanOneTypeByDiscriminator = true;
+            // Register from generic type BaseDvo<>
             fac.RegisterTree(typeof(BaseDvo<>), typeof(BaseDvo<>).Assembly.DefinedTypes.ToArray());
             dis = fac.FromType(typeof(LocationDvo<>));
-            Assert.Equal(dis.Inclusions.Count(), 2);
-            Assert.Equal(dis.Exclusions.Count(), 1);
+            Assert.Equal(3, dis.Inclusions.Count());
+            Assert.Equal(1, dis.Exclusions.Count());
 
             fac.ClearAllRegisters();
-
+            fac.AllowMoreThanOneTypeByDiscriminator = false;
+            // Register from generic type LicationDvo<>
             fac.RegisterTree(typeof(LocationDvo<>), typeof(LocationDvo<>).Assembly.DefinedTypes.ToArray());
             dis = fac.FromType<CityDvo>();
 
-            Assert.Equal(dis.Inclusions.Count(), 0);
-            Assert.Equal(dis.Exclusions.Count(), 1);
+            Assert.Equal(0, dis.Inclusions.Count());
+            Assert.Equal(1, dis.Exclusions.Count());
+
+            fac.ClearAllRegisters();
+            // Register from Base and check disable state for Skill
+            fac.RegisterTree<Dao.BaseDao>(typeof(Dao.BaseDao).Assembly.DefinedTypes.ToArray());
+            dis = fac.FromType<FileDao>();
+
+            Assert.Equal(3, dis.Inclusions.Count());
+            Assert.Equal(1, dis.Exclusions.Count());
+
+            dis = fac.FromType<Dao.BaseDao>();
+
+            Assert.Equal(6, dis.Inclusions.Count());
+            Assert.Equal(0, dis.Exclusions.Count());
         }
         [Fact]
         public void Create()
@@ -56,14 +73,14 @@ namespace Fuxion.Identity.Test
             fac.GetIdFunction = type => type.Name;
             fac.GetNameFunction = type => type.Name.ToUpper();
 
-            fac.RegisterTree<Base>(typeof(Base).Assembly.DefinedTypes.ToArray());
-            var dis = fac.FromType<Document>();
-            Assert.Equal(dis.Id, typeof(Document).Name);
-            Assert.Equal(dis.Name, typeof(Document).Name.ToUpper());
+            fac.RegisterTree<Dao.BaseDao>(typeof(Dao.BaseDao).Assembly.DefinedTypes.ToArray());
+            var dis = fac.FromType<DocumentDao>();
+            Assert.Equal(dis.Id, typeof(DocumentDao).Name);
+            Assert.Equal(dis.Name, typeof(DocumentDao).Name.ToUpper());
             Assert.Equal(dis.TypeId, fac.DiscriminatorTypeId);
             Assert.Equal(dis.TypeName, fac.DiscriminatorTypeName);
-            Assert.Equal(dis.Inclusions.Count(), 3);
-            Assert.Equal(dis.Exclusions.Count(), 2);
+            Assert.Equal(3, dis.Inclusions.Count());
+            Assert.Equal(1, dis.Exclusions.Count());
         }
         [Fact]
         public void TypeDiscriminatorAttribute()
@@ -94,8 +111,8 @@ namespace Fuxion.Identity.Test
             fac.Register(typeof(CityDvo));
             fac.Register(typeof(CountryDvo));
 
-            var dvo  = fac.FromId("City");
-            var dvo2 = fac.FromId("Location");
+            var dvo  = fac.FromId(TypeDiscriminatorIds.City);
+            var dvo2 = fac.FromId(TypeDiscriminatorIds.Location);
             var dvo3 = fac.FromType(typeof(LocationDvo<>));
             //var dvo3 = fac.FromType(typeof(LocationDvo<CityDvo>));
 
@@ -114,32 +131,17 @@ namespace Fuxion.Identity.Test
                 fac.Register(typeof(BaseDto));
             });
         }
+        [Fact]
+        public void AllowTwoSameIds()
+        {
+            var fac = new TypeDiscriminatorFactory();
+            fac.AllowMoreThanOneTypeByDiscriminator = true;
+
+            fac.RegisterTree(typeof(BaseDvo<>), typeof(BaseDvo<>).Assembly.DefinedTypes.ToArray());
+
+            var res = fac.AllFromId(TypeDiscriminatorIds.Person);
+
+            Assert.Equal(2, res.Count());
+        }
     }
-
-    [TypeDiscriminated("Base")]
-    public abstract class BaseDao { }
-    [TypeDiscriminated("Location")]
-    public abstract class LocationDao : BaseDao { }
-    [TypeDiscriminated("City")]
-    public class CityDao : LocationDao { }
-    [TypeDiscriminated("Country")]
-    public class CountryDao : LocationDao { }
-
-    [TypeDiscriminated("Base")]
-    public abstract class BaseDto { }
-    [TypeDiscriminated("Location")]
-    public abstract class LocationDto : BaseDto { }
-    [TypeDiscriminated("City")]
-    public class CityDto : LocationDto { }
-    [TypeDiscriminated("Country")]
-    public class CountryDto : LocationDto { }
-
-    [TypeDiscriminated("Base")]
-    public abstract class BaseDvo<T> : Notifier<BaseDvo<T>>{ }
-    [TypeDiscriminated("Location")]
-    public abstract class LocationDvo<T> : BaseDvo<LocationDvo<T>>{ }
-    [TypeDiscriminated("City")]
-    public class CityDvo : LocationDvo<CityDvo> { }
-    [TypeDiscriminated("Country")]
-    public class CountryDvo : LocationDvo<CountryDvo> { }
 }

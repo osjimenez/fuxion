@@ -1,4 +1,4 @@
-﻿using Fuxion.Identity.Test.Entity;
+﻿using Fuxion.Identity.Test.Dao;
 using Fuxion.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -30,9 +30,9 @@ namespace Fuxion.Identity.DatabaseTest
             //    .WithMany(t => t.RolGroups)
             //    .ForeignKey(pt => pt.RolId);
         }
-        public DbSet<Test.Entity.Identity> Identity { get; set; }
-        public DbSet<Rol> Rols { get; set; }
-        public DbSet<Group> Groups { get; set; }
+        public DbSet<Test.Dao.IdentityDao> Identity { get; set; }
+        public DbSet<RolDao> Rols { get; set; }
+        public DbSet<GroupDao> Groups { get; set; }
         //public DbSet<Demo1> Demo1 { get; set; }
         //public DbSet<Demo2> Demo2 { get; set; }
         public bool Exist(string key)

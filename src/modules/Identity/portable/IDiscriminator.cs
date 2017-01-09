@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Diagnostics;
 using Fuxion.Logging;
-
+using Fuxion.Reflection;
 namespace Fuxion.Identity
 {
     public interface IDiscriminator : IInclusive<IDiscriminator>, IExclusive<IDiscriminator>
@@ -86,15 +86,6 @@ namespace Fuxion.Identity
             return Comparer.AreEquals(dis1.Id, dis2.Id) && Comparer.AreEquals(dis1.TypeId, dis2.TypeId);
         }
     }
-    //[AttributeUsage(AttributeTargets.Class)]
-    //public class DiscriminatorAttribute : Attribute
-    //{
-    //    public DiscriminatorAttribute(string key)
-    //    {
-    //        Key = key;
-    //    }
-    //    public string Key { get; set; }
-    //}
     [AttributeUsage(AttributeTargets.Class)]
     public class DiscriminatorAttribute : Attribute
     {
@@ -120,14 +111,24 @@ namespace Fuxion.Identity
     public class TypeDiscriminatedAttribute :Attribute
     {
         public TypeDiscriminatedAttribute(string id) { Id = id; Name = id; }
+        public TypeDiscriminatedAttribute(bool enabled) { Enabled = enabled; }
         public string Id { get; set; }
         public string Name { get; set; }
+        public bool Enabled { get; set; } = true;
     }
     [Discriminator("TYPE")]
     [DebuggerDisplay("{" + nameof(Name) + "}")]
     public class TypeDiscriminator : IDiscriminator<string, string>
     {
         internal TypeDiscriminator() { }
+        internal TypeDiscriminator(Func<IEnumerable<TypeDiscriminator>> getInclusions, Func<IEnumerable<TypeDiscriminator>> getExclusions)
+        {
+            this.getInclusions = getInclusions;
+            this.getExclusions = getExclusions;
+        }
+
+        Func<IEnumerable<TypeDiscriminator>> getInclusions;
+        Func<IEnumerable<TypeDiscriminator>> getExclusions;
 
         public string Id { get; internal set; }
         object IDiscriminator.Id { get { return Id; } }
@@ -139,8 +140,8 @@ namespace Fuxion.Identity
 
         public string TypeName { get; internal set; }
 
-        public IEnumerable<TypeDiscriminator> Inclusions { get; internal set; }
-        public IEnumerable<TypeDiscriminator> Exclusions { get; internal set; }
+        public IEnumerable<TypeDiscriminator> Inclusions { get { return getInclusions?.Invoke(); } }//; internal set; }
+        public IEnumerable<TypeDiscriminator> Exclusions { get { return getExclusions?.Invoke(); } }//; internal set; }
 
         IEnumerable<IDiscriminator> IInclusive<IDiscriminator>.Inclusions { get { return Inclusions; } }
 
@@ -149,27 +150,15 @@ namespace Fuxion.Identity
         IEnumerable<IDiscriminator<string, string>> IInclusive<IDiscriminator<string, string>>.Inclusions { get { return Inclusions; } }
 
         IEnumerable<IDiscriminator<string, string>> IExclusive<IDiscriminator<string, string>>.Exclusions { get { return Exclusions; } }
+
         public override string ToString() { return this.ToOneLineString(); }
-
-
-        //public override int GetHashCode() { return Id.GetHashCode(); }
-        //public override bool Equals(object obj) { return obj is TypeDiscriminator && Compare(this, obj as TypeDiscriminator); }
-        //private static bool Compare(TypeDiscriminator item1, TypeDiscriminator item2)
-        //{
-        //    if (ReferenceEquals(item1, null) && ReferenceEquals(item2, null)) return true;
-        //    else if (ReferenceEquals(item1, null) && !ReferenceEquals(item2, null)) return false;
-        //    else if (!ReferenceEquals(item1, null) && ReferenceEquals(item2, null)) return false;
-        //    else return item1.Id == item2.Id;
-        //}
-        //public static bool operator ==(TypeDiscriminator item1, TypeDiscriminator item2) { return Compare(item1, item2); }
-        //public static bool operator !=(TypeDiscriminator item1, TypeDiscriminator item2) { return !Compare(item1, item2); }
     }
-
     public class TypeDiscriminatorFactory
     {
         ILog log = LogManager.Create<TypeDiscriminatorFactory>();
         public string DiscriminatorTypeId { get; set; } = "TYPE";
         public string DiscriminatorTypeName { get; set; } = "TYPE";
+        public bool AllowMoreThanOneTypeByDiscriminator { get; set; }
         [DebuggerDisplay("{" + nameof(Discriminator) + "}")]
         class Entry
         {
@@ -191,17 +180,28 @@ namespace Fuxion.Identity
                     Register(type);
                 }
             }
-            //Register(baseType);
         }
         public void Register<T>() => Register(typeof(T));
         public void Register(params Type[] types)
         {
-            foreach (var type in types)
+            foreach (var type in types.Where(t => t.GetTypeInfo().GetCustomAttribute<TypeDiscriminatedAttribute>(false, false)?.Enabled ?? true))
             {
+                // Compruebo si lo tengo que ignorar
+                if (type.GetTypeInfo().GetCustomAttribute<TypeDiscriminatedAttribute>() == null)
+                {
+                    var parent = type.GetTypeInfo().BaseType;
+                    while (parent != null)
+                    {
+                        var att = parent.GetTypeInfo().GetCustomAttribute<TypeDiscriminatedAttribute>();
+                        if (att != null && !att.Enabled) return;
+                        parent = parent.GetTypeInfo().BaseType;
+                    }
+                }
+
                 // Calculo el id para este tipo
                 var id = GetIdFunction(type);
                 var aux = entries.FirstOrDefault(e => e.Discriminator.Id == id);
-                if (aux != null)
+                if (!AllowMoreThanOneTypeByDiscriminator && aux != null)
                 {
                     var ex = new Exception($"El tipo '{type.FullName}' no se puede registrar porque el id '{id}' ya se ha registrado para el tipo '{aux.Type.FullName}'");
                     log.Error(ex.Message, ex);
@@ -210,30 +210,39 @@ namespace Fuxion.Identity
 
                 // Creo la entrada con el tipo
                 var ent = new Entry { Type = type };
+                var getInclusions = new Func<IEnumerable<TypeDiscriminator>>(() =>
+                {
+                    var inc = entries
+                        .Where(e =>
+                            type != e.Type &&
+                            (type.GetTypeInfo().IsGenericTypeDefinition
+                            ? e.Type.IsSubclassOfRawGeneric(type)
+                            : e.Type.GetTypeInfo().IsSubclassOf(type)));
 
-                var inclusions = entries
-                    .Where(e =>
-                        type != e.Type &&
-                        (type.GetTypeInfo().IsGenericTypeDefinition
-                        ? e.Type.IsSubclassOfRawGeneric(type)
-                        : e.Type.GetTypeInfo().IsSubclassOf(type)))
-                    .Select(e => e.Discriminator);
-                var exclusions = entries
-                    .Where(e =>
-                        type != e.Type &&
-                        (e.Type.GetTypeInfo().IsGenericTypeDefinition
-                        ? type.IsSubclassOfRawGeneric(e.Type)
-                        : type.GetTypeInfo().IsSubclassOf(e.Type)))
-                    .Select(e => e.Discriminator);
-
-                ent.Discriminator = new TypeDiscriminator
+                    var res = inc
+                        .Where(i => !inc.Any(ii => ii.Discriminator.Inclusions.Contains(i.Discriminator)))
+                        .Select(i => i.Discriminator);
+                    return res;
+                });
+                var getExclusions = new Func<IEnumerable<TypeDiscriminator>>(() =>
+                {
+                    var exc = entries
+                        .Where(e =>
+                            type != e.Type &&
+                            (e.Type.GetTypeInfo().IsGenericTypeDefinition
+                            ? type.IsSubclassOfRawGeneric(e.Type)
+                            : type.GetTypeInfo().IsSubclassOf(e.Type)));
+                    var res = exc
+                        .Where(e => !exc.Any(ee => ee.Discriminator.Exclusions.Contains(e.Discriminator)))
+                        .Select(e => e.Discriminator);
+                    return res;
+                });
+                ent.Discriminator = new TypeDiscriminator(getInclusions, getExclusions)
                 {
                     Id = GetIdFunction(type),
                     Name = GetNameFunction(type),
                     TypeId = DiscriminatorTypeId,
                     TypeName = DiscriminatorTypeName,
-                    Inclusions = inclusions,
-                    Exclusions = exclusions
                 };
                 entries.Add(ent);
                 log.Info($"El tipo '{type.FullName}' se ha registrado para ser discriminado con el id '{ent.Discriminator.Id}'");
@@ -249,18 +258,22 @@ namespace Fuxion.Identity
         }
         public TypeDiscriminator FromId(string id)
         {
-            return entries.FirstOrDefault(e => e.Discriminator.Id == id)?.Discriminator;
+            var res = entries.Where(e => e.Discriminator.Id == id);
+            if (res.Count() > 1) throw new InvalidStateException($"More than one discriminator for the id '{id}'. Use '{nameof(AllFromId)}' method instead");
+            return res.FirstOrDefault()?.Discriminator;
         }
+        public IEnumerable<TypeDiscriminator> AllFromId(string id) => entries.Where(e => e.Discriminator.Id == id).Select(e => e.Discriminator);
+        
         public Func<Type, string> GetIdFunction { get; set; } = type =>
         {
             var att = type.GetTypeInfo().GetCustomAttribute<TypeDiscriminatedAttribute>(false, false, true);
-            if (att != null) return att.Id;
+            if (att != null && !string.IsNullOrWhiteSpace(att.Id)) return att.Id;
             return type.GetSignature(true);
         };
         public Func<Type, string> GetNameFunction { get; set; } = type =>
         {
             var att = type.GetTypeInfo().GetCustomAttribute<TypeDiscriminatedAttribute>(false, false, true);
-            if (att != null) return att.Name;
+            if (att != null && !string.IsNullOrWhiteSpace(att.Name)) return att.Name;
             return type.Name;
         };
     }

@@ -45,6 +45,10 @@ namespace Fuxion.ComponentModel
             PreviousValue = previousValue;
             ActualValue = actualValue;
         }
+        public NotifierPropertyChangedEventArgs<T> ConvertToNotifier<T>(T notifier)
+        {
+            return new NotifierPropertyChangedEventArgs<T>(PropertyName, notifier, PreviousValue, ActualValue);
+        }
         private object PreviousValue { get; set; }
         private object ActualValue { get; set; }
         private TNotifier Notifier { get; set; }

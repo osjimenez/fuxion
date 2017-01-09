@@ -1,6 +1,6 @@
 ﻿using Fuxion.Factories;
 using Fuxion.Identity.Test;
-using Fuxion.Identity.Test.Entity;
+using Fuxion.Identity.Test.Dao;
 using Fuxion.Identity.Test.Helpers;
 using Fuxion.Repositories;
 using SimpleInjector;
@@ -35,7 +35,7 @@ namespace Fuxion.Identity.DatabaseEFTest
                     con.RegisterSingleton<IdentityManager>();
 
                     var fac = new TypeDiscriminatorFactory();
-                    fac.RegisterTree<Base>(typeof(Base).Assembly.DefinedTypes.ToArray());
+                    fac.RegisterTree<Test.Dao.BaseDao>(typeof(Test.Dao.BaseDao).Assembly.DefinedTypes.ToArray());
                     con.RegisterSingleton(fac);
 
                     memoryFactory = new SimpleInjectorFactoryInjector(con);
@@ -56,7 +56,7 @@ namespace Fuxion.Identity.DatabaseEFTest
                     con.RegisterSingleton<IdentityManager>();
 
                     var fac = new TypeDiscriminatorFactory();
-                    fac.RegisterTree<Base>(typeof(Base).Assembly.DefinedTypes.ToArray());
+                    fac.RegisterTree<Test.Dao.BaseDao>(typeof(Test.Dao.BaseDao).Assembly.DefinedTypes.ToArray());
                     con.RegisterSingleton(fac);
 
                     databaseFactory = new SimpleInjectorFactoryInjector(con);

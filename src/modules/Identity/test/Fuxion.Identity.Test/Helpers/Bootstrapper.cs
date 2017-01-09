@@ -1,5 +1,5 @@
 ﻿using Fuxion.Factories;
-using Fuxion.Identity.Test.Entity;
+using Fuxion.Identity.Test.Dao;
 using System;
 using System.Collections.Generic;
 using System.Linq;

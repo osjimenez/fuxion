@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using static Fuxion.Identity.Functions;
 using Fuxion.Identity.Test.Mocks;
-using Fuxion.Identity.Test.Entity;
+using Fuxion.Identity.Test.Dao;
 using static Fuxion.Identity.Test.Context;
 using Xunit;
 
@@ -15,9 +15,9 @@ namespace Fuxion.Identity.Test
         public void WhenPermission_MatchByFunction()
         {
             // Un permiso de concesion para editar algo implicará que tambien puedo leerlo
-            Assert.True(new Permission { Value = true, Function = Edit.Id.ToString() }.MatchByFunction(Read));
+            Assert.True(new PermissionDao { Value = true, Function = Edit.Id.ToString() }.MatchByFunction(Read));
             // Un permiso de denegación para leer algo implicará que tampoco puedo editarlo
-            Assert.True(new Permission { Value = false, Function = Read.Id.ToString() }.MatchByFunction(Edit));
+            Assert.True(new PermissionDao { Value = false, Function = Read.Id.ToString() }.MatchByFunction(Edit));
         }
         [Fact(Skip = "Deactivated")]
         public void WhenPermission_MatchByDiscriminatorsType()

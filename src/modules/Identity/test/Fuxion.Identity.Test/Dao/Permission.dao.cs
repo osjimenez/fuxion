@@ -5,14 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Fuxion.Identity.Test.Entity
+namespace Fuxion.Identity.Test.Dao
 {
-    [Table(nameof(Permission))]
-    public class Permission : Base, IPermission
+    [Table(nameof(PermissionDao))]
+    public class PermissionDao : BaseDao, IPermission
     {
-        public Rol Rol { get; set; }
+        public RolDao Rol { get; set; }
         public string Function { get; set; }
-        public IList<Scope> Scopes { get; set; } = new List<Scope>();
+        public IList<ScopeDao> Scopes { get; set; } = new List<ScopeDao>();
         public bool Value { get; set; }
         public override string Name { get { return $"{Rol?.Name} can{(Value?"":"'t")} {Function} with {Scopes.Count} scopes."; } }
         public override string ToString()
