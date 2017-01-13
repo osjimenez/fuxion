@@ -64,6 +64,9 @@
     <Compile Include="Printer.cs" />
     <Compile Include="Reflection\Reflect.cs" />
     <Compile Include="Singleton.cs" />
+    <Compile Include="Synchronization\Sync.cs" />
+    <Compile Include="Synchronization\SyncComparator.cs" />
+    <Compile Include="Synchronization\SyncPreview.cs" />
     <Compile Include="System-Extensions.cs" />
     <Compile Include="Factories\Factory.cs" />
     <Compile Include="Factories\IFactoryInjector.cs" />
