@@ -17,7 +17,7 @@ namespace Fuxion.Synchronization
     {
         internal SyncItemSidePreview() { }
         internal SyncItemSidePreview(Guid syncId) { SyncId = syncId; }
-        public Guid SyncId { get; }
+        public Guid SyncId { get; set; }
 
         public bool SideItemExist { get; set; }
         public string SideName { get; set; }
@@ -25,29 +25,29 @@ namespace Fuxion.Synchronization
         public string SideItemName { get; set; }
         public SyncAction Action { get; set; }
 
-        public IEnumerable<SyncPropertyPreview> Properties { get; set; }
+        public IList<SyncPropertyPreview> Properties { get; set; }
     }
     public class SyncItemPreview
     {
         internal SyncItemPreview() { }
         internal SyncItemPreview(Guid syncId) { SyncId = syncId; }
-        public Guid SyncId { get; }
+        public Guid SyncId { get; set; }
         public bool MasterItemExist { get; set; }
         public string MasterItemName { get; set; }
-        public IEnumerable<SyncItemSidePreview> Sides { get; set; }
+        public IList<SyncItemSidePreview> Sides { get; set; }
     }
     public class SyncWorkPreview
     {
         internal SyncWorkPreview() { }
         internal SyncWorkPreview(Guid syncId) { SyncId = syncId; }
-        public Guid SyncId { get; }
-        public IEnumerable<SyncItemPreview> Items { get; set; }
+        public Guid SyncId { get; set; }
+        public IList<SyncItemPreview> Items { get; set; }
     }
     public class SyncSessionPreview
     {
         internal SyncSessionPreview() { }
         internal SyncSessionPreview(Guid syncId) { SyncId = syncId; }
-        public Guid SyncId { get; }
-        public IEnumerable<SyncWorkPreview> Works { get; set; }
+        public Guid SyncId { get; set; }
+        public IList<SyncWorkPreview> Works { get; set; }
     }
 }

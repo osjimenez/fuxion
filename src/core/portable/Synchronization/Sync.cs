@@ -132,11 +132,15 @@ namespace Fuxion.Synchronization
         string Name { get; }
         string SingularItemTypeName { get; }
         string PluralItemTypeName { get; }
-        IEnumerable<object> Load();
+        Task Load();
         string GetItemName(object item);
         void Add(object item);
         void Delete(object item);
         void Update(object item);
+
+        IEnumerable<object> Entries { get; set; }
+        ISyncComparator Comparator { get; set; }
+        IEnumerable<ISyncComparatorResult> Results { get; set; }
     }
     public class SyncSide<TSource, TItem, TKey> : ISyncSide
     {
@@ -153,7 +157,7 @@ namespace Fuxion.Synchronization
         public Action<TSource, TItem> Remover { get; set; }
         public Action<TSource, TItem> Updater { get; set; }
 
-        IEnumerable<object> ISyncSide.Load() => Loader(Source).Cast<object>();
+        //IEnumerable<object> ISyncSide.Load() => Loader(Source).Cast<object>();
         public string GetItemName(object item) => item != null ? Nominator((TItem)item) : null;
 
         public void Add(object item)
@@ -174,6 +178,11 @@ namespace Fuxion.Synchronization
                 Updater(Source, (TItem)item);
             else throw new ArgumentException($"'{nameof(item)}' must be of type '{typeof(TItem).Name}'", nameof(item));
         }
+
+        public IEnumerable<object> Entries { get; set; }
+        public ISyncComparator Comparator { get; set; }
+        public IEnumerable<ISyncComparatorResult> Results { get; set; }
+        public Task Load() => TaskManager.StartNew(() => Entries = Loader(Source).Cast<object>());
     }
     public class SyncWork
     {
@@ -181,18 +190,19 @@ namespace Fuxion.Synchronization
         public IEnumerable<ISyncSide> Sides { get; set; }
         public IEnumerable<ISyncComparator> Comparators { get; set; }
         //public IEnumerable<SyncWork> SubWorks { get; set; }
+        public IList<ISyncItem> Items { get; set; } = new List<ISyncItem>();
 
         ISyncSide MasterSide { get; set; }
-        List<WorkEntry> Entries { get; set; }
+        //List<WorkEntry> Entries { get; set; }
 
-        class WorkEntry
-        {
-            public IEnumerable<object> Items { get; set; }
-            public ISyncSide Side { get; set; }
-            public ISyncComparator Comparator { get; set; }
-            public IEnumerable<ISyncComparatorResult> Results { get; set; }
-            public Task Load() => TaskManager.StartNew(() => Items = Side.Load());
-        }
+        //class WorkEntry
+        //{
+        //    public IEnumerable<object> Items { get; set; }
+        //    public ISyncSide Side { get; set; }
+        //    public ISyncComparator Comparator { get; set; }
+        //    public IEnumerable<ISyncComparatorResult> Results { get; set; }
+        //    public Task Load() => TaskManager.StartNew(() => Items = Side.Load());
+        //}
 
         public async Task<SyncWorkPreview> PreviewAsync()
         {
@@ -201,8 +211,10 @@ namespace Fuxion.Synchronization
             if (masters.Count() != 1) throw new ArgumentException("One, and only one SyncSide must be the master side");
             MasterSide = masters.Single();
             // Create entries from sides
-            Entries = Sides.Select(s => new WorkEntry { Side = s }).ToList();
-            var masterEntry = Entries.Single(e => e.Side.IsMaster);
+            
+            //Entries = Sides.Select(s => new WorkEntry { Side = s }).ToList();
+            //var masterEntry = Sides.Single(s => s.IsMaster);
+
             // Search for comparators for any side with master side
             foreach (var side in Sides.Where(s => !s.IsMaster))
             {
@@ -214,42 +226,60 @@ namespace Fuxion.Synchronization
                     return (ct.Item1 == mt && ct.Item2 == st) || (ct.Item2 == mt && ct.Item1 == st);
                 });
                 if (cc.Count() != 1) throw new ArgumentException("One, and only one ISyncComparator must be added for master side and each side");
-                Entries.Single(e => e.Side == side).Comparator = cc.Single();
+                side.Comparator = cc.Single();
+                //Entries.Single(e => e.Side == side).Comparator = cc.Single();
             }
             // Load all sides in parallel
-            await Task.WhenAll(Entries.Select(e => e.Load()));
+            await Task.WhenAll(Sides.Select(s => s.Load()));
             // Compare each side with master side
-            foreach (var ent in Entries.Where(e => !e.Side.IsMaster))
+            foreach (var sid in Sides.Where(s => !s.IsMaster))
             {
-                
-                if(ent.Comparator.GetItemTypes().Item1 == MasterSide.GetItemType())
+                if(sid.Comparator.GetItemTypes().Item1 == MasterSide.GetItemType())
                 {
                     // Master is A in this comparer
-                    ent.Results = ent.Comparator.CompareItems(masterEntry.Items, ent.Items);
+                    sid.Results = sid.Comparator.CompareItems(MasterSide.Entries, sid.Entries);
                 }else
                 {
                     // Master is B in this comparer
-                    ent.Results = ent.Comparator.CompareItems(ent.Items, masterEntry.Items).Select(p => p.Invert());
+                    sid.Results = sid.Comparator.CompareItems(sid.Entries, MasterSide.Entries).Select(p => p.Invert());
                 }
             }
             // Group side results by item key and populate with sides results
-            var items = new List<ISyncItem>();
-            foreach(var gro in Entries
-                .Where(e => !e.Side.IsMaster)
+            //var items = new List<ISyncItem>();
+
+            var ppp = Sides
+                .Where(e => !e.IsMaster)
                 .SelectMany(e => e.Results.Select(r => new
                 {
                     Key = r.Key,
                     MasterItemType = MasterSide.GetItemType(),
                     MasterItem = r.MasterItem,
                     MasterName = MasterSide.GetItemName(r.MasterItem),
-                    SideSyncId = e.Side.SyncId,
-                    SideItemType = e.Side.GetItemType(),
+                    SideSyncId = e.SyncId,
+                    SideItemType = e.GetItemType(),
                     SideItem = r.SideItem,
-                    SideItemName = e.Side.GetItemName(r.SideItem),
-                    SideName = e.Side.Name,
+                    SideItemName = e.GetItemName(r.SideItem),
+                    SideName = e.Name,
                     Properties = r.ToArray()
                 }))
-                .GroupBy(r => r.Key))
+                .GroupBy(r => r.MasterItem).ToList();
+
+            foreach (var gro in Sides
+                .Where(e => !e.IsMaster)
+                .SelectMany(e => e.Results.Select(r => new
+                {
+                    Key = r.Key,
+                    MasterItemType = MasterSide.GetItemType(),
+                    MasterItem = r.MasterItem,
+                    MasterName = MasterSide.GetItemName(r.MasterItem),
+                    SideSyncId = e.SyncId,
+                    SideItemType = e.GetItemType(),
+                    SideItem = r.SideItem,
+                    SideItemName = e.GetItemName(r.SideItem),
+                    SideName = e.Name,
+                    Properties = r.ToArray()
+                }))
+                .GroupBy(r => r.MasterItem))
             {
                 // Create item preview
                 var fir = gro.First(); // Use first element to get master info, all items in this group has the same master item
@@ -267,12 +297,12 @@ namespace Fuxion.Synchronization
                     ((IList<ISyncItemSide>)itemPreview.Sides).Add(sidePreview);
                 }
                 // Add item to work
-                items.Add(itemPreview);
+                Items.Add(itemPreview);
             }
             // Create preview response
             var preWork = new SyncWorkPreview(SyncId);
             var preItems = new List<SyncItemPreview>();
-            foreach (var item in items)
+            foreach (var item in Items)
             {
                 var preItem = new SyncItemPreview(item.SyncId);
                 preItem.MasterItemExist = item.MasterItem != null;
@@ -321,35 +351,34 @@ namespace Fuxion.Synchronization
         {
             foreach (var item in preview.Items)
             {
+                var runItem = Items.Single(i => i.SyncId == item.SyncId);
                 foreach (var side in item.Sides)
                 {
-                    var ent = Entries.FirstOrDefault(e => e.Side.SyncId == side.SyncId);
+                    var runSide = Sides.Single(e => e.SyncId == side.SyncId);
+                    var runItemSide = runItem.Sides.Single(s => s.SyncId == side.SyncId);
                     object sideItem = null;
-                    if (ent.Comparator.GetItemTypes().Item1 == MasterSide.GetItemType())
+                    if (runSide.Comparator.GetItemTypes().Item1 == MasterSide.GetItemType())
                     {
-
-
-
                         // Master is A in this comparator
                         if (item.MasterItemExist)
-                            sideItem = ent.Comparator.MapAToB(item.MasterItem, side.SideItem);
+                            sideItem = runSide.Comparator.MapAToB(runItem.MasterItem, runItemSide.SideItem);
                     }
                     else
                     {
                         // Master is B in this comparator
                         if (item.MasterItemExist)
-                            sideItem = ent.Comparator.MapBToA(item.MasterItem, side.SideItem);
+                            sideItem = runSide.Comparator.MapBToA(runItem.MasterItem, runItemSide.SideItem);
                     }
                     switch (side.Action)
                     {
                         case SyncAction.Add:
-                            ent.Side.Add(sideItem);
+                            runSide.Add(sideItem);
                             break;
                         case SyncAction.Delete:
-                            ent.Side.Delete(side.SideItem);
+                            runSide.Delete(runItemSide.SideItem);
                             break;
                         case SyncAction.Update:
-                            ent.Side.Update(sideItem);
+                            runSide.Update(sideItem);
                             break;
                     }
                 }
@@ -363,15 +392,14 @@ namespace Fuxion.Synchronization
         public async Task<SyncSessionPreview> PreviewAsync()
         {
             var res = new SyncSessionPreview(SyncId);
-            var works = new List<SyncWorkPreview>();
-            foreach (var work in Works)
-            {
-                var r = work.PreviewAsync().Result;
-                works.Add(r);
-            }
-            var ooo = Works.Select(w => w.PreviewAsync().Result).ToList();
-            //res.Works = Works.Select(w => w.PreviewAsync().Result).ToList();
-            res.Works = ooo;
+            //var works = new List<SyncWorkPreview>();
+            //foreach (var work in Works)
+            //{
+            //    var r = work.PreviewAsync().Result;
+            //    works.Add(r);
+            //}
+            //var ooo = Works.Select(w => w.PreviewAsync().Result).ToList();
+            res.Works = Works.Select(w => w.PreviewAsync().Result).ToList();
             return res;
         }
         public async Task RunAsync(SyncSessionPreview preview)

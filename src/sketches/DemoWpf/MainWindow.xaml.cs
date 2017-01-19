@@ -187,6 +187,10 @@ namespace DemoWpf
             not.Integer = 6;
             //DispatcherSynchronizer sync = new DispatcherSynchronizer();
         }
+        private void Button_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            e.Handled = true;
+        }
     }
     public class SynchronizableNotifierMock : Notifier<SynchronizableNotifierMock>
     {

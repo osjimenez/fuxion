@@ -80,15 +80,17 @@ namespace Fuxion.Test
                                 MapAToB = (a,b) =>
                                 {
                                     if(b == null)
-                                        return new UserSalto { Id = a.Id, Name = a.Name };
+                                        return new UserSalto { Id = a.Id, Name = a.Name, Age = a.Age };
                                     b.Name = a.Name;
+                                    b.Age = a.Age;
                                     return b;
                                 },
                                 MapBToA = (b,a) =>
                                 {
                                     if(a == null)
-                                        return new UserFD { Id = b.Id, Name = b.Name };
+                                        return new UserFD { Id = b.Id, Name = b.Name, Age = b.Age };
                                     a.Name = b.Name;
+                                    a.Age = b.Age;
                                     return a;
                                 },
                                 Function = (a, b, p) =>
@@ -96,6 +98,8 @@ namespace Fuxion.Test
                                     // Compruebo cada propiedad para ver si es igual, si no lo es agrego la propiedad al resultado de la preview
                                     if (a.Name != b.Name)
                                         p.AddProperty(nameof(a.Name), a.Name, b.Name);
+                                    if (a.Age != b.Age)
+                                        p.AddProperty(nameof(a.Age), a.Age, b.Age);
                                 }
                             },
                             new SyncComparator<UserPresence, UserFD, int>
@@ -105,15 +109,17 @@ namespace Fuxion.Test
                                 MapAToB = (a,b) =>
                                 {
                                     if(b == null)
-                                        return new UserFD { Id = a.Id, Name = a.Name };
+                                        return new UserFD { Id = a.Id, Name = a.Name, Age = a.Age };
                                     b.Name = a.Name;
+                                    b.Age = a.Age;
                                     return b;
                                 },
                                 MapBToA = (b,a) =>
                                 {
                                     if(a == null)
-                                        return new UserPresence { Id = b.Id, Name = b.Name };
+                                        return new UserPresence { Id = b.Id, Name = b.Name, Age = b.Age };
                                     a.Name = b.Name;
+                                    a.Age = b.Age;
                                     return a;
                                 },
                                 Function = (a, b, p) =>
@@ -121,6 +127,8 @@ namespace Fuxion.Test
                                     // Compruebo cada propiedad para ver si es igual, si no lo es agrego la propiedad al resultado de la preview
                                     if (a.Name != b.Name)
                                         p.AddProperty(nameof(a.Name), a.Name, b.Name);
+                                    if (a.Age != b.Age)
+                                        p.AddProperty(nameof(a.Age), a.Age, b.Age);
                                 }
                             },
                             new SyncComparator<UserSalto, UserPresence, int>
@@ -130,15 +138,17 @@ namespace Fuxion.Test
                                 MapAToB = (a,b) =>
                                 {
                                     if(b == null)
-                                        return new UserPresence { Id = a.Id, Name = a.Name };
+                                        return new UserPresence { Id = a.Id, Name = a.Name, Age = a.Age };
                                     b.Name = a.Name;
+                                    b.Age = a.Age;
                                     return b;
                                 },
                                 MapBToA = (b,a) =>
                                 {
                                     if(a == null)
-                                        return new UserSalto { Id = b.Id, Name = b.Name };
+                                        return new UserSalto { Id = b.Id, Name = b.Name, Age = b.Age };
                                     a.Name = b.Name;
+                                    a.Age = b.Age;
                                     return a;
                                 },
                                 Function = (a, b, p) =>
@@ -146,6 +156,8 @@ namespace Fuxion.Test
                                     // Compruebo cada propiedad para ver si es igual, si no lo es agrego la propiedad al resultado de la preview
                                     if (a.Name != b.Name)
                                         p.AddProperty(nameof(a.Name), a.Name, b.Name);
+                                    if (a.Age != b.Age)
+                                        p.AddProperty(nameof(a.Age), a.Age, b.Age);
                                 }
                             },
                         },
@@ -241,6 +253,7 @@ namespace Fuxion.Test
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public int Age { get; set; }
         public IEnumerable<SkillFD> Skills { get; set; }
         public override string ToString() => Name;
     }
@@ -256,21 +269,25 @@ namespace Fuxion.Test
                 {
                     Id = 1,
                     Name = "Modificado Salto-Presence",
+                    Age = 30,
                 },
                 new UserFD
                 {
                     Id = 2,
                     Name = "Modificado Salto",
+                    Age = 24,
                 },
                 new UserFD
                 {
                     Id = 3,
                     Name = "Modificado Presence",
+                    Age = 23,
                 },
                 new UserFD
                 {
                     Id = 4,
-                    Name = "Solo master"
+                    Name = "Solo master",
+                    Age = 43
                 }
             })
         { }
@@ -282,6 +299,7 @@ namespace Fuxion.Test
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public int Age { get; set; }
         public IEnumerable<SkillSalto> Skills { get; set; }
         public override string ToString() => Name;
     }
@@ -297,21 +315,25 @@ namespace Fuxion.Test
                 {
                     Id = 1,
                     Name = "Modificado Salto-Presence (S)",
+                    Age = 30,
                 },
                 new UserSalto
                 {
                     Id = 2,
                     Name = "Modificado Salto (S)",
+                    Age = 24,
                 },
                 new UserSalto
                 {
                     Id = 3,
                     Name = "Modificado Presence",
+                    Age = 23,
                 },
                 new UserSalto
                 {
                     Id = 5,
-                    Name = "Solo salto"
+                    Name = "Solo salto",
+                    Age = 46,
                 }
             })
         { }
@@ -323,6 +345,7 @@ namespace Fuxion.Test
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public int Age { get; set; }
         public IEnumerable<SkillPresence> Skills { get; set; }
         public override string ToString() => Name;
     }
@@ -338,21 +361,25 @@ namespace Fuxion.Test
                 {
                     Id = 1,
                     Name = "Modificado Salto-Presence (P)",
+                    Age = 29,
                 },
                 new UserPresence
                 {
                     Id = 2,
                     Name = "Modificado Salto",
+                    Age = 24
                 },
                 new UserPresence
                 {
                     Id = 3,
                     Name = "Modificado Presence (P)",
+                    Age = 23,
                 },
                 new UserPresence
                 {
                     Id = 6,
-                    Name = "Solo presence"
+                    Name = "Solo presence",
+                    Age = 87
                 }
             })
         { }

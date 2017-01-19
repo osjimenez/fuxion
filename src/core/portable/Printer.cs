@@ -21,14 +21,14 @@ namespace Fuxion
         {
             IdentationLevel++;
             action();
-            IdentationLevel--;
+            if(IdentationLevel > 0) IdentationLevel--;
         }
         public static void Ident(string message, Action action)
         {
             Print(message);
             IdentationLevel++;
             action();
-            IdentationLevel--;
+            if (IdentationLevel > 0) IdentationLevel--;
         }
         public static bool Enabled { get; set; } = true;
     }
