@@ -65,6 +65,7 @@
     <Compile Include="Reflection\Reflect.cs" />
     <Compile Include="Singleton.cs" />
     <Compile Include="Synchronization\Sync.cs" />
+    <Compile Include="Synchronization\SyncAction.cs" />
     <Compile Include="Synchronization\SyncComparator.cs" />
     <Compile Include="Synchronization\SyncPreview.cs" />
     <Compile Include="System-Extensions.cs" />

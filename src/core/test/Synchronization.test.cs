@@ -173,37 +173,35 @@ namespace Fuxion.Test
 
             Printer.PrintAction = m => output.WriteLine(m);
 
-            foreach (var work in res)
+            foreach (var work in res.Works)
             {
                 Printer.Print("Work:");
                 Printer.Ident(() =>
                 {
-                    foreach (var item in work)
+                    foreach (var item in work.Items)
                     {
-                        Printer.Print($"Item '{item.MasterItem ?? "null"}' with key '{item.Key}' has '{item.Count()}' sides");
+                        Printer.Print($"Item '{(item.MasterItemExist ? item.MasterItemName : "null")}' has '{item.Sides.Count()}' sides");
                         Printer.Ident(() =>
                         {
-                            foreach (var side in item)
+                            foreach (var side in item.Sides)
                             {
-                                if (side.SideItem != null)
+                                if (side.SideItemExist)
                                 {
-                                    Printer.Print($"{side.Action.ToString().ToUpper()} - In '{side.Name}' side is named '{side.SideItemName}' and has '{side.Count()}' change(s)");
+                                    Printer.Print($"{side.Action.ToString().ToUpper()} - In '{side.SideName}' side is named '{side.SideItemName}' with key '{side.Key}' and has '{side.Properties.Count()}' change(s)");
                                     Printer.Ident(() =>
                                     {
-                                        foreach (var pro in side)
+                                        foreach (var pro in side.Properties)
                                         {
                                             Printer.Print($"Property '{pro.PropertyName}' will be changed from '{pro.SideValue}' to '{pro.MasterValue}'");
                                         }
                                     });
                                 }
-                                else Printer.Print($"{side.Action.ToString().ToUpper()} - In '{side.Name}' side does not exist");
+                                else Printer.Print($"{side.Action.ToString().ToUpper()} - In '{side.SideName}' side does not exist");
                             }
                         });
                     }
                 });
             }
-
-            Debug.WriteLine("");
 
             DataContractSerializer ser = new DataContractSerializer(typeof(SyncSessionPreview));
             var str = new MemoryStream();
@@ -211,7 +209,7 @@ namespace Fuxion.Test
             str.Seek(0, SeekOrigin.Begin);
             var res2 = (SyncSessionPreview)ser.ReadObject(str);
 
-            ses.RunAsync(res).Wait();
+            ses.RunAsync(res2).Wait();
 
             //Assert.Equal(6, res.First().Count());
             //Assert.Equal(3, res.First().First().Count());

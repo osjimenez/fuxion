@@ -70,13 +70,13 @@ namespace Fuxion.Synchronization
         object ISyncComparator.MapAToB(object itemA, object itemB) => MapAToB((TItemA)itemA, (TItemB)itemB);
         object ISyncComparator.MapBToA(object itemB, object itemA) => MapBToA((TItemB)itemB, (TItemA)itemA);
     }
-    public interface ISyncComparatorResult : IEnumerable<ISyncPropertyPreview>
+    public interface ISyncComparatorResult : IEnumerable<ISyncProperty>
     {
         object Key { get; }
         object MasterItem { get; }
         object SideItem { get; }
     }
-    public class SyncComparatorResult<TItemA, TItemB, TKey> : List<ISyncPropertyPreview>, ISyncComparatorResult
+    public class SyncComparatorResult<TItemA, TItemB, TKey> : List<ISyncProperty>, ISyncComparatorResult
     {
         public TKey Key { get; set; }
         object ISyncComparatorResult.Key { get { return Key; } }
@@ -87,7 +87,7 @@ namespace Fuxion.Synchronization
 
         public void AddProperty<TPropertyA, TPropertyB>(string propertyName, TPropertyA aValue, TPropertyB bValue)
         {
-            Add(new SyncPropertyPreview<TPropertyA, TPropertyB>(propertyName, aValue, bValue));
+            Add(new SyncProperty<TPropertyA, TPropertyB>(propertyName, aValue, bValue));
         }
     }
 }
