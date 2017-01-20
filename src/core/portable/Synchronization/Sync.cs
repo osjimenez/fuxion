@@ -351,11 +351,11 @@ namespace Fuxion.Synchronization
         {
             foreach (var item in preview.Items)
             {
-                var runItem = Items.Single(i => i.SyncId == item.SyncId);
+                var runItem = Items.Single(i => i.SyncId == item.ItemId);
                 foreach (var side in item.Sides)
                 {
-                    var runSide = Sides.Single(e => e.SyncId == side.SyncId);
-                    var runItemSide = runItem.Sides.Single(s => s.SyncId == side.SyncId);
+                    var runSide = Sides.Single(e => e.SyncId == side.SideId);
+                    var runItemSide = runItem.Sides.Single(s => s.SyncId == side.SideId);
                     object sideItem = null;
                     if (runSide.Comparator.GetItemTypes().Item1 == MasterSide.GetItemType())
                     {
@@ -406,7 +406,7 @@ namespace Fuxion.Synchronization
         {
             foreach(var work in Works)
             {
-                var workPre = preview.Works.FirstOrDefault(w => w.SyncId == work.SyncId);
+                var workPre = preview.Works.FirstOrDefault(w => w.WorkId == work.SyncId);
                 await work.RunAsync(workPre);
             }
         }

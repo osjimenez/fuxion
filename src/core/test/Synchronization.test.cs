@@ -9,6 +9,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
+using System.Xml;
+using System.Xml.Linq;
 
 namespace Fuxion.Test
 {
@@ -17,6 +19,7 @@ namespace Fuxion.Test
         public SynchronizationTest(ITestOutputHelper output)
         {
             this.output = output;
+            Printer.PrintAction = m => output.WriteLine(m);
         }
         ITestOutputHelper output;
         [Fact]
@@ -25,6 +28,8 @@ namespace Fuxion.Test
             var fdRepo = new RepoFD();
             var saltoRepo = new RepoSalto();
             var presenceRepo = new RepoPresence();
+
+            // Create sync session
             var ses = new SyncSession
             {
                 Works = new[]
@@ -181,10 +186,11 @@ namespace Fuxion.Test
                     }
                 }
             };
+
+            // Preview synchronization
             var res = ses.PreviewAsync().Result;
 
-            Printer.PrintAction = m => output.WriteLine(m);
-
+            // Print preview results
             foreach (var work in res.Works)
             {
                 Printer.Print("Work:");
@@ -215,14 +221,33 @@ namespace Fuxion.Test
                 });
             }
 
+            // Serialize
             DataContractSerializer ser = new DataContractSerializer(typeof(SyncSessionPreview));
             var str = new MemoryStream();
             ser.WriteObject(str, res);
-            str.Seek(0, SeekOrigin.Begin);
+            str.Position = 0;
+
+            // Print as JSON and XML
+            Printer.Print("JSON:\r\n" + res.ToJson());
+
+            XmlDocument doc = new XmlDocument();
+            doc.Load(str);
+            var str2 = new MemoryStream();
+            var writer = new XmlTextWriter(str2, Encoding.Default);
+            writer.Formatting = Formatting.Indented;
+            doc.WriteContentTo(writer);
+            str2.Position = 0;
+            var serStr = new StreamReader(str2).ReadToEnd();
+            Printer.Print("XML:\r\n" + serStr);
+            str.Position = 0;
+
+            // Deserialize
             var res2 = (SyncSessionPreview)ser.ReadObject(str);
 
+            // Run Sync
             ses.RunAsync(res2).Wait();
 
+            // Check results
             //Assert.Equal(6, res.First().Count());
             //Assert.Equal(3, res.First().First().Count());
             //Assert.Equal(2, res.First().Skip(1).First().Count());
