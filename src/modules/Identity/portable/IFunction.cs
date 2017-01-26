@@ -46,7 +46,8 @@ namespace Fuxion.Identity
         }
         public static IEnumerable<T> GetAllInclusions<T>(this IInclusive<T> me)
         {
-            return GetAllInclusions(me, new List<T>(new[] { (T)me }));
+            //return GetAllInclusions(me, new List<T>(new[] { (T)me }));
+            return GetAllInclusions(me, new List<T>(new T[] { }));
         }
         private static IEnumerable<T> GetAllExclusions<T>(this IExclusive<T> me, List<T> progress)
         {
@@ -59,7 +60,8 @@ namespace Fuxion.Identity
         }
         public static IEnumerable<T> GetAllExclusions<T>(this IExclusive<T> me)
         {
-            return GetAllExclusions(me, new List<T>(new[] { (T)me }));
+            //return GetAllExclusions(me, new List<T>(new[] { (T)me }));
+            return GetAllExclusions(me, new List<T>(new T[] { }));
         }
         public static void Print(this IEnumerable<IFunction> me, PrintMode mode)
         {

@@ -31,15 +31,15 @@ namespace Fuxion.Identity.Test
         [Fact(DisplayName = "Function - Inclusions & exclusion")]
         public void IncludesAndExcludes()
         {
-            Assert.Equal(Read.GetAllInclusions().Count(), 1);
-            Assert.Equal(Read.GetAllExclusions().Count(), 6);
-            Assert.Equal(Edit.GetAllInclusions().Count(), 2);
-            Assert.Equal(Edit.GetAllExclusions().Count(), 5);
+            Assert.Equal(Read.GetAllInclusions().Count(), 0);
+            Assert.Equal(Read.GetAllExclusions().Count(), 5);
+            Assert.Equal(Edit.GetAllInclusions().Count(), 1);
+            Assert.Equal(Edit.GetAllExclusions().Count(), 4);
             var Custom = AddCustom("CUSTOM", new[] { Read }, new[] { Manage });
-            Assert.Equal(Custom.GetAllInclusions().Count(), 2);
-            Assert.Equal(Custom.GetAllExclusions().Count(), 3);
+            Assert.Equal(Custom.GetAllInclusions().Count(), 1);
+            Assert.Equal(Custom.GetAllExclusions().Count(), 2);
             var oo = Read.GetAllExclusions();
-            Assert.Equal(Read.GetAllExclusions().Count(), 7);
+            Assert.Equal(Read.GetAllExclusions().Count(), 6);
         }
         [Fact(DisplayName = "Function - Cycles detection")]
         public void CyclesDetection()
