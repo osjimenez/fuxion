@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Fuxion.Identity.Test.Helpers;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -16,6 +17,7 @@ namespace Fuxion.Identity.Test.Dao
     [Table(nameof(ExcelDocumentDao))]
     public class ExcelDocumentDao : DocumentDao { }
     [Table(nameof(WordDocumentDao))]
+    [TypeDiscriminated(TypeDiscriminatorIds.WordDocument)]
     public class WordDocumentDao : DocumentDao { }
     [Table(nameof(MediaDao))]
     public abstract class MediaDao : FileDao { }

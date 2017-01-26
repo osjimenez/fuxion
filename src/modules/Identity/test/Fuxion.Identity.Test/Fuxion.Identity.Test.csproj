@@ -67,14 +67,9 @@
         <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
       </ItemGroup>
     </When>
-    <Otherwise>
-      <ItemGroup>
-        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
-      </ItemGroup>
-    </Otherwise>
+    <Otherwise />
   </Choose>
   <ItemGroup>
-    <Compile Include="BaseTestClass.cs" />
     <Compile Include="Context.Test.cs" />
     <Compile Include="Discriminator.Test.cs" />
     <Compile Include="Dto\Base.dto.cs" />
@@ -83,7 +78,6 @@
     <Compile Include="Dvo\File.dvo.cs" />
     <Compile Include="Dvo\Person.dvo.cs" />
     <Compile Include="Dvo\Skill.dvo.cs" />
-    <Compile Include="Entity.Test.cs" />
     <Compile Include="Dao\Base.dao.cs" />
     <Compile Include="Dao\Discriminator.dao.cs" />
     <Compile Include="Dao\Skill.dao.cs" />
@@ -93,9 +87,8 @@
     <Compile Include="Dao\Rol.dao.cs" />
     <Compile Include="Dao\Scope.dao.cs" />
     <Compile Include="Function.Test.cs" />
-    <Compile Include="Helpers\Bootstrapper.cs" />
-    <Compile Include="IdentityMemoryRepository.cs" />
-    <Compile Include="Helpers\PasswordProvider.cs" />
+    <Compile Include="Repositories\IdentityMemoryRepository.cs" />
+    <Compile Include="Mocks\PasswordProvider.cs" />
     <Compile Include="Mocks\GuidDiscriminator.cs" />
     <Compile Include="Mocks\GuidFunction.cs" />
     <Compile Include="Mocks\GuidStringDiscriminator.cs" />
@@ -108,12 +101,16 @@
     <Compile Include="Scope.Test.cs" />
     <Compile Include="Context.cs" />
     <Compile Include="TypeDiscriminator.Test.cs" />
-    <Compile Include="TypeDiscriminatorIds.cs" />
+    <Compile Include="Helpers\TypeDiscriminatorIds.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\core\portable\Fuxion.csproj">
       <Project>{5761cb44-504f-468b-8263-39f59eebbb17}</Project>
       <Name>Fuxion</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\core\test\Fuxion.Test.csproj">
+      <Project>{8d2242c6-d7d3-403c-b39d-8877ab8e745a}</Project>
+      <Name>Fuxion.Test</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\SimpleInjector\portable\Fuxion.SimpleInjector.csproj">
       <Project>{dfe9408b-2bb2-4f86-a1c0-2a050d155f82}</Project>

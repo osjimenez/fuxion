@@ -1,6 +1,7 @@
 ﻿using Fuxion.Factories;
 using Fuxion.Identity.Test.Dao;
 using Fuxion.Identity.Test.Helpers;
+using Fuxion.Identity.Test.Mocks;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -31,83 +32,143 @@ namespace Fuxion.Identity.Test
         public static void RunConfigurationActions()
         {
             foreach (var act in configurationActions)
-                act.Item1.DynamicInvoke(act.Item2);
+                try
+                {
+                    act.Item1.DynamicInvoke(act.Item2);
+                }
+                catch
+                {
+                    Printer.Print("ERROR al procesar una configuracion del contexto");
+                }
         }
 
         #region Discriminator
-        public static DiscriminatorContext Discriminator { get; } = new DiscriminatorContext();
+        static DiscriminatorContext _Discriminator;
+        public static DiscriminatorContext Discriminator
+        {
+            get
+            {
+                if (_Discriminator == null)
+                {
+                    _Discriminator = new DiscriminatorContext();
+                    RunConfigurationActions();
+                }
+                return _Discriminator;
+            }
+        }
         public class DiscriminatorContext : Context<DiscriminatorDao>
         {
-            public DiscriminatorContext()
-            {
-                //Location.Country.Usa.States = new[] { Location.State.California };
-                //Location.State.California.Country = Location.Country.Usa;
-            }
             #region Location
             public LocationContext Location { get; } = new LocationContext();
-            public class LocationContext
+            public class LocationContext : Context<LocationDao>
             {
                 #region Country
                 public CountryContext Country { get; } = new CountryContext();
-                public class CountryContext
+                public class CountryContext : Context<CountryDao>
                 {
                     static CountryDao Create(string name, Action<Dao.CountryDao> configureAction = null)
                     {
                         var res = new Dao.CountryDao { Id = name, Name = name };
-                        configureAction?.Invoke(res);
+                        AddConfigurationAction(configureAction, res);
                         return res;
                     }
-                    public CountryDao Usa { get; } = Create(nameof(Usa));//, c => c.States = new[] { Discriminator.Location.State.California });
-                    public CountryDao Spain { get; } = Create(nameof(Spain));
+                    public CountryDao Usa { get; } = Create(nameof(Usa), me => me.States = new[] { Discriminator.Location.State.California, Discriminator.Location.State.NewYork });
+                    public CountryDao Spain { get; } = Create(nameof(Spain), me => me.States = new[] { Discriminator.Location.State.Madrid });
                 }
                 #endregion
                 #region State
                 public StateContext State { get; } = new StateContext();
-                public class StateContext
+                public class StateContext : Context<StateDao>
                 {
                     static StateDao Create(string name, Action<StateDao> configureAction = null)
                     {
                         var res = new StateDao { Id = name, Name = name };
-                        configureAction?.Invoke(res);
+                        AddConfigurationAction(configureAction, res);
                         return res;
                     }
-                    public StateDao California { get; } = Create(nameof(California));//, s => s.Country = Discriminator.Location.Country.Usa);
-                    public StateDao NewYork { get; } = Create(nameof(NewYork));
-                    public StateDao Madrid { get; } = Create(nameof(Madrid));
+                    public StateDao California { get; } = Create(nameof(California), me =>
+                    {
+                        me.Country = Discriminator.Location.Country.Usa;
+                        me.Cities = new[] { Discriminator.Location.City.SanFrancisco, Discriminator.Location.City.Berkeley };
+                    });
+                    public StateDao NewYork { get; } = Create(nameof(NewYork), me =>
+                    {
+                        me.Country = Discriminator.Location.Country.Usa;
+                        me.Cities = new[] { Discriminator.Location.City.NewYork, Discriminator.Location.City.Buffalo };
+                    });
+                    public StateDao Madrid { get; } = Create(nameof(Madrid), me =>
+                    {
+                        me.Country = Discriminator.Location.Country.Spain;
+                        me.Cities = new[] { Discriminator.Location.City.Madrid, Discriminator.Location.City.Alcorcon };
+                    });
                 }
                 #endregion
                 #region City
                 public CityContext City { get; } = new CityContext();
-                public class CityContext
+                public class CityContext : Context<CityDao>
                 {
-
+                    static CityDao Create(string name, Action<CityDao> configureAction = null)
+                    {
+                        var res = new CityDao { Id = name, Name = name };
+                        AddConfigurationAction(configureAction, res);
+                        return res;
+                    }
+                    public CityDao SanFrancisco { get; } = Create(nameof(SanFrancisco), me => me.State = Discriminator.Location.State.California);
+                    public CityDao Berkeley { get; } = Create(nameof(Berkeley), me => me.State = Discriminator.Location.State.California);
+                    public CityDao NewYork { get; } = Create(nameof(NewYork), me => me.State = Discriminator.Location.State.NewYork);
+                    public CityDao Buffalo { get; } = Create(nameof(Buffalo), me => me.State = Discriminator.Location.State.NewYork);
+                    public CityDao Madrid { get; } = Create(nameof(Madrid), me => me.State = Discriminator.Location.State.Madrid);
+                    public CityDao Alcorcon { get; } = Create(nameof(Alcorcon), me => me.State = Discriminator.Location.State.Madrid);
                 }
                 #endregion
             }
             #endregion
             #region Category
             public CategoryContext Category { get; } = new CategoryContext();
-            public class CategoryContext { }
+            public class CategoryContext : Context<CategoryDao> {
+                static CategoryDao Create(string name, Action<CategoryDao> configureAction = null)
+                {
+                    var res = new CategoryDao { Id = name, Name = name };
+                    AddConfigurationAction(configureAction, res);
+                    return res;
+                }
+                public CategoryDao Sales { get; set; } = Create(nameof(Sales));
+                public CategoryDao Purchases { get; set; } = Create(nameof(Purchases));
+            }
             #endregion
             #region Tag
             public TagContext Tag { get; } = new TagContext();
-            public class TagContext { }
+            public class TagContext : Context<TagDao> {
+                static TagDao Create(string name, Action<TagDao> configureAction = null)
+                {
+                    var res = new TagDao { Id = name, Name = name };
+                    AddConfigurationAction(configureAction, res);
+                    return res;
+                }
+                public TagDao Urgent { get; set; } = Create(nameof(Urgent));
+                public TagDao Important { get; set; } = Create(nameof(Important));
+            }
             #endregion
         }
         #endregion
         #region Rol
         public static RolContext Rol { get; } = new RolContext();
-        public class RolContext
+        public class RolContext : Context<RolDao>
         {
             #region Identity
             public IdentityContext Identity { get; } = new IdentityContext();
-            public class IdentityContext : Context<Dao.IdentityDao>
+            public class IdentityContext : Context<IdentityDao>
             {
-                static Dao.IdentityDao Create(string name, Action<Dao.IdentityDao> configureAction = null)
+                static IdentityDao Create(string name, Action<Dao.IdentityDao> configureAction = null)
                 {
-                    var res = new Dao.IdentityDao { Id = name, UserName = name, Name = name };
+                    var res = new IdentityDao
+                    {
+                        Id = name,
+                        UserName = name,
+                        Name = name
+                    };
                     byte[] salt, hash;
-                    new PasswordProvider().Generate("test", out salt, out hash);
+                    new PasswordProviderMock().Generate("test", out salt, out hash);
                     res.PasswordHash = hash;
                     res.PasswordSalt = salt;
                     AddConfigurationAction(configureAction, res);
@@ -115,7 +176,7 @@ namespace Fuxion.Identity.Test
                     return res;
                 }
 
-                public Dao.IdentityDao Root { get; } = Create(nameof(Root), ide =>
+                public IdentityDao Root { get; } = Create(nameof(Root), ide =>
                     {
                         ide.Groups = new[] { Rol.Group.Admins };
                         ide.Permissions = new PermissionDao[] {
@@ -124,19 +185,6 @@ namespace Fuxion.Identity.Test
                                 Value = true,
                                 Function = ADMIN,
                                 Rol = ide,
-                            },
-                            new PermissionDao
-                            {
-                                Value = true,
-                                Function = ADMIN,
-                                Rol = ide,
-                                Scopes = new[]
-                                {
-                                    new ScopeDao {
-                                        Discriminator = Factory.Get<TypeDiscriminatorFactory>().FromType<Dao.IdentityDao>(),
-                                        Propagation = ScopePropagation.ToMe
-                                    }
-                                }
                             },
                         };
                     });
@@ -161,36 +209,36 @@ namespace Fuxion.Identity.Test
         #endregion
         #region Person
         public static PersonContext Person { get; } = new PersonContext();
-        public class PersonContext
+        public class PersonContext : Context<PersonDao>
         {
 
         }
         #endregion
         #region Skill
         public static SkillContext Skill { get; } = new SkillContext();
-        public class SkillContext
+        public class SkillContext : Context<SkillDao>
         {
             #region ActorSkill
             public ActorSkillContext Actor { get; } = new ActorSkillContext();
-            public class ActorSkillContext { }
+            public class ActorSkillContext : Context<ActorSkillDao> { }
             #endregion
             #region SingerSkill
             public SingerSkillContext Singer { get; } = new SingerSkillContext();
-            public class SingerSkillContext { }
+            public class SingerSkillContext : Context<SingerSkillDao> { }
             #endregion
             #region WriteSkill
             public WriterSkillContext Writer { get; } = new WriterSkillContext();
-            public class WriterSkillContext { }
+            public class WriterSkillContext : Context<WriterSkillDao> { }
             #endregion
             #region DirectorSkill
             public DirectorSkill Director { get; } = new DirectorSkill();
-            public class DirectorSkill { }
+            public class DirectorSkill : Context<DirectorSkillDao> { }
             #endregion
         }
         #endregion
         #region File
         public static FileContext File { get; } = new FileContext();
-        public class FileContext
+        public class FileContext : Context<FileDao>
         {
             #region Document
             public DocumentContext Document { get; } = new DocumentContext();
@@ -214,11 +262,11 @@ namespace Fuxion.Identity.Test
             #endregion
             #region Media
             public MediaContext Media { get; } = new MediaContext();
-            public class MediaContext
+            public class MediaContext : Context<MediaDao>
             {
                 #region Film
                 public FilmContext Film { get; } = new FilmContext();
-                public class FilmContext { }
+                public class FilmContext : Context<FilmDao> { }
                 #endregion
                 #region Song
                 public SongContext Song { get; } = new SongContext();
@@ -228,7 +276,7 @@ namespace Fuxion.Identity.Test
             #endregion
             #region Package
             public PackageContext Package { get; } = new PackageContext();
-            public class PackageContext
+            public class PackageContext : Context<PackageDao>
             {
                 #region Album
                 public AlbumContext Album { get; } = new AlbumContext();
@@ -245,7 +293,7 @@ namespace Fuxion.Identity.Test
                 #endregion
                 #region Software
                 public SoftwareContext Sofware { get; } = new SoftwareContext();
-                public class SoftwareContext { }
+                public class SoftwareContext : Context<SoftwareDao> { }
                 #endregion
             }
             #endregion

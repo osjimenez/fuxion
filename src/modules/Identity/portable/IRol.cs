@@ -237,60 +237,68 @@ namespace Fuxion.Identity
             foreach (var gro in me.Groups) res.AddRange(gro.AllGroups());
             return res;
         }
-        private static IPermission[] SearchForDeniedPermissions(this IRol me, IFunction function, IDiscriminator[] discriminators, Action<string, bool> console)
+        private static IPermission[] SearchForDeniedPermissions(this IRol me, IFunction function, IDiscriminator[] discriminators)//, Action<string, bool> console)
         {
-            Action<string, bool> con = (m, i) => { console?.Invoke(m, i); };
-            con($"SearchForDeniedPermissions:", true);
-            con($"---Rol: {me.Name}", true);
-            con($"---Funcion: {function.Name}", true);
-            con($"---Discriminadores: {discriminators.Aggregate("", (a, c) => $"{a}      {c.Name}\r\n")}", true);
-            // Validation
-            if (!function.IsValid()) throw new InvalidStateException($"The '{nameof(function)}' parameter has an invalid state");
-            if (discriminators == null || !discriminators.Any()) throw new ArgumentException($"The '{nameof(discriminators)}' pararameter cannot be null or empty", nameof(discriminators));
-            var invalidDiscriminator = discriminators.FirstOrDefault(d => !d.IsValid());
-            if (invalidDiscriminator != null) throw new InvalidStateException($"The '{invalidDiscriminator}' discriminator has an invalid state");
+            //Action<string, bool> con = (m, i) => { console?.Invoke(m, i); };
+            return Printer.Ident($"SearchForDeniedPermissions:", () =>
+            {
+                Printer.Ident("Input parameters", () =>
+                {
+                    Printer.Print($"Rol: {me.Name}");
+                    Printer.Print($"Function: {function.Name}");
+                    Printer.Foreach($"Discriminadores:", discriminators, dis => Printer.Print($"{dis.TypeName} - {dis.Name}"));
+                });
+                // Validation
+                if (!function.IsValid()) throw new InvalidStateException($"The '{nameof(function)}' parameter has an invalid state");
+                if (discriminators == null || !discriminators.Any()) throw new ArgumentException($"The '{nameof(discriminators)}' pararameter cannot be null or empty", nameof(discriminators));
+                var invalidDiscriminator = discriminators.FirstOrDefault(d => !d.IsValid());
+                if (invalidDiscriminator != null) throw new InvalidStateException($"The '{invalidDiscriminator}' discriminator has an invalid state");
 
-            Func<IRol, IEnumerable<IPermission>> getPers = null;
-            getPers = new Func<IRol, IEnumerable<IPermission>>(rol =>
-            {
-                var r = new List<IPermission>();
-                if (rol.Permissions != null) r.AddRange(rol.Permissions);
-                if (rol.Groups != null) foreach (var gro in rol.Groups) r.AddRange(getPers(gro));
-                return r;
+                Func<IRol, IEnumerable<IPermission>> getPers = null;
+                getPers = new Func<IRol, IEnumerable<IPermission>>(rol =>
+                {
+                    var r = new List<IPermission>();
+                    if (rol.Permissions != null) r.AddRange(rol.Permissions);
+                    if (rol.Groups != null) foreach (var gro in rol.Groups) r.AddRange(getPers(gro));
+                    return r;
+                });
+                var permissions = getPers(me);
+                Printer.Foreach($"Rol permissions ({permissions.Count()}):", permissions, p => {
+                    Printer.Print("Permission: " + p);
+                });
+                IPermission[] res = null;
+                // First, must take only permissions that match with the function and discriminators
+                if (permissions == null || !permissions.Any())
+                {
+                    Printer.Print($"Resultado: NO VALIDO - El rol no tiene permisos definidos");
+                    res = new IPermission[] { };
+                    return res;
+                }
+                Printer.Print("Comprobando los permisos que encajan con los discriminadores de entrada");
+                var matchs = permissions.Where(p => p.Match(function, discriminators)).ToList();
+                Printer.Print($"Encajan '{matchs.Count}' permisos");
+                // Now, let's go to check that does not match any denegation permission
+                res = matchs.Where(p => !p.Value).ToArray();
+                Printer.Print($"'{res.Length}' permisos son de denegación");
+                if (res.Any())
+                {
+                    Printer.Print($"Resultado: NO VALIDO - Denegado por un permiso");
+                    return res;
+                }
+                // Now, let's go to check that match at least one grant permission
+                if (!matchs.Any(p => p.Value))
+                {
+                    Printer.Print($"Resultado: NO VALIDO - Denegado por no encontrar un permiso de concesión");
+                    res = new IPermission[] { };
+                    return res;
+                }
+                Printer.Print($"Resultado: VALIDO");
+                return null;
             });
-            var permissions = getPers(me);
-            con($"---Tengo: {permissions.Count()} permisos", true);
-            IPermission[] res = null;
-            // First, must take only permissions that match with the function and discriminators
-            if (permissions == null || !permissions.Any())
-            {
-                con($"---Resultado: NO VALIDO - El rol no tiene permisos definidos", true);
-                res = new IPermission[] { };
-                return res;
-            }
-            var matchs = permissions.Where(p => p.Match(function, discriminators)).ToList();
-            con($"---Encajan: {matchs.Count()} permisos", true);
-            // Now, let's go to check that does not match any denegation permission
-            res = matchs.Where(p => !p.Value).ToArray();
-            con($"---De denegación: {res.Count()} permisos", true);
-            if (res.Any())
-            {
-                con($"---Resultado: NO VALIDO - Denegado por un permiso", true);
-                return res;
-            }
-            // Now, let's go to check that match at least one grant permission
-            if (!matchs.Any(p => p.Value))
-            {
-                con($"---Resultado: NO VALIDO - Denegado por no encontrar un permiso de concesión", true);
-                res = new IPermission[] { };
-                return res;
-            }
-            con($"Resultado: VALIDO", true);
-            return null;
         }
-        internal static bool IsFunctionAssigned(this IRol me, IFunction function, IDiscriminator[] discriminators, Action<string, bool> console)
+        internal static bool IsFunctionAssigned(this IRol me, IFunction function, IDiscriminator[] discriminators)
         {
-            return SearchForDeniedPermissions(me, function, discriminators, console) == null;
+            return SearchForDeniedPermissions(me, function, discriminators) == null;
         }
         //internal static void CheckFunctionAssigned(this IRol me, IFunction function, IDiscriminator[] discriminators, Action<string, bool> console)
         //{
@@ -340,14 +348,12 @@ namespace Fuxion.Identity
             var res = forAll
                 ? types.All(t => me.Rol.IsFunctionAssigned(
                     me.Functions.First(),
-                    new[] { Factory.Get<TypeDiscriminatorFactory>().FromType(t) },
-                    (m, _) => Printer.Print(m)))
+                    new[] { Factory.Get<TypeDiscriminatorFactory>().FromType(t) }))
                 : types.Any(t => me.Rol.IsFunctionAssigned(
                     me.Functions.First(),
-                    new[] { Factory.Get<TypeDiscriminatorFactory>().FromType(t) },
-                    (m, _) => Printer.Print(m)));
+                    new[] { Factory.Get<TypeDiscriminatorFactory>().FromType(t) }));
             if (me.ThrowExceptionIfCannot && !res)
-                throw new UnauthorizedAccessException($"The rol '{me.Rol.Name}' cannot '{me.Functions.Aggregate("", (a, c) => a + c.Name + "·", a => a.Trim('·'))}' for the given types '{types}'");
+                throw new UnauthorizedAccessException($"The rol '{me.Rol.Name}' cannot '{me.Functions.Aggregate("", (a, c) => a + c.Name + "·", a => a.Trim('·'))}' for the given types '{types.Aggregate("",(a,c)=> $"{a}, {c.Name}",a=>a.Trim(',',' ')) }'");
             return res;
         }
         #endregion
@@ -363,8 +369,7 @@ namespace Fuxion.Identity
         // -------------------------- IMPLEMENTATION
         private static bool CheckInstances<T>(_RolCan me, bool forAll, params T[] values)
         {
-            me.Rol.FilterExpression<T>(me.Functions);
-            var res = forAll ? values.AuthorizedTo(me.Functions).Count() == values.Count() : values.AuthorizedTo(me.Functions).Any();
+            var res = forAll ? values.AuthorizedTo(me.Rol, me.Functions).Count() == values.Count() : values.AuthorizedTo(me.Rol, me.Functions).Any();
             if (me.ThrowExceptionIfCannot && !res)
                 throw new UnauthorizedAccessException($"The rol '{me.Rol.Name}' cannot '{me.Functions.Aggregate("", (a, c) => a + c.Name + "·", a => a.Trim('·'))}' for the given instances '{values}'");
             return res;

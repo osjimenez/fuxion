@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Fuxion.Identity.Test.Helpers;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
@@ -50,7 +51,7 @@ namespace Fuxion.Identity.Test.Dao
     {
         public IList<CityDao> Cities { get; set; }
         public CountryDao Country { get; set; }
-        protected override IEnumerable<LocationDao> GetLocationExclusions() => new[] { Country };
+        protected override IEnumerable<LocationDao> GetLocationExclusions() => Country != null ? new[] { Country } : null;
         protected override IEnumerable<LocationDao> GetLocationInclusions() => Cities.Cast<LocationDao>().ToList();
     }
     [Table(nameof(CountryDao))]
@@ -68,11 +69,11 @@ namespace Fuxion.Identity.Test.Dao
     {
         public StateDao State { get; set; }
 
-        protected override IEnumerable<LocationDao> GetLocationExclusions() { return new[] { State }; }
+        protected override IEnumerable<LocationDao> GetLocationExclusions() => State != null ? new[] { State } : null;
 
         protected override IEnumerable<LocationDao> GetLocationInclusions() { return new LocationDao[] { }; }
     }
-    [Discriminator("CAT")]
+    [Discriminator("CAT ")]
     [Table(nameof(CategoryDao))]
     public class CategoryDao : DiscriminatorDao
     {
@@ -83,7 +84,7 @@ namespace Fuxion.Identity.Test.Dao
         protected sealed override string GetTypeName() => nameof(CategoryDao);
 
         protected override IEnumerable<DiscriminatorDao> GetInclusions() => Children;
-        protected override IEnumerable<DiscriminatorDao> GetExclusions() => new[] { Parent };
+        protected override IEnumerable<DiscriminatorDao> GetExclusions() => Parent != null ? new[] { Parent } : null;
     }
     [Table("TAG")]
     public class TagDao : DiscriminatorDao

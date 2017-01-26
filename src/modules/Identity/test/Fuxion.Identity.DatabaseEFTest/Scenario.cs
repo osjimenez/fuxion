@@ -2,6 +2,8 @@
 using Fuxion.Identity.Test;
 using Fuxion.Identity.Test.Dao;
 using Fuxion.Identity.Test.Helpers;
+using Fuxion.Identity.Test.Mocks;
+using Fuxion.Identity.Test.Repositories;
 using Fuxion.Repositories;
 using SimpleInjector;
 using System;
@@ -28,7 +30,7 @@ namespace Fuxion.Identity.DatabaseEFTest
                 {
                     var con = new Container();
                     con.RegisterSingleton<ICurrentUserNameProvider>(new AlwaysRootCurrentUserNameProvider());
-                    con.RegisterSingleton<IPasswordProvider>(new PasswordProvider());
+                    con.RegisterSingleton<IPasswordProvider>(new PasswordProviderMock());
                     var rep = new IdentityMemoryTestRepository();
                     con.RegisterSingleton<IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity>>(rep);
                     con.RegisterSingleton<IIdentityTestRepository>(rep);
@@ -48,7 +50,7 @@ namespace Fuxion.Identity.DatabaseEFTest
                 {
                     var con = new Container();
                     con.RegisterSingleton<ICurrentUserNameProvider>(new AlwaysRootCurrentUserNameProvider());
-                    con.RegisterSingleton<IPasswordProvider>(new PasswordProvider());
+                    con.RegisterSingleton<IPasswordProvider>(new PasswordProviderMock());
                     var rep = new IdentityDatabaseEFTestRepository();
                     rep.Initialize();
                     con.RegisterSingleton<IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity>>(new MemoryCachedKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity>(rep));

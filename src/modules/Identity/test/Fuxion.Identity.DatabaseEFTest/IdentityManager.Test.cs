@@ -10,6 +10,7 @@ using Fuxion.Factories;
 using Fuxion.Identity.Test;
 using System.Data.Entity;
 using System.Diagnostics;
+using Fuxion.Identity.Test.Repositories;
 
 namespace Fuxion.Identity.DatabaseEFTest
 {

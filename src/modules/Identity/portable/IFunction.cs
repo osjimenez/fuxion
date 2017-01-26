@@ -4,6 +4,8 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Fuxion.Math.Graph;
+
 namespace Fuxion.Identity
 {
     public interface IInclusive<T>
@@ -58,6 +60,61 @@ namespace Fuxion.Identity
         public static IEnumerable<T> GetAllExclusions<T>(this IExclusive<T> me)
         {
             return GetAllExclusions(me, new List<T>(new[] { (T)me }));
+        }
+        public static void Print(this IEnumerable<IFunction> me, PrintMode mode)
+        {
+            switch (mode)
+            {
+                case PrintMode.OneLine:
+                    foreach (var fun in me)
+                    {
+                        Printer.Print(fun.Id.ToString() + "-" + fun.Name);
+                    }
+                    break;
+                case PrintMode.PropertyList:
+                    break;
+                case PrintMode.Table:
+                    //var valueLength = me.Select(p => p.Value.ToString().Length).Union(new[] { "VALUE".Length }).Max();
+                    //var functionLength = me.Select(p => p.Function.Name.ToString().Length).Union(new[] { "FUNCTION".Length }).Max();
+                    //var typeLength = new[] { "TYPE".Length }.Concat(me.SelectMany(p => p.Scopes.Select(s => s.Discriminator.TypeName.Length))).Max();
+                    //var nameLength = new[] { "NAME".Length }.Concat(me.SelectMany(p => p.Scopes.Select(s => s.Discriminator.Name.Length))).Max();
+                    //var propagationLength = new[] { "PROPAGATION".Length }.Concat(me.SelectMany(p => p.Scopes.Select(s => s.Propagation.ToString().Length))).Max();
+
+                    //Printer.Print("┌" + ("".PadRight(valueLength, '─')) + "┬" + ("".PadRight(functionLength, '─')) + "┬" + ("".PadRight(typeLength, '─')) + "┬" + ("".PadRight(nameLength, '─')) + "┬" + ("".PadRight(propagationLength, '─')) + "┐");
+                    //if (me.Any())
+                    //{
+                    //    Printer.Print("│" + ("VALUE".PadRight(valueLength, ' ')) + "│" + ("FUNCTION".PadRight(functionLength, ' ')) + "│" + ("TYPE".PadRight(typeLength, ' ')) + "│" + ("NAME".PadRight(nameLength, ' ')) + "│" + ("PROPAGATION".PadRight(propagationLength, ' ')) + "│");
+                    //    Printer.Print("├" + ("".PadRight(valueLength, '─')) + "┼" + ("".PadRight(functionLength, '─')) + "┼" + ("".PadRight(typeLength, '─')) + "┼" + ("".PadRight(nameLength, '─')) + "┼" + ("".PadRight(propagationLength, '─')) + "┤");
+                    //}
+
+                    //foreach (var per in me)
+                    //{
+                    //    var list = per.Scopes.ToList();
+                    //    if (list.Count == 0)
+                    //    {
+                    //        Printer.Print("│" +
+                    //                per.Value.ToString().PadRight(valueLength, ' ') + "│" +
+                    //                per.Function.Name.PadRight(functionLength, ' ') + "│" +
+                    //                ("".PadRight(typeLength, ' ')) + "│" +
+                    //                ("".PadRight(nameLength, ' ')) + "│" +
+                    //                ("".PadRight(propagationLength, ' ')) + "│");
+                    //    }
+                    //    else
+                    //    {
+                    //        for (int i = 0; i < list.Count; i++)
+                    //        {
+                    //            Printer.Print("│" +
+                    //                ((i == 0 ? per.Value.ToString() : "").PadRight(valueLength, ' ')) + "│" +
+                    //                ((i == 0 ? per.Function.Name : "").PadRight(functionLength, ' ')) + "│" +
+                    //                (list[i].Discriminator.TypeName.PadRight(typeLength, ' ')) + "│" +
+                    //                (list[i].Discriminator.Name.PadRight(nameLength, ' ')) + "│" +
+                    //                (list[i].Propagation.ToString().PadRight(propagationLength, ' ')) + "│");
+                    //        }
+                    //    }
+                    //}
+                    //Printer.Print("└" + ("".PadRight(valueLength, '─')) + "┴" + ("".PadRight(functionLength, '─')) + "┴" + ("".PadRight(typeLength, '─')) + "┴" + ("".PadRight(nameLength, '─')) + "┴" + ("".PadRight(propagationLength, '─')) + "┘");
+                    break;
+            }
         }
     }
     class FunctionEqualityComparer : IEqualityComparer<IFunction>
@@ -120,7 +177,13 @@ namespace Fuxion.Identity
                 [((Function<string>)Manage).Id] = Manage,
                 [((Function<string>)Admin).Id] = Admin,
             };
+            graph.AddEdge(Admin, Manage);
+            graph.AddEdge(Manage, Edit);
+            graph.AddEdge(Manage, Delete);
+            graph.AddEdge(Edit, Read);
+            graph.AddEdge(Create, Read);
         }
+        static Graph<IFunction> graph = new Graph<IFunction>();
         static Dictionary<object, IFunction> dic;
         public const string READ = nameof(READ);
         public const string EDIT = nameof(EDIT);
@@ -144,11 +207,9 @@ namespace Fuxion.Identity
             if (inclusions != null)
                 foreach (var inc in inclusions)
                     ((Function<T>)dic[inc.Id]).Exclusions = ((Function<T>)dic[inc.Id]).Exclusions.Union(new[] { me });
-                    //((Function<T>)inc).Exclusions = inc.Exclusions.Union(new[] { inc });
             if (exclusions != null)
-                foreach (var inc in exclusions)
-                    ((Function<T>)dic[inc.Id]).Inclusions = ((Function<T>)dic[inc.Id]).Inclusions.Union(new[] { me });
-                    //((Function<T>)inc).Inclusions = inc.Inclusions.Union(new[] { me });
+                foreach (var exc in exclusions)
+                    ((Function<T>)dic[exc.Id]).Inclusions = ((Function<T>)dic[exc.Id]).Inclusions.Union(new[] { me });
             return dic[id] = me;
         }
         [DebuggerDisplay("{" + nameof(Name) + "}")]

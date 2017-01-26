@@ -9,9 +9,9 @@ using Xunit.Abstractions;
 
 namespace Fuxion.Test
 {
-    public class AntiBackTimeProviderTest
+    public class AntiBackTimeProviderTest : BaseTest
     {
-        public AntiBackTimeProviderTest(ITestOutputHelper output)
+        public AntiBackTimeProviderTest(ITestOutputHelper output) : base(output)
         {
             this.output = output;
         }

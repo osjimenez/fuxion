@@ -1,78 +1,117 @@
 ﻿using Fuxion.Identity.Test.Dao;
 using Fuxion.Identity.Test.Dao;
 using Fuxion.Identity.Test.Mocks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
 using static Fuxion.Identity.Functions;
 using static Fuxion.Identity.Test.Context;
+using Xunit.Abstractions;
+using Xunit;
+using Fuxion.Test;
+using SimpleInjector;
+using Fuxion.Repositories;
+using Fuxion.Identity.Test.Repositories;
+using Fuxion.Factories;
+
 namespace Fuxion.Identity.Test
 {
-    [TestClass]
-    public class RolTest : BaseTestClass
+    public class RolTest : BaseTest
     {
-        public static void Throws<T>(Action action, string message) where T : Exception
+        public RolTest(ITestOutputHelper helper) : base(helper)
         {
-            try { action(); }
-            catch (T _)
+            Container c = new Container();
+
+            // TypeDiscriminators
+            c.RegisterSingleton(new TypeDiscriminatorFactory().Transform(fac =>
             {
-                Debug.WriteLine("");
-                return;
-            }
-            Assert.Fail(message);
+                fac.RegisterTree<BaseDao>(typeof(BaseDao).Assembly.DefinedTypes.ToArray());
+                return fac;
+            }));
+            // IdentityManager
+            c.Register<IPasswordProvider, PasswordProviderMock>();
+            c.RegisterSingleton<ICurrentUserNameProvider>(new GenericCurrentUserNameProvider(() => Context.Rol.Identity.Root.UserName));
+            c.RegisterSingleton<IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity>>(new IdentityMemoryTestRepository());
+            c.Register<IdentityManager>();
+            //Factory.AddInjector(new InstanceInjector<IdentityManager>(new IdentityManager()));
+
+            Factory.AddInjector(new SimpleInjectorFactoryInjector(c));
         }
-        [TestMethod]
-        public void CheckFunctionAssigned()
+        [Fact(DisplayName = "Rol - Can by instance")]
+        public void CanByInstance()
         {
-            Assert.Inconclusive("Pending refactor code");
+            new IdentityDao
+            {
+                Id = "oka",
+                Name = "Oscar",
+                //Permissions = new[] {
+                //    new PermissionDao {
+                //        Value =true,
+                //        Function = Read.Id.ToString(),
+                //        Scopes =new[] {
+                //            new ScopeDao {
+                //                Discriminator = Discriminator.Location.City.SanFrancisco,
+                //                Propagation = ScopePropagation.ToMe }
+                //        }
+                //    },
+                //}.ToList(),
+                Groups = new[]
+                {
+                    new GroupDao
+                    {
+                        Id = "admins",
+                        Name = "Admins",
+                        Permissions = new[]
+                        {
+                            new PermissionDao {
+                                Value =false,
+                                Function =Edit.Id.ToString(),
+                                Scopes =new[] {
+                                    new ScopeDao {
+                                        Discriminator = Discriminator.Location.State.California,
+                                        Propagation = ScopePropagation.ToMe | ScopePropagation.ToInclusions }
+                                }
+                            }
+                        }
+                    }
+                }
+            }.EnsureCan(Edit).Instance(Discriminator.Location.City.SanFrancisco);
+        }
+        [Fact(DisplayName = "Rol - Can by type")]
+        public void CanByType()
+        { 
+            new IdentityDao
+            {
+                Id = "test",
+                Name = "Test",
+                Permissions = new[] {
+                    new PermissionDao {
+                        Value =true,
+                        Function = Admin.Id.ToString(),
+                        Scopes =new[]{
+                            new ScopeDao {
+                                Discriminator = Discriminator.Category.Purchases,
+                                Propagation = ScopePropagation.ToMe },
+                            new ScopeDao {
+                                Discriminator = Factory.Get<TypeDiscriminatorFactory>().FromType<BaseDao>(),
+                                Propagation = ScopePropagation.ToMe | ScopePropagation.ToInclusions },
+                        }
+                    },
+                    //new PermissionDao {
+                    //    Value =false,
+                    //    Function =Edit.Id.ToString(),
+                    //    Scopes =new[] {
+                    //        new ScopeDao {
+                    //            Discriminator = Factory.Get<TypeDiscriminatorFactory>().FromType<WordDocumentDao>(),
+                    //            Propagation = ScopePropagation.ToMe | ScopePropagation.ToInclusions }
+                    //    }
+                    //}
+                }.ToList()
+            }.EnsureCan(Read).Type<WordDocumentDao>();
 
-            //var LocationType = Guid.NewGuid();
-            //var USA = Guid.NewGuid();
-            //var USAPath = new Guid[] { };
-            //var California = Guid.NewGuid();
-            //var CaliforniaPath = new[] { USA };
-            //var SanFrancisco = Guid.NewGuid();
-            //var SanFranciscoPath = new[] { USA, California };
 
-            //var Department = Guid.NewGuid();
-            //var Sales = Guid.NewGuid();
-            //var TI = Guid.NewGuid();
-            //var Financial = Guid.NewGuid();
-
-            //var SanFranciscoDis = new GuidDiscriminator(SanFrancisco, "SanFrancisco", LocationType, "LocationType");
-            //var CaliforniaDis = new GuidDiscriminator(California, "California", LocationType, "LocationType");
-            //var USADis = new GuidDiscriminator(USA, "USA", LocationType, "LocationType");
-            //SanFranciscoDis.Exclusions = new[] { CaliforniaDis };
-            //CaliforniaDis.Inclusions = new[] { SanFranciscoDis };
-            //CaliforniaDis.Exclusions = new[] { USADis };
-
-
-            //new Rol
-            //{
-            //    Id = "oka",
-            //    Permissions = new[] {
-            //        new Permission {
-            //            Value =true,
-            //            Function = Read.Id.ToString(),
-            //            Scopes =new[]{
-            //                new Scope {
-            //                    Discriminator = Locations.SanFrancisco,
-            //                    Propagation = ScopePropagation.ToMe }
-            //            }
-            //        },
-            //        new Permission {
-            //            Value =false,
-            //            Function =Edit.Id.ToString(),
-            //            Scopes =new[] {
-            //                new Scope {
-            //                    Discriminator = Locations.California,
-            //                    Propagation = ScopePropagation.ToMe | ScopePropagation.ToInclusions }
-            //            }
-            //        }
-            //    }.ToList()
-            //}.CheckFunctionAssigned(Read, new[] { SanFranciscoDis }, (m, _) => Debug.WriteLine(m));
+            //Rol.Identity.Root.Can(Read).Instance(Discriminator.Location.City.SanFrancisco);
 
             //Assert.IsFalse(new Rol
             //{

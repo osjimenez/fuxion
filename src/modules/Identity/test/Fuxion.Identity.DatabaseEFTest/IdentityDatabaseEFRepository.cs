@@ -7,10 +7,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static Fuxion.Identity.Test.IdentityMemoryTestRepository;
+using static Fuxion.Identity.Test.Repositories.IdentityMemoryTestRepository;
 using static Fuxion.Identity.Test.Context;
 using Fuxion.Identity.Test;
 using Fuxion.Data;
+using Fuxion.Identity.Test.Repositories;
+
 namespace Fuxion.Identity.DatabaseEFTest
 {
     public class TestDatabaseInitializer : DropCreateDatabaseAlways<IdentityDatabaseEFTestRepository>
