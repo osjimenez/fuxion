@@ -14,7 +14,7 @@ namespace Fuxion.Identity
     public static class PermissionExtensions
     {
         public static bool IsValid(this IPermission me) { return me.Function != null && me.Scopes.Select(s => s.Discriminator.TypeId).Distinct().Count() == me.Scopes.Count(); }
-        public static bool Match(this IPermission me, IFunction function, IDiscriminator[] discriminators)
+        internal static bool Match(this IPermission me, IFunction function, IDiscriminator[] discriminators)
         {
             bool res = false;
             Printer.Ident($"{nameof(PermissionExtensions)}.{nameof(Match)}:", () =>
@@ -66,7 +66,7 @@ namespace Fuxion.Identity
                 return res;
             });
         }
-        public static bool MatchByDiscriminatorsType(this IPermission me, IEnumerable<IDiscriminator> discriminators)
+        internal static bool MatchByDiscriminatorsType(this IPermission me, IEnumerable<IDiscriminator> discriminators)
         {
             #region Notes
             // Tenemos que comprobar que todos los tipos de discriminadores que me han pasado estan presentes en este permiso, es decir
@@ -144,17 +144,18 @@ namespace Fuxion.Identity
                     Printer.Print("Permission:");
                     new[] { me }.Print(PrintMode.Table);
                     //Printer.Foreach($"Discriminadores:", discriminators, dis => Printer.Print($"{dis.TypeName} - {dis.Name}"));
-                    Printer.Print("Discriminadores:");
+                    Printer.Print("Discriminators:");
                     discriminators.Print(PrintMode.Table);
                 });
                 bool res = false;
                 // Si no tiene ninguno de los tipos, no encaja.
-                res = me.Scopes.Any(s => discriminators.Select(d => d.TypeId).Contains(s.Discriminator.TypeId));
-                Printer.Print($"Resultado: {res}");
+                Printer.Print("Or my permission haven't scopes or some of these scopes match by discriminator type with any of given scopes.");
+                res = me.Scopes.Count() == 0 || me.Scopes.Any(s => discriminators.Select(d => d.TypeId).Contains(s.Discriminator.TypeId));
+                Printer.Print($"Result: {res}");
                 return res;
             });
         }
-        public static bool MatchByDiscriminatorsPath(this IPermission me, IEnumerable<IDiscriminator> discriminators)
+        internal static bool MatchByDiscriminatorsPath(this IPermission me, IEnumerable<IDiscriminator> discriminators)
         {
             //return Printer.Ident($"{nameof(PermissionExtensions)}.{nameof(MatchByDiscriminatorsPath)}:", () => {
             return Printer.Ident($"{typeof(PermissionExtensions).GetTypeInfo().DeclaredMethods.FirstOrDefault(m=>m.Name == nameof(MatchByDiscriminatorsPath)).GetSignature()}:", () => {

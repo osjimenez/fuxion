@@ -19,27 +19,44 @@ namespace Fuxion.Identity
     {
         public static IEnumerable<IScope> GetScopes(this IRol me, IFunction[] functions, IDiscriminator[] discriminators)
         {
-            IEnumerable<IScope> res = null;
-            Printer.Ident($"GetScopes ...", () =>
+            return Printer.Ident($"{typeof(RolExtensions).GetTypeInfo().DeclaredMethods.FirstOrDefault(m => m.Name == nameof(GetScopes)).GetSignature()}:", () =>
             {
+                Printer.Ident("Input parameters:", () => {
+                    Printer.Print("Rol:");
+                    new[] { me }.Print(PrintMode.Table);
+                    Printer.Print("Functions:");
+                    functions.Print(PrintMode.Table);
+                    Printer.Print("Discriminators");
+                    discriminators.Print(PrintMode.Table);
+                });
+                IEnumerable<IScope> res = null;
                 var pers = me.GetPermissions(functions, discriminators);
                 var granted = pers.Where(p => p.Value);
                 var denied = pers.Where(p => !p.Value);
                 Printer.Print("Granted permissions:");
                 granted.Print(PrintMode.Table);
-                Printer.Print($"Denied permissions");
+                Printer.Print($"Denied permissions:");
                 denied.Print(PrintMode.Table);
                 res = pers.SelectMany(p => p.Scopes);
+                return res;
             });
-            return res;
         }
         internal static IEnumerable<IPermission> GetPermissions(this IRol me, IFunction[] functions, IDiscriminator[] discriminators)
         {
-            var permissions = me.AllPermissions();
-            Printer.Ident($"{nameof(GetPermissions)} ...", () =>
+            
+            return Printer.Ident($"{typeof(RolExtensions).GetTypeInfo().DeclaredMethods.FirstOrDefault(m => m.Name == nameof(GetPermissions)).GetSignature()}:", () =>
             {
-                var exclusions = functions.SelectMany(f => f.GetAllExclusions()).Distinct();
-                var inclusions = functions.SelectMany(f => f.GetAllExclusions()).Distinct();
+                Printer.Ident("Input parameters:", () => {
+                    Printer.Print("Rol:");
+                    new[] { me }.Print(PrintMode.Table);
+                    Printer.Print("Functions:");
+                    functions.Print(PrintMode.Table);
+                    Printer.Print("Discriminators");
+                    discriminators.Print(PrintMode.Table);
+                });
+                var permissions = me.AllPermissions();
+                var exclusions = functions.SelectMany(f => f.GetAllExclusions().Union(new[] { f })).Distinct();
+                var inclusions = functions.SelectMany(f => f.GetAllExclusions().Union(new[] { f })).Distinct();
                 Printer.Print("Functions: " + exclusions.Aggregate("", (s, a) => s + a.Id + " , ", s => s.Trim(',', ' ')));
                 Printer.Ident("Discriminators:", () => discriminators.Print(PrintMode.Table));
                 Printer.Ident("Initial permissions:", () => permissions.Print(PrintMode.Table));
@@ -119,30 +136,36 @@ namespace Fuxion.Identity
                     permissions.Print(PrintMode.Table);
                 });
                 #endregion
+                Printer.Ident("Returned permissions:", () => permissions.Print(PrintMode.Table));
+                return permissions;
             });
-            Printer.Ident("Returned permissions:", () => permissions.Print(PrintMode.Table));
-            return permissions;
         }
         internal static Expression<Func<TEntity, bool>> FilterExpression<TEntity>(this IRol me, IFunction[] functions)
         {
-            Expression<Func<TEntity, bool>> res = null;
-            Printer.Ident($"{nameof(FilterExpression)} ...", () =>
+            return Printer.Ident($"{typeof(RolExtensions).GetTypeInfo().DeclaredMethods.FirstOrDefault(m => m.Name == nameof(FilterExpression)).GetSignature()}:", () =>
             {
-                Printer.Print("Type: " + typeof(TEntity).Name);
-                var scopes = me.GetScopes(functions, new[] { Factory.Get<TypeDiscriminatorFactory>().FromType(typeof(TEntity)) }).ToList();
+                Printer.Ident("Input parameters:", () => {
+                    Printer.Print("Rol:");
+                    new[] { me }.Print(PrintMode.Table);
+                    Printer.Print("Functions:");
+                    functions.Print(PrintMode.Table);
+                    Printer.Print("Type: " + typeof(TEntity).Name);
+                });
                 Printer.Print("Scopes:");
+                var scopes = me.GetScopes(functions, new[] { Factory.Get<TypeDiscriminatorFactory>().FromType(typeof(TEntity)) }).ToList();
                 scopes.Print(PrintMode.Table);
                 var props = typeof(TEntity).GetRuntimeProperties()
                     .Where(p => p.GetCustomAttribute<DiscriminatedByAttribute>(true, false, false) != null)
                     .Select(p => new
                     {
                         PropertyInfo = p,
+                        DiscriminatorType = p.GetCustomAttribute<DiscriminatedByAttribute>(true).Type,
                         DiscriminatorTypeId =
                             p.GetCustomAttribute<DiscriminatedByAttribute>(true).Type.GetTypeInfo()
                                 .GetCustomAttribute<DiscriminatorAttribute>(true).TypeId,
                     });
                 Printer.Print("Properties => " + props.Aggregate("", (str, actual) => $"{str} {actual.PropertyInfo.Name} ({actual.PropertyInfo.PropertyType.GetSignature(false)}),", str => str.Trim(',', ' ')));
-                Printer.Print("");
+                Expression<Func<TEntity, bool>> res = null;
                 Printer.Ident("Filter:", () =>
                 {
                     Printer.Print("(");
@@ -157,15 +180,16 @@ namespace Fuxion.Identity
                             for (int p = 0; p < propsOfType.Count; p++)
                             {
                                 var pro = propsOfType[p].PropertyInfo;
-                                Printer.Print("    " +
-                                    sco.Discriminator.GetAllInclusions().Select(d => d.Id).Aggregate("",
-                                        (s2, a) => s2 + pro.Name + " == " + a + " || ",
-                                        s2 => s2.Trim('|', ' ')));
+                                //var att = pro.GetCustomAttribute<DiscriminatedByAttribute>();
 
                                 var castMethod = typeof(Enumerable).GetTypeInfo().DeclaredMethods
                                                     .Where(m => m.Name == nameof(Enumerable.Cast))
                                                     .Single(m => m.GetParameters().Length == 1)
                                                     .MakeGenericMethod(pro.PropertyType);
+                                var ofTypeMethod = typeof(Enumerable).GetTypeInfo().DeclaredMethods
+                                                    .Where(m => m.Name == nameof(Enumerable.OfType))
+                                                    .Single(m => m.GetParameters().Length == 1)
+                                                    .MakeGenericMethod(propsOfType[p].DiscriminatorType);
                                 var toListMethod = typeof(Enumerable).GetTypeInfo().DeclaredMethods
                                                     .Where(m => m.Name == nameof(Enumerable.ToList))
                                                     .Single(m => m.GetParameters().Length == 1)
@@ -174,7 +198,20 @@ namespace Fuxion.Identity
                                                     .Where(m => m.Name == nameof(Enumerable.Contains))
                                                     .Single(m => m.GetParameters().Length == 2)
                                                     .MakeGenericMethod(pro.PropertyType);
-                                var foreignKeys = sco.Discriminator.GetAllInclusions().Select(d => d.Id);
+                                IEnumerable<IDiscriminator> foreignDiscriminators = Enumerable.Empty<IDiscriminator>();
+                                if (sco.Propagation.HasFlag(ScopePropagation.ToMe))
+                                    foreignDiscriminators = foreignDiscriminators.Union(new[] { sco.Discriminator });
+                                if (sco.Propagation.HasFlag(ScopePropagation.ToInclusions))
+                                    foreignDiscriminators = foreignDiscriminators.Union(sco.Discriminator.GetAllInclusions().Select(d => d));
+                                if (sco.Propagation.HasFlag(ScopePropagation.ToExclusions))
+                                    foreignDiscriminators = foreignDiscriminators.Union(sco.Discriminator.GetAllExclusions().Select(d => d));
+                                var foreignDiscriminatorssOfType = (IEnumerable<IDiscriminator>)ofTypeMethod.Invoke(null, new object[] { foreignDiscriminators });
+                                var foreignKeys = foreignDiscriminatorssOfType.Select(d => d.Id);
+                                Printer.Print("    " +
+                                    foreignKeys.Select(d => d).Aggregate("",
+                                        (s2, a) => s2 + pro.Name + " == " + a + " || ",
+                                        s2 => s2.Trim('|', ' ')));
+                                //var foreignKeys = sco.Discriminator.GetAllInclusions().Select(d => d.Id);
                                 var foreignKeysCasted = castMethod.Invoke(null, new object[] { foreignKeys });
                                 var foreignKeysListed = toListMethod.Invoke(null, new object[] { foreignKeysCasted });
                                 var entityParameter = Expression.Parameter(typeof(TEntity));
@@ -215,13 +252,14 @@ namespace Fuxion.Identity
                     {
                         res = Expression.Lambda<Func<TEntity, bool>>(Expression.Constant(true), Expression.Parameter(typeof(TEntity)));
                     }
-                    else {
+                    else
+                    {
                         res = Expression.Lambda<Func<TEntity, bool>>(Expression.Constant(false), Expression.Parameter(typeof(TEntity)));
                     }
                 }
                 Printer.Print("Expression:" + (res == null ? "null" : res.ToString()));
+                return res;
             });
-            return res;
         }
         private static IEnumerable<IPermission> AllPermissions(this IRol me)
         {
@@ -263,7 +301,8 @@ namespace Fuxion.Identity
                     return r;
                 });
                 var permissions = getPers(me);
-                Printer.Foreach($"Rol permissions ({permissions.Count()}):", permissions, p => {
+                Printer.Foreach($"Rol permissions ({permissions.Count()}):", permissions, p =>
+                {
                     Printer.Print("Permission: " + p);
                 });
                 IPermission[] res = null;
@@ -300,21 +339,27 @@ namespace Fuxion.Identity
         {
             return SearchForDeniedPermissions(me, function, discriminators) == null;
         }
-        //internal static void CheckFunctionAssigned(this IRol me, IFunction function, IDiscriminator[] discriminators, Action<string, bool> console)
-        //{
-        //    var res = me.SearchForDeniedPermissions(function, discriminators, console);
-        //    if (res != null)
-        //    {
-        //        if (res.Any())
-        //            throw new UnauthorizedAccessException($"The function {function.Name} was requested for these discriminators:"
-        //                + discriminators.Aggregate("", (a, n) => $"{a}\n - {n.TypeName} = {n.Name}")
-        //                + "\nAnd have been matched in:\n" + res.First());
-        //        else
-        //            throw new UnauthorizedAccessException($"The function {function.Name} was requested for these discriminators:"
-        //                + discriminators.Aggregate("", (a, n) => $"{a}\r\n - {n.TypeName} = {n.Name}")
-        //                + "\nAnd don't match any permission");
-        //    }
-        //}
+        public static void Print(this IEnumerable<IRol> me, PrintMode mode)
+        {
+            switch (mode)
+            {
+                case PrintMode.OneLine:
+                    break;
+                case PrintMode.PropertyList:
+                    break;
+                case PrintMode.Table:
+                    var nameLength = me.Select(s => s.Name.ToString().Length).Union(new[] { "NAME".Length }).Max();
+                    //var typeName = me.Select(s => s.TypeName.Length).Union(new[] { "TYPE_NAME".Length }).Max();
+                    //var id = me.Select(s => s.Id.ToString().Length).Union(new[] { "ID".Length }).Max();
+                    //var name = me.Select(s => s.Name.Length).Union(new[] { "ID".Length }).Max();
+                    Printer.Print("┌" + ("".PadRight(nameLength, '─')) + "┐");
+                    Printer.Print("│" + "NAME".PadRight(nameLength, ' ') + "│");
+                    Printer.Print("├" + ("".PadRight(nameLength, '─')) + "┤");
+                    foreach (var rol in me) Printer.Print("│" + rol.Name.ToString().PadRight(nameLength, ' ') + "│");
+                    Printer.Print("└" + ("".PadRight(nameLength, '─')) + "┘");
+                    break;
+            }
+        }
 
         #region Fluent
         #region IRol
@@ -353,7 +398,7 @@ namespace Fuxion.Identity
                     me.Functions.First(),
                     new[] { Factory.Get<TypeDiscriminatorFactory>().FromType(t) }));
             if (me.ThrowExceptionIfCannot && !res)
-                throw new UnauthorizedAccessException($"The rol '{me.Rol.Name}' cannot '{me.Functions.Aggregate("", (a, c) => a + c.Name + "·", a => a.Trim('·'))}' for the given types '{types.Aggregate("",(a,c)=> $"{a}, {c.Name}",a=>a.Trim(',',' ')) }'");
+                throw new UnauthorizedAccessException($"The rol '{me.Rol.Name}' cannot '{me.Functions.Aggregate("", (a, c) => a + c.Name + "·", a => a.Trim('·'))}' for the given types '{types.Aggregate("", (a, c) => $"{a}, {c.Name}", a => a.Trim(',', ' ')) }'");
             return res;
         }
         #endregion

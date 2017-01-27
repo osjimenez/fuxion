@@ -41,7 +41,7 @@ namespace Fuxion.Identity.Test
                 }));
             // CASE 2
             // Faltan discriminadores, se han presentado una serie de discriminadores, pero este permiso tiene mas, no cumple
-            Assert.False(
+            Assert.True(
                 new PermissionDao
                 {
                     Value = true,
