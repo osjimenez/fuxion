@@ -38,7 +38,7 @@ namespace Fuxion.Identity.Test
                 }
                 catch
                 {
-                    Printer.Print("ERROR al procesar una configuracion del contexto");
+                    Printer.WriteLine("ERROR al procesar una configuracion del contexto");
                 }
         }
 

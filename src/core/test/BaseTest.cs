@@ -13,7 +13,7 @@ namespace Fuxion.Test
         public BaseTest(ITestOutputHelper output)
         {
             this.output = output;
-            Printer.PrintAction = m =>
+            Printer.WriteLineAction = m =>
             {
                 try
                 {

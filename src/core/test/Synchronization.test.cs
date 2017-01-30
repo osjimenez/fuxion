@@ -19,7 +19,7 @@ namespace Fuxion.Test
         public SynchronizationTest(ITestOutputHelper output)
         {
             this.output = output;
-            Printer.PrintAction = m => output.WriteLine(m);
+            Printer.WriteLineAction = m => output.WriteLine(m);
         }
         ITestOutputHelper output;
         [Fact]
@@ -193,28 +193,28 @@ namespace Fuxion.Test
             // Print preview results
             foreach (var work in res.Works)
             {
-                Printer.Print("Work:");
+                Printer.WriteLine("Work:");
                 Printer.Ident(() =>
                 {
                     foreach (var item in work.Items)
                     {
-                        Printer.Print($"Item '{(item.MasterItemExist ? item.MasterItemName : "null")}' has '{item.Sides.Count()}' sides");
+                        Printer.WriteLine($"Item '{(item.MasterItemExist ? item.MasterItemName : "null")}' has '{item.Sides.Count()}' sides");
                         Printer.Ident(() =>
                         {
                             foreach (var side in item.Sides)
                             {
                                 if (side.SideItemExist)
                                 {
-                                    Printer.Print($"{side.Action.ToString().ToUpper()} - In '{side.SideName}' side is named '{side.SideItemName}' with key '{side.Key}' and has '{side.Properties.Count()}' change(s)");
+                                    Printer.WriteLine($"{side.Action.ToString().ToUpper()} - In '{side.SideName}' side is named '{side.SideItemName}' with key '{side.Key}' and has '{side.Properties.Count()}' change(s)");
                                     Printer.Ident(() =>
                                     {
                                         foreach (var pro in side.Properties)
                                         {
-                                            Printer.Print($"Property '{pro.PropertyName}' will be changed from '{pro.SideValue}' to '{pro.MasterValue}'");
+                                            Printer.WriteLine($"Property '{pro.PropertyName}' will be changed from '{pro.SideValue}' to '{pro.MasterValue}'");
                                         }
                                     });
                                 }
-                                else Printer.Print($"{side.Action.ToString().ToUpper()} - In '{side.SideName}' side does not exist");
+                                else Printer.WriteLine($"{side.Action.ToString().ToUpper()} - In '{side.SideName}' side does not exist");
                             }
                         });
                     }
@@ -228,7 +228,7 @@ namespace Fuxion.Test
             str.Position = 0;
 
             // Print as JSON and XML
-            Printer.Print("JSON:\r\n" + res.ToJson());
+            Printer.WriteLine("JSON:\r\n" + res.ToJson());
 
             XmlDocument doc = new XmlDocument();
             doc.Load(str);
@@ -238,7 +238,7 @@ namespace Fuxion.Test
             doc.WriteContentTo(writer);
             str2.Position = 0;
             var serStr = new StreamReader(str2).ReadToEnd();
-            Printer.Print("XML:\r\n" + serStr);
+            Printer.WriteLine("XML:\r\n" + serStr);
             str.Position = 0;
 
             // Deserialize

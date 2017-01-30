@@ -70,7 +70,7 @@ namespace Fuxion.Identity
                 case PrintMode.OneLine:
                     foreach (var fun in me)
                     {
-                        Printer.Print(fun.Id.ToString() + "-" + fun.Name);
+                        Printer.WriteLine(fun.Id.ToString() + "-" + fun.Name);
                     }
                     break;
                 case PrintMode.PropertyList:
@@ -82,7 +82,7 @@ namespace Fuxion.Identity
                     //var nameLength = new[] { "NAME".Length }.Concat(me.SelectMany(p => p.Scopes.Select(s => s.Discriminator.Name.Length))).Max();
                     //var propagationLength = new[] { "PROPAGATION".Length }.Concat(me.SelectMany(p => p.Scopes.Select(s => s.Propagation.ToString().Length))).Max();
 
-                    Printer.Print("┌" 
+                    Printer.WriteLine("┌" 
                         + ("".PadRight(idLength, '─')) 
                         + "┬" + ("".PadRight(nameLength, '─')) 
                         //+ "┬" + ("".PadRight(typeLength, '─')) 
@@ -91,14 +91,14 @@ namespace Fuxion.Identity
                         + "┐");
                     if (me.Any())
                     {
-                        Printer.Print("│" 
+                        Printer.WriteLine("│" 
                             + ("ID".PadRight(idLength, ' ')) 
                             + "│" + ("NAME".PadRight(nameLength, ' ')) 
                             //+ "│" + ("TYPE".PadRight(typeLength, ' ')) 
                             //+ "│" + ("NAME".PadRight(nameLength, ' ')) 
                             //+ "│" + ("PROPAGATION".PadRight(propagationLength, ' ')) 
                             + "│");
-                        Printer.Print("├" + ("".PadRight(idLength, '─')) 
+                        Printer.WriteLine("├" + ("".PadRight(idLength, '─')) 
                             + "┼" + ("".PadRight(nameLength, '─')) 
                             //+ "┼" + ("".PadRight(typeLength, '─'))
                             //+ "┼" + ("".PadRight(nameLength, '─'))
@@ -111,7 +111,7 @@ namespace Fuxion.Identity
                         //var list = per.Scopes.ToList();
                         //if (list.Count == 0)
                         //{
-                            Printer.Print("│" +
+                            Printer.WriteLine("│" +
                                     per.Id.ToString().PadRight(idLength, ' ') + "│" +
                                     per.Name.PadRight(nameLength, ' ') + "│" + 
                                     //("".PadRight(typeLength, ' ')) + "│" +
@@ -132,7 +132,7 @@ namespace Fuxion.Identity
                         //    }
                         //}
                     }
-                    Printer.Print("└"
+                    Printer.WriteLine("└"
                         + ("".PadRight(idLength, '─')) 
                         + "┴" + ("".PadRight(nameLength, '─')) 
                         //+ "┴" + ("".PadRight(typeLength, '─'))
