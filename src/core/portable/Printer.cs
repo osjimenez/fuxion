@@ -13,17 +13,23 @@ namespace Fuxion
         public static int IdentationStep { get; set; } = 3;
         public static Action<string> WriteLineAction { get; set; } = m => Debug.WriteLine(m);
         static List<string> lineMessages = new List<string>();
-        public static bool IsLineWritePending { get { return lineMessages.Any(); } }
+        public static bool IsLineWritePending { get { lock (lineMessages) { return lineMessages.Any(); } } }
         public static void Write(string message)
         {
             if (!Enabled) return;
-            lineMessages.Add(message);
+            lock (lineMessages)
+            {
+                lineMessages.Add(message);
+            }
         }
         public static void WriteLine(string message)
         {
             if (!Enabled) return;
-            WriteLineAction("".PadRight(IdentationLevel * IdentationStep) + string.Concat(lineMessages) + message);
-            lineMessages.Clear();
+            lock (lineMessages)
+            {
+                WriteLineAction("".PadRight(IdentationLevel * IdentationStep) + string.Concat(lineMessages) + message);
+                lineMessages.Clear();
+            }
         }
         public static void Ident(Action action)
         {

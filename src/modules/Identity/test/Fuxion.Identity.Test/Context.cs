@@ -248,7 +248,15 @@ namespace Fuxion.Identity.Test
 
                 #region Word
                 public WordDocumentContext Word { get; } = new WordDocumentContext();
-                public class WordDocumentContext : Context<WordDocumentDao> { }
+                public class WordDocumentContext : Context<WordDocumentDao> {
+                    static WordDocumentDao Create(string name, Action<WordDocumentDao> configureAction = null)
+                    {
+                        var res = new WordDocumentDao { Id = name, Name = name };
+                        AddConfigurationAction(configureAction, res);
+                        return res;
+                    }
+                    public WordDocumentDao Word1 { get; } = Create(nameof(Word1));
+                }
                 #endregion
                 #region Excel
                 public ExcelDocumentContext Excel { get; } = new ExcelDocumentContext();

@@ -100,7 +100,7 @@ namespace Fuxion.Identity.Test
                     Scopes = new[] {
                         new ScopeDao { Discriminator = Discriminator.Location.State.California, Propagation = propagation }
                     }
-                }.MatchByDiscriminatorsPath(new IDiscriminator[] {
+                }.MatchByDiscriminatorsInclusionsAndExclusions(new IDiscriminator[] {
                     Discriminator.Location.State.California
                 }), $"Permiso de {nameof(Discriminator.Location.State.California)} hacia {propagation}, me pasan {nameof(Discriminator.Location.State.California)}, no debería encajar");
             Assert.True(
@@ -111,7 +111,7 @@ namespace Fuxion.Identity.Test
                     Scopes = new[] {
                         new ScopeDao { Discriminator = Discriminator.Location.State.California, Propagation = propagation }
                     }
-                }.MatchByDiscriminatorsPath(new IDiscriminator[] {
+                }.MatchByDiscriminatorsInclusionsAndExclusions(new IDiscriminator[] {
                     Discriminator.Location.Country.Usa
                 }), $"Permiso de {nameof(Discriminator.Location.State.California)} hacia {propagation}, me pasan {nameof(Discriminator.Location.Country.Usa)}, debería encajar");
             Assert.False(
@@ -122,7 +122,7 @@ namespace Fuxion.Identity.Test
                     Scopes = new[] {
                         new ScopeDao { Discriminator = Discriminator.Location.State.California, Propagation = propagation}
                     }
-                }.MatchByDiscriminatorsPath(new IDiscriminator[] {
+                }.MatchByDiscriminatorsInclusionsAndExclusions(new IDiscriminator[] {
                     Discriminator.Location.City.SanFrancisco
                 }), $"Permiso de {nameof(Discriminator.Location.State.California)} hacia {propagation}, me pasan {nameof(Discriminator.Location.City.SanFrancisco)}, no debería encajar");
 
@@ -136,7 +136,7 @@ namespace Fuxion.Identity.Test
                     Scopes = new[] {
                         new ScopeDao { Discriminator = Discriminator.Location.State.California, Propagation = propagation }
                     }
-                }.MatchByDiscriminatorsPath(new IDiscriminator[] {
+                }.MatchByDiscriminatorsInclusionsAndExclusions(new IDiscriminator[] {
                     Discriminator.Location.State.California
                 }), $"Permiso de {nameof(Discriminator.Location.State.California)} hacia {propagation}, me pasan {nameof(Discriminator.Location.State.California)}, debería encajar");
             Assert.False(
@@ -147,7 +147,7 @@ namespace Fuxion.Identity.Test
                     Scopes = new[] {
                         new ScopeDao { Discriminator = Discriminator.Location.State.California, Propagation = propagation }
                     }
-                }.MatchByDiscriminatorsPath(new[] {
+                }.MatchByDiscriminatorsInclusionsAndExclusions(new[] {
                     Discriminator.Location.Country.Usa
                 }), $"Permiso de {nameof(Discriminator.Location.State.California)} hacia {propagation}, me pasan {nameof(Discriminator.Location.Country.Usa)}, no debería encajar");
             Assert.False(
@@ -158,7 +158,7 @@ namespace Fuxion.Identity.Test
                     Scopes = new[] {
                         new ScopeDao { Discriminator = Discriminator.Location.State.California, Propagation = propagation }
                     }
-                }.MatchByDiscriminatorsPath(new[] {
+                }.MatchByDiscriminatorsInclusionsAndExclusions(new[] {
                     Discriminator.Location.City.SanFrancisco
                 }), $"Permiso de {nameof(Discriminator.Location.State.California)} hacia {propagation}, me pasan {nameof(Discriminator.Location.City.SanFrancisco)}, no debería encajar");
 
@@ -172,7 +172,7 @@ namespace Fuxion.Identity.Test
                     Scopes = new[] {
                         new ScopeDao { Discriminator = Discriminator.Location.State.California,  Propagation = propagation }
                     }
-                }.MatchByDiscriminatorsPath(new[] {
+                }.MatchByDiscriminatorsInclusionsAndExclusions(new[] {
                     Discriminator.Location.State.California
                 }), $"Permiso de {nameof(Discriminator.Location.State.California)} hacia {propagation}, me pasan {nameof(Discriminator.Location.State.California)}, no debería encajar");
             Assert.False(
@@ -183,7 +183,7 @@ namespace Fuxion.Identity.Test
                     Scopes = new[] {
                         new ScopeDao {Discriminator = Discriminator.Location.State.California, Propagation = propagation }
                     }
-                }.MatchByDiscriminatorsPath(new[] {
+                }.MatchByDiscriminatorsInclusionsAndExclusions(new[] {
                     Discriminator.Location.Country.Usa
                 }), $"Permiso de {nameof(Discriminator.Location.State.California)} hacia {propagation}, me pasan {nameof(Discriminator.Location.Country.Usa)}, no debería encajar");
             Assert.True(
@@ -194,7 +194,7 @@ namespace Fuxion.Identity.Test
                     Scopes = new[] {
                         new ScopeDao { Discriminator = Discriminator.Location.State.California,  Propagation = propagation }
                     }
-                }.MatchByDiscriminatorsPath(new[] {
+                }.MatchByDiscriminatorsInclusionsAndExclusions(new[] {
                     Discriminator.Location.City.SanFrancisco
                 }), $"Permiso de {nameof(Discriminator.Location.State.California)} hacia {propagation}, me pasan {nameof(Discriminator.Location.City.SanFrancisco)}, debería encajar");
         }

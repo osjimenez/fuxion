@@ -17,22 +17,21 @@ namespace System.Collections.Generic
                 rol = Factory.Get<IdentityManager>().GetCurrent();
             //var im = Factory.Get<IdentityManager>();
             var pre = rol.FilterExpression<TSource>(functions);
-            if (pre == null) return source;
+            //if (pre == null) return Enumerable.Empty<TSource>();
             return source is IQueryable<TSource>
                 ? ((IQueryable<TSource>)source).Where(pre)
                 : source.Where(pre.Compile());
         }
         public static IQueryable<TSource> AuthorizedTo<TSource>(this IQueryable<TSource> source, params IFunction[] functions)
         {
-            var im = Factory.Get<IdentityManager>();
-            return source.AuthorizedTo(im.GetCurrent(), functions);
+            return source.AuthorizedTo(null, functions);
         }
         public static IQueryable<TSource> AuthorizedTo<TSource>(this IQueryable<TSource> source, IRol rol, params IFunction[] functions)
         {
             if (rol == null)
                 rol = Factory.Get<IdentityManager>().GetCurrent();
             var pre = rol.FilterExpression<TSource>(functions);
-            if (pre == null) return source;
+            //if (pre == null) return Enumerable.Empty<TSource>().AsQueryable();
             return source.Where(pre);
         }
     }

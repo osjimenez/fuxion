@@ -18,7 +18,11 @@ namespace Fuxion.Identity.Test.Dao
     public class ExcelDocumentDao : DocumentDao { }
     [Table(nameof(WordDocumentDao))]
     [TypeDiscriminated(TypeDiscriminatorIds.WordDocument)]
-    public class WordDocumentDao : DocumentDao { }
+    public class WordDocumentDao : DocumentDao {
+        public CategoryDao Category { get; set; }
+        [DiscriminatedBy(typeof(CategoryDao))]
+        public string CategoryId { get; set; }
+    }
     [Table(nameof(MediaDao))]
     public abstract class MediaDao : FileDao { }
     [Table(nameof(FilmDao))]

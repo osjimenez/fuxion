@@ -88,11 +88,15 @@ namespace Fuxion.Identity.Test.Dao
 
         protected override IEnumerable<LocationDao> GetLocationInclusions() { return new LocationDao[] { }; }
     }
-    [Discriminator("CAT ")]
+    [Discriminator("CAT")]
     [Table(nameof(CategoryDao))]
     public class CategoryDao : DiscriminatorDao
     {
+        [DiscriminatedBy(typeof(CategoryDao))]
+        public new string Id { get { return base.Id; } set { base.Id = value; } }
         public CategoryDao Parent { get; set; }
+        [DiscriminatedBy(typeof(CategoryDao))]
+        public string PrentId { get; set; }
         public IEnumerable<CategoryDao> Children { get; set; }
 
         protected sealed override string GetTypeId() => "CAT";

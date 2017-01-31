@@ -38,34 +38,38 @@ namespace Fuxion.Identity.Test
 
             Factory.AddInjector(new SimpleInjectorFactoryInjector(c));
         }
+        [Fact(DisplayName = "Rol - Can by instance multiple properties")]
+        public void CanByInstance2()
+        {
+            new IdentityDao
+            {
+                Id = "test",
+                Name = "Test",
+                Groups = new[]
+                {
+                    new GroupDao
+                    {
+                        Id = "admins",
+                        Name = "Admins",
+                        Permissions = new[]
+                        {
+                            new PermissionDao {
+                                Value = true,
+                                Function = Edit.Id.ToString(),
+                                Scopes =new[] {
+                                    new ScopeDao {
+                                        Discriminator = Discriminator.Category.Purchases,
+                                        Propagation = ScopePropagation.ToMe | ScopePropagation.ToExclusions }
+                                }
+                            }
+                        }
+                    }
+                }
+            }.EnsureCan(Edit).Instance(Discriminator.Category.Purchases);
+        }
         [Fact(DisplayName = "Rol - Can by instance")]
         public void CanByInstance()
         {
-            //new IdentityDao
-            //{
-            //    Id = "test",
-            //    Name = "Test",
-            //    Groups = new[]
-            //    {
-            //        new GroupDao
-            //        {
-            //            Id = "admins",
-            //            Name = "Admins",
-            //            Permissions = new[]
-            //            {
-            //                new PermissionDao {
-            //                    Value = true,
-            //                    Function =Edit.Id.ToString(),
-            //                    Scopes =new[] {
-            //                        new ScopeDao {
-            //                            Discriminator = Discriminator.Location.State.California,
-            //                            Propagation = ScopePropagation.ToMe | ScopePropagation.ToInclusions }
-            //                    }
-            //                }
-            //            }
-            //        }
-            //    }
-            //}.EnsureCan(Edit).Instance(Discriminator.Location.City.SanFrancisco);
             new IdentityDao
             {
                 Id = "test",
@@ -92,7 +96,37 @@ namespace Fuxion.Identity.Test
                 }
             }.EnsureCan(Edit).Instance(Discriminator.Location.Country.Usa);
         }
-        [Fact(DisplayName = "Rol - Can by type")]
+        [Fact(DisplayName = "Rol - Cannot by instance")]
+        public void CannotByInstance()
+        {
+            Assert.False(
+                new IdentityDao
+                {
+                    Id = "test",
+                    Name = "Test",
+                    Groups = new[]
+                    {
+                        new GroupDao
+                        {
+                            Id = "admins",
+                            Name = "Admins",
+                            Permissions = new[]
+                            {
+                                new PermissionDao {
+                                    Value = true,
+                                    Function =Edit.Id.ToString(),
+                                    Scopes =new[] {
+                                        new ScopeDao {
+                                            Discriminator = Discriminator.Category.Purchases,
+                                            Propagation = ScopePropagation.ToMe }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }.Can(Edit).Instance(File.Document.Word.Word1));
+        }
+        [Fact(DisplayName = "Rol - Can by type, same discriminator type")]
         public void CanByType()
         {
             new IdentityDao
@@ -112,17 +146,55 @@ namespace Fuxion.Identity.Test
                                 Propagation = ScopePropagation.ToMe | ScopePropagation.ToInclusions },
                         }
                     },
-                    //new PermissionDao {
-                    //    Value =false,
-                    //    Function =Edit.Id.ToString(),
-                    //    Scopes =new[] {
-                    //        new ScopeDao {
-                    //            Discriminator = Factory.Get<TypeDiscriminatorFactory>().FromType<WordDocumentDao>(),
-                    //            Propagation = ScopePropagation.ToMe | ScopePropagation.ToInclusions }
-                    //    }
-                    //}
                 }.ToList()
             }.EnsureCan(Read).Type<WordDocumentDao>();
+        }
+        [Fact(DisplayName = "Rol - Can by type, different discriminator type")]
+        public void CanByType2()
+        {
+            new IdentityDao
+            {
+                Id = "test",
+                Name = "Test",
+                Permissions = new[] {
+                    new PermissionDao {
+                        Value =true,
+                        Function = Admin.Id.ToString(),
+                        Scopes =new[]{
+                            new ScopeDao {
+                                Discriminator = Discriminator.Category.Purchases,
+                                Propagation = ScopePropagation.ToMe },
+                            //new ScopeDao {
+                            //    Discriminator = Factory.Get<TypeDiscriminatorFactory>().FromType<BaseDao>(),
+                            //    Propagation = ScopePropagation.ToMe | ScopePropagation.ToInclusions },
+                        }
+                    },
+                }.ToList()
+            }.EnsureCan(Read).Type<WordDocumentDao>();
+        }
+        [Fact(DisplayName = "Rol - Can by instance, mix root permission with others")]
+        public void CanByType3()
+        {
+            new IdentityDao
+            {
+                Id = "test",
+                Name = "Test",
+                Permissions = new[] {
+                    new PermissionDao {
+                        Value = true,
+                        Function = Admin.Id.ToString(),
+                    },
+                    new PermissionDao {
+                        Value =true,
+                        Function = Admin.Id.ToString(),
+                        Scopes =new[]{
+                            new ScopeDao {
+                                Discriminator = Discriminator.Category.Purchases,
+                                Propagation = ScopePropagation.ToMe },
+                        }
+                    },
+                }.ToList()
+            }.EnsureCan(Read).Instance(File.Document.Word.Word1);
         }
         [Fact(DisplayName = "Rol - Cannot by type")]
         public void CannotByType()
