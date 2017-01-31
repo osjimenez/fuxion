@@ -37,7 +37,7 @@ namespace Fuxion.Identity.DatabaseEFTest
                     con.RegisterSingleton<IdentityManager>();
 
                     var fac = new TypeDiscriminatorFactory();
-                    fac.RegisterTree<Test.Dao.BaseDao>(typeof(Test.Dao.BaseDao).Assembly.DefinedTypes.ToArray());
+                    fac.RegisterTree<BaseDao>(typeof(BaseDao).Assembly.DefinedTypes.ToArray());
                     con.RegisterSingleton(fac);
 
                     memoryFactory = new SimpleInjectorFactoryInjector(con);
@@ -58,7 +58,7 @@ namespace Fuxion.Identity.DatabaseEFTest
                     con.RegisterSingleton<IdentityManager>();
 
                     var fac = new TypeDiscriminatorFactory();
-                    fac.RegisterTree<Test.Dao.BaseDao>(typeof(Test.Dao.BaseDao).Assembly.DefinedTypes.ToArray());
+                    fac.RegisterTree<BaseDao>(typeof(BaseDao).Assembly.DefinedTypes.ToArray());
                     con.RegisterSingleton(fac);
 
                     databaseFactory = new SimpleInjectorFactoryInjector(con);

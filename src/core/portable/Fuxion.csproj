@@ -50,6 +50,7 @@
     <Compile Include="Collections\ObjectModel\DeactivatableObservableCollection.cs" />
     <Compile Include="ComponentModel\DefaultNotifierSynchronizer.cs" />
     <Compile Include="ComponentModel\INotifierSynchronizer.cs" />
+    <Compile Include="ComponentModel\NotifierException.cs" />
     <Compile Include="EventHandler.cs" />
     <Compile Include="Factories\CreationMode.cs" />
     <Compile Include="Factories\FactoryCreationException.cs" />

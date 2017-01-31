@@ -209,7 +209,26 @@ namespace Fuxion.ComponentModel
                 oldValue = GetValue<T>(propertyName: propertyName);
             else
             {
-                oldValue = (T)GetType().GetTypeInfo().GetAllProperties().Single(p => p.Name == propertyName).GetValue(this, null);
+                PropertyInfo pro = null;
+                var props = GetType().GetTypeInfo().GetAllProperties().Where(p => p.Name == propertyName).ToList();
+                if (props.Count == 0) throw new NotifierException($"Cannot find a property with name '{propertyName}' in type '{GetType().GetSignature(true)}'");
+                if (props.Count > 1)
+                {
+                    var parentType = this.GetType();
+                    while (pro == null && parentType != null)
+                    {
+                        var pp = props.Where(p => p.DeclaringType == parentType).ToList();
+                        if (pp.Count == 1)
+                            pro = pp.First();
+                        parentType = parentType.GetTypeInfo().BaseType;
+                    }
+                    if(pro == null) throw new NotifierException($"Cannot find a property with name '{propertyName}' in type '{GetType().GetSignature(true)}'");
+                }
+                else
+                {
+                    pro = props.First();
+                }
+                oldValue = (T)pro.GetValue(this, null);
                 //oldValue = (T)GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static).GetValue(this, null);
             }
             if (raiseOnlyIfNotEquals && EqualityComparer<T>.Default.Equals(oldValue, newValue))

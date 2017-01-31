@@ -41,7 +41,7 @@ namespace Fuxion.Identity.Test
             var oo = Read.GetAllExclusions();
             Assert.Equal(Read.GetAllExclusions().Count(), 6);
         }
-        [Fact(DisplayName = "Function - Cycles detection")]
+        [Fact(DisplayName = "Function - Cycles detection", Skip = "Disabled")]
         public void CyclesDetection()
         {
             var graph = new Graph<IFunction>();
@@ -63,7 +63,7 @@ namespace Fuxion.Identity.Test
             Assert.True(graph.HasCycles());
             Assert.True(false, "Graph is not used yet in Functions class");
         }
-        [Fact(DisplayName = "Function - Heterogeneous id types")]
+        [Fact(DisplayName = "Function - Heterogeneous id types", Skip = "Disabled")]
         public void HeterogeneousIdTypes()
         {
             var intFunction = AddCustom(1, new[] { Read }, new[] { Manage });

@@ -148,12 +148,43 @@ namespace Fuxion.Identity.Test
                                 Propagation = ScopePropagation.ToMe | ScopePropagation.ToInclusions } } }
                 }.ToList()
             }.Can(Edit).Instance(Discriminator.Location.City.SanFrancisco)
-            //}.IsFunctionAssigned(Edit, new[] { Discriminator.Location.City.SanFrancisco })
                 , "Tengo:\r\n" +
                     $" - Concedido el permiso para {nameof(Edit)} en {nameof(Discriminator.Location.City.SanFrancisco)}\r\n" +
                     $" - Denegado el permiso para {nameof(Edit)} en {nameof(Discriminator.Location.State.California)} y sus hijos\r\n" +
                     $"¿Debería poder {nameof(Edit)} en {nameof(Discriminator.Location.City.SanFrancisco)}?\r\n" +
                     " No");
+        }
+        [Fact(DisplayName = "Rol - No permissions")]
+        public void NoPermissions()
+        {
+            Assert.False(new IdentityDao
+            {
+                Id = "test",
+                Name = "Test",
+            }.Can(Edit).Instance(Discriminator.Location.City.SanFrancisco)
+                , "Tengo:\r\n" +
+                    $" - Ningun permiso\r\n" +
+                    $"¿Debería poder {nameof(Edit)} en {nameof(Discriminator.Location.City.SanFrancisco)}?\r\n" +
+                    " No");
+        }
+        [Fact(DisplayName = "Rol - Root permission")]
+        public void RootPermission()
+        {
+            Assert.True(new IdentityDao
+            {
+                Id = "test",
+                Name = "Test",
+                Permissions = new[] {
+                    new PermissionDao {
+                        Value = true,
+                        Function = Admin.Id.ToString(),
+                    }
+                }.ToList()
+            }.Can(Edit).Instance(Discriminator.Location.City.SanFrancisco)
+                , "Tengo:\r\n" +
+                    $" - Permiso ROOT\r\n" +
+                    $"¿Debería poder {nameof(Edit)} en {nameof(Discriminator.Location.City.SanFrancisco)}?\r\n" +
+                    " Si");
         }
     }
 }

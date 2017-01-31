@@ -284,7 +284,7 @@ namespace Fuxion.Test
         public new int Integer_Virtual_AutoImplemented_WithoutDefault_RaiseOnChange_NotLocked
         {
             get { return GetValue<int>(); }
-            set { SetValue(value, false); }
+            set { SetValue(value); }
         }
         #endregion
     }
@@ -352,9 +352,9 @@ namespace Fuxion.Test
             foreach (var name in counterNames)
             {
                 var counterValue = counters[propertyName + "_" + name];
-                Assert.Equal(counterValue, value);
-                //if (counterValue != value)
-                //    throw new AssertFailedException("El valor del contador '" + propertyName + "_" + name + "' no es '" + value + "' sino '" + counterValue + "'.");
+                //Assert.Equal(value, counterValue);
+                if (counterValue != value)
+                    throw new Exception("El valor del contador '" + propertyName + "_" + name + "' no es '" + value + "' sino '" + counterValue + "'.");
             }
         }
         private void IncrementCounter(string propertyName, string counterName)
@@ -479,7 +479,7 @@ namespace Fuxion.Test
         /// <summary>
         /// Compruebo el comportamiento de la función de propagar el evento siempre o solo cuando haya cambio de valor
         /// </summary>
-        private void RaiseOnChangeOrAlways<T>(T change, params PropertyInfo[] properties)
+        private void RaiseOnChangeOrAlwaysPrivate<T>(T change, params PropertyInfo[] properties)
         {
             foreach (var pro in properties)
             {
@@ -499,12 +499,12 @@ namespace Fuxion.Test
             //context.WriteLine("Se han comprobado " + properties.Count() + " propiedades de tipo '" + typeof(T).Name + "'");
         }
         [Fact]
-        public void RaiseOnChangeOrAlways2()
+        public void RaiseOnChangeOrAlways()
         {
             var props = mock.GetType().GetProperties().AsQueryable();
-            RaiseOnChangeOrAlways(999, props.Where(p => p.PropertyType == typeof(int)).ToArray());
-            RaiseOnChangeOrAlways("zzz", props.Where(p => p.PropertyType == typeof(string)).ToArray());
-            RaiseOnChangeOrAlways(
+            RaiseOnChangeOrAlwaysPrivate(999, props.Where(p => p.PropertyType == typeof(int)).ToArray());
+            RaiseOnChangeOrAlwaysPrivate("zzz", props.Where(p => p.PropertyType == typeof(string)).ToArray());
+            RaiseOnChangeOrAlwaysPrivate(
                 new ReferenceObjectMock { Cadena = "zzz", Entero = 999 },
                 props.Where(p => p.PropertyType == typeof(ReferenceObjectMock)).ToArray());
         }
