@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Xunit;
 
-namespace Fuxion.Test
+namespace Fuxion.Synchronization
 {
-    public class MemoryKeyValueRepositoryTest
+    public enum SyncAction
     {
-        [Fact]
-        public void Add() { }
+        None = 0,
+        Add,
+        Delete,
+        Update
     }
 }

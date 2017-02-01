@@ -37,7 +37,7 @@ namespace System.Reflection
         public static string GetSignature(this MethodBase method,
             bool includeAccessModifiers = false,
             bool includeReturn = false,
-            bool includeDeclarinType = true,
+            bool includeDeclaringType = true,
             bool useFullNames = false,
             bool includeParameters = true,
             bool includeParametersNames = false,
@@ -68,7 +68,7 @@ namespace System.Reflection
             if (includeReturn)
                 res.Append(((MethodInfo)method).ReturnType.GetSignature(useFullNames) + " ");
             // Method name
-            if (includeDeclarinType)
+            if (includeDeclaringType)
                 res.Append(method.DeclaringType.GetSignature(useFullNames) + ".");
             res.Append(method.Name);
             // Generics arguments

@@ -31,10 +31,12 @@ namespace System
         }
         #endregion
         #region Json
-        public static string ToJson(this object me, Formatting formatting = Formatting.Indented, JsonSerializerSettings settings = null) {
+        public static string ToJson(this object me, Formatting formatting = Formatting.Indented, JsonSerializerSettings settings = null)
+        {
             if (settings != null)
                 return JsonConvert.SerializeObject(me, formatting, settings);
-            return JsonConvert.SerializeObject(me, formatting); }
+            return JsonConvert.SerializeObject(me, formatting);
+        }
         public static T FromJson<T>(this string me, JsonSerializerSettings settings = null) { return (T)JsonConvert.DeserializeObject(me, typeof(T), settings); }
         public static object FromJson(this string me, Type type) { return JsonConvert.DeserializeObject(me, type); }
         public static T CloneWithJson<T>(this T me) { return (T)FromJson(me.ToJson(), me.GetType()); }

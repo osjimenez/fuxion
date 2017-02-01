@@ -41,22 +41,22 @@ namespace Fuxion.Identity
         public IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity> Repository { get; private set; }
         public bool CheckCredentials(string username, string password)
         {
-            Printer.Print($"Validando credenciales\r\n   Usuario: {username}\r\n   Contraseña: {password}\r\n");
+            Printer.WriteLine($"Validando credenciales\r\n   Usuario: {username}\r\n   Contraseña: {password}\r\n");
             if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
             {
-                Printer.Print($"Resultado: NO VALIDO - El nombre de usuario o la contraseña es NULL");
+                Printer.WriteLine($"Resultado: NO VALIDO - El nombre de usuario o la contraseña es NULL");
                 return false;
             }
             var ide = Repository.Find(username);
             if (ide == null)
             {
-                Printer.Print($"Resultado: NO VALIDO - No se ha encontrado una identidad con ese nombre de usuario");
+                Printer.WriteLine($"Resultado: NO VALIDO - No se ha encontrado una identidad con ese nombre de usuario");
                 return false;
             }
             var res = PasswordProvider.Verify(password, ide.PasswordHash, ide.PasswordSalt);
             if (res)
             {
-                Printer.Print($"Resultado: VALIDO");
+                Printer.WriteLine($"Resultado: VALIDO");
             }
             return res;
         }

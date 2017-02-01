@@ -17,7 +17,7 @@ namespace Fuxion.Identity.Test
 {
     public class TypeDiscriminatorTetst
     {
-        [Fact]
+        [Fact(DisplayName = "TypeDiscriminator - Register tree")]
         public void RegisterTree()
         {
             var fac = new TypeDiscriminatorFactory();
@@ -65,7 +65,7 @@ namespace Fuxion.Identity.Test
             Assert.Equal(6, dis.Inclusions.Count());
             Assert.Equal(0, dis.Exclusions.Count());
         }
-        [Fact]
+        [Fact(DisplayName = "TypeDiscriminator - Create")]
         public void Create()
         {
             var fac = new TypeDiscriminatorFactory();
@@ -82,7 +82,7 @@ namespace Fuxion.Identity.Test
             Assert.Equal(3, dis.Inclusions.Count());
             Assert.Equal(1, dis.Exclusions.Count());
         }
-        [Fact]
+        [Fact(DisplayName = "TypeDiscriminator - Attribute")]
         public void TypeDiscriminatorAttribute()
         {
             var fac = new TypeDiscriminatorFactory();
@@ -121,7 +121,7 @@ namespace Fuxion.Identity.Test
 
             Assert.True(dvo2.Inclusions.Contains(dvo), $"Type discriminator 'Location' must include 'City'");
         }
-        [Fact]
+        [Fact(DisplayName = "TypeDiscriminator - Not allow two same ids")]
         public void NotAllowTwoSameIds()
         {
             var fac = new TypeDiscriminatorFactory();
@@ -131,8 +131,8 @@ namespace Fuxion.Identity.Test
                 fac.Register(typeof(BaseDto));
             });
         }
-        [Fact]
-        public void AllowTwoSameIds()
+        [Fact(DisplayName = "TypeDiscriminator - Allow more than one type by discriminator")]
+        public void AllowMoreThanOneTypeByDiscriminator()
         {
             var fac = new TypeDiscriminatorFactory();
             fac.AllowMoreThanOneTypeByDiscriminator = true;

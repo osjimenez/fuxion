@@ -2,6 +2,7 @@
 using Fuxion.Identity.Test;
 using Fuxion.Identity.Test.Dao;
 using Fuxion.Identity.Test.Helpers;
+using Fuxion.Identity.Test.Mocks;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -38,7 +39,7 @@ namespace Fuxion.Identity.DatabaseTest
             get
             {
                 if (_IdentityManager == null)
-                    _IdentityManager = new IdentityManager(new PasswordProvider(), null, new IdentityDatabaseRepository());
+                    _IdentityManager = new IdentityManager(new PasswordProviderMock(), null, new IdentityDatabaseRepository());
                 return _IdentityManager;
             }
         }

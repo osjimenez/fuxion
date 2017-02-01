@@ -10,6 +10,7 @@ using Fuxion.Factories;
 using Fuxion.Identity.Test;
 using System.Data.Entity;
 using System.Diagnostics;
+using Fuxion.Identity.Test.Repositories;
 
 namespace Fuxion.Identity.DatabaseEFTest
 {
@@ -17,7 +18,7 @@ namespace Fuxion.Identity.DatabaseEFTest
     {
         public IdentityManagerTest(ITestOutputHelper output)
         {
-            Printer.PrintAction = m =>
+            Printer.WriteLineAction = m =>
             {
                 Debug.WriteLine(m);
                 output.WriteLine(m);
@@ -82,8 +83,8 @@ namespace Fuxion.Identity.DatabaseEFTest
         public void Check(string _, string scenarios, string username, string password, string[] functionsIds, Type[] types, string message, bool expected)
         {
             //Assert.True(false, "Require revision after change all context design");
-            Printer.Print($"{message}");
-            Printer.Print("");
+            Printer.WriteLine($"{message}");
+            Printer.WriteLine("");
             foreach (var scenario in scenarios.Split('·'))
             {
                 Printer.Ident($"Scenario = { scenario}", () =>
@@ -94,9 +95,9 @@ namespace Fuxion.Identity.DatabaseEFTest
                     Assert.True(im.CheckCredentials(username, password), $"Login fail unexpected: username<{username}> password<{password}>");
                     Printer.Ident("Parameters:", () =>
                     {
-                        Printer.Print($"Username: {username}");
-                        Printer.Print($"Functions: {functions.Aggregate("", (a, c) => a + c.Name + "·")}");
-                        Printer.Print($"Types: {types.Aggregate("", (a, c) => a + c.Name + "·")}");
+                        Printer.WriteLine($"Username: {username}");
+                        Printer.WriteLine($"Functions: {functions.Aggregate("", (a, c) => a + c.Name + "·")}");
+                        Printer.WriteLine($"Types: {types.Aggregate("", (a, c) => a + c.Name + "·")}");
                     });
                     var strArgs = $"\r\nscenario<{scenario}>\r\nusername<{username}>\r\nfunctions<{functions.Aggregate("", (a, c) => a + c.Name + "·")}>\r\ntypes<{types.Aggregate("", (a, c) => a + c.Name + "·")}>";
                     if (expected)
@@ -183,7 +184,7 @@ namespace Fuxion.Identity.DatabaseEFTest
             var res = rep.Document.AuthorizedTo(Read);
             //Assert.True(im.Current.Can(Read).OfType<Order>());
             //var res = rep.Album.Where(o => o.Songs.AuthorizedTo(Edit).Any());
-            Printer.Print("res.Count(): " + res.Count());
+            Printer.WriteLine("res.Count(): " + res.Count());
         }
         [Fact]
         public void DemoTest2()
@@ -194,7 +195,7 @@ namespace Fuxion.Identity.DatabaseEFTest
             im.CheckCredentials("root", "root");
             Assert.True(im.GetCurrent().Can(Read).Type<DocumentDao>());
             var res = rep.Album.Where(o => o.Songs.AuthorizedTo(Read).Any());
-            Printer.Print("res.Count(): " + res.Count());
+            Printer.WriteLine("res.Count(): " + res.Count());
         }
     }
 }

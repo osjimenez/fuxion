@@ -1,4 +1,5 @@
 ﻿using Fuxion.ComponentModel;
+using Fuxion.Identity.Test.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

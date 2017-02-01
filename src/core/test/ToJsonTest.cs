@@ -1,5 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -7,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Xunit;
 
 namespace Fuxion.Test
 {
@@ -15,10 +15,9 @@ namespace Fuxion.Test
         public int Entero { get; set; }
         public string Cadena { get; set; }
     }
-    [TestClass]
     public class ToJsonTest
     {
-        [TestMethod]
+        [Fact]
         public void FormatTest()
         {
             Guid id = Guid.NewGuid();

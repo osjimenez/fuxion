@@ -50,6 +50,7 @@
     <Compile Include="Collections\ObjectModel\DeactivatableObservableCollection.cs" />
     <Compile Include="ComponentModel\DefaultNotifierSynchronizer.cs" />
     <Compile Include="ComponentModel\INotifierSynchronizer.cs" />
+    <Compile Include="ComponentModel\NotifierException.cs" />
     <Compile Include="EventHandler.cs" />
     <Compile Include="Factories\CreationMode.cs" />
     <Compile Include="Factories\FactoryCreationException.cs" />
@@ -64,6 +65,10 @@
     <Compile Include="Printer.cs" />
     <Compile Include="Reflection\Reflect.cs" />
     <Compile Include="Singleton.cs" />
+    <Compile Include="Synchronization\Sync.cs" />
+    <Compile Include="Synchronization\SyncAction.cs" />
+    <Compile Include="Synchronization\SyncComparator.cs" />
+    <Compile Include="Synchronization\SyncPreview.cs" />
     <Compile Include="System-Extensions.cs" />
     <Compile Include="Factories\Factory.cs" />
     <Compile Include="Factories\IFactoryInjector.cs" />

@@ -54,7 +54,10 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Serialization" />
     <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
       <HintPath>..\..\packages\xunit.abstractions.2.0.0\lib\net35\xunit.abstractions.dll</HintPath>
       <Private>True</Private>
@@ -78,17 +81,12 @@
         <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
       </ItemGroup>
     </When>
-    <Otherwise>
-      <ItemGroup>
-        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework">
-          <Private>False</Private>
-        </Reference>
-      </ItemGroup>
-    </Otherwise>
+    <Otherwise />
   </Choose>
   <ItemGroup>
     <Compile Include="AntiBackTimeProvider.test.cs" />
     <Compile Include="AverageTimeProvider.test.cs" />
+    <Compile Include="BaseTest.cs" />
     <Compile Include="CachedTimeProvider.test.cs" />
     <Compile Include="ConnectableNotifier.test.cs" />
     <Compile Include="CustomizableTimeProvider.test.cs" />
@@ -107,6 +105,7 @@
     <Compile Include="Patchable.cs" />
     <Compile Include="RemoveOutliersTest.cs" />
     <Compile Include="Singleton.cs" />
+    <Compile Include="Synchronization.test.cs" />
     <Compile Include="TaskManager.test.cs" />
     <Compile Include="LocalMachineTimeProvider.test.cs" />
     <Compile Include="ToJsonTest.cs" />

@@ -1,13 +1,12 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Fuxion.Windows;
+using Xunit;
 
 namespace Fuxion.Test
 {
-    [TestClass]
     public class ViewModelTest
     {
-        [TestMethod]
+        [Fact]
         public void PropertyChangedRaise()
         {
             //DemoViewModel dvm = new DemoViewModel();
@@ -18,7 +17,7 @@ namespace Fuxion.Test
             //dvm.Name = "oka";
             //Assert.IsTrue(changed);
         }
-        [TestMethod]
+        [Fact]
         public void RaisePropertyChangedMethod()
         {
             //DemoViewModel dvm = new DemoViewModel();

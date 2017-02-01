@@ -15,12 +15,11 @@ namespace Fuxion.Identity.Test.Dao
         public IList<ScopeDao> Scopes { get; set; } = new List<ScopeDao>();
         public bool Value { get; set; }
         public override string Name { get { return $"{Rol?.Name} can{(Value?"":"'t")} {Function} with {Scopes.Count} scopes."; } }
+
         public override string ToString()
         {
             return this.ToOneLineString();
         }
-
-
         IFunction IPermission.Function { get { return Functions.GetById(Function); } }
         IEnumerable<IScope> IPermission.Scopes { get { return Scopes; } }
     }

@@ -10,15 +10,16 @@ using Xunit.Abstractions;
 using static Fuxion.Identity.Functions;
 using Fuxion.Identity.Test.Helpers;
 using Fuxion.Repositories;
+using Fuxion.Test;
+using Fuxion.Identity.Test.Repositories;
+using Fuxion.Identity.Test.Mocks;
 
 namespace Fuxion.Identity.Test
 {
-    public class ContextTest
+    public class ContextTest : BaseTest
     {
-        public ContextTest(ITestOutputHelper output)
+        public ContextTest(ITestOutputHelper output) : base(output)
         {
-            // Printer
-            Printer.PrintAction = m => output.WriteLine(m);
             Container c = new Container();
 
             // TypeDiscriminators
@@ -28,7 +29,7 @@ namespace Fuxion.Identity.Test
                 return fac;
             }));
             // IdentityManager
-            c.Register<IPasswordProvider, PasswordProvider>();
+            c.Register<IPasswordProvider, PasswordProviderMock>();
             c.RegisterSingleton<ICurrentUserNameProvider>(new GenericCurrentUserNameProvider(() => Context.Rol.Identity.Root.UserName));
             c.RegisterSingleton<IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity>>(new IdentityMemoryTestRepository());
             c.Register<IdentityManager>();
@@ -36,46 +37,33 @@ namespace Fuxion.Identity.Test
 
             Factory.AddInjector(new SimpleInjectorFactoryInjector(c));
         }
-        [Fact]
-        public void CreateCalifornia()
-        {
-            var c = Context.Discriminator.Location.State.California;
-            Debug.WriteLine("");
+        //[Fact]
+        //public void CreateCalifornia()
+        //{
+        //    var c = Context.Discriminator.Location.State.California;
+        //    Debug.WriteLine("");
 
-        }
-        [Fact]
-        public void CheckAdmin()
-        {
-            var r = Context.Rol;
-            Context.RunConfigurationActions();
-            Assert.True(Context.Rol.Identity.Root.Can(Create).Type<AlbumDao>());
-        }
-        [Fact]
-        public void AuthorizeToAdmin()
-        {
-            var r = Context.Rol;
-            Context.RunConfigurationActions();
-            var res = Context.Rol.Identity.GetAll().AuthorizedTo(Create);
-            Printer.Print("Results:");
-            Printer.Ident(() =>
-            {
-                foreach (var ide in res)
-                    Printer.Print($"- {ide.Name}");
-            });
-            Assert.True(res.Count() == 3);
-        }
+        //}
+        //[Fact]
+        //public void CheckAdmin()
+        //{
+        //    var r = Context.Rol;
+        //    Context.RunConfigurationActions();
+        //    Assert.True(Context.Rol.Identity.Root.Can(Create).Type<AlbumDao>());
+        //}
+        //[Fact]
+        //public void AuthorizeToAdmin()
+        //{
+        //    var r = Context.Rol;
+        //    Context.RunConfigurationActions();
+        //    var res = Context.Rol.Identity.GetAll().AuthorizedTo(Create);
+        //    Printer.Print("Results:");
+        //    Printer.Ident(() =>
+        //    {
+        //        foreach (var ide in res)
+        //            Printer.Print($"- {ide.Name}");
+        //    });
+        //    Assert.True(res.Count() == 3);
+        //}
     }
-    //public class AlbumList : List<Album>
-    //{
-    //    public AlbumList()
-    //    {
-    //        AddRange(new[] { Album_1 });
-    //    }
-    //    public const string ALBUM_1 = nameof(ALBUM_1);
-    //    public Album Album_1 = new Album
-    //    {
-    //        Id = ALBUM_1,
-    //        Songs = new[] { Songs.Song_1 }
-    //    };
-    //}
 }

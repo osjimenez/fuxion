@@ -11,24 +11,57 @@ namespace Fuxion
     {
         public static int IdentationLevel { get; set; }
         public static int IdentationStep { get; set; } = 3;
-        public static Action<string> PrintAction { get; set; } = m => Debug.WriteLine(m);
-        public static void Print(string message)
+        public static Action<string> WriteLineAction { get; set; } = m => Debug.WriteLine(m);
+        static List<string> lineMessages = new List<string>();
+        public static bool IsLineWritePending { get { lock (lineMessages) { return lineMessages.Any(); } } }
+        public static void Write(string message)
         {
             if (!Enabled) return;
-            PrintAction("".PadRight(IdentationLevel * IdentationStep) + message);
+            lock (lineMessages)
+            {
+                lineMessages.Add(message);
+            }
+        }
+        public static void WriteLine(string message)
+        {
+            if (!Enabled) return;
+            lock (lineMessages)
+            {
+                WriteLineAction("".PadRight(IdentationLevel * IdentationStep) + string.Concat(lineMessages) + message);
+                lineMessages.Clear();
+            }
         }
         public static void Ident(Action action)
         {
             IdentationLevel++;
             action();
-            IdentationLevel--;
+            if(IdentationLevel > 0) IdentationLevel--;
         }
         public static void Ident(string message, Action action)
         {
-            Print(message);
+            WriteLine(message);
+            Ident(action);
+        }
+        public static T Ident<T>(Func<T> func)
+        {
             IdentationLevel++;
-            action();
-            IdentationLevel--;
+            var res = func();
+            if (IdentationLevel > 0) IdentationLevel--;
+            return res;
+        }
+        public static T Ident<T>(string message, Func<T> func)
+        {
+            WriteLine(message);
+            return Ident(func);
+        }
+        public static void Foreach<T>(string message, IEnumerable<T> items, Action<T> action)
+        {
+            WriteLine(message);
+            Ident(() =>
+            {
+                foreach (var item in items)
+                    action(item);
+            });
         }
         public static bool Enabled { get; set; } = true;
     }

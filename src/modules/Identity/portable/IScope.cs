@@ -46,11 +46,11 @@ namespace Fuxion.Identity
                     //var type = me.Max(s => s.Discriminator.TypeName.Length);
                     //var name = me.Max(s => s.Discriminator.Name.Length);
                     //var pro = me.Max(s => s.Propagation.ToString().Length);
-                    Printer.Print("┌" + ("".PadRight(typeLength, '─')) + "┬" + ("".PadRight(nameLength, '─')) + "┬" + ("".PadRight(propagationLength, '─')) + "┐");
-                    Printer.Print("│" + "TYPE".PadRight(typeLength, ' ') + "│" + "NAME".PadRight(nameLength, ' ') + "│" + "PROPAGATION".PadRight(propagationLength, ' ') + "│");
-                    Printer.Print("├" + ("".PadRight(typeLength, '─')) + "┼" + ("".PadRight(nameLength, '─')) + "┼" + ("".PadRight(propagationLength, '─')) + "┤");
-                    foreach (var sco in me) Printer.Print("│" + sco.Discriminator.TypeName.PadRight(typeLength, ' ') + "│" + sco.Discriminator.Name.PadRight(nameLength, ' ') + "│" + sco.Propagation.ToString().PadRight(propagationLength, ' ') + "│");
-                    Printer.Print("└" + ("".PadRight(typeLength, '─')) + "┴" + ("".PadRight(nameLength, '─')) + "┴" + ("".PadRight(propagationLength, '─')) + "┘");
+                    Printer.WriteLine("┌" + ("".PadRight(typeLength, '─')) + "┬" + ("".PadRight(nameLength, '─')) + "┬" + ("".PadRight(propagationLength, '─')) + "┐");
+                    Printer.WriteLine("│" + "TYPE".PadRight(typeLength, ' ') + "│" + "NAME".PadRight(nameLength, ' ') + "│" + "PROPAGATION".PadRight(propagationLength, ' ') + "│");
+                    Printer.WriteLine("├" + ("".PadRight(typeLength, '─')) + "┼" + ("".PadRight(nameLength, '─')) + "┼" + ("".PadRight(propagationLength, '─')) + "┤");
+                    foreach (var sco in me) Printer.WriteLine("│" + sco.Discriminator.TypeName.PadRight(typeLength, ' ') + "│" + sco.Discriminator.Name.PadRight(nameLength, ' ') + "│" + sco.Propagation.ToString().PadRight(propagationLength, ' ') + "│");
+                    Printer.WriteLine("└" + ("".PadRight(typeLength, '─')) + "┴" + ("".PadRight(nameLength, '─')) + "┴" + ("".PadRight(propagationLength, '─')) + "┘");
                     break;
             }
         }

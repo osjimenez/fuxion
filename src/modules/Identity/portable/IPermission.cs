@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Fuxion.Identity.Helpers;
-using System;
+using System.Reflection;
 
 namespace Fuxion.Identity
 {
@@ -13,63 +13,86 @@ namespace Fuxion.Identity
     }
     public static class PermissionExtensions
     {
-        public static string ToOneLineString(this IPermission per)
-        {
-            return per.Function.Name.PadRight(8, ' ') + " , v:" +
-                per.Value + "".PadRight(per.Value ? 1 : 0, ' ') + " , ss:[" +
-                per.Scopes.Aggregate("", (str, actual) => str + actual + ",", str => str.Trim(',')) +
-                "]";
-        }
         public static bool IsValid(this IPermission me) { return me.Function != null && me.Scopes.Select(s => s.Discriminator.TypeId).Distinct().Count() == me.Scopes.Count(); }
-        public static bool Match(this IPermission me, IFunction function, IDiscriminator[] discriminators)
+        internal static bool Match(this IPermission me, IFunction function, IDiscriminator[] discriminators)
         {
-            bool res = false;
-            Printer.Ident("Match ...", () =>
+            //bool res = false;
+            return Printer.Ident($"{nameof(PermissionExtensions)}.{nameof(Match)}:", () =>
             {
-                var byFunction = me.MatchByFunction(function);
-                var byDiscriminator = me.MatchByDiscriminatorsType(discriminators);
-                var byDiscriminatorPath = me.MatchByDiscriminatorsPath(discriminators);
-                res = byFunction && byDiscriminator && byDiscriminatorPath;
-                Printer.Ident($"Resultado del matching => byFunction && byDiscriminator && byDiscriminatorPath: {res}", () =>
+                Printer.Ident("Input parameters", () =>
                 {
-                    Printer.Print($"byFunction: {byFunction}");
-                    Printer.Print($"byDiscriminator: {byDiscriminator}");
-                    Printer.Print($"byDiscriminatorPath: {byDiscriminatorPath}");
+                    //Printer.Print($"Permission (me): {me}");
+                    Printer.WriteLine($"Permission:");
+                    new[] { me }.Print(PrintMode.Table);
+                    Printer.WriteLine($"Function: {function.Name}");
+                    Printer.WriteLine($"Discriminadores:");
+                    discriminators.Print(PrintMode.Table);
+                    //Printer.Foreach($"Discriminadores:", discriminators, dis => Printer.Print($"{dis.TypeName} - {dis.Name}"));
                 });
+                if (me.MatchByFunction(function))
+                {
+                    if (me.MatchByDiscriminatorsType(discriminators))
+                    {
+                        if (me.MatchByDiscriminatorsInclusionsAndExclusions(discriminators))
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            Printer.WriteLine($"Falló el matching al comprobar los inclusiones/exclusiones del discriminador");
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        Printer.WriteLine($"Falló el matching al comprobar el tipo de discriminador");
+                        return false;
+                    }
+                }
+                else
+                {
+                    Printer.WriteLine($"Falló el matching al comprobar la función");
+                    return false;
+                }
+                //var byFunction = me.MatchByFunction(function);
+                //var byDiscriminator = me.MatchByDiscriminatorsType(discriminators);
+                //var byDiscriminatorPath = me.MatchByDiscriminatorsPath(discriminators);
+                //res = byFunction && byDiscriminator && byDiscriminatorPath;
+                //Printer.WriteLine($"Resultado del matching => byFunction<{byFunction}> && byDiscriminator<{byDiscriminator}> && byDiscriminatorPath<{byDiscriminatorPath}>: {res}");
             });
-            return res;
+            //return res;
         }
-        public static bool MatchByFunction(this IPermission me, IFunction function)
+        internal static bool MatchByFunction(this IPermission me, IFunction function)
         {
-            bool res = false;
-            Printer.Ident("MatchByFunction ...", () =>
+            return Printer.Ident($"{nameof(PermissionExtensions)}.{nameof(MatchByFunction)}:", () =>
             {
-                Printer.Print($"Permiso: {me.Value}");
-                Printer.Print($"Mi función: {me.Function.Id}");
-                Printer.Print($"Función objetivo: {function.Id}");
-                Printer.Print($"Mis inclusiones: {me.Function.GetAllInclusions().Aggregate("", (a, s) => a + " - " + s.Id)}");
+                Printer.Ident("Input parameters", () =>
+                {
+                    Printer.WriteLine($"Permission:");
+                    new[] { me }.Print(PrintMode.Table);
+                    Printer.WriteLine($"Function: {function.Name}");
+                });
+                Printer.WriteLine($"Inclusiones: {me.Function.GetAllInclusions().Aggregate("", (a, s) => a + " - " + s.Id, a => a.Trim(' ','-'))}");
+                Printer.WriteLine($"Exclusiones: {me.Function.GetAllExclusions().Aggregate("", (a, s) => a + " - " + s.Id, a => a.Trim(' ', '-'))}");
                 var comparer = new FunctionEqualityComparer();
                 // Si es la misma función, TRUE.
                 var byFunc = comparer.Equals(me.Function, function);
                 // Si soy un permiso de concesión y la funcion esta incluida, TRUE.
                 // Ejemplo: Soy un permiso que concede edición y la funcion que me piden es de lectura
                 //          la edición implica/incluye la lectura, pro lo tanto, encaja.
-                var byInclusion = me.Value && function.GetAllInclusions().Contains(function, comparer);
+                var byInclusion = me.Value && me.Function.GetAllInclusions().Contains(function, comparer);
                 // Si soy un permiso de denegacion y la funcion esta excluida, TRUE.
                 // Ejemplo: Soy un permiso que deniega la lectura y la funcion que me piden es de edición
                 //          la lectura excluye la edición, si no puedo leer algo tampoco podré editarlo
                 //          por lo tanto es permiso encaja.
-                var byExclusion = !me.Value && function.GetAllExclusions().Contains(function, comparer);
-                res = byFunc || byInclusion || byExclusion;
-                Printer.Print($"         Resultado: {res}");
-                Printer.Print($"            byFunc: {byFunc}");
-                Printer.Print($"            byInclusion: {byInclusion}");
-                Printer.Print($"            byExclusion: {byExclusion}");
+                var byExclusion = !me.Value && me.Function.GetAllExclusions().Contains(function, comparer);
+                var res = byFunc || byInclusion || byExclusion;
+                Printer.WriteLine($"Resultado => byFunc<{byFunc}> || byInclusion<{byInclusion}> || byExclusion<{byExclusion}>: {res}");
                 // El permiso nos dará la función por cualquiera de los trés métodos.
+                return res;
             });
-            return res;
         }
-        public static bool MatchByDiscriminatorsType(this IPermission me, IEnumerable<IDiscriminator> discriminators)
+        internal static bool MatchByDiscriminatorsType(this IPermission me, IEnumerable<IDiscriminator> discriminators)
         {
             #region Notes
             // Tenemos que comprobar que todos los tipos de discriminadores que me han pasado estan presentes en este permiso, es decir
@@ -139,82 +162,123 @@ namespace Fuxion.Identity
             //                      en una determianda localización, no puedo afirmar que tenga el permiso en un departamento dado.
             //                      
             #endregion
-            bool res = false;
-            Printer.Ident("MatchByDiscriminatorsType ...", () =>
+            return Printer.Ident($"{nameof(PermissionExtensions)}.{nameof(MatchByDiscriminatorsType)}:", () =>
             {
-                Printer.Print($"Tengo {me.Scopes.Count()} scopes");
-                // Si no tiene ninguno de los tipos, no encaja.
-                res = me.Scopes.All(s => discriminators.Select(d => d.TypeId).Contains(s.Discriminator.TypeId));
-                Printer.Print($"Resultado: {res}");
-            });
-            return res;
-        }
-        public static bool MatchByDiscriminatorsPath(this IPermission me, IEnumerable<IDiscriminator> discriminators)
-        {
-            bool res = false;
-            Printer.Ident("MatchByDiscriminatorsPath ...", () => { 
-
-            
-            Printer.Print($"         Tengo {me.Scopes.Count()} scopes");
-                if (!me.Scopes.Any())
+                Printer.Ident("Input parameters", () =>
                 {
-                    Printer.Print($"         No tengo scopes");
+                    //Printer.Print($"Permission (me): {me}");
+                    Printer.WriteLine("Permission:");
+                    new[] { me }.Print(PrintMode.Table);
+                    //Printer.Foreach($"Discriminadores:", discriminators, dis => Printer.Print($"{dis.TypeName} - {dis.Name}"));
+                    Printer.WriteLine("Discriminators:");
+                    discriminators.Print(PrintMode.Table);
+                });
+                bool res = false;
+                // Si no tiene ninguno de los tipos, no encaja.
+                Printer.WriteLine("Or my permission haven't scopes or some of these scopes match by discriminator type with any of given scopes.");
+                if (me.Scopes.Count() == 0)
+                {
+                    Printer.WriteLine($"Este permiso no tiene ningun scope");
                     res = true;
                 }
-                else {
-                    // Tenemos que tomar nuestros discriminadores, y comprobarlos contra los discriminadores que me han pasado
-                    // - Cojo un discriminador y busco el discriminador del mismo tipo en la entrada:
-                    //    - No hay un discriminador del mismo tipo, pues no encaja
-                    //    - Si hay un discriminador del mismo tipo, compruebo la ruta
-                    foreach (var sco in me.Scopes)
+                else
+                {
+                    var scos = me.Scopes.Where(s => discriminators.Select(d => d.TypeId).Contains(s.Discriminator.TypeId));
+                    Printer.WriteLine($"Este permiso tiene '{scos.Count()}' scopes para los tipos de los discriminadores dados");
+                    res = true;
+                }
+                //res = me.Scopes.Count() == 0 || me.Scopes.Any(s => discriminators.Select(d => d.TypeId).Contains(s.Discriminator.TypeId));
+                Printer.WriteLine($"Result: {res}");
+                return res;
+            });
+        }
+        internal static bool MatchByDiscriminatorsInclusionsAndExclusions(this IPermission me, IEnumerable<IDiscriminator> discriminators)
+        {
+            //return Printer.Ident($"{nameof(PermissionExtensions)}.{nameof(MatchByDiscriminatorsPath)}:", () => {
+            return Printer.Ident($"{typeof(PermissionExtensions).GetTypeInfo().DeclaredMethods.FirstOrDefault(m=>m.Name == nameof(MatchByDiscriminatorsInclusionsAndExclusions)).GetSignature()}:", () => {
+                Printer.Ident("Input parameters", () =>
+                {
+                    //Printer.Print($"Permission (me): {me}");
+                    Printer.WriteLine("Permission:");
+                    new[] { me }.Print(PrintMode.Table);
+                    //Printer.Foreach($"Discriminadores:", discriminators, dis => Printer.Print($"{dis.TypeName} - {dis.Name}"));
+                    Printer.WriteLine("Discriminadores:");
+                    discriminators.Print(PrintMode.Table);
+                });
+                //Printer.Foreach($"Permission scopes ({me.Scopes.Count()}):", me.Scopes, sco => Printer.Print(sco.ToString()));
+                if (!me.Scopes.Any())
+                {
+                    
+                    Printer.WriteLine($"Resultado: TRUE - No tengo scopes");
+                    return true;
+                }
+                else
+                {
+                    return Printer.Ident("Analizamos cada scope:", () =>
                     {
-                        Printer.Print($"            Scope {sco}");
-                        if (discriminators.Count(d => Comparer.AreEquals(d.TypeId, sco.Discriminator.TypeId)) == 1)
-                        {
-                            // Si hay un discriminador del mismo tipo, compruebo la ruta
-                            var target = discriminators.Single(d => Comparer.AreEquals(d.TypeId, sco.Discriminator.TypeId));
-                            Printer.Print($"               Se propaga a mi {sco.Propagation.HasFlag(ScopePropagation.ToMe)} ids = {target.Id}-{sco.Discriminator.Id}");
-                            // Se propaga a mi y es el mismo discriminador
-                            if (sco.Propagation.HasFlag(ScopePropagation.ToMe) && Comparer.AreEquals(target.Id, sco.Discriminator.Id))
+                        // Tenemos que tomar nuestros discriminadores, y comprobarlos contra los discriminadores que me han pasado
+                        // - Cojo un discriminador y busco el discriminador del mismo tipo en la entrada:
+                        //    - No hay un discriminador del mismo tipo, pues no encaja
+                        //    - Si hay un discriminador del mismo tipo, compruebo la ruta
+                        return me.Scopes.Any(sco=> {
+                            Printer.WriteLine($"Scope {sco}");
+                            Printer.IdentationLevel++;
+                            if (discriminators.Count(d => Comparer.AreEquals(d.TypeId, sco.Discriminator.TypeId)) == 1)
                             {
-                                Printer.Print($"               Se propaga a mi y es el mismo discriminador");
-                                res = true;
-                                break;
+                                // Si hay un discriminador del mismo tipo, compruebo la ruta
+                                var target = discriminators.Single(d => Comparer.AreEquals(d.TypeId, sco.Discriminator.TypeId));
+                                Printer.WriteLine($"Se propaga a mi {sco.Propagation.HasFlag(ScopePropagation.ToMe)} ids = {target.Id}-{sco.Discriminator.Id}");
+                                // Se propaga a mi y es el mismo discriminador
+                                if (sco.Propagation.HasFlag(ScopePropagation.ToMe) && Comparer.AreEquals(target.Id, sco.Discriminator.Id))
+                                {
+                                    Printer.WriteLine($"Se propaga a mi y es el mismo discriminador");
+                                    return true;
+                                }
+                                // Se propaga hacia arriba y su id esta en mi path:
+                                //if (sco.Propagation.HasFlag(ScopePropagation.ToExclusions) && sco.Discriminator.Path.Contains(target.Id)) return true;
+                                if (sco.Propagation.HasFlag(ScopePropagation.ToExclusions) && sco.Discriminator.GetAllExclusions().Contains(target))
+                                {
+                                    Printer.WriteLine($"Se propaga hacia arriba y su id esta en mi path");
+                                    return true;
+                                }
+                                // Se propaga hacia abajo y mi id esta en su path:
+                                //if (sco.Propagation.HasFlag(ScopePropagation.ToInclusions) && target.Path.Contains(sco.Discriminator.Id)) return true;
+                                if (sco.Propagation.HasFlag(ScopePropagation.ToInclusions) && sco.Discriminator.GetAllInclusions().Contains(target))
+                                {
+                                    Printer.WriteLine($"Se propaga hacia abajo y mi id esta en su path");
+                                    return true;
+                                }
+                                Printer.IdentationLevel--;
+                                return false;
                             }
-                            // Se propaga hacia arriba y su id esta en mi path:
-                            //if (sco.Propagation.HasFlag(ScopePropagation.ToExclusions) && sco.Discriminator.Path.Contains(target.Id)) return true;
-                            if (sco.Propagation.HasFlag(ScopePropagation.ToExclusions) && sco.Discriminator.Exclusions.Contains(target))
+                            else
                             {
-                                Printer.Print($"               Se propaga hacia arriba y su id esta en mi path");
-                                res = true;
-                                break;
+                                // No hay un discriminador del mismo tipo, pues no encaja
+                                Printer.WriteLine($"No hay un discriminador del mismo tipo");
+                                Printer.IdentationLevel--;
+                                return true;
                             }
-                            // Se propaga hacia abajo y mi id esta en su path:
-                            //if (sco.Propagation.HasFlag(ScopePropagation.ToInclusions) && target.Path.Contains(sco.Discriminator.Id)) return true;
-                            if (sco.Propagation.HasFlag(ScopePropagation.ToInclusions) && sco.Discriminator.Inclusions.Contains(target))
-                            {
-                                Printer.Print($"               Se propaga hacia abajo y mi id esta en su path");
-                                res = true;
-                                break;
-                            }
-                        }
-                        else
-                        {
-                            // No hay un discriminador del mismo tipo, pues no encaja
-                            Printer.Print($"               No hay un discriminador del mismo tipo");
-                            res = false;
-                            break;
-                        }
-                    }
+                        });
+                    });
                 }
             });
-            return res;
+        }
+        public static string ToOneLineString(this IPermission me)
+        {
+            return $"{me.Value} - {me.Function.Name} - {me.Scopes.Count()}";
         }
         public static void Print(this IEnumerable<IPermission> me, PrintMode mode)
         {
             switch (mode)
             {
                 case PrintMode.OneLine:
+                    foreach (var per in me)
+                    {
+                        Printer.WriteLine(per.Function.Name.PadRight(8, ' ') + " , v:" +
+                            per.Value + "".PadRight(per.Value ? 1 : 0, ' ') + " , ss:[" +
+                            per.Scopes.Aggregate("", (str, actual) => str + actual + ",", str => str.Trim(',')) +
+                            "]");
+                    }
                     break;
                 case PrintMode.PropertyList:
                     break;
@@ -225,11 +289,11 @@ namespace Fuxion.Identity
                     var nameLength = new[] { "NAME".Length }.Concat(me.SelectMany(p => p.Scopes.Select(s => s.Discriminator.Name.Length))).Max();
                     var propagationLength = new[] { "PROPAGATION".Length }.Concat(me.SelectMany(p => p.Scopes.Select(s => s.Propagation.ToString().Length))).Max();
 
-                    Printer.Print("┌" + ("".PadRight(valueLength, '─')) + "┬" + ("".PadRight(functionLength, '─')) + "┬" + ("".PadRight(typeLength, '─')) + "┬" + ("".PadRight(nameLength, '─')) + "┬" + ("".PadRight(propagationLength, '─')) + "┐");
+                    Printer.WriteLine("┌" + ("".PadRight(valueLength, '─')) + "┬" + ("".PadRight(functionLength, '─')) + "┬" + ("".PadRight(typeLength, '─')) + "┬" + ("".PadRight(nameLength, '─')) + "┬" + ("".PadRight(propagationLength, '─')) + "┐");
                     if (me.Any())
                     {
-                        Printer.Print("│" + ("VALUE".PadRight(valueLength, ' ')) + "│" + ("FUNCTION".PadRight(functionLength, ' ')) + "│" + ("TYPE".PadRight(typeLength, ' ')) + "│" + ("NAME".PadRight(nameLength, ' ')) + "│" + ("PROPAGATION".PadRight(propagationLength, ' ')) + "│");
-                        Printer.Print("├" + ("".PadRight(valueLength, '─')) + "┼" + ("".PadRight(functionLength, '─')) + "┼" + ("".PadRight(typeLength, '─')) + "┼" + ("".PadRight(nameLength, '─')) + "┼" + ("".PadRight(propagationLength, '─')) + "┤");
+                        Printer.WriteLine("│" + ("VALUE".PadRight(valueLength, ' ')) + "│" + ("FUNCTION".PadRight(functionLength, ' ')) + "│" + ("TYPE".PadRight(typeLength, ' ')) + "│" + ("NAME".PadRight(nameLength, ' ')) + "│" + ("PROPAGATION".PadRight(propagationLength, ' ')) + "│");
+                        Printer.WriteLine("├" + ("".PadRight(valueLength, '─')) + "┼" + ("".PadRight(functionLength, '─')) + "┼" + ("".PadRight(typeLength, '─')) + "┼" + ("".PadRight(nameLength, '─')) + "┼" + ("".PadRight(propagationLength, '─')) + "┤");
                     }
 
                     foreach(var per in me)
@@ -237,7 +301,7 @@ namespace Fuxion.Identity
                         var list = per.Scopes.ToList();
                         if (list.Count == 0)
                         {
-                            Printer.Print("│" +
+                            Printer.WriteLine("│" +
                                     per.Value.ToString().PadRight(valueLength, ' ') + "│" +
                                     per.Function.Name.PadRight(functionLength, ' ') + "│" +
                                     ("".PadRight(typeLength, ' ')) + "│" +
@@ -247,7 +311,7 @@ namespace Fuxion.Identity
                         else {
                             for (int i = 0; i < list.Count; i++)
                             {
-                                Printer.Print("│" +
+                                Printer.WriteLine("│" +
                                     ((i == 0 ? per.Value.ToString() : "").PadRight(valueLength, ' ')) + "│" +
                                     ((i == 0 ? per.Function.Name : "").PadRight(functionLength, ' ')) + "│" +
                                     (list[i].Discriminator.TypeName.PadRight(typeLength, ' ')) + "│" +
@@ -256,7 +320,7 @@ namespace Fuxion.Identity
                             }
                         }
                     }
-                    Printer.Print("└" + ("".PadRight(valueLength, '─')) + "┴" + ("".PadRight(functionLength, '─')) + "┴" + ("".PadRight(typeLength, '─')) + "┴" + ("".PadRight(nameLength, '─')) + "┴" + ("".PadRight(propagationLength, '─')) + "┘");
+                    Printer.WriteLine("└" + ("".PadRight(valueLength, '─')) + "┴" + ("".PadRight(functionLength, '─')) + "┴" + ("".PadRight(typeLength, '─')) + "┴" + ("".PadRight(nameLength, '─')) + "┴" + ("".PadRight(propagationLength, '─')) + "┘");
                     break;
             }
         }
