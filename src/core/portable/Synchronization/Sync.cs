@@ -14,6 +14,7 @@ namespace Fuxion.Synchronization
 {
     public static class SyncExtensions
     {
+        sdaflklñsjadklñj
         public static Type GetItemType(this ISyncSide me)
         {
             return me.GetType().GetTypeInfo().GenericTypeArguments[1];
