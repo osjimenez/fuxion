@@ -105,6 +105,7 @@ public class BuildTask : Microsoft.Build.Utilities.Task
                         }
                     }
                 );
+                Log.LogWarning("Running NuGet: " + psi.FileName + " " + psi.Arguments);
                 proc.Start();
                 proc.WaitForExit();
                 if (proc.ExitCode != 0)
