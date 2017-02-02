@@ -111,7 +111,7 @@ public class BuildTask : Microsoft.Build.Utilities.Task
                 if (proc.ExitCode != 0)
                     Log.LogError("NuGet exit code: " + proc.ExitCode);
             }
-            File.Delete(nuspecTempPath);
+            //File.Delete(nuspecTempPath);
         }
     }
     private Version GetVersion()
