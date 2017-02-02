@@ -56,7 +56,8 @@ public class BuildTask : Microsoft.Build.Utilities.Task
                 .Replace("###year###", DateTime.Now.Year.ToString())
                 .Replace("###version###", semanticVersion));
 
-            var nugetDefaultOutputPath = @"bin\Nuget";
+            //var nugetDefaultOutputPath = @"bin\Nuget";
+            var nugetDefaultOutputPath = Path.Combine(Path.GetDirectoryName(projectFile), @"bin\Nuget");
             var nugetOutputPaths = new List<string>();
             if (File.Exists(nugetDefaultOutputPath))
             {
@@ -111,7 +112,7 @@ public class BuildTask : Microsoft.Build.Utilities.Task
                 if (proc.ExitCode != 0)
                     Log.LogError("NuGet exit code: " + proc.ExitCode);
             }
-            //File.Delete(nuspecTempPath);
+            File.Delete(nuspecTempPath);
         }
     }
     private Version GetVersion()
