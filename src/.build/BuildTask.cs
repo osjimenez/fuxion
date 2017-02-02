@@ -11,19 +11,15 @@ public class BuildTask : Microsoft.Build.Utilities.Task
 {
     public override bool Execute()
     {
-        
         switch (TargetName)
         {
             case "BeforeBuild":
-                BeforeBuild();
-                break;
+                return BeforeBuild();
             case "AfterBuild":
-                AfterBuild();
-                break;
+                return AfterBuild();
             default:
-                break;
+                return true;
         }
-        return true;
     }
     [Required]
     public string TargetName { get; set; }
@@ -31,7 +27,7 @@ public class BuildTask : Microsoft.Build.Utilities.Task
     //public string VersionFile { get; set; }
     [Required]
     public string NugetPath { get; set; }
-    private void BeforeBuild()
+    private bool BeforeBuild()
     {
         var version = GetVersion();
         var path = Path.Combine(Path.GetDirectoryName(BuildEngine.ProjectFileOfTaskNode), @"Properties\AssemblyInfo.cs");
@@ -42,8 +38,10 @@ public class BuildTask : Microsoft.Build.Utilities.Task
             setFile(GetAssemblyFileVersionSentence(version));
         if (!SearchAndSet(version, path, assemblyInformationalVersionRegex, GetAssemblyInformationalVersionSentence))
             setFile(GetAssemblyInformationalVersionSentence(version));
+
+        return true;
     }
-    private void AfterBuild()
+    private bool AfterBuild()
     {
         var projectFile = BuildEngine.ProjectFileOfTaskNode;
         var nugetPath = Path.Combine(Path.GetDirectoryName(projectFile), NugetPath);
@@ -98,22 +96,21 @@ public class BuildTask : Microsoft.Build.Utilities.Task
                 proc.StartInfo = psi;
                 proc.OutputDataReceived += new DataReceivedEventHandler
                 (
-                    delegate (object sender, DataReceivedEventArgs e)
+                    (sender, e) =>
                     {
-                        using (StreamReader output = proc.StandardOutput)
-                        {
-                            Log.LogWarning("NuGet output: " + output.ReadToEnd());
-                        }
+                        BuildEngine.LogMessageEvent(new BuildMessageEventArgs("NUGET => "+e.Data, "", "", MessageImportance.High));
                     }
                 );
-                Log.LogWarning("Running NuGet: " + psi.FileName + " " + psi.Arguments);
+                BuildEngine.LogMessageEvent(new BuildMessageEventArgs("NUGET => Starting process: " + psi.FileName + " " + psi.Arguments, "", "", MessageImportance.High));
                 proc.Start();
+                proc.BeginOutputReadLine();
                 proc.WaitForExit();
                 if (proc.ExitCode != 0)
                     Log.LogError("NuGet exit code: " + proc.ExitCode);
             }
             File.Delete(nuspecTempPath);
         }
+        return !Log.HasLoggedErrors;
     }
     private Version GetVersion()
     {
