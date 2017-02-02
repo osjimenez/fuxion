@@ -1,12 +1,12 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using PCLCrypto;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PCLCrypto;
 using static PCLCrypto.WinRTCrypto;
 namespace Fuxion.Licensing
 {

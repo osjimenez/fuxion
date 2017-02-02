@@ -29,13 +29,13 @@ namespace Fuxion.Web
         }
 
         #region Common methods
-        internal FlurlClient GetClient(Url pathSegment = null, bool anonymous = false, bool useBaseUrl = true)
+        internal IFlurlClient GetClient(Url pathSegment = null, bool anonymous = false, bool useBaseUrl = true)
         {
             var url = useBaseUrl ? BaseUrl
                 .AppendPathSegment(API_SEGMENT)
                 .AppendPathSegment(pathSegment.Path)
                 .SetQueryParams(pathSegment.QueryParams) : pathSegment;
-            FlurlClient client = new FlurlClient(url);
+            IFlurlClient client = new FlurlClient(url);
             foreach (var hea in Headers)
                 client = client.WithHeader(hea.Key, hea.Value);
             //var client = url

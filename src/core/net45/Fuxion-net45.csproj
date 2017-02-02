@@ -97,7 +97,7 @@
   </Target>
   -->
   <PropertyGroup>
-    <FuxionTasksPath>$(SolutionDir).build\</FuxionTasksPath>
+    <FuxionTasksPath>$(SolutionDir)\.build\</FuxionTasksPath>
   </PropertyGroup>
   <Import Project="$(FuxionTasksPath)Fuxion.Build.Targets" />
   <Target Name="BeforeBuild" Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">

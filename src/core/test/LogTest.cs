@@ -1,6 +1,5 @@
 ﻿using Fuxion.Factories;
 using Fuxion.Logging;
-using Moq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -18,12 +17,8 @@ namespace Fuxion.Test
         [Fact]
         public void Demo()
         {
-            var fac = new Mock<ILogFactory>();
             Factory.AddInjector(new FunctionInjector<ILogFactory>(() => new Log4netFactory()));
-
-
             Factory.AddInjector(new FunctionInjector<IDemo>(() => new Demo()));
-
             var demo = Factory.Get<IDemo>();
             var log = LogManager.Create<LogTest>();
             Debug.WriteLine("");

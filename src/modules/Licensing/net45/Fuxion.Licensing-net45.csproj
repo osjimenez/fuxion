@@ -48,6 +48,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="Fuxion.Licensing-net45.nuspec" />
     <None Include="Fuxion.Licensing.version" />
     <None Include="packages.config" />

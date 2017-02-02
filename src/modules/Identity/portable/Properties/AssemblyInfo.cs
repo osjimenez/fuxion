@@ -26,6 +26,6 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: InternalsVisibleTo("Fuxion.Identity.Test")]
-[assembly: AssemblyVersion("0.0.1.32")]
-[assembly: AssemblyFileVersion("0.0.1.32")]
-[assembly: AssemblyInformationalVersion("0.0.1-alpha032")]
+[assembly: AssemblyVersion("0.0.1.33")]
+[assembly: AssemblyFileVersion("0.0.1.33")]
+[assembly: AssemblyInformationalVersion("0.0.1-alpha033")]
