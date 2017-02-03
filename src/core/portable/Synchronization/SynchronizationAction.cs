@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Synchronization
 {
-    public enum SyncAction
+    public enum SynchronizationAction
     {
         None = 0,
-        Add,
+        Insert,
         Delete,
         Update
     }

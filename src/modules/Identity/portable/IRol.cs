@@ -144,9 +144,9 @@ namespace Fuxion.Identity
         //}
         internal static Expression<Func<TEntity, bool>> FilterExpression<TEntity>(this IRol me, IFunction[] functions)
         {
-            return Printer.Ident($"{typeof(RolExtensions).GetTypeInfo().DeclaredMethods.FirstOrDefault(m => m.Name == nameof(FilterExpression)).GetSignature()}:", () =>
+            return Printer.Indent($"{typeof(RolExtensions).GetTypeInfo().DeclaredMethods.FirstOrDefault(m => m.Name == nameof(FilterExpression)).GetSignature()}:", () =>
             {
-                Printer.Ident("Input parameters:", () =>
+                Printer.Indent("Input parameters:", () =>
                 {
                     Printer.WriteLine("Rol:");
                     new[] { me }.Print(PrintMode.Table);
@@ -238,11 +238,11 @@ namespace Fuxion.Identity
                 Printer.Foreach("Deny permissions:", pers.Where(p => !p.Value), per =>
                 {
                     Expression<Func<TEntity, bool>> perExp = null;
-                    Printer.Ident($"Permission: {per}", () =>
+                    Printer.Indent($"Permission: {per}", () =>
                     {
                         Printer.Foreach("Scopes:", per.Scopes, sco =>
                         {
-                            Printer.Ident($"Scope: {sco}", () =>
+                            Printer.Indent($"Scope: {sco}", () =>
                             {
                                 // Recorro las propiedades que son del tipo de este discriminador
                                 foreach (var pro in props.Where(p => p.DiscriminatorTypeId.Equals(sco.Discriminator.TypeId)).ToList())
@@ -274,12 +274,12 @@ namespace Fuxion.Identity
                 Printer.Foreach("Grant permissions:", pers.Where(p => p.Value), per =>
                 {
                     
-                    Printer.Ident($"Permission: Value<{per.Value}> - Function<{per.Function.Name}> - Scopes<{per.Scopes.Count()}>", () =>
+                    Printer.Indent($"Permission: Value<{per.Value}> - Function<{per.Function.Name}> - Scopes<{per.Scopes.Count()}>", () =>
                     {
                         Expression<Func<TEntity, bool>> perExp = null;
                         Printer.Foreach("Scopes:", per.Scopes, sco =>
                         {
-                            Printer.Ident($"Scope: Discriminator<{sco.Discriminator.Name}({sco.Discriminator.Id})> - Propagation<{sco.Propagation}>", () =>
+                            Printer.Indent($"Scope: Discriminator<{sco.Discriminator.Name}({sco.Discriminator.Id})> - Propagation<{sco.Propagation}>", () =>
                             {
                                 // Recorro las propiedades que son del tipo de este discriminador
                                 foreach (var pro in props.Where(p => p.DiscriminatorTypeId.Equals(sco.Discriminator.TypeId)).ToList())
@@ -611,7 +611,7 @@ namespace Fuxion.Identity
         }
         private static void PrintBinaryExpression(BinaryExpression exp)
         {
-            Printer.Ident("(", () =>
+            Printer.Indent("(", () =>
             {
                 PrintExpression(exp.Left);
                 if (Printer.IsLineWritePending) Printer.WriteLine("");
@@ -713,9 +713,9 @@ namespace Fuxion.Identity
         private static IPermission[] SearchForDeniedPermissions(this IRol me, IFunction function, IDiscriminator[] discriminators)//, Action<string, bool> console)
         {
             //Action<string, bool> con = (m, i) => { console?.Invoke(m, i); };
-            return Printer.Ident($"SearchForDeniedPermissions:", () =>
+            return Printer.Indent($"SearchForDeniedPermissions:", () =>
             {
-                Printer.Ident("Input parameters", () =>
+                Printer.Indent("Input parameters", () =>
                 {
                     Printer.WriteLine($"Rol: {me.Name}");
                     Printer.WriteLine($"Function: {function.Name}");

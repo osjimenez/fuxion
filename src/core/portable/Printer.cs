@@ -9,8 +9,9 @@ namespace Fuxion
 {
     public class Printer
     {
-        public static int IdentationLevel { get; set; }
-        public static int IdentationStep { get; set; } = 3;
+        public static bool Enabled { get; set; } = true;
+        public static int IndentationLevel { get; set; }
+        public static int IndentationStep { get; set; } = 3;
         public static Action<string> WriteLineAction { get; set; } = m => Debug.WriteLine(m);
         static List<string> lineMessages = new List<string>();
         public static bool IsLineWritePending { get { lock (lineMessages) { return lineMessages.Any(); } } }
@@ -27,42 +28,78 @@ namespace Fuxion
             if (!Enabled) return;
             lock (lineMessages)
             {
-                WriteLineAction("".PadRight(IdentationLevel * IdentationStep) + string.Concat(lineMessages) + message);
+                WriteLineAction("".PadRight(IndentationLevel * IndentationStep) + string.Concat(lineMessages) + message);
                 lineMessages.Clear();
             }
         }
-        public static void Ident(Action action)
+        #region Indent
+        public static void Indent(Action action)
         {
-            IdentationLevel++;
+            IndentationLevel++;
             action();
-            if(IdentationLevel > 0) IdentationLevel--;
+            if(IndentationLevel > 0) IndentationLevel--;
         }
-        public static void Ident(string message, Action action)
+        public static void Indent(string message, Action action)
         {
             WriteLine(message);
-            Ident(action);
+            Indent(action);
         }
-        public static T Ident<T>(Func<T> func)
+        public static T Indent<T>(Func<T> func)
         {
-            IdentationLevel++;
+            IndentationLevel++;
             var res = func();
-            if (IdentationLevel > 0) IdentationLevel--;
+            if (IndentationLevel > 0) IndentationLevel--;
             return res;
         }
-        public static T Ident<T>(string message, Func<T> func)
+        public static T Indent<T>(string message, Func<T> func)
         {
             WriteLine(message);
-            return Ident(func);
+            return Indent(func);
         }
+
+        public static async Task IndentAsync(Func<Task> func)
+        {
+            IndentationLevel++;
+            await func();
+            if (IndentationLevel > 0) IndentationLevel--;
+        }
+        public static Task IndentAsync(string message, Func<Task> func)
+        {
+            WriteLine(message);
+            return IndentAsync(func);
+        }
+        public static async Task<T> IndentAsync<T>(Func<Task<T>> func)
+        {
+            IndentationLevel++;
+            var res = await func();
+            if (IndentationLevel > 0) IndentationLevel--;
+            return res;
+        }
+        public static Task<T> IndentAsync<T>(string message, Func<Task<T>> func)
+        {
+            WriteLine(message);
+            return IndentAsync(func);
+        }
+        #endregion
+        #region Foreach
         public static void Foreach<T>(string message, IEnumerable<T> items, Action<T> action)
         {
             WriteLine(message);
-            Ident(() =>
+            Indent(() =>
             {
                 foreach (var item in items)
                     action(item);
             });
         }
-        public static bool Enabled { get; set; } = true;
+        public static Task ForeachAsync<T>(string message, IEnumerable<T> items, Func<T, Task> action)
+        {
+            WriteLine(message);
+            return Indent(async () =>
+            {
+                foreach (var item in items)
+                    await action(item);
+            });
+        }
+        #endregion
     }
 }

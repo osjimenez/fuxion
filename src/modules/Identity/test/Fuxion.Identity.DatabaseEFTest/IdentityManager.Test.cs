@@ -45,7 +45,7 @@ namespace Fuxion.Identity.DatabaseEFTest
         {
             foreach (var scenario in scenarios.Split('·'))
             {
-                Printer.Ident($"Scenario = { scenario}", () =>
+                Printer.Indent($"Scenario = { scenario}", () =>
                 {
                     Load(scenario);
                     var im = Factory.Get<IdentityManager>();
@@ -87,13 +87,13 @@ namespace Fuxion.Identity.DatabaseEFTest
             Printer.WriteLine("");
             foreach (var scenario in scenarios.Split('·'))
             {
-                Printer.Ident($"Scenario = { scenario}", () =>
+                Printer.Indent($"Scenario = { scenario}", () =>
                 {
                     Load(scenario);
                     var im = Factory.Get<IdentityManager>();
                     var functions = functionsIds.Select(id => GetById(id)).ToArray();
                     Assert.True(im.CheckCredentials(username, password), $"Login fail unexpected: username<{username}> password<{password}>");
-                    Printer.Ident("Parameters:", () =>
+                    Printer.Indent("Parameters:", () =>
                     {
                         Printer.WriteLine($"Username: {username}");
                         Printer.WriteLine($"Functions: {functions.Aggregate("", (a, c) => a + c.Name + "·")}");
@@ -147,7 +147,7 @@ namespace Fuxion.Identity.DatabaseEFTest
             //Assert.True(false, "Require revision after change all context design");
             foreach (var scenario in scenarios.Split('·'))
             {
-                Printer.Ident($"Scenario = { scenario}", () =>
+                Printer.Indent($"Scenario = { scenario}", () =>
                 {
                     Load(scenario);
                     var im = Factory.Get<IdentityManager>();

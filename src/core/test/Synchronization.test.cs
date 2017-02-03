@@ -14,91 +14,92 @@ using System.Xml.Linq;
 
 namespace Fuxion.Test
 {
-    public class SynchronizationTest
+    public class SynchronizationTest : BaseTest
     {
-        public SynchronizationTest(ITestOutputHelper output)
+        public SynchronizationTest(ITestOutputHelper output) : base(output) { }
+        [Fact(DisplayName = "Synchronization - Demo")]
+        public void Demo()
         {
-            this.output = output;
-            Printer.WriteLineAction = m => output.WriteLine(m);
-        }
-        ITestOutputHelper output;
-        [Fact]
-        public void SyncDemo()
-        {
-            var fdRepo = new RepoFD();
-            var saltoRepo = new RepoSalto();
-            var presenceRepo = new RepoPresence();
-
+            var fdRepo = new RepoFuxion();
+            var saltoRepo = new RepoCRM();
+            var presenceRepo = new RepoERP();
+            var ss = new SynchronizationSession();
             // Create sync session
-            var ses = new SyncSession
+            var ses = new SynchronizationSession
             {
+                Name = "Test",
                 Works = new[]
                 {
-                    new SyncWork
+                    new SynchronizationWork
                     {
-                        Sides = new ISyncSide[] {
-                            new SyncSide<RepoFD, UserFD, int>
+                        Name = "Users",
+                        #region Sides
+                        Sides = new ISynchronizationSide[] {
+                            new SynchronizationSide<RepoFuxion, UserFuxion, int>
                             {
                                 IsMaster = true,
-                                Name = "FOOD-DEFENSE",
+                                Name = "FUXION",
                                 Source = fdRepo,
-                                Loader = s => s.Get().ToList(),
                                 PluralItemTypeName = "Users",
                                 SingularItemTypeName = "User",
-                                Nominator = i => i.Name,
-                                Adder =(s,i) => s.Add(i),
-                                Remover=(s,i)=> s.Delete(i),
-                                Updater=(s,i)=> { }
+
+                                OnLoad = s => s.Get().ToList(),
+                                OnNaming = i => i.Name,
+                                OnInsert =(s,i) => s.Add(i),
+                                OnDelete=(s,i)=> s.Delete(i),
+                                OnUpdate=(s,i)=> { }
                             },
-                            new SyncSide<RepoSalto, UserSalto, int>
+                            new SynchronizationSide<RepoCRM, UserCRM, int>
                             {
                                 //IsMaster = true,
-                                Name = "SALTO",
+                                Name = "CRM",
                                 Source = saltoRepo,
-                                Loader = s => s.Get().ToList(),
+                                OnLoad = s => s.Get().ToList(),
                                 PluralItemTypeName = "Users",
                                 SingularItemTypeName = "User",
-                                Nominator = i => i.Name,
-                                Adder =(s,i) => s.Add(i),
-                                Remover=(s,i)=> s.Delete(i),
-                                Updater=(s,i)=> { }
+                                OnNaming = i => i.Name,
+                                OnInsert =(s,i) => s.Add(i),
+                                OnDelete=(s,i)=> s.Delete(i),
+                                OnUpdate=(s,i)=> { }
                             },
-                            new SyncSide<RepoPresence, UserPresence, int>
+                            new SynchronizationSide<RepoERP, UserERP, int>
                             {
                                 //IsMaster = true,
-                                Name = "PRESENCE",
+                                Name = "ERP",
                                 Source = presenceRepo,
-                                Loader = s => s.Get().ToList(),
+                                OnLoad = s => s.Get().ToList(),
                                 PluralItemTypeName = "Users",
                                 SingularItemTypeName = "User",
-                                Nominator = i => i.Name,
-                                Adder =(s,i) => s.Add(i),
-                                Remover=(s,i)=> s.Delete(i),
-                                Updater=(s,i)=> { }
+                                OnNaming = i => i.Name,
+                                OnInsert =(s,i) => s.Add(i),
+                                OnDelete=(s,i)=> s.Delete(i),
+                                OnUpdate=(s,i)=> { }
                             },
                         },
-                        Comparators = new ISyncComparator[] {
-                            new SyncComparator<UserFD, UserSalto, int>
+                        #endregion
+                        #region Comparators
+                        Comparators = new ISynchronizationComparator[] {
+                            new SynchronizationComparator<UserFuxion, UserCRM, int>
                             {
-                                KeyASelector = u => u.Id,
-                                KeyBSelector = u => u.Id,
-                                MapAToB = (a,b) =>
+                                OnSelectKeyA = u => u.Id,
+                                OnSelectKeyB = u => u.Id,
+                                OnMapAToB = (a,b) =>
                                 {
                                     if(b == null)
-                                        return new UserSalto { Id = a.Id, Name = a.Name, Age = a.Age };
+                                        return new UserCRM { Id = a.Id, Name = a.Name, Age = a.Age };
                                     b.Name = a.Name;
                                     b.Age = a.Age;
                                     return b;
                                 },
-                                MapBToA = (b,a) =>
+                                OnMapBToA = (b,a) =>
                                 {
                                     if(a == null)
-                                        return new UserFD { Id = b.Id, Name = b.Name, Age = b.Age };
+                                        return new UserFuxion { Id = b.Id, Name = b.Name, Age = b.Age };
                                     a.Name = b.Name;
                                     a.Age = b.Age;
                                     return a;
                                 },
-                                Function = (a, b, p) =>
+                                OnCompare = (a, b, p) =>
                                 {
                                     // Compruebo cada propiedad para ver si es igual, si no lo es agrego la propiedad al resultado de la preview
                                     if (a.Name != b.Name)
@@ -107,27 +108,27 @@ namespace Fuxion.Test
                                         p.AddProperty(nameof(a.Age), a.Age, b.Age);
                                 }
                             },
-                            new SyncComparator<UserPresence, UserFD, int>
+                            new SynchronizationComparator<UserERP, UserFuxion, int>
                             {
-                                KeyASelector = u=>u.Id,
-                                KeyBSelector = u=>u.Id,
-                                MapAToB = (a,b) =>
+                                OnSelectKeyA = u=>u.Id,
+                                OnSelectKeyB = u=>u.Id,
+                                OnMapAToB = (a,b) =>
                                 {
                                     if(b == null)
-                                        return new UserFD { Id = a.Id, Name = a.Name, Age = a.Age };
+                                        return new UserFuxion { Id = a.Id, Name = a.Name, Age = a.Age };
                                     b.Name = a.Name;
                                     b.Age = a.Age;
                                     return b;
                                 },
-                                MapBToA = (b,a) =>
+                                OnMapBToA = (b,a) =>
                                 {
                                     if(a == null)
-                                        return new UserPresence { Id = b.Id, Name = b.Name, Age = b.Age };
+                                        return new UserERP { Id = b.Id, Name = b.Name, Age = b.Age };
                                     a.Name = b.Name;
                                     a.Age = b.Age;
                                     return a;
                                 },
-                                Function = (a, b, p) =>
+                                OnCompare = (a, b, p) =>
                                 {
                                     // Compruebo cada propiedad para ver si es igual, si no lo es agrego la propiedad al resultado de la preview
                                     if (a.Name != b.Name)
@@ -136,27 +137,27 @@ namespace Fuxion.Test
                                         p.AddProperty(nameof(a.Age), a.Age, b.Age);
                                 }
                             },
-                            new SyncComparator<UserSalto, UserPresence, int>
+                            new SynchronizationComparator<UserCRM, UserERP, int>
                             {
-                                KeyASelector = u=>u.Id,
-                                KeyBSelector = u=>u.Id,
-                                MapAToB = (a,b) =>
+                                OnSelectKeyA = u=>u.Id,
+                                OnSelectKeyB = u=>u.Id,
+                                OnMapAToB = (a,b) =>
                                 {
                                     if(b == null)
-                                        return new UserPresence { Id = a.Id, Name = a.Name, Age = a.Age };
+                                        return new UserERP { Id = a.Id, Name = a.Name, Age = a.Age };
                                     b.Name = a.Name;
                                     b.Age = a.Age;
                                     return b;
                                 },
-                                MapBToA = (b,a) =>
+                                OnMapBToA = (b,a) =>
                                 {
                                     if(a == null)
-                                        return new UserSalto { Id = b.Id, Name = b.Name, Age = b.Age };
+                                        return new UserCRM { Id = b.Id, Name = b.Name, Age = b.Age };
                                     a.Name = b.Name;
                                     a.Age = b.Age;
                                     return a;
                                 },
-                                Function = (a, b, p) =>
+                                OnCompare = (a, b, p) =>
                                 {
                                     // Compruebo cada propiedad para ver si es igual, si no lo es agrego la propiedad al resultado de la preview
                                     if (a.Name != b.Name)
@@ -166,6 +167,8 @@ namespace Fuxion.Test
                                 }
                             },
                         },
+                        #endregion
+                        #region Subworks
                         //SubWorks = new []
                         //{
                         //    new SyncWork<UserA,UserB,SkillA,SkillB,int>
@@ -183,6 +186,7 @@ namespace Fuxion.Test
                         //        })
                         //    }
                         //}
+                        #endregion
                     }
                 }
             };
@@ -190,45 +194,49 @@ namespace Fuxion.Test
             // Preview synchronization
             var res = ses.PreviewAsync().Result;
 
-            // Print preview results
-            foreach (var work in res.Works)
-            {
-                Printer.WriteLine("Work:");
-                Printer.Ident(() =>
-                {
-                    foreach (var item in work.Items)
-                    {
-                        Printer.WriteLine($"Item '{(item.MasterItemExist ? item.MasterItemName : "null")}' has '{item.Sides.Count()}' sides");
-                        Printer.Ident(() =>
-                        {
-                            foreach (var side in item.Sides)
-                            {
-                                if (side.SideItemExist)
-                                {
-                                    Printer.WriteLine($"{side.Action.ToString().ToUpper()} - In '{side.SideName}' side is named '{side.SideItemName}' with key '{side.Key}' and has '{side.Properties.Count()}' change(s)");
-                                    Printer.Ident(() =>
-                                    {
-                                        foreach (var pro in side.Properties)
-                                        {
-                                            Printer.WriteLine($"Property '{pro.PropertyName}' will be changed from '{pro.SideValue}' to '{pro.MasterValue}'");
-                                        }
-                                    });
-                                }
-                                else Printer.WriteLine($"{side.Action.ToString().ToUpper()} - In '{side.SideName}' side does not exist");
-                            }
-                        });
-                    }
-                });
-            }
+            //// Print preview results
+            //foreach (var work in res.Works)
+            //{
+            //    Printer.WriteLine("Work:");
+            //    Printer.Ident(() =>
+            //    {
+            //        foreach (var item in work.Items)
+            //        {
+            //            Printer.WriteLine($"Item '{(item.MasterItemExist ? item.MasterItemName : "null")}' has '{item.Sides.Count()}' sides");
+            //            Printer.Ident(() =>
+            //            {
+            //                foreach (var side in item.Sides)
+            //                {
+            //                    if (side.SideItemExist)
+            //                    {
+            //                        if(side.SideItemName.StartsWith("Tom"))
+            //                        {
+            //                            side.Action = SynchronizationAction.None;
+            //                        }
+            //                        Printer.WriteLine($"{side.Action.ToString().ToUpper()} - In '{side.SideName}' side is named '{side.SideItemName}' with key '{side.Key}' and has '{side.Properties.Count()}' change(s)");
+            //                        Printer.Ident(() =>
+            //                        {
+            //                            foreach (var pro in side.Properties)
+            //                            {
+            //                                Printer.WriteLine($"Property '{pro.PropertyName}' will be changed from '{pro.SideValue}' to '{pro.MasterValue}'");
+            //                            }
+            //                        });
+            //                    }
+            //                    else Printer.WriteLine($"{side.Action.ToString().ToUpper()} - In '{side.SideName}' side does not exist");
+            //                }
+            //            });
+            //        }
+            //    });
+            //}
 
             // Serialize
-            DataContractSerializer ser = new DataContractSerializer(typeof(SyncSessionPreview));
+            DataContractSerializer ser = new DataContractSerializer(typeof(SynchronizationSessionPreview));
             var str = new MemoryStream();
             ser.WriteObject(str, res);
             str.Position = 0;
 
             // Print as JSON and XML
-            Printer.WriteLine("JSON:\r\n" + res.ToJson());
+            //Printer.WriteLine("JSON:\r\n" + res.ToJson());
 
             XmlDocument doc = new XmlDocument();
             doc.Load(str);
@@ -238,11 +246,11 @@ namespace Fuxion.Test
             doc.WriteContentTo(writer);
             str2.Position = 0;
             var serStr = new StreamReader(str2).ReadToEnd();
-            Printer.WriteLine("XML:\r\n" + serStr);
+            //Printer.WriteLine("XML:\r\n" + serStr);
             str.Position = 0;
 
             // Deserialize
-            var res2 = (SyncSessionPreview)ser.ReadObject(str);
+            var res2 = (SynchronizationSessionPreview)ser.ReadObject(str);
 
             // Run Sync
             ses.RunAsync(res2).Wait();
@@ -274,44 +282,44 @@ namespace Fuxion.Test
     }
     #region Side FD
     [DebuggerDisplay("{" + nameof(Name) + "}")]
-    public class UserFD
+    public class UserFuxion
     {
         public int Id { get; set; }
         public string Name { get; set; }
         public int Age { get; set; }
-        public IEnumerable<SkillFD> Skills { get; set; }
+        public IEnumerable<SkillFuxion> Skills { get; set; }
         public override string ToString() => Name;
     }
-    public class SkillFD
+    public class SkillFuxion
     {
         public int Id { get; set; }
         public string Name { get; set; }
     }
-    public class RepoFD : Repo<UserFD>
+    public class RepoFuxion : Repo<UserFuxion>
     {
-        public RepoFD() : base(new[] {
-                new UserFD
+        public RepoFuxion() : base(new[] {
+                new UserFuxion
                 {
                     Id = 1,
-                    Name = "Modificado Salto-Presence",
+                    Name = "Tom",
                     Age = 30,
                 },
-                new UserFD
+                new UserFuxion
                 {
                     Id = 2,
-                    Name = "Modificado Salto",
+                    Name = "Clark",
                     Age = 24,
                 },
-                new UserFD
+                new UserFuxion
                 {
                     Id = 3,
-                    Name = "Modificado Presence",
+                    Name = "Jerry",
                     Age = 23,
                 },
-                new UserFD
+                new UserFuxion
                 {
                     Id = 4,
-                    Name = "Solo master",
+                    Name = "Bob",
                     Age = 43
                 }
             })
@@ -320,44 +328,44 @@ namespace Fuxion.Test
     #endregion
     #region Side Salto
     [DebuggerDisplay("{" + nameof(Name) + "}")]
-    public class UserSalto
+    public class UserCRM
     {
         public int Id { get; set; }
         public string Name { get; set; }
         public int Age { get; set; }
-        public IEnumerable<SkillSalto> Skills { get; set; }
+        public IEnumerable<SkillCRM> Skills { get; set; }
         public override string ToString() => Name;
     }
-    public class SkillSalto
+    public class SkillCRM
     {
         public int Id { get; set; }
         public string Name { get; set; }
     }
-    public class RepoSalto : Repo<UserSalto>
+    public class RepoCRM : Repo<UserCRM>
     {
-        public RepoSalto() : base(new[] {
-                new UserSalto
+        public RepoCRM() : base(new[] {
+                new UserCRM
                 {
                     Id = 1,
-                    Name = "Modificado Salto-Presence (S)",
+                    Name = "Tom (CRM modified)",
                     Age = 30,
                 },
-                new UserSalto
+                new UserCRM
                 {
                     Id = 2,
-                    Name = "Modificado Salto (S)",
+                    Name = "Clark",
                     Age = 24,
                 },
-                new UserSalto
+                new UserCRM
                 {
                     Id = 3,
-                    Name = "Modificado Presence",
+                    Name = "Jerry",
                     Age = 23,
                 },
-                new UserSalto
+                new UserCRM
                 {
                     Id = 5,
-                    Name = "Solo salto",
+                    Name = "Adam",
                     Age = 46,
                 }
             })
@@ -366,44 +374,44 @@ namespace Fuxion.Test
     #endregion
     #region Side Presence
     [DebuggerDisplay("{" + nameof(Name) + "}")]
-    public class UserPresence
+    public class UserERP
     {
         public int Id { get; set; }
         public string Name { get; set; }
         public int Age { get; set; }
-        public IEnumerable<SkillPresence> Skills { get; set; }
+        public IEnumerable<SkillERP> Skills { get; set; }
         public override string ToString() => Name;
     }
-    public class SkillPresence
+    public class SkillERP
     {
         public int Id { get; set; }
         public string Name { get; set; }
     }
-    public class RepoPresence : Repo<UserPresence>
+    public class RepoERP : Repo<UserERP>
     {
-        public RepoPresence() : base(new[] {
-                new UserPresence
+        public RepoERP() : base(new[] {
+                new UserERP
                 {
                     Id = 1,
-                    Name = "Modificado Salto-Presence (P)",
+                    Name = "Tom",
                     Age = 29,
                 },
-                new UserPresence
+                new UserERP
                 {
                     Id = 2,
-                    Name = "Modificado Salto",
+                    Name = "Clark (ERP modified)",
                     Age = 24
                 },
-                new UserPresence
+                new UserERP
                 {
                     Id = 3,
-                    Name = "Modificado Presence (P)",
+                    Name = "Jerry",
                     Age = 23,
                 },
-                new UserPresence
+                new UserERP
                 {
                     Id = 6,
-                    Name = "Solo presence",
+                    Name = "Scott",
                     Age = 87
                 }
             })

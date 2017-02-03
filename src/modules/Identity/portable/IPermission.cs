@@ -17,9 +17,9 @@ namespace Fuxion.Identity
         internal static bool Match(this IPermission me, IFunction function, IDiscriminator[] discriminators)
         {
             //bool res = false;
-            return Printer.Ident($"{nameof(PermissionExtensions)}.{nameof(Match)}:", () =>
+            return Printer.Indent($"{nameof(PermissionExtensions)}.{nameof(Match)}:", () =>
             {
-                Printer.Ident("Input parameters", () =>
+                Printer.Indent("Input parameters", () =>
                 {
                     //Printer.Print($"Permission (me): {me}");
                     Printer.WriteLine($"Permission:");
@@ -64,9 +64,9 @@ namespace Fuxion.Identity
         }
         internal static bool MatchByFunction(this IPermission me, IFunction function)
         {
-            return Printer.Ident($"{nameof(PermissionExtensions)}.{nameof(MatchByFunction)}:", () =>
+            return Printer.Indent($"{nameof(PermissionExtensions)}.{nameof(MatchByFunction)}:", () =>
             {
-                Printer.Ident("Input parameters", () =>
+                Printer.Indent("Input parameters", () =>
                 {
                     Printer.WriteLine($"Permission:");
                     new[] { me }.Print(PrintMode.Table);
@@ -162,9 +162,9 @@ namespace Fuxion.Identity
             //                      en una determianda localización, no puedo afirmar que tenga el permiso en un departamento dado.
             //                      
             #endregion
-            return Printer.Ident($"{nameof(PermissionExtensions)}.{nameof(MatchByDiscriminatorsType)}:", () =>
+            return Printer.Indent($"{nameof(PermissionExtensions)}.{nameof(MatchByDiscriminatorsType)}:", () =>
             {
-                Printer.Ident("Input parameters", () =>
+                Printer.Indent("Input parameters", () =>
                 {
                     //Printer.Print($"Permission (me): {me}");
                     Printer.WriteLine("Permission:");
@@ -195,8 +195,8 @@ namespace Fuxion.Identity
         internal static bool MatchByDiscriminatorsInclusionsAndExclusions(this IPermission me, IEnumerable<IDiscriminator> discriminators)
         {
             //return Printer.Ident($"{nameof(PermissionExtensions)}.{nameof(MatchByDiscriminatorsPath)}:", () => {
-            return Printer.Ident($"{typeof(PermissionExtensions).GetTypeInfo().DeclaredMethods.FirstOrDefault(m=>m.Name == nameof(MatchByDiscriminatorsInclusionsAndExclusions)).GetSignature()}:", () => {
-                Printer.Ident("Input parameters", () =>
+            return Printer.Indent($"{typeof(PermissionExtensions).GetTypeInfo().DeclaredMethods.FirstOrDefault(m=>m.Name == nameof(MatchByDiscriminatorsInclusionsAndExclusions)).GetSignature()}:", () => {
+                Printer.Indent("Input parameters", () =>
                 {
                     //Printer.Print($"Permission (me): {me}");
                     Printer.WriteLine("Permission:");
@@ -214,7 +214,7 @@ namespace Fuxion.Identity
                 }
                 else
                 {
-                    return Printer.Ident("Analizamos cada scope:", () =>
+                    return Printer.Indent("Analizamos cada scope:", () =>
                     {
                         // Tenemos que tomar nuestros discriminadores, y comprobarlos contra los discriminadores que me han pasado
                         // - Cojo un discriminador y busco el discriminador del mismo tipo en la entrada:
@@ -222,7 +222,7 @@ namespace Fuxion.Identity
                         //    - Si hay un discriminador del mismo tipo, compruebo la ruta
                         return me.Scopes.Any(sco=> {
                             Printer.WriteLine($"Scope {sco}");
-                            Printer.IdentationLevel++;
+                            Printer.IndentationLevel++;
                             if (discriminators.Count(d => Comparer.AreEquals(d.TypeId, sco.Discriminator.TypeId)) == 1)
                             {
                                 // Si hay un discriminador del mismo tipo, compruebo la ruta
@@ -248,14 +248,14 @@ namespace Fuxion.Identity
                                     Printer.WriteLine($"Se propaga hacia abajo y mi id esta en su path");
                                     return true;
                                 }
-                                Printer.IdentationLevel--;
+                                Printer.IndentationLevel--;
                                 return false;
                             }
                             else
                             {
                                 // No hay un discriminador del mismo tipo, pues no encaja
                                 Printer.WriteLine($"No hay un discriminador del mismo tipo");
-                                Printer.IdentationLevel--;
+                                Printer.IndentationLevel--;
                                 return true;
                             }
                         });
