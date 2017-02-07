@@ -41,6 +41,7 @@ namespace Fuxion.Synchronization
         {
             SyncId = syncId;
             Name = name;
+            Key = key;
             SideItem = sideItem;
             SideItemName = sideItemName;
         }

@@ -50,5 +50,42 @@ namespace Fuxion.Synchronization
         internal SynchronizationSessionPreview(Guid id) { Id = id; }
         public Guid Id { get; set; }
         public IList<SynchronizationWorkPreview> Works { get; set; }
+        public void Print()
+        {
+            // Print preview results
+            Printer.Foreach("Preview: ", Works, work =>
+            {
+                Printer.WriteLine("Work:");
+                Printer.Indent(() =>
+                {
+                    foreach (var item in work.Items)
+                    {
+                        Printer.WriteLine($"Item '{(item.MasterItemExist ? item.MasterItemName : "null")}' has '{item.Sides.Count()}' sides");
+                        Printer.Indent(() =>
+                        {
+                            foreach (var side in item.Sides)
+                            {
+                                if (side.SideItemExist)
+                                {
+                                    if (side.SideItemName.StartsWith("Tom"))
+                                    {
+                                        side.Action = SynchronizationAction.None;
+                                    }
+                                    Printer.WriteLine($"{side.Action.ToString().ToUpper()} - In '{side.SideName}' side is named '{side.SideItemName}' with key '{side.Key}' and has '{side.Properties.Count()}' change(s)");
+                                    Printer.Indent(() =>
+                                    {
+                                        foreach (var pro in side.Properties)
+                                        {
+                                            Printer.WriteLine($"Property '{pro.PropertyName}' will be changed from '{pro.SideValue}' to '{pro.MasterValue}'");
+                                        }
+                                    });
+                                }
+                                else Printer.WriteLine($"{side.Action.ToString().ToUpper()} - In '{side.SideName}' side does not exist");
+                            }
+                        });
+                    }
+                });
+            });
+        }
     }
 }

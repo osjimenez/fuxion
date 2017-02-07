@@ -23,7 +23,6 @@ namespace Fuxion.Test
             var fdRepo = new RepoFuxion();
             var saltoRepo = new RepoCRM();
             var presenceRepo = new RepoERP();
-            var ss = new SynchronizationSession();
             // Create sync session
             var ses = new SynchronizationSession
             {
@@ -194,40 +193,7 @@ namespace Fuxion.Test
             // Preview synchronization
             var res = ses.PreviewAsync().Result;
 
-            //// Print preview results
-            //foreach (var work in res.Works)
-            //{
-            //    Printer.WriteLine("Work:");
-            //    Printer.Ident(() =>
-            //    {
-            //        foreach (var item in work.Items)
-            //        {
-            //            Printer.WriteLine($"Item '{(item.MasterItemExist ? item.MasterItemName : "null")}' has '{item.Sides.Count()}' sides");
-            //            Printer.Ident(() =>
-            //            {
-            //                foreach (var side in item.Sides)
-            //                {
-            //                    if (side.SideItemExist)
-            //                    {
-            //                        if(side.SideItemName.StartsWith("Tom"))
-            //                        {
-            //                            side.Action = SynchronizationAction.None;
-            //                        }
-            //                        Printer.WriteLine($"{side.Action.ToString().ToUpper()} - In '{side.SideName}' side is named '{side.SideItemName}' with key '{side.Key}' and has '{side.Properties.Count()}' change(s)");
-            //                        Printer.Ident(() =>
-            //                        {
-            //                            foreach (var pro in side.Properties)
-            //                            {
-            //                                Printer.WriteLine($"Property '{pro.PropertyName}' will be changed from '{pro.SideValue}' to '{pro.MasterValue}'");
-            //                            }
-            //                        });
-            //                    }
-            //                    else Printer.WriteLine($"{side.Action.ToString().ToUpper()} - In '{side.SideName}' side does not exist");
-            //                }
-            //            });
-            //        }
-            //    });
-            //}
+            res.Print();
 
             // Serialize
             DataContractSerializer ser = new DataContractSerializer(typeof(SynchronizationSessionPreview));
@@ -320,6 +286,12 @@ namespace Fuxion.Test
                 {
                     Id = 4,
                     Name = "Bob",
+                    Age = 43
+                },
+                                new UserFuxion
+                {
+                    Id = 7,
+                    Name = "Jimmy",
                     Age = 43
                 }
             })

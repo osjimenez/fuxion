@@ -94,7 +94,7 @@ namespace Fuxion
         public static Task ForeachAsync<T>(string message, IEnumerable<T> items, Func<T, Task> action)
         {
             WriteLine(message);
-            return Indent(async () =>
+            return IndentAsync(async () =>
             {
                 foreach (var item in items)
                     await action(item);

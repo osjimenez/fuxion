@@ -26,6 +26,7 @@ namespace Fuxion.Synchronization
                 var masters = InternalSides.Where(s => s.IsMaster);
                 if (masters.Count() != 1) throw new ArgumentException("One, and only one SyncSide must be the master side");
                 InternalMasterSide = masters.Single();
+                Printer.WriteLine($"Master side is '{InternalMasterSide.Name}'");
 
                 // Search for comparators for any side with master side
                 foreach (var side in InternalSides.Where(s => !s.IsMaster))
@@ -75,7 +76,7 @@ namespace Fuxion.Synchronization
                         SideName = e.Name,
                         Properties = r.Properties.ToArray()
                     }))
-                    .GroupBy(r => r.MasterItem))
+                    .GroupBy(r => r.Key))
                 {
                     // Create item preview
                     var fir = gro.First(); // Use first element to get master info, all items in this group has the same master item
@@ -153,8 +154,9 @@ namespace Fuxion.Synchronization
                 foreach (var item in preview.Items)
                 {
                     var runItem = Items.Single(i => i.SyncId == item.Id);
-                    foreach (var side in item.Sides)
+                    await Printer.ForeachAsync($"Item '{item.MasterItemName ?? item.Sides.First(s => s.SideItemName != null).SideItemName}'", item.Sides, async side =>
                     {
+                        Printer.Write($"Side '{side.SideName}' ");
                         var runSide = InternalSides.Single(e => e.Id == side.Id);
                         var runItemSide = runItem.Sides.Single(s => s.SyncId == side.Id);
                         var map = new Func<ISynchronizationItem, ISynchronizationItemSide, object>((i, s) =>
@@ -178,15 +180,23 @@ namespace Fuxion.Synchronization
                         {
                             case SynchronizationAction.Insert:
                                 await runSide.InsertAsync(map(runItem, runItemSide));
+                                Printer.WriteLine("Inserted");
                                 break;
                             case SynchronizationAction.Delete:
                                 await runSide.DeleteAsync(runItemSide.SideItem);
+                                Printer.WriteLine("Deleted");
                                 break;
                             case SynchronizationAction.Update:
                                 await runSide.UpdateAsync(map(runItem, runItemSide));
+                                Printer.Foreach("Updated:", side.Properties, pro => {
+                                    Printer.WriteLine($"Changed '{pro.PropertyName}' property from '{pro.SideValue}' to '{pro.MasterValue}'");
+                                });
+                                break;
+                            case SynchronizationAction.None:
+                                Printer.WriteLine("None");
                                 break;
                         }
-                    }
+                    });
                 }
             });
         }
