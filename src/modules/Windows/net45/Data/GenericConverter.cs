@@ -14,7 +14,7 @@ namespace Fuxion.Windows.Data
         public abstract TResult Convert(TSource source, TParameter parameter, CultureInfo culture);
         object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (!(parameter is TParameter)) throw new NotSupportedException($"The parameter must be of type '{typeof(TParameter).Name}'");
+            if (typeof(TParameter) != typeof(object) && !(parameter is TParameter)) throw new NotSupportedException($"The parameter must be of type '{typeof(TParameter).Name}'");
             // value must be TSource, call Convert
             if (value is TSource)
                 return Convert((TSource)value, (TParameter)parameter, culture);
@@ -33,7 +33,7 @@ namespace Fuxion.Windows.Data
         }
         object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (!(parameter is TParameter)) throw new NotSupportedException($"The parameter must be of type '{typeof(TParameter).Name}'");
+            if (typeof(TParameter) != typeof(object) && !(parameter is TParameter)) throw new NotSupportedException($"The parameter must be of type '{typeof(TParameter).Name}'");
             // value must be TSource, call ConvertBack
             if (value is TResult)
                 return ConvertBack((TResult)value, (TParameter)parameter, culture);
