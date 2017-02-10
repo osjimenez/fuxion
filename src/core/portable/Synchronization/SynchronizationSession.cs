@@ -14,7 +14,8 @@ namespace Fuxion.Synchronization
         public ICollection<SynchronizationWork> Works { get; set; } = new List<SynchronizationWork>();
         public Task<SynchronizationSessionPreview> PreviewAsync()
         {
-            return Printer.IndentAsync($"Previewing synchronization session '{Name}'", async () =>
+            return Printer.IndentAsync($"Previewing synchronization session '{Name}'",
+                async () =>
             {
                 var res = new SynchronizationSessionPreview(Id);
                 var tasks = Works.Select(w => w.PreviewAsync());
@@ -23,13 +24,18 @@ namespace Fuxion.Synchronization
                 return res;
             });
         }
-        public Task RunAsync(SynchronizationSessionPreview preview)
+        public async Task RunAsync(SynchronizationSessionPreview preview)
         {
-            return Printer.ForeachAsync($"Running synchronization session '{Name}'", Works, async work =>
+            var actions = new List<Action>();
+            await Printer.ForeachAsync($"Running synchronization session '{Name}'", Works,
+                async work =>
             {
                 var workPre = preview.Works.FirstOrDefault(w => w.Id == work.Id);
-                await work.RunAsync(workPre);
+                var act = new Action(() => { });
+                await work.RunAsync(workPre, act);
             });
+            foreach (var act in actions)
+                act();
         }
     }
 }

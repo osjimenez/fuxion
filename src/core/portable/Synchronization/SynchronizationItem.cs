@@ -8,7 +8,7 @@ namespace Fuxion.Synchronization
 {
     internal interface ISynchronizationItem
     {
-        Guid SyncId { get; }
+        Guid Id { get; }
         object MasterItem { get; }
         string MasterName { get; }
         IEnumerable<ISynchronizationItemSide> Sides { get; }
@@ -20,7 +20,7 @@ namespace Fuxion.Synchronization
             MasterItem = masterItem;
             MasterName = masterName;
         }
-        public Guid SyncId { get; } = Guid.NewGuid();
+        public Guid Id { get; } = Guid.NewGuid();
         public string MasterName { get; }
         public TMasterItem MasterItem { get; }
         object ISynchronizationItem.MasterItem { get { return MasterItem; } }
@@ -28,24 +28,25 @@ namespace Fuxion.Synchronization
     }
     internal interface ISynchronizationItemSide
     {
-        Guid SyncId { get; }
+        Guid Id { get; }
         string Name { get; }
         object Key { get; }
         object SideItem { get; }
         string SideItemName { get; }
         IEnumerable<ISynchronizationProperty> Properties { get; }
+        ICollection<ISynchronizationItem> SubItems { get; set; }
     }
     internal class SynchronizationItemSide<TSideItem, TKey> : ISynchronizationItemSide
     {
-        public SynchronizationItemSide(Guid syncId, string name, TKey key, TSideItem sideItem, string sideItemName)
+        public SynchronizationItemSide(Guid id, string name, TKey key, TSideItem sideItem, string sideItemName)
         {
-            SyncId = syncId;
+            Id = id;
             Name = name;
             Key = key;
             SideItem = sideItem;
             SideItemName = sideItemName;
         }
-        public Guid SyncId { get; }
+        public Guid Id { get; }
         public string Name { get; }
         public TKey Key { get; }
         object ISynchronizationItemSide.Key { get { return Key; } }
@@ -53,5 +54,6 @@ namespace Fuxion.Synchronization
         object ISynchronizationItemSide.SideItem { get { return SideItem; } }
         public string SideItemName { get; }
         public IEnumerable<ISynchronizationProperty> Properties { get; set; } = new List<ISynchronizationProperty>();
+        public ICollection<ISynchronizationItem> SubItems { get; set; } = new List<ISynchronizationItem>();
     }
 }

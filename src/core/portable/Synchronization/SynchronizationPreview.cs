@@ -14,6 +14,21 @@ namespace Fuxion.Synchronization
         public string MasterValue { get; set; }
         public string SideValue { get; set; }
     }
+    public class SynchronizationItemRelationPreview
+    {
+        internal SynchronizationItemRelationPreview() { }
+
+        public bool MasterItemExist { get; set; }
+        public string MasterItemName { get; set; }
+
+        public bool SideItemExist { get; set; }
+        public string SideName { get; set; }
+        public string Key { get; set; }
+        public string SideItemName { get; set; }
+        public SynchronizationAction Action { get; set; }
+        public ICollection<SynchronizationPropertyPreview> Properties { get; set; } = new List<SynchronizationPropertyPreview>();
+        public ICollection<SynchronizationItemRelationPreview> Relations { get; set; } = new List<SynchronizationItemRelationPreview>();
+    }
     public class SynchronizationItemSidePreview
     {
         internal SynchronizationItemSidePreview() { }
@@ -26,7 +41,8 @@ namespace Fuxion.Synchronization
         public string SideItemName { get; set; }
         public SynchronizationAction Action { get; set; }
 
-        public IList<SynchronizationPropertyPreview> Properties { get; set; }
+        public ICollection<SynchronizationPropertyPreview> Properties { get; set; } = new List<SynchronizationPropertyPreview>();
+        public ICollection<SynchronizationItemRelationPreview> Relations { get; set; } = new List<SynchronizationItemRelationPreview>();
     }
     public class SynchronizationItemPreview
     {
@@ -52,38 +68,21 @@ namespace Fuxion.Synchronization
         public IList<SynchronizationWorkPreview> Works { get; set; }
         public void Print()
         {
-            // Print preview results
             Printer.Foreach("Preview: ", Works, work =>
             {
-                Printer.WriteLine("Work:");
-                Printer.Indent(() =>
+                Printer.Foreach("Work:", work.Items, item =>
                 {
-                    foreach (var item in work.Items)
+                    Printer.Foreach($"Item '{(item.MasterItemExist ? item.MasterItemName : "null")}' has '{item.Sides.Count()}' sides", item.Sides, side =>
                     {
-                        Printer.WriteLine($"Item '{(item.MasterItemExist ? item.MasterItemName : "null")}' has '{item.Sides.Count()}' sides");
-                        Printer.Indent(() =>
+                        if (side.SideItemExist)
                         {
-                            foreach (var side in item.Sides)
+                            Printer.Foreach($"{side.Action.ToString().ToUpper()} - In '{side.SideName}' side is named '{side.SideItemName}' with key '{side.Key}' and has '{side.Properties.Count()}' change(s)", side.Properties, pro =>
                             {
-                                if (side.SideItemExist)
-                                {
-                                    if (side.SideItemName.StartsWith("Tom"))
-                                    {
-                                        side.Action = SynchronizationAction.None;
-                                    }
-                                    Printer.WriteLine($"{side.Action.ToString().ToUpper()} - In '{side.SideName}' side is named '{side.SideItemName}' with key '{side.Key}' and has '{side.Properties.Count()}' change(s)");
-                                    Printer.Indent(() =>
-                                    {
-                                        foreach (var pro in side.Properties)
-                                        {
-                                            Printer.WriteLine($"Property '{pro.PropertyName}' will be changed from '{pro.SideValue}' to '{pro.MasterValue}'");
-                                        }
-                                    });
-                                }
-                                else Printer.WriteLine($"{side.Action.ToString().ToUpper()} - In '{side.SideName}' side does not exist");
-                            }
-                        });
-                    }
+                                Printer.WriteLine($"Property '{pro.PropertyName}' will be changed from '{pro.SideValue}' to '{pro.MasterValue}'");
+                            });
+                        }
+                        else Printer.WriteLine($"{side.Action.ToString().ToUpper()} - In '{side.SideName}' side does not exist");
+                    });
                 });
             });
         }
