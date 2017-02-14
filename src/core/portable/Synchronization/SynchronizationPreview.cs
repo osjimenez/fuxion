@@ -17,6 +17,8 @@ namespace Fuxion.Synchronization
     public class SynchronizationItemRelationPreview
     {
         internal SynchronizationItemRelationPreview() { }
+        internal SynchronizationItemRelationPreview(Guid id) { Id = id; }
+        public Guid Id { get; set; }
 
         public bool MasterItemExist { get; set; }
         public string MasterItemName { get; set; }
@@ -74,14 +76,34 @@ namespace Fuxion.Synchronization
                 {
                     Printer.Foreach($"Item '{(item.MasterItemExist ? item.MasterItemName : "null")}' has '{item.Sides.Count()}' sides", item.Sides, side =>
                     {
+                        Action<ICollection<SynchronizationItemRelationPreview>> printRelations = null;
+                        printRelations = rels =>
+                        {
+                            if (!rels.Any()) return;
+                            Printer.Foreach("Relations: ", rels, rel =>
+                            {
+                                //Printer.WriteLine($"Relation '{(rel.MasterItemExist ? rel.MasterItemName : "null")}' has '{rel.Relations.Count()}' relations");
+                                Printer.Foreach($"{rel.Action.ToString().ToUpper()} - In '{rel.SideName}' side is named '{rel.SideItemName}' with key '{rel.Key}' and has '{rel.Properties.Count()}' change(s)", rel.Properties, pro2 =>
+                                {
+                                    Printer.WriteLine($"Property '{pro2.PropertyName}' will be changed from '{pro2.SideValue}' to '{pro2.MasterValue}'");
+                                });
+                                printRelations(rel.Relations);
+                            });
+                        };
+
                         if (side.SideItemExist)
                         {
                             Printer.Foreach($"{side.Action.ToString().ToUpper()} - In '{side.SideName}' side is named '{side.SideItemName}' with key '{side.Key}' and has '{side.Properties.Count()}' change(s)", side.Properties, pro =>
                             {
                                 Printer.WriteLine($"Property '{pro.PropertyName}' will be changed from '{pro.SideValue}' to '{pro.MasterValue}'");
                             });
+                            printRelations(side.Relations);
                         }
-                        else Printer.WriteLine($"{side.Action.ToString().ToUpper()} - In '{side.SideName}' side does not exist");
+                        else
+                        {
+                            Printer.WriteLine($"{side.Action.ToString().ToUpper()} - In '{side.SideName}' side does not exist");
+                            printRelations(side.Relations);
+                        }
                     });
                 });
             });

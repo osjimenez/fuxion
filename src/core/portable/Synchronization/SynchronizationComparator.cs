@@ -29,13 +29,21 @@ namespace Fuxion.Synchronization
         {
             var res = new List<ISynchronizationComparatorResultInternal>();
             Dictionary<TKey, Tuple<SynchronizationLoadedItem, SynchronizationLoadedItem>> dic = new Dictionary<TKey, Tuple<SynchronizationLoadedItem, SynchronizationLoadedItem>>();
-            foreach (var item in sideA.Entries)
+            foreach (var item in sideA?.Entries)
                 dic.Add(OnSelectKeyA.Invoke((TItemA)item.Item), new Tuple<SynchronizationLoadedItem, SynchronizationLoadedItem>(item, new SynchronizationLoadedItem
                 {
                     Item = null,
-                    Sides = sideB.SubSides
+                    //Sides = Enumerable.Empty<ISynchronizationSideInternal>().ToList()
+                    Sides = sideB.SubSides?.Select(side =>
+                    {
+                        var clon = side.Clone();
+                        clon.Source = null;
+                        clon.Name = $"{clon.Name} ({sideA.GetItemName(item.Item)})";
+                        //clon.Load().Wait();
+                        return clon;
+                    }).ToList() ?? Enumerable.Empty<ISynchronizationSideInternal>().ToList()
                 }));
-            foreach (var item in sideB.Entries)
+            foreach (var item in sideB?.Entries)
             {
                 var key = OnSelectKeyB.Invoke((TItemB)item.Item);
                 if (dic.ContainsKey(key))
@@ -44,6 +52,7 @@ namespace Fuxion.Synchronization
                     dic.Add(key, new Tuple<SynchronizationLoadedItem, SynchronizationLoadedItem>(new SynchronizationLoadedItem
                     {
                         Item = null,
+                        //Sides = Enumerable.Empty<ISynchronizationSideInternal>().ToList()
                         Sides = sideA.SubSides
                     }, item));
             }
@@ -80,12 +89,6 @@ namespace Fuxion.Synchronization
         //}
         ISynchronizationComparatorResultInternal ISynchronizationComparatorInternal.CompareItem(SynchronizationLoadedItem itemA, SynchronizationLoadedItem itemB, bool runInverted)
         {
-            //if (runInverted)
-            //{
-            //    var aux = itemA;
-            //    itemA = itemB;
-            //    itemB = aux;
-            //}
             ISynchronizationComparatorResultInternal res;
             if (itemA?.Item == null || itemB?.Item == null)
             {

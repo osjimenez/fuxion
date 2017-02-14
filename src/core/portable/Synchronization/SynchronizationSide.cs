@@ -20,7 +20,7 @@ namespace Fuxion.Synchronization
         Guid Id { get; }
         new string Name { get; set; }
         object Source { get; set; }
-        IEnumerable<SynchronizationLoadedItem> Entries { get; set; }
+        ICollection<SynchronizationLoadedItem> Entries { get; set; }
         ISynchronizationComparatorInternal Comparator { get; set; }
         IEnumerable<ISynchronizationComparatorResultInternal> Results { get; set; }
         string GetItemName(object item);
@@ -99,7 +99,7 @@ namespace Fuxion.Synchronization
             Printer.WriteLine($"Side '{Name}' loaded");
             //return me.Entries = res;
         });
-        IEnumerable<SynchronizationLoadedItem> ISynchronizationSideInternal.Entries { get; set; } = new List<SynchronizationLoadedItem>();
+        ICollection<SynchronizationLoadedItem> ISynchronizationSideInternal.Entries { get; set; } = new List<SynchronizationLoadedItem>();
         ISynchronizationComparatorInternal ISynchronizationSideInternal.Comparator { get; set; }
         IEnumerable<ISynchronizationComparatorResultInternal> ISynchronizationSideInternal.Results { get; set; }
         ICollection<ISynchronizationSideInternal> ISynchronizationSideInternal.SubSides { get; set; }

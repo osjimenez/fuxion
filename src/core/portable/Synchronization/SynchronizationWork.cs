@@ -17,7 +17,7 @@ namespace Fuxion.Synchronization
         internal IEnumerable<ISynchronizationSideInternal> InternalSides { get; set; }
         internal IList<ISynchronizationItem> Items { get; set; } = new List<ISynchronizationItem>();
         ISynchronizationSide MasterSide { get { return InternalMasterSide; } set { InternalMasterSide = (ISynchronizationSideInternal)MasterSide; } }
-        ISynchronizationSideInternal InternalMasterSide { get; set; }
+        internal ISynchronizationSideInternal InternalMasterSide { get; set; }
 
 
         //public SynchronizationWork AddSubWork<TSource, TItem, TKey>(TSource source)
@@ -125,7 +125,8 @@ namespace Fuxion.Synchronization
                             MasterItemType = side.SearchMasterSubSide(InternalMasterSide).GetItemType(),
                             MasterItem = result.MasterItem,
                             MasterName = side.SearchMasterSubSide(InternalMasterSide).GetItemName(result.MasterItem),
-                            SideId = side.Id,
+                            //SideId = side.Id,
+                            Side = side,
                             SideItemType = side.GetItemType(),
                             SideItem = result.SideItem,
                             SideItemName = side.GetItemName(result.SideItem),
@@ -135,18 +136,18 @@ namespace Fuxion.Synchronization
                         }))
                         .GroupBy(r => r.Key))
                     {
-                        // Create item preview
+                        // Create item
                         var fir = gro.First(); // Use first element to get master info, all items in this group has the same master item
                         var itemType = typeof(SynchronizationItem<>).MakeGenericType(fir.MasterItemType);
                         var item = (ISynchronizationItem)Activator.CreateInstance(itemType, fir.MasterItem, fir.MasterName);
                         foreach (var i in gro)
                         {
-                            // Create side preview
+                            // Create side
                             var sideItemType = typeof(SynchronizationItemSide<,>).MakeGenericType(i.SideItemType, i.Key.GetType());
-                            var sideItem = (ISynchronizationItemSide)Activator.CreateInstance(sideItemType, i.SideId, i.SideName, i.Key, i.SideItem, i.SideItemName);
+                            var sideItem = (ISynchronizationItemSide)Activator.CreateInstance(sideItemType, i.Side, i.SideName, i.Key, i.SideItem, i.SideItemName);
                             foreach (var pro in i.Properties)
                                 ((IList<ISynchronizationProperty>)sideItem.Properties).Add(pro);
-                            sideItem.SubItems = analyzeResults(fir.SideSubSides);
+                            sideItem.SubItems = analyzeResults(i.SideSubSides);
                             // Add side to item
                             ((IList<ISynchronizationItemSide>)item.Sides).Add(sideItem);
                         }
@@ -168,7 +169,7 @@ namespace Fuxion.Synchronization
                     var preSides = new List<SynchronizationItemSidePreview>();
                     foreach (var side in item.Sides)
                     {
-                        var preSide = new SynchronizationItemSidePreview(side.Id);
+                        var preSide = new SynchronizationItemSidePreview(side.Side.Id);
                         preSide.Key = side.Key.ToString();
                         preSide.SideItemExist = side.SideItem != null;
                         preSide.SideItemName = side.SideItemName;
@@ -189,7 +190,7 @@ namespace Fuxion.Synchronization
                             var res = new List<SynchronizationItemRelationPreview>();
                             foreach (var s in items)
                             {
-                                var rel = new SynchronizationItemRelationPreview();
+                                var rel = new SynchronizationItemRelationPreview(s.Id);
                                 rel.MasterItemExist = s.MasterItem != null;
                                 rel.MasterItemName = s.MasterName;
                                 var subSide = s.Sides.Single();
@@ -197,7 +198,7 @@ namespace Fuxion.Synchronization
                                 rel.SideItemExist = subSide.SideItem != null;
                                 rel.SideItemName = subSide.SideItemName;
                                 rel.SideName = subSide.Name;
-                                foreach (var pro in rel.Properties)
+                                foreach (var pro in subSide.Properties)
                                 {
                                     var prePro = new SynchronizationPropertyPreview();
                                     prePro.MasterValue = pro.MasterValue?.ToString();
@@ -253,6 +254,8 @@ namespace Fuxion.Synchronization
         {
             return Printer.IndentAsync($"Work '{Name}'", async () =>
             {
+                preview.Items.SelectMany(item => item.Sides.Select(s => s.Relations));
+
                 foreach (var item in preview.Items)
                 {
                     var runItem = Items.Single(i => i.Id == item.Id);
@@ -261,7 +264,7 @@ namespace Fuxion.Synchronization
                     {
                         Printer.Write($"Side '{side.SideName}' ");
                         var runSide = InternalSides.Single(e => e.Id == side.Id);
-                        var runItemSide = runItem.Sides.Single(s => s.Id == side.Id);
+                        var runItemSide = runItem.Sides.Single(s => s.Side.Id == side.Id);
                         var map = new Func<ISynchronizationItem, ISynchronizationItemSide, object>((i, s) =>
                         {
                             if (runSide.Comparator.GetItemTypes().Item1 == InternalMasterSide.GetItemType())

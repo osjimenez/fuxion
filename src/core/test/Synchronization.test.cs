@@ -90,7 +90,10 @@ namespace Fuxion.Test
                                 PluralItemTypeName = "Skills",
                                 SingularItemTypeName = "Skill",
                                 OnNaming = i => i.Name,
-                                OnInsert = (s, i) => s.Skills.Add(i),
+                                OnInsert = (s, i) => {
+                                    if (s.Skills == null)s.Skills=new List<SkillCRM>();
+                                    s.Skills.Add(i);
+                                },
                                 OnDelete = (s, i) => s.Skills.Remove(i),
                                 OnUpdate = (s, i) => { }
                             },
@@ -101,7 +104,10 @@ namespace Fuxion.Test
                                 PluralItemTypeName = "Properties",
                                 SingularItemTypeName = "Property",
                                 OnNaming = i => i.Name,
-                                OnInsert = (s, i) => s.Properties.Add(i),
+                                OnInsert = (s, i) => {
+                                    if (s.Properties == null) s.Properties = new  List<SkillPropertyCRM>();
+                                    s.Properties.Add(i);
+                                },
                                 OnDelete = (s, i) => s.Properties.Remove(i),
                                 OnUpdate = (s, i) => { }
                             },
@@ -318,7 +324,7 @@ namespace Fuxion.Test
             // Preview synchronization
             var res = ses.PreviewAsync().Result;
 
-            res.Print();
+            //res.Print();
 
             // Serialize
             DataContractSerializer ser = new DataContractSerializer(typeof(SynchronizationSessionPreview));
@@ -351,7 +357,7 @@ namespace Fuxion.Test
             //Assert.Equal(3, res.First().First().Count());
             //Assert.Equal(2, res.First().Skip(1).First().Count());
 
-            Debug.WriteLine("");
+            Printer.WriteLine("TEST FINISHED");
         }
     }
     public class Repo<T>
@@ -435,7 +441,23 @@ namespace Fuxion.Test
                 {
                     Id = 4,
                     Name = "Bob",
-                    Age = 43
+                    Age = 43,
+                    Skills = new[]
+                    {
+                        new SkillFuxion
+                        {
+                            Id = 1,
+                            Name = "Skill Bob",
+                            Properties = new[]
+                            {
+                                new SkillPropertyFuxion
+                                {
+                                    Id = 1,
+                                    Name = "Property Bob"
+                                }
+                            }
+                        }
+                    }
                 },
                 new UserFuxion
                 {

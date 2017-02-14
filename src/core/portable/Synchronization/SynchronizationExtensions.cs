@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Synchronization
 {
-    public static class SynchronizationExtensions
+    internal static class SynchronizationExtensions
     {
         internal static Type GetItemType(this ISynchronizationSide me)
         {

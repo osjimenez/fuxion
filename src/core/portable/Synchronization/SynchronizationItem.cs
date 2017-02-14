@@ -28,32 +28,37 @@ namespace Fuxion.Synchronization
     }
     internal interface ISynchronizationItemSide
     {
-        Guid Id { get; }
+        //Guid Id { get; }
         string Name { get; }
         object Key { get; }
         object SideItem { get; }
         string SideItemName { get; }
+        ISynchronizationSideInternal Side { get; set; }
         IEnumerable<ISynchronizationProperty> Properties { get; }
         ICollection<ISynchronizationItem> SubItems { get; set; }
     }
     internal class SynchronizationItemSide<TSideItem, TKey> : ISynchronizationItemSide
     {
-        public SynchronizationItemSide(Guid id, string name, TKey key, TSideItem sideItem, string sideItemName)
+        public SynchronizationItemSide(ISynchronizationSideInternal side, string name, TKey key, TSideItem sideItem, string sideItemName)
         {
-            Id = id;
+            //Id = id;
+            Side = side;
             Name = name;
             Key = key;
             SideItem = sideItem;
             SideItemName = sideItemName;
         }
-        public Guid Id { get; }
+        //public Guid Id { get; }
         public string Name { get; }
         public TKey Key { get; }
         object ISynchronizationItemSide.Key { get { return Key; } }
         public TSideItem SideItem { get; }
         object ISynchronizationItemSide.SideItem { get { return SideItem; } }
         public string SideItemName { get; }
+        public ISynchronizationSideInternal Side { get; set; }
         public IEnumerable<ISynchronizationProperty> Properties { get; set; } = new List<ISynchronizationProperty>();
         public ICollection<ISynchronizationItem> SubItems { get; set; } = new List<ISynchronizationItem>();
+
+        
     }
 }
