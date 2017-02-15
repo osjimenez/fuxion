@@ -9,7 +9,16 @@ namespace Fuxion.Synchronization
 {
     internal static class SynchronizationExtensions
     {
-        internal static Type GetItemType(this ISideDefinition me)
+        internal static ISideRunner CreateRunner(this ISideDefinition me)
+        {
+            return (ISideRunner)Activator.CreateInstance(typeof(SideRunner<,,>).MakeGenericType(me.GetType().GetTypeInfo().GenericTypeArguments), me);
+        }
+        internal static IComparatorRunner CreateRunner(this IComparatorDefinition me)
+        {
+            return (IComparatorRunner)Activator.CreateInstance(typeof(ComparatorRunner<,,>).MakeGenericType(me.GetType().GetTypeInfo().GenericTypeArguments), me);
+        }
+
+        internal static Type GetItemType(this ISideRunner me)
         {
             return me.GetType().GetTypeInfo().GenericTypeArguments[1];
         }
@@ -53,11 +62,11 @@ namespace Fuxion.Synchronization
             //    res.AddRange(getAllSubSides(s));
             return res;
         }
-        internal static Type GetSourceType(this ISideDefinition me)
+        internal static Type GetSourceType(this ISideRunner me)
         {
             return me.GetType().GetTypeInfo().GenericTypeArguments[0];
         }
-        internal static Tuple<Type, Type> GetItemTypes(this IComparatorDefinition me)
+        internal static Tuple<Type, Type> GetItemTypes(this IComparatorRunner me)
         {
             var args = me.GetType().GetTypeInfo().GenericTypeArguments;
             return new Tuple<Type, Type>(args[0], args[1]);
@@ -65,37 +74,6 @@ namespace Fuxion.Synchronization
         internal static Type GetKeyType(this IComparatorDefinition me)
         {
             return me.GetType().GetTypeInfo().GenericTypeArguments[2];
-        }
-        internal static IProperty Invert(this IProperty me)
-        {
-            var meType = me.GetType();
-            if (meType.IsSubclassOfRawGeneric(typeof(Property<,>)))
-            {
-                var resType = typeof(Property<,>).MakeGenericType(meType.GetTypeInfo().GenericTypeArguments[1], meType.GetTypeInfo().GenericTypeArguments[0]);
-                var res = Activator.CreateInstance(resType, me.PropertyName, me.SideValue, me.MasterValue);
-                return (IProperty)res;
-            }
-            else throw new InvalidCastException($"The property '{me.PropertyName}' cannot be inverted because is of type '{meType.Name}' and is not subclass of generic type '{typeof(Property<,>).Name}'");
-        }
-        internal static IComparatorResultInternal Invert(this IComparatorResultInternal me)
-        {
-            var meType = me.GetType();
-            if (meType.IsSubclassOfRawGeneric(typeof(ComparatorResult<,,>)))
-            {
-                var resType = typeof(ComparatorResult<,,>).MakeGenericType(meType.GetTypeInfo().GenericTypeArguments[1], meType.GetTypeInfo().GenericTypeArguments[0], meType.GetTypeInfo().GenericTypeArguments[2]);
-                var res = Activator.CreateInstance(resType);
-                resType.GetRuntimeProperty(nameof(me.MasterItem)).SetValue(res, me.SideItem);
-                resType.GetRuntimeProperty(nameof(me.SideItem)).SetValue(res, me.MasterItem);
-                resType.GetRuntimeProperty(nameof(me.Key)).SetValue(res, me.Key);
-                var properties = resType.GetRuntimeProperty(nameof(me.Properties)).GetValue(res);
-                var addMethod = typeof(ICollection<IProperty>).GetRuntimeMethod("Add", new[] { typeof(IProperty) });
-                foreach (var pro in me.Properties)
-                {
-                    addMethod.Invoke(properties, new[] { pro.Invert() });
-                }
-                return (IComparatorResultInternal)res;
-            }
-            else throw new InvalidCastException($"The item '{me}' cannot be inverted because is of type '{meType.Name}' and is not subclass of generic type '{typeof(ComparatorResult<,,>).Name}'");
         }
     }
 }

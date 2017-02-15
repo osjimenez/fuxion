@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Synchronization
 {
-    internal class Item<TMasterItem> : IItem
+    internal class ItemRunner<TMasterItem> : IItemRunner
     {
-        public Item(TMasterItem masterItem, string masterName)
+        public ItemRunner(TMasterItem masterItem, string masterName)
         {
             MasterItem = masterItem;
             MasterName = masterName;
@@ -16,7 +16,7 @@ namespace Fuxion.Synchronization
         public Guid Id { get; } = Guid.NewGuid();
         public string MasterName { get; }
         public TMasterItem MasterItem { get; }
-        object IItem.MasterItem { get { return MasterItem; } }
-        public IEnumerable<IItemSide> Sides { get; set; } = new List<IItemSide>();
+        object IItemRunner.MasterItem { get { return MasterItem; } }
+        public IEnumerable<IItemSideRunner> Sides { get; set; } = new List<IItemSideRunner>();
     }
 }

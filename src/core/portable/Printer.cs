@@ -91,8 +91,9 @@ namespace Fuxion
                     action(item);
             });
         }
-        public static Task ForeachAsync<T>(string message, IEnumerable<T> items, Func<T, Task> action)
+        public static Task ForeachAsync<T>(string message, IEnumerable<T> items, Func<T, Task> action, bool printMessageIfNoItems = true)
         {
+            if (!printMessageIfNoItems && !items.Any()) return Task.FromResult(0);
             WriteLine(message);
             return IndentAsync(async () =>
             {

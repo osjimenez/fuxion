@@ -11,8 +11,10 @@ namespace Fuxion.Synchronization
         internal ItemPreview() { }
         internal ItemPreview(Guid id) { Id = id; }
         public Guid Id { get; set; }
+
         public bool MasterItemExist { get; set; }
         public string MasterItemName { get; set; }
+
         public IList<ItemSidePreview> Sides { get; set; }
         public void Print()
         {
@@ -43,7 +45,7 @@ namespace Fuxion.Synchronization
                 }
                 else
                 {
-                    Printer.WriteLine($"{side.Action.ToString().ToUpper()} - In '{side.SideName}' side does not exist");
+                    Printer.WriteLine($"{side.Action.ToString().ToUpper()} - In '{side.SideName}' side because does not exist");
                     printRelations(side.Relations);
                 }
             });

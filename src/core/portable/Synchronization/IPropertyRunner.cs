@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Synchronization
 {
-    internal interface IProperty
+    internal interface IPropertyRunner
     {
         string PropertyName { get; }
         object MasterValue { get; }

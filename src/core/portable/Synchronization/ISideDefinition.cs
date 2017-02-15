@@ -8,9 +8,9 @@ namespace Fuxion.Synchronization
 {
     public interface ISideDefinition
     {
-        bool IsMaster { get; }
-        string Name { get; }
-        string SingularItemTypeName { get; }
-        string PluralItemTypeName { get; }
+        bool IsMaster { get; set; }
+        string Name { get; set; }
+        //string SingularItemTypeName { get; set; }
+        //string PluralItemTypeName { get; set; }
     }
 }

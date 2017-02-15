@@ -11,7 +11,7 @@ namespace Fuxion.Synchronization
         object Key { get; }
         object MasterItem { get; }
         object SideItem { get; }
-        ICollection<IProperty> Properties { get; }
+        ICollection<IPropertyRunner> Properties { get; }
         ICollection<ISideRunner> SubSides { get; set; }
     }
 }

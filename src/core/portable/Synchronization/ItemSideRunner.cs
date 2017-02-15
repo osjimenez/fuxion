@@ -6,26 +6,24 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Synchronization
 {
-    internal class ItemSide<TSideItem, TKey> : IItemSide
+    internal class ItemSideRunner<TSideItem, TKey> : IItemSideRunner
     {
-        public ItemSide(ISideRunner side, string name, TKey key, TSideItem sideItem, string sideItemName)
+        public ItemSideRunner(ISideRunner side, string name, TKey key, TSideItem sideItem, string sideItemName)
         {
-            //Id = id;
             Side = side;
             Name = name;
             Key = key;
             SideItem = sideItem;
             SideItemName = sideItemName;
         }
-        //public Guid Id { get; }
         public string Name { get; }
         public TKey Key { get; }
-        object IItemSide.Key { get { return Key; } }
+        object IItemSideRunner.Key { get { return Key; } }
         public TSideItem SideItem { get; }
-        object IItemSide.SideItem { get { return SideItem; } }
+        object IItemSideRunner.SideItem { get { return SideItem; } }
         public string SideItemName { get; }
         public ISideRunner Side { get; set; }
-        public IEnumerable<IProperty> Properties { get; set; } = new List<IProperty>();
-        public ICollection<IItem> SubItems { get; set; } = new List<IItem>();
+        public IEnumerable<IPropertyRunner> Properties { get; set; } = new List<IPropertyRunner>();
+        public ICollection<IItemRunner> SubItems { get; set; } = new List<IItemRunner>();
     }
 }

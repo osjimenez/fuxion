@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Synchronization
 {
-    internal class Property<TMasterProperty, TSideProperty> : IProperty
+    internal class PropertyRunner<TMasterProperty, TSideProperty> : IPropertyRunner
     {
-        public Property(string propertyName, TMasterProperty masterValue, TSideProperty sideValue)
+        public PropertyRunner(string propertyName, TMasterProperty masterValue, TSideProperty sideValue)
         {
             PropertyName = propertyName;
             MasterValue = masterValue;
@@ -16,8 +16,8 @@ namespace Fuxion.Synchronization
         }
         public string PropertyName { get; set; }
         public TMasterProperty MasterValue { get; }
-        object IProperty.MasterValue { get { return MasterValue; } }
+        object IPropertyRunner.MasterValue { get { return MasterValue; } }
         public TSideProperty SideValue { get; }
-        object IProperty.SideValue { get { return SideValue; } }
+        object IPropertyRunner.SideValue { get { return SideValue; } }
     }
 }

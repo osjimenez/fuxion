@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Synchronization
 {
-    internal interface IItem
+    internal interface IItemRunner
     {
         Guid Id { get; }
         object MasterItem { get; }
         string MasterName { get; }
-        IEnumerable<IItemSide> Sides { get; }
+        IEnumerable<IItemSideRunner> Sides { get; }
     }
 }

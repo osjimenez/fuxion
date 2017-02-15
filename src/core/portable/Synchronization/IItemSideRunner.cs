@@ -6,15 +6,14 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Synchronization
 {
-    internal interface IItemSide
+    internal interface IItemSideRunner
     {
-        //Guid Id { get; }
         string Name { get; }
         object Key { get; }
         object SideItem { get; }
         string SideItemName { get; }
         ISideRunner Side { get; set; }
-        IEnumerable<IProperty> Properties { get; }
-        ICollection<IItem> SubItems { get; set; }
+        IEnumerable<IPropertyRunner> Properties { get; }
+        ICollection<IItemRunner> SubItems { get; set; }
     }
 }

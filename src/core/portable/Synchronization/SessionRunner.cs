@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Fuxion.Collections.Generic;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,10 +9,7 @@ namespace Fuxion.Synchronization
 {
     internal class SessionRunner
     {
-        public SessionRunner(SessionDefinition definition)
-        {
-            this.definition = definition;
-        }
+        public SessionRunner(SessionDefinition definition) { this.definition = definition; }
         SessionDefinition definition;
         ICollection<WorkRunner> works = new List<WorkRunner>();
         public Guid Id { get { return definition.Id; } }
@@ -28,78 +26,137 @@ namespace Fuxion.Synchronization
                     return res;
                 });
         }
-        public async Task RunAsync(SessionPreview preview)
+        public Task RunAsync(SessionPreview preview)
         {
-            // 1 - Insert 1º level
-            // 2 - Update 1º level
-            // 3 - Insert 2º level
-            // 4 - Update 2º level
-            // . - ...............
-            // 5 - Insert nº level
-            // 6 - Update nº level
-            // 7 - Delete nº level
-            // . - ...............
-            // 8 - Delete 2º level
-            // 9 - Delete 1º level
-
-            List<Task> tasks = new List<Task>();
-
-            foreach (var work in preview.Works)
+            return Printer.IndentAsync("Running session:", async () =>
             {
-                var runWork = works.Single(w => w.Id == work.Id);
-                foreach (var item in work.Items)
+                // 1 - Insert 1º level
+                // 2 - Update 1º level
+
+                // 3 - Insert 2º level
+                // 4 - Update 2º level
+                // . - ...............
+                // 5 - Insert nº level
+                // 6 - Update nº level
+
+                // 7 - Delete nº level
+                // . - ...............
+                // 8 - Delete 2º level
+                // 9 - Delete 1º level
+
+                List<Task> tasks = new List<Task>();
+                List<Tuple<ICollection<ItemPreview>, WorkRunner>> main = new List<Tuple<ICollection<ItemPreview>, WorkRunner>>();
+                List<Tuple<ICollection<ItemRelationPreview>, IItemSideRunner>> levels = new List<Tuple<ICollection<ItemRelationPreview>, IItemSideRunner>>();
+
+                foreach (var work in preview.Works)
                 {
-                    var runItem = runWork.Items.Single(i => i.Id == item.Id);
-                    foreach (var side in item.Sides)
+                    var runWork = works.Single(w => w.Id == work.Id);
+                    main.Add(new Tuple<ICollection<ItemPreview>, WorkRunner>(work.Items, runWork));
+                }
+                await Printer.ForeachAsync("Inserting level 0", main, async m =>
+                {
+                    levels.AddRange(await ProcessWork(m.Item1, m.Item2, SynchronizationAction.Insert));
+                }, false);
+                await Printer.ForeachAsync("Updating level 0",main, async m =>
+                {
+                    levels.AddRange(await ProcessWork(m.Item1, m.Item2, SynchronizationAction.Update));
+                }, false);
+                levels = levels.Distinct().ToList();
+                int level = 1;
+                while (levels.Any())
+                {
+                    var aux = levels.ToList();
+                    levels.Clear();
+                    await Printer.ForeachAsync($"Inserting level {level}", aux, async lev =>
                     {
-                        var runSide = runWork.InternalSides.Single(s => s.Id == side.Id);
-                        var runItemSide = runItem.Sides.Single(s => s.Side.Id == side.Id);
-                        var map = new Func<IItem, IItemSide, object>((i, s) =>
+                        levels.AddRange(await ProcessRelations(lev.Item1, lev.Item2, SynchronizationAction.Insert, level));
+                    }, false);
+                    await Printer.ForeachAsync($"Updating level {level}", aux, async lev =>
+                    {
+                        levels.AddRange(await ProcessRelations(lev.Item1, lev.Item2, SynchronizationAction.Update, level));
+                    }, false);
+                    levels = levels.Distinct().ToList();
+                    level++;
+                }
+                await Printer.ForeachAsync("Deleting level 0", main, async m =>
+                {
+                    levels.AddRange(await ProcessWork(m.Item1, m.Item2, SynchronizationAction.Delete));
+                }, false);
+
+                level = 1;
+                while (levels.Any())
+                {
+                    var aux = levels.ToList();
+                    levels.Clear();
+                    await Printer.ForeachAsync($"Deleting level {level}", aux, async lev =>
+                    {
+                        levels.AddRange(await ProcessRelations(lev.Item1, lev.Item2, SynchronizationAction.Delete, level));
+                    }, false);
+                    level++;
+                }
+            });
+        }
+        private static async Task<ICollection<Tuple<ICollection<ItemRelationPreview>, IItemSideRunner>>> ProcessWork(ICollection<ItemPreview> items, WorkRunner runner, SynchronizationAction action)
+        {
+            ICollection<Tuple<ICollection<ItemRelationPreview>, IItemSideRunner>> levels = new List<Tuple<ICollection<ItemRelationPreview>, IItemSideRunner>>();
+            foreach (var item in items)
+            {
+                var runItem = runner.Items.Single(i => i.Id == item.Id);
+
+                foreach (var side in item.Sides)
+                {
+                    var runSide = runner.Sides.Single(s => s.Id == side.Id);
+                    var runItemSide = runItem.Sides.Single(s => s.Side.Id == side.Id);
+                    var map = new Func<IItemRunner, IItemSideRunner, object>((i, s) =>
+                    {
+                        if (runSide.Comparator.GetItemTypes().Item1 == runner.MasterSide.GetItemType())
                         {
-                            if (runSide.Comparator.GetItemTypes().Item1 == runWork.MasterSide.GetItemType())
-                            {
-                                // Master is A in this comparator
-                                if (item.MasterItemExist)
-                                    return runSide.Comparator.MapAToB(i.MasterItem, s.SideItem);
-                            }
-                            else
-                            {
-                                // Master is B in this comparator
-                                if (item.MasterItemExist)
-                                    return runSide.Comparator.MapBToA(i.MasterItem, s.SideItem);
-                            }
-                            return null;
-                        });
-                        if (side.Action == SynchronizationAction.Insert)
-                        {
-                            var newItem = map(runItem, runItemSide);
-                            await runSide.InsertAsync(newItem);
-                            foreach (var subItem in runItemSide.SubItems)
-                                subItem.Sides.First().Side.Source = newItem;
+                            // Master is A in this comparator
+                            if (item.MasterItemExist)
+                                return runSide.Comparator.MapAToB(i.MasterItem, s.SideItem);
                         }
-                        await ProcessRelations(side.Relations, runItemSide);
+                        else
+                        {
+                            // Master is B in this comparator
+                            if (item.MasterItemExist)
+                                return runSide.Comparator.MapBToA(i.MasterItem, s.SideItem);
+                        }
+                        return null;
+                    });
+
+                    if (side.Action == action && side.Action == SynchronizationAction.Insert)
+                    {
+                        var newItem = map(runItem, runItemSide);
+                        await runSide.InsertAsync(newItem);
+                        foreach (var subItem in runItemSide.SubItems)
+                            subItem.Sides.First().Side.Source = newItem;
                     }
+                    else if (side.Action == action && side.Action == SynchronizationAction.Update)
+                    {
+                        var newItem = map(runItem, runItemSide);
+                        await runSide.UpdateAsync(newItem);
+                        foreach (var subItem in runItemSide.SubItems)
+                            subItem.Sides.First().Side.Source = newItem;
+                    }
+                    else if (side.Action == action && side.Action == SynchronizationAction.Delete)
+                    {
+                        await runSide.DeleteAsync(runItemSide.SideItem);
+                    }
+                    levels.Add(new Tuple<ICollection<ItemRelationPreview>, IItemSideRunner>(side.Relations, runItemSide));
                 }
             }
-
-            //var actions = new List<Action>();
-            //await Printer.ForeachAsync($"Running synchronization session '{Name}'", Works, async work =>
-            //{
-            //    var workPre = preview.Works.FirstOrDefault(w => w.Id == work.Id);
-            //    var act = new Action(() => { });
-            //    await work.RunAsync(workPre, act);
-            //});
-            //foreach (var act in actions)
-            //    act();
+            return levels;
         }
-        private static async Task ProcessRelations(ICollection<ItemRelationPreview> relations, IItemSide runItemSide)
+        private static async Task<ICollection<Tuple<ICollection<ItemRelationPreview>, IItemSideRunner>>> ProcessRelations(ICollection<ItemRelationPreview> relations, IItemSideRunner runItemSide, SynchronizationAction action, int level = 1)
         {
+            if (!relations.Any()) return Enumerable.Empty<Tuple<ICollection<ItemRelationPreview>, IItemSideRunner>>().ToList();
+            List<Tuple<ICollection<ItemRelationPreview>, IItemSideRunner>> nextLevels = new List<Tuple<ICollection<ItemRelationPreview>, IItemSideRunner>>();
             foreach (var rel in relations)
             {
                 var runSubItem = runItemSide.SubItems.Single(si => si.Id == rel.Id);
                 var runSubItemSide = runSubItem.Sides.First();
                 var runSubSide = runSubItemSide.Side;
-                var subMap = new Func<IItem, IItemSide, object>((i, s) =>
+                var subMap = new Func<IItemRunner, IItemSideRunner, object>((i, s) =>
                 {
                     if (runSubSide.Comparator.GetItemTypes().Item1 == runSubItem.MasterItem.GetType())
                     {
@@ -115,15 +172,28 @@ namespace Fuxion.Synchronization
                     }
                     return null;
                 });
-                if (rel.Action == SynchronizationAction.Insert)
+                if (rel.Action == action && rel.Action == SynchronizationAction.Insert)
                 {
                     var newItem = subMap(runSubItem, runSubItemSide);
                     await runSubSide.InsertAsync(newItem);
                     foreach (var subItem in runSubItemSide.SubItems)
                         subItem.Sides.First().Side.Source = newItem;
                 }
-                await ProcessRelations(rel.Relations, runSubItemSide);
+                else if (rel.Action == action && rel.Action == SynchronizationAction.Update)
+                {
+                    var newItem = subMap(runSubItem, runSubItemSide);
+                    await runSubSide.UpdateAsync(newItem);
+                    foreach (var subItem in runSubItemSide.SubItems)
+                        subItem.Sides.First().Side.Source = newItem;
+                }
+                else if (rel.Action == action && rel.Action == SynchronizationAction.Delete)
+                {
+                    await runSubSide.DeleteAsync(runSubItemSide.SideItem);
+                }
+                if (rel.Relations.Any())
+                    nextLevels.Add(new Tuple<ICollection<ItemRelationPreview>, IItemSideRunner>(rel.Relations, runSubItemSide));
             }
+            return nextLevels;
         }
     }
 }

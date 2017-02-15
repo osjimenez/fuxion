@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Synchronization
 {
-    internal interface ISideRunner : ISideDefinition
+    internal interface ISideRunner
     {
         Guid Id { get; }
-        new string Name { get; set; }
+        ISideDefinition Definition { get; set; }
         object Source { get; set; }
         ICollection<LoadedItem> Entries { get; set; }
         IComparatorRunner Comparator { get; set; }
