@@ -1,30 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Fuxion.Synchronization
 {
-    public class SynchronizationSession
+    internal class SessionRunner
     {
-        internal Guid Id { get; } = Guid.NewGuid();
-        public string Name { get; set; }
-        public ICollection<SynchronizationWork> Works { get; set; } = new List<SynchronizationWork>();
-        public Task<SynchronizationSessionPreview> PreviewAsync()
+        public SessionRunner(SessionDefinition definition)
         {
-            return Printer.IndentAsync($"Previewing synchronization session '{Name}'",
-                async () =>
-            {
-                var res = new SynchronizationSessionPreview(Id);
-                var tasks = Works.Select(w => w.PreviewAsync());
-                var resTask = await Task.WhenAll(tasks);
-                res.Works = resTask;
-                return res;
-            });
+            this.definition = definition;
         }
-        public async Task RunAsync(SynchronizationSessionPreview preview)
+        SessionDefinition definition;
+        ICollection<WorkRunner> works = new List<WorkRunner>();
+        public Guid Id { get { return definition.Id; } }
+        public Task<SessionPreview> PreviewAsync()
+        {
+            return Printer.IndentAsync($"Previewing synchronization session '{definition.Name}'",
+                async () =>
+                {
+                    var res = new SessionPreview(definition.Id);
+                    works = definition.Works.Select(d => new WorkRunner(d)).ToList();
+                    var tasks = works.Select(w => w.PreviewAsync());
+                    var resTask = await Task.WhenAll(tasks);
+                    res.Works = resTask;
+                    return res;
+                });
+        }
+        public async Task RunAsync(SessionPreview preview)
         {
             // 1 - Insert 1º level
             // 2 - Update 1º level
@@ -40,19 +44,19 @@ namespace Fuxion.Synchronization
 
             List<Task> tasks = new List<Task>();
 
-            foreach(var work in preview.Works)
+            foreach (var work in preview.Works)
             {
-                var runWork = Works.Single(w => w.Id == work.Id);
-                foreach(var item in work.Items)
+                var runWork = works.Single(w => w.Id == work.Id);
+                foreach (var item in work.Items)
                 {
                     var runItem = runWork.Items.Single(i => i.Id == item.Id);
-                    foreach(var side in item.Sides)
+                    foreach (var side in item.Sides)
                     {
                         var runSide = runWork.InternalSides.Single(s => s.Id == side.Id);
                         var runItemSide = runItem.Sides.Single(s => s.Side.Id == side.Id);
-                        var map = new Func<ISynchronizationItem, ISynchronizationItemSide, object>((i, s) =>
+                        var map = new Func<IItem, IItemSide, object>((i, s) =>
                         {
-                            if (runSide.Comparator.GetItemTypes().Item1 == runWork.InternalMasterSide.GetItemType())
+                            if (runSide.Comparator.GetItemTypes().Item1 == runWork.MasterSide.GetItemType())
                             {
                                 // Master is A in this comparator
                                 if (item.MasterItemExist)
@@ -88,15 +92,14 @@ namespace Fuxion.Synchronization
             //foreach (var act in actions)
             //    act();
         }
-
-        private static async Task ProcessRelations(ICollection<SynchronizationItemRelationPreview> relations, ISynchronizationItemSide runItemSide)
+        private static async Task ProcessRelations(ICollection<ItemRelationPreview> relations, IItemSide runItemSide)
         {
             foreach (var rel in relations)
             {
                 var runSubItem = runItemSide.SubItems.Single(si => si.Id == rel.Id);
                 var runSubItemSide = runSubItem.Sides.First();
                 var runSubSide = runSubItemSide.Side;
-                var subMap = new Func<ISynchronizationItem, ISynchronizationItemSide, object>((i, s) =>
+                var subMap = new Func<IItem, IItemSide, object>((i, s) =>
                 {
                     if (runSubSide.Comparator.GetItemTypes().Item1 == runSubItem.MasterItem.GetType())
                     {

@@ -24,17 +24,17 @@ namespace Fuxion.Test
             var saltoRepo = new RepoCRM();
             var presenceRepo = new RepoERP();
             // Create sync session
-            var ses = new SynchronizationSession
+            var ses = new SessionDefinition
             {
                 Name = "Test",
                 Works = new[]
                 {
-                    new SynchronizationWork
+                    new WorkDefinition
                     {
                         Name = "Users",
                         #region Sides
-                        Sides = new ISynchronizationSide[] {
-                            new SynchronizationSide<RepoFuxion, UserFuxion, int>
+                        Sides = new ISideDefinition[] {
+                            new SideDefinition<RepoFuxion, UserFuxion, int>
                             {
                                 IsMaster = true,
                                 Name = "FUXION",
@@ -48,7 +48,7 @@ namespace Fuxion.Test
                                 OnDelete = (s, i) => s.Delete(i),
                                 OnUpdate = (s, i) => { }
                             },
-                            new SynchronizationSide<UserFuxion, SkillFuxion, int> {
+                            new SideDefinition<UserFuxion, SkillFuxion, int> {
                                 Name = "FUXION-SKILLS",
                                 Source = null,
                                 OnLoad = s => s.Skills,
@@ -59,7 +59,7 @@ namespace Fuxion.Test
                                 OnDelete = (s, i) => s.Skills.Remove(i),
                                 OnUpdate = (s, i) => { }
                             },
-                            new SynchronizationSide<SkillFuxion, SkillPropertyFuxion, int> {
+                            new SideDefinition<SkillFuxion, SkillPropertyFuxion, int> {
                                 Name = "FUXION-PROPERTIES",
                                 Source = null,
                                 OnLoad = s => s.Properties,
@@ -70,7 +70,7 @@ namespace Fuxion.Test
                                 OnDelete = (s, i) => s.Properties.Remove(i),
                                 OnUpdate = (s, i) => { }
                             },
-                            new SynchronizationSide<RepoCRM, UserCRM, int>
+                            new SideDefinition<RepoCRM, UserCRM, int>
                             {
                                 //IsMaster = true,
                                 Name = "CRM",
@@ -83,7 +83,7 @@ namespace Fuxion.Test
                                 OnDelete = (s, i) => s.Delete(i),
                                 OnUpdate = (s, i) => { }
                             },
-                            new SynchronizationSide<UserCRM, SkillCRM, int> {
+                            new SideDefinition<UserCRM, SkillCRM, int> {
                                 Name = "CRM-SKILLS",
                                 Source = null,
                                 OnLoad = s => s.Skills,
@@ -97,7 +97,7 @@ namespace Fuxion.Test
                                 OnDelete = (s, i) => s.Skills.Remove(i),
                                 OnUpdate = (s, i) => { }
                             },
-                            new SynchronizationSide<SkillCRM, SkillPropertyCRM, int> {
+                            new SideDefinition<SkillCRM, SkillPropertyCRM, int> {
                                 Name = "CRM-PROPERTIES",
                                 Source = null,
                                 OnLoad = s => s.Properties,
@@ -111,7 +111,7 @@ namespace Fuxion.Test
                                 OnDelete = (s, i) => s.Properties.Remove(i),
                                 OnUpdate = (s, i) => { }
                             },
-                            new SynchronizationSide<RepoERP, UserERP, int>
+                            new SideDefinition<RepoERP, UserERP, int>
                             {
                                 //IsMaster = true,
                                 Name = "ERP",
@@ -127,8 +127,8 @@ namespace Fuxion.Test
                         },
                         #endregion
                         #region Comparators
-                        Comparators = new ISynchronizationComparator[] {
-                            new SynchronizationComparator<UserFuxion, UserCRM, int>
+                        Comparators = new IComparatorDefinition[] {
+                            new ComparatorDefinition<UserFuxion, UserCRM, int>
                             {
                                 OnSelectKeyA = u => u.Id,
                                 OnSelectKeyB = u => u.Id,
@@ -157,7 +157,7 @@ namespace Fuxion.Test
                                         p.AddProperty(nameof(a.Age), a.Age, b.Age);
                                 }
                             },
-                            new SynchronizationComparator<UserERP, UserFuxion, int>
+                            new ComparatorDefinition<UserERP, UserFuxion, int>
                             {
                                 OnSelectKeyA = u=>u.Id,
                                 OnSelectKeyB = u=>u.Id,
@@ -186,7 +186,7 @@ namespace Fuxion.Test
                                         p.AddProperty(nameof(a.Age), a.Age, b.Age);
                                 }
                             },
-                            new SynchronizationComparator<SkillERP, SkillFuxion, int>
+                            new ComparatorDefinition<SkillERP, SkillFuxion, int>
                             {
                                 OnSelectKeyA = u => u.Id,
                                 OnSelectKeyB = u => u.Id,
@@ -211,7 +211,7 @@ namespace Fuxion.Test
                                         p.AddProperty(nameof(a.Name), a.Name, b.Name);
                                 }
                             },
-                            new SynchronizationComparator<UserCRM, UserERP, int>
+                            new ComparatorDefinition<UserCRM, UserERP, int>
                             {
                                 OnSelectKeyA = u=>u.Id,
                                 OnSelectKeyB = u=>u.Id,
@@ -240,7 +240,7 @@ namespace Fuxion.Test
                                         p.AddProperty(nameof(a.Age), a.Age, b.Age);
                                 }
                             },
-                            new SynchronizationComparator<SkillCRM, SkillFuxion, int>
+                            new ComparatorDefinition<SkillCRM, SkillFuxion, int>
                             {
                                 OnSelectKeyA = u => u.Id,
                                 OnSelectKeyB = u => u.Id,
@@ -265,7 +265,7 @@ namespace Fuxion.Test
                                         p.AddProperty(nameof(a.Name), a.Name, b.Name);
                                 }
                             },
-                            new SynchronizationComparator<SkillPropertyCRM, SkillPropertyFuxion, int>
+                            new ComparatorDefinition<SkillPropertyCRM, SkillPropertyFuxion, int>
                             {
                                 OnSelectKeyA = u => u.Id,
                                 OnSelectKeyB = u => u.Id,
@@ -292,42 +292,19 @@ namespace Fuxion.Test
                             },
                         },
                         #endregion
-                        #region Subworks
-                        //SubWorks = new []
-                        //{
-                        //    new SynchronizationWork
-                        //    {
-                        //        Name = "Skills relations",
-                        //        Sides = new ISynchronizationSide[]
-                        //        {
-                        //            new SynchronizationSide<UserFuxion,SkillFuxion,int>
-                        //            {
-                        //                IsMaster = true,
-                        //                Name = "FUXION",
-                        //                Source = null,
-                        //                PluralItemTypeName = "Skills",
-                        //                SingularItemTypeName = "Skill",
-                        //                OnNaming = user => user.Name,
-                        //                OnLoad = user => user.Skills,
-                        //                OnDelete = (user, skill) => user.Skills.Remove(skill),
-                        //                OnInsert = (user, skill) => user.Skills.Add(skill),
-                        //                OnUpdate = (user, skill) => { }                                        
-                        //            }
-                        //        }
-                        //    }
-                        //}
-                        #endregion
-                    }//.AddSubWork<UserFuxion,SkillFuxion,int>(null)
+                    }
                 }
             };
 
+            var man = new SynchronizationManager();
             // Preview synchronization
-            var res = ses.PreviewAsync().Result;
+            //var res = ses.PreviewAsync().Result;
+            var res = man.PreviewAsync(ses).Result;
 
-            //res.Print();
+            res.Print();
 
             // Serialize
-            DataContractSerializer ser = new DataContractSerializer(typeof(SynchronizationSessionPreview));
+            DataContractSerializer ser = new DataContractSerializer(typeof(SessionPreview));
             var str = new MemoryStream();
             ser.WriteObject(str, res);
             str.Position = 0;
@@ -347,10 +324,11 @@ namespace Fuxion.Test
             str.Position = 0;
 
             // Deserialize
-            var res2 = (SynchronizationSessionPreview)ser.ReadObject(str);
+            var res2 = (SessionPreview)ser.ReadObject(str);
 
             // Run Sync
-            ses.RunAsync(res2).Wait();
+            man.RunAsync(res2).Wait();
+            //ses.RunAsync(res2).Wait();
 
             // Check results
             //Assert.Equal(6, res.First().Count());
