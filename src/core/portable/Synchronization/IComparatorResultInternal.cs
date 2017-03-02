@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Synchronization
 {
-    internal interface IComparatorResultInternal : IComparatorResult
+    internal interface IComparatorResultInternal //: IComparatorResult
     {
         object Key { get; }
         object MasterItem { get; }
         object SideItem { get; }
-        ICollection<IPropertyRunner> Properties { get; }
+        ICollection<IPropertyRunner> Properties { get; set; }
         ICollection<ISideRunner> SubSides { get; set; }
     }
 }

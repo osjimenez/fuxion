@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Synchronization
 {
-    public interface ISideDefinition
+    public interface ISide
     {
         bool IsMaster { get; set; }
         string Name { get; set; }
-        //string SingularItemTypeName { get; set; }
-        //string PluralItemTypeName { get; set; }
+        string SingularItemTypeName { get; set; }
+        string PluralItemTypeName { get; set; }
+        bool ItemTypeIsMale { get; set; }
     }
 }

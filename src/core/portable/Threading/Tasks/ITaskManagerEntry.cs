@@ -18,5 +18,6 @@ namespace Fuxion.Threading.Tasks
         event EventHandler Canceled;
         void Cancel();
         void Start();
+        CancellationTokenSource CancellationTokenSource { get; }
     }
 }

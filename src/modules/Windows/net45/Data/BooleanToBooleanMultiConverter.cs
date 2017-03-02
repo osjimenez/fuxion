@@ -9,21 +9,15 @@ using System.Windows.Data;
 
 namespace Fuxion.Windows.Data
 {
-    public enum MultiBooleanConverterMode
-    {
-        AllTrue, AnyTrue, AllFalse, AnyFalse
-    }
-    public sealed class BooleanToVisibilityMultiConverter : IMultiValueConverter
+    public sealed class BooleanToBooleanMultiConverter : IMultiValueConverter
     {
         public MultiBooleanConverterMode Mode { get; set; } = MultiBooleanConverterMode.AllTrue;
-        public Visibility TrueValue { get; set; } = Visibility.Visible;
-        public Visibility FalseValue { get; set; } = Visibility.Collapsed;
-        public bool AllowNullValues { get; set; }
-        public bool NullValue { get; set; }
+        public bool TrueValue { get; set; } = true;
+        public bool FalseValue { get; set; } = false;
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if (!values.All(v => v is bool) && !AllowNullValues) throw new NotSupportedException($"Not all values are booleans");
-            var vals = values.Select(o => o == null || o == DependencyProperty.UnsetValue ? NullValue : (bool)o);
+            if (!values.All(v => v is bool)) throw new NotSupportedException($"Not all values are booleans");
+            var vals = values.Cast<bool>();
             switch (Mode)
             {
                 case MultiBooleanConverterMode.AllTrue:

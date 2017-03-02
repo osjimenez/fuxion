@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Synchronization
 {
-    public interface IComparatorDefinition { }
+    public interface IComparator { }
 }

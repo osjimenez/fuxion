@@ -5,11 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 namespace Fuxion.Synchronization
 {
-    public class WorkDefinition
+    public class Work
     {
         public string Name { get; set; }
-        public IEnumerable<ISideDefinition> Sides { get; set; }
-        public IEnumerable<IComparatorDefinition> Comparators { get; set; }
+        public IEnumerable<ISide> Sides { get; set; }
+        public IEnumerable<IComparator> Comparators { get; set; }
         //internal Guid Id { get; } = Guid.NewGuid();
         //internal IEnumerable<ISideRunner> InternalSides { get; set; }
         //internal IList<IItem> Items { get; set; } = new List<IItem>();

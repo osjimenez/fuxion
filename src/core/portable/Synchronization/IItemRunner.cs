@@ -11,6 +11,7 @@ namespace Fuxion.Synchronization
         Guid Id { get; }
         object MasterItem { get; }
         string MasterName { get; }
-        IEnumerable<IItemSideRunner> Sides { get; }
+        ISideRunner MasterRunner { get; }
+        IEnumerable<IItemSideRunner> SideRunners { get; }
     }
 }

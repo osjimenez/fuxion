@@ -9,25 +9,25 @@ namespace Fuxion.Synchronization
 {
     public class WorkRunner
     {
-        public WorkRunner(WorkDefinition definition)
+        public WorkRunner(Work definition)
         {
             this.definition = definition;
             Sides = definition.Sides.Select(d => d.CreateRunner()).ToList();
             Comparators = definition.Comparators.Select(c => c.CreateRunner()).ToList();
         }
-        WorkDefinition definition;
+        Work definition;
         internal Guid Id { get; } = Guid.NewGuid();
         internal ICollection<ISideRunner> Sides { get; set; }
         internal ICollection<IItemRunner> Items { get; set; } = new List<IItemRunner>();
         internal ICollection<IComparatorRunner> Comparators { get; set; }
         internal ISideRunner MasterSide { get; set; }
-        internal Task<WorkPreview> PreviewAsync()
+        internal Task<WorkPreview> PreviewAsync(bool includeNoneActionItems = false)
         {
             return Printer.IndentAsync($"Work '{definition.Name}'", async () =>
             {
                 // Get master side
                 var masters = Sides.Where(s => s.Definition.IsMaster);
-                if (masters.Count() != 1) throw new ArgumentException($"One, and only one '{nameof(ISideDefinition)}' must be the master side");
+                if (masters.Count() != 1) throw new ArgumentException($"One, and only one '{nameof(ISide)}' must be the master side");
                 MasterSide = masters.Single();
                 // Determine what sides are sub-sides of others
                 Action<ISideRunner> populateSubSides = null;
@@ -66,7 +66,7 @@ namespace Fuxion.Synchronization
                         var ct = c.GetItemTypes();
                         return (mts.Contains(ct.Item1) && ct.Item2 == st) || (mts.Contains(ct.Item2) && ct.Item1 == st);
                     }).Cast<IComparatorRunner>();
-                    if (cc.Count() != 1) throw new ArgumentException($"One, and only one '{nameof(ISideDefinition)}' must be added for master side '{MasterSide.Definition.Name}' and each side");
+                    if (cc.Count() != 1) throw new ArgumentException($"One, and only one '{nameof(ISide)}' must be added for master side '{MasterSide.Definition.Name}' and each side");
                     side.Comparator = cc.Single();
                     Printer.WriteLine($"Comparator for side '{side.Definition.Name}' is '{side.Comparator.GetItemTypes().Item1.Name}' <> '{side.Comparator.GetItemTypes().Item2.Name}'");
                     foreach (var subSide in side.SubSides)
@@ -122,6 +122,7 @@ namespace Fuxion.Synchronization
                         .SelectMany(side => side.Results.Select(result => new
                         {
                             Key = result.Key,
+                            MasterRunner = side.SearchMasterSubSide(MasterSide),
                             MasterItemType = side.SearchMasterSubSide(MasterSide).GetItemType(),
                             MasterItem = result.MasterItem,
                             MasterName = side.SearchMasterSubSide(MasterSide).GetItemName(result.MasterItem),
@@ -139,7 +140,7 @@ namespace Fuxion.Synchronization
                         // Create item
                         var fir = gro.First(); // Use first element to get master info, all items in this group has the same master item
                         var itemType = typeof(ItemRunner<>).MakeGenericType(fir.MasterItemType);
-                        var item = (IItemRunner)Activator.CreateInstance(itemType, fir.MasterItem, fir.MasterName);
+                        var item = (IItemRunner)Activator.CreateInstance(itemType, fir.MasterRunner, fir.MasterItem, fir.MasterName);
                         foreach (var i in gro)
                         {
                             // Create side
@@ -149,7 +150,7 @@ namespace Fuxion.Synchronization
                                 ((IList<IPropertyRunner>)sideItem.Properties).Add(pro);
                             sideItem.SubItems = analyzeResults(i.SideSubSides);
                             // Add side to item
-                            ((IList<IItemSideRunner>)item.Sides).Add(sideItem);
+                            ((IList<IItemSideRunner>)item.SideRunners).Add(sideItem);
                         }
                         // Add item to work
                         res.Add(item);
@@ -160,58 +161,73 @@ namespace Fuxion.Synchronization
                 Printer.WriteLine("Creating preview result ...");
                 // Create preview response
                 var preWork = new WorkPreview(Id);
+                preWork.Name = definition.Name;
+                preWork.MasterSideName = MasterSide.Definition.Name;
                 var preItems = new List<ItemPreview>();
                 foreach (var item in Items)
                 {
-                    var preItem = new ItemPreview(item.Id);
+                    var preItem = new ItemPreview(preWork, item.Id);
                     preItem.MasterItemExist = item.MasterItem != null;
                     preItem.MasterItemName = item.MasterName;
+
+                    preItem.SingularMasterTypeName = MasterSide.Definition.SingularItemTypeName;
+                    preItem.PluralMasterTypeName = MasterSide.Definition.PluralItemTypeName;
+                    preItem.MasterTypeIsMale = MasterSide.Definition.ItemTypeIsMale;
+
                     var preSides = new List<ItemSidePreview>();
-                    foreach (var side in item.Sides)
+                    foreach (var side in item.SideRunners)
                     {
-                        var preSide = new ItemSidePreview(side.Side.Id);
+                        var preSide = new ItemSidePreview(preItem, side.Side.Id);
                         preSide.Key = side.Key.ToString();
                         preSide.SideItemExist = side.SideItem != null;
                         preSide.SideItemName = side.SideItemName;
+                        preSide.SingularSideTypeName = side.Side.Definition.SingularItemTypeName;
+                        preSide.PluralSideTypeName = side.Side.Definition.PluralItemTypeName;
+                        preSide.ItemTypeIsMale = side.Side.Definition.ItemTypeIsMale;
                         preSide.SideName = side.Name;
-                        //var prePros = new List<SynchronizationPropertyPreview>();
                         foreach (var pro in side.Properties)
                         {
-                            var prePro = new PropertyPreview();
-                            prePro.MasterValue = pro.MasterValue?.ToString();
-                            prePro.SideValue = pro.SideValue?.ToString();
+                            var prePro = new PropertyPreview(preSide);
+                            prePro.MasterValue = pro.MasterNamingFunction(pro.MasterValue);
+                            prePro.SideValue = pro.SideNamingFunction(pro.SideValue);
                             prePro.PropertyName = pro.PropertyName;
                             preSide.Properties.Add(prePro);
-                            //prePros.Add(prePro);
                         }
-                        //preSide.Properties = prePros;
-                        Func<ICollection<IItemRunner>, ICollection<ItemRelationPreview>> processSubItems = null;
-                        processSubItems = new Func<ICollection<IItemRunner>, ICollection<ItemRelationPreview>>(items => {
+                        Func<object, ICollection<IItemRunner>, ICollection<ItemRelationPreview>> processSubItems = null;
+                        processSubItems = new Func<object, ICollection<IItemRunner>, ICollection<ItemRelationPreview>>((parent,items) => {
                             var res = new List<ItemRelationPreview>();
                             foreach (var i in items)
                             {
-                                var rel = new ItemRelationPreview(i.Id);
+                                ItemRelationPreview rel;
+                                if (parent is ItemSidePreview)
+                                    rel = new ItemRelationPreview(parent as ItemSidePreview,i.Id);
+                                else
+                                    rel = new ItemRelationPreview(parent as ItemRelationPreview, i.Id);
                                 rel.MasterItemExist = i.MasterItem != null;
                                 rel.MasterItemName = i.MasterName;
-                                var subSide = i.Sides.Single();
+                                rel.SingularMasterTypeName =  i.MasterRunner.Definition.SingularItemTypeName;
+                                rel.PluralMasterTypeName= i.MasterRunner.Definition.PluralItemTypeName;
+                                rel.SingularSideTypeName = i.SideRunners.Single().Side.Definition.SingularItemTypeName;
+                                rel.PluralSideTypeName = i.SideRunners.Single().Side.Definition.PluralItemTypeName;
+                                var subSide = i.SideRunners.Single();
                                 rel.Key = subSide.Key.ToString();
                                 rel.SideItemExist = subSide.SideItem != null;
                                 rel.SideItemName = subSide.SideItemName;
                                 rel.SideName = subSide.Name;
                                 foreach (var pro in subSide.Properties)
                                 {
-                                    var prePro = new PropertyPreview();
-                                    prePro.MasterValue = pro.MasterValue?.ToString();
-                                    prePro.SideValue = pro.SideValue?.ToString();
+                                    var prePro = new PropertyPreview(rel);
+                                    prePro.MasterValue = pro.MasterNamingFunction(pro.MasterValue);
+                                    prePro.SideValue = pro.SideNamingFunction(pro.SideValue);
                                     prePro.PropertyName = pro.PropertyName;
                                     rel.Properties.Add(prePro);
                                 }
-                                rel.Relations = processSubItems(subSide.SubItems);
+                                rel.Relations = processSubItems(rel, subSide.SubItems);
                                 res.Add(rel);
                             }
                             return res;
                         });
-                        preSide.Relations = processSubItems(side.SubItems);
+                        preSide.Relations = processSubItems(preSide, side.SubItems);
                         preSides.Add(preSide);
                     }
                     preItem.Sides = preSides;
@@ -245,6 +261,39 @@ namespace Fuxion.Synchronization
                             }
                         });
                         act(side.Relations);
+                        //if (side.Relations.Any(rel => rel.Action != SynchronizationAction.None))
+                        //    side.Action = SynchronizationAction.Update;
+                    }
+                }
+                // Clean none-action items if proceed
+                if (!includeNoneActionItems)
+                {
+                    foreach(var item in preWork.Items.ToList())
+                    {
+                        foreach(var side in item.Sides.ToList())
+                        {
+                            Action<ICollection<ItemRelationPreview>> reduceRelations = null;
+                            reduceRelations = new Action<ICollection<ItemRelationPreview>>(relations =>
+                            {
+                                foreach (var rel in relations.ToList())
+                                {
+                                    reduceRelations(rel.Relations);
+                                    if(rel.Action == SynchronizationAction.None && !rel.Relations.Any())
+                                    {
+                                        relations.Remove(rel);
+                                    }
+                                }
+                            });
+                            reduceRelations(side.Relations);
+                            if (side.Action == SynchronizationAction.None && !side.Relations.Any())
+                            {
+                                item.Sides.Remove(side);
+                            }
+                        }
+                        if (!item.Sides.Any())
+                        {
+                            preWork.Items.Remove(item);
+                        }
                     }
                 }
                 return preWork;

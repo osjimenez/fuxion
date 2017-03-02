@@ -170,6 +170,7 @@ namespace Fuxion.ComponentModel
             // y este crea el objeto sin estado, no se llamará al constructor ni se crearán las instancias de los campos de la clase.
             PropertiesDictionary = new Dictionary<string, object>();
             Synchronizer = Factory.Get<INotifierSynchronizer>();
+            OnInitialize();
         }
         [EditorBrowsable(EditorBrowsableState.Never)]
         [OnDeserializing]
@@ -178,7 +179,10 @@ namespace Fuxion.ComponentModel
             //Este método será llamado al deserializar la clase en vez del contructor
             PropertiesDictionary = new Dictionary<string, object>();
             Synchronizer = Factory.Get<INotifierSynchronizer>();
+            OnInitialize();
         }
+        protected virtual void OnInitialize() { }
+
         #region Events
         event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged { add { PropertyChangedEvent += value; } remove { PropertyChangedEvent -= value; } }
         //event PropertyChangingEventHandler INotifyPropertyChanging.PropertyChanging { add { PropertyChangingEvent += value; } remove { PropertyChangingEvent -= value; } }

@@ -23,6 +23,7 @@
   </metadata>
   <files>
     <file src="bin\Release\Fuxion.dll" target="lib\portable-net45+netcore50+win8\Fuxion.dll" />
+    <file src="bin\Release\es\Fuxion.resources.dll" target="lib\portable-net45+netcore50+win8\es\Fuxion.resources.dll" />
     <file src="bin\Release\Fuxion.pdb" target="lib\portable-net45+netcore50+win8\Fuxion.pdb" />
     <!--<file src="bin\Release\Fuxion.dll" target="lib\portable-net45+sl5+netcore45+wpa81+wp8\Fuxion.dll" />
     <file src="bin\Release\Fuxion.pdb" target="lib\portable-net45+sl5+netcore45+wpa81+wp8\Fuxion.pdb" />-->
@@ -30,5 +31,6 @@
     <file src="bin\Release\Fuxion.pdb" target="lib\net45\Fuxion.pdb" />
     <file src="bin\Release\Fuxion-net45.dll" target="lib\net45\Fuxion-net45.dll" />
     <file src="bin\Release\Fuxion-net45.pdb" target="lib\net45\Fuxion-net45.pdb" />
+    <file src="bin\Release\es\Fuxion.resources.dll" target="lib\net45\es\Fuxion.resources.dll" />
   </files>
 </package>

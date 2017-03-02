@@ -54,7 +54,7 @@ namespace System.Reflection
         }
         public static bool IsNullable(this Type me)
         {
-            return me.IsClass || me.IsGenericType && me.GetGenericTypeDefinition() == typeof(Nullable<>);
+            return me.IsClass || me.IsInterface || me.IsGenericType && me.GetGenericTypeDefinition() == typeof(Nullable<>);
         }
     }
 }

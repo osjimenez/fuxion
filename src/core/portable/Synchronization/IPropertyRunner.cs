@@ -11,5 +11,9 @@ namespace Fuxion.Synchronization
         string PropertyName { get; }
         object MasterValue { get; }
         object SideValue { get; }
+        Func<object, string> MasterNamingFunction { get; }
+        Func<object, string> SideNamingFunction { get; }
+
+        IPropertyRunner Invert();
     }
 }

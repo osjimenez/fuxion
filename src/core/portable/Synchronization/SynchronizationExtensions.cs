@@ -9,11 +9,11 @@ namespace Fuxion.Synchronization
 {
     internal static class SynchronizationExtensions
     {
-        internal static ISideRunner CreateRunner(this ISideDefinition me)
+        internal static ISideRunner CreateRunner(this ISide me)
         {
             return (ISideRunner)Activator.CreateInstance(typeof(SideRunner<,,>).MakeGenericType(me.GetType().GetTypeInfo().GenericTypeArguments), me);
         }
-        internal static IComparatorRunner CreateRunner(this IComparatorDefinition me)
+        internal static IComparatorRunner CreateRunner(this IComparator me)
         {
             return (IComparatorRunner)Activator.CreateInstance(typeof(ComparatorRunner<,,>).MakeGenericType(me.GetType().GetTypeInfo().GenericTypeArguments), me);
         }
@@ -71,7 +71,7 @@ namespace Fuxion.Synchronization
             var args = me.GetType().GetTypeInfo().GenericTypeArguments;
             return new Tuple<Type, Type>(args[0], args[1]);
         }
-        internal static Type GetKeyType(this IComparatorDefinition me)
+        internal static Type GetKeyType(this IComparator me)
         {
             return me.GetType().GetTypeInfo().GenericTypeArguments[2];
         }

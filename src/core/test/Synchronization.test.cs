@@ -11,36 +11,50 @@ using Xunit;
 using Xunit.Abstractions;
 using System.Xml;
 using System.Xml.Linq;
+using Fuxion.Test.Resources;
+using System.Threading;
+using System.Globalization;
+using System.Linq.Expressions;
+using Fuxion.Collections.Generic;
 
 namespace Fuxion.Test
 {
     public class SynchronizationTest : BaseTest
     {
-        public SynchronizationTest(ITestOutputHelper output) : base(output) { }
+        public SynchronizationTest(ITestOutputHelper output) : base(output) {
+            this.output = output;
+        }
+        ITestOutputHelper output;
         [Fact(DisplayName = "Synchronization - Demo")]
         public void Demo()
         {
+            var es = new CultureInfo("ES-es");
+            Thread.CurrentThread.CurrentCulture = es;
+            Thread.CurrentThread.CurrentUICulture = es;
+
+            //Printer.WriteLineAction = m => { };
             var fuxionRepo = new RepoFuxion();
             var crmRepo = new RepoCRM();
             var erpRepo = new RepoERP();
             // Create sync session
-            var ses = new SessionDefinition
+            var ses = new Session
             {
                 Name = "Test",
                 Works = new[]
                 {
-                    new WorkDefinition
+                    new Work
                     {
                         Name = "Users",
                         #region Sides
-                        Sides = new ISideDefinition[] {
-                            new SideDefinition<RepoFuxion, UserFuxion, int>
+                        Sides = new ISide[] {
+                            new Side<RepoFuxion, UserFuxion, int>
                             {
                                 IsMaster = true,
                                 Name = "FUXION",
                                 Source = fuxionRepo,
-                                //PluralItemTypeName = "Users",
-                                //SingularItemTypeName = "User",
+                                PluralItemTypeName = Strings.Users,
+                                SingularItemTypeName = Strings.User,
+                                ItemTypeIsMale = true,
 
                                 OnLoad = s => s.Get().ToList(),
                                 OnNaming = i => i.Name,
@@ -48,47 +62,52 @@ namespace Fuxion.Test
                                 OnDelete = (s, i) => s.Delete(i),
                                 OnUpdate = (s, i) => { }
                             },
-                            new SideDefinition<UserFuxion, SkillFuxion, int> {
-                                Name = "FUXION-SKILLS",
+                            new Side<UserFuxion, SkillFuxion, int> {
+                                Name = "%sourceName%'s skills",
                                 Source = null,
                                 OnLoad = s => s.Skills,
-                                //PluralItemTypeName = "Skills",
-                                //SingularItemTypeName = "Skill",
+                                PluralItemTypeName = Strings.Skills,
+                                SingularItemTypeName = Strings.Skill,
+                                ItemTypeIsMale = false,
+
                                 OnNaming = i => i.Name,
                                 OnInsert = (s, i) => s.Skills.Add(i),
                                 OnDelete = (s, i) => s.Skills.Remove(i),
                                 OnUpdate = (s, i) => { }
                             },
-                            new SideDefinition<SkillFuxion, SkillPropertyFuxion, int> {
-                                Name = "FUXION-PROPERTIES",
+                            new Side<SkillFuxion, CharacteristicFuxion, int> {
+                                Name = "%sourceName%'s characteristics",
                                 Source = null,
                                 OnLoad = s => s.Properties,
-                                //PluralItemTypeName = "Properties",
-                                //SingularItemTypeName = "Property",
+                                PluralItemTypeName = Strings.Characteristic,
+                                SingularItemTypeName = Strings.Characteristics,
+                                ItemTypeIsMale = false,
                                 OnNaming = i => i.Name,
                                 OnInsert = (s, i) => s.Properties.Add(i),
                                 OnDelete = (s, i) => s.Properties.Remove(i),
                                 OnUpdate = (s, i) => { }
                             },
-                            new SideDefinition<RepoCRM, UserCRM, int>
+                            new Side<RepoCRM, UserCRM, int>
                             {
                                 //IsMaster = true,
                                 Name = "CRM",
                                 Source = crmRepo,
                                 OnLoad = s => s.Get().ToList(),
-                                //PluralItemTypeName = "Users",
-                                //SingularItemTypeName = "User",
+                                PluralItemTypeName = Strings.Users,
+                                SingularItemTypeName = Strings.User,
+                                ItemTypeIsMale = true,
                                 OnNaming = i => i.Name,
                                 OnInsert = (s, i) => s.Add(i),
                                 OnDelete = (s, i) => s.Delete(i),
                                 OnUpdate = (s, i) => { }
                             },
-                            new SideDefinition<UserCRM, SkillCRM, int> {
-                                Name = "CRM-SKILLS",
+                            new Side<UserCRM, SkillCRM, int> {
+                                Name = "%sourceName%'s skills",
                                 Source = null,
                                 OnLoad = s => s.Skills,
-                                //PluralItemTypeName = "Skills",
-                                //SingularItemTypeName = "Skill",
+                                PluralItemTypeName = Strings.Skills,
+                                SingularItemTypeName = Strings.Skill,
+                                ItemTypeIsMale = true,
                                 OnNaming = i => i.Name,
                                 OnInsert = (s, i) => {
                                     if (s.Skills == null)s.Skills=new List<SkillCRM>();
@@ -97,28 +116,30 @@ namespace Fuxion.Test
                                 OnDelete = (s, i) => s.Skills.Remove(i),
                                 OnUpdate = (s, i) => { }
                             },
-                            new SideDefinition<SkillCRM, SkillPropertyCRM, int> {
-                                Name = "CRM-PROPERTIES",
+                            new Side<SkillCRM, CharacteristicCRM, int> {
+                                Name = "%sourceName%'s properties",
                                 Source = null,
                                 OnLoad = s => s.Properties,
-                                //PluralItemTypeName = "Properties",
-                                //SingularItemTypeName = "Property",
+                                PluralItemTypeName = Strings.Characteristics,
+                                SingularItemTypeName = Strings.Characteristic,
+                                ItemTypeIsMale = false,
                                 OnNaming = i => i.Name,
                                 OnInsert = (s, i) => {
-                                    if (s.Properties == null) s.Properties = new  List<SkillPropertyCRM>();
+                                    if (s.Properties == null) s.Properties = new  List<CharacteristicCRM>();
                                     s.Properties.Add(i);
                                 },
                                 OnDelete = (s, i) => s.Properties.Remove(i),
                                 OnUpdate = (s, i) => { }
                             },
-                            new SideDefinition<RepoERP, UserERP, int>
+                            new Side<RepoERP, UserERP, int>
                             {
                                 //IsMaster = true,
                                 Name = "ERP",
                                 Source = erpRepo,
                                 OnLoad = s => s.Get().ToList(),
-                                //PluralItemTypeName = "Users",
-                                //SingularItemTypeName = "User",
+                                PluralItemTypeName = Strings.Users,
+                                SingularItemTypeName = Strings.User,
+                                ItemTypeIsMale = true,
                                 OnNaming = i => i.Name,
                                 OnInsert = (s, i) => s.Add(i),
                                 OnDelete = (s, i) => s.Delete(i),
@@ -127,8 +148,8 @@ namespace Fuxion.Test
                         },
                         #endregion
                         #region Comparators
-                        Comparators = new IComparatorDefinition[] {
-                            new ComparatorDefinition<UserFuxion, UserCRM, int>
+                        Comparators = new IComparator[] {
+                            new Comparator<UserFuxion, UserCRM, int>
                             {
                                 OnSelectKeyA = u => u.Id,
                                 OnSelectKeyB = u => u.Id,
@@ -148,16 +169,15 @@ namespace Fuxion.Test
                                     a.Age = b.Age;
                                     return a;
                                 },
-                                OnCompare = (a, b, p) =>
+                                PropertiesComparator = new PropertiesComparator<UserFuxion, UserCRM>(false)
                                 {
-                                    // Compruebo cada propiedad para ver si es igual, si no lo es agrego la propiedad al resultado de la preview
-                                    if (a.Name != b.Name)
-                                        p.AddProperty(nameof(a.Name), a.Name, b.Name);
-                                    if (a.Age != b.Age)
-                                        p.AddProperty(nameof(a.Age), a.Age, b.Age);
+                                    {a => a.Name, b => b.Name },
+                                    {a => a.Age, b => b.Age, (a,aVal,b,bVal)=> aVal != bVal },
+                                    //{a => a.Age, b => b.Age, new GenericEqualityComparer<int>(null,null) },
+                                    //{a => a.Name, b => b.Age, (name, age) => name == age.ToString() },
                                 }
                             },
-                            new ComparatorDefinition<UserERP, UserFuxion, int>
+                            new Comparator<UserERP, UserFuxion, int>
                             {
                                 OnSelectKeyA = u=>u.Id,
                                 OnSelectKeyB = u=>u.Id,
@@ -177,16 +197,13 @@ namespace Fuxion.Test
                                     a.Age = b.Age;
                                     return a;
                                 },
-                                OnCompare = (a, b, p) =>
-                                {
-                                    // Compruebo cada propiedad para ver si es igual, si no lo es agrego la propiedad al resultado de la preview
-                                    if (a.Name != b.Name)
-                                        p.AddProperty(nameof(a.Name), a.Name, b.Name);
-                                    if (a.Age != b.Age)
-                                        p.AddProperty(nameof(a.Age), a.Age, b.Age);
-                                }
+                                //PropertiesComparator = new PropertiesComparator<UserERP, UserFuxion>
+                                //{
+                                //    {a => a.Name, b => b.Name },
+                                //    {a => a.Age, b => b.Age },
+                                //}
                             },
-                            new ComparatorDefinition<SkillERP, SkillFuxion, int>
+                            new Comparator<SkillERP, SkillFuxion, int>
                             {
                                 OnSelectKeyA = u => u.Id,
                                 OnSelectKeyB = u => u.Id,
@@ -204,14 +221,12 @@ namespace Fuxion.Test
                                     a.Name = b.Name;
                                     return a;
                                 },
-                                OnCompare = (a, b, p) =>
-                                {
-                                    // Compruebo cada propiedad para ver si es igual, si no lo es agrego la propiedad al resultado de la preview
-                                    if (a.Name != b.Name)
-                                        p.AddProperty(nameof(a.Name), a.Name, b.Name);
-                                }
+                                //PropertiesComparator = new PropertiesComparator<SkillERP, SkillFuxion>
+                                //{
+                                //    {a => a.Name, b => b.Name },
+                                //}
                             },
-                            new ComparatorDefinition<UserCRM, UserERP, int>
+                            new Comparator<UserCRM, UserERP, int>
                             {
                                 OnSelectKeyA = u=>u.Id,
                                 OnSelectKeyB = u=>u.Id,
@@ -231,16 +246,13 @@ namespace Fuxion.Test
                                     a.Age = b.Age;
                                     return a;
                                 },
-                                OnCompare = (a, b, p) =>
-                                {
-                                    // Compruebo cada propiedad para ver si es igual, si no lo es agrego la propiedad al resultado de la preview
-                                    if (a.Name != b.Name)
-                                        p.AddProperty(nameof(a.Name), a.Name, b.Name);
-                                    if (a.Age != b.Age)
-                                        p.AddProperty(nameof(a.Age), a.Age, b.Age);
-                                }
+                                //PropertiesComparator = new PropertiesComparator<UserCRM, UserERP>
+                                //{
+                                //    {a => a.Name, b => b.Name },
+                                //    {a => a.Age, b => b.Age },
+                                //}
                             },
-                            new ComparatorDefinition<SkillCRM, SkillFuxion, int>
+                            new Comparator<SkillCRM, SkillFuxion, int>
                             {
                                 OnSelectKeyA = u => u.Id,
                                 OnSelectKeyB = u => u.Id,
@@ -258,37 +270,34 @@ namespace Fuxion.Test
                                     a.Name = b.Name;
                                     return a;
                                 },
-                                OnCompare = (a, b, p) =>
-                                {
-                                    // Compruebo cada propiedad para ver si es igual, si no lo es agrego la propiedad al resultado de la preview
-                                    if (a.Name != b.Name)
-                                        p.AddProperty(nameof(a.Name), a.Name, b.Name);
-                                }
+                                //PropertiesComparator = new PropertiesComparator<SkillCRM, SkillFuxion>
+                                //{
+                                //    {a => a.Name, b => b.Name },
+                                //}
+
                             },
-                            new ComparatorDefinition<SkillPropertyCRM, SkillPropertyFuxion, int>
+                            new Comparator<CharacteristicCRM, CharacteristicFuxion, int>
                             {
                                 OnSelectKeyA = u => u.Id,
                                 OnSelectKeyB = u => u.Id,
                                 OnMapAToB = (a,b) =>
                                 {
                                     if(b == null)
-                                        return new SkillPropertyFuxion { Id = a.Id, Name = a.Name };
+                                        return new CharacteristicFuxion { Id = a.Id, Name = a.Name };
                                     b.Name = a.Name;
                                     return b;
                                 },
                                 OnMapBToA = (b,a) =>
                                 {
                                     if(a == null)
-                                        return new SkillPropertyCRM { Id = b.Id, Name = b.Name };
+                                        return new CharacteristicCRM { Id = b.Id, Name = b.Name };
                                     a.Name = b.Name;
                                     return a;
                                 },
-                                OnCompare = (a, b, p) =>
-                                {
-                                    // Compruebo cada propiedad para ver si es igual, si no lo es agrego la propiedad al resultado de la preview
-                                    if (a.Name != b.Name)
-                                        p.AddProperty(nameof(a.Name), a.Name, b.Name);
-                                }
+                                //PropertiesComparator = new PropertiesComparator<CharacteristicCRM, CharacteristicFuxion>
+                                //{
+                                //    {a => a.Name, b => b.Name },
+                                //}
                             },
                         },
                         #endregion
@@ -324,10 +333,54 @@ namespace Fuxion.Test
 
             // Deserialize
             var res2 = (SessionPreview)ser.ReadObject(str);
-            res2.Print();
+            Printer.WriteLineAction = m => output.WriteLine(m);
+            res2.ResourceManager = Strings.ResourceManager;
+            //res2.Print();
+            foreach (var work in res2.Works)
+            {
+                Printer.Foreach($"Work '{work.Name}' ({work.ChangesMessage})", work.Items, item =>
+                {
+                    Printer.Foreach($"Item '{item.MasterItemName}' ({item.ChangesMessage})", item.Sides, side =>
+                    {
+                        //Printer.WriteLine($"Side '{side.SideName}' ({side.ChangesMessage}) = {side.StatusMessage}");
+
+                        var act = new Action<ItemRelationPreview>(relation =>
+                        {
+                            Printer.Indent(() =>
+                            {
+                                foreach (var pro in relation.Properties)
+                                    Printer.WriteLine($"Property '{pro.PropertyName}' = {pro.StatusMessage}");
+                                foreach (var rel in relation.Relations)
+                                    Printer.WriteLine($"Relation '{rel.MasterItemName}' ({rel.ChangesMessage}) = {rel.StatusMessage}");
+                            });
+                        });
+
+                        Printer.Indent($"Side '{side.SideName}' ({side.ChangesMessage}) = {side.StatusMessage}",() =>
+                        {
+                            foreach (var pro in side.Properties)
+                                Printer.WriteLine($"Property '{pro.PropertyName}' = {pro.StatusMessage}");
+                            foreach (var rel in side.Relations)
+                            {
+                                Printer.WriteLine($"Relation '{rel.MasterItemName}' ({rel.ChangesMessage}) = {rel.StatusMessage}");
+                                act(rel);
+                            }
+                        });
+                        //Printer.Indent($"Side {side.SideName} ({side.ChangesMessage}) = {side.StatusMessage}", () => {
+                        //    Printer.Foreach($"Property {pro.PropertyName}: {pro.SideValue} => {pro.MasterValue}", side.Properties, pro =>
+                        //    {
+                        //        Printer.WriteLine($"Property {pro.PropertyName}: {pro.SideValue} => {pro.MasterValue}");
+                        //    });
+                        //});
+                    });
+                });
+            }
+            Printer.WriteLineAction = m => { };
 
             // Run Sync
             man.RunAsync(res2).Wait();
+
+            Assert.True(crmRepo.Get().Single(u => u.Id == 1).Name == "Tom", "User 'Tom' isn't updated in CRM side");
+            Assert.True(erpRepo.Get().Single(u => u.Id == 2).Name == "Clark", "User 'Clark' isn't updated in ERP side");
 
             // Check results
             //Assert.Equal(6, res.First().Count());
@@ -340,17 +393,17 @@ namespace Fuxion.Test
         public async Task InsertAtLevel0()
         {
             UserCRM inserted = null;
-            var ses = new SessionDefinition
+            var ses = new Session
             {
                 Name = "TEST - Insert at Level 0",
                 Works = new[]
                 {
-                    new WorkDefinition
+                    new Work
                     {
                         Name = "TestWork",
-                        Sides = new ISideDefinition[]
+                        Sides = new ISide[]
                         {
-                            new SideDefinition<UserFuxion[],UserFuxion,int>
+                            new Side<UserFuxion[],UserFuxion,int>
                             {
                                 Name = "FUXION",
                                 IsMaster = true,
@@ -365,7 +418,7 @@ namespace Fuxion.Test
                                 OnNaming = u => u.Name,
                                 OnLoad = uu => uu,
                             },
-                            new SideDefinition<UserCRM[],UserCRM,int>
+                            new Side<UserCRM[],UserCRM,int>
                             {
                                 Name = "CRM",
                                 Source = Enumerable.Empty<UserCRM>().ToArray(),
@@ -376,7 +429,7 @@ namespace Fuxion.Test
                         },
                         Comparators = new[]
                         {
-                            new ComparatorDefinition<UserFuxion,UserCRM,int>
+                            new Comparator<UserFuxion,UserCRM,int>
                             {
                                 OnSelectKeyA = u => u.Id,
                                 OnSelectKeyB = u => u.Id,
@@ -407,17 +460,17 @@ namespace Fuxion.Test
         public async Task UpdateAtLevel0()
         {
             UserCRM updated = null;
-            var ses = new SessionDefinition
+            var ses = new Session
             {
                 Name = "TEST - Update at Level 0",
                 Works = new[]
                 {
-                    new WorkDefinition
+                    new Work
                     {
                         Name = "TestWork",
-                        Sides = new ISideDefinition[]
+                        Sides = new ISide[]
                         {
-                            new SideDefinition<UserFuxion[],UserFuxion,int>
+                            new Side<UserFuxion[],UserFuxion,int>
                             {
                                 Name = "FUXION",
                                 IsMaster = true,
@@ -432,7 +485,7 @@ namespace Fuxion.Test
                                 OnNaming = u => u.Name,
                                 OnLoad = uu => uu,
                             },
-                            new SideDefinition<UserCRM[],UserCRM,int>
+                            new Side<UserCRM[],UserCRM,int>
                             {
                                 Name = "CRM",
                                 Source = new []
@@ -451,7 +504,7 @@ namespace Fuxion.Test
                         },
                         Comparators = new[]
                         {
-                            new ComparatorDefinition<UserFuxion,UserCRM,int>
+                            new Comparator<UserFuxion,UserCRM,int>
                             {
                                 OnSelectKeyA = u => u.Id,
                                 OnSelectKeyB = u => u.Id,
@@ -464,13 +517,13 @@ namespace Fuxion.Test
                                     b.Age = a.Age;
                                     return b;
                                 },
-                                OnCompare = (a, b, r) =>
-                                {
-                                    if(a.Name != b.Name)
-                                        r.AddProperty(nameof(a.Name),a.Name,b.Name);
-                                    if(a.Age != b.Age)
-                                        r.AddProperty(nameof(a.Age),a.Age,b.Age);
-                                }
+                                //OnCompare = (a, b, r) =>
+                                //{
+                                //    if(a.Name != b.Name)
+                                //        r.AddProperty(() => a.Name,() => b.Name);
+                                //    if(a.Age != b.Age)
+                                //        r.AddProperty(() => a.Age,() => b.Age);
+                                //}
                             }
                         }
                     }
@@ -489,17 +542,17 @@ namespace Fuxion.Test
         public async Task DeleteAtLevel0()
         {
             UserCRM deleted = null;
-            var ses = new SessionDefinition
+            var ses = new Session
             {
                 Name = "TEST - Delete at Level 0",
                 Works = new[]
                 {
-                    new WorkDefinition
+                    new Work
                     {
                         Name = "TestWork",
-                        Sides = new ISideDefinition[]
+                        Sides = new ISide[]
                         {
-                            new SideDefinition<UserFuxion[],UserFuxion,int>
+                            new Side<UserFuxion[],UserFuxion,int>
                             {
                                 Name = "FUXION",
                                 IsMaster = true,
@@ -507,7 +560,7 @@ namespace Fuxion.Test
                                 OnNaming = u => u.Name,
                                 OnLoad = uu => uu,
                             },
-                            new SideDefinition<UserCRM[],UserCRM,int>
+                            new Side<UserCRM[],UserCRM,int>
                             {
                                 Name = "CRM",
                                 Source = new []
@@ -526,7 +579,7 @@ namespace Fuxion.Test
                         },
                         Comparators = new[]
                         {
-                            new ComparatorDefinition<UserFuxion,UserCRM,int>
+                            new Comparator<UserFuxion,UserCRM,int>
                             {
                                 OnSelectKeyA = u => u.Id,
                                 OnSelectKeyB = u => u.Id,
@@ -539,13 +592,13 @@ namespace Fuxion.Test
                                     b.Age = a.Age;
                                     return b;
                                 },
-                                OnCompare = (a, b, r) =>
-                                {
-                                    if(a.Name != b.Name)
-                                        r.AddProperty(nameof(a.Name),a.Name,b.Name);
-                                    if(a.Age != b.Age)
-                                        r.AddProperty(nameof(a.Age),a.Age,b.Age);
-                                }
+                                //OnCompare = (a, b, r) =>
+                                //{
+                                //    if(a.Name != b.Name)
+                                //        r.AddProperty(() => a.Name,() => b.Name);
+                                //    if(a.Age != b.Age)
+                                //        r.AddProperty(() => a.Age,() => b.Age);
+                                //}
                             }
                         }
                     }
@@ -565,17 +618,17 @@ namespace Fuxion.Test
         public async Task InsertAtLevel1()
         {
             SkillCRM inserted = null;
-            var ses = new SessionDefinition
+            var ses = new Session
             {
                 Name = "TEST - Insert at Level 1",
                 Works = new[]
                 {
-                    new WorkDefinition
+                    new Work
                     {
                         Name = "TestWork",
-                        Sides = new ISideDefinition[]
+                        Sides = new ISide[]
                         {
-                            new SideDefinition<UserFuxion[],UserFuxion,int>
+                            new Side<UserFuxion[],UserFuxion,int>
                             {
                                 Name = "FUXION",
                                 IsMaster = true,
@@ -598,7 +651,7 @@ namespace Fuxion.Test
                                 OnNaming = u => u.Name,
                                 OnLoad = uu => uu,
                             },
-                            new SideDefinition<UserCRM[],UserCRM,int>
+                            new Side<UserCRM[],UserCRM,int>
                             {
                                 Name = "CRM",
                                 Source = new[]
@@ -613,13 +666,13 @@ namespace Fuxion.Test
                                 OnNaming = u => u.Name,
                                 OnLoad = uu => uu,
                             },
-                            new SideDefinition<UserFuxion,SkillFuxion,int>
+                            new Side<UserFuxion,SkillFuxion,int>
                             {
                                 Name = "FUXION-SKILL",
                                 OnNaming = s => s.Name,
                                 OnLoad = u => u.Skills
                             },
-                            new SideDefinition<UserCRM,SkillCRM,int>
+                            new Side<UserCRM,SkillCRM,int>
                             {
                                 Name = "CRM-SKILL",
                                 OnNaming = s => s.Name,
@@ -627,9 +680,9 @@ namespace Fuxion.Test
                                 OnInsert = (ss, s) => inserted = s
                             },
                         },
-                        Comparators = new IComparatorDefinition[]
+                        Comparators = new IComparator[]
                         {
-                            new ComparatorDefinition<UserFuxion,UserCRM,int>
+                            new Comparator<UserFuxion,UserCRM,int>
                             {
                                 OnSelectKeyA = u => u.Id,
                                 OnSelectKeyB = u => u.Id,
@@ -642,13 +695,13 @@ namespace Fuxion.Test
                                     b.Age = a.Age;
                                     return b;
                                 },
-                                OnCompare = (a, b, p)=>
-                                {
-                                    if(a.Name != b.Name) p.AddProperty(nameof(a.Name),a.Name,b.Name);
-                                    if(a.Age != b.Age)p.AddProperty(nameof(a.Age),a.Age,b.Age);
-                                }
+                                //OnCompare = (a, b, p)=>
+                                //{
+                                //    if(a.Name != b.Name) p.AddProperty(() => a.Name,() => b.Name);
+                                //    if(a.Age != b.Age)p.AddProperty(() => a.Age,() => b.Age);
+                                //}
                             },
-                            new ComparatorDefinition<SkillFuxion,SkillCRM,int>
+                            new Comparator<SkillFuxion,SkillCRM,int>
                             {
                                 OnSelectKeyA = u => u.Id,
                                 OnSelectKeyB = u => u.Id,
@@ -677,17 +730,17 @@ namespace Fuxion.Test
         public async Task UpdateAtLevel1()
         {
             SkillCRM updated = null;
-            var ses = new SessionDefinition
+            var ses = new Session
             {
                 Name = "TEST - Update at Level 1",
                 Works = new[]
                 {
-                    new WorkDefinition
+                    new Work
                     {
                         Name = "TestWork",
-                        Sides = new ISideDefinition[]
+                        Sides = new ISide[]
                         {
-                            new SideDefinition<UserFuxion[],UserFuxion,int>
+                            new Side<UserFuxion[],UserFuxion,int>
                             {
                                 Name = "FUXION",
                                 IsMaster = true,
@@ -710,7 +763,7 @@ namespace Fuxion.Test
                                 OnNaming = u => u.Name,
                                 OnLoad = uu => uu,
                             },
-                            new SideDefinition<UserCRM[],UserCRM,int>
+                            new Side<UserCRM[],UserCRM,int>
                             {
                                 Name = "CRM",
                                 Source = new[]
@@ -733,13 +786,13 @@ namespace Fuxion.Test
                                 OnNaming = u => u.Name,
                                 OnLoad = uu => uu,
                             },
-                            new SideDefinition<UserFuxion,SkillFuxion,int>
+                            new Side<UserFuxion,SkillFuxion,int>
                             {
                                 Name = "FUXION-SKILL",
                                 OnNaming = s => s.Name,
                                 OnLoad = u => u.Skills
                             },
-                            new SideDefinition<UserCRM,SkillCRM,int>
+                            new Side<UserCRM,SkillCRM,int>
                             {
                                 Name = "CRM-SKILL",
                                 OnNaming = s => s.Name,
@@ -747,9 +800,9 @@ namespace Fuxion.Test
                                 OnUpdate = (ss, s) => updated = s
                             },
                         },
-                        Comparators = new IComparatorDefinition[]
+                        Comparators = new IComparator[]
                         {
-                            new ComparatorDefinition<UserFuxion,UserCRM,int>
+                            new Comparator<UserFuxion,UserCRM,int>
                             {
                                 OnSelectKeyA = u => u.Id,
                                 OnSelectKeyB = u => u.Id,
@@ -762,13 +815,13 @@ namespace Fuxion.Test
                                     b.Age = a.Age;
                                     return b;
                                 },
-                                OnCompare = (a, b, p)=>
-                                {
-                                    if(a.Name != b.Name) p.AddProperty(nameof(a.Name),a.Name,b.Name);
-                                    if(a.Age != b.Age)p.AddProperty(nameof(a.Age),a.Age,b.Age);
-                                }
+                                //OnCompare = (a, b, p)=>
+                                //{
+                                //    if(a.Name != b.Name) p.AddProperty(() => a.Name,() => b.Name);
+                                //    if(a.Age != b.Age)p.AddProperty(() => a.Age,() => b.Age);
+                                //}
                             },
-                            new ComparatorDefinition<SkillFuxion,SkillCRM,int>
+                            new Comparator<SkillFuxion,SkillCRM,int>
                             {
                                 OnSelectKeyA = u => u.Id,
                                 OnSelectKeyB = u => u.Id,
@@ -780,10 +833,10 @@ namespace Fuxion.Test
                                     b.Name = a.Name;
                                     return b;
                                 },
-                                OnCompare = (a, b, p) =>
-                                {
-                                    if(a.Name != b.Name) p.AddProperty(nameof(a.Name),a.Name,b.Name);
-                                }
+                                //OnCompare = (a, b, p) =>
+                                //{
+                                //    if(a.Name != b.Name) p.AddProperty(() => a.Name,() => b.Name);
+                                //}
                             },
                         }
                     }
@@ -801,17 +854,17 @@ namespace Fuxion.Test
         public async Task DeleteAtLevel1()
         {
             SkillCRM deleted = null;
-            var ses = new SessionDefinition
+            var ses = new Session
             {
                 Name = "TEST - Delete at Level 1",
                 Works = new[]
                 {
-                    new WorkDefinition
+                    new Work
                     {
                         Name = "TestWork",
-                        Sides = new ISideDefinition[]
+                        Sides = new ISide[]
                         {
-                            new SideDefinition<UserFuxion[],UserFuxion,int>
+                            new Side<UserFuxion[],UserFuxion,int>
                             {
                                 Name = "FUXION",
                                 IsMaster = true,
@@ -826,7 +879,7 @@ namespace Fuxion.Test
                                 OnNaming = u => u.Name,
                                 OnLoad = uu => uu,
                             },
-                            new SideDefinition<UserCRM[],UserCRM,int>
+                            new Side<UserCRM[],UserCRM,int>
                             {
                                 Name = "CRM",
                                 Source = new[]
@@ -849,13 +902,13 @@ namespace Fuxion.Test
                                 OnNaming = u => u.Name,
                                 OnLoad = uu => uu,
                             },
-                            new SideDefinition<UserFuxion,SkillFuxion,int>
+                            new Side<UserFuxion,SkillFuxion,int>
                             {
                                 Name = "FUXION-SKILL",
                                 OnNaming = s => s.Name,
                                 OnLoad = u => u.Skills
                             },
-                            new SideDefinition<UserCRM,SkillCRM,int>
+                            new Side<UserCRM,SkillCRM,int>
                             {
                                 Name = "CRM-SKILL",
                                 OnNaming = s => s.Name,
@@ -863,9 +916,9 @@ namespace Fuxion.Test
                                 OnDelete = (ss, s) => deleted = s
                             },
                         },
-                        Comparators = new IComparatorDefinition[]
+                        Comparators = new IComparator[]
                         {
-                            new ComparatorDefinition<UserFuxion,UserCRM,int>
+                            new Comparator<UserFuxion,UserCRM,int>
                             {
                                 OnSelectKeyA = u => u.Id,
                                 OnSelectKeyB = u => u.Id,
@@ -878,13 +931,13 @@ namespace Fuxion.Test
                                     b.Age = a.Age;
                                     return b;
                                 },
-                                OnCompare = (a, b, p)=>
-                                {
-                                    if(a.Name != b.Name) p.AddProperty(nameof(a.Name),a.Name,b.Name);
-                                    if(a.Age != b.Age)p.AddProperty(nameof(a.Age),a.Age,b.Age);
-                                }
+                                //OnCompare = (a, b, p)=>
+                                //{
+                                //    if(a.Name != b.Name) p.AddProperty(() => a.Name,() => b.Name);
+                                //    if(a.Age != b.Age)p.AddProperty(() => a.Age,() => b.Age);
+                                //}
                             },
-                            new ComparatorDefinition<SkillFuxion,SkillCRM,int>
+                            new Comparator<SkillFuxion,SkillCRM,int>
                             {
                                 OnSelectKeyA = u => u.Id,
                                 OnSelectKeyB = u => u.Id,
@@ -913,18 +966,18 @@ namespace Fuxion.Test
         [Fact(DisplayName = "Synchronization - Insert at level 2")]
         public async Task InsertAtLevel2()
         {
-            SkillPropertyCRM inserted = null;
-            var ses = new SessionDefinition
+            CharacteristicCRM inserted = null;
+            var ses = new Session
             {
                 Name = "TEST - Insert at Level 2",
                 Works = new[]
                 {
-                    new WorkDefinition
+                    new Work
                     {
                         Name = "TestWork",
-                        Sides = new ISideDefinition[]
+                        Sides = new ISide[]
                         {
-                            new SideDefinition<UserFuxion[],UserFuxion,int>
+                            new Side<UserFuxion[],UserFuxion,int>
                             {
                                 Name = "FUXION",
                                 IsMaster = true,
@@ -942,7 +995,7 @@ namespace Fuxion.Test
                                                 Name = "Driver",
                                                 Properties = new[]
                                                 {
-                                                    new SkillPropertyFuxion
+                                                    new CharacteristicFuxion
                                                     {
                                                         Id = 1,
                                                         Name = "Experience"
@@ -955,7 +1008,7 @@ namespace Fuxion.Test
                                 OnNaming = u => u.Name,
                                 OnLoad = uu => uu,
                             },
-                            new SideDefinition<UserCRM[],UserCRM,int>
+                            new Side<UserCRM[],UserCRM,int>
                             {
                                 Name = "CRM",
                                 Source = new[]
@@ -978,25 +1031,25 @@ namespace Fuxion.Test
                                 OnNaming = u => u.Name,
                                 OnLoad = uu => uu,
                             },
-                            new SideDefinition<UserFuxion,SkillFuxion,int>
+                            new Side<UserFuxion,SkillFuxion,int>
                             {
                                 Name = "FUXION-SKILL",
                                 OnNaming = s => s.Name,
                                 OnLoad = u => u.Skills
                             },
-                            new SideDefinition<UserCRM,SkillCRM,int>
+                            new Side<UserCRM,SkillCRM,int>
                             {
                                 Name = "CRM-SKILL",
                                 OnNaming = s => s.Name,
                                 OnLoad = u => u.Skills,
                             },
-                            new SideDefinition<SkillFuxion,SkillPropertyFuxion,int>
+                            new Side<SkillFuxion,CharacteristicFuxion,int>
                             {
                                 Name = "FUXION-SKILL-PROPERTY",
                                 OnNaming = p => p.Name,
                                 OnLoad = s => s.Properties
                             },
-                            new SideDefinition<SkillCRM,SkillPropertyCRM,int>
+                            new Side<SkillCRM,CharacteristicCRM,int>
                             {
                                 Name = "CRM-SKILL-PROPERTY",
                                 OnNaming = p => p.Name,
@@ -1004,9 +1057,9 @@ namespace Fuxion.Test
                                 OnInsert = (pp, p) => inserted = p
                             },
                         },
-                        Comparators = new IComparatorDefinition[]
+                        Comparators = new IComparator[]
                         {
-                            new ComparatorDefinition<UserFuxion,UserCRM,int>
+                            new Comparator<UserFuxion,UserCRM,int>
                             {
                                 OnSelectKeyA = u => u.Id,
                                 OnSelectKeyB = u => u.Id,
@@ -1019,25 +1072,29 @@ namespace Fuxion.Test
                                     b.Age = a.Age;
                                     return b;
                                 },
-                                OnCompare = (a, b, p)=>
-                                {
-                                    if(a.Name != b.Name) p.AddProperty(nameof(a.Name),a.Name,b.Name);
-                                    if(a.Age != b.Age)p.AddProperty(nameof(a.Age),a.Age,b.Age);
-                                }
+                                //OnCompare = (a, b, p)=>
+                                //{
+                                //    if(a.Name != b.Name) p.AddProperty(() => a.Name,() => b.Name);
+                                //    if(a.Age != b.Age)p.AddProperty(() => a.Age,() => b.Age);
+                                //}
                             },
-                            new ComparatorDefinition<SkillFuxion,SkillCRM,int>
+                            new Comparator<SkillFuxion,SkillCRM,int>
                             {
                                 OnSelectKeyA = u => u.Id,
                                 OnSelectKeyB = u => u.Id,
+                                //OnCompare = (a, b, p) =>
+                                //{
+                                //    if(a.Name != b.Name) p.AddProperty(() => a.Name,() => b.Name);
+                                //}
                             },
-                            new ComparatorDefinition<SkillPropertyFuxion,SkillPropertyFuxion,int>
+                            new Comparator<CharacteristicFuxion,CharacteristicCRM,int>
                             {
                                 OnSelectKeyA = u => u.Id,
                                 OnSelectKeyB = u => u.Id,
                                 OnMapAToB = (a, b) =>
                                 {
                                     if(b == null)
-                                        b = new SkillPropertyFuxion();
+                                        b = new CharacteristicCRM();
                                     b.Id = a.Id;
                                     b.Name = a.Name;
                                     return b;
@@ -1053,23 +1110,23 @@ namespace Fuxion.Test
             await man.RunAsync(pre);
             Assert.NotNull(inserted);
             Assert.Equal(1, inserted.Id);
-            Assert.Equal("Driver", inserted.Name);
+            Assert.Equal("Experience", inserted.Name);
         }
         [Fact(DisplayName = "Synchronization - Update at level 2")]
         public async Task UpdateAtLevel2()
         {
-            SkillCRM updated = null;
-            var ses = new SessionDefinition
+            CharacteristicCRM updated = null;
+            var ses = new Session
             {
-                Name = "TEST - Update at Level 1",
+                Name = "TEST - Update at Level 2",
                 Works = new[]
                 {
-                    new WorkDefinition
+                    new Work
                     {
                         Name = "TestWork",
-                        Sides = new ISideDefinition[]
+                        Sides = new ISide[]
                         {
-                            new SideDefinition<UserFuxion[],UserFuxion,int>
+                            new Side<UserFuxion[],UserFuxion,int>
                             {
                                 Name = "FUXION",
                                 IsMaster = true,
@@ -1084,7 +1141,15 @@ namespace Fuxion.Test
                                             new SkillFuxion
                                             {
                                                 Id = 1,
-                                                Name = "Driver"
+                                                Name = "Driver",
+                                                Properties = new[]
+                                                {
+                                                    new CharacteristicFuxion
+                                                    {
+                                                        Id = 1,
+                                                        Name = "Experience"
+                                                    }
+                                                }
                                             }
                                         }
                                     }
@@ -1092,7 +1157,7 @@ namespace Fuxion.Test
                                 OnNaming = u => u.Name,
                                 OnLoad = uu => uu,
                             },
-                            new SideDefinition<UserCRM[],UserCRM,int>
+                            new Side<UserCRM[],UserCRM,int>
                             {
                                 Name = "CRM",
                                 Source = new[]
@@ -1107,7 +1172,15 @@ namespace Fuxion.Test
                                             new SkillCRM
                                             {
                                                 Id = 1,
-                                                Name = "Driver (old)"
+                                                Name = "Driver",
+                                                Properties = new[]
+                                                {
+                                                    new CharacteristicCRM
+                                                    {
+                                                        Id = 1,
+                                                        Name = "Experience (old)"
+                                                    }
+                                                }
                                             }
                                         }
                                     }
@@ -1115,23 +1188,35 @@ namespace Fuxion.Test
                                 OnNaming = u => u.Name,
                                 OnLoad = uu => uu,
                             },
-                            new SideDefinition<UserFuxion,SkillFuxion,int>
+                            new Side<UserFuxion,SkillFuxion,int>
                             {
                                 Name = "FUXION-SKILL",
                                 OnNaming = s => s.Name,
                                 OnLoad = u => u.Skills
                             },
-                            new SideDefinition<UserCRM,SkillCRM,int>
+                            new Side<SkillFuxion,CharacteristicFuxion,int>
+                            {
+                                Name = "FUXION-SKILL-PROPERTY",
+                                OnNaming = s => s.Name,
+                                OnLoad = u => u.Properties
+                            },
+                            new Side<UserCRM,SkillCRM,int>
                             {
                                 Name = "CRM-SKILL",
                                 OnNaming = s => s.Name,
                                 OnLoad = u => u.Skills,
+                            },
+                            new Side<SkillCRM, CharacteristicCRM,int>
+                            {
+                                Name = "CRM-SKILL-PROPERTY",
+                                OnNaming = s => s.Name,
+                                OnLoad = u => u.Properties,
                                 OnUpdate = (ss, s) => updated = s
                             },
                         },
-                        Comparators = new IComparatorDefinition[]
+                        Comparators = new IComparator[]
                         {
-                            new ComparatorDefinition<UserFuxion,UserCRM,int>
+                            new Comparator<UserFuxion,UserCRM,int>
                             {
                                 OnSelectKeyA = u => u.Id,
                                 OnSelectKeyB = u => u.Id,
@@ -1144,13 +1229,13 @@ namespace Fuxion.Test
                                     b.Age = a.Age;
                                     return b;
                                 },
-                                OnCompare = (a, b, p)=>
-                                {
-                                    if(a.Name != b.Name) p.AddProperty(nameof(a.Name),a.Name,b.Name);
-                                    if(a.Age != b.Age)p.AddProperty(nameof(a.Age),a.Age,b.Age);
-                                }
+                                //OnCompare = (a, b, p)=>
+                                //{
+                                //    if(a.Name != b.Name) p.AddProperty(() => a.Name,() => b.Name);
+                                //    if(a.Age != b.Age)p.AddProperty(() => a.Age,() => b.Age);
+                                //}
                             },
-                            new ComparatorDefinition<SkillFuxion,SkillCRM,int>
+                            new Comparator<SkillFuxion,SkillCRM,int>
                             {
                                 OnSelectKeyA = u => u.Id,
                                 OnSelectKeyB = u => u.Id,
@@ -1162,10 +1247,27 @@ namespace Fuxion.Test
                                     b.Name = a.Name;
                                     return b;
                                 },
-                                OnCompare = (a, b, p) =>
+                                //OnCompare = (a, b, p) =>
+                                //{
+                                //    if(a.Name != b.Name) p.AddProperty(() => a.Name,() => b.Name);
+                                //}
+                            },
+                            new Comparator<CharacteristicFuxion,CharacteristicCRM,int>
+                            {
+                                OnSelectKeyA = u => u.Id,
+                                OnSelectKeyB = u => u.Id,
+                                OnMapAToB = (a, b) =>
                                 {
-                                    if(a.Name != b.Name) p.AddProperty(nameof(a.Name),a.Name,b.Name);
-                                }
+                                    if(b == null)
+                                        b = new CharacteristicCRM();
+                                    b.Id = a.Id;
+                                    b.Name = a.Name;
+                                    return b;
+                                },
+                                //OnCompare = (a, b, p) =>
+                                //{
+                                //    if(a.Name != b.Name) p.AddProperty(() => a.Name,() => b.Name);
+                                //}
                             },
                         }
                     }
@@ -1177,23 +1279,23 @@ namespace Fuxion.Test
             await man.RunAsync(pre);
             Assert.NotNull(updated);
             Assert.Equal(1, updated.Id);
-            Assert.Equal("Driver", updated.Name);
+            Assert.Equal("Experience", updated.Name);
         }
         [Fact(DisplayName = "Synchronization - Delete at level 2")]
         public async Task DeleteAtLevel2()
         {
-            SkillCRM deleted = null;
-            var ses = new SessionDefinition
+            CharacteristicCRM deleted = null;
+            var ses = new Session
             {
-                Name = "TEST - Delete at Level 1",
+                Name = "TEST - Delete at Level 2",
                 Works = new[]
                 {
-                    new WorkDefinition
+                    new Work
                     {
                         Name = "TestWork",
-                        Sides = new ISideDefinition[]
+                        Sides = new ISide[]
                         {
-                            new SideDefinition<UserFuxion[],UserFuxion,int>
+                            new Side<UserFuxion[],UserFuxion,int>
                             {
                                 Name = "FUXION",
                                 IsMaster = true,
@@ -1203,12 +1305,20 @@ namespace Fuxion.Test
                                         Id = 1,
                                         Name = "Oscar",
                                         Age = 18,
+                                        Skills = new[]
+                                        {
+                                            new SkillFuxion
+                                            {
+                                                Id = 1,
+                                                Name = "Driver",
+                                            }
+                                        }
                                     }
                                 },
                                 OnNaming = u => u.Name,
                                 OnLoad = uu => uu,
                             },
-                            new SideDefinition<UserCRM[],UserCRM,int>
+                            new Side<UserCRM[],UserCRM,int>
                             {
                                 Name = "CRM",
                                 Source = new[]
@@ -1223,7 +1333,15 @@ namespace Fuxion.Test
                                             new SkillCRM
                                             {
                                                 Id = 1,
-                                                Name = "Driver"
+                                                Name = "Driver",
+                                                Properties = new[]
+                                                {
+                                                    new CharacteristicCRM
+                                                    {
+                                                        Id = 1,
+                                                        Name = "Experience"
+                                                    }
+                                                }
                                             }
                                         }
                                     }
@@ -1231,23 +1349,36 @@ namespace Fuxion.Test
                                 OnNaming = u => u.Name,
                                 OnLoad = uu => uu,
                             },
-                            new SideDefinition<UserFuxion,SkillFuxion,int>
+                            new Side<UserFuxion,SkillFuxion,int>
                             {
                                 Name = "FUXION-SKILL",
                                 OnNaming = s => s.Name,
                                 OnLoad = u => u.Skills
                             },
-                            new SideDefinition<UserCRM,SkillCRM,int>
+                            new Side<UserCRM,SkillCRM,int>
                             {
                                 Name = "CRM-SKILL",
                                 OnNaming = s => s.Name,
                                 OnLoad = u => u.Skills,
-                                OnDelete = (ss, s) => deleted = s
                             },
+                            new Side<SkillFuxion, CharacteristicFuxion,int>
+                            {
+                                Name = "FUXION-SKILL-PROPERTY",
+                                OnNaming = p => p.Name,
+                                OnLoad = s => s.Properties,
+                                
+                            },
+                            new Side<SkillCRM, CharacteristicCRM,int>
+                            {
+                                Name = "CRM-SKILL-PROPERTY",
+                                OnNaming = p => p.Name,
+                                OnLoad = s => s.Properties,
+                                OnDelete = (pp, p) => deleted = p
+                            }
                         },
-                        Comparators = new IComparatorDefinition[]
+                        Comparators = new IComparator[]
                         {
-                            new ComparatorDefinition<UserFuxion,UserCRM,int>
+                            new Comparator<UserFuxion,UserCRM,int>
                             {
                                 OnSelectKeyA = u => u.Id,
                                 OnSelectKeyB = u => u.Id,
@@ -1260,13 +1391,13 @@ namespace Fuxion.Test
                                     b.Age = a.Age;
                                     return b;
                                 },
-                                OnCompare = (a, b, p)=>
-                                {
-                                    if(a.Name != b.Name) p.AddProperty(nameof(a.Name),a.Name,b.Name);
-                                    if(a.Age != b.Age)p.AddProperty(nameof(a.Age),a.Age,b.Age);
-                                }
+                                //OnCompare = (a, b, p)=>
+                                //{
+                                //    if(a.Name != b.Name) p.AddProperty(() => a.Name,() => b.Name);
+                                //    if(a.Age != b.Age)p.AddProperty(() => a.Age,() => b.Age);
+                                //}
                             },
-                            new ComparatorDefinition<SkillFuxion,SkillCRM,int>
+                            new Comparator<SkillFuxion,SkillCRM,int>
                             {
                                 OnSelectKeyA = u => u.Id,
                                 OnSelectKeyB = u => u.Id,
@@ -1274,6 +1405,23 @@ namespace Fuxion.Test
                                 {
                                     if(b == null)
                                         b = new SkillCRM();
+                                    b.Id = a.Id;
+                                    b.Name = a.Name;
+                                    return b;
+                                },
+                                //OnCompare = (a, b, p)=>
+                                //{
+                                //    if(a.Name != b.Name) p.AddProperty(() => a.Name,() => b.Name);
+                                //}
+                            },
+                            new Comparator<CharacteristicFuxion,CharacteristicCRM,int>
+                            {
+                                OnSelectKeyA = u => u.Id,
+                                OnSelectKeyB = u => u.Id,
+                                OnMapAToB = (a, b) =>
+                                {
+                                    if(b == null)
+                                        b = new CharacteristicCRM();
                                     b.Id = a.Id;
                                     b.Name = a.Name;
                                     return b;
@@ -1289,7 +1437,7 @@ namespace Fuxion.Test
             await man.RunAsync(pre);
             Assert.NotNull(deleted);
             Assert.Equal(1, deleted.Id);
-            Assert.Equal("Driver", deleted.Name);
+            Assert.Equal("Experience", deleted.Name);
         }
     }
     public class Repo<T>
@@ -1324,10 +1472,10 @@ namespace Fuxion.Test
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public ICollection<SkillPropertyFuxion> Properties { get; set; }
+        public ICollection<CharacteristicFuxion> Properties { get; set; }
     }
     [DebuggerDisplay("{" + nameof(Name) + "}")]
-    public class SkillPropertyFuxion
+    public class CharacteristicFuxion
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -1348,7 +1496,7 @@ namespace Fuxion.Test
                             Name = "Tom Skill",
                             Properties = new[]
                             {
-                                new SkillPropertyFuxion
+                                new CharacteristicFuxion
                                 {
                                     Id = 1,
                                     Name = "Tom Property"
@@ -1382,7 +1530,7 @@ namespace Fuxion.Test
                             Name = "Bob Skill",
                             Properties = new[]
                             {
-                                new SkillPropertyFuxion
+                                new CharacteristicFuxion
                                 {
                                     Id = 1,
                                     Name = "Bob Property"
@@ -1416,10 +1564,10 @@ namespace Fuxion.Test
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public ICollection<SkillPropertyCRM> Properties { get; set; }
+        public ICollection<CharacteristicCRM> Properties { get; set; }
     }
     [DebuggerDisplay("{" + nameof(Name) + "}")]
-    public class SkillPropertyCRM
+    public class CharacteristicCRM
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -1440,7 +1588,7 @@ namespace Fuxion.Test
                             Name = "Tom Skill (CRM)",
                             Properties = new[]
                             {
-                                new SkillPropertyCRM
+                                new CharacteristicCRM
                                 {
                                     Id = 1,
                                     Name = "Tom Property (CRM)"

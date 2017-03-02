@@ -10,11 +10,11 @@ namespace Fuxion.Synchronization
         where TItemA : class
         where TItemB : class
     {
-        public ComparatorRunner(ComparatorDefinition<TItemA, TItemB, TKey> definition)
+        public ComparatorRunner(Comparator<TItemA, TItemB, TKey> definition)
         {
             this.definition = definition;
         }
-        ComparatorDefinition<TItemA, TItemB, TKey> definition;
+        Comparator<TItemA, TItemB, TKey> definition;
         public ICollection<IComparatorResultInternal> CompareSides(ISideRunner sideA, ISideRunner sideB, bool runInverted)
         {
             return Printer.Indent($"Comparing sides '{sideA?.Definition.Name}' == '{sideB?.Definition.Name}' {(runInverted ? "INVERTED" : "")}", () =>
@@ -41,7 +41,8 @@ namespace Fuxion.Synchronization
                             {
                                 var clon = subSide.Clone();
                                 clon.Source = null;
-                                clon.Definition.Name = $"{clon.Definition.Name} ({sideA.GetItemName(item.Item)})";
+                                //clon.Definition.Name = $"{clon.Definition.Name} ({sideA.GetItemName(item.Item)})";
+                                clon.Definition.Name = $"{clon.Definition.Name.Replace("%sourceName%", sideA.GetItemName(item.Item))}";
                                 var sides = runInverted ? tup.Item1.Sides : tup.Item2.Sides;
                                 if (!sides.Any(s => s.Definition.Name == clon.Definition.Name))
                                 {
@@ -107,7 +108,11 @@ namespace Fuxion.Synchronization
             {
                 if (itemA?.Item != null && !(itemA?.Item is TItemA)) throw new InvalidCastException($"Parameter '{nameof(itemA)}' must be of type '{typeof(TItemA).FullName}'");
                 if (itemB?.Item != null && !(itemB?.Item is TItemB)) throw new InvalidCastException($"Parameter '{nameof(itemB)}' must be of type '{typeof(TItemB).FullName}'");
-                definition.OnCompare((TItemA)itemA.Item, (TItemB)itemB.Item, res);
+                //if (definition.OnCompare == null && definition.PropertiesComparator == null) throw new ArgumentException($"You must define '{nameof(definition.OnCompare)}' or '{nameof(definition.PropertiesComparator)}' to make it works");
+                //definition.OnCompare?.Invoke((TItemA)itemA.Item, (TItemB)itemB.Item, res);
+                if (definition.PropertiesComparator != null)
+                    foreach (var pro in definition.PropertiesComparator.Compare((TItemA)itemA.Item, (TItemB)itemB.Item, runInverted))
+                        res.Properties.Add(pro);
             }
             var processSubSides = new Action<LoadedItem, LoadedItem>((a, b) =>
             {

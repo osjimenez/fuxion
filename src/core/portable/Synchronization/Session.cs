@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Synchronization
 {
-    public class SessionDefinition
+    public class Session
     {
         internal Guid Id { get; } = Guid.NewGuid();
         public string Name { get; set; }
-        public ICollection<WorkDefinition> Works { get; set; } = new List<WorkDefinition>();
+        public ICollection<Work> Works { get; set; } = new List<Work>();
         //public Task<SessionPreview> PreviewAsync()
         //{
         //    return Printer.IndentAsync($"Previewing synchronization session '{Name}'",

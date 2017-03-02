@@ -8,8 +8,9 @@ namespace Fuxion.Synchronization
 {
     internal class ItemRunner<TMasterItem> : IItemRunner
     {
-        public ItemRunner(TMasterItem masterItem, string masterName)
+        public ItemRunner(ISideRunner masterRunner, TMasterItem masterItem, string masterName)
         {
+            MasterRunner = masterRunner;
             MasterItem = masterItem;
             MasterName = masterName;
         }
@@ -17,6 +18,7 @@ namespace Fuxion.Synchronization
         public string MasterName { get; }
         public TMasterItem MasterItem { get; }
         object IItemRunner.MasterItem { get { return MasterItem; } }
-        public IEnumerable<IItemSideRunner> Sides { get; set; } = new List<IItemSideRunner>();
+        public ISideRunner MasterRunner { get; }
+        public IEnumerable<IItemSideRunner> SideRunners { get; set; } = new List<IItemSideRunner>();
     }
 }

@@ -48,6 +48,11 @@ namespace System.Threading.Tasks
                 if (throwExceptionIfNotRunning) throw new ArgumentException("IsCancellationRequested: La tarea no esta administrada por el TaskManager." + task.CreationOptions.ToString());
             else return false;
         }
+        public static CancellationToken GetCancellationToken(this Task task, bool throwExceptionIfNotRunning = false)
+        {
+            var item = TaskManager.SearchEntry(task, throwExceptionIfNotRunning);
+            return item.CancellationTokenSource.Token;
+        }
         public static TResult WaitResult<TResult>(this Task<TResult> task, TimeSpan timeout = default(TimeSpan), bool rethrowException = true)
         {
             try

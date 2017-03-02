@@ -20,7 +20,8 @@ namespace DemoWpf
         protected override void OnStartup(StartupEventArgs e)
         {
             Factory.AddInjector(new InstanceInjector<ILogFactory>(new Log4netFactory()));
-            new TimeProvider().Show();
+            new ConvertersWindow().Show();
+            //new TimeProvider().Show();
         }
     }
 }

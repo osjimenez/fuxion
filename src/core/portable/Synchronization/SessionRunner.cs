@@ -4,25 +4,35 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using System.Reflection;
 namespace Fuxion.Synchronization
 {
     internal class SessionRunner
     {
-        public SessionRunner(SessionDefinition definition) { this.definition = definition; }
-        SessionDefinition definition;
+        public SessionRunner(Session definition) { this.Session = definition; }
+        internal Session Session { get; set; }
         ICollection<WorkRunner> works = new List<WorkRunner>();
-        public Guid Id { get { return definition.Id; } }
-        public Task<SessionPreview> PreviewAsync()
+        public Guid Id { get { return Session.Id; } }
+        public Task<SessionPreview> PreviewAsync(bool includeNoneActionItems = false)
         {
-            return Printer.IndentAsync($"Previewing synchronization session '{definition.Name}'",
+            return Printer.IndentAsync($"Previewing synchronization session '{Session.Name}'",
                 async () =>
                 {
-                    var res = new SessionPreview(definition.Id);
-                    works = definition.Works.Select(d => new WorkRunner(d)).ToList();
-                    var tasks = works.Select(w => w.PreviewAsync());
+                    var res = new SessionPreview(Session.Id);
+                    works = Session.Works.Select(d => new WorkRunner(d)).ToList();
+                    var tasks = works.Select(w => w.PreviewAsync(includeNoneActionItems));
                     var resTask = await Task.WhenAll(tasks);
-                    res.Works = resTask;
+                    res.Works = resTask.Select(w =>
+                    {
+                        w.Session = res;
+                        return w;
+                    }).ToList();
+                    if (!includeNoneActionItems)
+                    {
+                        foreach (var work in res.Works.ToList())
+                            if (!work.Items.Any())
+                                res.Works.Remove(work);
+                    }
                     return res;
                 });
         }
@@ -106,7 +116,7 @@ namespace Fuxion.Synchronization
                 foreach (var side in item.Sides)
                 {
                     var runSide = runner.Sides.Single(s => s.Id == side.Id);
-                    var runItemSide = runItem.Sides.Single(s => s.Side.Id == side.Id);
+                    var runItemSide = runItem.SideRunners.Single(s => s.Side.Id == side.Id);
                     var map = new Func<IItemRunner, IItemSideRunner, object>((i, s) =>
                     {
                         if (runSide.Comparator.GetItemTypes().Item1 == runner.MasterSide.GetItemType())
@@ -124,21 +134,21 @@ namespace Fuxion.Synchronization
                         return null;
                     });
 
-                    if (side.Action == action && side.Action == SynchronizationAction.Insert)
+                    if (side.IsEnabled && side.Action == action && side.Action == SynchronizationAction.Insert)
                     {
                         var newItem = map(runItem, runItemSide);
                         await runSide.InsertAsync(newItem);
                         foreach (var subItem in runItemSide.SubItems)
-                            subItem.Sides.First().Side.Source = newItem;
+                            subItem.SideRunners.First().Side.Source = newItem;
                     }
-                    else if (side.Action == action && side.Action == SynchronizationAction.Update)
+                    else if (side.IsEnabled && side.Action == action && side.Action == SynchronizationAction.Update)
                     {
                         var newItem = map(runItem, runItemSide);
                         await runSide.UpdateAsync(newItem);
                         foreach (var subItem in runItemSide.SubItems)
-                            subItem.Sides.First().Side.Source = newItem;
+                            subItem.SideRunners.First().Side.Source = newItem;
                     }
-                    else if (side.Action == action && side.Action == SynchronizationAction.Delete)
+                    else if (side.IsEnabled && side.Action == action && side.Action == SynchronizationAction.Delete)
                     {
                         await runSide.DeleteAsync(runItemSide.SideItem);
                     }
@@ -154,11 +164,11 @@ namespace Fuxion.Synchronization
             foreach (var rel in relations)
             {
                 var runSubItem = runItemSide.SubItems.Single(si => si.Id == rel.Id);
-                var runSubItemSide = runSubItem.Sides.First();
+                var runSubItemSide = runSubItem.SideRunners.First();
                 var runSubSide = runSubItemSide.Side;
                 var subMap = new Func<IItemRunner, IItemSideRunner, object>((i, s) =>
                 {
-                    if (runSubSide.Comparator.GetItemTypes().Item1 == runSubItem.MasterItem.GetType())
+                    if (runSubSide.Comparator.GetItemTypes().Item1.GetTypeInfo().IsAssignableFrom(runSubItem.MasterItem.GetType().GetTypeInfo()))
                     {
                         // Master is A in this comparator
                         if (runSubItem.MasterItem != null)
@@ -172,21 +182,21 @@ namespace Fuxion.Synchronization
                     }
                     return null;
                 });
-                if (rel.Action == action && rel.Action == SynchronizationAction.Insert)
+                if (rel.IsEnabled && rel.Action == action && rel.Action == SynchronizationAction.Insert)
                 {
                     var newItem = subMap(runSubItem, runSubItemSide);
                     await runSubSide.InsertAsync(newItem);
                     foreach (var subItem in runSubItemSide.SubItems)
-                        subItem.Sides.First().Side.Source = newItem;
+                        subItem.SideRunners.First().Side.Source = newItem;
                 }
-                else if (rel.Action == action && rel.Action == SynchronizationAction.Update)
+                else if (rel.IsEnabled && rel.Action == action && rel.Action == SynchronizationAction.Update)
                 {
                     var newItem = subMap(runSubItem, runSubItemSide);
                     await runSubSide.UpdateAsync(newItem);
                     foreach (var subItem in runSubItemSide.SubItems)
-                        subItem.Sides.First().Side.Source = newItem;
+                        subItem.SideRunners.First().Side.Source = newItem;
                 }
-                else if (rel.Action == action && rel.Action == SynchronizationAction.Delete)
+                else if (rel.IsEnabled && rel.Action == action && rel.Action == SynchronizationAction.Delete)
                 {
                     await runSubSide.DeleteAsync(runSubItemSide.SideItem);
                 }

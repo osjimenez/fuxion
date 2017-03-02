@@ -9,12 +9,13 @@ using System.Threading.Tasks;
 namespace Fuxion.Synchronization
 {
     [DebuggerDisplay("{" + nameof(Name) + "}")]
-    public class SideDefinition<TSource, TItem, TKey> : ISideDefinition
+    public class Side<TSource, TItem, TKey> : ISide
     {
         public bool IsMaster { get; set; }
         public string Name { get; set; }
-        //public string SingularItemTypeName { get; set; }
-        //public string PluralItemTypeName { get; set; }
+        public string SingularItemTypeName { get; set; }
+        public string PluralItemTypeName { get; set; }
+        public bool ItemTypeIsMale { get; set; }
 
         public TSource Source { get; set; }
         public Func<TItem, string> OnNaming { get; set; }
@@ -23,14 +24,14 @@ namespace Fuxion.Synchronization
         public Action<TSource, TItem> OnDelete { get; set; }
         public Action<TSource, TItem> OnUpdate { get; set; }
 
-        internal SideDefinition<TSource, TItem, TKey> Clone()
+        internal Side<TSource, TItem, TKey> Clone()
         {
-            return new SideDefinition<TSource, TItem, TKey>
+            return new Side<TSource, TItem, TKey>
             {
                 IsMaster = IsMaster,
                 Name = Name,
-                //SingularItemTypeName = SingularItemTypeName,
-                //PluralItemTypeName = PluralItemTypeName,
+                SingularItemTypeName = SingularItemTypeName,
+                PluralItemTypeName = PluralItemTypeName,
                 Source = Source,
                 OnNaming = OnNaming,
                 OnLoad = OnLoad,

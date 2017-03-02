@@ -9,7 +9,7 @@ namespace Fuxion.Synchronization
     internal interface ISideRunner
     {
         Guid Id { get; }
-        ISideDefinition Definition { get; set; }
+        ISide Definition { get; set; }
         object Source { get; set; }
         ICollection<LoadedItem> Entries { get; set; }
         IComparatorRunner Comparator { get; set; }
