@@ -77,28 +77,41 @@ namespace Fuxion.Synchronization
                 });
                 // Iterate non master sides to search for a comparator for they
                 Printer.Foreach("Comparators: ", rootSides.Where(s => !s.Definition.IsMaster), side => searchComparator(side));
-                await Printer.IndentAsync("Loading sides "+
-#if DEBUG
-                    "sequentially"
-#else
-                    "in parallel"
-#endif
-                    + " ...", () =>
+                await Printer.IndentAsync($"Loading sides {(definition.LoadSidesInParallel ? "in parallel" : "sequentially")} ...", () =>
+//#if DEBUG
+//                    "sequentially"
+//#else
+//                    "in parallel"
+//#endif
+//                    + " ...", () =>
                 {
-#if DEBUG
-                    // Load all sides sequentially
-                    return TaskManager.StartNew(async () =>
+                    if (definition.LoadSidesInParallel)
                     {
-                        foreach (var side in rootSides)
+                        return Task.WhenAll(rootSides.Select(s => s.Load()));
+                    }else
+                    {
+                        return TaskManager.StartNew(async () =>
                         {
-                            await side.Load();
-                        }
-                    });
-#else
-                    Printer.WriteLine("|| Loading in parallel");
-                    // Load all sides in parallel
-                    return Task.WhenAll(rootSides.Select(s => s.Load()));
-#endif
+                            foreach (var side in rootSides)
+                            {
+                                await side.Load();
+                            }
+                        });
+                    }
+//#if DEBUG
+//                    // Load all sides sequentially
+//                    return TaskManager.StartNew(async () =>
+//                    {
+//                        foreach (var side in rootSides)
+//                        {
+//                            await side.Load();
+//                        }
+//                    });
+//#else
+//                    Printer.WriteLine("|| Loading in parallel");
+//                    // Load all sides in parallel
+//                    return Task.WhenAll(rootSides.Select(s => s.Load()));
+//#endif
                 });
                 Printer.Foreach("Comparing each side with master side ...", rootSides.Where(s => !s.Definition.IsMaster), sid=> { 
                     if (sid.Comparator.GetItemTypes().Item1 == MasterSide.GetItemType())

@@ -11,7 +11,7 @@ namespace Fuxion.Synchronization
     {
         internal static ISideRunner CreateRunner(this ISide me)
         {
-            return (ISideRunner)Activator.CreateInstance(typeof(SideRunner<,,>).MakeGenericType(me.GetType().GetTypeInfo().GenericTypeArguments), me);
+            return (ISideRunner)Activator.CreateInstance(typeof(SideRunner<,>).MakeGenericType(me.GetType().GetTypeInfo().GenericTypeArguments), me);
         }
         internal static IComparatorRunner CreateRunner(this IComparator me)
         {

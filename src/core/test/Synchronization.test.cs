@@ -47,7 +47,7 @@ namespace Fuxion.Test
                         Name = "Users",
                         #region Sides
                         Sides = new ISide[] {
-                            new Side<RepoFuxion, UserFuxion, int>
+                            new Side<RepoFuxion, UserFuxion>
                             {
                                 IsMaster = true,
                                 Name = "FUXION",
@@ -62,7 +62,7 @@ namespace Fuxion.Test
                                 OnDelete = (s, i) => s.Delete(i),
                                 OnUpdate = (s, i) => { }
                             },
-                            new Side<UserFuxion, SkillFuxion, int> {
+                            new Side<UserFuxion, SkillFuxion> {
                                 Name = "%sourceName%'s skills",
                                 Source = null,
                                 OnLoad = s => s.Skills,
@@ -75,7 +75,7 @@ namespace Fuxion.Test
                                 OnDelete = (s, i) => s.Skills.Remove(i),
                                 OnUpdate = (s, i) => { }
                             },
-                            new Side<SkillFuxion, CharacteristicFuxion, int> {
+                            new Side<SkillFuxion, CharacteristicFuxion> {
                                 Name = "%sourceName%'s characteristics",
                                 Source = null,
                                 OnLoad = s => s.Properties,
@@ -87,7 +87,7 @@ namespace Fuxion.Test
                                 OnDelete = (s, i) => s.Properties.Remove(i),
                                 OnUpdate = (s, i) => { }
                             },
-                            new Side<RepoCRM, UserCRM, int>
+                            new Side<RepoCRM, UserCRM>
                             {
                                 //IsMaster = true,
                                 Name = "CRM",
@@ -101,7 +101,7 @@ namespace Fuxion.Test
                                 OnDelete = (s, i) => s.Delete(i),
                                 OnUpdate = (s, i) => { }
                             },
-                            new Side<UserCRM, SkillCRM, int> {
+                            new Side<UserCRM, SkillCRM> {
                                 Name = "%sourceName%'s skills",
                                 Source = null,
                                 OnLoad = s => s.Skills,
@@ -116,7 +116,7 @@ namespace Fuxion.Test
                                 OnDelete = (s, i) => s.Skills.Remove(i),
                                 OnUpdate = (s, i) => { }
                             },
-                            new Side<SkillCRM, CharacteristicCRM, int> {
+                            new Side<SkillCRM, CharacteristicCRM> {
                                 Name = "%sourceName%'s properties",
                                 Source = null,
                                 OnLoad = s => s.Properties,
@@ -131,7 +131,7 @@ namespace Fuxion.Test
                                 OnDelete = (s, i) => s.Properties.Remove(i),
                                 OnUpdate = (s, i) => { }
                             },
-                            new Side<RepoERP, UserERP, int>
+                            new Side<RepoERP, UserERP>
                             {
                                 //IsMaster = true,
                                 Name = "ERP",
@@ -403,7 +403,7 @@ namespace Fuxion.Test
                         Name = "TestWork",
                         Sides = new ISide[]
                         {
-                            new Side<UserFuxion[],UserFuxion,int>
+                            new Side<UserFuxion[],UserFuxion>
                             {
                                 Name = "FUXION",
                                 IsMaster = true,
@@ -418,7 +418,7 @@ namespace Fuxion.Test
                                 OnNaming = u => u.Name,
                                 OnLoad = uu => uu,
                             },
-                            new Side<UserCRM[],UserCRM,int>
+                            new Side<UserCRM[],UserCRM>
                             {
                                 Name = "CRM",
                                 Source = Enumerable.Empty<UserCRM>().ToArray(),
@@ -470,7 +470,7 @@ namespace Fuxion.Test
                         Name = "TestWork",
                         Sides = new ISide[]
                         {
-                            new Side<UserFuxion[],UserFuxion,int>
+                            new Side<UserFuxion[],UserFuxion>
                             {
                                 Name = "FUXION",
                                 IsMaster = true,
@@ -485,7 +485,7 @@ namespace Fuxion.Test
                                 OnNaming = u => u.Name,
                                 OnLoad = uu => uu,
                             },
-                            new Side<UserCRM[],UserCRM,int>
+                            new Side<UserCRM[],UserCRM>
                             {
                                 Name = "CRM",
                                 Source = new []
@@ -552,7 +552,7 @@ namespace Fuxion.Test
                         Name = "TestWork",
                         Sides = new ISide[]
                         {
-                            new Side<UserFuxion[],UserFuxion,int>
+                            new Side<UserFuxion[],UserFuxion>
                             {
                                 Name = "FUXION",
                                 IsMaster = true,
@@ -560,7 +560,7 @@ namespace Fuxion.Test
                                 OnNaming = u => u.Name,
                                 OnLoad = uu => uu,
                             },
-                            new Side<UserCRM[],UserCRM,int>
+                            new Side<UserCRM[],UserCRM>
                             {
                                 Name = "CRM",
                                 Source = new []
@@ -628,7 +628,7 @@ namespace Fuxion.Test
                         Name = "TestWork",
                         Sides = new ISide[]
                         {
-                            new Side<UserFuxion[],UserFuxion,int>
+                            new Side<UserFuxion[],UserFuxion>
                             {
                                 Name = "FUXION",
                                 IsMaster = true,
@@ -651,7 +651,7 @@ namespace Fuxion.Test
                                 OnNaming = u => u.Name,
                                 OnLoad = uu => uu,
                             },
-                            new Side<UserCRM[],UserCRM,int>
+                            new Side<UserCRM[],UserCRM>
                             {
                                 Name = "CRM",
                                 Source = new[]
@@ -666,13 +666,13 @@ namespace Fuxion.Test
                                 OnNaming = u => u.Name,
                                 OnLoad = uu => uu,
                             },
-                            new Side<UserFuxion,SkillFuxion,int>
+                            new Side<UserFuxion,SkillFuxion>
                             {
                                 Name = "FUXION-SKILL",
                                 OnNaming = s => s.Name,
                                 OnLoad = u => u.Skills
                             },
-                            new Side<UserCRM,SkillCRM,int>
+                            new Side<UserCRM,SkillCRM>
                             {
                                 Name = "CRM-SKILL",
                                 OnNaming = s => s.Name,
@@ -740,7 +740,7 @@ namespace Fuxion.Test
                         Name = "TestWork",
                         Sides = new ISide[]
                         {
-                            new Side<UserFuxion[],UserFuxion,int>
+                            new Side<UserFuxion[],UserFuxion>
                             {
                                 Name = "FUXION",
                                 IsMaster = true,
@@ -763,7 +763,7 @@ namespace Fuxion.Test
                                 OnNaming = u => u.Name,
                                 OnLoad = uu => uu,
                             },
-                            new Side<UserCRM[],UserCRM,int>
+                            new Side<UserCRM[],UserCRM>
                             {
                                 Name = "CRM",
                                 Source = new[]
@@ -786,13 +786,13 @@ namespace Fuxion.Test
                                 OnNaming = u => u.Name,
                                 OnLoad = uu => uu,
                             },
-                            new Side<UserFuxion,SkillFuxion,int>
+                            new Side<UserFuxion,SkillFuxion>
                             {
                                 Name = "FUXION-SKILL",
                                 OnNaming = s => s.Name,
                                 OnLoad = u => u.Skills
                             },
-                            new Side<UserCRM,SkillCRM,int>
+                            new Side<UserCRM,SkillCRM>
                             {
                                 Name = "CRM-SKILL",
                                 OnNaming = s => s.Name,
@@ -864,7 +864,7 @@ namespace Fuxion.Test
                         Name = "TestWork",
                         Sides = new ISide[]
                         {
-                            new Side<UserFuxion[],UserFuxion,int>
+                            new Side<UserFuxion[],UserFuxion>
                             {
                                 Name = "FUXION",
                                 IsMaster = true,
@@ -879,7 +879,7 @@ namespace Fuxion.Test
                                 OnNaming = u => u.Name,
                                 OnLoad = uu => uu,
                             },
-                            new Side<UserCRM[],UserCRM,int>
+                            new Side<UserCRM[],UserCRM>
                             {
                                 Name = "CRM",
                                 Source = new[]
@@ -902,13 +902,13 @@ namespace Fuxion.Test
                                 OnNaming = u => u.Name,
                                 OnLoad = uu => uu,
                             },
-                            new Side<UserFuxion,SkillFuxion,int>
+                            new Side<UserFuxion,SkillFuxion>
                             {
                                 Name = "FUXION-SKILL",
                                 OnNaming = s => s.Name,
                                 OnLoad = u => u.Skills
                             },
-                            new Side<UserCRM,SkillCRM,int>
+                            new Side<UserCRM,SkillCRM>
                             {
                                 Name = "CRM-SKILL",
                                 OnNaming = s => s.Name,
@@ -977,7 +977,7 @@ namespace Fuxion.Test
                         Name = "TestWork",
                         Sides = new ISide[]
                         {
-                            new Side<UserFuxion[],UserFuxion,int>
+                            new Side<UserFuxion[],UserFuxion>
                             {
                                 Name = "FUXION",
                                 IsMaster = true,
@@ -1008,7 +1008,7 @@ namespace Fuxion.Test
                                 OnNaming = u => u.Name,
                                 OnLoad = uu => uu,
                             },
-                            new Side<UserCRM[],UserCRM,int>
+                            new Side<UserCRM[],UserCRM>
                             {
                                 Name = "CRM",
                                 Source = new[]
@@ -1031,25 +1031,25 @@ namespace Fuxion.Test
                                 OnNaming = u => u.Name,
                                 OnLoad = uu => uu,
                             },
-                            new Side<UserFuxion,SkillFuxion,int>
+                            new Side<UserFuxion,SkillFuxion>
                             {
                                 Name = "FUXION-SKILL",
                                 OnNaming = s => s.Name,
                                 OnLoad = u => u.Skills
                             },
-                            new Side<UserCRM,SkillCRM,int>
+                            new Side<UserCRM,SkillCRM>
                             {
                                 Name = "CRM-SKILL",
                                 OnNaming = s => s.Name,
                                 OnLoad = u => u.Skills,
                             },
-                            new Side<SkillFuxion,CharacteristicFuxion,int>
+                            new Side<SkillFuxion,CharacteristicFuxion>
                             {
                                 Name = "FUXION-SKILL-PROPERTY",
                                 OnNaming = p => p.Name,
                                 OnLoad = s => s.Properties
                             },
-                            new Side<SkillCRM,CharacteristicCRM,int>
+                            new Side<SkillCRM,CharacteristicCRM>
                             {
                                 Name = "CRM-SKILL-PROPERTY",
                                 OnNaming = p => p.Name,
@@ -1126,7 +1126,7 @@ namespace Fuxion.Test
                         Name = "TestWork",
                         Sides = new ISide[]
                         {
-                            new Side<UserFuxion[],UserFuxion,int>
+                            new Side<UserFuxion[],UserFuxion>
                             {
                                 Name = "FUXION",
                                 IsMaster = true,
@@ -1157,7 +1157,7 @@ namespace Fuxion.Test
                                 OnNaming = u => u.Name,
                                 OnLoad = uu => uu,
                             },
-                            new Side<UserCRM[],UserCRM,int>
+                            new Side<UserCRM[],UserCRM>
                             {
                                 Name = "CRM",
                                 Source = new[]
@@ -1188,25 +1188,25 @@ namespace Fuxion.Test
                                 OnNaming = u => u.Name,
                                 OnLoad = uu => uu,
                             },
-                            new Side<UserFuxion,SkillFuxion,int>
+                            new Side<UserFuxion,SkillFuxion>
                             {
                                 Name = "FUXION-SKILL",
                                 OnNaming = s => s.Name,
                                 OnLoad = u => u.Skills
                             },
-                            new Side<SkillFuxion,CharacteristicFuxion,int>
+                            new Side<SkillFuxion,CharacteristicFuxion>
                             {
                                 Name = "FUXION-SKILL-PROPERTY",
                                 OnNaming = s => s.Name,
                                 OnLoad = u => u.Properties
                             },
-                            new Side<UserCRM,SkillCRM,int>
+                            new Side<UserCRM,SkillCRM>
                             {
                                 Name = "CRM-SKILL",
                                 OnNaming = s => s.Name,
                                 OnLoad = u => u.Skills,
                             },
-                            new Side<SkillCRM, CharacteristicCRM,int>
+                            new Side<SkillCRM, CharacteristicCRM>
                             {
                                 Name = "CRM-SKILL-PROPERTY",
                                 OnNaming = s => s.Name,
@@ -1295,7 +1295,7 @@ namespace Fuxion.Test
                         Name = "TestWork",
                         Sides = new ISide[]
                         {
-                            new Side<UserFuxion[],UserFuxion,int>
+                            new Side<UserFuxion[],UserFuxion>
                             {
                                 Name = "FUXION",
                                 IsMaster = true,
@@ -1318,7 +1318,7 @@ namespace Fuxion.Test
                                 OnNaming = u => u.Name,
                                 OnLoad = uu => uu,
                             },
-                            new Side<UserCRM[],UserCRM,int>
+                            new Side<UserCRM[],UserCRM>
                             {
                                 Name = "CRM",
                                 Source = new[]
@@ -1349,26 +1349,26 @@ namespace Fuxion.Test
                                 OnNaming = u => u.Name,
                                 OnLoad = uu => uu,
                             },
-                            new Side<UserFuxion,SkillFuxion,int>
+                            new Side<UserFuxion,SkillFuxion>
                             {
                                 Name = "FUXION-SKILL",
                                 OnNaming = s => s.Name,
                                 OnLoad = u => u.Skills
                             },
-                            new Side<UserCRM,SkillCRM,int>
+                            new Side<UserCRM,SkillCRM>
                             {
                                 Name = "CRM-SKILL",
                                 OnNaming = s => s.Name,
                                 OnLoad = u => u.Skills,
                             },
-                            new Side<SkillFuxion, CharacteristicFuxion,int>
+                            new Side<SkillFuxion, CharacteristicFuxion>
                             {
                                 Name = "FUXION-SKILL-PROPERTY",
                                 OnNaming = p => p.Name,
                                 OnLoad = s => s.Properties,
                                 
                             },
-                            new Side<SkillCRM, CharacteristicCRM,int>
+                            new Side<SkillCRM, CharacteristicCRM>
                             {
                                 Name = "CRM-SKILL-PROPERTY",
                                 OnNaming = p => p.Name,

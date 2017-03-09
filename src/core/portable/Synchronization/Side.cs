@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Fuxion.Synchronization
 {
     [DebuggerDisplay("{" + nameof(Name) + "}")]
-    public class Side<TSource, TItem, TKey> : ISide
+    public class Side<TSource, TItem> : ISide
     {
         public bool IsMaster { get; set; }
         public string Name { get; set; }
@@ -24,9 +24,9 @@ namespace Fuxion.Synchronization
         public Action<TSource, TItem> OnDelete { get; set; }
         public Action<TSource, TItem> OnUpdate { get; set; }
 
-        internal Side<TSource, TItem, TKey> Clone()
+        internal Side<TSource, TItem> Clone()
         {
-            return new Side<TSource, TItem, TKey>
+            return new Side<TSource, TItem>
             {
                 IsMaster = IsMaster,
                 Name = Name,

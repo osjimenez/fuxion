@@ -15,13 +15,21 @@ namespace Fuxion.Synchronization
         public Guid Id { get { return Session.Id; } }
         public Task<SessionPreview> PreviewAsync(bool includeNoneActionItems = false)
         {
-            return Printer.IndentAsync($"Previewing synchronization session '{Session.Name}'",
+            return Printer.IndentAsync($"Previewing synchronization session '{Session.Name}' {(Session.MakePreviewInParallel ? "in parallel" : "sequentially")}",
                 async () =>
                 {
                     var res = new SessionPreview(Session.Id);
                     works = Session.Works.Select(d => new WorkRunner(d)).ToList();
-                    var tasks = works.Select(w => w.PreviewAsync(includeNoneActionItems));
-                    var resTask = await Task.WhenAll(tasks);
+                    List<WorkPreview> resTask = new List<WorkPreview>();
+                    if (Session.MakePreviewInParallel)
+                    {
+                        var tasks = works.Select(w => w.PreviewAsync(includeNoneActionItems));
+                        resTask = (await Task.WhenAll(tasks)).ToList();
+                    }else
+                    {
+                        foreach (var work in works)
+                            resTask.Add(await work.PreviewAsync(includeNoneActionItems));
+                    }
                     res.Works = resTask.Select(w =>
                     {
                         w.Session = res;

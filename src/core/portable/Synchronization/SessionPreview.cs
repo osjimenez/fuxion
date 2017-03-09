@@ -17,6 +17,8 @@ namespace Fuxion.Synchronization
         public Guid Id { get; set; }
         [DataMember]
         public IList<WorkPreview> Works { get; set; }
+
+        public static SessionPreview Empty = new SessionPreview(Guid.Empty);
         public ResourceManager ResourceManager { get; set; }
         public int ChangesCount { get { return Works.Sum(w => w.ChangesCount); } }
         public void Print() => Printer.Foreach("Preview: ", Works, work => work.Print(), false);

@@ -90,6 +90,7 @@
     <Compile Include="Synchronization\ItemPreview.cs" />
     <Compile Include="Synchronization\ItemRelationPreview.cs" />
     <Compile Include="Synchronization\ItemSidePreview.cs" />
+    <Compile Include="Synchronization\PropertiesComparator.cs" />
     <Compile Include="Synchronization\PropertyPreview.cs" />
     <Compile Include="Synchronization\SessionRunner.cs" />
     <Compile Include="Synchronization\SideRunner.cs" />
