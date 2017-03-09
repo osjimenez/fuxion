@@ -56,6 +56,8 @@
       <DependentUpon>OverlayDialog.xaml</DependentUpon>
     </None>
     <Compile Include="Controls\OverlayManager.cs" />
+    <Compile Include="Data\BooleanToBooleanMultiConverter.cs" />
+    <Compile Include="Data\ICollectionCountToBooleanConverter.cs" />
     <Compile Include="Data\NullableBooleanToVisibilityConverter.cs" />
     <Compile Include="Data\TypeMatchToVisibilityConverter.cs" />
     <Compile Include="Helpers\FocusHelper.cs" />
@@ -87,7 +89,7 @@
     <Compile Include="Data\BooleanToVisibilityMultiConverter.cs" />
     <Compile Include="Data\ConnectionStateToVisibilityConverter.cs" />
     <Compile Include="Data\GenericConverter.cs" />
-    <Compile Include="Data\IListCountToVisibilityConverter.cs" />
+    <Compile Include="Data\ICollectionCountToVisibilityConverter.cs" />
     <Compile Include="Data\NullToBooleanConverter.cs" />
     <Compile Include="Data\NullToVisibilityConverter.cs" />
     <Compile Include="Data\StringToFontFamilyConverter.cs" />

@@ -13,7 +13,7 @@ namespace Fuxion.Windows.Data
     {
         public Visibility CreatedValue { get; set; } = Visibility.Collapsed;
         public Visibility OpeningValue { get; set; } = Visibility.Collapsed;
-        public Visibility OpenedValue { get; set; } = Visibility.Collapsed;
+        public Visibility OpenedValue { get; set; } = Visibility.Visible;
         public Visibility ClosingValue { get; set; } = Visibility.Collapsed;
         public Visibility ClosedValue { get; set; } = Visibility.Collapsed;
         public Visibility FaultedValue { get; set; } = Visibility.Collapsed;

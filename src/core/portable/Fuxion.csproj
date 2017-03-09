@@ -64,16 +64,49 @@
     <Compile Include="Net\IConnectableNotifier.cs" />
     <Compile Include="Printer.cs" />
     <Compile Include="Reflection\Reflect.cs" />
+    <Compile Include="Resources\Strings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Strings.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\Strings.es.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Strings.es.resx</DependentUpon>
+    </Compile>
     <Compile Include="Singleton.cs" />
+    <Compile Include="Synchronization\ComparatorRunner.cs" />
+    <Compile Include="Synchronization\IItemRunner.cs" />
+    <Compile Include="Synchronization\IItemSideRunner.cs" />
+    <Compile Include="Synchronization\IPropertyRunner.cs" />
+    <Compile Include="Synchronization\LoadedItem.cs" />
+    <Compile Include="Synchronization\Comparator.cs" />
+    <Compile Include="Synchronization\IComparator.cs" />
+    <Compile Include="Synchronization\ISide.cs" />
+    <Compile Include="Synchronization\ISideRunner.cs" />
+    <Compile Include="Synchronization\IComparatorRunner.cs" />
+    <Compile Include="Synchronization\IComparatorResult.cs" />
+    <Compile Include="Synchronization\IComparatorResultInternal.cs" />
+    <Compile Include="Synchronization\ItemPreview.cs" />
+    <Compile Include="Synchronization\ItemRelationPreview.cs" />
+    <Compile Include="Synchronization\ItemSidePreview.cs" />
+    <Compile Include="Synchronization\PropertiesComparator.cs" />
+    <Compile Include="Synchronization\PropertyPreview.cs" />
+    <Compile Include="Synchronization\SessionRunner.cs" />
+    <Compile Include="Synchronization\SideRunner.cs" />
     <Compile Include="Synchronization\SynchronizationAction.cs" />
-    <Compile Include="Synchronization\SynchronizationComparator.cs" />
+    <Compile Include="Synchronization\ComparatorResult.cs" />
     <Compile Include="Synchronization\SynchronizationExtensions.cs" />
-    <Compile Include="Synchronization\SynchronizationItem.cs" />
-    <Compile Include="Synchronization\SynchronizationProperty.cs" />
-    <Compile Include="Synchronization\SynchronizationSession.cs" />
-    <Compile Include="Synchronization\SynchronizationSide.cs" />
-    <Compile Include="Synchronization\SynchronizationPreview.cs" />
-    <Compile Include="Synchronization\SynchronizationWork.cs" />
+    <Compile Include="Synchronization\ItemRunner.cs" />
+    <Compile Include="Synchronization\ItemSideRunner.cs" />
+    <Compile Include="Synchronization\PropertyRunner.cs" />
+    <Compile Include="Synchronization\Session.cs" />
+    <Compile Include="Synchronization\Side.cs" />
+    <Compile Include="Synchronization\SessionPreview.cs" />
+    <Compile Include="Synchronization\SynchronizationManager.cs" />
+    <Compile Include="Synchronization\Work.cs" />
+    <Compile Include="Synchronization\WorkPreview.cs" />
+    <Compile Include="Synchronization\WorkRunner.cs" />
     <Compile Include="System-Extensions.cs" />
     <Compile Include="Factories\Factory.cs" />
     <Compile Include="Factories\IFactoryInjector.cs" />
@@ -131,6 +164,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Strings.es.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Strings.es.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Strings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

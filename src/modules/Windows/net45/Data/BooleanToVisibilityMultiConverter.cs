@@ -15,18 +15,15 @@ namespace Fuxion.Windows.Data
     }
     public sealed class BooleanToVisibilityMultiConverter : IMultiValueConverter
     {
-        public BooleanToVisibilityMultiConverter()
-        {
-            TrueValue = Visibility.Visible;
-            FalseValue = Visibility.Collapsed;
-        }
         public MultiBooleanConverterMode Mode { get; set; } = MultiBooleanConverterMode.AllTrue;
         public Visibility TrueValue { get; set; } = Visibility.Visible;
         public Visibility FalseValue { get; set; } = Visibility.Collapsed;
+        public bool AllowNullValues { get; set; }
+        public bool NullValue { get; set; }
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if (!values.All(v => v is bool)) throw new NotSupportedException($"Not all values are booleans");
-            var vals = values.Cast<bool>();
+            if (!values.All(v => v is bool) && !AllowNullValues) throw new NotSupportedException($"Not all values are booleans");
+            var vals = values.Select(o => o == null || o == DependencyProperty.UnsetValue ? NullValue : (bool)o);
             switch (Mode)
             {
                 case MultiBooleanConverterMode.AllTrue:

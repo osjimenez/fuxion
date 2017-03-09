@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Fuxion.Resources;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -82,8 +83,9 @@ namespace Fuxion
         }
         #endregion
         #region Foreach
-        public static void Foreach<T>(string message, IEnumerable<T> items, Action<T> action)
+        public static void Foreach<T>(string message, IEnumerable<T> items, Action<T> action, bool printMessageIfNoItems = true)
         {
+            if (!printMessageIfNoItems && !items.Any()) return;
             WriteLine(message);
             Indent(() =>
             {
@@ -91,10 +93,11 @@ namespace Fuxion
                     action(item);
             });
         }
-        public static Task ForeachAsync<T>(string message, IEnumerable<T> items, Func<T, Task> action)
+        public static Task ForeachAsync<T>(string message, IEnumerable<T> items, Func<T, Task> action, bool printMessageIfNoItems = true)
         {
+            if (!printMessageIfNoItems && !items.Any()) return Task.FromResult(0);
             WriteLine(message);
-            return Indent(async () =>
+            return IndentAsync(async () =>
             {
                 foreach (var item in items)
                     await action(item);

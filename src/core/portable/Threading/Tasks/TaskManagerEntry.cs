@@ -49,7 +49,7 @@ namespace Fuxion.Threading.Tasks
 
         public event EventHandler Canceled;
         public bool IsCancellationRequested { get { return CancellationTokenSource.IsCancellationRequested; } }
-        protected CancellationTokenSource CancellationTokenSource { get; set; }
+        public CancellationTokenSource CancellationTokenSource { get; set; }
         public void Cancel()
         {
             CancellationTokenSource.Cancel();
