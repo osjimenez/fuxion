@@ -6,11 +6,7 @@ namespace System.Collections.Generic
     public static class System_Extensions
     {
         public static IEnumerable<TSource> AuthorizedTo<TSource>(this IEnumerable<TSource> source, params IFunction[] functions)
-        {
-            var im = Factory.Get<IdentityManager>();
-            //var pre = im.GetCurrent().FilterExpression<TSource>(functions);
-            return source.AuthorizedTo(im.GetCurrent(), functions);
-        }
+            => source.AuthorizedTo(null, functions);
         public static IEnumerable<TSource> AuthorizedTo<TSource>(this IEnumerable<TSource> source, IRol rol, params IFunction[] functions)
         {
             if (rol == null)
@@ -23,9 +19,7 @@ namespace System.Collections.Generic
                 : source.Where(pre.Compile());
         }
         public static IQueryable<TSource> AuthorizedTo<TSource>(this IQueryable<TSource> source, params IFunction[] functions)
-        {
-            return source.AuthorizedTo(null, functions);
-        }
+            => source.AuthorizedTo(null, functions);
         public static IQueryable<TSource> AuthorizedTo<TSource>(this IQueryable<TSource> source, IRol rol, params IFunction[] functions)
         {
             if (rol == null)

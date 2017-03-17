@@ -279,18 +279,26 @@ namespace Fuxion.Test
         }
         #endregion
     }
-    public class DerivedNotifierMock : NotifierMock {
-        #region Virtual
+    public interface IDerivedNotifierMock
+    {
+        int Integer_Virtual_AutoImplemented_WithoutDefault_RaiseOnChange_NotLocked { get; set; }
+    }
+    public class DerivedNotifierMock : NotifierMock, IDerivedNotifierMock
+    {
         public new int Integer_Virtual_AutoImplemented_WithoutDefault_RaiseOnChange_NotLocked
         {
             get { return GetValue<int>(); }
             set { SetValue(value); }
         }
-        #endregion
+        int IDerivedNotifierMock.Integer_Virtual_AutoImplemented_WithoutDefault_RaiseOnChange_NotLocked
+        {
+            get { return GetValue<int>(); }
+            set { SetValue(value); }
+        }
     }
     public class Notifier_Test
     {
-        [Fact]
+        [Fact(DisplayName = "Notifier - ProtectedPropertyTest")]
         public void ProtectedPropertyTest()
         {
             var o = new DerivedNotifierMock();
@@ -400,7 +408,7 @@ namespace Fuxion.Test
             }
             //context.WriteLine("Se han comprobado " + properties.Count() + " propiedades de tipo '" + typeof(T).Name + "'");
         }
-        [Fact]
+        [Fact(DisplayName = "Notifier - PreviousValueIsDefaultValue2")]
         public void PreviousValueIsDefaultValue2()
         {
             var props = mock.GetType().GetProperties().AsQueryable().Where(p => p.Name.Contains("WithDefault"));
@@ -498,7 +506,7 @@ namespace Fuxion.Test
             }
             //context.WriteLine("Se han comprobado " + properties.Count() + " propiedades de tipo '" + typeof(T).Name + "'");
         }
-        [Fact]
+        [Fact(DisplayName = "Notifier - RaiseOnChangeOrAlways")]
         public void RaiseOnChangeOrAlways()
         {
             var props = mock.GetType().GetProperties().AsQueryable();
@@ -549,7 +557,7 @@ namespace Fuxion.Test
         //}
         #endregion
         #region Method IS
-        [Fact]
+        [Fact(DisplayName = "Notifier - IsAny")]
         public void Method_IsAny()
         {
             var passed = false;
@@ -570,7 +578,7 @@ namespace Fuxion.Test
         }
         #endregion
         #region Binding
-        [Fact]
+        [Fact(DisplayName = "Notifier - Binding_OneWay")]
         public void Notifier_Binding_OneWay()
         {
             var source = new DerivedNotifierMock();
@@ -582,7 +590,7 @@ namespace Fuxion.Test
             source.Integer_AutoImplemented_WithDefault_RaiseOnChange_NotLocked = 123;
             Assert.Equal(123, target.Integer_AutoImplemented_WithDefault_RaiseOnChange_NotLocked);
         }
-        [Fact]
+        [Fact(DisplayName = "Notifier - Binding_OneWay_WithTransformation")]
         public void Notifier_Binding_OneWay_WithTransformation()
         {
             var source = new DerivedNotifierMock();
@@ -594,7 +602,7 @@ namespace Fuxion.Test
             source.Integer_AutoImplemented_WithDefault_RaiseOnChange_NotLocked = 123;
             Assert.Equal(123.ToString(), target.String_AutoImplemented_WithDefault_RaiseOnChange_NotLocked);
         }
-        [Fact]
+        [Fact(DisplayName = "Notifier - Binding_TwoWay")]
         public void Notifier_Binding_TwoWay()
         {
             var source = new DerivedNotifierMock();
@@ -614,7 +622,7 @@ namespace Fuxion.Test
             Assert.Equal(321, source.Integer_AutoImplemented_WithDefault_RaiseOnChange_NotLocked);
         }
         #endregion
-        [Fact]
+        [Fact(DisplayName = "Notifier - VirtualProperty")]
         public void Notifier_VirtualProperty()
         {
             var mock = new DerivedNotifierMock();

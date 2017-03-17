@@ -101,8 +101,7 @@ namespace Fuxion.Identity
         public DiscriminatedByAttribute(Type type)
         {
             if (!typeof(IDiscriminator).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
-                throw new Exception("The Type '" + type.Name + "' must implements '" +
-                                               typeof(IDiscriminator).Name + "' interface");
+                throw new Exception($"The Type '{type.Name}' must implements '{nameof(IDiscriminator)}' interface");
             Type = type;
         }
         public Type Type { get; set; }

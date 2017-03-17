@@ -192,16 +192,20 @@ namespace Fuxion.ComponentModel
         #endregion
         #region Set&Get Value
         private volatile Dictionary<string, object> PropertiesDictionary;
+        private string GetPropertyKey(string propertyName)
+            => propertyName;
+            //=> GetType().GetTypeInfo().GetAllProperties().Where(p => p.Name == propertyName).First().DeclaringType.GetSignature(true) + "." + propertyName;
+        
         protected T GetValue<T>(Func<T> defaultValueFunction = null, [CallerMemberName] string propertyName = null)
         {
             if (propertyName == null) throw new ArgumentNullException(nameof(propertyName));
             object objValue;
             T value;
-            if (PropertiesDictionary.TryGetValue(propertyName, out objValue)) value = (T)objValue;
+            if (PropertiesDictionary.TryGetValue(GetPropertyKey(propertyName), out objValue)) value = (T)objValue;
             else
             {
                 value = defaultValueFunction == null ? default(T) : defaultValueFunction();
-                PropertiesDictionary[propertyName] = value;
+                PropertiesDictionary[GetPropertyKey(propertyName)] = value;
             }
             return value;
         }
@@ -209,7 +213,7 @@ namespace Fuxion.ComponentModel
         {
             if (propertyName == null) throw new ArgumentNullException(nameof(propertyName));
             T oldValue;
-            if (PropertiesDictionary.ContainsKey(propertyName))
+            if (PropertiesDictionary.ContainsKey(GetPropertyKey(propertyName)))
                 oldValue = GetValue<T>(propertyName: propertyName);
             else
             {
@@ -238,7 +242,7 @@ namespace Fuxion.ComponentModel
             if (raiseOnlyIfNotEquals && EqualityComparer<T>.Default.Equals(oldValue, newValue))
                 return false;
             //if (!OnRaisePropertyChanging(propertyName, oldValue, newValue)) return false;
-            PropertiesDictionary[propertyName] = newValue;
+            PropertiesDictionary[GetPropertyKey(propertyName)] = newValue;
             OnRaisePropertyChanged(propertyName, oldValue, newValue);
             return true;
         }
@@ -246,11 +250,11 @@ namespace Fuxion.ComponentModel
         {
             if (propertyName == null) throw new ArgumentNullException("propertyName");
             object objValue;
-            if (PropertiesDictionary.TryGetValue(propertyName, out objValue))
+            if (PropertiesDictionary.TryGetValue(GetPropertyKey(propertyName), out objValue))
                 return (ValueLocker<T>)objValue;
             T defaultValue = defaultValueFunction == null ? default(T) : defaultValueFunction();
             var defaultLocker = new ValueLocker<T>(defaultValue);
-            PropertiesDictionary[propertyName] = defaultLocker;
+            PropertiesDictionary[GetPropertyKey(propertyName)] = defaultLocker;
             return defaultLocker;
         }
         protected T GetLockedValue<T>(Func<T> defaultValueFunction = null, [CallerMemberName] string propertyName = null) where T : struct { return OnGetLockedValue(defaultValueFunction, propertyName); }
@@ -272,7 +276,7 @@ namespace Fuxion.ComponentModel
         {
             if (propertyName == null) throw new ArgumentNullException("propertyName");
             ValueLocker<T> oldLockerValue;
-            if (PropertiesDictionary.ContainsKey(propertyName))
+            if (PropertiesDictionary.ContainsKey(GetPropertyKey(propertyName)))
             {
                 oldLockerValue = GetLockerProperty<T>(propertyName: propertyName);
                 //OnRaisePropertyRead(propertyName, oldLockerValue.ObjectLocked);
@@ -281,13 +285,13 @@ namespace Fuxion.ComponentModel
             {
                 // oldLockerValue = new ValueLocker<T>((T)GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static).GetValue(this, null));
                 oldLockerValue = new ValueLocker<T>((T)GetType().GetTypeInfo().GetAllProperties().Single(p => p.Name == propertyName).GetValue(this, null));
-                PropertiesDictionary[propertyName] = oldLockerValue;
+                PropertiesDictionary[GetPropertyKey(propertyName)] = oldLockerValue;
             }
             if (raiseOnlyIfNotEquals && ((oldLockerValue == null && value == null) || EqualityComparer<T>.Default.Equals(oldLockerValue.ObjectLocked, value)))
                 return false;
             T oldValue = oldLockerValue.ObjectLocked;
             //if (!OnRaisePropertyChanging(propertyName, oldValue, value)) return false;
-            ((ValueLocker<T>)PropertiesDictionary[propertyName]).WriteRef(value);
+            ((ValueLocker<T>)PropertiesDictionary[GetPropertyKey(propertyName)]).WriteRef(value);
             OnRaisePropertyChanged(propertyName, oldValue, value);
             return true;
         }
@@ -360,11 +364,12 @@ namespace Fuxion.ComponentModel
         [JsonIgnore]
         protected bool UseSynchronizerOnRaisePropertyChanged { get { return GetValue(() => true); } set { SetValue(value); } }
         protected void RaisePropertyChanged<T>(Expression<Func<object>> expression, T previousValue, T actualValue)
+            => RaisePropertyChanged(expression.GetMemberName(), previousValue, actualValue);
+        protected void RaisePropertyChanged<T>(string propertyName, T previousValue, T actualValue)
         {
-            string memberName = expression.GetMemberName();
-            PropertyInfo prop = GetType().GetTypeInfo().GetAllProperties().Single(p => p.Name == memberName);
-            if (prop == null) throw new ArgumentException("No se ha encontrado la propiedad '" + memberName + "' en el tipo '" + GetType().Name + "'.");
-            OnRaisePropertyChanged(memberName, previousValue, actualValue);
+            //PropertyInfo prop = GetType().GetTypeInfo().GetAllProperties().Single(p => p.Name == propertyName);
+            //if (prop == null) throw new ArgumentException("No se ha encontrado la propiedad '" + propertyName + "' en el tipo '" + GetType().Name + "'.");
+            OnRaisePropertyChanged(propertyName, previousValue, actualValue);
         }
         protected virtual void OnRaisePropertyChanged<T>(string propertyName, T previousValue, T actualValue)
         {

@@ -96,7 +96,7 @@ namespace Fuxion.Identity.Test.Dao
         public new string Id { get { return base.Id; } set { base.Id = value; } }
         public CategoryDao Parent { get; set; }
         [DiscriminatedBy(typeof(CategoryDao))]
-        public string PrentId { get; set; }
+        public string ParentId { get; set; }
         public IEnumerable<CategoryDao> Children { get; set; }
 
         protected sealed override string GetTypeId() => "CAT";

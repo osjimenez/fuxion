@@ -13,9 +13,11 @@ namespace Fuxion
         public static bool Enabled { get; set; } = true;
         public static int IndentationLevel { get; set; }
         public static int IndentationStep { get; set; } = 3;
+        [DebuggerHidden]
         public static Action<string> WriteLineAction { get; set; } = m => Debug.WriteLine(m);
         static List<string> lineMessages = new List<string>();
         public static bool IsLineWritePending { get { lock (lineMessages) { return lineMessages.Any(); } } }
+        [DebuggerHidden]
         public static void Write(string message)
         {
             if (!Enabled) return;
@@ -24,6 +26,7 @@ namespace Fuxion
                 lineMessages.Add(message);
             }
         }
+        [DebuggerHidden]
         public static void WriteLine(string message)
         {
             if (!Enabled) return;
@@ -34,17 +37,20 @@ namespace Fuxion
             }
         }
         #region Indent
+        [DebuggerHidden]
         public static void Indent(Action action)
         {
             IndentationLevel++;
             action();
             if(IndentationLevel > 0) IndentationLevel--;
         }
+        [DebuggerHidden]
         public static void Indent(string message, Action action)
         {
             WriteLine(message);
             Indent(action);
         }
+        [DebuggerHidden]
         public static T Indent<T>(Func<T> func)
         {
             IndentationLevel++;
@@ -52,23 +58,26 @@ namespace Fuxion
             if (IndentationLevel > 0) IndentationLevel--;
             return res;
         }
+        [DebuggerHidden]
         public static T Indent<T>(string message, Func<T> func)
         {
             WriteLine(message);
             return Indent(func);
         }
-
+        [DebuggerHidden]
         public static async Task IndentAsync(Func<Task> func)
         {
             IndentationLevel++;
             await func();
             if (IndentationLevel > 0) IndentationLevel--;
         }
+        [DebuggerHidden]
         public static Task IndentAsync(string message, Func<Task> func)
         {
             WriteLine(message);
             return IndentAsync(func);
         }
+        [DebuggerHidden]
         public static async Task<T> IndentAsync<T>(Func<Task<T>> func)
         {
             IndentationLevel++;
@@ -76,6 +85,7 @@ namespace Fuxion
             if (IndentationLevel > 0) IndentationLevel--;
             return res;
         }
+        [DebuggerHidden]
         public static Task<T> IndentAsync<T>(string message, Func<Task<T>> func)
         {
             WriteLine(message);
@@ -83,6 +93,7 @@ namespace Fuxion
         }
         #endregion
         #region Foreach
+        [DebuggerHidden]
         public static void Foreach<T>(string message, IEnumerable<T> items, Action<T> action, bool printMessageIfNoItems = true)
         {
             if (!printMessageIfNoItems && !items.Any()) return;
@@ -93,6 +104,7 @@ namespace Fuxion
                     action(item);
             });
         }
+        [DebuggerHidden]
         public static Task ForeachAsync<T>(string message, IEnumerable<T> items, Func<T, Task> action, bool printMessageIfNoItems = true)
         {
             if (!printMessageIfNoItems && !items.Any()) return Task.FromResult(0);
