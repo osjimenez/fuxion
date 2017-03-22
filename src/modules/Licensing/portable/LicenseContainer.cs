@@ -48,8 +48,6 @@ namespace Fuxion.Licensing
         public bool VerifySignature(string key) { return VerifySignature(Convert.FromBase64String(key)); }
         public bool VerifySignature(byte[] key)
         {
-            Debug.WriteLine("VERIFICATION:"+Signature);
-            Debug.WriteLine(License.ToJson(Formatting.None));
             return CryptographicEngine.VerifySignature(
                 AsymmetricKeyAlgorithmProvider.OpenAlgorithm(AsymmetricAlgorithm.RsaSignPssSha512).ImportPublicKey(key),
                 Encoding.Unicode.GetBytes(License.ToJson(Formatting.None)),

@@ -86,6 +86,7 @@
     <Compile Include="DispatcherSynchronizer.test.cs" />
     <Compile Include="Factory.test.cs" />
     <Compile Include="GenericEqualityComparer.test.cs" />
+    <Compile Include="HardwareId.Test.cs" />
     <Compile Include="Helpers\ITimeProviderExtensions.cs" />
     <Compile Include="Helpers\MockTimeProvider.cs" />
     <Compile Include="Helpers\xUnitLog.cs" />
