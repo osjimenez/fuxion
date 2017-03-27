@@ -14,7 +14,7 @@
     <licenseUrl>https://raw.githubusercontent.com/osjimenez/Fuxion/develop/LICENSE</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <dependencies>
-      <dependency id="Fuxion" version="0.0.3-alpha103" />
+      <dependency id="Fuxion" version="0.0.3-alpha110" />
       <dependency id="EntityFramework" version="6.1.3" />
     </dependencies>
     <references/>

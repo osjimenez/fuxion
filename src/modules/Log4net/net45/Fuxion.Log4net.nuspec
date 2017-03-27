@@ -12,7 +12,7 @@
     <projectUrl>https://github.com/osjimenez/Fuxion</projectUrl>
     <licenseUrl>https://raw.githubusercontent.com/osjimenez/Fuxion/develop/LICENSE</licenseUrl>
     <dependencies>
-      <dependency id="Fuxion" version="0.0.3-alpha103" />
+      <dependency id="Fuxion" version="0.0.3-alpha110" />
       <dependency id="log4net" version="2.0.7" />
       <dependency id="NuGetPowerTools" version="0.29.0" />
     </dependencies>
