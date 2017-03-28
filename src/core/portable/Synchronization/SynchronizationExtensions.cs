@@ -9,9 +9,9 @@ namespace Fuxion.Synchronization
 {
     internal static class SynchronizationExtensions
     {
-        internal static ISideRunner CreateRunner(this ISide me)
+        internal static ISideRunner CreateRunner(this ISide me, IPrinter printer)
         {
-            return (ISideRunner)Activator.CreateInstance(typeof(SideRunner<,>).MakeGenericType(me.GetType().GetTypeInfo().GenericTypeArguments), me);
+            return (ISideRunner)Activator.CreateInstance(typeof(SideRunner<,>).MakeGenericType(me.GetType().GetTypeInfo().GenericTypeArguments), me, printer);
         }
         internal static IComparatorRunner CreateRunner(this IComparator me)
         {

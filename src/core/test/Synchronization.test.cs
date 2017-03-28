@@ -169,13 +169,10 @@ namespace Fuxion.Test
                                     a.Age = b.Age;
                                     return a;
                                 },
-                                PropertiesComparator = new PropertiesComparator<UserFuxion, UserCRM>(false)
-                                {
-                                    {a => a.Name, b => b.Name },
-                                    {a => a.Age, b => b.Age, (a,aVal,b,bVal)=> aVal != bVal },
-                                    //{a => a.Age, b => b.Age, new GenericEqualityComparer<int>(null,null) },
-                                    //{a => a.Name, b => b.Age, (name, age) => name == age.ToString() },
-                                }
+                                PropertiesComparator = PropertiesComparator<UserFuxion, UserCRM>
+                                    .WithoutAutoDiscoverProperties()
+                                    .With(a => a.Name, b => b.Name)
+                                    .With(a => a.Age, b => b.Age, v => v.aValue != v.bValue)
                             },
                             new Comparator<UserERP, UserFuxion, int>
                             {
@@ -197,11 +194,6 @@ namespace Fuxion.Test
                                     a.Age = b.Age;
                                     return a;
                                 },
-                                //PropertiesComparator = new PropertiesComparator<UserERP, UserFuxion>
-                                //{
-                                //    {a => a.Name, b => b.Name },
-                                //    {a => a.Age, b => b.Age },
-                                //}
                             },
                             new Comparator<SkillERP, SkillFuxion, int>
                             {
@@ -221,10 +213,6 @@ namespace Fuxion.Test
                                     a.Name = b.Name;
                                     return a;
                                 },
-                                //PropertiesComparator = new PropertiesComparator<SkillERP, SkillFuxion>
-                                //{
-                                //    {a => a.Name, b => b.Name },
-                                //}
                             },
                             new Comparator<UserCRM, UserERP, int>
                             {
@@ -246,11 +234,6 @@ namespace Fuxion.Test
                                     a.Age = b.Age;
                                     return a;
                                 },
-                                //PropertiesComparator = new PropertiesComparator<UserCRM, UserERP>
-                                //{
-                                //    {a => a.Name, b => b.Name },
-                                //    {a => a.Age, b => b.Age },
-                                //}
                             },
                             new Comparator<SkillCRM, SkillFuxion, int>
                             {
@@ -270,10 +253,6 @@ namespace Fuxion.Test
                                     a.Name = b.Name;
                                     return a;
                                 },
-                                //PropertiesComparator = new PropertiesComparator<SkillCRM, SkillFuxion>
-                                //{
-                                //    {a => a.Name, b => b.Name },
-                                //}
 
                             },
                             new Comparator<CharacteristicCRM, CharacteristicFuxion, int>
@@ -294,10 +273,6 @@ namespace Fuxion.Test
                                     a.Name = b.Name;
                                     return a;
                                 },
-                                //PropertiesComparator = new PropertiesComparator<CharacteristicCRM, CharacteristicFuxion>
-                                //{
-                                //    {a => a.Name, b => b.Name },
-                                //}
                             },
                         },
                         #endregion
@@ -306,6 +281,7 @@ namespace Fuxion.Test
             };
 
             var man = new SynchronizationManager();
+            
             // Preview synchronization
             var res = man.PreviewAsync(ses).Result;
 

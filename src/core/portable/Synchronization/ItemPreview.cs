@@ -42,20 +42,19 @@ namespace Fuxion.Synchronization
                 return $"{count} {(count == 1 ? Strings.Change.ToLower() : Strings.Changes.ToLower())}";
             }
         }
-        public void Print()
+        public void Print(IPrinter printer)
         {
-            Printer.Foreach($"Item '{(MasterItemExist ? MasterItemName : "null")}' has '{Sides.Count()}' sides", Sides, side =>
+            printer.Foreach($"Item '{(MasterItemExist ? MasterItemName : "null")}' has '{Sides.Count()}' sides", Sides, side =>
             {
                 Action<ICollection<ItemRelationPreview>> printRelations = null;
                 printRelations = rels =>
                 {
                     if (!rels.Any()) return;
-                    Printer.Foreach("Relations: ", rels, rel =>
+                    printer.Foreach("Relations: ", rels, rel =>
                     {
-                        //Printer.WriteLine($"Relation '{(rel.MasterItemExist ? rel.MasterItemName : "null")}' has '{rel.Relations.Count()}' relations");
-                        Printer.Foreach($"{rel.Action.ToString().ToUpper()} - In '{rel.SideName}' side is named '{rel.SideItemName}' with key '{rel.Key}' and has '{rel.Properties.Count()}' change(s)", rel.Properties, pro2 =>
+                        printer.Foreach($"{rel.Action.ToString().ToUpper()} - In '{rel.SideName}' side is named '{rel.SideItemName}' with key '{rel.Key}' and has '{rel.Properties.Count()}' change(s)", rel.Properties, pro2 =>
                         {
-                            Printer.WriteLine($"Property '{pro2.PropertyName}' will be changed from '{pro2.SideValue}' to '{pro2.MasterValue}'");
+                            printer.WriteLine($"Property '{pro2.PropertyName}' will be changed from '{pro2.SideValue}' to '{pro2.MasterValue}'");
                         });
                         printRelations(rel.Relations);
                     });
@@ -63,15 +62,15 @@ namespace Fuxion.Synchronization
 
                 if (side.SideItemExist)
                 {
-                    Printer.Foreach($"{side.Action.ToString().ToUpper()} - In '{side.SideName}' side is named '{side.SideItemName}' with key '{side.Key}' and has '{side.Properties.Count()}' change(s)", side.Properties, pro =>
+                    printer.Foreach($"{side.Action.ToString().ToUpper()} - In '{side.SideName}' side is named '{side.SideItemName}' with key '{side.Key}' and has '{side.Properties.Count()}' change(s)", side.Properties, pro =>
                     {
-                        Printer.WriteLine($"Property '{pro.PropertyName}' will be changed from '{pro.SideValue}' to '{pro.MasterValue}'");
+                        printer.WriteLine($"Property '{pro.PropertyName}' will be changed from '{pro.SideValue}' to '{pro.MasterValue}'");
                     });
                     printRelations(side.Relations);
                 }
                 else
                 {
-                    Printer.WriteLine($"{side.Action.ToString().ToUpper()} - In '{side.SideName}' side because does not exist");
+                    printer.WriteLine($"{side.Action.ToString().ToUpper()} - In '{side.SideName}' side because does not exist");
                     printRelations(side.Relations);
                 }
             }, false);

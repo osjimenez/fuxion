@@ -35,6 +35,6 @@ namespace Fuxion.Synchronization
                 return $"{count} {(count == 1 ? Strings.Change.ToLower() : Strings.Changes.ToLower())}";
             }
         }
-        public void Print() => Printer.Foreach("Work:", Items, item => item.Print(), false);
+        public void Print(IPrinter printer) => printer.Foreach("Work:", Items, item => item.Print(printer), false);
     }
 }

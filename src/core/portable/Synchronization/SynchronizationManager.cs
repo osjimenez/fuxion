@@ -35,19 +35,20 @@ namespace Fuxion.Synchronization
         ILog log = LogManager.Create<SynchronizationManager>();
         Task cleanEntriesTask = null;
         ValueLocker<ICollection<SessionEntry>> runners = new ValueLocker<ICollection<SessionEntry>>(new List<SessionEntry>());
+        public IPrinter Printer { get; set; } = Fuxion.Printer.Default;
         public TimeSpan CheckOutdatedSessionsInterval { get; set; } = TimeSpan.FromMinutes(1);
         public TimeSpan SessionOutdateLimit { get; set; } = TimeSpan.FromMinutes(60);
         public async Task<SessionPreview> PreviewAsync(Session definition, bool includeNoneActionItems = false)
         {
-            var runner = new SessionRunner(definition);
-            var preview = await runner.PreviewAsync(includeNoneActionItems);
+            var runner = new SessionRunner(definition, Printer);
+            var preview = await runner.PreviewAsync(includeNoneActionItems, Printer);
             runners.Write(l => l.Add(new SessionEntry(runner)));
             return preview;
         }
         public async Task RunAsync(SessionPreview preview)
         {
             var entry = runners.Read(l => l.Single(r => r.Runner.Id == preview.Id));
-            await entry.Runner.RunAsync(preview);
+            await entry.Runner.RunAsync(preview, Printer);
             runners.Write(l => l.Remove(entry));
         }
         public void Dispose()

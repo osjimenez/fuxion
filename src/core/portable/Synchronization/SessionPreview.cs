@@ -21,6 +21,10 @@ namespace Fuxion.Synchronization
         public static SessionPreview Empty = new SessionPreview(Guid.Empty);
         public ResourceManager ResourceManager { get; set; }
         public int ChangesCount { get { return Works.Sum(w => w.ChangesCount); } }
-        public void Print() => Printer.Foreach("Preview: ", Works, work => work.Print(), false);
+        public void Print(IPrinter printer = null)
+        {
+            printer = printer ?? Printer.Default;
+            printer.Foreach("Preview: ", Works, work => work.Print(printer), false);
+        }
     }
 }

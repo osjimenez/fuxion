@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Synchronization
 {
-    public class WorkRunner
+    internal class WorkRunner
     {
-        public WorkRunner(Work definition)
+        public WorkRunner(Work definition, IPrinter printer)
         {
             this.definition = definition;
-            Sides = definition.Sides.Select(d => d.CreateRunner()).ToList();
+            Sides = definition.Sides.Select(d => d.CreateRunner(printer)).ToList();
             Comparators = definition.Comparators.Select(c => c.CreateRunner()).ToList();
         }
         Work definition;
@@ -21,9 +21,9 @@ namespace Fuxion.Synchronization
         internal ICollection<IItemRunner> Items { get; set; } = new List<IItemRunner>();
         internal ICollection<IComparatorRunner> Comparators { get; set; }
         internal ISideRunner MasterSide { get; set; }
-        internal Task<WorkPreview> PreviewAsync(bool includeNoneActionItems = false)
+        internal Task<WorkPreview> PreviewAsync(bool includeNoneActionItems, IPrinter printer)
         {
-            return Printer.IndentAsync($"Work '{definition.Name}'", async () =>
+            return printer.IndentAsync($"Work '{definition.Name}'", async () =>
             {
                 // Get master side
                 var masters = Sides.Where(s => s.Definition.IsMaster);
@@ -43,14 +43,12 @@ namespace Fuxion.Synchronization
                 var rootSides = Sides.Where(s => !Sides.Any(s2 => s2.GetItemType() == s.GetSourceType())).OrderByDescending(s => s.Definition.IsMaster).ThenBy(s => s.Definition.Name).ToList();
                 foreach (var side in rootSides)
                     populateSubSides(side);
-                Printer.Foreach("Sides tree:", rootSides, side =>
+                printer.Foreach("Sides tree:", rootSides, side =>
                 {
                     Action<ISideRunner> printSide = null;
                     printSide = new Action<ISideRunner>(si =>
                     {
-                        //if (si.Definition.IsMaster) Printer.WriteLine("--- MASTER SIDE -----------------------");
-                        Printer.Foreach($"Side '{si.Definition.Name}' {(si.Definition.IsMaster ? "(MASTER)" : "")}:", si.SubSides, s => printSide(s));
-                        //if (si.Definition.IsMaster) Printer.WriteLine("---------------------------------------");
+                        printer.Foreach($"Side '{si.Definition.Name}' {(si.Definition.IsMaster ? "(MASTER)" : "")}:", si.SubSides, s => printSide(s));
                     });
                     printSide(side);
                 });
@@ -58,7 +56,6 @@ namespace Fuxion.Synchronization
                 Action<ISideRunner> searchComparator = null;
                 searchComparator = new Action<ISideRunner>(side =>
                 {
-                    //Printer.WriteLine($"Search comparator for side '{side.Name}'");
                     var cc = Comparators.Where(c =>
                     {
                         var mts = MasterSide.GetAllItemsType();
@@ -68,7 +65,7 @@ namespace Fuxion.Synchronization
                     }).Cast<IComparatorRunner>();
                     if (cc.Count() != 1) throw new ArgumentException($"One, and only one '{nameof(ISide)}' must be added for master side '{MasterSide.Definition.Name}' and each side");
                     side.Comparator = cc.Single();
-                    Printer.WriteLine($"Comparator for side '{side.Definition.Name}' is '{side.Comparator.GetItemTypes().Item1.Name}' <> '{side.Comparator.GetItemTypes().Item2.Name}'");
+                    printer.WriteLine($"Comparator for side '{side.Definition.Name}' is '{side.Comparator.GetItemTypes().Item1.Name}' <> '{side.Comparator.GetItemTypes().Item2.Name}'");
                     foreach (var subSide in side.SubSides)
                     {
                         Sides.Where(s => s.GetSourceType() == subSide.GetItemType());
@@ -76,14 +73,8 @@ namespace Fuxion.Synchronization
                     }
                 });
                 // Iterate non master sides to search for a comparator for they
-                Printer.Foreach("Comparators: ", rootSides.Where(s => !s.Definition.IsMaster), side => searchComparator(side));
-                await Printer.IndentAsync($"Loading sides {(definition.LoadSidesInParallel ? "in parallel" : "sequentially")} ...", () =>
-//#if DEBUG
-//                    "sequentially"
-//#else
-//                    "in parallel"
-//#endif
-//                    + " ...", () =>
+                printer.Foreach("Comparators: ", rootSides.Where(s => !s.Definition.IsMaster), side => searchComparator(side));
+                await printer.IndentAsync($"Loading sides {(definition.LoadSidesInParallel ? "in parallel" : "sequentially")} ...", () =>
                 {
                     if (definition.LoadSidesInParallel)
                     {
@@ -98,34 +89,20 @@ namespace Fuxion.Synchronization
                             }
                         });
                     }
-//#if DEBUG
-//                    // Load all sides sequentially
-//                    return TaskManager.StartNew(async () =>
-//                    {
-//                        foreach (var side in rootSides)
-//                        {
-//                            await side.Load();
-//                        }
-//                    });
-//#else
-//                    Printer.WriteLine("|| Loading in parallel");
-//                    // Load all sides in parallel
-//                    return Task.WhenAll(rootSides.Select(s => s.Load()));
-//#endif
                 });
-                Printer.Foreach("Comparing each side with master side ...", rootSides.Where(s => !s.Definition.IsMaster), sid=> { 
+                printer.Foreach("Comparing each side with master side ...", rootSides.Where(s => !s.Definition.IsMaster), sid=> { 
                     if (sid.Comparator.GetItemTypes().Item1 == MasterSide.GetItemType())
                     {
                         // Master is A in this comparer
-                        sid.Results = sid.Comparator.CompareSides(MasterSide, sid);
+                        sid.Results = sid.Comparator.CompareSides(MasterSide, sid, false, printer);
                     }
                     else
                     {
                         // Master is B in this comparer
-                        sid.Results = sid.Comparator.CompareSides(sid, MasterSide, true);
+                        sid.Results = sid.Comparator.CompareSides(sid, MasterSide, true, printer);
                     }
                 });
-                Printer.WriteLine("Analyzing results ...");
+                printer.WriteLine("Analyzing results ...");
                 Func<ICollection<ISideRunner>, ICollection<IItemRunner>> analyzeResults = null;
                 analyzeResults = new Func<ICollection<ISideRunner>, ICollection<IItemRunner>>(sides =>
                 {
@@ -171,7 +148,7 @@ namespace Fuxion.Synchronization
                     return res;
                 });
                 foreach (var item in analyzeResults(rootSides.Where(side => !side.Definition.IsMaster).ToList())) Items.Add(item);
-                Printer.WriteLine("Creating preview result ...");
+                printer.WriteLine("Creating preview result ...");
                 // Create preview response
                 var preWork = new WorkPreview(Id);
                 preWork.Name = definition.Name;
@@ -247,7 +224,7 @@ namespace Fuxion.Synchronization
                     preItems.Add(preItem);
                 }
                 preWork.Items = preItems;
-                Printer.WriteLine("Determining default actions ...");
+                printer.WriteLine("Determining default actions ...");
                 // Check result and suggest an action
                 foreach (var item in preWork.Items)
                 {

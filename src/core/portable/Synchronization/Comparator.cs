@@ -14,10 +14,8 @@ namespace Fuxion.Synchronization
     {
         public Func<TItemA, TKey> OnSelectKeyA { get; set; }
         public Func<TItemB, TKey> OnSelectKeyB { get; set; }
-        //public Action<TItemA, TItemB, IComparatorResult> OnCompare { get; set; }
         public Func<TItemA, TItemB, TItemB> OnMapAToB { get; set; }
         public Func<TItemB, TItemA, TItemA> OnMapBToA { get; set; }
-        //public IEnumerable<Tuple<Expression<Func<TItemA, object>>, Expression<Func<TItemB, object>>>> OnCompare2 { get; set; }
-        public PropertiesComparator<TItemA, TItemB> PropertiesComparator { get; set; } = new PropertiesComparator<TItemA, TItemB>();
+        public PropertiesComparator<TItemA, TItemB> PropertiesComparator { get; set; } = PropertiesComparator<TItemA, TItemB>.WithAutoDiscoverProperties();
     }
 }
