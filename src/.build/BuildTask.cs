@@ -23,7 +23,7 @@ public class BuildTask : Microsoft.Build.Utilities.Task
     }
     [Required]
     public string TargetName { get; set; }
-    //[Required]
+    //[Required] 
     //public string VersionFile { get; set; }
     [Required]
     public string NugetPath { get; set; }
