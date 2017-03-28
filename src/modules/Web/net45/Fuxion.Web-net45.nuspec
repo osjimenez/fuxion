@@ -15,7 +15,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <dependencies>
       <group>
-        <dependency id="Fuxion" version="0.0.3-alpha103" />
+        <dependency id="Fuxion" version="0.0.3-alpha110" />
         <dependency id="Flurl.Http" version="1.1.1" />
       </group>
       <group targetFramework="net45">
