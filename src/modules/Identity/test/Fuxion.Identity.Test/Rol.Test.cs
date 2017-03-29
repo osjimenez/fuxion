@@ -70,8 +70,8 @@ namespace Fuxion.Identity.Test
                         $"¿Debería poder {nameof(Delete)} en {nameof(Discriminator.Category.Purchases)}?\r\n" +
                         " No");
         }
-        [Fact(DisplayName = "pppp")]
-        public void Canppppp()
+        [Fact(DisplayName = "Rol - Cannot for different discriminator")]
+        public void CannotForDifferent()
         {
             var ide = new IdentityDao
             {
@@ -108,6 +108,94 @@ namespace Fuxion.Identity.Test
             //        $" - Concedido el permiso para {nameof(Admin)} la categoria {Discriminator.Category.Purchases} del tipo {nameof(BaseDao)} y derivados\r\n" +
             //        $"¿Debería poder {nameof(Admin)} alguna cosa?\r\n" +
             //        " Si");
+        }
+        [Fact(DisplayName = "Rol - Cannot for different discriminator2")]
+        public void CannotForDifferent2()
+        {
+            var ide = new IdentityDao
+            {
+                Id = "test",
+                Name = "Test",
+                Groups = new[]
+                {
+                    new GroupDao
+                    {
+                        Id = "admins",
+                        Name = "Admins",
+                        Permissions = new[]
+                        {
+                            new PermissionDao {
+                                Value = true,
+                                Function = Edit.Id.ToString(),
+                                Scopes =new[] {
+                                    new ScopeDao {
+                                        Discriminator = Factory.Get<TypeDiscriminatorFactory>().FromType<CategoryDao>(),
+                                        Propagation = ScopePropagation.ToMe | ScopePropagation.ToInclusions }
+                                }
+                            },
+                            new PermissionDao {
+                                Value = false,
+                                Function = Read.Id.ToString(),
+                                Scopes =new[] {
+                                    new ScopeDao {
+                                        Discriminator = Factory.Get<TypeDiscriminatorFactory>().FromType<CategoryDao>(),
+                                        Propagation = ScopePropagation.ToMe | ScopePropagation.ToInclusions }
+                                }
+                            },
+                        }
+                    }
+                }
+            };
+            Assert.False(ide.Can(Read).Instance(Discriminator.Category.Purchases),
+                 "Tengo:\r\n" +
+                    $" - Concedido el permiso para {nameof(Edit)} el tipo {nameof(CategoryDao)} y derivados\r\n" +
+                    $" - Denegado el permiso para {nameof(Read)} el tipo {nameof(CategoryDao)} y derivados\r\n" +
+                    $"¿Debería poder {nameof(Read)} en {nameof(Discriminator.Category.Purchases)}?\r\n" +
+                    " No");
+        }
+        [Fact(DisplayName = "Rol - Cannot admin something")]
+        public void CannotAdminSomething()
+        {
+            var ide = new IdentityDao
+            {
+                Id = "test",
+                Name = "Test",
+                Groups = new[]
+                {
+                    new GroupDao
+                    {
+                        Id = "admins",
+                        Name = "Admins",
+                        Permissions = new[]
+                        {
+                            new PermissionDao {
+                                Value = true,
+                                Function = Edit.Id.ToString(),
+                                Scopes =new[] {
+                                    new ScopeDao {
+                                        Discriminator = Factory.Get<TypeDiscriminatorFactory>().FromType<CategoryDao>(),
+                                        Propagation = ScopePropagation.ToMe | ScopePropagation.ToInclusions }
+                                }
+                            },
+                            new PermissionDao {
+                                Value = false,
+                                Function = Read.Id.ToString(),
+                                //Scopes =new[] {
+                                //    new ScopeDao {
+                                //        Discriminator = Factory.Get<TypeDiscriminatorFactory>().FromType<CategoryDao>(),
+                                //        Propagation = ScopePropagation.ToMe | ScopePropagation.ToInclusions }
+                                //}
+                            },
+                        }
+                    }
+                }
+            };
+            Assert.False(ide.Can(Admin).Something(),
+                 "Tengo:\r\n" +
+                    $" - Concedido el permiso para {nameof(Edit)} el tipo {nameof(CategoryDao)} y derivados\r\n" +
+                    $" - Denegado el permiso para {nameof(Read)} cualquier cosa\r\n" +
+                    $"¿Debería poder {nameof(Admin)} alguna cosa?\r\n" +
+                    " No");
         }
         [Fact(DisplayName = "Rol - Can by instance multiple properties")]
         public void CanByInstance2()

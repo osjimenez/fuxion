@@ -32,28 +32,27 @@ namespace Fuxion.Identity
                     Printer.WriteLine("Type: " + typeof(TEntity).Name);
                 });
                 #region Methods
-                var getCastMethod = new Func<Type, MethodInfo>(type =>
+                MethodInfo GetCastMethod(Type type) =>
                     typeof(Enumerable).GetTypeInfo().DeclaredMethods
                         .Where(m => m.Name == nameof(Enumerable.Cast))
                         .Single(m => m.GetParameters().Length == 1)
-                        .MakeGenericMethod(type));
-                var getOfTypeMethod = new Func<Type, MethodInfo>(type =>
+                        .MakeGenericMethod(type);
+                MethodInfo GetOfTypeMethod(Type type) =>
                     typeof(Enumerable).GetTypeInfo().DeclaredMethods
                         .Where(m => m.Name == nameof(Enumerable.OfType))
                         .Single(m => m.GetParameters().Length == 1)
-                        .MakeGenericMethod(type));
-                var getToListMethod = new Func<Type, MethodInfo>(type =>
+                        .MakeGenericMethod(type);
+                MethodInfo GetToListMethod(Type type) =>
                     typeof(Enumerable).GetTypeInfo().DeclaredMethods
                         .Where(m => m.Name == nameof(Enumerable.ToList))
                         .Single(m => m.GetParameters().Length == 1)
-                        .MakeGenericMethod(type));
-                var getContainsMethod = new Func<Type, MethodInfo>(type =>
+                        .MakeGenericMethod(type);
+                MethodInfo GetContainsMethod(Type type) =>
                     typeof(Enumerable).GetTypeInfo().DeclaredMethods
                         .Where(m => m.Name == nameof(Enumerable.Contains))
                         .Single(m => m.GetParameters().Length == 2)
-                        .MakeGenericMethod(type));
-                var getContainsExpression = new Func<bool, IScope, Type, PropertyInfo, Expression<Func<TEntity, bool>>>((value, sco, disType, proInfo) =>
-                {
+                        .MakeGenericMethod(type);
+                Expression<Func<TEntity, bool>> GetContainsExpression(bool value, IScope sco, Type disType, PropertyInfo proInfo){
                     IEnumerable<IDiscriminator> foreignDiscriminators = Enumerable.Empty<IDiscriminator>();
                     if (sco.Propagation.HasFlag(ScopePropagation.ToMe))
                         foreignDiscriminators = foreignDiscriminators.Union(new[] { sco.Discriminator });
@@ -61,22 +60,22 @@ namespace Fuxion.Identity
                         foreignDiscriminators = foreignDiscriminators.Union(sco.Discriminator.GetAllInclusions().Select(d => d));
                     if (sco.Propagation.HasFlag(ScopePropagation.ToExclusions))
                         foreignDiscriminators = foreignDiscriminators.Union(sco.Discriminator.GetAllExclusions().Select(d => d));
-                    var foreignDiscriminatorssOfType = (IEnumerable<IDiscriminator>)getOfTypeMethod(disType).Invoke(null, new object[] { foreignDiscriminators });
+                    var foreignDiscriminatorssOfType = (IEnumerable<IDiscriminator>)GetOfTypeMethod(disType).Invoke(null, new object[] { foreignDiscriminators });
                     // Si no hay claves externas del tipo de esta propiedad, continuo con la siguiente propiedad
                     if (!foreignDiscriminatorssOfType.Any()) return null;
                     var foreignKeys = foreignDiscriminatorssOfType.Select(d => d.Id);
-                    var foreignKeysCasted = getCastMethod(proInfo.PropertyType).Invoke(null, new object[] { foreignKeys });
-                    var foreignKeysListed = getToListMethod(proInfo.PropertyType).Invoke(null, new object[] { foreignKeysCasted });
+                    var foreignKeysCasted = GetCastMethod(proInfo.PropertyType).Invoke(null, new object[] { foreignKeys });
+                    var foreignKeysListed = GetToListMethod(proInfo.PropertyType).Invoke(null, new object[] { foreignKeysCasted });
 
 
                     var entityParameter = Expression.Parameter(typeof(TEntity));
                     var memberExpression = Expression.Property(entityParameter, proInfo);
-                    var containsExpression = Expression.Call(getContainsMethod(proInfo.PropertyType),
+                    var containsExpression = Expression.Call(GetContainsMethod(proInfo.PropertyType),
                         Expression.Constant(foreignKeysListed, foreignKeysListed.GetType()),
                         memberExpression);
                     var curExp = Expression.Lambda<Func<TEntity, bool>>((value ? (Expression)containsExpression : Expression.Not(containsExpression)), entityParameter);
                     return curExp;
-                });
+                }
                 #endregion 
                 var props = typeof(TEntity).GetRuntimeProperties()
                    .Where(p => p.GetCustomAttribute<DiscriminatedByAttribute>(true, false, false) != null)
@@ -91,29 +90,7 @@ namespace Fuxion.Identity
                    });
                 Printer.Foreach("Properties:", props, p => Printer.WriteLine($"{p.PropertyType.Name} {p.PropertyInfo.Name}"));
                 Expression<Func<TEntity, bool>> res = null;
-                // Load permissions for all given functions
                 var pers = functions.SelectMany(fun => me.SearchPermissions(fun, Factory.Get<TypeDiscriminatorFactory>().FromType<TEntity>())).Distinct().ToList();
-                //var pers = functions.SelectMany(fun => me.SearchPermissions(fun)).Distinct().ToList();
-                //var pers = me.SearchPermissions().ToList();
-                // Los permisos se agrupan por Value (concesión/denegación) y se combinan estos grupos con AND
-                // Los permisos de denegación, se combinan entre ellos con AND
-                // Los permisos de concesión, se combinan entre ellos con OR
-                // Ejemplo:
-                // (
-                //    Denypermission1
-                //    AND
-                //    DenyPermission2
-                //    AND
-                //    DenyPermission3
-                // )
-                // AND
-                // (
-                //    GrantPermission1
-                //    OR
-                //    GrantPermission2
-                //    OR
-                //    GrantPermission3
-                // )
                 Expression<Func<TEntity, bool>> denyPersExp = null;
                 Printer.Foreach("Deny permissions:", pers.Where(p => !p.Value), per =>
                 {
@@ -128,7 +105,7 @@ namespace Fuxion.Identity
                                 foreach (var pro in props.Where(p => p.DiscriminatorTypeId.Equals(sco.Discriminator.TypeId)).ToList())
                                 {
                                     Printer.WriteLine($"Property: {pro.PropertyType.Name} {pro.PropertyInfo.Name}");
-                                    var exp = getContainsExpression(per.Value, sco, pro.DiscriminatorType, pro.PropertyInfo);
+                                    var exp = GetContainsExpression(per.Value, sco, pro.DiscriminatorType, pro.PropertyInfo);
                                     if (exp == null) exp = Expression.Lambda<Func<TEntity, bool>>(Expression.Constant(false), Expression.Parameter(typeof(TEntity)));
                                     if (perExp == null)
                                         perExp = exp;
@@ -137,7 +114,8 @@ namespace Fuxion.Identity
                                 }
                             });
                         });
-                        if (!per.Scopes.Any())
+                        //if (!per.Scopes.Any())
+                        if (perExp == null)
                         {
                             perExp = Expression.Lambda<Func<TEntity, bool>>(Expression.Constant(false), Expression.Parameter(typeof(TEntity)));
                         }
@@ -159,13 +137,13 @@ namespace Fuxion.Identity
                         Expression<Func<TEntity, bool>> perExp = null;
                         Printer.Foreach("Scopes:", per.Scopes, sco =>
                         {
-                            Printer.Indent($"Scope: Discriminator<{sco.Discriminator.Name}({sco.Discriminator.Id})> - Propagation<{sco.Propagation}>", () =>
+                            Printer.Indent($"Scope: {sco}", () =>
                             {
                                 // Recorro las propiedades que son del tipo de este discriminador
                                 foreach (var pro in props.Where(p => p.DiscriminatorTypeId.Equals(sco.Discriminator.TypeId)).ToList())
                                 {
                                     Printer.WriteLine($"Property: {pro.PropertyType.Name} {pro.PropertyInfo.Name}");
-                                    var exp = getContainsExpression(per.Value, sco, pro.DiscriminatorType, pro.PropertyInfo);
+                                    var exp = GetContainsExpression(per.Value, sco, pro.DiscriminatorType, pro.PropertyInfo);
                                     if (exp == null) exp = Expression.Lambda<Func<TEntity, bool>>(Expression.Constant(false), Expression.Parameter(typeof(TEntity)));
                                     if (perExp == null)
                                         perExp = exp;
@@ -398,7 +376,7 @@ namespace Fuxion.Identity
             foreach (var fun in me.Functions)
             {
                 var permissions = me.Rol.SearchPermissions(fun);
-                if (!permissions.Any())// || permissions.All(p => p.Scopes.Any()))
+                if (!permissions.Any(p => p.Value))// || permissions.All(p => p.Scopes.Any()))
                     return false;
             }
             return true;
