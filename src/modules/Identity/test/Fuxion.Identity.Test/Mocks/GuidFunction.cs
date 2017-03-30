@@ -15,7 +15,7 @@ namespace Fuxion.Identity.Test.Mocks
         public Guid Id { get; private set; }
         object IFunction.Id { get { return Id; } }
 
-        public string Name { get; private set; }
+        public string Name { get; set; }
 
         public IEnumerable<IFunction<Guid>> Inclusions { get; set; }
         IEnumerable<IFunction> IInclusive<IFunction>.Inclusions { get { return Inclusions; } }

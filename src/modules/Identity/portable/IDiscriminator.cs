@@ -151,6 +151,19 @@ namespace Fuxion.Identity
         IEnumerable<IDiscriminator<string, string>> IExclusive<IDiscriminator<string, string>>.Exclusions { get { return Exclusions; } }
 
         public override string ToString() { return this.ToOneLineString(); }
+
+        public override bool Equals(object obj)
+        {
+            if (!(obj is TypeDiscriminator)) return false;
+            var c = obj as TypeDiscriminator;
+            return c.Id == Id && c.TypeId == TypeId;
+            var inc = c.Inclusions.Select(i => (i.TypeId, i.Id)).ToList();
+            var exc = c.Exclusions.Select(i => (i.TypeId, i.Id)).ToList();
+            return c.Id == Id && c.TypeId == TypeId && c.Inclusions.SequenceEqual(Inclusions) && c.Exclusions.SequenceEqual(Exclusions);
+        }
+        public override int GetHashCode() { return TypeId.GetHashCode() ^ Id.GetHashCode(); }
+        public static bool operator ==(TypeDiscriminator a, TypeDiscriminator b) { return EqualityComparer<TypeDiscriminator>.Default.Equals(a, b); }
+        public static bool operator !=(TypeDiscriminator a, TypeDiscriminator b) { return !EqualityComparer<TypeDiscriminator>.Default.Equals(a, b); }
     }
     public class TypeDiscriminatorFactory
     {
@@ -243,7 +256,16 @@ namespace Fuxion.Identity
                     TypeId = DiscriminatorTypeId,
                     TypeName = DiscriminatorTypeName,
                 };
-                entries.Add(ent);
+                if (aux != null)
+                {
+                    if (aux.Discriminator != ent.Discriminator)
+                    {
+                        var ex = new Exception($"El tipo '{type.FullName}' no se puede registrar porque el id '{id}' ya se ha registrado para el tipo '{aux.Type.FullName}' y el discriminador resultante no es equivalente.");
+                        log.Error(ex.Message, ex);
+                        throw ex;
+                    }
+                }
+                else entries.Add(ent);
                 log.Info($"El tipo '{type.FullName}' se ha registrado para ser discriminado con el id '{ent.Discriminator.Id}'");
             }
         }
@@ -251,9 +273,10 @@ namespace Fuxion.Identity
         public TypeDiscriminator FromType<T>() => FromType(typeof(T));
         public TypeDiscriminator FromType(Type type)
         {
-            var ent = entries.FirstOrDefault(e => e.Type == type);
-            if (ent == null) throw new KeyNotFoundException($"The type '{type.FullName}' was not registered. Use '{nameof(TypeDiscriminatorFactory)}.{nameof(Register)}' to register it.");
-            return ent.Discriminator;
+            return FromId(GetIdFunction(type));
+            //var ent = entries.FirstOrDefault(e => e.Type == type);
+            //if (ent == null) throw new KeyNotFoundException($"The type '{type.FullName}' was not registered. Use '{nameof(TypeDiscriminatorFactory)}.{nameof(Register)}' to register it.");
+            //return ent.Discriminator;
         }
         public TypeDiscriminator FromId(string id)
         {

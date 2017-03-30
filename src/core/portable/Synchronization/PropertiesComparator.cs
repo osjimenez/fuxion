@@ -134,11 +134,12 @@ namespace Fuxion.Synchronization
                     {
                         // Comparing values by default
                         comparationResult = 
+                            !(
                             (aValue != null && aValue.Equals(bValue))
                             ||
                             (bValue != null && bValue.Equals(aValue))
                             ||
-                            (aValue == null && bValue == null);
+                            (aValue == null && bValue == null));
                     }
                 }
                 if (comparationResult)

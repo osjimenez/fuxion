@@ -25,16 +25,23 @@ namespace Fuxion.Math.Graph
                 }
             }
         }
+        public void Remove(T value) {
+            foreach(var edge in Edges.ToList())
+            {
+                if (edge.Source == value || edge.Target == value)
+                    Edges.Remove(edge);
+            }
+        }
         public void AddEdge(T source, T target)
         {
             Edges.Add(new Edge<T>(source, target));
-            if (!AllowCycles && HasCycles()) throw new GraphCyclicException();
+            if (!AllowCycles && HasCycles()) throw new GraphCyclicException($"Source={source}   Target={target}");
         }
-        public void AddEdges(params T[][] edges)
+        public void AddEdges(params (T source, T target)[] edges)
         {
             foreach (var edge in edges)
-                Edges.Add(new Edge<T>(edge[0], edge[1]));
-            if (!AllowCycles && HasCycles()) throw new GraphCyclicException();
+                Edges.Add(new Edge<T>(edge.source, edge.target));
+            //if (!AllowCycles && HasCycles()) throw new GraphCyclicException();
         }
         public bool HasCycles()
         {

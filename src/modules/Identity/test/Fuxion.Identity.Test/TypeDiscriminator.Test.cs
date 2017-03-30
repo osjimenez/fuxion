@@ -141,7 +141,7 @@ namespace Fuxion.Identity.Test
 
             var res = fac.AllFromId(TypeDiscriminatorIds.Person);
 
-            Assert.Equal(2, res.Count());
+            Assert.Equal(1, res.Count());
         }
     }
 }

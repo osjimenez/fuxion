@@ -172,7 +172,7 @@ namespace Fuxion.Test
                                 PropertiesComparator = PropertiesComparator<UserFuxion, UserCRM>
                                     .WithoutAutoDiscoverProperties()
                                     .With(a => a.Name, b => b.Name)
-                                    .With(a => a.Age, b => b.Age, v => v.aValue != v.bValue)
+                                    .With(a => a.Age, b => b.Age, v => v.aValue == v.bValue)
                             },
                             new Comparator<UserERP, UserFuxion, int>
                             {
