@@ -81,6 +81,34 @@ namespace Fuxion.Test
             Assert.Equal(res, 2);
         }
         #endregion
+        [Fact]
+        public void TaskManager_SleepCancelation()
+        {
+            Task task = null;
+            var dt = DateTime.Now;
+            output.WriteLine("Inicio en " + dt.ToString("HH:mm:ss.fff"));
+            task = TaskManager.StartNew(() => {
+                //task.Sleep(TimeSpan.FromMilliseconds(2500), TimeSpan.FromMilliseconds(500));
+                task.Sleep(TimeSpan.FromMilliseconds(2500));
+            });
+            task.CancelAndWait();
+            output.WriteLine("Cancelado en " + DateTime.Now.ToString("HH:mm:ss.fff"));
+            Assert.True(dt.AddSeconds(1) > DateTime.Now);
+            //Assert.True(dt.AddMilliseconds(400) < DateTime.Now);
+        }
+        [Fact]
+        public Task TaskManager_Sleep()
+        {
+            Task task = null;
+            var dt = DateTime.Now;
+            task = TaskManager.StartNew(() => {
+                //task.Sleep(TimeSpan.FromMilliseconds(2500), TimeSpan.FromMilliseconds(500));
+                task.Sleep(TimeSpan.FromMilliseconds(2500));
+            });
+            return task.ContinueWith(_=> {
+                Assert.True(dt.AddSeconds(2) < DateTime.Now);
+            });
+        }
         #region void_StartNew
         [Fact]
         public void TaskManager_void_StartNew()

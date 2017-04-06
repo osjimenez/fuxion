@@ -13,7 +13,7 @@ namespace Fuxion.Threading.Tasks
         protected TaskManagerEntry(TaskScheduler scheduler, TaskCreationOptions options)
         {
             CancellationTokenSource = new CancellationTokenSource();
-            AutoResetEvent = new AutoResetEvent(false);
+            //AutoResetEvent = new AutoResetEvent(false);
             TaskScheduler = scheduler ?? TaskScheduler.Default;
             TaskCreationOptions = options;
         }
@@ -39,8 +39,8 @@ namespace Fuxion.Threading.Tasks
         }
         public TaskScheduler TaskScheduler { get; set; }
         public TaskCreationOptions TaskCreationOptions { get; set; }
-        public AutoResetEvent AutoResetEvent { get; set; }
-        public bool IsSleeping { get; set; }
+        //public AutoResetEvent AutoResetEvent { get; set; }
+        //public bool IsSleeping { get; set; }
 
         public void Start()
         {
