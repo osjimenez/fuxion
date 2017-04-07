@@ -21,7 +21,7 @@ namespace Fuxion.Synchronization
                 await Task.Delay(TimeSpan.FromSeconds(5));
                 while (!cleanEntriesTask.IsCancellationRequested())
                 {
-                    await Task.Delay(CheckOutdatedSessionsInterval, cleanEntriesTask.GetCancellationToken());
+                    await Task.Delay(CheckOutdatedSessionsInterval, cleanEntriesTask.GetCancellationToken(true).Value);
                     runners.Write(l => {
                         foreach (var entry in l.Where(e => e.CreationTime.Add(SessionOutdateLimit) < DateTime.Now).ToList())
                         {
