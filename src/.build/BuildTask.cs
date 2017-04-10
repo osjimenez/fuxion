@@ -116,7 +116,24 @@ public class BuildTask : Microsoft.Build.Utilities.Task
     {
         var projectFile = BuildEngine.ProjectFileOfTaskNode;
         
-        var versionFilePath = Directory.GetFiles(Path.GetDirectoryName(projectFile), "*.version", SearchOption.TopDirectoryOnly).First();
+        var versionFilePath = Directory.GetFiles(Path.GetDirectoryName(projectFile), "*.version", SearchOption.TopDirectoryOnly).FirstOrDefault();
+        if(versionFilePath == null)
+        {
+            var actualDir = Path.GetDirectoryName(projectFile);
+            //Log.LogError("actualDir1=" + actualDir);
+            while (!string.IsNullOrWhiteSpace(actualDir))
+            {
+                var files = Directory.GetFiles(actualDir, "*.version", SearchOption.TopDirectoryOnly);
+                if (files.Length > 0)
+                {
+                    versionFilePath = files[0];
+                    break;
+                }
+                actualDir = Path.GetDirectoryName(actualDir);
+                //Log.LogError("actualDir=" + actualDir);
+            }
+        }
+        if (string.IsNullOrWhiteSpace(versionFilePath)) throw new FileNotFoundException("File *.version cannot be found");
         return new Version(File.ReadAllText(Path.Combine(Path.GetDirectoryName(BuildEngine.ProjectFileOfTaskNode), versionFilePath)));
     }
     private static string VersionToSemanticVersion(Version version)
@@ -130,7 +147,14 @@ public class BuildTask : Microsoft.Build.Utilities.Task
         if (revision <= 0)
             return "";
         if (revision < 10000)
-            return "-alpha" + revision.ToString("000");
+            return "-alpha." + revision + "+date." + 
+                DateTime.Now.Year.ToString("0000") +
+                DateTime.Now.Month.ToString("00") + 
+                DateTime.Now.Day.ToString("00") + 
+                DateTime.Now.Hour.ToString("00") + 
+                DateTime.Now.Minute.ToString("00") + 
+                DateTime.Now.Second.ToString("00");
+        //return "-alpha" + revision.ToString("000");
         else if (revision < 20000)
             return "-beta" + (revision - 10000).ToString("000");
         else if (revision < 30000)
