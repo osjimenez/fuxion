@@ -24,6 +24,10 @@ namespace Fuxion.Synchronization
         public Action<TSource, TItem> OnDelete { get; set; }
         public Action<TSource, TItem> OnUpdate { get; set; }
 
+        bool ISide.AllowDelete { get => OnDelete != null; }
+        bool ISide.AllowInsert { get => OnInsert != null; }
+        bool ISide.AllowUpdate { get => OnUpdate != null; }
+
         internal Side<TSource, TItem> Clone()
         {
             return new Side<TSource, TItem>

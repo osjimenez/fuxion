@@ -13,5 +13,8 @@ namespace Fuxion.Synchronization
         string SingularItemTypeName { get; set; }
         string PluralItemTypeName { get; set; }
         bool ItemTypeIsMale { get; set; }
+        bool AllowDelete { get; }
+        bool AllowInsert { get; }
+        bool AllowUpdate { get; }
     }
 }

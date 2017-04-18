@@ -169,6 +169,9 @@ namespace Fuxion.Synchronization
                     {
                         var preSide = new ItemSidePreview(preItem, side.Side.Id);
                         preSide.Key = side.Key.ToString();
+                        preSide.SideAllowInsert = side.Side.Definition.AllowInsert;
+                        preSide.SideAllowDelete = side.Side.Definition.AllowDelete;
+                        preSide.SideAllowUpdate = side.Side.Definition.AllowUpdate;
                         preSide.SideItemExist = side.SideItem != null;
                         preSide.SideItemName = side.SideItemName;
                         preSide.SingularSideTypeName = side.Side.Definition.SingularItemTypeName;
@@ -230,22 +233,22 @@ namespace Fuxion.Synchronization
                 {
                     foreach (var side in item.Sides)
                     {
-                        if (!item.MasterItemExist)
+                        if (!item.MasterItemExist && side.SideAllowDelete)
                             side.Action = SynchronizationAction.Delete;
-                        else if (!side.SideItemExist)
+                        else if (!side.SideItemExist && side.SideAllowInsert)
                             side.Action = SynchronizationAction.Insert;
-                        else if (side.Properties.Count() > 0)
+                        else if (side.Properties.Count() > 0 && side.SideAllowUpdate)
                             side.Action = SynchronizationAction.Update;
                         Action<ICollection<ItemRelationPreview>> act = null;
                         act = new Action<ICollection<ItemRelationPreview>>(relations =>
                         {
                             foreach (var rel in relations)
                             {
-                                if (!rel.MasterItemExist)
+                                if (!rel.MasterItemExist && side.SideAllowDelete)
                                     rel.Action = SynchronizationAction.Delete;
-                                else if (!rel.SideItemExist)
+                                else if (!rel.SideItemExist && side.SideAllowInsert)
                                     rel.Action = SynchronizationAction.Insert;
-                                else if (rel.Properties.Count() > 0)
+                                else if (rel.Properties.Count() > 0 && side.SideAllowUpdate)
                                     rel.Action = SynchronizationAction.Update;
                                 act(rel.Relations);
                             }

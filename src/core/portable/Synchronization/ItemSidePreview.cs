@@ -67,6 +67,14 @@ namespace Fuxion.Synchronization
         public ItemPreview Item { get { return GetValue<ItemPreview>(); } set { SetValue(value); } }
         [DataMember]
         public Guid Id { get { return GetValue<Guid>(); } set { SetValue(value); } }
+
+        [DataMember]
+        public bool SideAllowDelete { get { return GetValue<bool>(); } set { SetValue(value); } }
+        [DataMember]
+        public bool SideAllowInsert { get { return GetValue<bool>(); } set { SetValue(value); } }
+        [DataMember]
+        public bool SideAllowUpdate { get { return GetValue<bool>(); } set { SetValue(value); } }
+
         [DataMember]
         public bool SideItemExist { get { return GetValue<bool>(); } set { SetValue(value); } }
         [DataMember]
