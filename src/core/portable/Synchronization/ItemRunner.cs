@@ -8,14 +8,16 @@ namespace Fuxion.Synchronization
 {
     internal class ItemRunner<TMasterItem> : IItemRunner
     {
-        public ItemRunner(ISideRunner masterRunner, TMasterItem masterItem, string masterName)
+        public ItemRunner(ISideRunner masterRunner, TMasterItem masterItem, string masterItemName, string masterItemTag)
         {
             MasterRunner = masterRunner;
             MasterItem = masterItem;
-            MasterName = masterName;
+            MasterItemName = masterItemName;
+            MasterItemTag = masterItemTag;
         }
         public Guid Id { get; } = Guid.NewGuid();
-        public string MasterName { get; }
+        public string MasterItemName { get; }
+        public string MasterItemTag { get; }
         public TMasterItem MasterItem { get; }
         object IItemRunner.MasterItem { get { return MasterItem; } }
         public ISideRunner MasterRunner { get; }

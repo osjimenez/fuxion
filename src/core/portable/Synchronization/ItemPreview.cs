@@ -26,6 +26,8 @@ namespace Fuxion.Synchronization
         [DataMember]
         public string MasterItemName { get; set; }
         [DataMember]
+        public string MasterItemTag { get; set; }
+        [DataMember]
         public string SingularMasterTypeName { get; set; }
         [DataMember]
         public string PluralMasterTypeName { get; set; }

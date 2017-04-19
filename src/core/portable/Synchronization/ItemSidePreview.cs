@@ -90,6 +90,8 @@ namespace Fuxion.Synchronization
         [DataMember]
         public string SideItemName { get { return GetValue<string>(); } set { SetValue(value); } }
         [DataMember]
+        public string SideItemTag { get { return GetValue<string>(); } set { SetValue(value); } }
+        [DataMember]
         public bool IsReadOnly { get { return GetValue<bool>(); } set { SetValue(value); } }
         [DataMember]
         public bool IsEnabled { get { return GetValue(() => true); } set { SetValue(value); RaisePropertyChanged(() => StatusMessage, "", ""); } }

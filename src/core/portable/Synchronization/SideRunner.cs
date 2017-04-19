@@ -24,6 +24,7 @@ namespace Fuxion.Synchronization
         public ICollection<ISideRunner> SubSides { get; set; }
 
         public string GetItemName(object item) => item != null ? ((Side<TSource, TItem>)Definition).OnNaming((TItem)item) : null;
+        public string GetItemTag(object item) => (item != null && ((Side<TSource, TItem>)Definition).OnTagging != null) ? ((Side<TSource, TItem>)Definition).OnTagging((TItem)item) : null;
         public Task InsertAsync(object item)
         {
             printer.WriteLine($"Inserting '{GetItemName(item)}' in side '{Definition.Name}'");

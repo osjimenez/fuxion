@@ -25,6 +25,137 @@ namespace Fuxion.Test
             this.output = output;
         }
         ITestOutputHelper output;
+        [Fact(DisplayName = "Synchronization - Related works")]
+        public async Task RelatedWorks()
+        {
+            var fuxionRepo = new RepoFuxion();
+            var crmRepo = new RepoCRM();
+            bool relationProcessed = false;
+
+            ISide GetFuxionSide(bool isMaster)
+            {
+                return new Side<RepoFuxion, UserFuxion>
+                {
+                    IsMaster = isMaster,
+                    Name = "FUXION",
+                    Source = fuxionRepo,
+                    PluralItemTypeName = Strings.Users,
+                    SingularItemTypeName = Strings.User,
+                    ItemTypeIsMale = true,
+
+                    OnLoad = s => s.Get().ToList(),
+                    OnNaming = i => i.Name,
+                    OnTagging = i => i.Id.ToString(),
+                    OnInsert = (s, i) => s.Add(i),
+                    OnDelete = (s, i) => s.Delete(i),
+                    OnUpdate = (s, i) => { }
+                };
+            }
+            ISide GetCRMSide(bool isMaster)
+            {
+                return new Side<RepoCRM, UserCRM>
+                {
+                    IsMaster = isMaster,
+                    Name = "CRM",
+                    Source = crmRepo,
+                    OnLoad = s => s.Get().ToList(),
+                    PluralItemTypeName = Strings.Users,
+                    SingularItemTypeName = Strings.User,
+                    ItemTypeIsMale = true,
+                    OnNaming = i => i.Name,
+                    OnTagging = i => i.Id.ToString(),
+                    OnInsert = (s, i) => s.Add(i),
+                    OnDelete = (s, i) => s.Delete(i),
+                    OnUpdate = (s, i) => { }
+                };
+            }
+            IComparator GetFuxionCRMComparator()
+            {
+                return new Comparator<UserFuxion, UserCRM, int>
+                {
+                    OnSelectKeyA = u => u.Id,
+                    OnSelectKeyB = u => u.Id,
+                    OnMapAToB = (a, b) =>
+                    {
+                        if (b == null)
+                            return new UserCRM { Id = a.Id, Name = a.Name, Age = a.Age };
+                        b.Name = a.Name;
+                        b.Age = a.Age;
+                        return b;
+                    },
+                    OnMapBToA = (b, a) =>
+                    {
+                        if (a == null)
+                            return new UserFuxion { Id = b.Id, Name = b.Name, Age = b.Age };
+                        a.Name = b.Name;
+                        a.Age = b.Age;
+                        return a;
+                    },
+                    PropertiesComparator = PropertiesComparator<UserFuxion, UserCRM>
+                        .WithoutAutoDiscoverProperties()
+                        .With(a => a.Name, b => b.Name)
+                        .With(a => a.Age, b => b.Age, v => v.aValue == v.bValue)
+                };
+            }
+
+            var work1 = new Work
+            {
+                Name = "Users",
+                Sides = new[] { GetFuxionSide(true), GetCRMSide(false) },
+                Comparators = new[] { GetFuxionCRMComparator() },
+            };
+
+            var work2 = new Work
+            {
+                Name = "Users",
+                Sides = new[] { GetFuxionSide(false), GetCRMSide(true) },
+                Comparators = new[] { GetFuxionCRMComparator() },
+            };
+            //work2.Relations = new[]
+            //    {
+            //        new WorkRelation
+            //        {
+            //            RelatedWork = work1,
+            //            Action = () => { relationProcessed = true; },
+            //            PostPreviewAction = p => {
+            //                var w1 = p.Works.First(w=>w.Id == work1.Id);
+            //                var w2 = p.Works.First(w=>w.Id == work2.Id);
+            //                var itemsToDeleteInCRM = w1.Items.Where(i=>i.Sides.First().Action == SynchronizationAction.Delete).ToList();
+            //                var itemsToInsertInFuxion = w2.Items.Where(i=>i.Sides.First().Action == SynchronizationAction.Insert).ToList();
+            //                foreach(var item in itemsToDeleteInCRM)
+            //                {
+            //                    if(itemsToInsertInFuxion.Any(i=>i.MasterItemTag == item.Sides.First().SideItemTag))
+            //                        w1.Items.Remove(item);
+            //                }
+
+            //                relationProcessed = true; }
+            //        }
+            //    };
+            work2.PostPreviewAction = p =>
+            {
+                var w1 = p.Works.First(w => w.Id == work1.Id);
+                var w2 = p.Works.First(w => w.Id == work2.Id);
+                var itemsToDeleteInCRM = w1.Items.Where(i => i.Sides.First().Action == SynchronizationAction.Delete).ToList();
+                var itemsToInsertInFuxion = w2.Items.Where(i => i.Sides.First().Action == SynchronizationAction.Insert).ToList();
+                foreach (var item in itemsToDeleteInCRM)
+                    if (itemsToInsertInFuxion.Any(i => i.MasterItemTag == item.Sides.First().SideItemTag))
+                        w1.Items.Remove(item);
+                relationProcessed = true;
+            };
+
+            var ses = new Session
+            {
+                Name = "Test",
+                Works = new[] { work1, work2 }
+            };
+
+            SynchronizationManager man = new SynchronizationManager();
+            var pre = await man.PreviewAsync(ses);
+            pre.Print();
+            await man.RunAsync(pre);
+
+            Assert.True(relationProcessed, "Relation wasn't processed");
+        }
         [Fact(DisplayName = "Synchronization - Demo")]
         public void Demo()
         {

@@ -24,7 +24,7 @@ namespace Fuxion.Synchronization
                 async () =>
                 {
                     var res = new SessionPreview(Session.Id);
-                    works = Session.Works.Select(d => new WorkRunner(d, printer)).ToList();
+                    works = Session.Works.Select(w => new WorkRunner(w, printer)).ToList();
                     List<WorkPreview> resTask = new List<WorkPreview>();
                     if (Session.MakePreviewInParallel)
                     {
@@ -40,6 +40,10 @@ namespace Fuxion.Synchronization
                         w.Session = res;
                         return w;
                     }).ToList();
+                    // Run post preview actions
+                    foreach (var work in works.Where(w => w.Definition.PostPreviewAction != null))
+                        work.Definition.PostPreviewAction(res);
+
                     if (!includeNoneActionItems)
                     {
                         foreach (var work in res.Works.ToList())
@@ -73,7 +77,7 @@ namespace Fuxion.Synchronization
 
                 foreach (var work in preview.Works)
                 {
-                    var runWork = works.Single(w => w.Id == work.Id);
+                    var runWork = works.Single(w => w.Definition.Id == work.Id);
                     main.Add(new Tuple<ICollection<ItemPreview>, WorkRunner>(work.Items, runWork));
                 }
                 await printer.ForeachAsync("Inserting level 0", main, async m =>

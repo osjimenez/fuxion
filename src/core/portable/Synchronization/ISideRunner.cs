@@ -15,6 +15,7 @@ namespace Fuxion.Synchronization
         IComparatorRunner Comparator { get; set; }
         IEnumerable<IComparatorResultInternal> Results { get; set; }
         string GetItemName(object item);
+        string GetItemTag(object item);
         Task Load();
         Task InsertAsync(object item);
         Task DeleteAsync(object item);

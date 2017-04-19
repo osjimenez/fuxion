@@ -80,6 +80,8 @@ namespace Fuxion.Synchronization
         [DataMember]
         public string MasterItemName { get; set; }
         [DataMember]
+        public string MasterItemTag { get; set; }
+        [DataMember]
         public string SingularMasterTypeName { get; set; }
         [DataMember]
         public string PluralMasterTypeName { get; set; }
@@ -95,6 +97,8 @@ namespace Fuxion.Synchronization
         public string Key { get; set; }
         [DataMember]
         public string SideItemName { get; set; }
+        [DataMember]
+        public string SideItemTag { get; set; }
         [DataMember]
         public bool IsReadOnly { get { return GetValue<bool>(); } set { SetValue(value); } }
         [DataMember]

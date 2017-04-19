@@ -12,6 +12,7 @@ namespace Fuxion.Synchronization
         object Key { get; }
         object SideItem { get; }
         string SideItemName { get; }
+        string SideItemTag { get; }
         ISideRunner Side { get; set; }
         IEnumerable<IPropertyRunner> Properties { get; }
         ICollection<IItemRunner> SubItems { get; set; }

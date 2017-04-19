@@ -19,6 +19,7 @@ namespace Fuxion.Synchronization
 
         public TSource Source { get; set; }
         public Func<TItem, string> OnNaming { get; set; }
+        public Func<TItem, string> OnTagging { get; set; }
         public Func<TSource, ICollection<TItem>> OnLoad { get; set; }
         public Action<TSource, TItem> OnInsert { get; set; }
         public Action<TSource, TItem> OnDelete { get; set; }
@@ -38,6 +39,7 @@ namespace Fuxion.Synchronization
                 PluralItemTypeName = PluralItemTypeName,
                 Source = Source,
                 OnNaming = OnNaming,
+                OnTagging = OnTagging,
                 OnLoad = OnLoad,
                 OnInsert = OnInsert,
                 OnDelete = OnDelete,
