@@ -67,6 +67,13 @@ namespace Fuxion.Synchronization
         public ItemRelationPreview Relation { get; set; }
 
         [DataMember]
+        public bool SideAllowDelete { get { return GetValue<bool>(); } set { SetValue(value); } }
+        [DataMember]
+        public bool SideAllowInsert { get { return GetValue<bool>(); } set { SetValue(value); } }
+        [DataMember]
+        public bool SideAllowUpdate { get { return GetValue<bool>(); } set { SetValue(value); } }
+
+        [DataMember]
         public Guid Id { get; set; }
         [DataMember]
         public bool MasterItemExist { get; set; }

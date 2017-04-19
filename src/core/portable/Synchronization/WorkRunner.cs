@@ -196,6 +196,9 @@ namespace Fuxion.Synchronization
                                     rel = new ItemRelationPreview(parent as ItemSidePreview,i.Id);
                                 else
                                     rel = new ItemRelationPreview(parent as ItemRelationPreview, i.Id);
+                                rel.SideAllowInsert = i.SideRunners.Single().Side.Definition.AllowInsert;
+                                rel.SideAllowDelete = i.SideRunners.Single().Side.Definition.AllowDelete;
+                                rel.SideAllowUpdate = i.SideRunners.Single().Side.Definition.AllowUpdate;
                                 rel.MasterItemExist = i.MasterItem != null;
                                 rel.MasterItemName = i.MasterName;
                                 rel.SingularMasterTypeName =  i.MasterRunner.Definition.SingularItemTypeName;
@@ -244,11 +247,11 @@ namespace Fuxion.Synchronization
                         {
                             foreach (var rel in relations)
                             {
-                                if (!rel.MasterItemExist && side.SideAllowDelete)
+                                if (!rel.MasterItemExist && rel.SideAllowDelete)
                                     rel.Action = SynchronizationAction.Delete;
-                                else if (!rel.SideItemExist && side.SideAllowInsert)
+                                else if (!rel.SideItemExist && side.SideAllowInsert && rel.SideAllowInsert)
                                     rel.Action = SynchronizationAction.Insert;
-                                else if (rel.Properties.Count() > 0 && side.SideAllowUpdate)
+                                else if (rel.Properties.Count() > 0 && rel.SideAllowUpdate)
                                     rel.Action = SynchronizationAction.Update;
                                 act(rel.Relations);
                             }
