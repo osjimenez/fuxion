@@ -28,12 +28,12 @@ namespace Fuxion.Synchronization
                     List<WorkPreview> resTask = new List<WorkPreview>();
                     if (Session.MakePreviewInParallel)
                     {
-                        var tasks = works.Select(w => w.PreviewAsync(includeNoneActionItems, printer));
+                        var tasks = works.Select(w => w.PreviewAsync(printer));
                         resTask = (await Task.WhenAll(tasks)).ToList();
                     }else
                     {
                         foreach (var work in works)
-                            resTask.Add(await work.PreviewAsync(includeNoneActionItems, printer));
+                            resTask.Add(await work.PreviewAsync(printer));
                     }
                     res.Works = resTask.Select(w =>
                     {
@@ -43,13 +43,9 @@ namespace Fuxion.Synchronization
                     // Run post preview actions
                     foreach (var work in works.Where(w => w.Definition.PostPreviewAction != null))
                         work.Definition.PostPreviewAction(res);
-
+                    // Clean results
                     if (!includeNoneActionItems)
-                    {
-                        foreach (var work in res.Works.ToList())
-                            if (!work.Items.Any())
-                                res.Works.Remove(work);
-                    }
+                        res.CleanNoneActions();
                     return res;
                 });
         }

@@ -20,7 +20,7 @@ namespace Fuxion.Synchronization
         internal ICollection<IItemRunner> Items { get; set; } = new List<IItemRunner>();
         internal ICollection<IComparatorRunner> Comparators { get; set; }
         internal ISideRunner MasterSide { get; set; }
-        internal Task<WorkPreview> PreviewAsync(bool includeNoneActionItems, IPrinter printer) 
+        internal Task<WorkPreview> PreviewAsync(IPrinter printer) 
         {
             return printer.IndentAsync($"Work '{Definition.Name}'", async () =>
             {
@@ -263,37 +263,6 @@ namespace Fuxion.Synchronization
                         act(side.Relations);
                         //if (side.Relations.Any(rel => rel.Action != SynchronizationAction.None))
                         //    side.Action = SynchronizationAction.Update;
-                    }
-                }
-                // Clean none-action items if proceed
-                if (!includeNoneActionItems)
-                {
-                    foreach(var item in preWork.Items.ToList())
-                    {
-                        foreach(var side in item.Sides.ToList())
-                        {
-                            Action<ICollection<ItemRelationPreview>> reduceRelations = null;
-                            reduceRelations = new Action<ICollection<ItemRelationPreview>>(relations =>
-                            {
-                                foreach (var rel in relations.ToList())
-                                {
-                                    reduceRelations(rel.Relations);
-                                    if(rel.Action == SynchronizationAction.None && !rel.Relations.Any())
-                                    {
-                                        relations.Remove(rel);
-                                    }
-                                }
-                            });
-                            reduceRelations(side.Relations);
-                            if (side.Action == SynchronizationAction.None && !side.Relations.Any())
-                            {
-                                item.Sides.Remove(side);
-                            }
-                        }
-                        if (!item.Sides.Any())
-                        {
-                            preWork.Items.Remove(item);
-                        }
                     }
                 }
                 return preWork;

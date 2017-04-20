@@ -26,5 +26,14 @@ namespace Fuxion.Synchronization
             printer = printer ?? Printer.Default;
             printer.Foreach("Preview: ", Works, work => work.Print(printer), false);
         }
+        internal void CleanNoneActions()
+        {
+            foreach (var work in Works.ToList())
+            {
+                work.CleanNoneActions();
+                if (!work.Items.Any())
+                    Works.Remove(work);
+            }
+        }
     }
 }

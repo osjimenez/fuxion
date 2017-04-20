@@ -36,5 +36,35 @@ namespace Fuxion.Synchronization
             }
         }
         public void Print(IPrinter printer) => printer.Foreach("Work:", Items, item => item.Print(printer), false);
+        internal void CleanNoneActions()
+        {
+            foreach (var item in Items.ToList())
+            {
+                foreach (var side in item.Sides.ToList())
+                {
+                    Action<ICollection<ItemRelationPreview>> reduceRelations = null;
+                    reduceRelations = new Action<ICollection<ItemRelationPreview>>(relations =>
+                    {
+                        foreach (var rel in relations.ToList())
+                        {
+                            reduceRelations(rel.Relations);
+                            if (rel.Action == SynchronizationAction.None && !rel.Relations.Any())
+                            {
+                                relations.Remove(rel);
+                            }
+                        }
+                    });
+                    reduceRelations(side.Relations);
+                    if (side.Action == SynchronizationAction.None && !side.Relations.Any())
+                    {
+                        item.Sides.Remove(side);
+                    }
+                }
+                if (!item.Sides.Any())
+                {
+                    Items.Remove(item);
+                }
+            }
+        }
     }
 }
