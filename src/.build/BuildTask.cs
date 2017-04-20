@@ -147,14 +147,14 @@ public class BuildTask : Microsoft.Build.Utilities.Task
         if (revision <= 0)
             return "";
         if (revision < 10000)
-            //return "-alpha." + revision + "+date." + 
-            //    DateTime.Now.Year.ToString("0000") +
-            //    DateTime.Now.Month.ToString("00") + 
-            //    DateTime.Now.Day.ToString("00") + 
-            //    DateTime.Now.Hour.ToString("00") + 
-            //    DateTime.Now.Minute.ToString("00") + 
-            //    DateTime.Now.Second.ToString("00");
-            return "-alpha" + revision.ToString("000");
+            return "-alpha." + revision + "+date." +
+                DateTime.Now.Year.ToString("0000") +
+                DateTime.Now.Month.ToString("00") +
+                DateTime.Now.Day.ToString("00") +
+                DateTime.Now.Hour.ToString("00") +
+                DateTime.Now.Minute.ToString("00") +
+                DateTime.Now.Second.ToString("00");
+            //return "-alpha" + revision.ToString("000");
         else if (revision < 20000)
             return "-beta" + (revision - 10000).ToString("000");
         else if (revision < 30000)
