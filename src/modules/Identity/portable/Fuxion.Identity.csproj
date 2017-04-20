@@ -40,7 +40,7 @@
     <None Include="Fuxion.Identity.nuspec">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Fuxion.Identity.version~" />
+    <None Include="Fuxion.Identity.version" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
