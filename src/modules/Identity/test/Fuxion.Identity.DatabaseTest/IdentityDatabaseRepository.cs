@@ -75,7 +75,7 @@ namespace Fuxion.Identity.DatabaseTest
             throw new NotImplementedException();
         }
 
-        public new void Set(string key, IIdentity value)
+        public void Set(string key, IIdentity value)
         {
             throw new NotImplementedException();
         }

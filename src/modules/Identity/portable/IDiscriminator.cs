@@ -157,9 +157,9 @@ namespace Fuxion.Identity
             if (!(obj is TypeDiscriminator)) return false;
             var c = obj as TypeDiscriminator;
             return c.Id == Id && c.TypeId == TypeId;
-            var inc = c.Inclusions.Select(i => (i.TypeId, i.Id)).ToList();
-            var exc = c.Exclusions.Select(i => (i.TypeId, i.Id)).ToList();
-            return c.Id == Id && c.TypeId == TypeId && c.Inclusions.SequenceEqual(Inclusions) && c.Exclusions.SequenceEqual(Exclusions);
+            //var inc = c.Inclusions.Select(i => (i.TypeId, i.Id)).ToList();
+            //var exc = c.Exclusions.Select(i => (i.TypeId, i.Id)).ToList();
+            //return c.Id == Id && c.TypeId == TypeId && c.Inclusions.SequenceEqual(Inclusions) && c.Exclusions.SequenceEqual(Exclusions);
         }
         public override int GetHashCode() { return TypeId.GetHashCode() ^ Id.GetHashCode(); }
         public static bool operator ==(TypeDiscriminator a, TypeDiscriminator b) { return EqualityComparer<TypeDiscriminator>.Default.Equals(a, b); }

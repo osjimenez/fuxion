@@ -56,7 +56,7 @@ namespace Fuxion.Licensing
                     throw new LicenseValidationException(validationMessage);
                 return true;
             }
-            catch(Exception ex)
+            catch
             {
                 if (throwExceptionIfNotValidate) throw;
                 return false;

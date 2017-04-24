@@ -56,5 +56,52 @@ namespace Fuxion.Data
                 connection.Close();
             }
         }
+        #region Sequences
+        public static int CreateSequence(this DbContext me, string name, int startWith = 1, int increment = 1, int minValue = 1, int maxValue = int.MaxValue, bool cycle = false)
+        {
+            var con = new SqlConnection(me.Database.Connection.ConnectionString);
+            con.Open();
+            var com = new SqlCommand($@"CREATE SEQUENCE [{name}]
+                AS int
+                START WITH {startWith}
+                INCREMENT BY {increment}
+                MINVALUE {minValue}
+                MAXVALUE {maxValue}
+                {(cycle ? " CYCLE" : "")}", con);
+            var res = Convert.ToInt32(com.ExecuteScalar());
+            con.Close();
+            return res;
+        }
+        public static int DeleteSequence(this DbContext me, string name)
+        {
+            var con = new SqlConnection(me.Database.Connection.ConnectionString);
+            con.Open();
+            var com = new SqlCommand($"DROP SEQUENCE [{name}]", con);
+            var res = Convert.ToInt32(com.ExecuteScalar());
+            con.Close();
+            return res;
+        }
+        public static int GetSequenceValue(this DbContext me, string name, bool increment = true)
+        {
+            var con = new SqlConnection(me.Database.Connection.ConnectionString);
+            con.Open();
+            SqlCommand com;
+            if (increment)
+                com = new SqlCommand($"SELECT NEXT VALUE FOR [{name}]", con);
+            else
+                com = new SqlCommand($"SELECT current_value FROM sys.sequences WHERE name = '{name}'", con);
+            var res = Convert.ToInt32(com.ExecuteScalar());
+            con.Close();
+            return res;
+        }
+        public static void SetSequenceValue(this DbContext me, string name, int value)
+        {
+            var con = new SqlConnection(me.Database.Connection.ConnectionString);
+            con.Open();
+            var com = new SqlCommand($"ALTER SEQUENCE [{name}] RESTART WITH {value}", con);
+            com.ExecuteNonQuery();
+            con.Close();
+        }
+        #endregion
     }
 }

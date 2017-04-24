@@ -27,7 +27,9 @@ namespace Fuxion.Net
                 {
                     //Si cambia el modo de conexión a automática y no estoy conectado o conectando debo llamar a Connect
                     if (p.ActualValue == ConnectionMode.Automatic && State != ConnectionState.Opened && State != ConnectionState.Opening)
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                         Connect();
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                 });
                 e.Case(() => State, p =>
                 {
@@ -63,7 +65,9 @@ namespace Fuxion.Net
                         if (actualConnectMode == ConnectionMode.Automatic)
                             ConnectionMode = ConnectionMode.Automatic;
                         else
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                             Connect();
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                     });
 					break;
 			}
@@ -194,7 +198,9 @@ namespace Fuxion.Net
 					        {
 					            State = ConnectionState.Faulted;
 					            if (ConnectionMode == ConnectionMode.Automatic)
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 					                Connect();
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 					        }
 					        else
 					        {
@@ -249,7 +255,9 @@ namespace Fuxion.Net
 				    try { await OnKeepAlive(); }
 				    catch (Exception ex) {
 				        log.Error("Error '" + ex.GetType().Name + "' en el método 'OnKeepAlive': " + ex.Message, ex);
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 				        Disconnect(true);
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 				    }
 				}
 			});

@@ -211,7 +211,8 @@ namespace Fuxion.Logging
 					Message = "Tcp-Appender dropped messages Messages due to buffer overrun",
 					Level = Level.Warn,
 					ThreadName = Thread.CurrentThread.Name,
-					TimeStamp = DateTime.Now,
+                    TimeStampUtc = DateTime.UtcNow,
+					//TimeStamp = DateTime.Now,
 					LoggerName = "TcpAppender",
 					Domain = AppDomain.CurrentDomain.FriendlyName
 				};

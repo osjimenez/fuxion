@@ -41,7 +41,7 @@ namespace Fuxion
                     //Task.WaitAll(ents.Select(en => en.Task).ToArray());
                     results = await Task.WhenAll(ents.Select(en => en.Task).ToArray()).ConfigureAwait(false);
                 }
-                catch (Exception ex)
+                catch
                 {
                     Debug.WriteLine("");
                 }

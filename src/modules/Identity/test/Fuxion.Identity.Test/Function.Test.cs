@@ -86,7 +86,7 @@ namespace Fuxion.Identity.Test
                 //Reset();
                 var intFunction = AddCustom(CreateCustom(1, new[] { Read }, new[] { Manage }));
                 Reset();
-            }catch(Exception ex)
+            }catch
             {
                 var oo = Functions.GetAll();
                 throw;

@@ -268,7 +268,7 @@ namespace Fuxion.Identity
                     foreach (var fun in function.Exclusions)
                         graph.AddEdge(fun, function);
             }
-            catch (GraphCyclicException gcex)
+            catch (GraphCyclicException)
             {
                 Remove(function);
                 throw;
