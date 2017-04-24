@@ -117,6 +117,9 @@ namespace Fuxion.Synchronization
                     }, false);
                     level++;
                 }
+                // Run post run actions
+                foreach (var work in works.Where(w => w.Definition.PostRunAction != null))
+                    work.Definition.PostRunAction(preview);
             });
         }
         private static async Task<ICollection<Tuple<ICollection<ItemRelationPreview>, IItemSideRunner>>> ProcessWork(ICollection<ItemPreview> items, WorkRunner runner, SynchronizationAction action)

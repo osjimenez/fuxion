@@ -13,5 +13,6 @@ namespace Fuxion.Synchronization
         public IEnumerable<ISide> Sides { get; set; }
         public IEnumerable<IComparator> Comparators { get; set; }
         public Action<SessionPreview> PostPreviewAction { get; set; }
+        public Action<SessionPreview> PostRunAction { get; set; }
     }
 }
