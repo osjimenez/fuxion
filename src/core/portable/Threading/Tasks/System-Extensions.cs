@@ -30,13 +30,16 @@ namespace System.Threading.Tasks
             // If task was cancelled, nothing happens
             catch (AggregateException aex) when (aex.InnerException is TaskCanceledException) { }
         }
-        public static void OnCancel(this Task task, Action action) => TaskManager.SearchEntry(task, true).Canceled += (s, e) => action();
+        //public static void OnCancel(this Task task, Action action) => TaskManager.SearchEntry(task, true).Canceled += (s, e) => action();
+        public static Task OnCancel(this Task task, Action action) => task.ContinueWith(t => action(), TaskContinuationOptions.OnlyOnCanceled);
+        public static Task OnSuccess(this Task task, Action action) => task.ContinueWith(t => action(), TaskContinuationOptions.OnlyOnRanToCompletion);
+        public static Task OnFaulted(this Task task, Action<AggregateException> action) => task.ContinueWith(t => action(t.Exception), TaskContinuationOptions.OnlyOnFaulted);
         public static bool IsCancellationRequested(this Task task, bool throwExceptionIfNotRunning = false)
         {
-            var item = TaskManager.SearchEntry(task, throwExceptionIfNotRunning);
-            if (item != null)
+            var entry = TaskManager.SearchEntry(task, throwExceptionIfNotRunning);
+            if (entry != null)
             {
-                return item.IsCancellationRequested;
+                return entry.IsCancellationRequested;
             }
             else
                 if (throwExceptionIfNotRunning) throw new ArgumentException("IsCancellationRequested: La tarea no esta administrada por el TaskManager." + task.CreationOptions.ToString());
@@ -44,37 +47,35 @@ namespace System.Threading.Tasks
         }
         public static CancellationToken? GetCancellationToken(this Task task, bool throwExceptionIfNotRunning = false)
         {
-            var item = TaskManager.SearchEntry(task, throwExceptionIfNotRunning);
-            return item?.CancellationTokenSource.Token;
+            var entry = TaskManager.SearchEntry(task, throwExceptionIfNotRunning);
+            return entry?.CancellationTokenSource.Token;
         }
-        public static TResult WaitResult<TResult>(this Task<TResult> task, TimeSpan timeout = default(TimeSpan), bool rethrowException = true)
-        {
-            try
-            {
-                var tt = task.ConfigureAwait(false);
-                if (timeout == default(TimeSpan)) task.Wait();
-                else task.Wait(timeout);
-                return task.Result;
-            }
-            catch (AggregateException aex)
-            {
-                if (rethrowException)
-                {
-                    aex = aex.Flatten();
-                    if (aex.InnerExceptions.Count == 1) throw aex.InnerException;
-                    throw aex;
-                }
-                else
-                    return default(TResult);
-            }
-        }
+        //public static TResult WaitResult<TResult>(this Task<TResult> task, TimeSpan timeout = default(TimeSpan), bool rethrowException = true)
+        //{
+        //    try
+        //    {
+        //        var tt = task.ConfigureAwait(false);
+        //        if (timeout == default(TimeSpan)) task.Wait();
+        //        else task.Wait(timeout);
+        //        return task.Result;
+        //    }
+        //    catch (AggregateException aex)
+        //    {
+        //        if (rethrowException)
+        //        {
+        //            aex = aex.Flatten();
+        //            if (aex.InnerExceptions.Count == 1) throw aex.InnerException;
+        //            throw aex;
+        //        }
+        //        else
+        //            return default(TResult);
+        //    }
+        //}
         public static void Sleep(this Task task, TimeSpan timeout)
         {
-            //var entry = TaskManager.SearchEntry(task);
             try
             {
                 // Share the token with Delay method to break the operation if task will canceled
-                //Task.Delay(timeout, entry.CancellationTokenSource.Token).Wait();
                 Task.Delay(timeout, task.GetCancellationToken(true).Value).Wait();
             }
             // If task was cancelled, nothing happens

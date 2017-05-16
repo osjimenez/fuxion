@@ -53,6 +53,8 @@ namespace Fuxion.Synchronization
         {
             return printer.IndentAsync("Running session:", async () =>
             {
+                // Run order:
+
                 // 1 - Insert 1º level
                 // 2 - Update 1º level
 
@@ -68,21 +70,21 @@ namespace Fuxion.Synchronization
                 // 9 - Delete 1º level
 
                 List<Task> tasks = new List<Task>();
-                List<Tuple<ICollection<ItemPreview>, WorkRunner>> main = new List<Tuple<ICollection<ItemPreview>, WorkRunner>>();
-                List<Tuple<ICollection<ItemRelationPreview>, IItemSideRunner>> levels = new List<Tuple<ICollection<ItemRelationPreview>, IItemSideRunner>>();
+                List<(ICollection<ItemPreview> items, WorkRunner runner)> main = new List<(ICollection<ItemPreview> items, WorkRunner runner)>();
+                List<(ICollection<ItemRelationPreview> relations, IItemSideRunner runner)> levels = new List<(ICollection<ItemRelationPreview> relations, IItemSideRunner runner)>();
 
                 foreach (var work in preview.Works)
                 {
                     var runWork = works.Single(w => w.Definition.Id == work.Id);
-                    main.Add(new Tuple<ICollection<ItemPreview>, WorkRunner>(work.Items, runWork));
+                    main.Add((work.Items, runWork));
                 }
                 await printer.ForeachAsync("Inserting level 0", main, async m =>
                 {
-                    levels.AddRange(await ProcessWork(m.Item1, m.Item2, SynchronizationAction.Insert));
+                    levels.AddRange(await ProcessWork(m.items, m.runner, SynchronizationAction.Insert));
                 }, false);
                 await printer.ForeachAsync("Updating level 0",main, async m =>
                 {
-                    levels.AddRange(await ProcessWork(m.Item1, m.Item2, SynchronizationAction.Update));
+                    levels.AddRange(await ProcessWork(m.items, m.runner, SynchronizationAction.Update));
                 }, false);
                 levels = levels.Distinct().ToList();
                 int level = 1;
@@ -92,18 +94,18 @@ namespace Fuxion.Synchronization
                     levels.Clear();
                     await printer.ForeachAsync($"Inserting level {level}", aux, async lev =>
                     {
-                        levels.AddRange(await ProcessRelations(lev.Item1, lev.Item2, SynchronizationAction.Insert, level));
+                        levels.AddRange(await ProcessRelations(lev.relations, lev.runner, SynchronizationAction.Insert, level));
                     }, false);
                     await printer.ForeachAsync($"Updating level {level}", aux, async lev =>
                     {
-                        levels.AddRange(await ProcessRelations(lev.Item1, lev.Item2, SynchronizationAction.Update, level));
+                        levels.AddRange(await ProcessRelations(lev.relations, lev.runner, SynchronizationAction.Update, level));
                     }, false);
                     levels = levels.Distinct().ToList();
                     level++;
                 }
                 await printer.ForeachAsync("Deleting level 0", main, async m =>
                 {
-                    levels.AddRange(await ProcessWork(m.Item1, m.Item2, SynchronizationAction.Delete));
+                    levels.AddRange(await ProcessWork(m.items, m.runner, SynchronizationAction.Delete));
                 }, false);
 
                 level = 1;
@@ -113,7 +115,7 @@ namespace Fuxion.Synchronization
                     levels.Clear();
                     await printer.ForeachAsync($"Deleting level {level}", aux, async lev =>
                     {
-                        levels.AddRange(await ProcessRelations(lev.Item1, lev.Item2, SynchronizationAction.Delete, level));
+                        levels.AddRange(await ProcessRelations(lev.relations, lev.runner, SynchronizationAction.Delete, level));
                     }, false);
                     level++;
                 }
@@ -122,9 +124,9 @@ namespace Fuxion.Synchronization
                     work.Definition.PostRunAction(preview);
             });
         }
-        private static async Task<ICollection<Tuple<ICollection<ItemRelationPreview>, IItemSideRunner>>> ProcessWork(ICollection<ItemPreview> items, WorkRunner runner, SynchronizationAction action)
+        private static async Task<ICollection<(ICollection<ItemRelationPreview>, IItemSideRunner)>> ProcessWork(ICollection<ItemPreview> items, WorkRunner runner, SynchronizationAction action)
         {
-            ICollection<Tuple<ICollection<ItemRelationPreview>, IItemSideRunner>> levels = new List<Tuple<ICollection<ItemRelationPreview>, IItemSideRunner>>();
+            ICollection<(ICollection<ItemRelationPreview>, IItemSideRunner)> levels = new List<(ICollection<ItemRelationPreview>, IItemSideRunner)>();
             foreach (var item in items)
             {
                 var runItem = runner.Items.Single(i => i.Id == item.Id);
@@ -135,7 +137,7 @@ namespace Fuxion.Synchronization
                     var runItemSide = runItem.SideRunners.Single(s => s.Side.Id == side.Id);
                     var map = new Func<IItemRunner, IItemSideRunner, object>((i, s) =>
                     {
-                        if (runSide.Comparator.GetItemTypes().Item1 == runner.MasterSide.GetItemType())
+                        if (runSide.Comparator.GetItemTypes().typeA == runner.MasterSide.GetItemType())
                         {
                             // Master is A in this comparator
                             if (item.MasterItemExist)
@@ -168,15 +170,15 @@ namespace Fuxion.Synchronization
                     {
                         await runSide.DeleteAsync(runItemSide.SideItem);
                     }
-                    levels.Add(new Tuple<ICollection<ItemRelationPreview>, IItemSideRunner>(side.Relations, runItemSide));
+                    levels.Add((side.Relations, runItemSide));
                 }
             }
             return levels;
         }
-        private static async Task<ICollection<Tuple<ICollection<ItemRelationPreview>, IItemSideRunner>>> ProcessRelations(ICollection<ItemRelationPreview> relations, IItemSideRunner runItemSide, SynchronizationAction action, int level = 1)
+        private static async Task<ICollection<(ICollection<ItemRelationPreview>, IItemSideRunner)>> ProcessRelations(ICollection<ItemRelationPreview> relations, IItemSideRunner runItemSide, SynchronizationAction action, int level = 1)
         {
-            if (!relations.Any()) return Enumerable.Empty<Tuple<ICollection<ItemRelationPreview>, IItemSideRunner>>().ToList();
-            List<Tuple<ICollection<ItemRelationPreview>, IItemSideRunner>> nextLevels = new List<Tuple<ICollection<ItemRelationPreview>, IItemSideRunner>>();
+            if (!relations.Any()) return Enumerable.Empty<(ICollection<ItemRelationPreview>, IItemSideRunner)>().ToList();
+            List<(ICollection<ItemRelationPreview>, IItemSideRunner)> nextLevels = new List<(ICollection<ItemRelationPreview>, IItemSideRunner)>();
             foreach (var rel in relations)
             {
                 var runSubItem = runItemSide.SubItems.Single(si => si.Id == rel.Id);
@@ -184,7 +186,7 @@ namespace Fuxion.Synchronization
                 var runSubSide = runSubItemSide.Side;
                 var subMap = new Func<IItemRunner, IItemSideRunner, object>((i, s) =>
                 {
-                    if (runSubSide.Comparator.GetItemTypes().Item1.GetTypeInfo().IsAssignableFrom(runSubItem.MasterItem.GetType().GetTypeInfo()))
+                    if (runSubSide.Comparator.GetItemTypes().typeA.GetTypeInfo().IsAssignableFrom(runSubItem.MasterItem.GetType().GetTypeInfo()))
                     {
                         // Master is A in this comparator
                         if (runSubItem.MasterItem != null)
@@ -217,7 +219,7 @@ namespace Fuxion.Synchronization
                     await runSubSide.DeleteAsync(runSubItemSide.SideItem);
                 }
                 if (rel.Relations.Any())
-                    nextLevels.Add(new Tuple<ICollection<ItemRelationPreview>, IItemSideRunner>(rel.Relations, runSubItemSide));
+                    nextLevels.Add((rel.Relations, runSubItemSide));
             }
             return nextLevels;
         }

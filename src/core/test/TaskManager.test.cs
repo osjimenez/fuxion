@@ -77,7 +77,7 @@ namespace Fuxion.Test
         }
         private void Assert_int(Task<int> task)
         {
-            var res = task.WaitResult();
+            var res = task.Result;
             Assert.Equal(res, 2);
         }
         #endregion

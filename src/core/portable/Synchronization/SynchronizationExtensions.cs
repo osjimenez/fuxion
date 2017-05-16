@@ -31,45 +31,40 @@ namespace Fuxion.Synchronization
         }
         internal static IEnumerable<Type> GetAllItemsType(this ISideRunner me)
         {
-            Func<ISideRunner, IEnumerable<Type>> getAllItemsType = null;
-            getAllItemsType = new Func<ISideRunner, IEnumerable<Type>>(side => {
+            IEnumerable<Type> GetAllItemsType(ISideRunner side)
+            {
                 var r = new List<Type>();
                 r.Add(side.GetItemType());
                 foreach (var s in side.SubSides)
-                    r.AddRange(getAllItemsType(s));
+                    r.AddRange(GetAllItemsType(s));
                 return r;
-            });
+            }
             var res = new List<Type>();
-            res.AddRange(getAllItemsType(me));
-            //res.Add(me.GetItemType());
-            //foreach (var s in me.SubSides)
-            //    res.AddRange(getAllItemsType(s));
+            res.AddRange(GetAllItemsType(me));
             return res;
         }
         internal static IEnumerable<ISideRunner> GetAllSubSides(this ISideRunner me)
         {
-            Func<ISideRunner, IEnumerable<ISideRunner>> getAllSubSides = null;
-            getAllSubSides = new Func<ISideRunner, IEnumerable<ISideRunner>>(side => {
+            IEnumerable<ISideRunner> GetAllSubSides(ISideRunner side)
+            {
                 var r = new List<ISideRunner>();
                 r.AddRange(side.SubSides);
                 foreach (var s in side.SubSides)
-                    r.AddRange(getAllSubSides(s));
+                    r.AddRange(GetAllSubSides(s));
                 return r;
-            });
+            }
             var res = new List<ISideRunner>();
-            res.AddRange(getAllSubSides(me));
-            //foreach (var s in me.SubSides)
-            //    res.AddRange(getAllSubSides(s));
+            res.AddRange(GetAllSubSides(me));
             return res;
         }
         internal static Type GetSourceType(this ISideRunner me)
         {
             return me.GetType().GetTypeInfo().GenericTypeArguments[0];
         }
-        internal static Tuple<Type, Type> GetItemTypes(this IComparatorRunner me)
+        internal static (Type typeA, Type typeB) GetItemTypes(this IComparatorRunner me)
         {
             var args = me.GetType().GetTypeInfo().GenericTypeArguments;
-            return new Tuple<Type, Type>(args[0], args[1]);
+            return (args[0], args[1]);
         }
         internal static Type GetKeyType(this IComparator me)
         {
