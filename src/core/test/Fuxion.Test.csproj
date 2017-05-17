@@ -93,7 +93,7 @@
     <Compile Include="Log.test.cs" />
     <Compile Include="MemoryKeyValueRepositoryTest.cs" />
     <Compile Include="Notifier.test.cs" />
-    <Compile Include="Patchable.cs" />
+    <Compile Include="Patchable.test.cs" />
     <Compile Include="RemoveOutliersTest.cs" />
     <Compile Include="Resources\Strings.Designer.cs">
       <AutoGen>True</AutoGen>

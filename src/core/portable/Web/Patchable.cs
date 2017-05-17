@@ -15,16 +15,29 @@ namespace Fuxion.Web
     {
         private IDictionary<PropertyInfo, object> _changedProperties = new Dictionary<PropertyInfo, object>();
         public IEnumerable<string> ChangedPropertyNames { get { return _changedProperties.Keys.Select(p => p.Name); } }
-        public bool TryGetChangedPropertyValue<TProperty>(Expression<Func<T, TProperty>> exp, out TProperty value)
+        //public bool TryGetChangedPropertyValue<TProperty>(Expression<Func<T, TProperty>> exp, out TProperty value)
+        //{
+        //    if (!_changedProperties.Keys.Any(k => k.Name == exp.GetMemberName()))
+        //    {
+        //        value = default(TProperty);
+        //        return false;
+        //    }
+        //    var pro = _changedProperties.Single(p => p.Key.Name == exp.GetMemberName());
+        //    value = (TProperty)CastValue(typeof(TProperty), pro.Value);
+        //    return true;
+        //}
+        public override bool TryGetMember(GetMemberBinder binder, out object result)
         {
-            if (!_changedProperties.Keys.Any(k => k.Name == exp.GetMemberName()))
+            if (_changedProperties.Any(p => p.Key.Name == binder.Name))
             {
-                value = default(TProperty);
-                return false;
+                var pro = _changedProperties.First(p => p.Key.Name == binder.Name).Value;
+                if (pro != null)
+                {
+                    result = pro;
+                    return true;
+                }
             }
-            var pro = _changedProperties.Single(p => p.Key.Name == exp.GetMemberName());
-            value = (TProperty)CastValue(typeof(TProperty), pro.Value);
-            return true;
+            return base.TryGetMember(binder, out result);
         }
         public override bool TrySetMember(SetMemberBinder binder, object value)
         {
@@ -78,6 +91,7 @@ namespace Fuxion.Web
                 res = Activator.CreateInstance(typeof(Nullable<>).MakeGenericType(valueType), res);
             return res;
         }
+
         public object GetMember(string propName)
         {
             var binder = Binder.GetMember(CSharpBinderFlags.None,
@@ -88,7 +102,6 @@ namespace Fuxion.Web
 
             return callsite.Target(callsite, this);
         }
-
         public void SetMember(string propName, object val)
         {
             var binder = Binder.SetMember(CSharpBinderFlags.None,
