@@ -91,8 +91,7 @@ namespace Fuxion.Web
                 res = Activator.CreateInstance(typeof(Nullable<>).MakeGenericType(valueType), res);
             return res;
         }
-
-        public object GetMember(string propName)
+        public object Get(string propName)
         {
             var binder = Binder.GetMember(CSharpBinderFlags.None,
                   propName, this.GetType(),
@@ -102,7 +101,8 @@ namespace Fuxion.Web
 
             return callsite.Target(callsite, this);
         }
-        public void SetMember(string propName, object val)
+        public TMember Get<TMember>(string memberName) => (TMember)Get(memberName);
+        public void Set(string propName, object val)
         {
             var binder = Binder.SetMember(CSharpBinderFlags.None,
                    propName, this.GetType(),
@@ -125,6 +125,23 @@ namespace Fuxion.Web
             }
             res._changedProperties = dic;
             return res;
+        }
+        public bool Has(string memberName) => ChangedPropertyNames.Contains(memberName);
+        //public PatchableHas<T> Has
+        //{
+        //    get => new PatchableHas<T>(this);
+        //}
+    }
+    public class PatchableHas<T> where T : class
+    {
+        public PatchableHas(Patchable<T> patchable)
+        {
+            this.patchable = patchable;
+        }
+        Patchable<T> patchable;
+        public bool this[string memberName]
+        {
+            get => patchable.ChangedPropertyNames.Contains(memberName);
         }
     }
 }

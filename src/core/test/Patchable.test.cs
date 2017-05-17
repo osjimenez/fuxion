@@ -19,29 +19,34 @@ namespace Fuxion.Test
                 Integer = 123,
                 String = "TEST"
             };
-            dynamic pat = new Patchable<ToPatch>();
-            //pat.SetMember("Integer", 123);
-            pat.Integer = 111;
+            dynamic dyn = new Patchable<ToPatch>();
+            dyn.Integer = 111;
 
-            pat.Patch(toPatch);
+            dyn.Patch(toPatch);
 
             Assert.Equal(111, toPatch.Integer);
         }
-        [Fact(DisplayName = "Patchable - GetMemeber")]
-        public void GetMemeber()
+        [Fact(DisplayName = "Patchable - Get")]
+        public void Get()
         {
-            var toPatch = new ToPatch
-            {
-                Integer = 123,
-                String = "TEST"
-            };
-            dynamic pat = new Patchable<ToPatch>();
-            pat.Integer = 111;
-            var patt = pat as Patchable<ToPatch>;
-            
-            var value = (int)patt.GetMember(nameof(toPatch.Integer));
+            dynamic dyn = new Patchable<ToPatch>();
+            dyn.Integer = 111;
 
-            Assert.Equal(111, value);
+            var delta = dyn as Patchable<ToPatch>;
+
+            Assert.Equal(111, delta.Get<int>("Integer"));
+        }
+        [Fact(DisplayName = "Patchable - Indexer")]
+        public void Indexer()
+        {
+            dynamic dyn = new Patchable<ToPatch>();
+            dyn.Integer = 111;
+
+            var delta = dyn as Patchable<ToPatch>;
+
+            Assert.True(delta.Has("Integer"));
+            Assert.False(delta.Has("Integer2"));
+            Assert.Equal(111, delta.Get<int>("Integer"));
         }
     }
     public class ToPatch
