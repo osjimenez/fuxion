@@ -101,7 +101,7 @@ namespace Fuxion.Web
 
             return callsite.Target(callsite, this);
         }
-        public TMember Get<TMember>(string memberName) => (TMember)Get(memberName);
+        public TMember Get<TMember>(string memberName) => (TMember)CastValue(typeof(TMember), Get(memberName));
         public void Set(string propName, object val)
         {
             var binder = Binder.SetMember(CSharpBinderFlags.None,
