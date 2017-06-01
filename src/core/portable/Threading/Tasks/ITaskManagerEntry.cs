@@ -15,7 +15,7 @@ namespace Fuxion.Threading.Tasks
         TaskCreationOptions TaskCreationOptions { get; }
         //AutoResetEvent AutoResetEvent { get; }
         //bool IsSleeping { get; set; }
-        event EventHandler Canceled;
+        event EventHandler CancelRequested;
         void Cancel();
         void Start();
         CancellationTokenSource CancellationTokenSource { get; }

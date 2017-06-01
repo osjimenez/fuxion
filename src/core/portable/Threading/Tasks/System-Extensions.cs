@@ -30,7 +30,7 @@ namespace System.Threading.Tasks
             // If task was cancelled, nothing happens
             catch (AggregateException aex) when (aex.InnerException is TaskCanceledException) { }
         }
-        //public static void OnCancel(this Task task, Action action) => TaskManager.SearchEntry(task, true).Canceled += (s, e) => action();
+        public static void OnCancelRequested(this Task task, Action action) => TaskManager.SearchEntry(task, true).CancelRequested += (s, e) => action();
         public static Task OnCancel(this Task task, Action action) => task.ContinueWith(t => action(), TaskContinuationOptions.OnlyOnCanceled);
         public static Task OnSuccess(this Task task, Action action) => task.ContinueWith(t => action(), TaskContinuationOptions.OnlyOnRanToCompletion);
         public static Task OnFaulted(this Task task, Action<AggregateException> action) => task.ContinueWith(t => action(t.Exception), TaskContinuationOptions.OnlyOnFaulted);

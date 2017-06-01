@@ -47,13 +47,13 @@ namespace Fuxion.Threading.Tasks
             Task.Start(TaskScheduler);
         }
 
-        public event EventHandler Canceled;
+        public event EventHandler CancelRequested;
         public bool IsCancellationRequested { get { return CancellationTokenSource.IsCancellationRequested; } }
         public CancellationTokenSource CancellationTokenSource { get; set; }
         public void Cancel()
         {
             CancellationTokenSource.Cancel();
-            Canceled?.Invoke(this, EventArgs.Empty);
+            CancelRequested?.Invoke(this, EventArgs.Empty);
         }
     }
     class ActionTaskManagerEntry : TaskManagerEntry
