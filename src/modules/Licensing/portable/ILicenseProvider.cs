@@ -8,7 +8,6 @@ namespace Fuxion.Licensing
 {
     public interface ILicenseProvider
     {
-        //License Request(LicenseContent content);
         LicenseContainer Request(LicenseRequest request);
         LicenseContainer Refresh(LicenseContainer oldLicense);
     }
