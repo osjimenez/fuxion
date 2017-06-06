@@ -41,7 +41,7 @@ namespace Fuxion.Licensing.Test
             var con = new LicenseContainer
             {
                 Signature = "signature"
-            }.SetLicense(lic);
+            }.Set(lic);
             output.WriteLine("ToJson:");
             var json = con.ToJson();
             output.WriteLine(json);
@@ -51,8 +51,8 @@ namespace Fuxion.Licensing.Test
             var json2 = con2.ToJson();
             output.WriteLine(json2);
             Assert.Equal(json, json2);
-            Assert.True(con2.LicenseIs<LicenseMock>());
-            var lic2 = con2.LicenseAs<LicenseMock>();
+            Assert.True(con2.Is<LicenseMock>());
+            var lic2 = con2.As<LicenseMock>();
             Assert.NotNull(lic2);
             Assert.Equal(lic.HardwareId.Key, lic2.HardwareId.Key);
             Assert.Equal(lic.ProductId.Key, lic2.ProductId.Key);
@@ -69,8 +69,8 @@ namespace Fuxion.Licensing.Test
 
             Assert.Equal(json, json3);
             Assert.Equal(json2, json3);
-            Assert.True(con3.LicenseIs<LicenseMock>());
-            var lic3 = con3.LicenseAs<LicenseMock>();
+            Assert.True(con3.Is<LicenseMock>());
+            var lic3 = con3.As<LicenseMock>();
             Assert.NotNull(lic3);
             Assert.Equal(lic.HardwareId.Key, lic3.HardwareId.Key);
             Assert.Equal(lic.ProductId.Key, lic3.ProductId.Key);
@@ -90,7 +90,7 @@ namespace Fuxion.Licensing.Test
             output.WriteLine("ToJson:");
             output.WriteLine(con.ToJson());
             output.WriteLine("License.ToJson:");
-            output.WriteLine(con.License.ToJson());
+            output.WriteLine(con.RawLicense.ToJson());
             Assert.True(con.VerifySignature(Const.PUBLIC_KEY));
         }
         [Fact]
