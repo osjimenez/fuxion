@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace System
 {
-    public static class Extensions
+    public static class Extensions_net45
     {
         /// <summary>
         /// Permite una clonación en profundidad de origen. 

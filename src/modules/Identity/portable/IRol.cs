@@ -363,6 +363,7 @@ namespace Fuxion.Identity
         #region Something
         public static bool Anything(this IRolCan me)
         {
+            if (me.Rol == null) return false;
             foreach (var fun in me.Functions)
             {
                 var permissions = me.Rol.SearchPermissions(fun);
@@ -373,6 +374,7 @@ namespace Fuxion.Identity
         }
         public static bool Something(this IRolCan me)
         {
+            if (me.Rol == null) return false;
             foreach (var fun in me.Functions)
             {
                 var permissions = me.Rol.SearchPermissions(fun);
@@ -391,6 +393,7 @@ namespace Fuxion.Identity
             => CheckDiscriminators(me, false, discriminators.Cast<IDiscriminator>().ToArray());
         private static bool CheckDiscriminators(this IRolCan me, bool forAll, params IDiscriminator[] discriminators)
         {
+            if (me.Rol == null) return false;
             foreach (var fun in me.Functions)
             {
                 var res = forAll
@@ -437,6 +440,7 @@ namespace Fuxion.Identity
         // -------------------------- IMPLEMENTATION
         private static bool CheckInstances<T>(this IRolCan me, bool forAll, params T[] values)
         {
+            if (me.Rol == null) return false;
             var res = forAll ? values.AuthorizedTo(me.Rol, me.Functions).Count() == values.Count() : values.AuthorizedTo(me.Rol, me.Functions).Any();
             if (me.ThrowExceptionIfCannot && !res)
                 throw new UnauthorizedAccessException($"The rol '{me.Rol.Name}' cannot '{me.Functions.Aggregate("", (a, c) => a + c.Name + "·", a => a.Trim('·'))}' for the given instances '{values}'");
