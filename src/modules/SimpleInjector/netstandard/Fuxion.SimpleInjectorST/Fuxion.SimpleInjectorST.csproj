@@ -2,6 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard1.6</TargetFramework>
+	<PackageId>Fuxion.SimpleInjectorST</PackageId>
+    <PackageVersion>0.0.1</PackageVersion>
+    <Authors>Oscar Jimenez</Authors>
+    <Description>Testing NetStandard and nuget</Description>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageReleaseNotes>Testing notes</PackageReleaseNotes>
+    <Copyright>Copyright 2017 (c) Oscar Jimenez. All rights reserved.</Copyright>
+    <PackageTags>fuxion</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,8 +23,13 @@
 
   <PropertyGroup>
     <FuxionTasksPath>$(SolutionDir).build\</FuxionTasksPath>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <AssemblyVersion>0.0.2.0</AssemblyVersion>
+    <FileVersion>0.0.2.0</FileVersion>
+    <Company>WAF</Company>
   </PropertyGroup>
-  <Import Project="$(FuxionTasksPath)Fuxion.Build.Targets" />
+  
+    <Import Project="$(FuxionTasksPath)Fuxion.Build.Targets" />
   <Target Name="BeforeBuild" Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <BuildTask TargetName="BeforeBuild" NugetPath="$(FuxionTasksPath)nuget\nuget.exe" />
   </Target>
