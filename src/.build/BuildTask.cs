@@ -29,7 +29,7 @@ public class BuildTask : Microsoft.Build.Utilities.Task
     public string NugetPath { get; set; }
     private bool BeforeBuild()
     {
-        Log.LogError("PROJECT: " + Path.GetFileNameWithoutExtension(BuildEngine.ProjectFileOfTaskNode));
+        //Log.LogError("PROJECT: " + Path.GetFileNameWithoutExtension(BuildEngine.ProjectFileOfTaskNode));
         var version = GetVersion();
         var path = Path.Combine(Path.GetDirectoryName(BuildEngine.ProjectFileOfTaskNode), @"Properties\AssemblyInfo.cs");
         Action<string> setFile = ver => File.AppendAllLines(path, new string[] { ver });
