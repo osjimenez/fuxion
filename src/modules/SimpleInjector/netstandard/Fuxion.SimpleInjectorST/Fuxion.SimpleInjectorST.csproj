@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.6</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="1.1.2" />
+    <PackageReference Include="SimpleInjector" Version="4.0.8" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\core\portable\Fuxion.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <FuxionTasksPath>$(SolutionDir).build\</FuxionTasksPath>
+  </PropertyGroup>
+  <Import Project="$(FuxionTasksPath)Fuxion.Build.Targets" />
+  <Target Name="BeforeBuild" Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <BuildTask TargetName="BeforeBuild" NugetPath="$(FuxionTasksPath)nuget\nuget.exe" />
+  </Target>
+  <Target Name="AfterBuild" Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <BuildTask TargetName="AfterBuild" NugetPath="$(FuxionTasksPath)nuget\nuget.exe" />
+  </Target>
+  
+</Project>

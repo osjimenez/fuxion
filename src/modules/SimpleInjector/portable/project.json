@@ -1,0 +1,11 @@
+﻿{
+  "supports": {},
+  "dependencies": {
+    "Microsoft.NETCore.Portable.Compatibility": "1.0.1",
+    "NETStandard.Library": "1.6.0",
+    "SimpleInjector": "4.0.8"
+  },
+  "frameworks": {
+    "netstandard1.4": {}
+  }
+}
