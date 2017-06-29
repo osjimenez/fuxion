@@ -1614,6 +1614,162 @@ namespace Fuxion.Test
             Assert.Equal(1, deleted.Id);
             Assert.Equal("Experience", deleted.Name);
         }
+        [Fact(DisplayName = "Synchronization - Delete at levels 1 & 2")]
+        public async Task DeleteAtLevels1and2()
+        {
+            SkillCRM deleted1 = null;
+            CharacteristicCRM deleted2 = null;
+            var ses = new Session
+            {
+                Name = "TEST - Delete at Level 2",
+                Works = new[]
+                {
+                    new Work
+                    {
+                        Name = "TestWork",
+                        Sides = new ISide[]
+                        {
+                            new Side<UserFuxion[],UserFuxion>
+                            {
+                                Name = "FUXION",
+                                IsMaster = true,
+                                Source = new[] {
+                                    new UserFuxion
+                                    {
+                                        Id = 1,
+                                        Name = "Oscar",
+                                        Age = 18,
+                                    }
+                                },
+                                OnNaming = u => u.Name,
+                                OnLoad = uu => uu,
+                            },
+                            new Side<UserCRM[],UserCRM>
+                            {
+                                Name = "CRM",
+                                Source = new[]
+                                {
+                                    new UserCRM
+                                    {
+                                        Id = 1,
+                                        Name = "Oscar",
+                                        Age = 18,
+                                        Skills = new[]
+                                        {
+                                            new SkillCRM
+                                            {
+                                                Id = 1,
+                                                Name = "Driver",
+                                                Properties = new[]
+                                                {
+                                                    new CharacteristicCRM
+                                                    {
+                                                        Id = 1,
+                                                        Name = "Experience"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                OnNaming = u => u.Name,
+                                OnLoad = uu => uu,
+                            },
+                            new Side<UserFuxion,SkillFuxion>
+                            {
+                                Name = "FUXION-SKILL",
+                                OnNaming = s => s.Name,
+                                OnLoad = u => u.Skills
+                            },
+                            new Side<UserCRM,SkillCRM>
+                            {
+                                Name = "CRM-SKILL",
+                                OnNaming = s => s.Name,
+                                OnLoad = u => u.Skills,
+                                OnDelete = (pp, p) => 
+                                {
+                                    //if(deleted2 != null) throw new InvalidStateException("Level ");
+                                    deleted1 = p;
+                                }
+                            },
+                            new Side<SkillFuxion, CharacteristicFuxion>
+                            {
+                                Name = "FUXION-SKILL-PROPERTY",
+                                OnNaming = p => p.Name,
+                                OnLoad = s => s.Properties,
+
+                            },
+                            new Side<SkillCRM, CharacteristicCRM>
+                            {
+                                Name = "CRM-SKILL-PROPERTY",
+                                OnNaming = p => p.Name,
+                                OnLoad = s => s.Properties,
+                                OnDelete = (pp, p) =>
+                                {
+                                    if(deleted1 != null) throw new InvalidStateException("Level 1 was deleted before level 2");
+                                    deleted2 = p;
+                                }
+                            }
+                        },
+                        Comparators = new IComparator[]
+                        {
+                            new Comparator<UserFuxion,UserCRM,int>
+                            {
+                                OnSelectKeyA = u => u.Id,
+                                OnSelectKeyB = u => u.Id,
+                                OnMapAToB = (a, b) =>
+                                {
+                                    if(b == null)
+                                        b = new UserCRM();
+                                    b.Id = a.Id;
+                                    b.Name = a.Name;
+                                    b.Age = a.Age;
+                                    return b;
+                                },
+                            },
+                            new Comparator<SkillFuxion,SkillCRM,int>
+                            {
+                                OnSelectKeyA = u => u.Id,
+                                OnSelectKeyB = u => u.Id,
+                                OnMapAToB = (a, b) =>
+                                {
+                                    if(b == null)
+                                        b = new SkillCRM();
+                                    b.Id = a.Id;
+                                    b.Name = a.Name;
+                                    return b;
+                                },
+                            },
+                            new Comparator<CharacteristicFuxion,CharacteristicCRM,int>
+                            {
+                                OnSelectKeyA = u => u.Id,
+                                OnSelectKeyB = u => u.Id,
+                                OnMapAToB = (a, b) =>
+                                {
+                                    if(b == null)
+                                        b = new CharacteristicCRM();
+                                    b.Id = a.Id;
+                                    b.Name = a.Name;
+                                    return b;
+                                },
+                            },
+                        }
+                    }
+                }
+            };
+            SynchronizationManager man = new SynchronizationManager();
+            var pre = await man.PreviewAsync(ses);
+            pre.Print();
+            await man.RunAsync(pre);
+
+            Assert.NotNull(deleted1);
+            Assert.Equal(1, deleted1.Id);
+            Assert.Equal("Driver", deleted1.Name);
+
+            Assert.NotNull(deleted2);
+            Assert.Equal(1, deleted2.Id);
+            Assert.Equal("Experience", deleted2.Name);
+        }
     }
     public class Repo<T>
     {

@@ -46,6 +46,23 @@ namespace System
         {
             return transformFunction(me);
         }
+        public static TSource Transform<TSource>(this TSource me, Action<TSource> transformFunction)
+        {
+            transformFunction(me);
+            return me;
+        }
+        public static IEnumerable<TSource> Transform<TSource>(this IEnumerable<TSource> me, Action<TSource> transformFunction)
+        {
+            foreach(var item in me)
+                transformFunction(item);
+            return me;
+        }
+        public static async Task<IEnumerable<TSource>> Transform<TSource>(this IEnumerable<TSource> me, Func<TSource, Task> transformFunction)
+        {
+            foreach (var item in me)
+                await transformFunction(item);
+            return me;
+        }
         #endregion
         #region Reflections
         public static string GetFullNameWithAssemblyName(this Type me) { return $"{me.AssemblyQualifiedName.Split(',').Take(2).Aggregate("", (a, n) => a + ", " + n, a => a.Trim(' ', ','))}"; }
