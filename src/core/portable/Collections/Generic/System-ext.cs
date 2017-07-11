@@ -24,5 +24,6 @@ namespace System.Collections.Generic
                 yield return list[actual];
             }
         }
+        public static bool IsNullOrEmpty<T>(this IEnumerable<T> me) => me == null || !me.Any();
     }
 }

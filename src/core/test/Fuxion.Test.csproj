@@ -78,6 +78,7 @@
     <Compile Include="AverageTimeProvider.test.cs" />
     <Compile Include="BaseTest.cs" />
     <Compile Include="CachedTimeProvider.test.cs" />
+    <Compile Include="Collections\Generic\IEnumerableExtensions.test.cs" />
     <Compile Include="ConnectableNotifier.test.cs" />
     <Compile Include="CustomizableTimeProvider.test.cs" />
     <Compile Include="DeactivatableObservableCollection.test.cs" />
