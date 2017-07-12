@@ -31,6 +31,8 @@ namespace Fuxion.Licensing
         public event EventHandler<EventArgs<LicenseContainer>> LicenseAdded;
         public event EventHandler<EventArgs<LicenseContainer>> LicenseRemoved;
 
+        public string FilePath => pathLocker.Read(p => p);
+        
         public IQueryable<LicenseContainer> Query() { return listLocker.Read(licenses => licenses.ToArray().AsQueryable()); }
         public void Add(LicenseContainer license)
         {
