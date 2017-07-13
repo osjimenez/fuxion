@@ -1,9 +1,11 @@
 ﻿using Fuxion.Factories;
 using Fuxion.Threading;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -161,7 +163,72 @@ namespace Fuxion.ComponentModel
     {
         new event NotifierPropertyChangedEventHandler<TNotifier> PropertyChanged;
     }
-    [DataContract(IsReference = true)]
+    public class NotifierJsonConverter : JsonConverter
+    {
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            if (value.GetType().IsSubclassOfRawGeneric(typeof(Notifier<>)))
+            {
+                //var ti = typeof(Notifier<>).GetTypeInfo();
+                var ti = value.GetType().GetTypeInfo();
+                while (!ti.IsGenericType || ti.GetGenericTypeDefinition() != typeof(Notifier<>))
+                {
+                    ti = ti.BaseType.GetTypeInfo();
+                }
+                var f = ti.GetDeclaredField("PropertiesDictionary");
+                var pros = (Dictionary<string, object>)f.GetValue(value);
+                writer.WriteStartObject();
+                foreach (var pro in pros.Where(p=>p.Key != "UseSynchronizerOnRaisePropertyChanged"))
+                {
+                    writer.WritePropertyName(pro.Key);
+                    serializer.Serialize(writer, pro.Value);
+                }
+                writer.WriteEndObject();
+                Debug.WriteLine("");
+            }
+            else
+            {
+                throw new InvalidCastException($"Type '{value.GetType().Name}' isn't a subclass of '{nameof(NotifierJsonConverter)}'");
+            }
+        }
+    
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            if (existingValue == null) existingValue = Activator.CreateInstance(objectType);
+            //reader.Read();
+            //var props = objectType.GetTypeInfo().GetAllProperties();
+            //while (reader.TokenType != JsonToken.Null)
+            //{
+            //    var pro = props.FirstOrDefault(p => p.Name == reader.Path);
+            //    if (pro != null)
+            //    {
+            //        pro.SetValue(existingValue, serializer.Populate(reader, existingValue));
+            //    }
+            //    reader.Read();
+            //}
+            //var proName = reader.ReadAsString();
+
+
+            // Load JObject from stream
+            JObject jObject = JObject.Load(reader);
+            serializer.Populate(jObject.CreateReader(), existingValue);
+            return existingValue;
+        }
+        public override bool CanConvert(Type objectType)
+        {
+            //return _types.Any(t => t == objectType);
+            return false;
+        }
+
+        public override bool CanRead
+        {
+            get { return true; }
+        }
+    
+        
+    }
+    //[DataContract(IsReference = true)]
+    //[JsonConverter(typeof(NotifierJsonConverter))]
     public abstract class Notifier<TNotifier> : INotifier<TNotifier> where TNotifier : class, INotifier<TNotifier>
     {
         protected Notifier()
@@ -199,9 +266,8 @@ namespace Fuxion.ComponentModel
         protected T GetValue<T>(Func<T> defaultValueFunction = null, [CallerMemberName] string propertyName = null)
         {
             if (propertyName == null) throw new ArgumentNullException(nameof(propertyName));
-            object objValue;
             T value;
-            if (PropertiesDictionary.TryGetValue(GetPropertyKey(propertyName), out objValue)) value = (T)objValue;
+            if (PropertiesDictionary.TryGetValue(GetPropertyKey(propertyName), out object objValue)) value = (T)objValue;
             else
             {
                 value = defaultValueFunction == null ? default(T) : defaultValueFunction();
@@ -317,7 +383,8 @@ namespace Fuxion.ComponentModel
             //return interceptedValue;
             return field;
         }
-        protected bool SetLockedField<T>(ref ValueLocker<T> lockedField, T value, bool raiseOnlyIfNotEquals = true, [CallerMemberName] String propertyName = null) where T : struct { return OnSetLockedField(propertyName, ref lockedField, value, raiseOnlyIfNotEquals); }
+        protected bool SetLockedField<T>(ref ValueLocker<T> lockedField, T value, bool raiseOnlyIfNotEquals = true, [CallerMemberName] String propertyName = null) where T : struct 
+            => OnSetLockedField(propertyName, ref lockedField, value, raiseOnlyIfNotEquals);
         protected bool SetLockedField(ref ValueLocker<string> lockedField, string value, bool raiseOnlyIfNotEquals = true, [CallerMemberName] String propertyName = null) { return OnSetLockedField(propertyName, ref lockedField, value, raiseOnlyIfNotEquals); }
         private bool OnSetLockedField<T>(string propertyName, ref ValueLocker<T> lockedField, T value, bool raiseOnlyIfNotEquals)
         {

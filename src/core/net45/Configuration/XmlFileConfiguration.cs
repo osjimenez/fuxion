@@ -11,8 +11,9 @@ namespace Fuxion.Configuration
 {
     public class XmlFileConfiguration : IConfigurationManager
     {
-        public XmlFileConfiguration()
+        public XmlFileConfiguration(string path = null)
         {
+            this.path = path;
             Load();
         }
         public event EventHandler Saved;
