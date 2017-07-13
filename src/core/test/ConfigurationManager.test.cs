@@ -70,35 +70,48 @@ namespace Fuxion.Test
         public void XmlFileConfiguration()
         {
             if (File.Exists(xmlPath)) File.Delete(xmlPath);
-            TestFile(() => new XmlFileConfiguration(xmlPath));
+            TestFile(() => new XmlFileConfiguration
+            {
+                Path = xmlPath
+            });
         }
         [Fact(DisplayName = "ConfigurationManager - JSON")]
         public void JsonFileConfiguration()
         {
             if (File.Exists(jsonPath)) File.Delete(jsonPath);
-            TestFile(() => new JsonFileConfiguration(jsonPath));
+            TestFile(() => new JsonFileConfiguration
+            {
+                Path = jsonPath
+            });
         }
     }
+    [DataContract]
     public class ConfigurationMock : ConfigurationItem<ConfigurationMock>
     {
-        //[JsonProperty(DefaultValueHandling = DefaultValueHandling.Include)]
         public override Guid ConfigurationItemId { get { return Guid.Parse("{10000000-0000-0000-0000-000000000000}"); } }
+        [DataMember]
         public string IPAddress { get { return GetValue<string>(); } set { SetValue(value); } }
+        [DataMember]
         public int Port { get { return GetValue(() => 1111); } set { SetValue(value); } }
+        [DataMember]
         public LoginConfigurationMock Login { get { return GetValue<LoginConfigurationMock>(); } set { SetValue(value); } }
     }
-    //[DataContract(IsReference = true)]
+    [DataContract]
     public class LoginConfigurationMock : ConfigurationItem<LoginConfigurationMock>
     {
         public override Guid ConfigurationItemId { get { return Guid.Parse("{20000000-0000-0000-0000-000000000000}"); } }
-        //[DataMember]
+        [DataMember]
         public string Username { get { return GetValue<string>(); } set { SetValue(value); } }
+        [DataMember]
         public string Password { get { return GetValue<string>(); } set { SetValue(value); } }
     }
+    [DataContract]
     public class ModuleConfigurationMock : ConfigurationItem<ModuleConfigurationMock>
     {
         public override Guid ConfigurationItemId { get { return Guid.Parse("{30000000-0000-0000-0000-000000000000}"); } }
+        [DataMember]
         public string LicenseFor { get { return GetValue<string>(); } set { SetValue(value); } }
+        [DataMember]
         public Guid LicenseId { get { return GetValue<Guid>(); } set { SetValue(value); } }
     }
 }

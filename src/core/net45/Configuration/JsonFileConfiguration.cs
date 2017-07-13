@@ -18,11 +18,6 @@ namespace Fuxion.Configuration
         {
             Load();
         }
-        public JsonFileConfiguration(string path = null)
-        {
-            this.path = path;
-            Load();
-        }
 
         public event EventHandler Saved;
         public event EventHandler Cleared;

@@ -15,13 +15,10 @@ namespace Fuxion.Configuration
         {
             Load();
         }
-        public XmlFileConfiguration(string path)
-        {
-            this.path = path;
-            Load();
-        }
+
         public event EventHandler Saved;
         public event EventHandler Cleared;
+
         string path;
         public string Path
         {

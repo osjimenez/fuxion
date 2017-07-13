@@ -191,7 +191,6 @@ namespace Fuxion.ComponentModel
                 throw new InvalidCastException($"Type '{value.GetType().Name}' isn't a subclass of '{nameof(NotifierJsonConverter)}'");
             }
         }
-    
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             if (existingValue == null) existingValue = Activator.CreateInstance(objectType);
@@ -219,15 +218,13 @@ namespace Fuxion.ComponentModel
             //return _types.Any(t => t == objectType);
             return false;
         }
-
         public override bool CanRead
         {
             get { return true; }
         }
-    
-        
     }
-    //[DataContract(IsReference = true)]
+    [DataContract(IsReference = true)]
+    //[DataContract]
     //[JsonConverter(typeof(NotifierJsonConverter))]
     public abstract class Notifier<TNotifier> : INotifier<TNotifier> where TNotifier : class, INotifier<TNotifier>
     {
