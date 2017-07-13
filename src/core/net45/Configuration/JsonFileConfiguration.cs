@@ -14,6 +14,10 @@ namespace Fuxion.Configuration
 {
     public class JsonFileConfiguration : IConfigurationManager
     {
+        public JsonFileConfiguration()
+        {
+            Load();
+        }
         public JsonFileConfiguration(string path = null)
         {
             this.path = path;

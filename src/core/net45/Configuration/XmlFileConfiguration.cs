@@ -11,7 +11,11 @@ namespace Fuxion.Configuration
 {
     public class XmlFileConfiguration : IConfigurationManager
     {
-        public XmlFileConfiguration(string path = null)
+        public XmlFileConfiguration()
+        {
+            Load();
+        }
+        public XmlFileConfiguration(string path)
         {
             this.path = path;
             Load();
