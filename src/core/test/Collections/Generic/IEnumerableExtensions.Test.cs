@@ -19,5 +19,12 @@ namespace Fuxion.Test.Collections.Generic
             col = null;
             Assert.True(col.IsNullOrEmpty(), "Collection is null");
         }
+        [Fact(DisplayName = "IEnumerableExtensions - RemoveNulls")]
+        public void RemoveNulls()
+        {
+            var col = new[] { "uno", "dos", null };
+            col = col.RemoveNulls();
+            Assert.Equal(2, col.Count());
+        }
     }
 }
