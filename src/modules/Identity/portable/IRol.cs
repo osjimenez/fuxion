@@ -295,6 +295,7 @@ namespace Fuxion.Identity
         }
         internal static IPermission[] SearchPermissions(this IRol me, IFunction function = null, params IDiscriminator[] discriminators)
         {
+            discriminators = discriminators.RemoveNulls();
             return Printer.Indent($"{nameof(RolExtensions)}.{nameof(SearchPermissions)}:", () =>
             {
                 Printer.Indent("Input parameters", () =>
