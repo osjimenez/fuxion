@@ -435,10 +435,10 @@ namespace Fuxion.Identity
         // One instance
         public static bool Instance<T>(this IRolCan me, T value) => me.AllInstances(new[] { value });
         // Many instances
-        public static bool AllInstances<T>(this IRolCan me, params T[] values) => me.CheckInstances(true, values);
-        public static bool AnyInstance<T>(this IRolCan me, params T[] values) => me.CheckInstances(false, values);
+        public static bool AllInstances<T>(this IRolCan me, IEnumerable<T> values) => me.CheckInstances(true, values);
+        public static bool AnyInstance<T>(this IRolCan me, IEnumerable<T> values) => me.CheckInstances(false, values);
         // -------------------------- IMPLEMENTATION
-        private static bool CheckInstances<T>(this IRolCan me, bool forAll, params T[] values)
+        private static bool CheckInstances<T>(this IRolCan me, bool forAll, IEnumerable<T> values)
         {
             if (me.Rol == null) return false;
             var res = forAll ? values.AuthorizedTo(me.Rol, me.Functions).Count() == values.Count() : values.AuthorizedTo(me.Rol, me.Functions).Any();
