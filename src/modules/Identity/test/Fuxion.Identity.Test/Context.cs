@@ -23,18 +23,18 @@ namespace Fuxion.Identity.Test
     }
     public class Context
     {
-        static List<Tuple<Delegate, object>> configurationActions = new List<Tuple<Delegate, object>>();
+        static List<(Delegate Action, object Parameter)> configurationActions = new List<(Delegate Action, object Parameter)>();
         public static void AddConfigurationAction(Delegate action, object parameter)
         {
             if (action != null)
-                configurationActions.Add(new Tuple<Delegate, object>(action, parameter));
+                configurationActions.Add((action, parameter));
         }
         public static void RunConfigurationActions()
         {
             foreach (var act in configurationActions)
                 try
                 {
-                    act.Item1.DynamicInvoke(act.Item2);
+                    act.Action.DynamicInvoke(act.Parameter);
                 }
                 catch
                 {

@@ -479,5 +479,66 @@ namespace Fuxion.Identity.Test
                     $"¿Debería poder '{nameof(Edit)}' las '{nameof(CityDao)}'?\r\n" +
                     " Si");
         }
+        [Fact(DisplayName = "Rol - Only read permission")]
+        public void OnlyReadPermission()
+        {
+            var ide = new IdentityDao
+            {
+                Id = "test",
+                Name = "Test",
+                Permissions = new[] {
+                    new PermissionDao {
+                        Value = true,
+                        Function = Read.Id.ToString(),
+                    }
+                }.ToList()
+            };
+            Assert.True(ide.Can(Read).Type<CityDao>(),
+                "Tengo:\r\n" +
+                    $" - Permiso ONLY READ\r\n" +
+                    $"¿Debería poder '{nameof(Read)}' las '{nameof(CityDao)}'?\r\n" +
+                    " Si");
+            Assert.False(ide.Can(Create).Type<CityDao>(),
+                "Tengo:\r\n" +
+                    $" - Permiso ONLY READ\r\n" +
+                    $"¿Debería poder '{nameof(Create)}' las '{nameof(CityDao)}'?\r\n" +
+                    " No");
+        }
+        [Fact(DisplayName = "Rol - Empty discriminator")]
+        public void EmptyDiscriminator()
+        {
+            var ide = new IdentityDao
+            {
+                Id = "test",
+                Name = "Test",
+                Permissions = new[] {
+                    new PermissionDao {
+                        Value = true,
+                        Function = Admin.Id.ToString(),
+                        Scopes = new[] {
+                            new ScopeDao
+                            {
+                                Discriminator = Discriminator.Category.Purchases,
+                                Propagation = ScopePropagation.ToMe| ScopePropagation.ToInclusions
+                            }
+                        }
+                    }
+                }.ToList()
+            };
+            Assert.False(ide.Can(Create).Instance(File.Document.Word.Word1),
+               "Tengo:\r\n" +
+                   $" - Permiso ADMIN en la categoria 'Purchases' y sus subcategorias\r\n" +
+                   $"¿Debería poder '{nameof(Create)}' una instancia de documento Word sin categoria?\r\n" +
+                   " No");
+            Assert.True(ide.Can(Create).Instance(File.Document.Word.Word1.Transform(w=>w.Category=Discriminator.Category.Purchases)),
+               "Tengo:\r\n" +
+                   $" - Permiso ADMIN en la categoria 'Purchases' y sus subcategorias\r\n" +
+                   $"¿Debería poder '{nameof(Create)}' una instancia de documento Word de la categoria 'Purchases'?\r\n" +
+                   " Si");
+
+            //Assert.True(ide.Can(Create).ByAll(
+            //    (IDiscriminator)Factory.Get<TypeDiscriminatorFactory>().FromType<WordDocumentDao>(),
+            //    Discriminator.Category.Purchases));
+        }
     }
 }

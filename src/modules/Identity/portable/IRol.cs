@@ -364,10 +364,11 @@ namespace Fuxion.Identity
         #region Something
         public static bool Anything(this IRolCan me)
         {
-            if (me.Rol == null) return false;
-            foreach (var fun in me.Functions)
+            var mee = (IInternalRolCan)me;
+            if (mee.Rol == null) return false;
+            foreach (var fun in mee.Functions)
             {
-                var permissions = me.Rol.SearchPermissions(fun);
+                var permissions = mee.Rol.SearchPermissions(fun);
                 if (!permissions.Any() || permissions.Any(p => p.Scopes.Any()))
                     return false;
             }
@@ -375,10 +376,11 @@ namespace Fuxion.Identity
         }
         public static bool Something(this IRolCan me)
         {
-            if (me.Rol == null) return false;
-            foreach (var fun in me.Functions)
+            var mee = (IInternalRolCan)me;
+            if (mee.Rol == null) return false;
+            foreach (var fun in mee.Functions)
             {
-                var permissions = me.Rol.SearchPermissions(fun);
+                var permissions = mee.Rol.SearchPermissions(fun);
                 if (!permissions.Any(p => p.Value))// || permissions.All(p => p.Scopes.Any()))
                     return false;
             }
@@ -386,13 +388,13 @@ namespace Fuxion.Identity
         }
         #endregion
         #region Can().By..<IDiscriminator>()
-        public static bool ByAll<TDiscriminator>(this IRolCan me, params TDiscriminator[] discriminators)
-            where TDiscriminator : IDiscriminator
-            => CheckDiscriminators(me, true, discriminators.Cast<IDiscriminator>().ToArray());
-        public static bool ByAny<TDiscriminator>(this IRolCan me, params TDiscriminator[] discriminators)
-            where TDiscriminator : IDiscriminator
-            => CheckDiscriminators(me, false, discriminators.Cast<IDiscriminator>().ToArray());
-        private static bool CheckDiscriminators(this IRolCan me, bool forAll, params IDiscriminator[] discriminators)
+        private static bool ByAll(this IRolCan me, params IDiscriminator[] discriminators)
+            //where TDiscriminator : IDiscriminator
+            => CheckDiscriminators((IInternalRolCan)me, true, discriminators);
+        private static bool ByAny(this IRolCan me, params IDiscriminator[] discriminators)
+            //where TDiscriminator : IDiscriminator
+            => CheckDiscriminators((IInternalRolCan)me, false, discriminators);
+        private static bool CheckDiscriminators(this IInternalRolCan me, bool forAll, params IDiscriminator[] discriminators)
         {
             if (me.Rol == null) return false;
             foreach (var fun in me.Functions)
@@ -436,10 +438,10 @@ namespace Fuxion.Identity
         // One instance
         public static bool Instance<T>(this IRolCan me, T value) => me.AllInstances(new[] { value });
         // Many instances
-        public static bool AllInstances<T>(this IRolCan me, IEnumerable<T> values) => me.CheckInstances(true, values);
-        public static bool AnyInstance<T>(this IRolCan me, IEnumerable<T> values) => me.CheckInstances(false, values);
+        public static bool AllInstances<T>(this IRolCan me, IEnumerable<T> values) => ((IInternalRolCan)me).CheckInstances(true, values);
+        public static bool AnyInstance<T>(this IRolCan me, IEnumerable<T> values) => ((IInternalRolCan)me).CheckInstances(false, values);
         // -------------------------- IMPLEMENTATION
-        private static bool CheckInstances<T>(this IRolCan me, bool forAll, IEnumerable<T> values)
+        private static bool CheckInstances<T>(this IInternalRolCan me, bool forAll, IEnumerable<T> values)
         {
             if (me.Rol == null) return false;
             var res = forAll ? values.AuthorizedTo(me.Rol, me.Functions).Count() == values.Count() : values.AuthorizedTo(me.Rol, me.Functions).Any();
@@ -450,13 +452,20 @@ namespace Fuxion.Identity
         #endregion
         #endregion
     }
-    public interface IRolCan {
+    internal interface IInternalRolCan : IRolCan
+    {
         IRol Rol { get; }
         IFunction[] Functions { get; }
         bool ThrowExceptionIfCannot { get; }
+    }
+    public interface IRolCan
+    {
+        //IRol Rol { get; }
+        //IFunction[] Functions { get; }
+        //bool ThrowExceptionIfCannot { get; }
         //bool IsFunctionAssigned(IFunction function, IDiscriminator[] discriminators);
     }
-    class _RolCan : IRolCan
+    class _RolCan : IInternalRolCan
     {
         public _RolCan(IRol rol, IFunction[] functions, bool throwExceptionIfCannot)
         {
