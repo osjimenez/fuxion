@@ -388,10 +388,10 @@ namespace Fuxion.Identity
         }
         #endregion
         #region Can().By..<IDiscriminator>()
-        private static bool ByAll(this IRolCan me, params IDiscriminator[] discriminators)
+        public static bool ByAll(this IRolCan me, params IDiscriminator[] discriminators)
             //where TDiscriminator : IDiscriminator
             => CheckDiscriminators((IInternalRolCan)me, true, discriminators);
-        private static bool ByAny(this IRolCan me, params IDiscriminator[] discriminators)
+        public static bool ByAny(this IRolCan me, params IDiscriminator[] discriminators)
             //where TDiscriminator : IDiscriminator
             => CheckDiscriminators((IInternalRolCan)me, false, discriminators);
         private static bool CheckDiscriminators(this IInternalRolCan me, bool forAll, params IDiscriminator[] discriminators)
