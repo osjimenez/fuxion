@@ -535,10 +535,57 @@ namespace Fuxion.Identity.Test
                    $" - Permiso ADMIN en la categoria 'Purchases' y sus subcategorias\r\n" +
                    $"¿Debería poder '{nameof(Create)}' una instancia de documento Word de la categoria 'Purchases'?\r\n" +
                    " Si");
-
-            //Assert.True(ide.Can(Create).ByAll(
-            //    (IDiscriminator)Factory.Get<TypeDiscriminatorFactory>().FromType<WordDocumentDao>(),
-            //    Discriminator.Category.Purchases));
+        }
+        [Fact(DisplayName = "Rol - Grant for discriminator and denied for children")]
+        public void GrantParentDeniedChildren()
+        {
+            var ide = new IdentityDao
+            {
+                Id = "test",
+                Name = "Test",
+                Permissions = new[] {
+                    new PermissionDao {
+                        Value = true,
+                        Function = Admin.Id.ToString(),
+                        Scopes = new[] {
+                            new ScopeDao
+                            {
+                                Discriminator = Discriminator.Location.Country.Spain,
+                                Propagation = ScopePropagation.ToMe| ScopePropagation.ToInclusions
+                            }
+                        }
+                    },
+                    new PermissionDao {
+                        Value = false,
+                        Function = Read.Id.ToString(),
+                        Scopes = new[] {
+                            new ScopeDao
+                            {
+                                Discriminator = Discriminator.Location.City.Madrid,
+                                Propagation = ScopePropagation.ToMe| ScopePropagation.ToInclusions
+                            }
+                        }
+                    },
+                }.ToList()
+            };
+            Assert.False(ide.Can(Create).Instance(Person.MadridAdmin),
+               "Tengo:\r\n" +
+                   $" - Permiso ADMIN en el estado 'Spain' y sus sublocalizaciones\r\n" +
+                   $" - Denegado READ en la ciudad 'Madrid' y sus sublocalizaciones\r\n" +
+                   $"¿Debería poder '{nameof(Create)}' una instancia de persona con la ciudad Madrid?\r\n" +
+                   " No");
+            Assert.True(ide.Can(Create).Instance(Person.AlcorconAdmin),
+               "Tengo:\r\n" +
+                   $" - Permiso ADMIN en el estado 'Spain' y sus sublocalizaciones\r\n" +
+                   $" - Denegado READ en la ciudad 'Madrid' y sus sublocalizaciones\r\n" +
+                   $"¿Debería poder '{nameof(Create)}' una instancia de persona con la ciudad Madrid?\r\n" +
+                   " Si");
+            Assert.True(ide.Can(Read).Type<WordDocumentDao>(),
+                 "Tengo:\r\n" +
+                   $" - Permiso ADMIN en el estado 'Spain' y sus sublocalizaciones\r\n" +
+                   $" - Denegado READ en la ciudad 'Madrid' y sus sublocalizaciones\r\n" +
+                   $"¿Debería poder '{nameof(Read)}' objetos del tipo Word?\r\n" +
+                   " Si");
         }
     }
 }

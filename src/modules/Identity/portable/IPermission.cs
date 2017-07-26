@@ -66,22 +66,24 @@ namespace Fuxion.Identity
                 Printer.WriteLine($"Inclusiones: {me.Function.GetAllInclusions().Aggregate("", (a, s) => a + " - " + s.Id, a => a.Trim(' ','-'))}");
                 Printer.WriteLine($"Exclusiones: {me.Function.GetAllExclusions().Aggregate("", (a, s) => a + " - " + s.Id, a => a.Trim(' ', '-'))}");
                 var comparer = new FunctionEqualityComparer();
+                bool res = false;
                 if (comparer.Equals(me.Function, function))
                 {
                     Printer.WriteLine("Match with same function");
-                    return true;
+                    res = true;
                 }
-                if(me.Value && me.Function.GetAllInclusions().Contains(function, comparer))
+                else if(me.Value && me.Function.GetAllInclusions().Contains(function, comparer))
                 {
                     Printer.WriteLine("Match by included function");
-                    return true;
+                    res = true;
                 }
-                if (!me.Value && me.Function.GetAllExclusions().Contains(function, comparer))
+                else if (!me.Value && me.Function.GetAllExclusions().Contains(function, comparer))
                 {
                     Printer.WriteLine("Match by excluded function");
-                    return true;
+                    res = true;
                 }
-                return false;
+                Printer.WriteLine($"RESULT: {res}");
+                return res;
             });
         }
         internal static bool MatchByDiscriminatorsType(this IPermission me, params IDiscriminator[] discriminators)
@@ -101,40 +103,38 @@ namespace Fuxion.Identity
                 {
                     Printer.WriteLine($"This permission haven't any scope");
                     res = true;
+                    //res = me.Value;
                 }
                 else
                 {
                     var scos = me.Scopes.Where(s => discriminators.Select(d => d.TypeId).Contains(s.Discriminator.TypeId));
                     Printer.WriteLine($"This permission have '{scos.Count()}' scopes for type of given discriminators");
                     res = true;
+                    //res = me.Value;
                 }
-                Printer.WriteLine($"Result: {res}");
+                Printer.WriteLine($"RESULT: {res}");
                 return res;
             });
         }
         internal static bool MatchByDiscriminatorsInclusionsAndExclusions(this IPermission me, params IDiscriminator[] discriminators)
         {
-            //return Printer.Ident($"{nameof(PermissionExtensions)}.{nameof(MatchByDiscriminatorsPath)}:", () => {
             return Printer.Indent($"{typeof(PermissionExtensions).GetTypeInfo().DeclaredMethods.FirstOrDefault(m=>m.Name == nameof(MatchByDiscriminatorsInclusionsAndExclusions)).GetSignature()}:", () => {
                 Printer.Indent("Input parameters", () =>
                 {
-                    //Printer.Print($"Permission (me): {me}");
                     Printer.WriteLine("Permission:");
                     new[] { me }.Print(PrintMode.Table);
-                    //Printer.Foreach($"Discriminadores:", discriminators, dis => Printer.Print($"{dis.TypeName} - {dis.Name}"));
                     Printer.WriteLine("Discriminators:");
                     discriminators.Print(PrintMode.Table);
                 });
-                //Printer.Foreach($"Permission scopes ({me.Scopes.Count()}):", me.Scopes, sco => Printer.Print(sco.ToString()));
+                bool res = false;
                 if (!me.Scopes.Any())
                 {
-                    
-                    Printer.WriteLine($"Result: TRUE - Haven't scopes");
-                    return true;
+                    Printer.WriteLine($"Haven't scopes");
+                    res = true;
                 }
                 else
                 {
-                    return Printer.Indent("Analyze each scope:", () =>
+                    res = Printer.Indent("Analyze each scope:", () =>
                     {
                         // Tenemos que tomar nuestros discriminadores, y comprobarlos contra los discriminadores que me han pasado
                         // - Cojo un discriminador y busco el discriminador del mismo tipo en la entrada:
@@ -181,6 +181,8 @@ namespace Fuxion.Identity
                             || result.All(r => !r.HasValue || r.Value);
                     });
                 }
+                Printer.WriteLine($"RESULT: {res}");
+                return res;
             });
         }
         public static string ToOneLineString(this IPermission me)

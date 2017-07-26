@@ -88,7 +88,7 @@ namespace Fuxion.Identity
                            p.GetCustomAttribute<DiscriminatedByAttribute>(true).Type.GetTypeInfo()
                                .GetCustomAttribute<DiscriminatorAttribute>(true).TypeId,
                    });
-                Printer.Foreach("Properties:", props, p => Printer.WriteLine($"{p.PropertyType.Name} {p.PropertyInfo.Name}"));
+                Printer.Foreach("Properties:", props, p => Printer.WriteLine($"{p.PropertyType.Name} {p.PropertyInfo.Name} - {p.DiscriminatorTypeId} {p.DiscriminatorType.Name}"));
                 Expression<Func<TEntity, bool>> res = null;
                 var pers = functions.SelectMany(fun => me.SearchPermissions(fun, Factory.Get<TypeDiscriminatorFactory>().FromType<TEntity>())).Distinct().ToList();
                 Expression<Func<TEntity, bool>> denyPersExp = null;
@@ -403,12 +403,12 @@ namespace Fuxion.Identity
                     ? discriminators.All(dis =>
                      {
                          var pers = me.Rol.SearchPermissions(fun, dis);
-                         return !pers.Any(p => !p.Value) && pers.Any(p => p.Value);
+                         return !pers.Any(p => !p.Value && p.Scopes.Any(s => dis.TypeId == s.Discriminator.TypeId)) && pers.Any(p => p.Value);
                      })
                     : discriminators.Any(dis =>
                      {
                          var pers = me.Rol.SearchPermissions(fun, dis);
-                         return !pers.Any(p => !p.Value) && pers.Any(p => p.Value);
+                         return !pers.Any(p => !p.Value && p.Scopes.Any(s => dis.TypeId == s.Discriminator.TypeId)) && pers.Any(p => p.Value);
                      });
                 if (!res)
                 {

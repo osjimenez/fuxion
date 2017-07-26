@@ -31,7 +31,7 @@ namespace Fuxion.Identity.Test
         }
         public static void RunConfigurationActions()
         {
-            foreach (var act in configurationActions)
+            foreach (var act in configurationActions.ToList())
                 try
                 {
                     act.Action.DynamicInvoke(act.Parameter);
@@ -68,7 +68,7 @@ namespace Fuxion.Identity.Test
                 {
                     static CountryDao Create(string name, Action<Dao.CountryDao> configureAction = null)
                     {
-                        var res = new Dao.CountryDao { Id = name, Name = name };
+                        var res = new CountryDao { Id = name, Name = name };
                         AddConfigurationAction(configureAction, res);
                         return res;
                     }
@@ -208,10 +208,32 @@ namespace Fuxion.Identity.Test
         }
         #endregion
         #region Person
+        //static PersonContext _Person;
+        //public static PersonContext Person
+        //{
+        //    get
+        //    {
+        //        if(_Person == null)
+        //        {
+        //            _Person = new PersonContext();
+        //            RunConfigurationActions();
+        //        }
+        //        return _Person;
+        //    }
+        //}
         public static PersonContext Person { get; } = new PersonContext();
+
         public class PersonContext : Context<PersonDao>
         {
-
+            static PersonDao Create(string name, Action<PersonDao> configureAction = null)
+            {
+                var res = new PersonDao { Id = name, Name = name };
+                AddConfigurationAction(configureAction, res);
+                return res;
+            }
+            public PersonDao Admin { get; } = Create(nameof(Admin));
+            public PersonDao MadridAdmin { get; } = Create(nameof(MadridAdmin), p => p.City = Discriminator.Location.City.Madrid);
+            public PersonDao AlcorconAdmin { get; } = Create(nameof(AlcorconAdmin), p => p.City = Discriminator.Location.City.Alcorcon);
         }
         #endregion
         #region Skill
