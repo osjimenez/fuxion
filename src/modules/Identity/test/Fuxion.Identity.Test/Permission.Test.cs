@@ -32,12 +32,12 @@ namespace Fuxion.Identity.Test
                     Value = true,
                     Function = Read.Id.ToString(),
                     Scopes = new[] {
-                        new ScopeDao { Discriminator = Discriminator.Location.State.California },
-                        new ScopeDao { Discriminator = Discriminator.Category.Sales }
+                        new ScopeDao { Discriminator = Discriminators.Location.State.California },
+                        new ScopeDao { Discriminator = Discriminators.Category.Sales }
                     }
                 }.MatchByDiscriminatorsType(new IDiscriminator[] {
-                    Discriminator.Category.Sales,
-                    Discriminator.Location.State.California
+                    Discriminators.Category.Sales,
+                    Discriminators.Location.State.California
                 }));
             // CASE 2
             // Faltan discriminadores, se han presentado una serie de discriminadores, pero este permiso tiene mas, no cumple
@@ -47,11 +47,11 @@ namespace Fuxion.Identity.Test
                     Value = true,
                     Function = Read.Id.ToString(),
                     Scopes = new[] {
-                        new ScopeDao { Discriminator = Discriminator.Location.State.California },
-                        new ScopeDao { Discriminator = Discriminator.Category.Sales }
+                        new ScopeDao { Discriminator = Discriminators.Location.State.California },
+                        new ScopeDao { Discriminator = Discriminators.Category.Sales }
                     }
                 }.MatchByDiscriminatorsType(new[] {
-                    Discriminator.Category.Sales,
+                    Discriminators.Category.Sales,
                 }));
             // CASE 3
             // Sobran discriminadores, se han presentado más discriminadores que los que aplican en este permiso, se ignorarán,
@@ -62,13 +62,13 @@ namespace Fuxion.Identity.Test
                     Value = true,
                     Function = Read.Id.ToString(),
                     Scopes = new[] {
-                        new ScopeDao { Discriminator = Discriminator.Location.State.California },
-                        new ScopeDao { Discriminator = Discriminator.Category.Sales }
+                        new ScopeDao { Discriminator = Discriminators.Location.State.California },
+                        new ScopeDao { Discriminator = Discriminators.Category.Sales }
                     }
                 }.MatchByDiscriminatorsType(new IDiscriminator[] {
-                    Discriminator.Category.Sales,
-                    Discriminator.Location.State.California,
-                    Discriminator.Tag.Urgent,
+                    Discriminators.Category.Sales,
+                    Discriminators.Location.State.California,
+                    Discriminators.Tag.Urgent,
                 }));
             // CASE 4
             // Permiso de Root, sin discriminadores
@@ -82,9 +82,9 @@ namespace Fuxion.Identity.Test
                     }
                 }.MatchByDiscriminatorsType(new IDiscriminator[]
                 {
-                    Discriminator.Category.Sales,
-                    Discriminator.Location.State.California,
-                    Discriminator.Tag.Urgent,
+                    Discriminators.Category.Sales,
+                    Discriminators.Location.State.California,
+                    Discriminators.Tag.Urgent,
                 }));
         }
         [Fact(DisplayName = "Permission - Match by discriminators path")]
@@ -98,33 +98,33 @@ namespace Fuxion.Identity.Test
                     Value = true,
                     Function = Read.Id.ToString(),
                     Scopes = new[] {
-                        new ScopeDao { Discriminator = Discriminator.Location.State.California, Propagation = propagation }
+                        new ScopeDao { Discriminator = Discriminators.Location.State.California, Propagation = propagation }
                     }
                 }.MatchByDiscriminatorsInclusionsAndExclusions(new IDiscriminator[] {
-                    Discriminator.Location.State.California
-                }), $"Permiso de {nameof(Discriminator.Location.State.California)} hacia {propagation}, me pasan {nameof(Discriminator.Location.State.California)}, no debería encajar");
+                    Discriminators.Location.State.California
+                }), $"Permiso de {nameof(Discriminators.Location.State.California)} hacia {propagation}, me pasan {nameof(Discriminators.Location.State.California)}, no debería encajar");
             Assert.True(
                 new PermissionDao
                 {
                     Value = true,
                     Function = Read.Id.ToString(),
                     Scopes = new[] {
-                        new ScopeDao { Discriminator = Discriminator.Location.State.California, Propagation = propagation }
+                        new ScopeDao { Discriminator = Discriminators.Location.State.California, Propagation = propagation }
                     }
                 }.MatchByDiscriminatorsInclusionsAndExclusions(new IDiscriminator[] {
-                    Discriminator.Location.Country.Usa
-                }), $"Permiso de {nameof(Discriminator.Location.State.California)} hacia {propagation}, me pasan {nameof(Discriminator.Location.Country.Usa)}, debería encajar");
+                    Discriminators.Location.Country.Usa
+                }), $"Permiso de {nameof(Discriminators.Location.State.California)} hacia {propagation}, me pasan {nameof(Discriminators.Location.Country.Usa)}, debería encajar");
             Assert.False(
                 new PermissionDao
                 {
                     Value = true,
                     Function = Read.Id.ToString(),
                     Scopes = new[] {
-                        new ScopeDao { Discriminator = Discriminator.Location.State.California, Propagation = propagation}
+                        new ScopeDao { Discriminator = Discriminators.Location.State.California, Propagation = propagation}
                     }
                 }.MatchByDiscriminatorsInclusionsAndExclusions(new IDiscriminator[] {
-                    Discriminator.Location.City.SanFrancisco
-                }), $"Permiso de {nameof(Discriminator.Location.State.California)} hacia {propagation}, me pasan {nameof(Discriminator.Location.City.SanFrancisco)}, no debería encajar");
+                    Discriminators.Location.City.SanFrancisco
+                }), $"Permiso de {nameof(Discriminators.Location.State.California)} hacia {propagation}, me pasan {nameof(Discriminators.Location.City.SanFrancisco)}, no debería encajar");
 
             // CASE 2 - Propagation to me
             propagation = ScopePropagation.ToMe;
@@ -134,33 +134,33 @@ namespace Fuxion.Identity.Test
                     Value = true,
                     Function = Read.Id.ToString(),
                     Scopes = new[] {
-                        new ScopeDao { Discriminator = Discriminator.Location.State.California, Propagation = propagation }
+                        new ScopeDao { Discriminator = Discriminators.Location.State.California, Propagation = propagation }
                     }
                 }.MatchByDiscriminatorsInclusionsAndExclusions(new IDiscriminator[] {
-                    Discriminator.Location.State.California
-                }), $"Permiso de {nameof(Discriminator.Location.State.California)} hacia {propagation}, me pasan {nameof(Discriminator.Location.State.California)}, debería encajar");
+                    Discriminators.Location.State.California
+                }), $"Permiso de {nameof(Discriminators.Location.State.California)} hacia {propagation}, me pasan {nameof(Discriminators.Location.State.California)}, debería encajar");
             Assert.False(
                 new PermissionDao
                 {
                     Value = true,
                     Function = Read.Id.ToString(),
                     Scopes = new[] {
-                        new ScopeDao { Discriminator = Discriminator.Location.State.California, Propagation = propagation }
+                        new ScopeDao { Discriminator = Discriminators.Location.State.California, Propagation = propagation }
                     }
                 }.MatchByDiscriminatorsInclusionsAndExclusions(new[] {
-                    Discriminator.Location.Country.Usa
-                }), $"Permiso de {nameof(Discriminator.Location.State.California)} hacia {propagation}, me pasan {nameof(Discriminator.Location.Country.Usa)}, no debería encajar");
+                    Discriminators.Location.Country.Usa
+                }), $"Permiso de {nameof(Discriminators.Location.State.California)} hacia {propagation}, me pasan {nameof(Discriminators.Location.Country.Usa)}, no debería encajar");
             Assert.False(
                 new PermissionDao
                 {
                     Value = true,
                     Function = Read.Id.ToString(),
                     Scopes = new[] {
-                        new ScopeDao { Discriminator = Discriminator.Location.State.California, Propagation = propagation }
+                        new ScopeDao { Discriminator = Discriminators.Location.State.California, Propagation = propagation }
                     }
                 }.MatchByDiscriminatorsInclusionsAndExclusions(new[] {
-                    Discriminator.Location.City.SanFrancisco
-                }), $"Permiso de {nameof(Discriminator.Location.State.California)} hacia {propagation}, me pasan {nameof(Discriminator.Location.City.SanFrancisco)}, no debería encajar");
+                    Discriminators.Location.City.SanFrancisco
+                }), $"Permiso de {nameof(Discriminators.Location.State.California)} hacia {propagation}, me pasan {nameof(Discriminators.Location.City.SanFrancisco)}, no debería encajar");
 
             // CASE 3 - Propagation to childs
             propagation = ScopePropagation.ToInclusions;
@@ -170,33 +170,33 @@ namespace Fuxion.Identity.Test
                     Value = true,
                     Function = Read.Id.ToString(),
                     Scopes = new[] {
-                        new ScopeDao { Discriminator = Discriminator.Location.State.California,  Propagation = propagation }
+                        new ScopeDao { Discriminator = Discriminators.Location.State.California,  Propagation = propagation }
                     }
                 }.MatchByDiscriminatorsInclusionsAndExclusions(new[] {
-                    Discriminator.Location.State.California
-                }), $"Permiso de {nameof(Discriminator.Location.State.California)} hacia {propagation}, me pasan {nameof(Discriminator.Location.State.California)}, no debería encajar");
+                    Discriminators.Location.State.California
+                }), $"Permiso de {nameof(Discriminators.Location.State.California)} hacia {propagation}, me pasan {nameof(Discriminators.Location.State.California)}, no debería encajar");
             Assert.False(
                 new PermissionDao
                 {
                     Value = true,
                     Function = Read.Id.ToString(),
                     Scopes = new[] {
-                        new ScopeDao {Discriminator = Discriminator.Location.State.California, Propagation = propagation }
+                        new ScopeDao {Discriminator = Discriminators.Location.State.California, Propagation = propagation }
                     }
                 }.MatchByDiscriminatorsInclusionsAndExclusions(new[] {
-                    Discriminator.Location.Country.Usa
-                }), $"Permiso de {nameof(Discriminator.Location.State.California)} hacia {propagation}, me pasan {nameof(Discriminator.Location.Country.Usa)}, no debería encajar");
+                    Discriminators.Location.Country.Usa
+                }), $"Permiso de {nameof(Discriminators.Location.State.California)} hacia {propagation}, me pasan {nameof(Discriminators.Location.Country.Usa)}, no debería encajar");
             Assert.True(
                 new PermissionDao
                 {
                     Value = true,
                     Function = Read.Id.ToString(),
                     Scopes = new[] {
-                        new ScopeDao { Discriminator = Discriminator.Location.State.California,  Propagation = propagation }
+                        new ScopeDao { Discriminator = Discriminators.Location.State.California,  Propagation = propagation }
                     }
                 }.MatchByDiscriminatorsInclusionsAndExclusions(new[] {
-                    Discriminator.Location.City.SanFrancisco
-                }), $"Permiso de {nameof(Discriminator.Location.State.California)} hacia {propagation}, me pasan {nameof(Discriminator.Location.City.SanFrancisco)}, debería encajar");
+                    Discriminators.Location.City.SanFrancisco
+                }), $"Permiso de {nameof(Discriminators.Location.State.California)} hacia {propagation}, me pasan {nameof(Discriminators.Location.City.SanFrancisco)}, debería encajar");
         }
         [Fact(DisplayName = "Permission - Match")]
         public void WhenPermission_Match()
@@ -208,14 +208,14 @@ namespace Fuxion.Identity.Test
                     Value = true,
                     Function = Edit.Id.ToString(),
                     Scopes = new[] {
-                        new ScopeDao { Discriminator = Discriminator.Location.State.California,Propagation = propagation }
+                        new ScopeDao { Discriminator = Discriminators.Location.State.California,Propagation = propagation }
                     }
                 }.Match(Read,
                     new[] {
-                        Discriminator.Location.City.SanFrancisco
+                        Discriminators.Location.City.SanFrancisco
                     }),
-                $"Si tengo permiso para {nameof(Edit)} en {nameof(Discriminator.Location.State.California)} y se propaga {propagation}." +
-                $"¿Debería poder {nameof(Read)} en {nameof(Discriminator.Location.City.SanFrancisco)}? => SI");
+                $"Si tengo permiso para {nameof(Edit)} en {nameof(Discriminators.Location.State.California)} y se propaga {propagation}." +
+                $"¿Debería poder {nameof(Read)} en {nameof(Discriminators.Location.City.SanFrancisco)}? => SI");
 
             Assert.True(
                 new PermissionDao
@@ -223,14 +223,14 @@ namespace Fuxion.Identity.Test
                     Value = true,
                     Function = Edit.Id.ToString(),
                     Scopes = new[] {
-                        new ScopeDao {Discriminator = Discriminator.Location.State.California,Propagation = propagation}
+                        new ScopeDao {Discriminator = Discriminators.Location.State.California,Propagation = propagation}
                     }
                 }.Match(Read,
                     new IDiscriminator[] {
-                        Discriminator.Location.City.SanFrancisco
+                        Discriminators.Location.City.SanFrancisco
                     }),
-                $"Si tengo permiso para {nameof(Edit)} en {nameof(Discriminator.Location.State.California)} y se propaga {propagation}." +
-                $"¿Debería poder {nameof(Read)} en {nameof(Discriminator.Location.City.SanFrancisco)}? => SI");
+                $"Si tengo permiso para {nameof(Edit)} en {nameof(Discriminators.Location.State.California)} y se propaga {propagation}." +
+                $"¿Debería poder {nameof(Read)} en {nameof(Discriminators.Location.City.SanFrancisco)}? => SI");
         }
     }
 }

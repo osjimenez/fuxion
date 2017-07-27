@@ -132,7 +132,7 @@ namespace Fuxion.Identity
                 Printer.Foreach("Grant permissions:", pers.Where(p => p.Value), per =>
                 {
                     
-                    Printer.Indent($"Permission: Value<{per.Value}> - Function<{per.Function.Name}> - Scopes<{per.Scopes.Count()}>", () =>
+                    Printer.Indent($"Permission: {per}>", () =>
                     {
                         Expression<Func<TEntity, bool>> perExp = null;
                         Printer.Foreach("Scopes:", per.Scopes, sco =>
@@ -396,28 +396,38 @@ namespace Fuxion.Identity
             => CheckDiscriminators((IInternalRolCan)me, false, discriminators);
         private static bool CheckDiscriminators(this IInternalRolCan me, bool forAll, params IDiscriminator[] discriminators)
         {
-            if (me.Rol == null) return false;
-            foreach (var fun in me.Functions)
+            discriminators = discriminators.RemoveNulls();
+            return Printer.Indent($"{nameof(RolExtensions)}.{nameof(CheckDiscriminators)}:", () =>
             {
-                var res = forAll
-                    ? discriminators.All(dis =>
-                     {
-                         var pers = me.Rol.SearchPermissions(fun, dis);
-                         return !pers.Any(p => !p.Value && p.Scopes.Any(s => dis.TypeId == s.Discriminator.TypeId)) && pers.Any(p => p.Value);
-                     })
-                    : discriminators.Any(dis =>
-                     {
-                         var pers = me.Rol.SearchPermissions(fun, dis);
-                         return !pers.Any(p => !p.Value && p.Scopes.Any(s => dis.TypeId == s.Discriminator.TypeId)) && pers.Any(p => p.Value);
-                     });
-                if (!res)
+                Printer.Indent("Input parameters", () =>
                 {
-                    if (me.ThrowExceptionIfCannot)
-                        throw new UnauthorizedAccessException($"The rol '{me.Rol.Name}' cannot '{me.Functions.Aggregate("", (a, c) => a + c.Name + "·", a => a.Trim('·'))}' for the given discriminators '{discriminators.Aggregate("", (a, c) => $"{a}, {c.Name}", a => a.Trim(',', ' ')) }'");
-                    return false;
+                    Printer.WriteLine($"Rol: {me.Rol.Name}");
+                    Printer.WriteLine($"Functions: {string.Join(",", me.Functions.Select(f => f.Name)) ?? "<null>"}");
+                    Printer.Foreach($"Discriminators:", discriminators, dis => Printer.WriteLine($"{dis.TypeName} - {dis.Name}"));
+                });
+                if (me.Rol == null) return false;
+                foreach (var fun in me.Functions)
+                {
+                    var res = forAll
+                        ? discriminators.All(dis =>
+                        {
+                            var pers = me.Rol.SearchPermissions(fun, dis);
+                            return !pers.Any(p => !p.Value && p.Scopes.Any(s => dis.TypeId == s.Discriminator.TypeId)) && pers.Any(p => p.Value);
+                        })
+                        : discriminators.Any(dis =>
+                        {
+                            var pers = me.Rol.SearchPermissions(fun, dis);
+                            return !pers.Any(p => !p.Value && p.Scopes.Any(s => dis.TypeId == s.Discriminator.TypeId)) && pers.Any(p => p.Value);
+                        });
+                    if (!res)
+                    {
+                        if (me.ThrowExceptionIfCannot)
+                            throw new UnauthorizedAccessException($"The rol '{me.Rol.Name}' cannot '{me.Functions.Aggregate("", (a, c) => a + c.Name + "·", a => a.Trim('·'))}' for the given discriminators '{discriminators.Aggregate("", (a, c) => $"{a}, {c.Name}", a => a.Trim(',', ' ')) }'");
+                        return false;
+                    }
                 }
-            }
-            return true;
+                return true;
+            });
         }
         #endregion
         #region Can().Type's

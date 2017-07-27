@@ -24,6 +24,33 @@ namespace Fuxion.Identity
         new TTypeId TypeId { get; }
         new TId Id { get; }
     }
+    public class Discriminator : IDiscriminator
+    {
+        private Discriminator() { }
+        public object TypeId { get; private set; }
+
+        public string TypeName { get; private set; }
+
+        public object Id => "----------------------------------- EMPTY -----------------------------------";
+
+        public string Name => "EMPTY";
+
+        public IEnumerable<IDiscriminator> Inclusions => throw new NotImplementedException();
+
+        public IEnumerable<IDiscriminator> Exclusions => throw new NotImplementedException();
+
+        public static IDiscriminator Empty<TDiscriminator>()
+        {
+            var att = typeof(TDiscriminator).GetTypeInfo().GetCustomAttribute<DiscriminatorAttribute>();
+            if (att != null)
+                return new Discriminator
+                {
+                    TypeId = att.TypeId,
+                    TypeName = typeof(TDiscriminator).Name,
+                };
+            throw new ArgumentException($"The type '{typeof(TDiscriminator).Name}' isn't adorned with Discriminator attribute");
+        }
+    }
     public static class DiscriminatorExtensions
     {
         public static string ToOneLineString(this IDiscriminator me)

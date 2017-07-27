@@ -57,17 +57,17 @@ namespace Fuxion.Identity.Test
                                     Function = Edit.Id.ToString(),
                                     Scopes =new[] {
                                         new ScopeDao {
-                                            Discriminator = Discriminator.Category.Purchases,
+                                            Discriminator = Discriminators.Category.Purchases,
                                             Propagation = ScopePropagation.ToMe | ScopePropagation.ToExclusions }
                                     }
                                 }
                             }
                         }
                     }
-                }.Can(Delete).Instance(Discriminator.Category.Purchases)
+                }.Can(Delete).Instance(Discriminators.Category.Purchases)
                 , "Tengo:\r\n" +
-                        $" - Concedido el permiso para {nameof(Edit)} en {nameof(Discriminator.Category.Purchases)}\r\n" +
-                        $"¿Debería poder {nameof(Delete)} en {nameof(Discriminator.Category.Purchases)}?\r\n" +
+                        $" - Concedido el permiso para {nameof(Edit)} en {nameof(Discriminators.Category.Purchases)}\r\n" +
+                        $"¿Debería poder {nameof(Delete)} en {nameof(Discriminators.Category.Purchases)}?\r\n" +
                         " No");
         }
         [Fact(DisplayName = "Rol - Cannot for different discriminator")]
@@ -98,10 +98,10 @@ namespace Fuxion.Identity.Test
                     }
                 }
             };//.EnsureCan(Read).Instance(Discriminator.Location.City);
-            Assert.False(ide.Can(Read).Instance(Discriminator.Location.City.Buffalo),
+            Assert.False(ide.Can(Read).Instance(Discriminators.Location.City.Buffalo),
                  "Tengo:\r\n" +
                     $" - Concedido el permiso para {nameof(Edit)} el tipo {nameof(CategoryDao)} y derivados\r\n" +
-                    $"¿Debería poder {nameof(Read)} en {nameof(Discriminator.Location.City.Buffalo)}?\r\n" +
+                    $"¿Debería poder {nameof(Read)} en {nameof(Discriminators.Location.City.Buffalo)}?\r\n" +
                     " No");
             //Assert.True(ide.EnsureCan(Admin).Something(),
             //     "Tengo:\r\n" +
@@ -146,11 +146,11 @@ namespace Fuxion.Identity.Test
                     }
                 }
             };
-            Assert.False(ide.Can(Read).Instance(Discriminator.Category.Purchases),
+            Assert.False(ide.Can(Read).Instance(Discriminators.Category.Purchases),
                  "Tengo:\r\n" +
                     $" - Concedido el permiso para {nameof(Edit)} el tipo {nameof(CategoryDao)} y derivados\r\n" +
                     $" - Denegado el permiso para {nameof(Read)} el tipo {nameof(CategoryDao)} y derivados\r\n" +
-                    $"¿Debería poder {nameof(Read)} en {nameof(Discriminator.Category.Purchases)}?\r\n" +
+                    $"¿Debería poder {nameof(Read)} en {nameof(Discriminators.Category.Purchases)}?\r\n" +
                     " No");
         }
         [Fact(DisplayName = "Rol - Cannot admin something")]
@@ -217,14 +217,14 @@ namespace Fuxion.Identity.Test
                                 Function = Edit.Id.ToString(),
                                 Scopes =new[] {
                                     new ScopeDao {
-                                        Discriminator = Discriminator.Category.Purchases,
+                                        Discriminator = Discriminators.Category.Purchases,
                                         Propagation = ScopePropagation.ToMe | ScopePropagation.ToExclusions }
                                 }
                             }
                         }
                     }
                 }
-            }.EnsureCan(Edit).Instance(Discriminator.Category.Purchases);
+            }.EnsureCan(Edit).Instance(Discriminators.Category.Purchases);
         }
         [Fact(DisplayName = "Rol - Can by instance")]
         public void CanByInstance()
@@ -246,14 +246,14 @@ namespace Fuxion.Identity.Test
                                 Function =Edit.Id.ToString(),
                                 Scopes =new[] {
                                     new ScopeDao {
-                                        Discriminator = Discriminator.Location.State.California,
+                                        Discriminator = Discriminators.Location.State.California,
                                         Propagation = ScopePropagation.ToMe | ScopePropagation.ToExclusions }
                                 }
                             }
                         }
                     }
                 }
-            }.EnsureCan(Edit).AllLocations(Discriminator.Location.Country.Usa);
+            }.EnsureCan(Edit).AllLocations(Discriminators.Location.Country.Usa);
             //}.EnsureCan(Edit).Instance(Discriminator.Location.Country.Usa);
         }
         [Fact(DisplayName = "Rol - Cannot by instance")]
@@ -277,7 +277,7 @@ namespace Fuxion.Identity.Test
                                     Function =Edit.Id.ToString(),
                                     Scopes =new[] {
                                         new ScopeDao {
-                                            Discriminator = Discriminator.Category.Purchases,
+                                            Discriminator = Discriminators.Category.Purchases,
                                             Propagation = ScopePropagation.ToMe }
                                     }
                                 }
@@ -299,7 +299,7 @@ namespace Fuxion.Identity.Test
                         Function = Admin.Id.ToString(),
                         Scopes =new[]{
                             new ScopeDao {
-                                Discriminator = Discriminator.Category.Purchases,
+                                Discriminator = Discriminators.Category.Purchases,
                                 Propagation = ScopePropagation.ToMe },
                             new ScopeDao {
                                 Discriminator = Factory.Get<TypeDiscriminatorFactory>().FromType<BaseDao>(),
@@ -311,12 +311,12 @@ namespace Fuxion.Identity.Test
             ide.EnsureCan(Read).Type<WordDocumentDao>();
             Assert.True(ide.EnsureCan(Read).Type<WordDocumentDao>(),
                  "Tengo:\r\n" +
-                    $" - Concedido el permiso para {nameof(Admin)} la categoria {Discriminator.Category.Purchases} del tipo {nameof(BaseDao)} y derivados\r\n" +
+                    $" - Concedido el permiso para {nameof(Admin)} la categoria {Discriminators.Category.Purchases} del tipo {nameof(BaseDao)} y derivados\r\n" +
                     $"¿Debería poder {nameof(Read)} en {nameof(WordDocumentDao)}?\r\n" +
                     " Si");
             Assert.True(ide.EnsureCan(Admin).Something(),
                  "Tengo:\r\n" +
-                    $" - Concedido el permiso para {nameof(Admin)} la categoria {Discriminator.Category.Purchases} del tipo {nameof(BaseDao)} y derivados\r\n" +
+                    $" - Concedido el permiso para {nameof(Admin)} la categoria {Discriminators.Category.Purchases} del tipo {nameof(BaseDao)} y derivados\r\n" +
                     $"¿Debería poder {nameof(Admin)} alguna cosa?\r\n" +
                     " Si");
         }
@@ -333,14 +333,14 @@ namespace Fuxion.Identity.Test
                         Function = Admin.Id.ToString(),
                         Scopes =new[]{
                             new ScopeDao {
-                                Discriminator = Discriminator.Category.Purchases,
+                                Discriminator = Discriminators.Category.Purchases,
                                 Propagation = ScopePropagation.ToMe },
                         }
                     },
                 }.ToList()
             };
             Assert.True(ide.Can(Read).Type<WordDocumentDao>(), "\r\n" +
-                $" - Granted permission for '{nameof(Admin)}' anything of category '{nameof(Discriminator.Category.Purchases)}'\r\n" +
+                $" - Granted permission for '{nameof(Admin)}' anything of category '{nameof(Discriminators.Category.Purchases)}'\r\n" +
                 $"Should i be able to '{nameof(Read)}' objects of type '{nameof(WordDocumentDao)}'?\r\n" +
                 $"YES");
         }
@@ -361,7 +361,7 @@ namespace Fuxion.Identity.Test
                         Function = Admin.Id.ToString(),
                         Scopes =new[]{
                             new ScopeDao {
-                                Discriminator = Discriminator.Category.Purchases,
+                                Discriminator = Discriminators.Category.Purchases,
                                 Propagation = ScopePropagation.ToMe },
                         }
                     },
@@ -369,12 +369,12 @@ namespace Fuxion.Identity.Test
             };
             Assert.True(ide.EnsureCan(Read).Instance(File.Document.Word.Word1),
                  "Tengo:\r\n" +
-                    $" - Concedido el permiso para {nameof(Admin)} en {nameof(Discriminator.Category.Purchases)}\r\n" +
+                    $" - Concedido el permiso para {nameof(Admin)} en {nameof(Discriminators.Category.Purchases)}\r\n" +
                     $"¿Debería poder {nameof(Read)} en {nameof(File.Document.Word.Word1)}?\r\n" +
                     " Si");
             Assert.True(ide.EnsureCan(Read).Something(),
                  "Tengo:\r\n" +
-                    $" - Concedido el permiso para {nameof(Admin)} en {nameof(Discriminator.Category.Purchases)}\r\n" +
+                    $" - Concedido el permiso para {nameof(Admin)} en {nameof(Discriminators.Category.Purchases)}\r\n" +
                     $"¿Debería poder {nameof(Read)} alguna cosa?\r\n" +
                     " Si");
         }
@@ -391,28 +391,28 @@ namespace Fuxion.Identity.Test
                         Function = Edit.Id.ToString(),
                         Scopes = new[] {
                             new ScopeDao {
-                                Discriminator = Discriminator.Location.City.SanFrancisco,
+                                Discriminator = Discriminators.Location.City.SanFrancisco,
                                 Propagation = ScopePropagation.ToMe } } },
                     new PermissionDao {
                         Value = false,
                         Function = Edit.Id.ToString(),
                         Scopes = new[] {
                             new ScopeDao {
-                                Discriminator = Discriminator.Location.State.California,
+                                Discriminator = Discriminators.Location.State.California,
                                 Propagation = ScopePropagation.ToMe | ScopePropagation.ToInclusions } } }
                 }.ToList()
             };
             Assert.False(ide.IsRoot(),
                 "Tengo:\r\n" +
-                    $" - Concedido el permiso para {nameof(Edit)} en {nameof(Discriminator.Location.City.SanFrancisco)}\r\n" +
-                    $" - Denegado el permiso para {nameof(Edit)} en {nameof(Discriminator.Location.State.California)} y sus hijos\r\n" +
+                    $" - Concedido el permiso para {nameof(Edit)} en {nameof(Discriminators.Location.City.SanFrancisco)}\r\n" +
+                    $" - Denegado el permiso para {nameof(Edit)} en {nameof(Discriminators.Location.State.California)} y sus hijos\r\n" +
                     $"¿Debería ser root?\r\n" +
                     " No");
-            Assert.False(ide.Can(Edit).Instance(Discriminator.Location.City.SanFrancisco)
+            Assert.False(ide.Can(Edit).Instance(Discriminators.Location.City.SanFrancisco)
                 , "Tengo:\r\n" +
-                    $" - Concedido el permiso para {nameof(Edit)} en {nameof(Discriminator.Location.City.SanFrancisco)}\r\n" +
-                    $" - Denegado el permiso para {nameof(Edit)} en {nameof(Discriminator.Location.State.California)} y sus hijos\r\n" +
-                    $"¿Debería poder {nameof(Edit)} en {nameof(Discriminator.Location.City.SanFrancisco)}?\r\n" +
+                    $" - Concedido el permiso para {nameof(Edit)} en {nameof(Discriminators.Location.City.SanFrancisco)}\r\n" +
+                    $" - Denegado el permiso para {nameof(Edit)} en {nameof(Discriminators.Location.State.California)} y sus hijos\r\n" +
+                    $"¿Debería poder {nameof(Edit)} en {nameof(Discriminators.Location.City.SanFrancisco)}?\r\n" +
                     " No");
         }
         [Fact(DisplayName = "Rol - No permissions")]
@@ -433,10 +433,10 @@ namespace Fuxion.Identity.Test
                     $" - Ningún permiso\r\n" +
                     $"¿Debería poder '{nameof(Read)}' alguna cosa?\r\n" +
                     " No");
-            Assert.False(ide.Can(Edit).Instance(Discriminator.Location.City.SanFrancisco)
+            Assert.False(ide.Can(Edit).Instance(Discriminators.Location.City.SanFrancisco)
                 , "Tengo:\r\n" +
                     $" - Ningun permiso\r\n" +
-                    $"¿Debería poder {nameof(Edit)} en {nameof(Discriminator.Location.City.SanFrancisco)}?\r\n" +
+                    $"¿Debería poder {nameof(Edit)} en {nameof(Discriminators.Location.City.SanFrancisco)}?\r\n" +
                     " No");
         }
         [Fact(DisplayName = "Rol - Root permission")]
@@ -518,7 +518,7 @@ namespace Fuxion.Identity.Test
                         Scopes = new[] {
                             new ScopeDao
                             {
-                                Discriminator = Discriminator.Category.Purchases,
+                                Discriminator = Discriminators.Category.Purchases,
                                 Propagation = ScopePropagation.ToMe| ScopePropagation.ToInclusions
                             }
                         }
@@ -530,11 +530,25 @@ namespace Fuxion.Identity.Test
                    $" - Permiso ADMIN en la categoria 'Purchases' y sus subcategorias\r\n" +
                    $"¿Debería poder '{nameof(Create)}' una instancia de documento Word sin categoria?\r\n" +
                    " No");
-            Assert.True(ide.Can(Create).Instance(File.Document.Word.Word1.Transform(w=>w.Category=Discriminator.Category.Purchases)),
+            Assert.False(ide.Can(Create).ByAll(
+                    Factory.Get<TypeDiscriminatorFactory>().FromType<WordDocumentDao>(),
+                    Discriminator.Empty<CategoryDao>()
+                ),
+                "Tengo:\r\n" +
+                  $" - Permiso ADMIN en la categoria 'Purchases' y sus subcategorias\r\n" +
+                  $"¿Debería poder '{nameof(Create)}' una instancia de documento Word sin categoria?\r\n" +
+                  " No");
+
+            Assert.True(ide.Can(Create).Instance(File.Document.Word.Word1.Transform(w=>w.Category=Discriminators.Category.Purchases)),
                "Tengo:\r\n" +
                    $" - Permiso ADMIN en la categoria 'Purchases' y sus subcategorias\r\n" +
                    $"¿Debería poder '{nameof(Create)}' una instancia de documento Word de la categoria 'Purchases'?\r\n" +
                    " Si");
+            Assert.False(ide.Can(Create).Instance(File.Document.Word.Word1.Transform(w => w.Category = Discriminators.Category.Sales)),
+              "Tengo:\r\n" +
+                  $" - Permiso ADMIN en la categoria 'Purchases' y sus subcategorias\r\n" +
+                  $"¿Debería poder '{nameof(Create)}' una instancia de documento Word de la categoria 'Sales'?\r\n" +
+                  " No");
         }
         [Fact(DisplayName = "Rol - Grant for discriminator and denied for children")]
         public void GrantParentDeniedChildren()
@@ -550,7 +564,7 @@ namespace Fuxion.Identity.Test
                         Scopes = new[] {
                             new ScopeDao
                             {
-                                Discriminator = Discriminator.Location.Country.Spain,
+                                Discriminator = Discriminators.Location.Country.Spain,
                                 Propagation = ScopePropagation.ToMe| ScopePropagation.ToInclusions
                             }
                         }
@@ -561,25 +575,58 @@ namespace Fuxion.Identity.Test
                         Scopes = new[] {
                             new ScopeDao
                             {
-                                Discriminator = Discriminator.Location.City.Madrid,
+                                Discriminator = Discriminators.Location.City.Madrid,
                                 Propagation = ScopePropagation.ToMe| ScopePropagation.ToInclusions
                             }
                         }
                     },
                 }.ToList()
             };
+            Assert.False(ide.Can(Create).Instance(Person.Admin),
+               "Tengo:\r\n" +
+                   $" - Permiso ADMIN en el estado 'Spain' y sus sublocalizaciones\r\n" +
+                   $" - Denegado READ en la ciudad 'Madrid' y sus sublocalizaciones\r\n" +
+                   $"¿Debería poder '{nameof(Create)}' una instancia de persona sin ciudad?\r\n" +
+                   " No");
+            Assert.False(ide.Can(Create).ByAll(
+                Factory.Get<TypeDiscriminatorFactory>().FromType<PersonDao>(),
+                Discriminator.Empty<CityDao>()),
+               "Tengo:\r\n" +
+                   $" - Permiso ADMIN en el estado 'Spain' y sus sublocalizaciones\r\n" +
+                   $" - Denegado READ en la ciudad 'Madrid' y sus sublocalizaciones\r\n" +
+                   $"¿Debería poder '{nameof(Create)}' una instancia de persona sin ciudad?\r\n" +
+                   " No");
+
             Assert.False(ide.Can(Create).Instance(Person.MadridAdmin),
                "Tengo:\r\n" +
                    $" - Permiso ADMIN en el estado 'Spain' y sus sublocalizaciones\r\n" +
                    $" - Denegado READ en la ciudad 'Madrid' y sus sublocalizaciones\r\n" +
                    $"¿Debería poder '{nameof(Create)}' una instancia de persona con la ciudad Madrid?\r\n" +
                    " No");
-            Assert.True(ide.Can(Create).Instance(Person.AlcorconAdmin),
+            Assert.False(ide.Can(Create).ByAll(
+                Factory.Get<TypeDiscriminatorFactory>().FromType<PersonDao>(), 
+                Discriminators.Location.City.Madrid),
                "Tengo:\r\n" +
                    $" - Permiso ADMIN en el estado 'Spain' y sus sublocalizaciones\r\n" +
                    $" - Denegado READ en la ciudad 'Madrid' y sus sublocalizaciones\r\n" +
                    $"¿Debería poder '{nameof(Create)}' una instancia de persona con la ciudad Madrid?\r\n" +
+                   " No");
+
+            Assert.True(ide.Can(Create).Instance(Person.AlcorconAdmin),
+               "Tengo:\r\n" +
+                   $" - Permiso ADMIN en el estado 'Spain' y sus sublocalizaciones\r\n" +
+                   $" - Denegado READ en la ciudad 'Madrid' y sus sublocalizaciones\r\n" +
+                   $"¿Debería poder '{nameof(Create)}' una instancia de persona con la ciudad Alcorcon?\r\n" +
                    " Si");
+            Assert.True(ide.Can(Create).ByAll(
+                Factory.Get<TypeDiscriminatorFactory>().FromType<PersonDao>(),
+                Discriminators.Location.City.Alcorcon),
+               "Tengo:\r\n" +
+                   $" - Permiso ADMIN en el estado 'Spain' y sus sublocalizaciones\r\n" +
+                   $" - Denegado READ en la ciudad 'Madrid' y sus sublocalizaciones\r\n" +
+                   $"¿Debería poder '{nameof(Create)}' una instancia de persona con la ciudad Alcorcon?\r\n" +
+                   " Si");
+
             Assert.True(ide.Can(Read).Type<WordDocumentDao>(),
                  "Tengo:\r\n" +
                    $" - Permiso ADMIN en el estado 'Spain' y sus sublocalizaciones\r\n" +
