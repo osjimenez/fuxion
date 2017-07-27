@@ -408,16 +408,19 @@ namespace Fuxion.Identity
                 if (me.Rol == null) return false;
                 foreach (var fun in me.Functions)
                 {
+                    //var pers = me.Rol.SearchPermissions(fun, discriminators);
+                    var discriminatorsTypeIds = discriminators.Select(d => d.TypeId);
                     var res = forAll
                         ? discriminators.All(dis =>
                         {
                             var pers = me.Rol.SearchPermissions(fun, dis);
-                            return !pers.Any(p => !p.Value && p.Scopes.Any(s => dis.TypeId == s.Discriminator.TypeId)) && pers.Any(p => p.Value);
-                        })
+                            return !pers.Any(p => !p.Value && p.Match(fun, discriminators)) && pers.Any(p => p.Value);
+                           })
                         : discriminators.Any(dis =>
                         {
                             var pers = me.Rol.SearchPermissions(fun, dis);
-                            return !pers.Any(p => !p.Value && p.Scopes.Any(s => dis.TypeId == s.Discriminator.TypeId)) && pers.Any(p => p.Value);
+                            //return !pers.Any(p => !p.Value && p.Scopes.Any(s => dis.TypeId == s.Discriminator.TypeId)) && pers.Any(p => p.Value);
+                            return !pers.Any(p => !p.Value && p.Match(fun, discriminators)) && pers.Any(p => p.Value);
                         });
                     if (!res)
                     {

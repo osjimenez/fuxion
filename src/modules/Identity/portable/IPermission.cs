@@ -177,8 +177,10 @@ namespace Fuxion.Identity
                                 return null;
                             }
                         });
-                        return result.Any(r => r.HasValue && r.Value) // Si algun
-                            || result.All(r => !r.HasValue || r.Value);
+                        // Si hay algún resultado false, será FALSE
+                        return !result.Any(r => r.HasValue && !r.Value);
+                        //return result.Any(r => r.HasValue && r.Value) // Si algun resultado tiene valor y es true, TRUE
+                        //    || result.All(r => !r.HasValue || r.Value); // Si todos los resultados o son true o no tienen valor (no hay ningún false), TRUE
                     });
                 }
                 Printer.WriteLine($"RESULT: {res}");

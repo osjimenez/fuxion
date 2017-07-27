@@ -577,7 +577,12 @@ namespace Fuxion.Identity.Test
                             {
                                 Discriminator = Discriminators.Location.City.Madrid,
                                 Propagation = ScopePropagation.ToMe| ScopePropagation.ToInclusions
-                            }
+                            },
+                            new ScopeDao
+                            {
+                                Discriminator = Factory.Get<TypeDiscriminatorFactory>().FromType<PersonDao>(),
+                                Propagation = ScopePropagation.ToMe| ScopePropagation.ToInclusions
+                            },
                         }
                     },
                 }.ToList()
