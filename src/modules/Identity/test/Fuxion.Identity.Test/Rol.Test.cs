@@ -39,36 +39,34 @@ namespace Fuxion.Identity.Test
         [Fact(DisplayName = "Rol - Cannot by function")]
         public void CannotByFunction()
         {
-            Assert.False(
-                new IdentityDao
+            var ide = new IdentityDao
+            {
+                Id = "test",
+                Name = "Test",
+                Permissions = new[]
                 {
-                    Id = "test",
-                    Name = "Test",
-                    Groups = new[]
-                    {
-                        new GroupDao
-                        {
-                            Id = "admins",
-                            Name = "Admins",
-                            Permissions = new[]
-                            {
-                                new PermissionDao {
-                                    Value = true,
-                                    Function = Edit.Id.ToString(),
-                                    Scopes =new[] {
-                                        new ScopeDao {
-                                            Discriminator = Discriminators.Category.Purchases,
-                                            Propagation = ScopePropagation.ToMe | ScopePropagation.ToExclusions }
-                                    }
-                                }
-                            }
+                    new PermissionDao {
+                        Value = true,
+                        Function = EDIT,
+                        Scopes =new[] {
+                            new ScopeDao {
+                                Discriminator = Discriminators.Category.Purchases,
+                                Propagation = ScopePropagation.ToMe | ScopePropagation.ToExclusions }
                         }
                     }
-                }.Can(Delete).Instance(Discriminators.Category.Purchases)
-                , "Tengo:\r\n" +
-                        $" - Concedido el permiso para {nameof(Edit)} en {nameof(Discriminators.Category.Purchases)}\r\n" +
-                        $"¿Debería poder {nameof(Delete)} en {nameof(Discriminators.Category.Purchases)}?\r\n" +
-                        " No");
+                },
+            };
+            Assert.False(ide.Can(Delete).Instance(Discriminators.Category.Purchases),
+                "Tengo:\r\n" +
+                    $" - Concedido el permiso para {nameof(Edit)} en {nameof(Discriminators.Category.Purchases)}\r\n" +
+                    $"¿Debería poder {nameof(Delete)} en {nameof(Discriminators.Category.Purchases)}?\r\n" +
+                    " No");
+
+            Assert.False(ide.Can(Delete).Type<WordDocumentDao>(),
+                "Tengo:\r\n" +
+                    $" - Concedido el permiso para {nameof(Edit)} en {nameof(Discriminators.Category.Purchases)}\r\n" +
+                    $"¿Debería poder {nameof(Delete)} en {nameof(Discriminators.Category.Purchases)}?\r\n" +
+                    " No");
         }
         [Fact(DisplayName = "Rol - Cannot for different discriminator")]
         public void CannotForDifferent()
@@ -97,17 +95,17 @@ namespace Fuxion.Identity.Test
                         }
                     }
                 }
-            };//.EnsureCan(Read).Instance(Discriminator.Location.City);
+            };
+            //Assert.True(ide.Can(Read).Instance(Discriminators.Cate.City.Buffalo),
+            // "Tengo:\r\n" +
+            //    $" - Concedido el permiso para {nameof(Edit)} el tipo {nameof(CategoryDao)} y derivados\r\n" +
+            //    $"¿Debería poder {nameof(Read)} en {nameof(Discriminators.Location.City.Buffalo)}?\r\n" +
+            //    " No");
             Assert.False(ide.Can(Read).Instance(Discriminators.Location.City.Buffalo),
                  "Tengo:\r\n" +
                     $" - Concedido el permiso para {nameof(Edit)} el tipo {nameof(CategoryDao)} y derivados\r\n" +
                     $"¿Debería poder {nameof(Read)} en {nameof(Discriminators.Location.City.Buffalo)}?\r\n" +
                     " No");
-            //Assert.True(ide.EnsureCan(Admin).Something(),
-            //     "Tengo:\r\n" +
-            //        $" - Concedido el permiso para {nameof(Admin)} la categoria {Discriminator.Category.Purchases} del tipo {nameof(BaseDao)} y derivados\r\n" +
-            //        $"¿Debería poder {nameof(Admin)} alguna cosa?\r\n" +
-            //        " Si");
         }
         [Fact(DisplayName = "Rol - Cannot for different discriminator2")]
         public void CannotForDifferent2()
@@ -308,13 +306,12 @@ namespace Fuxion.Identity.Test
                     },
                 }.ToList()
             };
-            ide.EnsureCan(Read).Type<WordDocumentDao>();
-            Assert.True(ide.EnsureCan(Read).Type<WordDocumentDao>(),
+            Assert.True(ide.Can(Read).Type<WordDocumentDao>(),
                  "Tengo:\r\n" +
                     $" - Concedido el permiso para {nameof(Admin)} la categoria {Discriminators.Category.Purchases} del tipo {nameof(BaseDao)} y derivados\r\n" +
                     $"¿Debería poder {nameof(Read)} en {nameof(WordDocumentDao)}?\r\n" +
                     " Si");
-            Assert.True(ide.EnsureCan(Admin).Something(),
+            Assert.True(ide.Can(Admin).Something(),
                  "Tengo:\r\n" +
                     $" - Concedido el permiso para {nameof(Admin)} la categoria {Discriminators.Category.Purchases} del tipo {nameof(BaseDao)} y derivados\r\n" +
                     $"¿Debería poder {nameof(Admin)} alguna cosa?\r\n" +
@@ -585,7 +582,7 @@ namespace Fuxion.Identity.Test
                             },
                         }
                     },
-                }.ToList()
+                }
             };
             Assert.False(ide.Can(Create).Instance(Person.Admin),
                "Tengo:\r\n" +

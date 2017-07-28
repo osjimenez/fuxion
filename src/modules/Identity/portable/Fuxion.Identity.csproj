@@ -48,6 +48,7 @@
     <Compile Include="FuxionPrincipal.cs" />
     <Compile Include="Helpers\Comparer.cs" />
     <Compile Include="ICurrentUserNameProvider.cs" />
+    <Compile Include="IdentityHelper.cs" />
     <Compile Include="IdentityManager.cs" />
     <Compile Include="IDiscriminator.cs" />
     <Compile Include="IFunction.cs" />

@@ -31,7 +31,7 @@ namespace Fuxion.Identity
 
         public string TypeName { get; private set; }
 
-        public object Id => "----------------------------------- EMPTY -----------------------------------";
+        public object Id => "<--- EMPTY --->";
 
         public string Name => "EMPTY";
 
