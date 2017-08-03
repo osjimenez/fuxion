@@ -24,16 +24,24 @@ namespace Fuxion.Identity
 
             public bool IsVirtual => Types.IsNullOrEmpty();
             public bool HasAttribute => Types?.Any(t => t.Attribute != null) ?? false;
-            public bool DefineInclusionsExplicitly => Types?.Any(t => t.DefineInclusionsExplicitly) ?? false;
-            public bool DefineExclusionsExplicitly => Types?.Any(t => t.DefineExclusionsExplicitly) ?? false;
+            public bool HasExplicitInclusions => Types?.Any(t => t.HasExplicitInclusions) ?? false;
+            public bool HasExplicitExclusions => Types?.Any(t => t.HasExplicitExclusions) ?? false;
+            public bool HasAddInclusions => Types?.Any(t => t.HasAddInclusions) ?? false;
+            public bool HasAddExclusions => Types?.Any(t => t.HasAddExclusions) ?? false;
+            public bool HasAvoidtInclusions => Types?.Any(t => t.HasAvoidInclusions) ?? false;
+            public bool HasAvoidtExclusions => Types?.Any(t => t.HasAvoidExclusions) ?? false;
         }
         [DebuggerDisplay("{" + nameof(Type) + "}")]
         class EntryType
         {
             public Type Type { get; set; }
             public TypeDiscriminatedAttribute Attribute { get; set; }
-            public bool DefineInclusionsExplicitly => !Attribute?.Inclusions.IsNullOrEmpty() ?? false;
-            public bool DefineExclusionsExplicitly => !Attribute?.Exclusions.IsNullOrEmpty() ?? false;
+            public bool HasExplicitInclusions => !Attribute?.ExplicitInclusions.IsNullOrEmpty() ?? false;
+            public bool HasExplicitExclusions => !Attribute?.ExplicitExclusions.IsNullOrEmpty() ?? false;
+            public bool HasAddInclusions => !Attribute?.AddInclusions.IsNullOrEmpty() ?? false;
+            public bool HasAddExclusions => !Attribute?.AddExclusions.IsNullOrEmpty() ?? false;
+            public bool HasAvoidInclusions => !Attribute?.AvoidInclusions.IsNullOrEmpty() ?? false;
+            public bool HasAvoidExclusions => !Attribute?.AvoidExclusions.IsNullOrEmpty() ?? false;
         }
         List<Entry> entries = new List<Entry>();
         bool initialized = false;
@@ -63,18 +71,18 @@ namespace Fuxion.Identity
             // En estas entradas estan todos los posibles tipos virtuales
             foreach (var ent in entries
                 .Where(e => e.HasAttribute) // Algun tipo contiene el atributo
-                .Where(e => e.DefineInclusionsExplicitly || e.DefineExclusionsExplicitly)
+                .Where(e => e.HasExplicitInclusions || e.HasExplicitExclusions)
                 //.Where(e => !e.Attribute.Inclusions.IsNullOrEmpty() || !e.Attribute.Exclusions.IsNullOrEmpty())
                 .ToList())
             {
                 // Recorro las inclusiones y exclusiones cuyo id no esta en la lista de entradas
                 foreach (var id in (
                         ent.Types
-                            .Where(t => t.Attribute?.Inclusions != null)
-                            .SelectMany(t => t.Attribute.Inclusions)
+                            .Where(t => t.Attribute?.ExplicitInclusions != null)
+                            .SelectMany(t => t.Attribute.ExplicitInclusions)
                             .Concat(ent.Types
-                                .Where(t => t.Attribute?.Exclusions != null)
-                                .SelectMany(t => t.Attribute.Exclusions)))
+                                .Where(t => t.Attribute?.ExplicitExclusions != null)
+                                .SelectMany(t => t.Attribute.ExplicitExclusions)))
                     .Where(id => !entries.Any(e => e.Discriminator.Id == id)))
                 {
                     // Compruebo si existe ya la entrada
@@ -100,10 +108,10 @@ namespace Fuxion.Identity
             foreach (var ent in entries)
             {
                 // INCLUSIONES
-                if (ent.DefineInclusionsExplicitly)
+                if (ent.HasExplicitInclusions)
                 {
                     // Recorro todas las inclusiones
-                    foreach (var inc in ent.Types.SelectMany(t => t.Attribute.Inclusions.Select(i => new
+                    foreach (var inc in ent.Types.SelectMany(t => t.Attribute.ExplicitInclusions.Select(i => new
                     {
                         Inclusion = i,
                         Type = t.Type
@@ -128,10 +136,10 @@ namespace Fuxion.Identity
                         .ToList();
                 }
                 // EXCLUSIONES
-                if (ent.DefineExclusionsExplicitly)
+                if (ent.HasExplicitExclusions)
                 {
                     // Se han definido explicitamente las exclusiones
-                    foreach (var exc in ent.Types.SelectMany(t => t.Attribute.Exclusions.Select(i => new
+                    foreach (var exc in ent.Types.SelectMany(t => t.Attribute.ExplicitExclusions.Select(i => new
                     {
                         Exclusion = i,
                         Type = t.Type
@@ -214,9 +222,9 @@ namespace Fuxion.Identity
                 foreach (var ent in entries)
                 {
                     foreach (var dis in ent.Discriminator.Inclusions.Where(i => !i.Exclusions.Contains(ent.Discriminator)))
-                        errors.Add(new InvalidTypeDiscriminatorException($"The discriminator '{ent.Discriminator.Name}' include the discriminator '{dis.Name}', but '{dis.Name}' not exclude '{ent.Discriminator.Name}'"));
+                        errors.Add(new InvalidTypeDiscriminatorException($"The type discriminator '{ent.Discriminator.Name}' include the type discriminator '{dis.Name}', but '{dis.Name}' not exclude '{ent.Discriminator.Name}'"));
                     foreach (var dis in ent.Discriminator.Exclusions.Where(i => !i.Inclusions.Contains(ent.Discriminator)))
-                        errors.Add(new InvalidTypeDiscriminatorException($"The discriminator '{ent.Discriminator.Name}' exclude the discriminator '{dis.Name}', but '{dis.Name}' not include '{ent.Discriminator.Name}'"));
+                        errors.Add(new InvalidTypeDiscriminatorException($"The type discriminator '{ent.Discriminator.Name}' exclude the type discriminator '{dis.Name}', but '{dis.Name}' not include '{ent.Discriminator.Name}'"));
                 }
                 if (errors.Count > 1)
                     throw new AggregateException("Type discriminator registrations are not valid, see inner exceptions for details", errors);
@@ -227,7 +235,7 @@ namespace Fuxion.Identity
 
         public void RegisterTree<T>(params Type[] types) => RegisterTree(typeof(T), types);
         public void RegisterTree(Type baseType, params Type[] types)
-            => Register(types
+            => Register((types.IsNullOrEmpty() ? baseType.GetTypeInfo().Assembly.DefinedTypes.Select(ti=>ti.AsType()).ToArray() : types)
                 .Where(type => baseType == type ||
                     (baseType.GetTypeInfo().IsGenericTypeDefinition
                         ? type.IsSubclassOfRawGeneric(baseType)
@@ -272,7 +280,7 @@ namespace Fuxion.Identity
                 else entries.Add(ent);
             }
         }
-        public void ClearAllRegisters()
+        public void ClearRegistrations()
         {
             entries.Clear();
             initialized = false;
