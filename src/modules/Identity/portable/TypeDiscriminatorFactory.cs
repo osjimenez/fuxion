@@ -194,31 +194,35 @@ namespace Fuxion.Identity
                     .Select(e => e.Discriminator)
                     .ToList();
             }
-            ValidateRegistrations();
             initialized = true;
+            ValidateRegistrations();
         }
-        private void ValidateRegistrations()
+        public void ValidateRegistrations()
         {
+            if (!initialized) Initialize();
+            else
+            {
 #if DEBUG
-            foreach(var ent in entries)
-            {
-                Debug.WriteLine($"ENTRY: {ent.Discriminator.Id}");
-                Debug.WriteLine($"   Inclusions: {ent.Discriminator.Inclusions.Aggregate("", (a, e) => a + ", " + e.Id, a => a.Trim(',',' '))}");
-                Debug.WriteLine($"   Exclusions: {ent.Discriminator.Exclusions.Aggregate("", (a, e) => a + ", " + e.Id, a => a.Trim(',', ' '))}");
-            }
+                foreach (var ent in entries)
+                {
+                    Debug.WriteLine($"ENTRY: {ent.Discriminator.Id}");
+                    Debug.WriteLine($"   Inclusions: {ent.Discriminator.Inclusions.Aggregate("", (a, e) => a + ", " + e.Id, a => a.Trim(',', ' '))}");
+                    Debug.WriteLine($"   Exclusions: {ent.Discriminator.Exclusions.Aggregate("", (a, e) => a + ", " + e.Id, a => a.Trim(',', ' '))}");
+                }
 #endif
-            var errors = new List<InvalidTypeDiscriminatorException>();
-            foreach(var ent in entries)
-            {
-                foreach(var dis in ent.Discriminator.Inclusions.Where(i => !i.Exclusions.Contains(ent.Discriminator)))
-                    errors.Add(new InvalidTypeDiscriminatorException($"The discriminator '{ent.Discriminator.Name}' include the discriminator '{dis.Name}', but '{dis.Name}' not exclude '{ent.Discriminator.Name}'"));
-                foreach(var dis in ent.Discriminator.Exclusions.Where(i => !i.Inclusions.Contains(ent.Discriminator)))
-                    errors.Add(new InvalidTypeDiscriminatorException($"The discriminator '{ent.Discriminator.Name}' exclude the discriminator '{dis.Name}', but '{dis.Name}' not include '{ent.Discriminator.Name}'"));
-            }
-            if (errors.Count > 1)
-                throw new AggregateException("Type discriminator registrations are not valid, see inner exceptions for details", errors);
-            else if (errors.Count == 1)
-                throw errors[0];
+                var errors = new List<InvalidTypeDiscriminatorException>();
+                foreach (var ent in entries)
+                {
+                    foreach (var dis in ent.Discriminator.Inclusions.Where(i => !i.Exclusions.Contains(ent.Discriminator)))
+                        errors.Add(new InvalidTypeDiscriminatorException($"The discriminator '{ent.Discriminator.Name}' include the discriminator '{dis.Name}', but '{dis.Name}' not exclude '{ent.Discriminator.Name}'"));
+                    foreach (var dis in ent.Discriminator.Exclusions.Where(i => !i.Inclusions.Contains(ent.Discriminator)))
+                        errors.Add(new InvalidTypeDiscriminatorException($"The discriminator '{ent.Discriminator.Name}' exclude the discriminator '{dis.Name}', but '{dis.Name}' not include '{ent.Discriminator.Name}'"));
+                }
+                if (errors.Count > 1)
+                    throw new AggregateException("Type discriminator registrations are not valid, see inner exceptions for details", errors);
+                else if (errors.Count == 1)
+                    throw errors[0];
+            }   
         }
 
         public void RegisterTree<T>(params Type[] types) => RegisterTree(typeof(T), types);
