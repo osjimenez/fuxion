@@ -71,15 +71,15 @@ namespace Fuxion.Identity.Test
         {
             var fac = new TypeDiscriminatorFactory();
 
-            fac.GetIdFunction = type => type.Name;
-            fac.GetNameFunction = type => type.Name.ToUpper();
+            fac.GetIdFunction = (type, att) => att?.Id ?? type.Name;
+            fac.GetNameFunction = (type, att) => att?.Name ?? type.Name.ToUpper();
 
-            fac.RegisterTree<Dao.BaseDao>(typeof(Dao.BaseDao).Assembly.DefinedTypes.ToArray());
+            fac.RegisterTree<BaseDao>(typeof(BaseDao).Assembly.DefinedTypes.ToArray());
             var dis = fac.FromType<DocumentDao>();
-            Assert.Equal(dis.Id, typeof(DocumentDao).Name);
-            Assert.Equal(dis.Name, typeof(DocumentDao).Name.ToUpper());
-            Assert.Equal(dis.TypeId, fac.DiscriminatorTypeId);
-            Assert.Equal(dis.TypeName, fac.DiscriminatorTypeName);
+            Assert.Equal(TypeDiscriminatorIds.Document, dis.Id);
+            Assert.Equal(TypeDiscriminatorIds.Document, dis.Name);
+            Assert.Equal(fac.DiscriminatorTypeId, dis.TypeId);
+            Assert.Equal(fac.DiscriminatorTypeName, dis.TypeName);
             Assert.Equal(2, dis.Inclusions.Count());
             Assert.Equal(1, dis.Exclusions.Count());
         }

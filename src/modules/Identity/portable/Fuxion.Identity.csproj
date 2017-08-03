@@ -44,6 +44,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DiscriminatedByAttribute.cs" />
+    <Compile Include="DiscriminatorAttribute.cs" />
+    <Compile Include="DiscriminatorEqualityComparer.cs" />
     <Compile Include="FunctionGraph.cs" />
     <Compile Include="FuxionPrincipal.cs" />
     <Compile Include="Helpers\Comparer.cs" />
@@ -62,6 +65,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScopePropagation.cs" />
     <Compile Include="System_Extensions.cs" />
+    <Compile Include="TypeDiscriminatedAttribute.cs" />
+    <Compile Include="TypeDiscriminator.cs" />
+    <Compile Include="TypeDiscriminatorFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\core\portable\Fuxion.csproj">

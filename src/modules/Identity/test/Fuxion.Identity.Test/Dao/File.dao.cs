@@ -14,6 +14,7 @@ namespace Fuxion.Identity.Test.Dao
 
     [Table(nameof(DocumentDao))]
     [TypeDiscriminated(Document, Inclusions = new[] { OfficeDocument, PdfDocument })]
+    //[TypeDiscriminated(Document)]
     public abstract class DocumentDao : FileDao { }
 
     [Table(nameof(PdfDocumentDao))]
