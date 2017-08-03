@@ -12,9 +12,7 @@ namespace System.Collections.Generic
         {
             if (rol == null)
                 rol = Factory.Get<IdentityManager>().GetCurrent();
-            //var im = Factory.Get<IdentityManager>();
             var pre = FilterExpression<TSource>(rol, functions);
-            //if (pre == null) return Enumerable.Empty<TSource>();
             return source is IQueryable<TSource>
                 ? ((IQueryable<TSource>)source).Where(pre)
                 : source.Where(pre.Compile());
@@ -26,7 +24,6 @@ namespace System.Collections.Generic
             if (rol == null)
                 rol = Factory.Get<IdentityManager>().GetCurrent();
             var pre = FilterExpression<TSource>(rol, functions);
-            //if (pre == null) return Enumerable.Empty<TSource>().AsQueryable();
             return source.Where(pre);
         }
     }

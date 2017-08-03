@@ -10,21 +10,22 @@ namespace Fuxion.Identity.Test.Dao
     public abstract class SkillDao : BaseDao
     {
     }
+    [TypeDiscriminated(false)]
     public class ActorSkillDao : SkillDao
     {
 
     }
-
+    [TypeDiscriminated(false)]
     public class SingerSkillDao : SkillDao
     {
 
     }
-
+    [TypeDiscriminated(false)]
     public class WriterSkillDao : SkillDao
     {
 
     }
-
+    [TypeDiscriminated(false)]
     public class DirectorSkillDao : SkillDao
     {
 

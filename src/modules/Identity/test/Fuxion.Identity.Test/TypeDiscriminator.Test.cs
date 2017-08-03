@@ -21,10 +21,11 @@ namespace Fuxion.Identity.Test
         public void RegisterTree()
         {
             var fac = new TypeDiscriminatorFactory();
+            fac.AllowVirtualTypeDiscriminators = true;
             // Register from Base
-            fac.RegisterTree<Dao.BaseDao>(typeof(Dao.BaseDao).Assembly.DefinedTypes.ToArray());
+            fac.RegisterTree<BaseDao>(typeof(BaseDao).Assembly.DefinedTypes.ToArray());
             var dis = fac.FromType<DocumentDao>();
-            Assert.Equal(3, dis.Inclusions.Count());
+            Assert.Equal(2, dis.Inclusions.Count());
             Assert.Equal(1, dis.Exclusions.Count());
 
             fac.ClearAllRegisters();
@@ -32,7 +33,7 @@ namespace Fuxion.Identity.Test
             fac.RegisterTree<FileDao>(typeof(FileDao).Assembly.DefinedTypes.ToArray());
             dis = fac.FromType<DocumentDao>();
 
-            Assert.Equal(3, dis.Inclusions.Count());
+            Assert.Equal(2, dis.Inclusions.Count());
             Assert.Equal(1, dis.Exclusions.Count());
 
             fac.ClearAllRegisters();
@@ -54,13 +55,13 @@ namespace Fuxion.Identity.Test
 
             fac.ClearAllRegisters();
             // Register from Base and check disable state for Skill
-            fac.RegisterTree<Dao.BaseDao>(typeof(Dao.BaseDao).Assembly.DefinedTypes.ToArray());
+            fac.RegisterTree<BaseDao>(typeof(BaseDao).Assembly.DefinedTypes.ToArray());
             dis = fac.FromType<FileDao>();
 
-            Assert.Equal(3, dis.Inclusions.Count());
+            Assert.Equal(4, dis.Inclusions.Count());
             Assert.Equal(1, dis.Exclusions.Count());
 
-            dis = fac.FromType<Dao.BaseDao>();
+            dis = fac.FromType<BaseDao>();
 
             Assert.Equal(6, dis.Inclusions.Count());
             Assert.Equal(0, dis.Exclusions.Count());
@@ -79,7 +80,7 @@ namespace Fuxion.Identity.Test
             Assert.Equal(dis.Name, typeof(DocumentDao).Name.ToUpper());
             Assert.Equal(dis.TypeId, fac.DiscriminatorTypeId);
             Assert.Equal(dis.TypeName, fac.DiscriminatorTypeName);
-            Assert.Equal(3, dis.Inclusions.Count());
+            Assert.Equal(2, dis.Inclusions.Count());
             Assert.Equal(1, dis.Exclusions.Count());
         }
         [Fact(DisplayName = "TypeDiscriminator - Attribute")]

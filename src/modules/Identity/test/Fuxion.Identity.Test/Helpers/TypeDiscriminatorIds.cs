@@ -17,6 +17,10 @@ namespace Fuxion.Identity.Test.Helpers
 
         public const string Person = nameof(Person);
 
+        public const string Document = nameof(Document);
+        public const string PdfDocument = nameof(PdfDocument);
+        public const string OfficeDocument = nameof(OfficeDocument);
         public const string WordDocument = nameof(WordDocument);
+        public const string ExcelDocument = nameof(ExcelDocument);
     }
 }

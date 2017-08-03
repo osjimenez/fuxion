@@ -47,8 +47,8 @@ namespace Fuxion.Identity.Test
                 {
                     new PermissionDao {
                         Value = true,
-                        Function = EDIT,
-                        Scopes =new[] {
+                        Function = Edit.Id.ToString(),
+                        Scopes = new[] {
                             new ScopeDao {
                                 Discriminator = Discriminators.Category.Purchases,
                                 Propagation = ScopePropagation.ToMe | ScopePropagation.ToExclusions }
@@ -61,12 +61,22 @@ namespace Fuxion.Identity.Test
                     $" - Concedido el permiso para {nameof(Edit)} en {nameof(Discriminators.Category.Purchases)}\r\n" +
                     $"¿Debería poder {nameof(Delete)} en {nameof(Discriminators.Category.Purchases)}?\r\n" +
                     " No");
+            Assert.True(ide.Can(Read).Instance(Discriminators.Category.Purchases),
+                "Tengo:\r\n" +
+                    $" - Concedido el permiso para {nameof(Edit)} en {nameof(Discriminators.Category.Purchases)}\r\n" +
+                    $"¿Debería poder {nameof(Read)} en {nameof(Discriminators.Category.Purchases)}?\r\n" +
+                    " Si");
 
             Assert.False(ide.Can(Delete).Type<WordDocumentDao>(),
                 "Tengo:\r\n" +
                     $" - Concedido el permiso para {nameof(Edit)} en {nameof(Discriminators.Category.Purchases)}\r\n" +
                     $"¿Debería poder {nameof(Delete)} en {nameof(Discriminators.Category.Purchases)}?\r\n" +
                     " No");
+            Assert.True(ide.Can(Read).Type<WordDocumentDao>(),
+                "Tengo:\r\n" +
+                    $" - Concedido el permiso para {nameof(Edit)} en {nameof(Discriminators.Category.Purchases)}\r\n" +
+                    $"¿Debería poder {nameof(Read)} en {nameof(Discriminators.Category.Purchases)}?\r\n" +
+                    " Si");
         }
         [Fact(DisplayName = "Rol - Cannot for different discriminator")]
         public void CannotForDifferent()

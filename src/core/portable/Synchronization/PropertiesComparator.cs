@@ -35,7 +35,7 @@ namespace Fuxion.Synchronization
                         b = bp
                     };
                 return null;
-            }).Where(o => o != null);
+            }).RemoveNulls();
             foreach (var o in oo)
                 dic.Add((o.a.Name, o.b.Name), v =>
                 {
