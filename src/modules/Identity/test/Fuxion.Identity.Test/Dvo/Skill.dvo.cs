@@ -11,7 +11,7 @@ namespace Fuxion.Identity.Test.Dvo
     {
 
     }
-    [TypeDiscriminated(false)]
+    [TypeDiscriminated(TypeDiscriminationMode.DisableBranch)]
     public abstract class SkillDvo<TSkill> : BaseDvo<TSkill>, ISkillDvo
         where TSkill : SkillDvo<TSkill>
     {

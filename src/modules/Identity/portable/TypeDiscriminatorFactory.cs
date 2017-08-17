@@ -4,6 +4,8 @@ using System.Linq;
 using System.Reflection;
 using System.Diagnostics;
 using Fuxion.Logging;
+using System.Collections.ObjectModel;
+
 namespace Fuxion.Identity
 {
     public class TypeDiscriminatorFactory
@@ -16,6 +18,8 @@ namespace Fuxion.Identity
         [DebuggerDisplay("{" + nameof(Discriminator) + "}")]
         class Entry
         {
+            public string Id => Discriminator.Id;
+
             public List<EntryType> Types { get; set; }
             public TypeDiscriminator Discriminator { get; set; }
 
@@ -28,22 +32,32 @@ namespace Fuxion.Identity
             public bool HasExplicitExclusions => Types?.Any(t => t.HasExplicitExclusions) ?? false;
             public bool HasAdditionalInclusions => Types?.Any(t => t.HasAdditionalInclusions) ?? false;
             public bool HasAdditionalExclusions => Types?.Any(t => t.HasAdditionalExclusions) ?? false;
-            //public bool HasAvoidedInclusions => Types?.Any(t => t.HasAvoidedInclusions) ?? false;
-            //public bool HasAvoidedExclusions => Types?.Any(t => t.HasAvoidedExclusions) ?? false;
+            public bool HasAvoidedInclusions => Types?.Any(t => t.HasAvoidedInclusions) ?? false;
+            public bool HasAvoidedExclusions => Types?.Any(t => t.HasAvoidedExclusions) ?? false;
         }
         [DebuggerDisplay("{" + nameof(Type) + "}")]
         class EntryType
         {
+            public Entry Entry { get; set; }
             public Type Type { get; set; }
+            public EntryType BaseType { get; set; }
+            public EntryType DeepBaseType { get; set; }
+            public List<EntryType> DerivedTypes { get; set; }
             public TypeDiscriminatedAttribute Attribute { get; set; }
             public bool HasExplicitInclusions => !Attribute?.ExplicitInclusions.IsNullOrEmpty() ?? false;
             public bool HasExplicitExclusions => !Attribute?.ExplicitExclusions.IsNullOrEmpty() ?? false;
             public bool HasAdditionalInclusions => !Attribute?.AdditionalInclusions.IsNullOrEmpty() ?? false;
             public bool HasAdditionalExclusions => !Attribute?.AdditionalExclusions.IsNullOrEmpty() ?? false;
-            //public bool HasAvoidedInclusions => !Attribute?.AvoidedInclusions.IsNullOrEmpty() ?? false;
-            //public bool HasAvoidedExclusions => !Attribute?.AvoidedExclusions.IsNullOrEmpty() ?? false;
+            public bool HasAvoidedInclusions => !Attribute?.AvoidedInclusions.IsNullOrEmpty() ?? false;
+            public bool HasAvoidedExclusions => !Attribute?.AvoidedExclusions.IsNullOrEmpty() ?? false;
         }
-        List<Entry> entries = new List<Entry>();
+        [DebuggerDisplay("{" + nameof(Count) + "} entries")]
+        class EntryList : KeyedCollection<string, Entry>
+        {
+            protected override string GetKeyForItem(Entry item) => item.Id;
+        }
+        //List<Entry> entries = new List<Entry>();
+        EntryList entries = new EntryList();
         bool initialized = false;
 
         //public Func<Type, string> GetIdFunction { get; set; } = type =>
@@ -67,187 +81,292 @@ namespace Fuxion.Identity
 
         private void Initialize()
         {
-            // Recorro todas las entradas marcadas con el atributo TypeDiscriminated que han especificado el parámetro Inclusions o Exclusions
-            // En estas entradas estan todos los posibles tipos virtuales
-            foreach (var ent in entries
-                .Where(e => e.HasAttribute) // Algun tipo contiene el atributo
-                .Where(e => e.HasExplicitInclusions || e.HasExplicitExclusions)
-                //.Where(e => !e.Attribute.Inclusions.IsNullOrEmpty() || !e.Attribute.Exclusions.IsNullOrEmpty())
-                .ToList())
+#if DEBUG
+            Debug.WriteLine("List of types to initialize");
+            var maxTypeFullNameLength = entries.SelectMany(e => e.Types).Max(t => t.Type.FullName.Length);
+            foreach (var type in entries.SelectMany(e => e.Types).OrderBy(t => t.Type.Name))
             {
-                // Recorro las inclusiones y exclusiones cuyo id no esta en la lista de entradas
-                foreach (var id in (
-                            // Explicits
-                            ent.Types
-                                .Where(t => t.Attribute?.ExplicitInclusions != null)
-                                .SelectMany(t => t.Attribute.ExplicitInclusions)
-                            .Concat(ent.Types
-                                .Where(t => t.Attribute?.ExplicitExclusions != null)
-                                .SelectMany(t => t.Attribute.ExplicitExclusions))
-                            // Avoids
-                            //.Concat(ent.Types
-                            //    .Where(t => t.Attribute.AvoidedInclusions != null)
-                            //    .SelectMany(t => t.Attribute.AvoidedInclusions))
-                            //.Concat(ent.Types
-                            //    .Where(t => t.Attribute.AvoidedExclusions != null)
-                            //    .SelectMany(t => t.Attribute.AvoidedExclusions))
-                            // Additional
-                            .Concat(ent.Types
-                                .Where(t => t.Attribute.AdditionalInclusions != null)
-                                .SelectMany(t => t.Attribute.AdditionalInclusions))
-                            .Concat(ent.Types
-                                .Where(t => t.Attribute.AdditionalExclusions != null)
-                                .SelectMany(t => t.Attribute.AdditionalExclusions)))
-                    .Where(id => !entries.Any(e => e.Discriminator.Id == id)))
+                Debug.WriteLine($"   {type.Type.FullName.PadLeft(maxTypeFullNameLength)} - {(type.Attribute == null ? "NULL" : $"{type.Attribute.Mode}")}");
+            }
+#endif
+            // Creo todas las entradas virtuales que se han encontrado en inclusiones y exclusiones
+            // No creo las entradas virtuales que han sido indicadas en un tipo pero no hay contra-parte
+            // De esta forma, puedo NO cargar todos los tipos de un arbol y no tener errores con los tipos virtuales
+            foreach (var id in entries.SelectMany(e => e.Types)
+                        .SelectMany(t => new string[] { }
+                            .Concat(t.Attribute?.ExplicitInclusions ?? Enumerable.Empty<string>())
+                            .Concat(t.Attribute?.AdditionalInclusions ?? Enumerable.Empty<string>())
+                            .Concat(t.Attribute?.AvoidedInclusions ?? Enumerable.Empty<string>()))
+                        .Intersect(entries.SelectMany(e => e.Types)
+                            .SelectMany(t => new string[] { }
+                                .Concat(t.Attribute?.ExplicitExclusions ?? Enumerable.Empty<string>())
+                                .Concat(t.Attribute?.AdditionalExclusions ?? Enumerable.Empty<string>())
+                                .Concat(t.Attribute?.AvoidedExclusions ?? Enumerable.Empty<string>())))
+                        .Where(id => !entries.Contains(id))
+                        .ToList())
+            {
+                entries.Add(new Entry
                 {
-                    // Compruebo si existe ya la entrada
-                    if (!entries.Any(e => e.Discriminator.Id == id))
+                    Discriminator = new TypeDiscriminator
                     {
-                        // Creo el tipo virtual para cada una de ellas
-                        entries.Add(new Entry
-                        {
-                            Discriminator = new TypeDiscriminator
-                            {
-                                Id = id,
-                                Name = id,
-                                TypeId = DiscriminatorTypeId,
-                                TypeName = DiscriminatorTypeName,
-                            }
-                        });
+                        Id = id,
+                        Name = id,
+                        TypeId = DiscriminatorTypeId,
+                        TypeName = DiscriminatorTypeName,
+                    }
+                });
+            }
+            // Coloco los tipos base y derivados de cada tipo
+            {
+                var types = entries.SelectMany(e => e.Types ?? Enumerable.Empty<EntryType>()).ToList();
+                foreach (var typ in types)
+                {
+                    var parent = typ.Type.GetTypeInfo().BaseType;
+
+                    typ.BaseType = types.FirstOrDefault(t => t.Type == parent);
+                    typ.DeepBaseType = typ.BaseType;
+                    typ.DerivedTypes = types.Where(t => t.Type.GetTypeInfo().BaseType == typ.Type).ToList();
+
+                    while (typ.DeepBaseType == null && parent != null)
+                    {
+                        parent = parent.GetTypeInfo().BaseType;
+                        typ.DeepBaseType = types.FirstOrDefault(t => t.Type == parent);
                     }
                 }
+                foreach (var type in types.Where(t => t.BaseType == null && t.DeepBaseType != null && !t.DeepBaseType.DerivedTypes.Contains(t)))
+                {
+                    type.DeepBaseType.DerivedTypes.Add(type);
+                }
+            }
+            // Asigno las inclusiones y exclusiones
+            {
+
             }
 
-            // Ahora tengo todos las entradas definidas, incluidas las de los tipos virtuales
-            // Recorro todas las entradas para calcular las inclusiones y exclusiones
-            foreach (var ent in entries)
-            {
-                // INCLUSIONES
-                if (ent.HasExplicitInclusions)
-                {
-                    // Recorro todas las inclusiones
-                    foreach (var inc in ent.Types.SelectMany(t => t.Attribute.ExplicitInclusions.Select(i => new
-                    {
-                        Inclusion = i,
-                        Type = t.Type
-                    })))
-                    {
-                        var incent = entries.FirstOrDefault(e => e.Discriminator.Id == inc.Inclusion);
-                        if (incent == null) throw new ArgumentException($"The inclusion discriminator id '{inc.Inclusion}', defined explicitly in type '{inc.Type.Name}' was not found");
-                        ent.AllInclusions.Add(incent);
-                    }
-                }
-                else if (!ent.IsVirtual)
-                {
-                    // Se calcularan las inclusiones por herencia
-                    ent.AllInclusions = entries
-                        .Where(e =>
-                            !e.IsVirtual && // Quito las entradas de tipos virtuales
-                            ent.Discriminator.Id != e.Discriminator.Id && // Me excluyo a mi mismo
-                            ent.Types.Any(t => t.Type.GetTypeInfo().IsGenericTypeDefinition // Compruebo si el tipo es genérico
-                                ? e.Types.Any(ty => ty.Type.IsSubclassOfRawGeneric(t.Type)) // Compruebo si es derivado del genérico
-                                : e.Types.Any(ty => ty.Type.GetTypeInfo().IsSubclassOf(t.Type)))
-                        )
-                        .ToList();
-                }
-                if (ent.HasAdditionalInclusions)
-                {
-                    // Se agregarán las inclusiones adicionales
-                    foreach(var inc in ent.Types.SelectMany(t => t.Attribute.AdditionalInclusions.Select(i => new
-                    {
-                        Inclusion = i,
-                        Type = t.Type
-                    })))
-                    {
-                        var incent = entries.FirstOrDefault(e => e.Discriminator.Id == inc.Inclusion);
-                        if (incent == null) throw new ArgumentException($"The inclusion discriminator id '{inc.Inclusion}', defined for add in type '{inc.Type.Name}' was not found");
-                        ent.AllInclusions.Add(incent);
-                    }
-                }
-                // EXCLUSIONES
-                if (ent.HasExplicitExclusions)
-                {
-                    // Se han definido explicitamente las exclusiones
-                    foreach (var exc in ent.Types.SelectMany(t => t.Attribute.ExplicitExclusions.Select(i => new
-                    {
-                        Exclusion = i,
-                        Type = t.Type
-                    })))
-                    {
-                        var excent = entries.FirstOrDefault(e => e.Discriminator.Id == exc.Exclusion);
-                        if (excent == null) throw new ArgumentException($"The exclusion discriminator id '{exc}', defined explicitly in type '{exc.Type.Name}' was not found");
-                        ent.AllExclusions.Add(excent);
-                    }
-                }
-                else if (!ent.IsVirtual)
-                {
-                    // Se calcularan las exclusiones por herencia
-                    ent.AllExclusions = entries
-                        .Where(e =>
-                            !e.IsVirtual && // Quito las entradas de tipos virtuales
-                            ent.Discriminator.Id != e.Discriminator.Id && // Me excluyo a mi mismo
-                            e.Types.Any(t => t.Type.GetTypeInfo().IsGenericTypeDefinition // Compruebo si el tipo es genérico
-                                ? ent.Types.Any(ty => ty.Type.IsSubclassOfRawGeneric(t.Type)) // Compruebo si es derivado del genérico
-                                : ent.Types.Any(ty => ty.Type.GetTypeInfo().IsSubclassOf(t.Type)))
-                        )
-                        .ToList();
-                }
-                if (ent.HasAdditionalExclusions)
-                {
-                    // Se agregarán las inclusiones adicionales
-                    foreach (var exc in ent.Types.SelectMany(t => t.Attribute.AdditionalExclusions.Select(i => new
-                    {
-                        Exclusion = i,
-                        Type = t.Type
-                    })))
-                    {
-                        var excent = entries.FirstOrDefault(e => e.Discriminator.Id == exc.Exclusion);
-                        if (excent == null) throw new ArgumentException($"The exclusion discriminator id '{exc.Exclusion}', defined for add in type '{exc.Type.Name}' was not found");
-                        ent.AllExclusions.Add(excent);
-                    }
-                }
-            }
-
-            // Calculo las inclusiones y exclusiones de los tipos virtuales
-            foreach (var ent in entries.Where(e => e.IsVirtual))
-            {
-                // En funcion de las inclusiones y exclusiones del resto de entradas
-                ent.AllInclusions = entries
-                    .Where(e => e.AllExclusions.Select(ee => ee.Discriminator.Id).Contains(ent.Discriminator.Id))
-                    .ToList();
-                ent.AllExclusions = entries
-                    .Where(e => e.AllInclusions.Select(ee => ee.Discriminator.Id).Contains(ent.Discriminator.Id))
-                    .ToList();
-            }
-            foreach (var ent in entries)
-            {
-                // Agrego todo el arbol de inlcusiones y exclusiones agregando las de los hijos
-                ent.AllInclusions = ent.AllInclusions
-                    .Concat(ent.AllInclusions.SelectMany(i => i.AllInclusions))
-                    .Distinct()
-                    .ToList();
-
-                ent.AllExclusions = ent.AllExclusions
-                    .Concat(ent.AllExclusions.SelectMany(i => i.AllExclusions))
-                    .Distinct()
-                    .ToList();
-            }
-            // Ahora tengo que eliminar las inclusiones y exclusiones que sobran para quedarme solo con las de primer nivel
-            // Esto es, para conocer todas las inclusiones de un tipo deberé recorrer el arbol de inclusiones entero
-            foreach (var ent in entries)
-            {
-                ent.Discriminator.Inclusions = ent.AllInclusions
-                    .Except(ent.AllInclusions.SelectMany(e => e.AllInclusions))
-                    .Select(e => e.Discriminator)
-                    .ToList();
-                ent.Discriminator.Exclusions = ent.AllExclusions
-                    .Except(ent.AllExclusions.SelectMany(e => e.AllExclusions))
-                    .Select(e => e.Discriminator)
-                    .ToList();
-            }
             initialized = true;
             ValidateRegistrations();
+            return;
         }
+        //private void Initialize()
+        //{
+        //    // Recorro todas las entradas marcadas con el atributo TypeDiscriminated que han especificado el parámetro Inclusions o Exclusions
+        //    // En estas entradas estan todos los posibles tipos virtuales
+        //    foreach (var ent in entries
+        //        .Where(e => e.HasAttribute) // Algun tipo contiene el atributo
+        //        .Where(e => e.HasExplicitInclusions || e.HasExplicitExclusions)
+        //        //.Where(e => !e.Attribute.Inclusions.IsNullOrEmpty() || !e.Attribute.Exclusions.IsNullOrEmpty())
+        //        .ToList())
+        //    {
+        //        // Recorro las inclusiones y exclusiones cuyo id no esta en la lista de entradas
+        //        foreach (var id in (
+        //                    // Explicits
+        //                    ent.Types
+        //                        .Where(t => t.Attribute?.ExplicitInclusions != null)
+        //                        .SelectMany(t => t.Attribute.ExplicitInclusions)
+        //                    .Concat(ent.Types
+        //                        .Where(t => t.Attribute?.ExplicitExclusions != null)
+        //                        .SelectMany(t => t.Attribute.ExplicitExclusions))
+        //                    // Avoids
+        //                    .Concat(ent.Types
+        //                        .Where(t => t.Attribute.AvoidedInclusions != null)
+        //                        .SelectMany(t => t.Attribute.AvoidedInclusions))
+        //                    .Concat(ent.Types
+        //                        .Where(t => t.Attribute.AvoidedExclusions != null)
+        //                        .SelectMany(t => t.Attribute.AvoidedExclusions))
+        //                    // Additional
+        //                    .Concat(ent.Types
+        //                        .Where(t => t.Attribute.AdditionalInclusions != null)
+        //                        .SelectMany(t => t.Attribute.AdditionalInclusions))
+        //                    .Concat(ent.Types
+        //                        .Where(t => t.Attribute.AdditionalExclusions != null)
+        //                        .SelectMany(t => t.Attribute.AdditionalExclusions)))
+        //            .Where(id => !entries.Any(e => e.Discriminator.Id == id)))
+        //        {
+        //            // Compruebo si existe ya la entrada
+        //            if (!entries.Any(e => e.Discriminator.Id == id))
+        //            {
+        //                // Creo el tipo virtual para cada una de ellas
+        //                entries.Add(new Entry
+        //                {
+        //                    Discriminator = new TypeDiscriminator
+        //                    {
+        //                        Id = id,
+        //                        Name = id,
+        //                        TypeId = DiscriminatorTypeId,
+        //                        TypeName = DiscriminatorTypeName,
+        //                    }
+        //                });
+        //            }
+        //        }
+        //    }
+
+        //    // Ahora tengo todos las entradas definidas, incluidas las de los tipos virtuales
+        //    // Recorro todas las entradas para calcular las inclusiones y exclusiones
+        //    foreach (var ent in entries)
+        //    {
+        //        // INCLUSIONES
+        //        if (ent.HasExplicitInclusions)
+        //        {
+        //            // Recorro todas las inclusiones
+        //            foreach (var inc in ent.Types.SelectMany(t => t.Attribute.ExplicitInclusions.Select(i => new
+        //            {
+        //                Inclusion = i,
+        //                Type = t.Type
+        //            })))
+        //            {
+        //                var incent = entries.FirstOrDefault(e => e.Discriminator.Id == inc.Inclusion);
+        //                if (incent == null) throw new ArgumentException($"The inclusion discriminator id '{inc.Inclusion}', defined explicitly in type '{inc.Type.Name}' was not found");
+        //                ent.AllInclusions.Add(incent);
+        //            }
+        //        }
+        //        else if (!ent.IsVirtual)
+        //        {
+        //            // Se calcularan las inclusiones por herencia
+        //            ent.AllInclusions = entries
+        //                .Where(e =>
+        //                    !e.IsVirtual && // Quito las entradas de tipos virtuales
+        //                    ent.Discriminator.Id != e.Discriminator.Id && // Me excluyo a mi mismo
+        //                    ent.Types.Any(t => t.Type.GetTypeInfo().IsGenericTypeDefinition // Compruebo si el tipo es genérico
+        //                        ? e.Types.Any(ty => ty.Type.IsSubclassOfRawGeneric(t.Type)) // Compruebo si es derivado del genérico
+        //                        : e.Types.Any(ty => ty.Type.GetTypeInfo().IsSubclassOf(t.Type)))
+        //                )
+        //                .ToList();
+        //        }
+        //        if (ent.HasAdditionalInclusions)
+        //        {
+        //            // Se agregarán las inclusiones adicionales
+        //            foreach(var inc in ent.Types.SelectMany(t => t.Attribute.AdditionalInclusions.Select(i => new
+        //            {
+        //                Inclusion = i,
+        //                Type = t.Type
+        //            })))
+        //            {
+        //                var incent = entries.FirstOrDefault(e => e.Discriminator.Id == inc.Inclusion);
+        //                if (incent == null) throw new ArgumentException($"The inclusion discriminator id '{inc.Inclusion}', defined for add in type '{inc.Type.Name}' was not found");
+        //                ent.AllInclusions.Add(incent);
+        //            }
+        //        }
+        //        if (ent.HasAvoidedInclusions)
+        //        {
+        //            foreach(var inc in ent.Types.SelectMany(t => t.Attribute.AvoidedInclusions.Select(i => new
+        //            {
+        //                Inclusion = i,
+        //                Type = t.Type
+        //            })))
+        //            {
+        //                var incent = entries.FirstOrDefault(e => e.Discriminator.Id == inc.Inclusion);
+        //                if (incent == null) throw new ArgumentException($"The inclusion discriminator id '{inc.Inclusion}', defined for avoid in type '{inc.Type.Name}' was not found");
+        //                ent.AllInclusions.Remove(incent);
+        //            }
+        //        }
+        //        // EXCLUSIONES
+        //        if (ent.HasExplicitExclusions)
+        //        {
+        //            // Se han definido explicitamente las exclusiones
+        //            foreach (var exc in ent.Types.SelectMany(t => t.Attribute.ExplicitExclusions.Select(i => new
+        //            {
+        //                Exclusion = i,
+        //                Type = t.Type
+        //            })))
+        //            {
+        //                var excent = entries.FirstOrDefault(e => e.Discriminator.Id == exc.Exclusion);
+        //                if (excent == null) throw new ArgumentException($"The exclusion discriminator id '{exc}', defined explicitly in type '{exc.Type.Name}' was not found");
+        //                ent.AllExclusions.Add(excent);
+        //            }
+        //        }
+        //        else if (!ent.IsVirtual)
+        //        {
+        //            // Se calcularan las exclusiones por herencia
+        //            ent.AllExclusions = entries
+        //                .Where(e =>
+        //                    !e.IsVirtual && // Quito las entradas de tipos virtuales
+        //                    ent.Discriminator.Id != e.Discriminator.Id && // Me excluyo a mi mismo
+        //                    e.Types.Any(t => t.Type.GetTypeInfo().IsGenericTypeDefinition // Compruebo si el tipo es genérico
+        //                        ? ent.Types.Any(ty => ty.Type.IsSubclassOfRawGeneric(t.Type)) // Compruebo si es derivado del genérico
+        //                        : ent.Types.Any(ty => ty.Type.GetTypeInfo().IsSubclassOf(t.Type)))
+        //                )
+        //                .ToList();
+        //        }
+        //        if (ent.HasAdditionalExclusions)
+        //        {
+        //            // Se agregarán las inclusiones adicionales
+        //            foreach (var exc in ent.Types.SelectMany(t => t.Attribute.AdditionalExclusions.Select(i => new
+        //            {
+        //                Exclusion = i,
+        //                Type = t.Type
+        //            })))
+        //            {
+        //                var excent = entries.FirstOrDefault(e => e.Discriminator.Id == exc.Exclusion);
+        //                if (excent == null) throw new ArgumentException($"The exclusion discriminator id '{exc.Exclusion}', defined for add in type '{exc.Type.Name}' was not found");
+        //                ent.AllExclusions.Add(excent);
+        //            }
+        //        }
+        //        if (ent.HasAvoidedExclusions)
+        //        {
+        //            foreach (var exc in ent.Types.SelectMany(t => t.Attribute.AvoidedExclusions.Select(i => new
+        //            {
+        //                Exclusion = i,
+        //                Type = t.Type
+        //            })))
+        //            {
+        //                var excent = entries.FirstOrDefault(e => e.Discriminator.Id == exc.Exclusion);
+        //                if (excent == null) throw new ArgumentException($"The exclusion discriminator id '{exc.Exclusion}', defined for avoid in type '{exc.Type.Name}' was not found");
+        //                ent.AllExclusions.Remove(excent);
+        //            }
+        //        }
+        //    }
+
+        //    // Calculo las inclusiones y exclusiones de los tipos virtuales
+        //    foreach (var ent in entries.Where(e => e.IsVirtual))
+        //    {
+        //        // En funcion de las inclusiones y exclusiones del resto de entradas
+        //        ent.AllInclusions = entries
+        //            .Where(e => e.AllExclusions.Select(ee => ee.Discriminator.Id).Contains(ent.Discriminator.Id))
+        //            .ToList();
+        //        ent.AllExclusions = entries
+        //            .Where(e => e.AllInclusions.Select(ee => ee.Discriminator.Id).Contains(ent.Discriminator.Id))
+        //            .ToList();
+        //    }
+        //    //foreach (var ent in entries)
+        //    //{
+        //    //    // Agrego todo el arbol de inlcusiones y exclusiones agregando las de los hijos
+        //    //    ent.AllInclusions = ent.AllInclusions
+        //    //        .Concat(ent.AllInclusions.SelectMany(i => i.AllInclusions))
+        //    //        .Distinct()
+        //    //        .ToList();
+
+        //    //    ent.AllExclusions = ent.AllExclusions
+        //    //        .Concat(ent.AllExclusions.SelectMany(i => i.AllExclusions))
+        //    //        .Distinct()
+        //    //        .ToList();
+        //    //}
+        //    //// Ahora tengo que eliminar las inclusiones y exclusiones que sobran para quedarme solo con las de primer nivel
+        //    //// Esto es, para conocer todas las inclusiones de un tipo deberé recorrer el arbol de inclusiones entero
+        //    //foreach (var ent in entries)
+        //    //{
+        //    //    ent.Discriminator.Inclusions = ent.AllInclusions
+        //    //        .Except(ent.AllInclusions.SelectMany(e => e.AllInclusions))
+        //    //        .Select(e => e.Discriminator)
+        //    //        .ToList();
+        //    //    ent.Discriminator.Exclusions = ent.AllExclusions
+        //    //        .Except(ent.AllExclusions.SelectMany(e => e.AllExclusions))
+        //    //        .Select(e => e.Discriminator)
+        //    //        .ToList();
+        //    //}
+
+
+        //    foreach(var ent in entries)
+        //    {
+        //        ent.Discriminator.Inclusions = ent.AllInclusions
+        //            .Select(e => e.Discriminator)
+        //            .ToList();
+        //        ent.Discriminator.Exclusions = ent.AllExclusions
+        //            .Select(e => e.Discriminator)
+        //            .ToList();
+        //    }
+        //    initialized = true;
+        //    ValidateRegistrations();
+        //}
         public void ValidateRegistrations()
         {
             if (!initialized) Initialize();
@@ -257,8 +376,8 @@ namespace Fuxion.Identity
                 foreach (var ent in entries)
                 {
                     Debug.WriteLine($"ENTRY: {ent.Discriminator.Id}");
-                    Debug.WriteLine($"   Inclusions: {ent.Discriminator.Inclusions.Aggregate("", (a, e) => a + ", " + e.Id, a => a.Trim(',', ' '))}");
-                    Debug.WriteLine($"   Exclusions: {ent.Discriminator.Exclusions.Aggregate("", (a, e) => a + ", " + e.Id, a => a.Trim(',', ' '))}");
+                    Debug.WriteLine($"\tInclusions: {ent.Discriminator.Inclusions.Aggregate("\r\n\t\t", (a, e) => a + "\r\n\t\t" + e.Id, a => a.Trim('\r', '\n', '\t'))}");
+                    Debug.WriteLine($"\tExclusions: {ent.Discriminator.Exclusions.Aggregate("\r\n\t\t", (a, e) => a + "\r\n\t\t" + e.Id, a => a.Trim('\r', '\n', '\t'))}");
                 }
 #endif
                 var errors = new List<InvalidTypeDiscriminatorException>();
@@ -292,17 +411,9 @@ namespace Fuxion.Identity
             {
                 var att = type.GetTypeInfo().GetCustomAttribute<TypeDiscriminatedAttribute>(false, false, true);
                 // If this Type is disabled, continues to next.
-                if (!att?.Enabled ?? false) continue;
+                //if (!att?.Enabled ?? false) continue;
                 var ent = new Entry
                 {
-                    Types = new[] 
-                    {
-                        new EntryType
-                        {
-                            Type = type,
-                            Attribute = att
-                        }
-                    }.ToList(),
                     Discriminator = new TypeDiscriminator
                     {
                         Id = GetIdFunction(type, att),
@@ -311,13 +422,20 @@ namespace Fuxion.Identity
                         TypeName = DiscriminatorTypeName
                     }
                 };
+                var typ = new EntryType
+                {
+                    Entry = ent,
+                    Type = type,
+                    Attribute = att
+                };
+                ent.Types = new[] { typ }.ToList();
                 var existent = entries.FirstOrDefault(e => e.Discriminator.Id == ent.Discriminator.Id);
                 if (existent != null)
                 {
-                    // La entrada ya existe, agrego el tipo a la lista de tipos de la entrada
+                    // La entrada ya existe, agrego el tipo a la lista de tipos de la entrada existente
                     if (AllowMoreThanOneTypeByDiscriminator)
                     {
-                        existent.Types = existent.Types.Concat(ent.Types).ToList();
+                        existent.Types.AddRange(ent.Types.Transform(t => t.Entry = existent));
                     }
                     else throw new Exception($"Type '{type.FullName}' cannot be registered because the id '{ent.Discriminator.Id}' already registered for '{existent.Discriminator.Id}'");
                 }

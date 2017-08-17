@@ -23,16 +23,14 @@ namespace Fuxion.Identity.Test.Dvo
     {
         public IList<AlbumDvo> Albums { get; set; }
     }
-    [TypeDiscriminated(false)]
+    [TypeDiscriminated(TypeDiscriminationMode.DisableType)]
     public abstract class PackageDvo<TPackage> : FileDvo<TPackage>
         where TPackage : PackageDvo<TPackage>
     {
     }
-    //[TypeDiscriminated(true)]
     public class AlbumDvo : PackageDvo<AlbumDvo>
     {
         public IList<SongDvo> Songs { get; set; }
     }
-    [TypeDiscriminated(true)]
     public class SoftwareDvo : PackageDvo<SoftwareDvo> { }
 }

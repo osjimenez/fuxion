@@ -10,14 +10,10 @@ using static Fuxion.Identity.Test.Helpers.TypeDiscriminatorIds;
 namespace Fuxion.Identity.Test.Dao
 {
     [Table(nameof(FileDao))]
+    [TypeDiscriminated(File, AvoidedInclusions = new[] { Media })]
     public abstract class FileDao : BaseDao { }
 
     [Table(nameof(DocumentDao))]
-    //[TypeDiscriminated(Document, ExplicitInclusions = new[] { OfficeDocument, PdfDocument })]
-    //[TypeDiscriminated(Document, 
-    //      AddedInclusions = new[] { OfficeDocument }, 
-    //    AvoidedInclusions = new[] { ExcelDocument, WordDocument })]
-    //[TypeDiscriminated(Document)]
     [TypeDiscriminated(Document, AdditionalInclusions = new[] { OfficeDocument })]
     public abstract class DocumentDao : FileDao { }
 
@@ -38,6 +34,7 @@ namespace Fuxion.Identity.Test.Dao
     }
 
     [Table(nameof(MediaDao))]
+    [TypeDiscriminated(Media, ExplicitExclusions = new[] { Base })]
     public abstract class MediaDao : FileDao { }
 
     [Table(nameof(FilmDao))]
@@ -50,20 +47,18 @@ namespace Fuxion.Identity.Test.Dao
     }
 
     [Table(nameof(PackageDao))]
-    [TypeDiscriminated(false)]
+    [TypeDiscriminated(TypeDiscriminationMode.DisableType)]
     public abstract class PackageDao : FileDao
     {
         public IList<FileDao> Files { get; set; }
     }
 
     [Table(nameof(AlbumDao))]
-    [TypeDiscriminated(true)]
     public class AlbumDao : PackageDao
     {
         public IList<SongDao> Songs { get; set; }
     }
 
     [Table(nameof(SoftwareDao))]
-    //[TypeDiscriminated(true)]
     public class SoftwareDao : PackageDao { }
 }

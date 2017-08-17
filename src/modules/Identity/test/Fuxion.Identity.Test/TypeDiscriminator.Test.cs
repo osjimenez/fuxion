@@ -65,7 +65,7 @@ namespace Fuxion.Identity.Test
             // Register from Base and check disable state for Skill
             fac.RegisterTree<BaseDao>();
             dis = fac.FromType<FileDao>();
-            Assert.Equal(4, dis.Inclusions.Count());
+            Assert.Equal(3, dis.Inclusions.Count());
             Assert.Equal(1, dis.Exclusions.Count());
             dis = fac.FromType<BaseDao>();
             Assert.Equal(6, dis.Inclusions.Count());
@@ -87,6 +87,25 @@ namespace Fuxion.Identity.Test
             Assert.Equal(fac.DiscriminatorTypeName, dis.TypeName);
             Assert.Equal(2, dis.Inclusions.Count());
             Assert.Equal(1, dis.Exclusions.Count());
+        }
+        [Fact(DisplayName = "TypeDiscriminator - New test")]
+        public void NewTest()
+        {
+            var fac = new TypeDiscriminatorFactory();
+            fac.Register(typeof(BaseDao));
+            fac.Register(typeof(LocationDao));
+            fac.Register(typeof(CityDao));
+            fac.Register(typeof(CountryDao));
+
+            var dao = fac.FromType<BaseDao>();
+
+            fac.ClearRegistrations();
+            fac.Register(typeof(BaseDao));
+            fac.Register(typeof(FileDao));
+            fac.Register(typeof(DocumentDao));
+            fac.Register(typeof(WordDocumentDao));
+
+            dao = fac.FromType<BaseDao>();
         }
         [Fact(DisplayName = "TypeDiscriminator - Attribute")]
         public void TypeDiscriminatorAttribute()
