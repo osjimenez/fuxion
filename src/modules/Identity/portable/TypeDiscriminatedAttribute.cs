@@ -9,11 +9,11 @@ namespace Fuxion.Identity
     {
         public TypeDiscriminatedAttribute(string id) { Id = id; Name = id; }
         //public TypeDiscriminatedAttribute(bool enabled) { Enabled = enabled; }
-        public TypeDiscriminatedAttribute(TypeDiscriminationMode mode) { Mode = mode; }
+        public TypeDiscriminatedAttribute(TypeDiscriminationDisableMode disableMode) { DisableMode = disableMode; }
         public string Id { get; set; }
         public string Name { get; set; }
         //public bool Enabled { get; set; } = true;
-        public TypeDiscriminationMode Mode { get; set; } = TypeDiscriminationMode.Enabled;
+        public TypeDiscriminationDisableMode? DisableMode { get; private set; }
 
         public string[] ExplicitInclusions { get; set; }
         public string[] ExplicitExclusions { get; set; }
@@ -22,10 +22,9 @@ namespace Fuxion.Identity
         public string[] AvoidedInclusions { get; set; }
         public string[] AvoidedExclusions { get; set; }
     }
-    public enum TypeDiscriminationMode
+    public enum TypeDiscriminationDisableMode
     {
-        Enabled,
         DisableType,
-        DisableBranch
+        DisableHierarchy
     }
 }

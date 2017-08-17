@@ -12,6 +12,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Fuxion.Identity.Test
 {
@@ -24,32 +25,69 @@ namespace Fuxion.Identity.Test
             me.ClearRegistrations();
         }
     }
-    public class TypeDiscriminatorTetst
+    public class TypeDiscriminatorTetst : Fuxion.Test.BaseTest
     {
-        [Fact(DisplayName = "TypeDiscriminator - Register tree")]
-        public void RegisterTree()
+        public TypeDiscriminatorTetst(ITestOutputHelper output) : base(output) { this.output = output; }
+        ITestOutputHelper output;
+        [Fact(DisplayName = "TypeDiscriminator - Register - Twice")]
+        public void RegisterTwice()
         {
             var fac = new TypeDiscriminatorFactory();
-            fac.AllowVirtualTypeDiscriminators = true;
+            // Register from Base
+            fac.Register<BaseDao>();
+            Assert.Throws(typeof(Exception), () =>
+            {
+                fac.Register<BaseDao>();
+            });
+        }
+        [Fact(DisplayName = "TypeDiscriminator - Register - All tree")]
+        public void RegisterAllTree()
+        {
+            var fac = new TypeDiscriminatorFactory();
             // Register from Base
             fac.RegisterTree<BaseDao>();
             var dis = fac.FromType<DocumentDao>();
             Assert.Equal(2, dis.Inclusions.Count());
             Assert.Equal(1, dis.Exclusions.Count());
-
-            fac.Reset();
+        }
+        [Fact(DisplayName = "TypeDiscriminator - Register - File tree")]
+        public void RegisterFileTree()
+        {
+            var fac = new TypeDiscriminatorFactory();
+            fac.AllowVirtualTypeDiscriminators = true;
             // Register from File
             fac.RegisterTree<FileDao>();
+            TypeDiscriminator dis = null;
+            Assert.Throws(typeof(TypeDiscriminatorRegistrationValidationException), () =>
+            {
+                dis = fac.FromType<DocumentDao>();
+            });
+            fac.Reset();
+            fac.RegisterTree<FileDao>();
+            fac.Register<BaseDao>();
             dis = fac.FromType<DocumentDao>();
-
             Assert.Equal(2, dis.Inclusions.Count());
             Assert.Equal(1, dis.Exclusions.Count());
-
-            fac.Reset();
+        }
+        [Fact(DisplayName = "TypeDiscriminator - Register - Generic")]
+        public void RegisterGeneric()
+        {
+            var fac = new TypeDiscriminatorFactory();
+            fac.RegisterTree(typeof(FileDvo<>));
+            fac.Register(typeof(BaseDvo<>));
+            var dis = fac.FromType(typeof(DocumentDvo<>));
+            Assert.Equal(2, dis.Inclusions.Count());
+            Assert.Equal(1, dis.Exclusions.Count());
+        }
+        [Fact(DisplayName = "TypeDiscriminator - Register - Only File")]
+        public void RegisterOnlyttttFile()
+        {
+            var fac = new TypeDiscriminatorFactory();
             fac.AllowMoreThanOneTypeByDiscriminator = true;
+            fac.AllowVirtualTypeDiscriminators = true;
             // Register from generic type BaseDvo<>
             fac.RegisterTree(typeof(BaseDvo<>));
-            dis = fac.FromType(typeof(LocationDvo<>));
+            var dis = fac.FromType(typeof(LocationDvo<>));
             Assert.Equal(3, dis.Inclusions.Count());
             Assert.Equal(1, dis.Exclusions.Count());
 
@@ -62,13 +100,19 @@ namespace Fuxion.Identity.Test
             Assert.Equal(1, dis.Exclusions.Count());
 
             fac.Reset();
-            // Register from Base and check disable state for Skill
+        }
+        [Fact(DisplayName = "TypeDiscriminator - Register - Disable")]
+        public void RegisterDisabgleState()
+        {
+            var fac = new TypeDiscriminatorFactory();
+            //fac.AllowMoreThanOneTypeByDiscriminator = true;
+            fac.AllowVirtualTypeDiscriminators = true;
             fac.RegisterTree<BaseDao>();
-            dis = fac.FromType<FileDao>();
+            var dis = fac.FromType<FileDao>();
             Assert.Equal(3, dis.Inclusions.Count());
             Assert.Equal(1, dis.Exclusions.Count());
             dis = fac.FromType<BaseDao>();
-            Assert.Equal(6, dis.Inclusions.Count());
+            Assert.Equal(7, dis.Inclusions.Count());
             Assert.Equal(0, dis.Exclusions.Count());
         }
         [Fact(DisplayName = "TypeDiscriminator - Create")]
@@ -107,6 +151,7 @@ namespace Fuxion.Identity.Test
 
             dao = fac.FromType<BaseDao>();
         }
+        //[Fact(DisplayName = "TypeDiscriminator - Attribute - Only File")]
         [Fact(DisplayName = "TypeDiscriminator - Attribute")]
         public void TypeDiscriminatorAttribute()
         {
@@ -118,8 +163,7 @@ namespace Fuxion.Identity.Test
             fac.Register(typeof(CountryDao));
 
             var dao = fac.FromType<CityDao>();
-
-            fac.ClearRegistrations();
+            fac.Reset();
             fac.Register(typeof(BaseDto));
             fac.Register(typeof(LocationDto));
             fac.Register(typeof(CityDto));

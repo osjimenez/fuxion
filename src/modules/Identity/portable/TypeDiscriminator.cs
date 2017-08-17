@@ -9,24 +9,27 @@ namespace Fuxion.Identity
         internal TypeDiscriminator() { }
 
         public string Id { get; internal set; }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         object IDiscriminator.Id { get { return Id; } }
 
         public string Name { get; internal set; }
 
         public string TypeId { get; internal set; }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         object IDiscriminator.TypeId { get { return TypeId; } }
 
         public string TypeName { get; internal set; }
 
-        public IList<TypeDiscriminator> Inclusions { get; internal set; }
-        public IList<TypeDiscriminator> Exclusions { get; internal set; }
+        public List<TypeDiscriminator> Inclusions { get; internal set; }
+        public List<TypeDiscriminator> Exclusions { get; internal set; }
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         IEnumerable<IDiscriminator> IInclusive<IDiscriminator>.Inclusions { get { return Inclusions; } }
-
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         IEnumerable<IDiscriminator> IExclusive<IDiscriminator>.Exclusions { get { return Exclusions; } }
-
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         IEnumerable<IDiscriminator<string, string>> IInclusive<IDiscriminator<string, string>>.Inclusions { get { return Inclusions; } }
-
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         IEnumerable<IDiscriminator<string, string>> IExclusive<IDiscriminator<string, string>>.Exclusions { get { return Exclusions; } }
 
         public override string ToString() { return this.ToOneLineString(); }
