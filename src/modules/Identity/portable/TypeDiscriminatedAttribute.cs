@@ -15,9 +15,9 @@ namespace Fuxion.Identity
 
         public string[] ExplicitInclusions { get; set; }
         public string[] ExplicitExclusions { get; set; }
-        public string[] AddInclusions { get; set; }
-        public string[] AddExclusions { get; set; }
-        public string[] AvoidInclusions { get; set; }
-        public string[] AvoidExclusions { get; set; }
+        public string[] AdditionalInclusions { get; set; }
+        public string[] AdditionalExclusions { get; set; }
+        //public string[] AvoidedInclusions { get; set; }
+        //public string[] AvoidedExclusions { get; set; }
     }
 }

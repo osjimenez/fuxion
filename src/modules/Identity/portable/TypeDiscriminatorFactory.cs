@@ -26,10 +26,10 @@ namespace Fuxion.Identity
             public bool HasAttribute => Types?.Any(t => t.Attribute != null) ?? false;
             public bool HasExplicitInclusions => Types?.Any(t => t.HasExplicitInclusions) ?? false;
             public bool HasExplicitExclusions => Types?.Any(t => t.HasExplicitExclusions) ?? false;
-            public bool HasAddInclusions => Types?.Any(t => t.HasAddInclusions) ?? false;
-            public bool HasAddExclusions => Types?.Any(t => t.HasAddExclusions) ?? false;
-            public bool HasAvoidtInclusions => Types?.Any(t => t.HasAvoidInclusions) ?? false;
-            public bool HasAvoidtExclusions => Types?.Any(t => t.HasAvoidExclusions) ?? false;
+            public bool HasAdditionalInclusions => Types?.Any(t => t.HasAdditionalInclusions) ?? false;
+            public bool HasAdditionalExclusions => Types?.Any(t => t.HasAdditionalExclusions) ?? false;
+            //public bool HasAvoidedInclusions => Types?.Any(t => t.HasAvoidedInclusions) ?? false;
+            //public bool HasAvoidedExclusions => Types?.Any(t => t.HasAvoidedExclusions) ?? false;
         }
         [DebuggerDisplay("{" + nameof(Type) + "}")]
         class EntryType
@@ -38,10 +38,10 @@ namespace Fuxion.Identity
             public TypeDiscriminatedAttribute Attribute { get; set; }
             public bool HasExplicitInclusions => !Attribute?.ExplicitInclusions.IsNullOrEmpty() ?? false;
             public bool HasExplicitExclusions => !Attribute?.ExplicitExclusions.IsNullOrEmpty() ?? false;
-            public bool HasAddInclusions => !Attribute?.AddInclusions.IsNullOrEmpty() ?? false;
-            public bool HasAddExclusions => !Attribute?.AddExclusions.IsNullOrEmpty() ?? false;
-            public bool HasAvoidInclusions => !Attribute?.AvoidInclusions.IsNullOrEmpty() ?? false;
-            public bool HasAvoidExclusions => !Attribute?.AvoidExclusions.IsNullOrEmpty() ?? false;
+            public bool HasAdditionalInclusions => !Attribute?.AdditionalInclusions.IsNullOrEmpty() ?? false;
+            public bool HasAdditionalExclusions => !Attribute?.AdditionalExclusions.IsNullOrEmpty() ?? false;
+            //public bool HasAvoidedInclusions => !Attribute?.AvoidedInclusions.IsNullOrEmpty() ?? false;
+            //public bool HasAvoidedExclusions => !Attribute?.AvoidedExclusions.IsNullOrEmpty() ?? false;
         }
         List<Entry> entries = new List<Entry>();
         bool initialized = false;
@@ -77,12 +77,27 @@ namespace Fuxion.Identity
             {
                 // Recorro las inclusiones y exclusiones cuyo id no esta en la lista de entradas
                 foreach (var id in (
-                        ent.Types
-                            .Where(t => t.Attribute?.ExplicitInclusions != null)
-                            .SelectMany(t => t.Attribute.ExplicitInclusions)
+                            // Explicits
+                            ent.Types
+                                .Where(t => t.Attribute?.ExplicitInclusions != null)
+                                .SelectMany(t => t.Attribute.ExplicitInclusions)
                             .Concat(ent.Types
                                 .Where(t => t.Attribute?.ExplicitExclusions != null)
-                                .SelectMany(t => t.Attribute.ExplicitExclusions)))
+                                .SelectMany(t => t.Attribute.ExplicitExclusions))
+                            // Avoids
+                            //.Concat(ent.Types
+                            //    .Where(t => t.Attribute.AvoidedInclusions != null)
+                            //    .SelectMany(t => t.Attribute.AvoidedInclusions))
+                            //.Concat(ent.Types
+                            //    .Where(t => t.Attribute.AvoidedExclusions != null)
+                            //    .SelectMany(t => t.Attribute.AvoidedExclusions))
+                            // Additional
+                            .Concat(ent.Types
+                                .Where(t => t.Attribute.AdditionalInclusions != null)
+                                .SelectMany(t => t.Attribute.AdditionalInclusions))
+                            .Concat(ent.Types
+                                .Where(t => t.Attribute.AdditionalExclusions != null)
+                                .SelectMany(t => t.Attribute.AdditionalExclusions)))
                     .Where(id => !entries.Any(e => e.Discriminator.Id == id)))
                 {
                     // Compruebo si existe ya la entrada
@@ -135,6 +150,20 @@ namespace Fuxion.Identity
                         )
                         .ToList();
                 }
+                if (ent.HasAdditionalInclusions)
+                {
+                    // Se agregarán las inclusiones adicionales
+                    foreach(var inc in ent.Types.SelectMany(t => t.Attribute.AdditionalInclusions.Select(i => new
+                    {
+                        Inclusion = i,
+                        Type = t.Type
+                    })))
+                    {
+                        var incent = entries.FirstOrDefault(e => e.Discriminator.Id == inc.Inclusion);
+                        if (incent == null) throw new ArgumentException($"The inclusion discriminator id '{inc.Inclusion}', defined for add in type '{inc.Type.Name}' was not found");
+                        ent.AllInclusions.Add(incent);
+                    }
+                }
                 // EXCLUSIONES
                 if (ent.HasExplicitExclusions)
                 {
@@ -163,6 +192,20 @@ namespace Fuxion.Identity
                         )
                         .ToList();
                 }
+                if (ent.HasAdditionalExclusions)
+                {
+                    // Se agregarán las inclusiones adicionales
+                    foreach (var exc in ent.Types.SelectMany(t => t.Attribute.AdditionalExclusions.Select(i => new
+                    {
+                        Exclusion = i,
+                        Type = t.Type
+                    })))
+                    {
+                        var excent = entries.FirstOrDefault(e => e.Discriminator.Id == exc.Exclusion);
+                        if (excent == null) throw new ArgumentException($"The exclusion discriminator id '{exc.Exclusion}', defined for add in type '{exc.Type.Name}' was not found");
+                        ent.AllExclusions.Add(excent);
+                    }
+                }
             }
 
             // Calculo las inclusiones y exclusiones de los tipos virtuales
@@ -178,7 +221,7 @@ namespace Fuxion.Identity
             }
             foreach (var ent in entries)
             {
-                // Agrego todo el arbol de inlcusiones y exclusiones agrgando las de los hijos
+                // Agrego todo el arbol de inlcusiones y exclusiones agregando las de los hijos
                 ent.AllInclusions = ent.AllInclusions
                     .Concat(ent.AllInclusions.SelectMany(i => i.AllInclusions))
                     .Distinct()
@@ -248,6 +291,7 @@ namespace Fuxion.Identity
             foreach (var type in types)
             {
                 var att = type.GetTypeInfo().GetCustomAttribute<TypeDiscriminatedAttribute>(false, false, true);
+                // If this Type is disabled, continues to next.
                 if (!att?.Enabled ?? false) continue;
                 var ent = new Entry
                 {

@@ -14,10 +14,11 @@ namespace Fuxion.Identity.Test.Dao
 
     [Table(nameof(DocumentDao))]
     //[TypeDiscriminated(Document, ExplicitInclusions = new[] { OfficeDocument, PdfDocument })]
-    [TypeDiscriminated(Document, 
-          AddInclusions = new[] { OfficeDocument }, 
-        AvoidInclusions = new[] { ExcelDocument, WordDocument })]
+    //[TypeDiscriminated(Document, 
+    //      AddedInclusions = new[] { OfficeDocument }, 
+    //    AvoidedInclusions = new[] { ExcelDocument, WordDocument })]
     //[TypeDiscriminated(Document)]
+    [TypeDiscriminated(Document, AdditionalInclusions = new[] { OfficeDocument })]
     public abstract class DocumentDao : FileDao { }
 
     [Table(nameof(PdfDocumentDao))]
