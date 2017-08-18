@@ -13,6 +13,8 @@ using SimpleInjector;
 using Fuxion.Repositories;
 using Fuxion.Identity.Test.Repositories;
 using Fuxion.Factories;
+using Fuxion.Identity.Test.Helpers;
+
 namespace Fuxion.Identity.Test
 {
     public class RolTest : BaseTest
@@ -645,6 +647,94 @@ namespace Fuxion.Identity.Test
                    $" - Denegado READ en la ciudad 'Madrid' y sus sublocalizaciones\r\n" +
                    $"¿Debería poder '{nameof(Read)}' objetos del tipo Word?\r\n" +
                    " Si");
+        }
+        [Fact(DisplayName = "Rol - Grant for discriminator and denied for other discriminator")]
+        public void GrantADiscriminatorAndDeniedOther()
+        {
+            var ide = new IdentityDao
+            {
+                Id = "test",
+                Name = "Test",
+                Permissions = new[] {
+                    new PermissionDao {
+                        Value = true,
+                        Function = Manage.Id.ToString(),
+                        Scopes = new[] {
+                            new ScopeDao
+                            {
+                                Discriminator = Factory.Get<TypeDiscriminatorFactory>().FromType<FileDao>(),
+                                Propagation = ScopePropagation.ToMe| ScopePropagation.ToInclusions
+                            }
+                        }
+                    },
+                    new PermissionDao {
+                        Value = false,
+                        Function = Read.Id.ToString(),
+                        Scopes = new[] {
+                            new ScopeDao
+                            {
+                                Discriminator = Discriminators.Location.Country.Spain,
+                                Propagation = ScopePropagation.ToMe| ScopePropagation.ToInclusions
+                            },
+                        }
+                    },
+                }
+            };
+            //Assert.False(ide.Can(Create).Instance(Person.Admin),
+            //   "Tengo:\r\n" +
+            //       $" - Permiso MANAGE 'File' y sus derivados\r\n" +
+            //       $" - Denegado READ en el pais 'Spain' y sus sublocalizaciones\r\n" +
+            //       $"¿Debería poder '{nameof(Read)}' una instancia de persona sin ciudad?\r\n" +
+            //       " No");
+            Assert.True(ide.Can(Read).Type<DocumentDao>(),
+               "Tengo:\r\n" +
+                   $" - Permiso MANAGE 'File' y sus derivados\r\n" +
+                   $" - Denegado READ en el pais 'Spain' y sus sublocalizaciones\r\n" +
+                   $"¿Debería poder '{nameof(Read)}' el tipo '{nameof(DocumentDao)}'?\r\n" +
+                   " Si");
+            Assert.True(ide.Can(Read).ByAll(Factory.Get<TypeDiscriminatorFactory>().FromId(TypeDiscriminatorIds.OfficeDocument)),
+               "Tengo:\r\n" +
+                   $" - Permiso MANAGE 'File' y sus derivados\r\n" +
+                   $" - Denegado READ en el pais 'Spain' y sus sublocalizaciones\r\n" +
+                   $"¿Debería poder '{nameof(Read)}' el tipo '{TypeDiscriminatorIds.OfficeDocument}'?\r\n" +
+                   " Si");
+
+            //Assert.False(ide.Can(Create).Instance(Person.MadridAdmin),
+            //   "Tengo:\r\n" +
+            //       $" - Permiso ADMIN en el estado 'Spain' y sus sublocalizaciones\r\n" +
+            //       $" - Denegado READ en la ciudad 'Madrid' y sus sublocalizaciones\r\n" +
+            //       $"¿Debería poder '{nameof(Create)}' una instancia de persona con la ciudad Madrid?\r\n" +
+            //       " No");
+            //Assert.False(ide.Can(Create).ByAll(
+            //    Factory.Get<TypeDiscriminatorFactory>().FromType<PersonDao>(),
+            //    Discriminators.Location.City.Madrid),
+            //   "Tengo:\r\n" +
+            //       $" - Permiso ADMIN en el estado 'Spain' y sus sublocalizaciones\r\n" +
+            //       $" - Denegado READ en la ciudad 'Madrid' y sus sublocalizaciones\r\n" +
+            //       $"¿Debería poder '{nameof(Create)}' una instancia de persona con la ciudad Madrid?\r\n" +
+            //       " No");
+
+            //Assert.True(ide.Can(Create).Instance(Person.AlcorconAdmin),
+            //   "Tengo:\r\n" +
+            //       $" - Permiso ADMIN en el estado 'Spain' y sus sublocalizaciones\r\n" +
+            //       $" - Denegado READ en la ciudad 'Madrid' y sus sublocalizaciones\r\n" +
+            //       $"¿Debería poder '{nameof(Create)}' una instancia de persona con la ciudad Alcorcon?\r\n" +
+            //       " Si");
+            //Assert.True(ide.Can(Create).ByAll(
+            //    Factory.Get<TypeDiscriminatorFactory>().FromType<PersonDao>(),
+            //    Discriminators.Location.City.Alcorcon),
+            //   "Tengo:\r\n" +
+            //       $" - Permiso ADMIN en el estado 'Spain' y sus sublocalizaciones\r\n" +
+            //       $" - Denegado READ en la ciudad 'Madrid' y sus sublocalizaciones\r\n" +
+            //       $"¿Debería poder '{nameof(Create)}' una instancia de persona con la ciudad Alcorcon?\r\n" +
+            //       " Si");
+
+            //Assert.True(ide.Can(Read).Type<WordDocumentDao>(),
+            //     "Tengo:\r\n" +
+            //       $" - Permiso ADMIN en el estado 'Spain' y sus sublocalizaciones\r\n" +
+            //       $" - Denegado READ en la ciudad 'Madrid' y sus sublocalizaciones\r\n" +
+            //       $"¿Debería poder '{nameof(Read)}' objetos del tipo Word?\r\n" +
+            //       " Si");
         }
     }
 }

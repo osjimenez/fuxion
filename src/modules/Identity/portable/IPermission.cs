@@ -102,15 +102,15 @@ namespace Fuxion.Identity
                 if (me.Scopes.Count() == 0)
                 {
                     Printer.WriteLine($"This permission haven't any scope");
-                    res = true;
                     //res = me.Value;
+                    res = true;
                 }
                 else
                 {
                     var scos = me.Scopes.Where(s => discriminators.Select(d => d.TypeId).Contains(s.Discriminator.TypeId));
                     Printer.WriteLine($"This permission have '{scos.Count()}' scopes for type of given discriminators");
+                    //res = scos.Count() > 0 ? !me.Value : true;
                     res = true;
-                    //res = me.Value;
                 }
                 Printer.WriteLine($"RESULT: {res}");
                 return res;
