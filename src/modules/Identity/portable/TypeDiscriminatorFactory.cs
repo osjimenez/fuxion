@@ -11,10 +11,11 @@ namespace Fuxion.Identity
     public class TypeDiscriminatorFactory
     {
         ILog log = LogManager.Create<TypeDiscriminatorFactory>();
-        public string DiscriminatorTypeId { get; set; } = "TYPE";
-        public string DiscriminatorTypeName { get; set; } = "TYPE";
+        public string DiscriminatorTypeId { get; set; } = TypeDiscriminator.TypeDiscriminatorId;
+        public string DiscriminatorTypeName { get; set; } = TypeDiscriminator.TypeDiscriminatorId;
         public bool AllowMoreThanOneTypeByDiscriminator { get; set; }
         public bool AllowVirtualTypeDiscriminators { get; set; }
+        #region Classes
         [DebuggerDisplay("{" + nameof(Discriminator) + "}")]
         class Entry
         {
@@ -56,6 +57,7 @@ namespace Fuxion.Identity
         {
             protected override string GetKeyForItem(Entry item) => item.Id;
         }
+        #endregion
         //List<Entry> entries = new List<Entry>();
         EntryList entries = new EntryList();
         bool initialized = false;
@@ -611,6 +613,11 @@ namespace Fuxion.Identity
         {
             if (!initialized) Initialize();
             return entries.Where(e => e.Discriminator.Id == id).Select(e => e.Discriminator);
+        }
+        public IEnumerable<Type> TypesFromId(string id)
+        {
+            if (!initialized) Initialize();
+            return entries[id].Types?.Select(t => t.Type) ?? new Type[] { };
         }
     }
     public class TypeDiscriminatorRegistrationValidationException : FuxionAggregateException<InvalidTypeDiscriminatorException>

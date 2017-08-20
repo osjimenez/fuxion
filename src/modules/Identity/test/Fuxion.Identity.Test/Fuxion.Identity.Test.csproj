@@ -98,6 +98,7 @@
     <Compile Include="RolExtensions.cs" />
     <Compile Include="Scope.Test.cs" />
     <Compile Include="Context.cs" />
+    <Compile Include="Test2.cs" />
     <Compile Include="TypeDiscriminator.Test.cs" />
     <Compile Include="Helpers\TypeDiscriminatorIds.cs" />
   </ItemGroup>

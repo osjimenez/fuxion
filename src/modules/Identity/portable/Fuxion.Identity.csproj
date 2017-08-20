@@ -51,7 +51,7 @@
     <Compile Include="FuxionPrincipal.cs" />
     <Compile Include="Helpers\Comparer.cs" />
     <Compile Include="ICurrentUserNameProvider.cs" />
-    <Compile Include="IdentityHelper.cs" />
+    <Compile Include="IdentityExtensions.cs" />
     <Compile Include="IdentityManager.cs" />
     <Compile Include="IDiscriminator.cs" />
     <Compile Include="IFunction.cs" />
@@ -63,6 +63,7 @@
     <Compile Include="IScope.cs" />
     <Compile Include="PrintMode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RolExtensions.cs" />
     <Compile Include="ScopePropagation.cs" />
     <Compile Include="System_Extensions.cs" />
     <Compile Include="TypeDiscriminatedAttribute.cs" />

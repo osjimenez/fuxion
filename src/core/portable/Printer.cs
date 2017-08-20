@@ -37,7 +37,11 @@ namespace Fuxion
         [DebuggerHidden]
         public static void Indent(Action action) => Default.Indent(action);
         [DebuggerHidden]
+        public static IDisposable Indent2() => Default.Indent2();
+        [DebuggerHidden]
         public static void Indent(string message, Action action) => Default.Indent(message, action);
+        [DebuggerHidden]
+        public static IDisposable Indent2(string message) => Default.Indent2(message);
         [DebuggerHidden]
         public static T Indent<T>(Func<T> func) => Default.Indent(func);
         [DebuggerHidden]
@@ -96,10 +100,23 @@ namespace Fuxion
             if (IndentationLevel > 0) IndentationLevel--;
         }
         [DebuggerHidden]
+        public IDisposable Indent2()
+        {
+            var o = new object();
+            IndentationLevel++;
+            return o.AsDisposable(_ => { if (IndentationLevel > 0) IndentationLevel--; });
+        }
+        [DebuggerHidden]
         public void Indent(string message, Action action)
         {
             WriteLine(message);
             Indent(action);
+        }
+        [DebuggerHidden]
+        public IDisposable Indent2(string message)
+        {
+            WriteLine(message);
+            return Indent2();
         }
         [DebuggerHidden]
         public T Indent<T>(Func<T> func)
@@ -184,7 +201,11 @@ namespace Fuxion
         [DebuggerHidden]
         void Indent(Action action);
         [DebuggerHidden]
+        IDisposable Indent2();
+        [DebuggerHidden]
         void Indent(string message, Action action);
+        [DebuggerHidden]
+        IDisposable Indent2(string message);
         [DebuggerHidden]
         T Indent<T>(Func<T> func);
         [DebuggerHidden]

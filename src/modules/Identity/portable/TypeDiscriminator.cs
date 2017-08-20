@@ -2,11 +2,12 @@
 using System.Diagnostics;
 namespace Fuxion.Identity
 {
-    [Discriminator("TYPE")]
+    [Discriminator(TypeDiscriminatorId)]
     [DebuggerDisplay("{" + nameof(Name) + "}")]
-    public class TypeDiscriminator : IDiscriminator<string, string>
+    public sealed class TypeDiscriminator : IDiscriminator<string, string>
     {
         internal TypeDiscriminator() { }
+        internal const string TypeDiscriminatorId = "TYPE";
 
         public string Id { get; internal set; }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]

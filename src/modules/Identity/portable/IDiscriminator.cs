@@ -4,6 +4,9 @@ using Fuxion.Identity.Helpers;
 using System.Linq;
 using System.Reflection;
 using Fuxion.Reflection;
+using Fuxion.Factories;
+using Fuxion.Repositories;
+
 namespace Fuxion.Identity
 {
     public interface IDiscriminator : IInclusive<IDiscriminator>, IExclusive<IDiscriminator>
@@ -29,24 +32,33 @@ namespace Fuxion.Identity
 
         public string TypeName { get; private set; }
 
-        public object Id => "<--- EMPTY --->";
+        public object Id { get; private set; } = "<--- EMPTY --->";
 
-        public string Name => "EMPTY";
+        public string Name { get; private set; } = "EMPTY";
 
         public IEnumerable<IDiscriminator> Inclusions => throw new NotImplementedException();
 
         public IEnumerable<IDiscriminator> Exclusions => throw new NotImplementedException();
 
-        public static IDiscriminator Empty<TDiscriminator>()
+        public static IDiscriminator Empty<TDiscriminator>() => Empty(typeof(TDiscriminator));
+        public static IDiscriminator Empty(Type type)
         {
-            var att = typeof(TDiscriminator).GetTypeInfo().GetCustomAttribute<DiscriminatorAttribute>();
+            var att = type.GetTypeInfo().GetCustomAttribute<DiscriminatorAttribute>();
             if (att != null)
                 return new Discriminator
                 {
                     TypeId = att.TypeId,
-                    TypeName = typeof(TDiscriminator).Name,
+                    TypeName = type.Name,
                 };
-            throw new ArgumentException($"The type '{typeof(TDiscriminator).Name}' isn't adorned with Discriminator attribute");
+            throw new ArgumentException($"The type '{type.Name}' isn't adorned with Discriminator attribute");
+        }
+        internal static IDiscriminator ForId(Type type, object id)
+        {
+            return ((Discriminator)Empty(type)).Transform(d =>
+               {
+                   d.Id = id;
+                   d.Name = id?.ToString();
+               });
         }
     }
     public static class DiscriminatorExtensions
@@ -75,7 +87,7 @@ namespace Fuxion.Identity
                     var typeId = me.Select(s => s.TypeId.ToString().Length).Union(new[] { "TYPE_ID".Length }).Max();
                     var typeName = me.Select(s => s.TypeName.Length).Union(new[] { "TYPE_NAME".Length }).Max();
                     var id = me.Select(s => s.Id.ToString().Length).Union(new[] { "ID".Length }).Max();
-                    var name = me.Select(s => s.Name.Length).Union(new[] { "ID".Length }).Max();
+                    var name = me.Select(s => s.Name.Length).Union(new[] { "NAME".Length }).Max();
                     Printer.WriteLine("┌" + ("".PadRight(typeId, '─')) + "┬" + ("".PadRight(typeName, '─')) + "┬" + ("".PadRight(id, '─')) + "┬" + ("".PadRight(name, '─')) + "┐");
                     Printer.WriteLine("│" + "TYPE_ID".PadRight(typeId, ' ') + "│" + "TYPE_NAME".PadRight(typeName, ' ') + "│" + "ID".PadRight(id, ' ') + "│" + "NAME".PadRight(name, ' ') + "│");
                     Printer.WriteLine("├" + ("".PadRight(typeId, '─')) + "┼" + ("".PadRight(typeName, '─')) + "┼" + ("".PadRight(id, '─')) + "┼" + ("".PadRight(name, '─')) + "┤");

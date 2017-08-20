@@ -17,17 +17,29 @@ namespace System
     public static class Extensions
     {
         #region Disposable
-        public static IDisposable AsDisposable<T>(this T me, Action<T> actionOnDispose) { return new DisposableEnvelope<T>(me, actionOnDispose); }
-        class DisposableEnvelope<T> : IDisposable
+        public static DisposableEnvelope<T> AsDisposable<T>(this T me, Action<T> actionOnDispose = null) { return new DisposableEnvelope<T>(me, actionOnDispose); }
+        public class DisposableEnvelope<T> : IDisposable
         {
-            public DisposableEnvelope(T obj, Action<T> actionOnDispose)
+            public DisposableEnvelope(T obj, Action<T> actionOnDispose = null)
             {
                 this.action = actionOnDispose;
-                this.obj = obj;
+                this.Value = obj;
             }
-            T obj;
+            T value;
+            public T Value
+            {
+                get => value; set
+                {
+                    if (disposed) throw new ObjectDisposedException(nameof(Value));
+                    this.value = value;
+                }
+            }
             Action<T> action;
-            void IDisposable.Dispose() { action(obj); }
+            bool disposed = false;
+            void IDisposable.Dispose() {
+                disposed = true;
+                action?.Invoke(Value);
+            }
         }
         #endregion
         #region Json
