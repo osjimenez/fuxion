@@ -207,18 +207,63 @@ namespace Fuxion.Identity
                 }
                 var res = false;
                 // Si el permiso no define scopes, TRUE
-                if (!me.Scopes.Any()) res = true;
+                if (!me.Scopes.Any())
+                {
+                    Printer.WriteLine("Permission hasn't scopes");
+                    res = true;
+                }
                 // Si el discriminador objetivo es null, TRUE
-                if (targetDiscriminator == null) res = true;
+                if (targetDiscriminator == null)
+                {
+                    Printer.WriteLine("Target discriminator is null");
+                    res = true;
+                }
                 // Si no es null y el target es TypeDiscriminator, si no hay TypeDiscriminator en el permiso, TRUE
                 else if (Comparer.AreEquals(targetDiscriminator.TypeId, TypeDiscriminator.TypeDiscriminatorId) && !me.Scopes.Any(s => Comparer.AreEquals(s.Discriminator.TypeId, TypeDiscriminator.TypeDiscriminatorId)))
-                    res = true;
-                // Si alguno de los discriminadores esta relacionado con los scopes del permiso, TRUE
-                if (discriminators.Any(d => me.Scopes.Any(s => s.Discriminator.GetAllRelated(s.Propagation).Any(d2 => Comparer.AreEquals(d.Id,d2.Id)))))
-                    res = true;
+                {
+                    //Printer.WriteLine("Target discriminator is TypeDiscriminator and permission hasn't TypeDiscriminator");
+                    //res = true;
+                }
+                // Si alguno de los discriminadores:
+                //  - Esta relacionado con los scopes del permiso
+                //  - Es del mismo tipo pero el discriminador tiene el Id null
+                //  TRUE
+                foreach(var dis in discriminators)
+                {
+                    //dis.Id == Discriminator.
+                    if(me.Scopes.Any(s=> Comparer.AreEquals(s.Discriminator.TypeId, dis.TypeId)))
+                    {
+                        // Al menos un discriminador es del mismo tipo
+                        foreach (var sco in me.Scopes)
+                        {
+                            foreach (var rel in sco.Discriminator.GetAllRelated(sco.Propagation))
+                            {
+                                // El discriminador es del mismo tipo
+                                if (dis.TypeId == rel.TypeId && Comparer.AreEquals(dis.Id, rel.Id))
+                                {
+                                    Printer.WriteLine($"The discriminator '{dis}' is related to permission scope '{sco}' on discriminator '{rel}'");
+                                    res = true;
+                                }
+                            }
+                        }
+                        //if (!me.Scopes.Any(s => Comparer.AreEquals(s.Discriminator.TypeId, targetDiscriminator.TypeId)))
+                        //{
+                        //    Printer.WriteLine($"The permission hasn't any discriminator of type of target");
+                        //    res = true;
+                        //}
+                    }
+                    else
+                    {
+                        // Ningún discriminador es del mismo tipo
+                        Printer.WriteLine($"The permission hasn't any discriminator of type '{dis}'");
+                        res = true;
+                    }
+                    
+                }
                 // Si el discriminador objetivo esta relacionado con alguno de los scopes del permiso, TRUE
-                if (me.Scopes.Any(s => s.Discriminator.GetAllRelated(s.Propagation).Any(d => Comparer.AreEquals(d.Id, targetDiscriminator?.Id))))
-                    res = true;
+                //if (me.Scopes.Any(s => s.Discriminator.GetAllRelated(s.Propagation).Any(d => Comparer.AreEquals(d.Id, targetDiscriminator?.Id))))
+                //    res = false;
+
                 
                 Printer.WriteLine($"RESULT: {res}");
                 return res;
@@ -361,15 +406,15 @@ namespace Fuxion.Identity
                 case PrintMode.Table:
                     var valueLength = me.Select(p => p.Value.ToString().Length).Union(new[] { "VALUE".Length }).Max();
                     var functionLength = me.Select(p => p.Function.Name.ToString().Length).Union(new[] { "FUNCTION".Length }).Max();
-                    var typeLength = new[] { "TYPE".Length }.Concat(me.SelectMany(p => p.Scopes.Select(s => s.Discriminator.TypeName.Length))).Max();
-                    var nameLength = new[] { "NAME".Length }.Concat(me.SelectMany(p => p.Scopes.Select(s => s.Discriminator.Name.Length))).Max();
+                    var typeLength = new[] { "TYPE".Length }.Concat(me.SelectMany(p => p.Scopes.Select(s => (s.Discriminator.TypeId + "-" + s.Discriminator.TypeName).Length))).Max();
+                    var nameLength = new[] { "ID".Length }.Concat(me.SelectMany(p => p.Scopes.Select(s => (s.Discriminator.Id.ToString() + "-" + s.Discriminator.Name).Length))).Max();
                     var propagationLength = new[] { "PROPAGATION".Length }.Concat(me.SelectMany(p => p.Scopes.Select(s => s.Propagation.ToString().Length))).Max();
 
-                    Printer.WriteLine("┌" + ("".PadRight(valueLength, '─')) + "┬" + ("".PadRight(functionLength, '─')) + "┬" + ("".PadRight(typeLength, '─')) + "┬" + ("".PadRight(nameLength, '─')) + "┬" + ("".PadRight(propagationLength, '─')) + "┐");
+                    Printer.WriteLine("┌" + ("".PadRight(valueLength, '─')) + "┬" + ("".PadRight(functionLength, '─')) + "┬┬" + ("".PadRight(typeLength, '─')) + "┬" + ("".PadRight(nameLength, '─')) + "┬" + ("".PadRight(propagationLength, '─')) + "┐");
                     if (me.Any())
                     {
-                        Printer.WriteLine("│" + ("VALUE".PadRight(valueLength, ' ')) + "│" + ("FUNCTION".PadRight(functionLength, ' ')) + "│" + ("TYPE".PadRight(typeLength, ' ')) + "│" + ("NAME".PadRight(nameLength, ' ')) + "│" + ("PROPAGATION".PadRight(propagationLength, ' ')) + "│");
-                        Printer.WriteLine("├" + ("".PadRight(valueLength, '─')) + "┼" + ("".PadRight(functionLength, '─')) + "┼" + ("".PadRight(typeLength, '─')) + "┼" + ("".PadRight(nameLength, '─')) + "┼" + ("".PadRight(propagationLength, '─')) + "┤");
+                        Printer.WriteLine("│" + ("VALUE".PadRight(valueLength, ' ')) + "│" + ("FUNCTION".PadRight(functionLength, ' ')) + "││" + ("TYPE".PadRight(typeLength, ' ')) + "│" + ("ID".PadRight(nameLength, ' ')) + "│" + ("PROPAGATION".PadRight(propagationLength, ' ')) + "│");
+                        Printer.WriteLine("├" + ("".PadRight(valueLength, '─')) + "┼" + ("".PadRight(functionLength, '─')) + "┼┼" + ("".PadRight(typeLength, '─')) + "┼" + ("".PadRight(nameLength, '─')) + "┼" + ("".PadRight(propagationLength, '─')) + "┤");
                     }
 
                     foreach(var per in me)
@@ -379,7 +424,7 @@ namespace Fuxion.Identity
                         {
                             Printer.WriteLine("│" +
                                     per.Value.ToString().PadRight(valueLength, ' ') + "│" +
-                                    per.Function.Name.PadRight(functionLength, ' ') + "│" +
+                                    per.Function.Name.PadRight(functionLength, ' ') + "││" +
                                     ("".PadRight(typeLength, ' ')) + "│" +
                                     ("".PadRight(nameLength, ' ')) + "│" +
                                     ("".PadRight(propagationLength, ' ')) + "│");
@@ -389,14 +434,14 @@ namespace Fuxion.Identity
                             {
                                 Printer.WriteLine("│" +
                                     ((i == 0 ? per.Value.ToString() : "").PadRight(valueLength, ' ')) + "│" +
-                                    ((i == 0 ? per.Function.Name : "").PadRight(functionLength, ' ')) + "│" +
-                                    (list[i].Discriminator.TypeName.PadRight(typeLength, ' ')) + "│" +
-                                    (list[i].Discriminator.Name.PadRight(nameLength, ' ')) + "│" +
+                                    ((i == 0 ? per.Function.Name : "").PadRight(functionLength, ' ')) + "││" +
+                                    ((list[i].Discriminator.TypeId + "-" + list[i].Discriminator.TypeName).PadRight(typeLength, ' ')) + "│" +
+                                    ((list[i].Discriminator.Id.ToString() + "-" + list[i].Discriminator.Name).PadRight(nameLength, ' ')) + "│" +
                                     (list[i].Propagation.ToString().PadRight(propagationLength, ' ')) + "│");
                             }
                         }
                     }
-                    Printer.WriteLine("└" + ("".PadRight(valueLength, '─')) + "┴" + ("".PadRight(functionLength, '─')) + "┴" + ("".PadRight(typeLength, '─')) + "┴" + ("".PadRight(nameLength, '─')) + "┴" + ("".PadRight(propagationLength, '─')) + "┘");
+                    Printer.WriteLine("└" + ("".PadRight(valueLength, '─')) + "┴" + ("".PadRight(functionLength, '─')) + "┴┴" + ("".PadRight(typeLength, '─')) + "┴" + ("".PadRight(nameLength, '─')) + "┴" + ("".PadRight(propagationLength, '─')) + "┘");
                     break;
             }
         }

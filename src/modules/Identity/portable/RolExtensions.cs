@@ -99,7 +99,9 @@ namespace Fuxion.Identity
         // Only one type
         public static bool Type(this IRolCan me, Type type) => me.AllTypes(type);
         public static bool Type<T>(this IRolCan me) => me.AllTypes(typeof(T));
-        public static bool Type2<T>(this IRolCan me) => ((IInternalRolCan)me).CheckDiscriminators2(true, Factory.Get<TypeDiscriminatorFactory>().FromType<T>());
+        public static bool Type2<T>(this IRolCan me) => ((IInternalRolCan)me).CheckDiscriminators2(true,
+            Factory.Get<TypeDiscriminatorFactory>().FromType<T>(),
+            typeof(T).GetDiscriminatorsOfDiscriminatedProperties().ToArray());
         // Two types
         public static bool AllTypes<T1, T2>(this IRolCan me) => me.AllTypes(typeof(T1), typeof(T2));
         public static bool AnyType<T1, T2>(this IRolCan me) => me.AnyType(typeof(T1), typeof(T2));
@@ -145,12 +147,7 @@ namespace Fuxion.Identity
                => ByAll2(me, new IDiscriminator[]
                 {
                     Factory.Get<TypeDiscriminatorFactory>().FromType<T>(),
-                }.Concat(typeof(T).GetDiscriminatedProperties().Select(p =>
-                    {
-                        var val = p.PropertyInfo.GetValue(value);
-                        if (val == null) return Discriminator.Empty(p.DiscriminatorType);
-                        return Discriminator.ForId(p.DiscriminatorType, val);
-                    }).RemoveNulls())
+                }.Concat(typeof(T).GetDiscriminatorsOfDiscriminatedProperties(value))
                 .ToArray());
             var res = forAll
                 ? values.Where(value => CheckInstance(value)).Count() == values.Count()

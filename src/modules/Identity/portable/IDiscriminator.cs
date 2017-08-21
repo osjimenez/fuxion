@@ -32,9 +32,11 @@ namespace Fuxion.Identity
 
         public string TypeName { get; private set; }
 
-        public object Id { get; private set; } = "<--- EMPTY --->";
+        public object Id { get; private set; }// = "EMPTY";
 
-        public string Name { get; private set; } = "EMPTY";
+        public string Name { get; private set; }// = "EMPTY";
+
+        public override string ToString() => this.ToOneLineString();
 
         public IEnumerable<IDiscriminator> Inclusions => throw new NotImplementedException();
 
@@ -70,9 +72,10 @@ namespace Fuxion.Identity
         public static bool IsValid(this IDiscriminator me)
         {
             return
-                !Comparer.AreEquals(me.Id, me.Id?.GetType().GetDefaultValue())
-                && !string.IsNullOrWhiteSpace(me.Name)
-                && !Comparer.AreEquals(me.TypeId, me.TypeId?.GetType().GetDefaultValue())
+                //!Comparer.AreEquals(me.Id, me.Id?.GetType().GetDefaultValue())
+                //&& !string.IsNullOrWhiteSpace(me.Name)
+                //&& 
+                !Comparer.AreEquals(me.TypeId, me.TypeId?.GetType().GetDefaultValue())
                 && !string.IsNullOrWhiteSpace(me.TypeName);
         }
         public static void Print(this IEnumerable<IDiscriminator> me, PrintMode mode)
@@ -86,12 +89,12 @@ namespace Fuxion.Identity
                 case PrintMode.Table:
                     var typeId = me.Select(s => s.TypeId.ToString().Length).Union(new[] { "TYPE_ID".Length }).Max();
                     var typeName = me.Select(s => s.TypeName.Length).Union(new[] { "TYPE_NAME".Length }).Max();
-                    var id = me.Select(s => s.Id.ToString().Length).Union(new[] { "ID".Length }).Max();
-                    var name = me.Select(s => s.Name.Length).Union(new[] { "NAME".Length }).Max();
+                    var id = me.Select(s => s.Id?.ToString().Length).RemoveNulls().Cast<int>().Union(new[] { "ID".Length, "null".Length }).Max();
+                    var name = me.Select(s => s.Name?.Length).RemoveNulls().Cast<int>().Union(new[] { "NAME".Length, "null".Length }).Max();
                     Printer.WriteLine("┌" + ("".PadRight(typeId, '─')) + "┬" + ("".PadRight(typeName, '─')) + "┬" + ("".PadRight(id, '─')) + "┬" + ("".PadRight(name, '─')) + "┐");
                     Printer.WriteLine("│" + "TYPE_ID".PadRight(typeId, ' ') + "│" + "TYPE_NAME".PadRight(typeName, ' ') + "│" + "ID".PadRight(id, ' ') + "│" + "NAME".PadRight(name, ' ') + "│");
                     Printer.WriteLine("├" + ("".PadRight(typeId, '─')) + "┼" + ("".PadRight(typeName, '─')) + "┼" + ("".PadRight(id, '─')) + "┼" + ("".PadRight(name, '─')) + "┤");
-                    foreach (var sco in me) Printer.WriteLine("│" + sco.TypeId.ToString().PadRight(typeId, ' ') + "│" + sco.TypeName.PadRight(typeName, ' ') + "│" + sco.Id.ToString().PadRight(id, ' ') + "│" + sco.Name.PadRight(name, ' ') + "│");
+                    foreach (var sco in me) Printer.WriteLine("│" + sco.TypeId.ToString().PadRight(typeId, ' ') + "│" + sco.TypeName.PadRight(typeName, ' ') + "│" + (sco.Id?.ToString() ?? "null").PadRight(id, ' ') + "│" + (sco.Name ?? "null").PadRight(name, ' ') + "│");
                     Printer.WriteLine("└" + ("".PadRight(typeId, '─')) + "┴" + ("".PadRight(typeName, '─')) + "┴" + ("".PadRight(id, '─')) + "┴" + ("".PadRight(name, '─')) + "┘");
                     break;
             }

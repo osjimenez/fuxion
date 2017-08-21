@@ -17,7 +17,9 @@ namespace Fuxion.Identity.Test
         public static bool AllLocations(this IRolCan me, params LocationDto[] locations) => me.AllInstances(locations);
         public static bool AnyLocations(this IRolCan me, params LocationDto[] locations) => me.AnyInstance(locations);
         public static bool AllLocations(this IRolCan me, params LocationDao[] locations) => me.AllInstances(locations);
-        public static bool AllLocations2(this IRolCan me, params LocationDao[] locations) => me.AllInstances2(locations);
+        public static bool AllLocations2<TLocation>(this IRolCan me, params TLocation[] locations)
+            where TLocation : LocationDao
+            => me.AllInstances2(locations);
         public static bool AnyLocations(this IRolCan me, params LocationDao[] locations) => me.AnyInstance(locations);
     }
 }

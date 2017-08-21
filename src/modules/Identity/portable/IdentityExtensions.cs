@@ -182,15 +182,34 @@ namespace Fuxion.Identity
             });
         }
         internal static IEnumerable<(PropertyInfo PropertyInfo, Type PropertyType, Type DiscriminatorType, object DiscriminatorTypeId)> GetDiscriminatedProperties(this Type me)
-            => me.GetRuntimeProperties()
+        {
+            using (Printer.Indent2($"GetDiscriminatedProperties({me.Name})"))
+            {
+                var res = me.GetRuntimeProperties()
                    .Where(p => p.GetCustomAttribute<DiscriminatedByAttribute>(true, false, false) != null)
                    .Select(p => (
-                       PropertyInfo : p,
-                       PropertyType : p.PropertyType,
-                       DiscriminatorType : p.GetCustomAttribute<DiscriminatedByAttribute>(true).Type,
-                       DiscriminatorTypeId :
+                       PropertyInfo: p,
+                       PropertyType: p.PropertyType,
+                       DiscriminatorType: p.GetCustomAttribute<DiscriminatedByAttribute>(true).Type,
+                       DiscriminatorTypeId:
                            p.GetCustomAttribute<DiscriminatedByAttribute>(true).Type.GetTypeInfo()
                                .GetCustomAttribute<DiscriminatorAttribute>(true).TypeId));
+                foreach (var p in res)
+                    Printer.WriteLine($"Property '{p.PropertyInfo.Name}' of type '{p.PropertyType.Name}' is discriminated by '{p.DiscriminatorTypeId.ToString()}' of type '{p.DiscriminatorType.Name}'");
+                return res;
+            }   
+        }
+        internal static IEnumerable<IDiscriminator> GetDiscriminatorsOfDiscriminatedProperties(this Type me, object value = null)
+        =>
+            me.GetDiscriminatedProperties().Select(p =>
+             {
+                 object val = null;
+                 if (value != null)
+                     val = p.PropertyInfo.GetValue(value);
+                 if (val == null) return Discriminator.Empty(p.DiscriminatorType);
+                 return Discriminator.ForId(p.DiscriminatorType, val);
+             }).RemoveNulls();
+        
         internal static Expression<Func<TEntity, bool>> FilterExpression2<TEntity>(this IRol me, IFunction[] functions, IEnumerable<TEntity> source)
         {
             return Printer.Indent($"{typeof(IdentityExtensions).GetTypeInfo().DeclaredMethods.FirstOrDefault(m => m.Name == nameof(FilterExpression2)).GetSignature()}:", () =>
