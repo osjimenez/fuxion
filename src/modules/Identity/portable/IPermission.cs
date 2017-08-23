@@ -223,8 +223,8 @@ namespace Fuxion.Identity
                 }
                 if (discriminators.Any(d => Comparer.AreEquals(d.TypeId, TypeDiscriminator.TypeDiscriminatorId)))
                     throw new ArgumentException("discriminators cannot contains a TypeDiscriminator");
-                //if (targetDiscriminator == null)
-                //    throw new ArgumentException("target discriminator cannot be null");
+                if (targetDiscriminator == null)
+                    throw new ArgumentException("target discriminator cannot be null");
                 if (targetDiscriminator != null && !Comparer.AreEquals(targetDiscriminator.TypeId, TypeDiscriminator.TypeDiscriminatorId))
                     throw new ArgumentException("target discriminator must be a TypeDiscriminator");
                 bool Compute() {

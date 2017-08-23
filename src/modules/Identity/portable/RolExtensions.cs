@@ -80,7 +80,7 @@ namespace Fuxion.Identity
             if (ime.Rol == null) return false;
             foreach (var fun in ime.Functions)
             {
-                var permissions = ime.Rol.SearchPermissions2(fun, null);
+                var permissions = ime.Rol.SearchPermissions2(fun, TypeDiscriminator.Empty);
                 if (!permissions.Any(p => p.Value))
                     return false;
             }
