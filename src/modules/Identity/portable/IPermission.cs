@@ -254,7 +254,7 @@ namespace Fuxion.Identity
                                 Printer.WriteLine($"The target discriminator '{targetDiscriminator}' is related to permission scope '{scopeOfTypeOfTarget}' on discriminator '{scopeDiscriminatorRelatedWithTargetDiscriminator}', check discriminators");
 
                             }
-                            else
+                            else if((TypeDiscriminator)targetDiscriminator != TypeDiscriminator.Empty)
                             {
                                 Printer.WriteLine($"The target discriminator '{targetDiscriminator}' isn't related to permission scope '{scopeOfTypeOfTarget}', FALSE");
                                 return false;
@@ -297,9 +297,11 @@ namespace Fuxion.Identity
                         }
                         else
                         {
-                            Printer.WriteLine($"The permission hasn't any discriminator of type '{dis}', VALUE");
+                            Printer.WriteLine($"The permission hasn't any discriminator of type '{dis}', VALUE or !VALUE");
                             //return me.Value;
-                            return true;
+                            //return true;
+                            //return false;
+                            return dis.Id == null ? me.Value : !me.Value;
                         }
                         return false;
                         //}

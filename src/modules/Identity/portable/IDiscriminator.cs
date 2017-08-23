@@ -18,6 +18,10 @@ namespace Fuxion.Identity
         object Id { get; }
         string Name { get; }
     }
+    //public interface IExplicitDiscriminator : IDiscriminator
+    //{
+    //    IEnumerable<IDiscriminator> GetSubDiscriminators();
+    //}
     public interface IDiscriminator<TId, TTypeId> : IDiscriminator, IInclusive<IDiscriminator<TId, TTypeId>>, IExclusive<IDiscriminator<TId, TTypeId>>
     {
         //new IEnumerable<TId> Inclusions { get; }
@@ -63,6 +67,13 @@ namespace Fuxion.Identity
                });
         }
     }
+    //public class ExplicitDiscriminator : Discriminator, IExplicitDiscriminator
+    //{
+    //    public IEnumerable<IDiscriminator> GetSubDiscriminators(Type type)
+    //    {
+    //        return type.GetDiscriminatorsOfDiscriminatedProperties();
+    //    }
+    //}
     public static class DiscriminatorExtensions
     {
         public static string ToOneLineString(this IDiscriminator me)

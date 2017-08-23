@@ -24,9 +24,5 @@ namespace Fuxion.Test
             };
         }
         ITestOutputHelper output;
-        protected void WriteLine(string message)
-        {
-            output.WriteLine(message);
-        }
     }
 }
