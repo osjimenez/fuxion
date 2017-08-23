@@ -90,12 +90,12 @@ namespace Fuxion.Identity
         #region Can().By..<IDiscriminator>()
         //public static bool ByAll(this IRolCan me, params IDiscriminator[] discriminators)
         //    => ((IInternalRolCan)me).CheckDiscriminators(true, discriminators);
-        public static bool ByAll2(this IRolCan me, params IDiscriminator[] discriminators)
+        public static bool ByAll2(this IRolCan me, TypeDiscriminator typeDiscriminator, params IDiscriminator[] discriminators)
         {
             bool res = false;
             using (Printer.Indent2($"CALL {nameof(ByAll2)}:", '│'))
             {
-                res = ((IInternalRolCan)me).CheckDiscriminators2(true, discriminators.First(), discriminators.Skip(1).ToArray());
+                res = ((IInternalRolCan)me).CheckDiscriminators2(true, typeDiscriminator, discriminators);
             }
             Printer.WriteLine($"● RESULT {nameof(ByAll2)}: {res}");
             return res;
@@ -128,16 +128,23 @@ namespace Fuxion.Identity
         //public static bool AnyType<T1, T2, T3>(this IRolCan me) => me.AnyType(typeof(T1), typeof(T2), typeof(T3));
         //// Many types
         //public static bool AllTypes(this IRolCan me, params Type[] types) => me.ByAll(types.Select(t => Factory.Get<TypeDiscriminatorFactory>().FromType(t)).RemoveNulls().ToArray());
-        public static bool AllTypes2(this IRolCan me, params Type[] types)
-        {
-            bool res = false;
-            using (Printer.Indent2($"CALL {nameof(AllTypes2)}:", '│'))
-            {
-                res = me.ByAll2(types.Select(t => Factory.Get<TypeDiscriminatorFactory>().FromType(t)).RemoveNulls().ToArray());
-            }
-            Printer.WriteLine($"● RESULT {nameof(AllTypes2)}: {res}");
-            return res;
-        }
+
+
+
+
+        //public static bool AllTypes2(this IRolCan me, params Type[] types)
+        //{
+        //    bool res = false;
+        //    using (Printer.Indent2($"CALL {nameof(AllTypes2)}:", '│'))
+        //    {
+        //        res = me.ByAll2(types.Select(t => Factory.Get<TypeDiscriminatorFactory>().FromType(t)).RemoveNulls().ToArray());
+        //    }
+        //    Printer.WriteLine($"● RESULT {nameof(AllTypes2)}: {res}");
+        //    return res;
+        //}
+
+
+
         //public static bool AnyType(this IRolCan me, params Type[] types) => me.ByAny(types.Select(t => Factory.Get<TypeDiscriminatorFactory>().FromType(t)).RemoveNulls().ToArray());
         #endregion
         #region Can().Instance's
@@ -200,11 +207,7 @@ namespace Fuxion.Identity
                 {
                     if (me.Rol == null) return false;
                     bool CheckInstance(T value)
-                       => ByAll2(me, new IDiscriminator[]
-                        {
-                            Factory.Get<TypeDiscriminatorFactory>().FromType<T>(),
-                        }.Concat(typeof(T).GetDiscriminatorsOfDiscriminatedProperties(value))
-                        .ToArray());
+                       => ByAll2(me, Factory.Get<TypeDiscriminatorFactory>().FromType<T>(), typeof(T).GetDiscriminatorsOfDiscriminatedProperties(value).ToArray());
                     var r = forAll
                         ? values.Where(value => CheckInstance(value)).Count() == values.Count()
                         : values.Where(value => CheckInstance(value)).Any();

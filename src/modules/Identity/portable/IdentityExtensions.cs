@@ -226,7 +226,7 @@ namespace Fuxion.Identity
                  return Discriminator.ForId(p.DiscriminatorType, val);
              }).RemoveNulls();
         
-        internal static Expression<Func<TEntity, bool>> FilterExpression2<TEntity>(this IRol me, IFunction[] functions, IEnumerable<TEntity> source)
+        internal static Expression<Func<TEntity, bool>> FilterExpression2<TEntity>(this IRol me, IFunction[] functions)
         {
             Expression<Func<TEntity, bool>> res = null;
             using (Printer.Indent2($"{typeof(IdentityExtensions).GetTypeInfo().DeclaredMethods.FirstOrDefault(m => m.Name == nameof(FilterExpression2)).GetSignature()}:", '│')) {

@@ -23,14 +23,14 @@ namespace System.Collections.Generic
         {
             if (rol == null)
                 rol = Factory.Get<IdentityManager>().GetCurrent();
-            var pre = rol.FilterExpression2<TSource>(functions, source);
+            var pre = rol.FilterExpression2<TSource>(functions);
             return source is IQueryable<TSource>
                 ? ((IQueryable<TSource>)source).Where(pre)
                 : source.Where(pre.Compile());
         }
         //public static IQueryable<TSource> AuthorizedTo<TSource>(this IQueryable<TSource> source, params IFunction[] functions)
         //    => source.AuthorizedTo(null, functions);
-        public static IQueryable<TSource> AuthorizedTo<TSource>(this IQueryable<TSource> source, params IFunction[] functions)
+        public static IQueryable<TSource> AuthorizedTo2<TSource>(this IQueryable<TSource> source, params IFunction[] functions)
             => source.AuthorizedTo2(null, functions);
         //public static IQueryable<TSource> AuthorizedTo<TSource>(this IQueryable<TSource> source, IRol rol, params IFunction[] functions)
         //{
@@ -43,7 +43,7 @@ namespace System.Collections.Generic
         {
             if (rol == null)
                 rol = Factory.Get<IdentityManager>().GetCurrent();
-            var pre = rol.FilterExpression2<TSource>(functions, source);
+            var pre = rol.FilterExpression2<TSource>(functions);
             return source.Where(pre);
         }
     }
