@@ -27,6 +27,19 @@ namespace Fuxion
         public static int IndentationLevel { get => Default.IndentationLevel; set => Default.IndentationLevel = value; }
         public static int IndentationStep { get => Default.IndentationStep; set => Default.IndentationStep = value; }
         public static char IndentationChar { get => Default.IndentationChar; set => Default.IndentationChar = value; }
+        public static string GetPrinted(Action action)
+        {
+            StringBuilder res = new StringBuilder();
+            //var def = Printer.Default;
+            var def = WriteLineAction;
+            WriteLineAction = m =>
+            {
+                res.AppendLine(m);
+                def(m);
+            };
+            action?.Invoke();
+            return res.ToString();
+        }
         [DebuggerHidden]
         public static Action<string> WriteLineAction { get => Default.WriteLineAction; set => Default.WriteLineAction = value; }
         public static bool IsLineWritePending { get => Default.IsLineWritePending; }
@@ -37,11 +50,11 @@ namespace Fuxion
         [DebuggerHidden]
         public static void Indent(Action action) => Default.Indent(action);
         [DebuggerHidden]
-        public static IDisposable Indent2() => Default.Indent2();
+        public static IDisposable Indent2(char? verticalConnectorChar = null) => Default.Indent2(verticalConnectorChar);
         [DebuggerHidden]
         public static void Indent(string message, Action action) => Default.Indent(message, action);
         [DebuggerHidden]
-        public static IDisposable Indent2(string message) => Default.Indent2(message);
+        public static IDisposable Indent2(string message, char? verticalConnectorChar = null) => Default.Indent2(message, verticalConnectorChar);
         [DebuggerHidden]
         public static T Indent<T>(Func<T> func) => Default.Indent(func);
         [DebuggerHidden]
@@ -68,6 +81,9 @@ namespace Fuxion
         public int IndentationLevel { get; set; }
         public int IndentationStep { get; set; } = 3;
         public char IndentationChar { get; set; } = ' ';
+        //public char VerticalConectorChar { get; set; } = '│';
+        //List<int> verticalConnectorLevels = new List<int>();
+        Dictionary<int, char> verticalConnectorLevels = new Dictionary<int, char>();
         [DebuggerHidden]
         public Action<string> WriteLineAction { get; set; } = m => Debug.WriteLine(m);
         List<string> lineMessages = new List<string>();
@@ -87,7 +103,22 @@ namespace Fuxion
             if (!Enabled) return;
             lock (lineMessages)
             {
-                WriteLineAction("".PadRight(IndentationLevel * IndentationStep, IndentationChar) + string.Concat(lineMessages) + message);
+                var indent = "";
+                for (int i = 0; i < IndentationLevel; i++)
+                {
+                    var step = "";
+                    if (verticalConnectorLevels.ContainsKey(i))
+                    {
+                        step += verticalConnectorLevels[i];
+                    }
+                    else
+                    {
+                        step += IndentationChar;
+                    }
+                    indent += step.PadRight(IndentationStep, IndentationChar);
+                }
+                //WriteLineAction("".PadRight(IndentationLevel * IndentationStep, IndentationChar) + string.Concat(lineMessages) + message);
+                WriteLineAction(indent + string.Concat(lineMessages) + message);
                 lineMessages.Clear();
             }
         }
@@ -100,11 +131,19 @@ namespace Fuxion
             if (IndentationLevel > 0) IndentationLevel--;
         }
         [DebuggerHidden]
-        public IDisposable Indent2()
+        public IDisposable Indent2(char? verticalConnectorChar = null)
         {
             var o = new object();
+            var currentIndentationLevel = IndentationLevel;
+            if (verticalConnectorChar != null)
+                verticalConnectorLevels.Add(currentIndentationLevel, verticalConnectorChar.Value);
             IndentationLevel++;
-            return o.AsDisposable(_ => { if (IndentationLevel > 0) IndentationLevel--; });
+            return o.AsDisposable(_ =>
+            {
+                if (IndentationLevel > 0)
+                    IndentationLevel--;
+                verticalConnectorLevels.Remove(currentIndentationLevel);
+            });
         }
         [DebuggerHidden]
         public void Indent(string message, Action action)
@@ -113,10 +152,10 @@ namespace Fuxion
             Indent(action);
         }
         [DebuggerHidden]
-        public IDisposable Indent2(string message)
+        public IDisposable Indent2(string message, char? verticalConnectorChar = null)
         {
             WriteLine(message);
-            return Indent2();
+            return Indent2(verticalConnectorChar);
         }
         [DebuggerHidden]
         public T Indent<T>(Func<T> func)
@@ -201,11 +240,11 @@ namespace Fuxion
         [DebuggerHidden]
         void Indent(Action action);
         [DebuggerHidden]
-        IDisposable Indent2();
+        IDisposable Indent2(char? verticalConnectorChar = null);
         [DebuggerHidden]
         void Indent(string message, Action action);
         [DebuggerHidden]
-        IDisposable Indent2(string message);
+        IDisposable Indent2(string message, char? verticalConnectorChar = null);
         [DebuggerHidden]
         T Indent<T>(Func<T> func);
         [DebuggerHidden]

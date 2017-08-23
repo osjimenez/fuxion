@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using static Fuxion.Identity.Test.Helpers.TypeDiscriminatorIds;
 namespace Fuxion.Identity.Test.Dao
 {
+    [TypeDiscriminated(Person)]
     public class PersonDao : BaseDao
     {
         public IList<SkillDao> Skills { get; set; }

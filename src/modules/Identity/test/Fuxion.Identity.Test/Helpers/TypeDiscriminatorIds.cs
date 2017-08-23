@@ -15,6 +15,8 @@ namespace Fuxion.Identity.Test.Helpers
         public const string State = nameof(State);
         public const string City = nameof(City);
 
+        public const string Category = nameof(Category);
+
         public const string Person = nameof(Person);
 
         public const string File = nameof(File);

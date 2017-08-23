@@ -67,7 +67,7 @@ namespace Fuxion.Identity
     {
         public static string ToOneLineString(this IDiscriminator me)
         {
-            return $"{me.TypeId} - {me.Id}";
+            return $"{me.TypeId} - {(string.IsNullOrWhiteSpace(me.Id?.ToString()) ? "null" : me.Id)}";
         }
         public static bool IsValid(this IDiscriminator me)
         {

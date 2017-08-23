@@ -23,7 +23,8 @@ namespace Fuxion.Identity
         }
         internal static IPermission[] SearchPermissions2(this IRol me, IFunction function, IDiscriminator targetDiscriminator, params IDiscriminator[] discriminators)
         {
-            using (Printer.Indent2($"{nameof(IdentityExtensions)}.{nameof(SearchPermissions2)}:"))
+            IPermission[] res = null;
+            using (Printer.Indent2($"CALL {nameof(SearchPermissions2)}:", '│'))
             {
                 discriminators = discriminators.RemoveNulls();
                 using (Printer.Indent2("Inpupt Prameters"))
@@ -43,14 +44,16 @@ namespace Fuxion.Identity
                 // Get & print rol permissions
                 var permissions = me.AllPermissions();
                 using (Printer.Indent2("Permissions:")) permissions.Print(PrintMode.Table);
-                var matchs = permissions.Where(p => p.Match2(function, targetDiscriminator, discriminators)).ToArray();
-                // Filter permissions
-                using (Printer.Indent2("Filtered permissions:"))
+                using (Printer.Indent2("Iterate permissions:"))
                 {
-                    matchs.Print(PrintMode.Table);
-                    return matchs;
+                    res = permissions.Where(p => p.Match2(function, targetDiscriminator, discriminators)).ToArray();
                 }
             }
+            using (Printer.Indent2($"● RESULT {nameof(SearchPermissions2)}:", '●'))
+            {
+                res.Print(PrintMode.Table);
+            }
+            return res;
         }
         internal static IPermission[] SearchPermissions(this IRol me, IFunction function = null, params IDiscriminator[] discriminators)
         {
@@ -87,8 +90,9 @@ namespace Fuxion.Identity
         }
         internal static bool CheckDiscriminators2(this IInternalRolCan me, bool forAll, IDiscriminator targetDiscriminator, params IDiscriminator[] discriminators)
         {
+            bool res = false;
             discriminators = discriminators.RemoveNulls();
-            return Printer.Indent($"{nameof(IdentityExtensions)}.{nameof(CheckDiscriminators2)}:", () =>
+            using (Printer.Indent2($"CALL {nameof(CheckDiscriminators2)}:", '│'))
             {
                 Printer.Indent("Input parameters", () =>
                 {
@@ -97,42 +101,45 @@ namespace Fuxion.Identity
                     Printer.Foreach($"Discriminators:", discriminators, dis => Printer.WriteLine($"{dis?.TypeName} - {dis?.Name}"));
                 });
                 if (me.Rol == null) return false;
-                bool res = true;
-                //Printer.Foreach("Iterating functions:", me.Functions, fun => {
-                Printer.Foreach("Iterating functions:", me.Functions, fun => {
-                    Printer.WriteLine($"Function '{fun.Name}':");
-                    var pers = SearchPermissions2(me.Rol, fun, targetDiscriminator, discriminators);
-                    if (!pers.Any())
-                        res = false;
-                    else
+                bool Compute()
+                {
+                    //Printer.Foreach("Iterating functions:", me.Functions, fun => {
+                    foreach (var fun in me.Functions)
                     {
-                        var r = forAll
-                            ? discriminators.All(dis =>
-                            {
-                                var grantPermissions = pers.Where(p => p.Value).ToList();
-                                var deniedPermissions = pers.Where(p => !p.Value).ToList();
-                                Printer.WriteLine($"Found '{grantPermissions.Count}' grant permissions");
-                                Printer.WriteLine($"Found '{deniedPermissions.Count}' denied permissions");
-                                return grantPermissions.Count > 0 && deniedPermissions.Count == 0;// || grantPermissions.Count == 0;
-                        })
-                            : discriminators.Any(dis =>
-                            {
-                            //var pers = me.Rol.SearchPermissions(fun, dis);
-                            //return !pers.Any(p => !p.Value && p.Scopes.Any(s => dis.TypeId == s.Discriminator.TypeId)) && pers.Any(p => p.Value);
-                            return !pers.Any(p => !p.Value && p.Match2(fun, targetDiscriminator, discriminators)) && pers.Any(p => p.Value);
-                            });
-                        if (!r)
+                        Printer.WriteLine($"Function '{fun.Name}':");
+                        var pers = SearchPermissions2(me.Rol, fun, targetDiscriminator, discriminators);
+                        if (!pers.Any())
+                            return false;
+                        else
                         {
-                            if (me.ThrowExceptionIfCannot)
+                            var r = forAll
+                                ? discriminators.All(dis =>
+                                {
+                                    var grantPermissions = pers.Where(p => p.Value).ToList();
+                                    var deniedPermissions = pers.Where(p => !p.Value).ToList();
+                                    Printer.WriteLine($"Found '{grantPermissions.Count}' grant permissions");
+                                    Printer.WriteLine($"Found '{deniedPermissions.Count}' denied permissions");
+                                    return grantPermissions.Count > 0 && deniedPermissions.Count == 0;// || grantPermissions.Count == 0;
+                                })
+                                : discriminators.Any(dis =>
+                                {
+                                    //var pers = me.Rol.SearchPermissions(fun, dis);
+                                    //return !pers.Any(p => !p.Value && p.Scopes.Any(s => dis.TypeId == s.Discriminator.TypeId)) && pers.Any(p => p.Value);
+                                    return !pers.Any(p => !p.Value && p.Match2(fun, targetDiscriminator, discriminators)) && pers.Any(p => p.Value);
+                                });
+                            if (!r && me.ThrowExceptionIfCannot)
                                 throw new UnauthorizedAccessException($"The rol '{me.Rol.Name}' cannot '{me.Functions.Aggregate("", (a, c) => a + c.Name + "·", a => a.Trim('·'))}' for the given discriminators '{discriminators.Aggregate("", (a, c) => $"{a}, {c.Name}", a => a.Trim(',', ' ')) }'");
-                            res = false;
+                            return r;
                         }
                     }
-                });
+                    return false;
+                }
+                res = Compute();
                 if(!res && me.ThrowExceptionIfCannot)
                     throw new UnauthorizedAccessException($"The rol '{me.Rol.Name}' cannot '{me.Functions.Aggregate("", (a, c) => a + c.Name + "·", a => a.Trim('·'))}' for the given discriminators '{discriminators.Aggregate("", (a, c) => $"{a}, {c.Name}", a => a.Trim(',', ' ')) }'");
-                return res;
-            });
+            };
+            Printer.WriteLine($"● RESULT {nameof(CheckDiscriminators2)}: {res}");
+            return res;
         }
         internal static bool CheckDiscriminators(this IInternalRolCan me, bool forAll, params IDiscriminator[] discriminators)
         {
@@ -183,9 +190,10 @@ namespace Fuxion.Identity
         }
         internal static IEnumerable<(PropertyInfo PropertyInfo, Type PropertyType, Type DiscriminatorType, object DiscriminatorTypeId)> GetDiscriminatedProperties(this Type me)
         {
-            using (Printer.Indent2($"GetDiscriminatedProperties({me.Name})"))
+            IEnumerable<(PropertyInfo PropertyInfo, Type PropertyType, Type DiscriminatorType, object DiscriminatorTypeId)> res = null;
+            using (Printer.Indent2($"CALL {nameof(GetDiscriminatedProperties)}", '│'))
             {
-                var res = me.GetRuntimeProperties()
+                res = me.GetRuntimeProperties()
                    .Where(p => p.GetCustomAttribute<DiscriminatedByAttribute>(true, false, false) != null)
                    .Select(p => (
                        PropertyInfo: p,
@@ -194,10 +202,13 @@ namespace Fuxion.Identity
                        DiscriminatorTypeId:
                            p.GetCustomAttribute<DiscriminatedByAttribute>(true).Type.GetTypeInfo()
                                .GetCustomAttribute<DiscriminatorAttribute>(true).TypeId));
+            }
+            using (Printer.Indent2($"● RESULT {nameof(GetDiscriminatedProperties)}", '●'))
+            {
                 foreach (var p in res)
                     Printer.WriteLine($"Property '{p.PropertyInfo.Name}' of type '{p.PropertyType.Name}' is discriminated by '{p.DiscriminatorTypeId.ToString()}' of type '{p.DiscriminatorType.Name}'");
                 return res;
-            }   
+            }
         }
         internal static IEnumerable<IDiscriminator> GetDiscriminatorsOfDiscriminatedProperties(this Type me, object value = null)
         =>
@@ -212,16 +223,16 @@ namespace Fuxion.Identity
         
         internal static Expression<Func<TEntity, bool>> FilterExpression2<TEntity>(this IRol me, IFunction[] functions, IEnumerable<TEntity> source)
         {
-            return Printer.Indent($"{typeof(IdentityExtensions).GetTypeInfo().DeclaredMethods.FirstOrDefault(m => m.Name == nameof(FilterExpression2)).GetSignature()}:", () =>
-            {
-                Printer.Indent("Input parameters:", () =>
+            Expression<Func<TEntity, bool>> res = null;
+            using (Printer.Indent2($"{typeof(IdentityExtensions).GetTypeInfo().DeclaredMethods.FirstOrDefault(m => m.Name == nameof(FilterExpression2)).GetSignature()}:", '│')) {
+                using (Printer.Indent2("Input parameters:"))
                 {
                     Printer.WriteLine("Rol:");
                     new[] { me }.Print(PrintMode.Table);
                     Printer.WriteLine("Functions:");
                     functions.Print(PrintMode.Table);
                     Printer.WriteLine("Type: " + typeof(TEntity).Name);
-                });
+                }
                 #region Methods
                 MethodInfo GetCastMethod(Type type) =>
                     typeof(Enumerable).GetTypeInfo().DeclaredMethods
@@ -270,19 +281,7 @@ namespace Fuxion.Identity
                 }
                 #endregion 
                 var props = typeof(TEntity).GetDiscriminatedProperties();
-                //var props = typeof(TEntity).GetRuntimeProperties()
-                //   .Where(p => p.GetCustomAttribute<DiscriminatedByAttribute>(true, false, false) != null)
-                //   .Select(p => new
-                //   {
-                //       PropertyInfo = p,
-                //       PropertyType = p.PropertyType,
-                //       DiscriminatorType = p.GetCustomAttribute<DiscriminatedByAttribute>(true).Type,
-                //       DiscriminatorTypeId =
-                //           p.GetCustomAttribute<DiscriminatedByAttribute>(true).Type.GetTypeInfo()
-                //               .GetCustomAttribute<DiscriminatorAttribute>(true).TypeId,
-                //   });
                 Printer.Foreach("Properties:", props, p => Printer.WriteLine($"{p.PropertyType.Name} {p.PropertyInfo.Name} - {p.DiscriminatorTypeId} {p.DiscriminatorType.Name}"));
-                Expression<Func<TEntity, bool>> res = null;
                 var pers = functions.SelectMany(fun => me.SearchPermissions2(
                         fun,
                         Factory.Get<TypeDiscriminatorFactory>().FromType<TEntity>(),
@@ -369,99 +368,104 @@ namespace Fuxion.Identity
                 if (denyPersExp != null && grantPersExp == null) res = denyPersExp;
                 if (denyPersExp == null && grantPersExp != null) res = grantPersExp;
                 res = res ?? Expression.Lambda<Func<TEntity, bool>>(Expression.Constant(false), Expression.Parameter(typeof(TEntity)));
+                //Printer.WriteLine("Expression:");
+                //PrintExpression(res?.Body);
+                //if (Printer.IsLineWritePending) Printer.WriteLine("");
 
-                #region PrintExpression
-                void PrintExpression(Expression exp)
+                //return res;
+            }
+            #region PrintExpression
+            void PrintExpression(Expression exp)
+            {
+                if (exp == null) Printer.WriteLine("NULL");
+                else if (exp is BinaryExpression)
+                    PrintBinaryExpression(exp as BinaryExpression);
+                else if (exp is MethodCallExpression)
+                    PrintMethodCallExpression(exp as MethodCallExpression);
+                else if (exp is ConstantExpression)
+                    PrintConstantExpression(exp as ConstantExpression);
+                else if (exp is MemberExpression)
+                    PrintMemberExpression(exp as MemberExpression);
+                else if (exp is UnaryExpression)
+                    PrintUnaryExpression(exp as UnaryExpression);
+                else
+                    Printer.WriteLine($"'{exp.GetType().Name}'");
+            }
+            void PrintBinaryExpression(BinaryExpression exp)
+            {
+                Printer.Indent("(", () =>
                 {
-                    if (exp == null) Printer.WriteLine("NULL");
-                    else if (exp is BinaryExpression)
-                        PrintBinaryExpression(exp as BinaryExpression);
-                    else if (exp is MethodCallExpression)
-                        PrintMethodCallExpression(exp as MethodCallExpression);
-                    else if (exp is ConstantExpression)
-                        PrintConstantExpression(exp as ConstantExpression);
-                    else if (exp is MemberExpression)
-                        PrintMemberExpression(exp as MemberExpression);
-                    else if (exp is UnaryExpression)
-                        PrintUnaryExpression(exp as UnaryExpression);
-                    else
-                        Printer.WriteLine($"'{exp.GetType().Name}'");
-                }
-                void PrintBinaryExpression(BinaryExpression exp)
-                {
-                    Printer.Indent("(", () =>
-                    {
-                        PrintExpression(exp.Left);
-                        if (Printer.IsLineWritePending) Printer.WriteLine("");
-                        Printer.WriteLine(exp.NodeType.ToString().ToUpper());
-                        PrintExpression(exp.Right);
-                        if (Printer.IsLineWritePending) Printer.WriteLine("");
-                    });
+                    PrintExpression(exp.Left);
                     if (Printer.IsLineWritePending) Printer.WriteLine("");
-                    Printer.WriteLine(")");
-                }
-                void PrintMethodCallExpression(MethodCallExpression exp)
+                    Printer.WriteLine(exp.NodeType.ToString().ToUpper());
+                    PrintExpression(exp.Right);
+                    if (Printer.IsLineWritePending) Printer.WriteLine("");
+                });
+                if (Printer.IsLineWritePending) Printer.WriteLine("");
+                Printer.WriteLine(")");
+            }
+            void PrintMethodCallExpression(MethodCallExpression exp)
+            {
+                var isExtenssionMethod = exp.Method.GetCustomAttribute<ExtensionAttribute>() != null;
+                if (isExtenssionMethod)
                 {
-                    var isExtenssionMethod = exp.Method.GetCustomAttribute<ExtensionAttribute>() != null;
-                    if (isExtenssionMethod)
-                    {
-                        PrintExpression(exp.Arguments[0]);
-                        Printer.Write($".{exp.Method.Name}(");
-                        foreach (var e in exp.Arguments.Skip(1))
-                            PrintExpression(e);
-                    }
-                    else
-                    {
-                        Printer.Write($"{exp.Method.Name}(");
-                        foreach (var e in exp.Arguments)
-                            PrintExpression(e);
-                    }
-                    Printer.Write(")");
+                    PrintExpression(exp.Arguments[0]);
+                    Printer.Write($".{exp.Method.Name}(");
+                    foreach (var e in exp.Arguments.Skip(1))
+                        PrintExpression(e);
                 }
-                void PrintConstantExpression(ConstantExpression exp)
+                else
                 {
-                    string r = "";
-                    if (exp.Value == null)
-                        r += "null";
-                    else if (exp.Value.GetType().IsSubclassOfRawGeneric(typeof(List<>)))
-                    {
-                        string toAdd = "[";
-                        foreach (var obj in (IEnumerable)exp.Value)
-                            toAdd += obj + ", ";
-                        toAdd = toAdd.Trim(' ', ',') + "]";
-                        r += toAdd;
-                    }
-                    else
-                        r += exp.Value;
-                    Printer.Write(r);
+                    Printer.Write($"{exp.Method.Name}(");
+                    foreach (var e in exp.Arguments)
+                        PrintExpression(e);
                 }
-                void PrintMemberExpression(MemberExpression exp)
+                Printer.Write(")");
+            }
+            void PrintConstantExpression(ConstantExpression exp)
+            {
+                string r = "";
+                if (exp.Value == null)
+                    r += "null";
+                else if (exp.Value.GetType().IsSubclassOfRawGeneric(typeof(List<>)))
                 {
-                    string r = "";
-                    r += exp.Member.Name;
-                    Printer.Write(r);
+                    string toAdd = "[";
+                    foreach (var obj in (IEnumerable)exp.Value)
+                        toAdd += obj + ", ";
+                    toAdd = toAdd.Trim(' ', ',') + "]";
+                    r += toAdd;
                 }
-                void PrintUnaryExpression(UnaryExpression exp)
+                else
+                    r += exp.Value;
+                Printer.Write(r);
+            }
+            void PrintMemberExpression(MemberExpression exp)
+            {
+                string r = "";
+                r += exp.Member.Name;
+                Printer.Write(r);
+            }
+            void PrintUnaryExpression(UnaryExpression exp)
+            {
+                switch (exp.NodeType)
                 {
-                    switch (exp.NodeType)
-                    {
-                        case ExpressionType.Not:
-                            Printer.Write("!");
-                            break;
-                        default:
-                            Printer.Write("<undefined>");
-                            break;
-                    }
-                    PrintExpression(exp.Operand);
+                    case ExpressionType.Not:
+                        Printer.Write("!");
+                        break;
+                    default:
+                        Printer.Write("<undefined>");
+                        break;
                 }
-                #endregion
-
+                PrintExpression(exp.Operand);
+            }
+            #endregion
+            using (Printer.Indent2($"● RESULT {nameof(SearchPermissions2)}:", '●'))
+            {
                 Printer.WriteLine("Expression:");
                 PrintExpression(res?.Body);
-                if (Printer.IsLineWritePending) Printer.WriteLine("");
-
-                return res;
-            });
+            }
+            return res;
+            
         }
         internal static Expression<Func<TEntity, bool>> FilterExpression<TEntity>(this IRol me, IFunction[] functions)
         {

@@ -33,6 +33,12 @@ namespace Fuxion.Identity
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         IEnumerable<IDiscriminator<string, string>> IExclusive<IDiscriminator<string, string>>.Exclusions { get { return Exclusions; } }
 
+        public static TypeDiscriminator Empty => new TypeDiscriminator
+        {
+            TypeId = TypeDiscriminatorId,
+            TypeName = TypeDiscriminatorId
+        };
+
         public override string ToString() { return this.ToOneLineString(); }
 
         public override bool Equals(object obj)

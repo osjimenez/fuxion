@@ -90,12 +90,13 @@ namespace Fuxion.Identity.Test.Dao
     }
     [Discriminator("CAT")]
     [Table(nameof(CategoryDao))]
+    [TypeDiscriminated(TypeDiscriminatorIds.Category)]
     public class CategoryDao : DiscriminatorDao
     {
         [DiscriminatedBy(typeof(CategoryDao))]
         public new string Id { get { return base.Id; } set { base.Id = value; } }
         public CategoryDao Parent { get; set; }
-        [DiscriminatedBy(typeof(CategoryDao))]
+        //[DiscriminatedBy(typeof(CategoryDao))]
         public string ParentId { get; set; }
         public IEnumerable<CategoryDao> Children { get; set; }
 
