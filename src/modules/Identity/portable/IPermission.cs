@@ -16,7 +16,7 @@ namespace Fuxion.Identity
     }
     public static class PermissionExtensions
     {
-        public static bool IsValid(this IPermission me) { return me.Function != null && (me.Scopes?.All(s => s.Discriminator != null) ?? true) && me.Scopes?.Select(s => s.Discriminator.TypeId).Distinct().Count() == me.Scopes?.Count(); }
+        //public static bool IsValid(this IPermission me) { return me.Function != null && (me.Scopes?.All(s => s.Discriminator != null) ?? true) && me.Scopes?.Select(s => s.Discriminator.TypeId).Distinct().Count() == me.Scopes?.Count(); }
         internal static bool Match2(this IPermission me, IFunction function, IDiscriminator targetDiscriminator, params IDiscriminator[] discriminators)
         {
             bool res = false;
@@ -55,52 +55,52 @@ namespace Fuxion.Identity
             Printer.WriteLine($"● RESULT {nameof(Match2)}: {res}");
             return res;
         }
-        internal static bool Match(this IPermission me, IFunction function = null, params IDiscriminator[] discriminators)
-        {
-            bool res = false;
-            using (Printer.Indent2($"CALL {nameof(Match)}:", '│'))
-            {
-                using (Printer.Indent2("Input parameters"))
-                {
-                    Printer.WriteLine($"Permission:");
-                    new[] { me }.Print(PrintMode.Table);
-                    Printer.WriteLine($"Function: {function?.Name ?? "<null>"}");
-                    Printer.WriteLine($"Discriminators:");
-                    discriminators.Print(PrintMode.Table);
-                }
-                bool Compute()
-                {
-                    if (function == null || me.MatchByFunction(function))
-                    {
-                        if (discriminators == null || !discriminators.Any() || me.MatchByDiscriminatorsType(discriminators))
-                        {
-                            if (discriminators == null || !discriminators.Any() || me.MatchByDiscriminatorsInclusionsAndExclusions(discriminators))
-                            {
-                                return true;
-                            }
-                            else
-                            {
-                                Printer.WriteLine($"Matching failed on check the inclusions/exclusions of discriminator");
-                                return false;
-                            }
-                        }
-                        else
-                        {
-                            Printer.WriteLine($"Matching failed on check the type of discriminator");
-                            return false;
-                        }
-                    }
-                    else
-                    {
-                        Printer.WriteLine($"Matching failed on check the function");
-                        return false;
-                    }
-                }
-                res = Compute();
-            }
-            Printer.WriteLine($"● RESULT {nameof(Match)}: {res}");
-            return res;
-        }
+        //internal static bool Match(this IPermission me, IFunction function = null, params IDiscriminator[] discriminators)
+        //{
+        //    bool res = false;
+        //    using (Printer.Indent2($"CALL {nameof(Match)}:", '│'))
+        //    {
+        //        using (Printer.Indent2("Input parameters"))
+        //        {
+        //            Printer.WriteLine($"Permission:");
+        //            new[] { me }.Print(PrintMode.Table);
+        //            Printer.WriteLine($"Function: {function?.Name ?? "<null>"}");
+        //            Printer.WriteLine($"Discriminators:");
+        //            discriminators.Print(PrintMode.Table);
+        //        }
+        //        bool Compute()
+        //        {
+        //            if (function == null || me.MatchByFunction(function))
+        //            {
+        //                if (discriminators == null || !discriminators.Any() || me.MatchByDiscriminatorsType(discriminators))
+        //                {
+        //                    if (discriminators == null || !discriminators.Any() || me.MatchByDiscriminatorsInclusionsAndExclusions(discriminators))
+        //                    {
+        //                        return true;
+        //                    }
+        //                    else
+        //                    {
+        //                        Printer.WriteLine($"Matching failed on check the inclusions/exclusions of discriminator");
+        //                        return false;
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    Printer.WriteLine($"Matching failed on check the type of discriminator");
+        //                    return false;
+        //                }
+        //            }
+        //            else
+        //            {
+        //                Printer.WriteLine($"Matching failed on check the function");
+        //                return false;
+        //            }
+        //        }
+        //        res = Compute();
+        //    }
+        //    Printer.WriteLine($"● RESULT {nameof(Match)}: {res}");
+        //    return res;
+        //}
         internal static bool MatchByFunction(this IPermission me, IFunction function)
         {
             bool res = false;
@@ -134,117 +134,74 @@ namespace Fuxion.Identity
             Printer.WriteLine($"● RESULT {nameof(MatchByFunction)}: {res}");
             return res;
         }
-        internal static bool MatchByDiscriminatorsType(this IPermission me, params IDiscriminator[] discriminators)
-        {
-            return true;
-            //using (Printer.Indent2($"{nameof(PermissionExtensions)}.{nameof(MatchByDiscriminatorsType)}:"))
-            //{
-            //    using (Printer.Indent2("Input parameters"))
-            //    {
-            //        Printer.WriteLine("Permission:");
-            //        new[] { me }.Print(PrintMode.Table);
-            //        Printer.WriteLine("Discriminators:");
-            //        discriminators.Print(PrintMode.Table);
-            //    }
-            //    bool res = false;
-            //    Printer.WriteLine("Or my permission haven't scopes or some of these scopes match by discriminator type with any of given discriminators.");
-            //    if (me.Scopes.Count() == 0)
-            //    {
-            //        Printer.WriteLine($"This permission hasn't any scope");
-            //        //res = me.Value;
-            //        res = true;
-            //    }
-            //    else
-            //    {
-            //        var scos = me.Scopes.Where(s => discriminators.Select(d => d.TypeId).Contains(s.Discriminator.TypeId)).ToList();
-            //        Printer.WriteLine($"This permission has '{scos.Count()}' scopes for type of given discriminators");
-            //        if(scos.Count == 0)
-            //        {
+        //internal static bool MatchByDiscriminatorsType(this IPermission me, params IDiscriminator[] discriminators)
+        //{
+        //    return true;
+        //    //using (Printer.Indent2($"{nameof(PermissionExtensions)}.{nameof(MatchByDiscriminatorsType)}:"))
+        //    //{
+        //    //    using (Printer.Indent2("Input parameters"))
+        //    //    {
+        //    //        Printer.WriteLine("Permission:");
+        //    //        new[] { me }.Print(PrintMode.Table);
+        //    //        Printer.WriteLine("Discriminators:");
+        //    //        discriminators.Print(PrintMode.Table);
+        //    //    }
+        //    //    bool res = false;
+        //    //    Printer.WriteLine("Or my permission haven't scopes or some of these scopes match by discriminator type with any of given discriminators.");
+        //    //    if (me.Scopes.Count() == 0)
+        //    //    {
+        //    //        Printer.WriteLine($"This permission hasn't any scope");
+        //    //        //res = me.Value;
+        //    //        res = true;
+        //    //    }
+        //    //    else
+        //    //    {
+        //    //        var scos = me.Scopes.Where(s => discriminators.Select(d => d.TypeId).Contains(s.Discriminator.TypeId)).ToList();
+        //    //        Printer.WriteLine($"This permission has '{scos.Count()}' scopes for type of given discriminators");
+        //    //        if(scos.Count == 0)
+        //    //        {
 
-            //            res = true;
-            //        }
-            //        else
-            //        {
-            //            res = true;
-            //        }
+        //    //            res = true;
+        //    //        }
+        //    //        else
+        //    //        {
+        //    //            res = true;
+        //    //        }
 
 
 
-            //        //res = scos.Count() > 0 ? !me.Value : true;
+        //    //        //res = scos.Count() > 0 ? !me.Value : true;
 
-            //        //var typeDis = discriminators.FirstOrDefault(d => d.TypeId.ToString() == TypeDiscriminator.TypeDiscriminatorId);
-            //        //if (typeDis != null) using (Printer.Indent2($"Has a discriminator 'TypeDiscriminator' = '{typeDis}'"))
-            //        //    {
-            //        //        var types = Factory.Get<TypeDiscriminatorFactory>().TypesFromId(typeDis.Id.ToString());
-            //        //        foreach(var type in types)
-            //        //        {
-            //        //            if(!type.GetRuntimeProperties()
-            //        //               .Where(p => p.GetCustomAttribute<DiscriminatedByAttribute>(true, false, false) != null)
-            //        //               .Select(p => new
-            //        //               {
-            //        //                   PropertyInfo = p,
-            //        //                   PropertyType = p.PropertyType,
-            //        //                   DiscriminatorType = p.GetCustomAttribute<DiscriminatedByAttribute>(true).Type,
-            //        //                   DiscriminatorTypeId =
-            //        //                       p.GetCustomAttribute<DiscriminatedByAttribute>(true).Type.GetTypeInfo()
-            //        //                           .GetCustomAttribute<DiscriminatorAttribute>(true).TypeId,
-            //        //               })
-            //        //               .Any(p => me.Scopes.Select(s => s.Discriminator.TypeId).Contains(p.DiscriminatorTypeId)))
-            //        //            {
-            //        //                Debug.WriteLine("");
-            //        //            }
-            //        //        }
-            //        //        //((TypeDiscriminator)typeSco.Discriminator)
-            //        //    }
-            //        //else res = true;
-            //    }
-            //    Printer.WriteLine($"● RESULT: {res}");
-            //    return res;
-            //}
-        }
-        internal static bool MatchByDiscriminatorsInclusionsAndExclusions22(this IPermission me, IDiscriminator targetDiscriminator, params IDiscriminator[] discriminators)
-        {
-            if (discriminators.Any(d => Comparer.AreEquals(d.TypeId, TypeDiscriminator.TypeDiscriminatorId)))
-                throw new ArgumentException("discriminators cannot contains a TypeDiscriminator");
-            if (targetDiscriminator != null && !Comparer.AreEquals(targetDiscriminator.TypeId, TypeDiscriminator.TypeDiscriminatorId))
-                throw new ArgumentException("target discriminator must be a TypeDiscriminator");
-            if (targetDiscriminator == null)
-                throw new ArgumentException("target discriminator cannot be null");
-            using (Printer.Indent2($"{typeof(PermissionExtensions).GetTypeInfo().DeclaredMethods.FirstOrDefault(m => m.Name == nameof(MatchByDiscriminatorsInclusionsAndExclusions2)).GetSignature()}:", '│'))
-            {
-                discriminators = (discriminators ?? new IDiscriminator[] { }).Concat(new[] { targetDiscriminator }).RemoveNulls().ToArray();
-                using (Printer.Indent2("Input parameters"))
-                {
-                    Printer.WriteLine("Permission:");
-                    new[] { me }.Print(PrintMode.Table);
-                    //if (targetDiscriminator == null)
-                    //    Printer.WriteLine($"Target discriminator: null");
-                    //else
-                    //{
-                    //    Printer.WriteLine($"Target discriminator:");
-                    //    new[] { targetDiscriminator }.Print(PrintMode.Table);
-                    //}
-                    Printer.WriteLine("Discriminators:");
-                    discriminators.Print(PrintMode.Table);
-                }
-                // var clon = me.CloneWithJson();
-                //using (Printer.Indent2("Processed parameters"))
-                //{
-                //    Printer.WriteLine("Permission:");
-                //    new[] { me }.Print(PrintMode.Table);
-                //    //if (targetDiscriminator == null)
-                //    //    Printer.WriteLine($"Target discriminator: null");
-                //    //else
-                //    //{
-                //    //    Printer.WriteLine($"Target discriminator:");
-                //    //    new[] { targetDiscriminator }.Print(PrintMode.Table);
-                //    //}
-                //    Printer.WriteLine("Discriminators:");
-                //    discriminators.Print(PrintMode.Table);
-                //}
-                return false;
-            }
-        }
+        //    //        //var typeDis = discriminators.FirstOrDefault(d => d.TypeId.ToString() == TypeDiscriminator.TypeDiscriminatorId);
+        //    //        //if (typeDis != null) using (Printer.Indent2($"Has a discriminator 'TypeDiscriminator' = '{typeDis}'"))
+        //    //        //    {
+        //    //        //        var types = Factory.Get<TypeDiscriminatorFactory>().TypesFromId(typeDis.Id.ToString());
+        //    //        //        foreach(var type in types)
+        //    //        //        {
+        //    //        //            if(!type.GetRuntimeProperties()
+        //    //        //               .Where(p => p.GetCustomAttribute<DiscriminatedByAttribute>(true, false, false) != null)
+        //    //        //               .Select(p => new
+        //    //        //               {
+        //    //        //                   PropertyInfo = p,
+        //    //        //                   PropertyType = p.PropertyType,
+        //    //        //                   DiscriminatorType = p.GetCustomAttribute<DiscriminatedByAttribute>(true).Type,
+        //    //        //                   DiscriminatorTypeId =
+        //    //        //                       p.GetCustomAttribute<DiscriminatedByAttribute>(true).Type.GetTypeInfo()
+        //    //        //                           .GetCustomAttribute<DiscriminatorAttribute>(true).TypeId,
+        //    //        //               })
+        //    //        //               .Any(p => me.Scopes.Select(s => s.Discriminator.TypeId).Contains(p.DiscriminatorTypeId)))
+        //    //        //            {
+        //    //        //                Debug.WriteLine("");
+        //    //        //            }
+        //    //        //        }
+        //    //        //        //((TypeDiscriminator)typeSco.Discriminator)
+        //    //        //    }
+        //    //        //else res = true;
+        //    //    }
+        //    //    Printer.WriteLine($"● RESULT: {res}");
+        //    //    return res;
+        //    //}
+        //}
         internal static bool MatchByDiscriminatorsInclusionsAndExclusions2(this IPermission me, IDiscriminator targetDiscriminator, params IDiscriminator[] discriminators)
         {
             bool res = false;
@@ -266,6 +223,8 @@ namespace Fuxion.Identity
                 }
                 if (discriminators.Any(d => Comparer.AreEquals(d.TypeId, TypeDiscriminator.TypeDiscriminatorId)))
                     throw new ArgumentException("discriminators cannot contains a TypeDiscriminator");
+                //if (targetDiscriminator == null)
+                //    throw new ArgumentException("target discriminator cannot be null");
                 if (targetDiscriminator != null && !Comparer.AreEquals(targetDiscriminator.TypeId, TypeDiscriminator.TypeDiscriminatorId))
                     throw new ArgumentException("target discriminator must be a TypeDiscriminator");
                 bool Compute() {
@@ -273,7 +232,7 @@ namespace Fuxion.Identity
                     if (targetDiscriminator == null)
                     {
                         Printer.WriteLine($"'{nameof(targetDiscriminator)}' is null");
-                        return true;
+                        //return true;
                     }
                     // Si el permiso no define scopes, TRUE
                     if (!me.Scopes.Any())
@@ -283,7 +242,7 @@ namespace Fuxion.Identity
                     }
                     // Compruebo el discriminador objetivo
                     {
-                        var scopeOfTypeOfTarget = me.Scopes.FirstOrDefault(s => Comparer.AreEquals(s.Discriminator.TypeId, targetDiscriminator.TypeId));
+                        var scopeOfTypeOfTarget = me.Scopes.FirstOrDefault(s => Comparer.AreEquals(s.Discriminator.TypeId, targetDiscriminator?.TypeId));
                         if(scopeOfTypeOfTarget != null)
                         {
                             Printer.WriteLine($"The target discriminator '{targetDiscriminator}' and permission scope '{scopeOfTypeOfTarget}' have same type '{targetDiscriminator.TypeId}', continue");
@@ -351,123 +310,123 @@ namespace Fuxion.Identity
             Printer.WriteLine($"● RESULT {nameof(MatchByDiscriminatorsInclusionsAndExclusions2)}: {res}");
             return res;
         }
-        internal static bool MatchByDiscriminatorsInclusionsAndExclusions(this IPermission me, params IDiscriminator[] discriminators)
-        {
-            using (Printer.Indent2($"{typeof(PermissionExtensions).GetTypeInfo().DeclaredMethods.FirstOrDefault(m => m.Name == nameof(MatchByDiscriminatorsInclusionsAndExclusions)).GetSignature()}:"))
-            {
-                using (Printer.Indent2("Input parameters"))
-                {
-                    Printer.WriteLine("Permission:");
-                    new[] { me }.Print(PrintMode.Table);
-                    Printer.WriteLine("Discriminators:");
-                    discriminators.Print(PrintMode.Table);
-                }
-                bool res = false;
-                if (!me.Scopes.Any())
-                {
-                    Printer.WriteLine($"Haven't scopes");
-                    res = true;
-                }
-                else
-                {
-                    using (Printer.Indent2("Analyze each scope:"))
-                    {
-                        // Tenemos que tomar nuestros discriminadores, y comprobarlos contra los discriminadores que me han pasado
-                        // - Cojo un discriminador y busco el discriminador del mismo tipo en la entrada:
-                        //    - No hay un discriminador del mismo tipo, pues no encaja
-                        //    - Si hay un discriminador del mismo tipo, compruebo la ruta
-                        var result = new List<bool?>();
-                        //var result = me.Scopes.Select<IScope, bool?>(sco => {
-                        foreach(var sco in me.Scopes)
-                        { 
-                            Printer.WriteLine($"Scope {sco}");
-                            Printer.IndentationLevel++;
-                            if (discriminators.Count(d => Comparer.AreEquals(d.TypeId, sco.Discriminator.TypeId)) == 1)
-                            {
-                                // Si hay un discriminador del mismo tipo, compruebo la ruta
-                                var target = discriminators.Single(d => Comparer.AreEquals(d.TypeId, sco.Discriminator.TypeId));
-                                Printer.WriteLine($"Se propaga a mi {sco.Propagation.HasFlag(ScopePropagation.ToMe)} ids = {target.Id}-{sco.Discriminator.Id}");
-                                // Se propaga a mi y es el mismo discriminador
-                                if (sco.Propagation.HasFlag(ScopePropagation.ToMe) && Comparer.AreEquals(target.Id, sco.Discriminator.Id))
-                                {
-                                    Printer.WriteLine($"Se propaga a mi y es el mismo discriminador");
-                                    result.Add(true);
-                                }
-                                // Se propaga hacia arriba y su id esta en mi path:
-                                else if (sco.Propagation.HasFlag(ScopePropagation.ToExclusions) && sco.Discriminator.GetAllExclusions().Contains(target))
-                                {
-                                    Printer.WriteLine($"Se propaga hacia arriba y su id esta en mi path");
-                                    result.Add(true);
-                                }
-                                // Se propaga hacia abajo y mi id esta en su path:
-                                else if (sco.Propagation.HasFlag(ScopePropagation.ToInclusions) && sco.Discriminator.GetAllInclusions().Contains(target))
-                                {
-                                    Printer.WriteLine($"Se propaga hacia abajo y mi id esta en su path");
-                                    result.Add(true);
-                                }
-                                else
-                                {
-                                    Printer.IndentationLevel--;
-                                    result.Add(false);
-                                }
-                            }
-                            else
-                            {
-                                // No hay un discriminador del mismo tipo, pues no encaja
-                                Printer.WriteLine($"No hay un discriminador del mismo tipo");
+        //internal static bool MatchByDiscriminatorsInclusionsAndExclusions(this IPermission me, params IDiscriminator[] discriminators)
+        //{
+        //    using (Printer.Indent2($"{typeof(PermissionExtensions).GetTypeInfo().DeclaredMethods.FirstOrDefault(m => m.Name == nameof(MatchByDiscriminatorsInclusionsAndExclusions)).GetSignature()}:"))
+        //    {
+        //        using (Printer.Indent2("Input parameters"))
+        //        {
+        //            Printer.WriteLine("Permission:");
+        //            new[] { me }.Print(PrintMode.Table);
+        //            Printer.WriteLine("Discriminators:");
+        //            discriminators.Print(PrintMode.Table);
+        //        }
+        //        bool res = false;
+        //        if (!me.Scopes.Any())
+        //        {
+        //            Printer.WriteLine($"Haven't scopes");
+        //            res = true;
+        //        }
+        //        else
+        //        {
+        //            using (Printer.Indent2("Analyze each scope:"))
+        //            {
+        //                // Tenemos que tomar nuestros discriminadores, y comprobarlos contra los discriminadores que me han pasado
+        //                // - Cojo un discriminador y busco el discriminador del mismo tipo en la entrada:
+        //                //    - No hay un discriminador del mismo tipo, pues no encaja
+        //                //    - Si hay un discriminador del mismo tipo, compruebo la ruta
+        //                var result = new List<bool?>();
+        //                //var result = me.Scopes.Select<IScope, bool?>(sco => {
+        //                foreach(var sco in me.Scopes)
+        //                { 
+        //                    Printer.WriteLine($"Scope {sco}");
+        //                    Printer.IndentationLevel++;
+        //                    if (discriminators.Count(d => Comparer.AreEquals(d.TypeId, sco.Discriminator.TypeId)) == 1)
+        //                    {
+        //                        // Si hay un discriminador del mismo tipo, compruebo la ruta
+        //                        var target = discriminators.Single(d => Comparer.AreEquals(d.TypeId, sco.Discriminator.TypeId));
+        //                        Printer.WriteLine($"Se propaga a mi {sco.Propagation.HasFlag(ScopePropagation.ToMe)} ids = {target.Id}-{sco.Discriminator.Id}");
+        //                        // Se propaga a mi y es el mismo discriminador
+        //                        if (sco.Propagation.HasFlag(ScopePropagation.ToMe) && Comparer.AreEquals(target.Id, sco.Discriminator.Id))
+        //                        {
+        //                            Printer.WriteLine($"Se propaga a mi y es el mismo discriminador");
+        //                            result.Add(true);
+        //                        }
+        //                        // Se propaga hacia arriba y su id esta en mi path:
+        //                        else if (sco.Propagation.HasFlag(ScopePropagation.ToExclusions) && sco.Discriminator.GetAllExclusions().Contains(target))
+        //                        {
+        //                            Printer.WriteLine($"Se propaga hacia arriba y su id esta en mi path");
+        //                            result.Add(true);
+        //                        }
+        //                        // Se propaga hacia abajo y mi id esta en su path:
+        //                        else if (sco.Propagation.HasFlag(ScopePropagation.ToInclusions) && sco.Discriminator.GetAllInclusions().Contains(target))
+        //                        {
+        //                            Printer.WriteLine($"Se propaga hacia abajo y mi id esta en su path");
+        //                            result.Add(true);
+        //                        }
+        //                        else
+        //                        {
+        //                            Printer.IndentationLevel--;
+        //                            result.Add(false);
+        //                        }
+        //                    }
+        //                    else
+        //                    {
+        //                        // No hay un discriminador del mismo tipo, pues no encaja
+        //                        Printer.WriteLine($"No hay un discriminador del mismo tipo");
 
 
 
-                                //var typeDis = discriminators.FirstOrDefault(d => d.TypeId.ToString() == TypeDiscriminator.TypeDiscriminatorId);
-                                //if (typeDis != null) using (Printer.Indent2($"Has a discriminator 'TypeDiscriminator' = '{typeDis}'"))
-                                //    {
-                                //        var types = Factory.Get<TypeDiscriminatorFactory>().TypesFromId(typeDis.Id.ToString());
-                                //        foreach (var type in types)
-                                //        {
-                                //            var props = type.GetRuntimeProperties()
-                                //               .Where(p => p.GetCustomAttribute<DiscriminatedByAttribute>(true, false, false) != null)
-                                //               .Select(p => new
-                                //               {
-                                //                   PropertyInfo = p,
-                                //                   PropertyType = p.PropertyType,
-                                //                   DiscriminatorType = p.GetCustomAttribute<DiscriminatedByAttribute>(true).Type,
-                                //                   DiscriminatorTypeId =
-                                //                       p.GetCustomAttribute<DiscriminatedByAttribute>(true).Type.GetTypeInfo()
-                                //                           .GetCustomAttribute<DiscriminatorAttribute>(true).TypeId,
-                                //               })
-                                //               .Where(p => me.Scopes.Select(s => s.Discriminator.TypeId).Contains(p.DiscriminatorTypeId));
-                                //            {
-                                //                Debug.WriteLine("");
-                                //                if (props.Count() > 0)
-                                //                {
-                                //                    return false;
-                                //                }
-                                //            }
-                                //        }
-                                //        //((TypeDiscriminator)typeSco.Discriminator)
-                                //        return true;
-                                //    }
-                                //else return true;
+        //                        //var typeDis = discriminators.FirstOrDefault(d => d.TypeId.ToString() == TypeDiscriminator.TypeDiscriminatorId);
+        //                        //if (typeDis != null) using (Printer.Indent2($"Has a discriminator 'TypeDiscriminator' = '{typeDis}'"))
+        //                        //    {
+        //                        //        var types = Factory.Get<TypeDiscriminatorFactory>().TypesFromId(typeDis.Id.ToString());
+        //                        //        foreach (var type in types)
+        //                        //        {
+        //                        //            var props = type.GetRuntimeProperties()
+        //                        //               .Where(p => p.GetCustomAttribute<DiscriminatedByAttribute>(true, false, false) != null)
+        //                        //               .Select(p => new
+        //                        //               {
+        //                        //                   PropertyInfo = p,
+        //                        //                   PropertyType = p.PropertyType,
+        //                        //                   DiscriminatorType = p.GetCustomAttribute<DiscriminatedByAttribute>(true).Type,
+        //                        //                   DiscriminatorTypeId =
+        //                        //                       p.GetCustomAttribute<DiscriminatedByAttribute>(true).Type.GetTypeInfo()
+        //                        //                           .GetCustomAttribute<DiscriminatorAttribute>(true).TypeId,
+        //                        //               })
+        //                        //               .Where(p => me.Scopes.Select(s => s.Discriminator.TypeId).Contains(p.DiscriminatorTypeId));
+        //                        //            {
+        //                        //                Debug.WriteLine("");
+        //                        //                if (props.Count() > 0)
+        //                        //                {
+        //                        //                    return false;
+        //                        //                }
+        //                        //            }
+        //                        //        }
+        //                        //        //((TypeDiscriminator)typeSco.Discriminator)
+        //                        //        return true;
+        //                        //    }
+        //                        //else return true;
 
 
 
-                                Printer.IndentationLevel--;
-                                result.Add(null);
-                            }
-                        }
-                        Printer.WriteLine($"results: {result.Aggregate("", (c, a) => c + ", " + (a == null ? "null" : a.ToString()), a => a.Trim(',', ' '))}");
-                        // Si hay algún resultado false, será FALSE
-                        res = me.Value 
-                            ? !result.Any(r => r.HasValue && !r.Value)
-                            : !result.Any(r => !r.HasValue || !r.Value);
-                        //return result.Any(r => r.HasValue && r.Value) // Si algun resultado tiene valor y es true, TRUE
-                        //    || result.All(r => !r.HasValue || r.Value); // Si todos los resultados o son true o no tienen valor (no hay ningún false), TRUE
-                    }
-                }
-                Printer.WriteLine($"● RESULT: {res}");
-                return res;
-            }
-        }
+        //                        Printer.IndentationLevel--;
+        //                        result.Add(null);
+        //                    }
+        //                }
+        //                Printer.WriteLine($"results: {result.Aggregate("", (c, a) => c + ", " + (a == null ? "null" : a.ToString()), a => a.Trim(',', ' '))}");
+        //                // Si hay algún resultado false, será FALSE
+        //                res = me.Value 
+        //                    ? !result.Any(r => r.HasValue && !r.Value)
+        //                    : !result.Any(r => !r.HasValue || !r.Value);
+        //                //return result.Any(r => r.HasValue && r.Value) // Si algun resultado tiene valor y es true, TRUE
+        //                //    || result.All(r => !r.HasValue || r.Value); // Si todos los resultados o son true o no tienen valor (no hay ningún false), TRUE
+        //            }
+        //        }
+        //        Printer.WriteLine($"● RESULT: {res}");
+        //        return res;
+        //    }
+        //}
         public static string ToOneLineString(this IPermission me)
             => $"{me.Value} - {me.Function.Name} - {me.Scopes.Count()}";
         public static void Print(this IEnumerable<IPermission> me, PrintMode mode)

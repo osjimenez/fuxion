@@ -23,12 +23,12 @@ namespace Fuxion.Identity.Test
             var ttt = new GuidDiscriminator(default(Guid),       "valid", Guid.NewGuid(), "valid");
 
             // Invalid by Id
-            Assert.False(new GuidDiscriminator(default(Guid) , "valid", Guid.NewGuid(), "valid").IsValid());
+            Assert.True(new GuidDiscriminator(default(Guid) , "valid", Guid.NewGuid(), "valid").IsValid());
 
             // Invalid by Name
-            Assert.False(new GuidDiscriminator(Guid.NewGuid(), null   , Guid.NewGuid(), "valid").IsValid());
-            Assert.False(new GuidDiscriminator(Guid.NewGuid(), ""     , Guid.NewGuid(), "valid").IsValid());
-            Assert.False(new GuidDiscriminator(Guid.NewGuid(), " "    , Guid.NewGuid(), "valid").IsValid());
+            Assert.True(new GuidDiscriminator(Guid.NewGuid(), null   , Guid.NewGuid(), "valid").IsValid());
+            Assert.True(new GuidDiscriminator(Guid.NewGuid(), ""     , Guid.NewGuid(), "valid").IsValid());
+            Assert.True(new GuidDiscriminator(Guid.NewGuid(), " "    , Guid.NewGuid(), "valid").IsValid());
 
             // Invalid by TypeId
             Assert.False(new GuidDiscriminator(Guid.NewGuid(), "valid", default(Guid) , "valid").IsValid());
@@ -45,13 +45,11 @@ namespace Fuxion.Identity.Test
         public void Validate_StringDiscriminator()
         {
             // Name and Id are same value
-            // Invalid by Name
-            Assert.False(new StringDiscriminator(null, null, null, "valid").IsValid());
-            Assert.False(new StringDiscriminator(""  , null, null, "valid").IsValid());
-            Assert.False(new StringDiscriminator(" " , null, null, "valid").IsValid());
+            Assert.True(new StringDiscriminator(null, null, null, "valid").IsValid());
+            Assert.True(new StringDiscriminator(""  , null, null, "valid").IsValid());
+            Assert.True(new StringDiscriminator(" " , null, null, "valid").IsValid());
 
             // TypeName and TypeId are same value
-            // Invalid by TypeName
             Assert.False(new StringDiscriminator("valid", null, null, null).IsValid());
             Assert.False(new StringDiscriminator("valid", null, null, ""  ).IsValid());
             Assert.False(new StringDiscriminator("valid", null, null, " ").IsValid());
@@ -62,21 +60,20 @@ namespace Fuxion.Identity.Test
         [Fact(DisplayName = "Discriminator - Validate guid string type")]
         public void Validate_GuidStringDiscriminator()
         {
-            // Invalid by Id
-            Assert.False(new GuidStringDiscriminator(default(Guid), "valid", null, null, "valid").IsValid());
+            // Id
+            Assert.True(new GuidStringDiscriminator(default(Guid), "valid", null, null, "valid").IsValid());
 
-            // Invalid by Name
-            Assert.False(new GuidStringDiscriminator(Guid.NewGuid(), null, null, null, "valid").IsValid());
-            Assert.False(new GuidStringDiscriminator(Guid.NewGuid(), "", null, null, "valid").IsValid());
-            Assert.False(new GuidStringDiscriminator(Guid.NewGuid(), " ", null, null, "valid").IsValid());
+            // Name
+            Assert.True(new GuidStringDiscriminator(Guid.NewGuid(), null, null, null, "valid").IsValid());
+            Assert.True(new GuidStringDiscriminator(Guid.NewGuid(), "", null, null, "valid").IsValid());
+            Assert.True(new GuidStringDiscriminator(Guid.NewGuid(), " ", null, null, "valid").IsValid());
 
             // TypeName and TypeId are same value
-            // Invalid by Typename
             Assert.False(new GuidStringDiscriminator(Guid.NewGuid(), "valid", null, null, null).IsValid());
             Assert.False(new GuidStringDiscriminator(Guid.NewGuid(), "valid", null, null, "").IsValid());
             Assert.False(new GuidStringDiscriminator(Guid.NewGuid(), "valid", null, null, " ").IsValid());
 
-            // Valid
+            // All valid
             Assert.True(new GuidStringDiscriminator(Guid.NewGuid(), "valid", null, null, "valid").IsValid());
         }
 

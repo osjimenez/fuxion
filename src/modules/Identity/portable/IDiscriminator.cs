@@ -74,7 +74,7 @@ namespace Fuxion.Identity
             return
                 //!Comparer.AreEquals(me.Id, me.Id?.GetType().GetDefaultValue())
                 //&& !string.IsNullOrWhiteSpace(me.Name)
-                //&& 
+                //&&
                 !Comparer.AreEquals(me.TypeId, me.TypeId?.GetType().GetDefaultValue())
                 && !string.IsNullOrWhiteSpace(me.TypeName);
         }

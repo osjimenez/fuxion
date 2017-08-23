@@ -104,13 +104,13 @@ namespace Fuxion.Identity.DatabaseEFTest
                         Assert.True(
                             im.GetCurrent()
                                 .Can(functions)
-                                .AllTypes(types)
+                                .AllTypes2(types)
                             , $"Function assignment failed unexpected: {strArgs}");
                     else
                         Assert.False(
                             im.GetCurrent()
                                 .Can(functions)
-                                .AllTypes(types)
+                                .AllTypes2(types)
                             , $"Function assignment success unexpected: {strArgs}");
                 });
             }
@@ -181,7 +181,7 @@ namespace Fuxion.Identity.DatabaseEFTest
             var im = Factory.Get<IdentityManager>();
             var rep = Factory.Get<IIdentityTestRepository>();
             im.CheckCredentials("cus", "cus");
-            var res = rep.Document.AuthorizedTo(Read);
+            var res = rep.Document.AuthorizedTo2(Read);
             //Assert.True(im.Current.Can(Read).OfType<Order>());
             //var res = rep.Album.Where(o => o.Songs.AuthorizedTo(Edit).Any());
             Printer.WriteLine("res.Count(): " + res.Count());
@@ -193,8 +193,8 @@ namespace Fuxion.Identity.DatabaseEFTest
             var im = Factory.Get<IdentityManager>();
             var rep = Factory.Get<IIdentityTestRepository>();
             im.CheckCredentials("root", "root");
-            Assert.True(im.GetCurrent().Can(Read).Type<DocumentDao>());
-            var res = rep.Album.Where(o => o.Songs.AuthorizedTo(Read).Any());
+            Assert.True(im.GetCurrent().Can(Read).Type2<DocumentDao>());
+            var res = rep.Album.Where(o => o.Songs.AuthorizedTo2(Read).Any());
             Printer.WriteLine("res.Count(): " + res.Count());
         }
     }

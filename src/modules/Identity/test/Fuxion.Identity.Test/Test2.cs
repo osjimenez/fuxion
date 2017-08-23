@@ -40,7 +40,7 @@ namespace Fuxion.Identity.Test
 
             Factory.AddInjector(new SimpleInjectorFactoryInjector(c));
         }
-        void PrintTestTry(string message)
+        void PrintTestTriedStarted(string message)
         {
             Printer.WriteLine("".PadRight(40,'=')+" TEST TRIED STARTED "+"".PadRight(40,'='));
             Printer.WriteLine(message);
@@ -69,18 +69,22 @@ namespace Fuxion.Identity.Test
                                 Propagation = ScopePropagation.ToMe | ScopePropagation.ToInclusions } } }
                 }.ToList()
             };
-            Assert.False(ide.IsRoot2(),
-                "Tengo:\r\n" +
-                    $" - Concedido el permiso para {nameof(Edit)} en {nameof(Discriminators.Location.City.SanFrancisco)}\r\n" +
-                    $" - Denegado el permiso para {nameof(Edit)} en {nameof(Discriminators.Location.State.California)} y sus hijos\r\n" +
-                    $"¿Debería ser root?\r\n" +
-                    " No");
-            Assert.False(ide.Can(Edit).Instance2(Discriminators.Location.City.SanFrancisco)
-                , "Tengo:\r\n" +
-                    $" - Concedido el permiso para {nameof(Edit)} en {nameof(Discriminators.Location.City.SanFrancisco)}\r\n" +
-                    $" - Denegado el permiso para {nameof(Edit)} en {nameof(Discriminators.Location.State.California)} y sus hijos\r\n" +
-                    $"¿Debería poder {nameof(Edit)} en {nameof(Discriminators.Location.City.SanFrancisco)}?\r\n" +
-                    " No");
+
+            string permissionExplanation = "Tengo:\r\n" +
+                $" - Concedido el permiso para {nameof(Edit)} en {nameof(Discriminators.Location.City.SanFrancisco)}\r\n" +
+                $" - Denegado el permiso para {nameof(Edit)} en {nameof(Discriminators.Location.State.California)} y sus hijos\r\n";
+
+            var query =
+                $"¿Debería ser root?\r\n" +
+                " No";
+            PrintTestTriedStarted(permissionExplanation + query);
+            Assert.False(ide.IsRoot2(), permissionExplanation + query);
+
+            query =
+                $"¿Debería poder {nameof(Edit)} en {nameof(Discriminators.Location.City.SanFrancisco)}?\r\n" +
+                " No";
+            PrintTestTriedStarted(permissionExplanation + query);
+            Assert.False(ide.Can(Edit).Instance2(Discriminators.Location.City.SanFrancisco), permissionExplanation + query);
         }
         [Fact(DisplayName = "Test2 - Grant for discriminator and denied for children")]
         public void GrantParentDeniedChildren()
@@ -127,13 +131,13 @@ namespace Fuxion.Identity.Test
             var query = 
                 $"¿Debería poder '{nameof(Create)}' una instancia de persona sin ciudad?\r\n" +
                 " No";
-            PrintTestTry(permissionExplanation + query);
+            PrintTestTriedStarted(permissionExplanation + query);
             Assert.False(ide.Can(Create).Instance2(Person.Admin), permissionExplanation + query);
 
             query = 
                 $"¿Debería poder '{nameof(Create)}' una instancia de persona sin ciudad?\r\n" +
                 " No";
-            PrintTestTry(permissionExplanation + query);
+            PrintTestTriedStarted(permissionExplanation + query);
             Assert.False(ide.Can(Create).ByAll2(
                 Factory.Get<TypeDiscriminatorFactory>().FromType<PersonDao>(),
                 Discriminator.Empty<CityDao>()), permissionExplanation + query);
@@ -143,10 +147,10 @@ namespace Fuxion.Identity.Test
                     $"¿Debería poder '{nameof(Create)}' una instancia de persona con la ciudad Madrid?\r\n" +
                     " No";
             
-                PrintTestTry(permissionExplanation + query);
+                PrintTestTriedStarted(permissionExplanation + query);
                 Assert.False(ide.Can(Create).Instance2(Person.MadridAdmin), permissionExplanation + query);
 
-                PrintTestTry(permissionExplanation + query);
+                PrintTestTriedStarted(permissionExplanation + query);
                 Assert.False(ide.Can(Create).ByAll2(
                     Factory.Get<TypeDiscriminatorFactory>().FromType<PersonDao>(),
                     Discriminators.Location.City.Madrid), 
@@ -158,10 +162,10 @@ namespace Fuxion.Identity.Test
                     $"¿Debería poder '{nameof(Create)}' una instancia de persona con la ciudad Alcorcon?\r\n" +
                     " Si";
             
-                PrintTestTry(permissionExplanation + query);
+                PrintTestTriedStarted(permissionExplanation + query);
                 Assert.True(ide.Can(Create).Instance2(Person.AlcorconAdmin), permissionExplanation + query);
 
-                PrintTestTry(permissionExplanation + query);
+                PrintTestTriedStarted(permissionExplanation + query);
                 Assert.True(ide.Can(Create).ByAll2(
                     Factory.Get<TypeDiscriminatorFactory>().FromType<PersonDao>(),
                     Discriminators.Location.City.Alcorcon), permissionExplanation + query);
@@ -170,7 +174,7 @@ namespace Fuxion.Identity.Test
             query = 
                 $"¿Debería poder '{nameof(Read)}' objetos del tipo Word?\r\n" +
                 " Si";
-            PrintTestTry(permissionExplanation + query);
+            PrintTestTriedStarted(permissionExplanation + query);
             Assert.True(ide.Can(Read).Type2<WordDocumentDao>(), permissionExplanation + query);
         }
         [Fact(DisplayName = "Test2 - Can by instance")]
@@ -199,7 +203,7 @@ namespace Fuxion.Identity.Test
             var query = (
                 $"¿Debería poder '{nameof(Edit)}' una instancia del pais '{nameof(Discriminators.Location.Country.Usa)}'?\r\n" +
                 " Si").AsDisposable();
-            PrintTestTry(permissionExplanation + query.Value);
+            PrintTestTriedStarted(permissionExplanation + query.Value);
             Assert.True(ide.Can(Edit).AllLocations2(Discriminators.Location.Country.Usa), permissionExplanation + query.Value);
         }
         [Fact(DisplayName = "Test2 - Can by instance multiple properties")]
@@ -226,11 +230,11 @@ namespace Fuxion.Identity.Test
             string permissionExplanation = "Tengo:\r\n" +
                 $" - Permiso EDIT en la categoria 'Purchases' y sus categorias padre\r\n";
 
-            var query = (
+            var query = 
                 $"¿Debería poder '{nameof(Edit)}' una instancia de 'Purchases'?\r\n" +
-                " Si").AsDisposable();
-            PrintTestTry(permissionExplanation + query.Value);
-            Assert.True(ide.Can(Edit).Instance2(Discriminators.Category.Purchases), permissionExplanation + query.Value);
+                " Si";
+            PrintTestTriedStarted(permissionExplanation + query);
+            Assert.True(ide.Can(Edit).Instance2(Discriminators.Category.Purchases), permissionExplanation + query);
         }
         [Fact(DisplayName = "Test2 - Can by instance, mix root permission with others")]
         public void CanByType3()
@@ -260,18 +264,18 @@ namespace Fuxion.Identity.Test
                 $" - Concedido el permiso para {nameof(Admin)} sin restricciones\r\n" +
                 $" - Concedido el permiso para {nameof(Admin)} en {nameof(Discriminators.Category.Purchases)}\r\n";
 
-            var query = (
+            var query = 
                 $"¿Debería poder {nameof(Read)} en {nameof(File.Document.Word.Word1)}?\r\n" +
-                " Si").AsDisposable();
+                " Si";
 
-            PrintTestTry(permissionExplanation + query.Value);
-            Assert.True(ide.Can(Read).Instance2(File.Document.Word.Word1), permissionExplanation + query.Value);
+            PrintTestTriedStarted(permissionExplanation + query);
+            Assert.True(ide.Can(Read).Instance2(File.Document.Word.Word1), permissionExplanation + query);
 
-             query = (
+             query = 
                 $"¿Debería poder {nameof(Read)} alguna cosa?\r\n" +
-                " Si").AsDisposable();
-            PrintTestTry(permissionExplanation + query.Value);
-            Assert.True(ide.Can(Read).Something2(), permissionExplanation + query.Value);
+                " Si";
+            PrintTestTriedStarted(permissionExplanation + query);
+            Assert.True(ide.Can(Read).Something2(), permissionExplanation + query);
         }
         [Fact(DisplayName = "Test2 - Can by type, different discriminator type")]
         public void CanByType2()
@@ -296,11 +300,11 @@ namespace Fuxion.Identity.Test
             string permissionExplanation = "Tengo:\r\n" +
                 $" - Concedido el permiso para {nameof(Admin)} en {nameof(Discriminators.Category.Purchases)}\r\n";
 
-            var query = (
+            var query = 
                 $"¿Debería poder {nameof(Read)} objetos de tipo '{nameof(WordDocumentDao)}'?\r\n" +
-                " Si").AsDisposable();
-            PrintTestTry(permissionExplanation + query.Value);
-            Assert.True(ide.Can(Read).Type2<WordDocumentDao>(), permissionExplanation + query.Value);
+                " Si";
+            PrintTestTriedStarted(permissionExplanation + query);
+            Assert.True(ide.Can(Read).Type2<WordDocumentDao>(), permissionExplanation + query);
         }
         [Fact(DisplayName = "Test2 - Can by type, same discriminator type")]
         public void CanByType()
@@ -328,17 +332,17 @@ namespace Fuxion.Identity.Test
             string permissionExplanation = "Tengo:\r\n" +
                 $" - Concedido el permiso para {nameof(Admin)} la categoria {Discriminators.Category.Purchases} del tipo {nameof(BaseDao)} y derivados\r\n";
 
-            var query = (
+            var query = 
                 $"¿Debería poder {nameof(Read)} en {nameof(WordDocumentDao)}?\r\n" +
-                " Si").AsDisposable();
-            PrintTestTry(permissionExplanation + query.Value);
-            Assert.True(ide.Can(Read).Type<WordDocumentDao>(), permissionExplanation + query.Value);
+                " Si";
+            PrintTestTriedStarted(permissionExplanation + query);
+            Assert.True(ide.Can(Read).Type2<WordDocumentDao>(), permissionExplanation + query);
 
-            query = (
+            query = 
                 $"¿Debería poder {nameof(Admin)} alguna cosa?\r\n" +
-                " Si").AsDisposable();
-            PrintTestTry(permissionExplanation + query.Value);
-            Assert.True(ide.Can(Admin).Something2(), permissionExplanation + query.Value);
+                " Si";
+            PrintTestTriedStarted(permissionExplanation + query);
+            Assert.True(ide.Can(Admin).Something2(), permissionExplanation + query);
         }
         [Fact(DisplayName = "Test2 - Cannot admin something")]
         public void CannotAdminSomething()
@@ -369,11 +373,11 @@ namespace Fuxion.Identity.Test
                 $" - Concedido el permiso para {nameof(Edit)} el tipo {nameof(CategoryDao)} y derivados\r\n" +
                 $" - Denegado el permiso para {nameof(Read)} cualquier cosa\r\n";
 
-            var query = (
+            var query = 
                 $"¿Debería poder {nameof(Admin)} alguna cosa?\r\n" +
-                " No").AsDisposable();
-            PrintTestTry(permissionExplanation + query.Value);
-            Assert.False(ide.Can(Admin).Something2(), permissionExplanation + query.Value);
+                " No";
+            PrintTestTriedStarted(permissionExplanation + query);
+            Assert.False(ide.Can(Admin).Something2(), permissionExplanation + query);
         }
         [Fact(DisplayName = "Test2 - Cannot by function")]
         public void CannotByFunction()
@@ -399,29 +403,29 @@ namespace Fuxion.Identity.Test
             string permissionExplanation = "Tengo:\r\n" +
                 $" - Concedido el permiso para {nameof(Edit)} en {nameof(Discriminators.Category.Purchases)}\r\n";
 
-            var query = (
+            var query = 
                 $"¿Debería poder {nameof(Delete)} en {nameof(Discriminators.Category.Purchases)}?\r\n" +
-                " No").AsDisposable();
-            PrintTestTry(permissionExplanation + query.Value);
-            Assert.False(ide.Can(Delete).Instance2(Discriminators.Category.Purchases), permissionExplanation + query.Value);
+                " No";
+            PrintTestTriedStarted(permissionExplanation + query);
+            Assert.False(ide.Can(Delete).Instance2(Discriminators.Category.Purchases), permissionExplanation + query);
 
-            query = (
+            query = 
                 $"¿Debería poder {nameof(Read)} en {nameof(Discriminators.Category.Purchases)}?\r\n" +
-                " Si").AsDisposable();
-            PrintTestTry(permissionExplanation + query.Value);
-            Assert.True(ide.Can(Read).Instance2(Discriminators.Category.Purchases), permissionExplanation + query.Value);
+                " Si";
+            PrintTestTriedStarted(permissionExplanation + query);
+            Assert.True(ide.Can(Read).Instance2(Discriminators.Category.Purchases), permissionExplanation + query);
 
-            query = (
+            query = 
                 $"¿Debería poder {nameof(Delete)} en {nameof(Discriminators.Category.Purchases)}?\r\n" +
-                " No").AsDisposable();
-            PrintTestTry(permissionExplanation + query.Value);
-            Assert.False(ide.Can(Delete).Type2<WordDocumentDao>(), permissionExplanation + query.Value);
+                " No";
+            PrintTestTriedStarted(permissionExplanation + query);
+            Assert.False(ide.Can(Delete).Type2<WordDocumentDao>(), permissionExplanation + query);
 
-            query = (
+            query = 
                 $"¿Debería poder {nameof(Read)} en {nameof(Discriminators.Category.Purchases)}?\r\n" +
-                " Si").AsDisposable();
-            PrintTestTry(permissionExplanation + query.Value);
-            Assert.True(ide.Can(Read).Type2<WordDocumentDao>(), permissionExplanation + query.Value);
+                " Si";
+            PrintTestTriedStarted(permissionExplanation + query);
+            Assert.True(ide.Can(Read).Type2<WordDocumentDao>(), permissionExplanation + query);
         }
         [Fact(DisplayName = "Test2 - Cannot by instance")]
         public void CannotByInstance()
@@ -447,11 +451,11 @@ namespace Fuxion.Identity.Test
             string permissionExplanation = "Tengo:\r\n" +
                 $" - Concedido el permiso para {nameof(Edit)} en {nameof(Discriminators.Category.Purchases)}\r\n";
 
-            var query = (
+            var query = 
                 $"¿Debería poder {nameof(Edit)} una instancia de documento de Word sin categoria?\r\n" +
-                " No").AsDisposable();
-            PrintTestTry(permissionExplanation + query.Value);
-            Assert.False(ide.Can(Edit).Instance2(File.Document.Word.Word1), permissionExplanation + query.Value);
+                " No";
+            PrintTestTriedStarted(permissionExplanation + query);
+            Assert.False(ide.Can(Edit).Instance2(File.Document.Word.Word1), permissionExplanation + query);
         }
         [Fact(DisplayName = "Test2 - Cannot for different discriminator")]
         public void CannotForDifferent()
@@ -477,11 +481,11 @@ namespace Fuxion.Identity.Test
             string permissionExplanation = "Tengo:\r\n" +
                 $" - Concedido el permiso para {nameof(Edit)} el tipo {nameof(CategoryDao)} y derivados\r\n";
 
-            var query = (
+            var query = 
                 $"¿Debería poder {nameof(Read)} en {nameof(Discriminators.Location.City.Buffalo)}?\r\n" +
-                " No").AsDisposable();
-            PrintTestTry(permissionExplanation + query.Value);
-            Assert.False(ide.Can(Read).Instance2(Discriminators.Location.City.Buffalo), permissionExplanation + query.Value);
+                " No";
+            PrintTestTriedStarted(permissionExplanation + query);
+            Assert.False(ide.Can(Read).Instance2(Discriminators.Location.City.Buffalo), permissionExplanation + query);
         }
         [Fact(DisplayName = "Test2 - Cannot for different discriminator2")]
         public void CannotForDifferent2()
@@ -517,11 +521,11 @@ namespace Fuxion.Identity.Test
                 $" - Concedido el permiso para {nameof(Edit)} el tipo {nameof(CategoryDao)} y derivados\r\n" +
                 $" - Denegado el permiso para {nameof(Read)} el tipo {nameof(CategoryDao)} y derivados\r\n";
 
-            var query = (
+            var query = 
                 $"¿Debería poder {nameof(Read)} la categoria '{nameof(Discriminators.Category.Purchases)}'?\r\n" +
-                " No").AsDisposable();
-            PrintTestTry(permissionExplanation + query.Value);
-            Assert.False(ide.Can(Read).Instance2(Discriminators.Category.Purchases), permissionExplanation + query.Value);
+                " No";
+            PrintTestTriedStarted(permissionExplanation + query);
+            Assert.False(ide.Can(Read).Instance2(Discriminators.Category.Purchases), permissionExplanation + query);
         }
         [Fact(DisplayName = "Test2 - Empty discriminator")]
         public void EmptyDiscriminator()
@@ -548,27 +552,27 @@ namespace Fuxion.Identity.Test
             string permissionExplanation = "Tengo:\r\n" +
                 $" - Permiso ADMIN en la categoria 'Purchases' y sus subcategorias\r\n";
 
-            var query = (
+            var query = 
                 $"¿Debería poder '{nameof(Create)}' una instancia de documento Word sin categoria?\r\n" +
-                " No").AsDisposable();
-            PrintTestTry(permissionExplanation + query.Value);
-            Assert.False(ide.Can(Create).Instance2(File.Document.Word.Word1), permissionExplanation + query.Value);
-            PrintTestTry(permissionExplanation + query.Value);
+                " No";
+            PrintTestTriedStarted(permissionExplanation + query);
+            Assert.False(ide.Can(Create).Instance2(File.Document.Word.Word1), permissionExplanation + query);
+            PrintTestTriedStarted(permissionExplanation + query);
             Assert.False(ide.Can(Create).ByAll2(
                     Factory.Get<TypeDiscriminatorFactory>().FromType<WordDocumentDao>(),
-                    Discriminator.Empty<CategoryDao>()), permissionExplanation + query.Value);
+                    Discriminator.Empty<CategoryDao>()), permissionExplanation + query);
 
-            query = (
+            query = 
                $"¿Debería poder '{nameof(Create)}' una instancia de documento Word de la categoria 'Purchases'?\r\n" +
-               " Si").AsDisposable();
-            PrintTestTry(permissionExplanation + query.Value);
-            Assert.True(ide.Can(Create).Instance2(File.Document.Word.Word1.Transform(w => w.Category = Discriminators.Category.Purchases)), permissionExplanation + query.Value);
+               " Si";
+            PrintTestTriedStarted(permissionExplanation + query);
+            Assert.True(ide.Can(Create).Instance2(File.Document.Word.Word1.Transform(w => w.Category = Discriminators.Category.Purchases)), permissionExplanation + query);
 
-            query = (
+            query = 
                $"¿Debería poder '{nameof(Create)}' una instancia de documento Word de la categoria 'Sales'?\r\n" +
-               " No").AsDisposable();
-            PrintTestTry(permissionExplanation + query.Value);
-            Assert.False(ide.Can(Create).Instance2(File.Document.Word.Word1.Transform(w => w.Category = Discriminators.Category.Sales)), permissionExplanation + query.Value);
+               " No";
+            PrintTestTriedStarted(permissionExplanation + query);
+            Assert.False(ide.Can(Create).Instance2(File.Document.Word.Word1.Transform(w => w.Category = Discriminators.Category.Sales)), permissionExplanation + query);
         }
         [Fact(DisplayName = "Test2 - Grant for discriminator and denied for other discriminator")]
         public void GrantForDiscriminatorAndDeniedOther()
@@ -598,7 +602,8 @@ namespace Fuxion.Identity.Test
                                 Discriminator = Discriminators.Location.Country.Spain,
                                 Propagation = ScopePropagation.ToMe| ScopePropagation.ToInclusions
                             },
-                            // Si pongo esto, pasa el TEST
+                            // Si agrego este segundo discriminador, pasa el TEST.
+                            // La cosa es, cuando tenemos un permiso discriminado por un tipo de discriminador y en la query tengo otro tipo de discriminador .. pasa el permiso el filtro?
                             //new ScopeDao
                             //{
                             //    Discriminator = TypeDiscriminator.Empty,
@@ -613,60 +618,23 @@ namespace Fuxion.Identity.Test
                 $" - Permiso MANAGE para el tipo 'File' y sus derivados\r\n" +
                 $" - Denegado READ en el pais 'Spain' y sus sublocalizaciones\r\n";
 
-            var query = (
+            var query = 
                 $"¿Debería poder '{nameof(Read)}' una instancia del tipo '{nameof(WordDocumentDao)}' sin categoria?\r\n" +
-                " Si").AsDisposable();
-            PrintTestTry(permissionExplanation + query.Value);
-            Assert.True(ide.Can(Read).Instance2(File.Document.Word.Word1), permissionExplanation + query.Value);
+                " Si";
+            PrintTestTriedStarted(permissionExplanation + query);
+            Assert.True(ide.Can(Read).Instance2(File.Document.Word.Word1), permissionExplanation + query);
 
-            query = (
+            query = 
                 $"¿Debería poder '{nameof(Read)}' el tipo '{nameof(DocumentDao)}'?\r\n" +
-                " Si").AsDisposable();
-            PrintTestTry(permissionExplanation + query.Value);
-            Assert.True(ide.Can(Read).Type2<DocumentDao>(), permissionExplanation + query.Value);
+                " Si";
+            PrintTestTriedStarted(permissionExplanation + query);
+            Assert.True(ide.Can(Read).Type2<DocumentDao>(), permissionExplanation + query);
 
-            query = (
+            query = 
                 $"¿Debería poder '{nameof(Read)}' el tipo '{TypeDiscriminatorIds.OfficeDocument}'?\r\n" +
-                " Si").AsDisposable();
-            PrintTestTry(permissionExplanation + query.Value);
-            Assert.True(ide.Can(Read).ByAll2(Factory.Get<TypeDiscriminatorFactory>().FromId(TypeDiscriminatorIds.OfficeDocument)), permissionExplanation + query.Value);
-
-            //Assert.False(ide.Can(Create).Instance(Person.MadridAdmin),
-            //   "Tengo:\r\n" +
-            //       $" - Permiso ADMIN en el estado 'Spain' y sus sublocalizaciones\r\n" +
-            //       $" - Denegado READ en la ciudad 'Madrid' y sus sublocalizaciones\r\n" +
-            //       $"¿Debería poder '{nameof(Create)}' una instancia de persona con la ciudad Madrid?\r\n" +
-            //       " No");
-            //Assert.False(ide.Can(Create).ByAll(
-            //    Factory.Get<TypeDiscriminatorFactory>().FromType<PersonDao>(),
-            //    Discriminators.Location.City.Madrid),
-            //   "Tengo:\r\n" +
-            //       $" - Permiso ADMIN en el estado 'Spain' y sus sublocalizaciones\r\n" +
-            //       $" - Denegado READ en la ciudad 'Madrid' y sus sublocalizaciones\r\n" +
-            //       $"¿Debería poder '{nameof(Create)}' una instancia de persona con la ciudad Madrid?\r\n" +
-            //       " No");
-
-            //Assert.True(ide.Can(Create).Instance(Person.AlcorconAdmin),
-            //   "Tengo:\r\n" +
-            //       $" - Permiso ADMIN en el estado 'Spain' y sus sublocalizaciones\r\n" +
-            //       $" - Denegado READ en la ciudad 'Madrid' y sus sublocalizaciones\r\n" +
-            //       $"¿Debería poder '{nameof(Create)}' una instancia de persona con la ciudad Alcorcon?\r\n" +
-            //       " Si");
-            //Assert.True(ide.Can(Create).ByAll(
-            //    Factory.Get<TypeDiscriminatorFactory>().FromType<PersonDao>(),
-            //    Discriminators.Location.City.Alcorcon),
-            //   "Tengo:\r\n" +
-            //       $" - Permiso ADMIN en el estado 'Spain' y sus sublocalizaciones\r\n" +
-            //       $" - Denegado READ en la ciudad 'Madrid' y sus sublocalizaciones\r\n" +
-            //       $"¿Debería poder '{nameof(Create)}' una instancia de persona con la ciudad Alcorcon?\r\n" +
-            //       " Si");
-
-            //Assert.True(ide.Can(Read).Type<WordDocumentDao>(),
-            //     "Tengo:\r\n" +
-            //       $" - Permiso ADMIN en el estado 'Spain' y sus sublocalizaciones\r\n" +
-            //       $" - Denegado READ en la ciudad 'Madrid' y sus sublocalizaciones\r\n" +
-            //       $"¿Debería poder '{nameof(Read)}' objetos del tipo Word?\r\n" +
-            //       " Si");
+                " Si";
+            PrintTestTriedStarted(permissionExplanation + query);
+            Assert.True(ide.Can(Read).ByAll2(Factory.Get<TypeDiscriminatorFactory>().FromId(TypeDiscriminatorIds.OfficeDocument)), permissionExplanation + query);
         }
         [Fact(DisplayName = "Test2 - Root permission")]
         public void RootPermission()
@@ -689,31 +657,31 @@ namespace Fuxion.Identity.Test
             var query = 
                 $"¿Debería ser root?\r\n" +
                 " Si";
-            PrintTestTry(permissionExplanation + query);
+            PrintTestTriedStarted(permissionExplanation + query);
             Assert.True(ide.IsRoot2(), permissionExplanation + query);
 
             query =
                 $"¿Debería poder '{nameof(Admin)}' cualquier cosa?\r\n" +
                 " Si";
-            PrintTestTry(permissionExplanation + query);
+            PrintTestTriedStarted(permissionExplanation + query);
             Assert.True(ide.Can(Admin).Anything2(), permissionExplanation + query);
 
             query =
                 $"¿Debería poder '{nameof(Admin)}' alguna cosa?\r\n" +
                 " Si";
-            PrintTestTry(permissionExplanation + query);
+            PrintTestTriedStarted(permissionExplanation + query);
             Assert.True(ide.Can(Admin).Something2(), permissionExplanation + query);
 
             query =
                 $"¿Debería poder '{nameof(Edit)}' en '{nameof(File.Document.Word.Word1)}'?\r\n" +
                 " Si";
-            PrintTestTry(permissionExplanation + query);
+            PrintTestTriedStarted(permissionExplanation + query);
             Assert.True(ide.Can(Edit).Instance2(File.Document.Word.Word1), permissionExplanation + query);
 
             query =
                 $"¿Debería poder '{nameof(Edit)}' las '{nameof(CityDao)}'?\r\n" +
                 " Si";
-            PrintTestTry(permissionExplanation + query);
+            PrintTestTriedStarted(permissionExplanation + query);
             Assert.True(ide.Can(Edit).Type2<CityDao>(), permissionExplanation + query);
         }
         [Fact(DisplayName = "Test2 - No permissions")]
@@ -731,19 +699,19 @@ namespace Fuxion.Identity.Test
             var query =
                 $"¿Debería ser root?\r\n" +
                 " No";
-            PrintTestTry(permissionExplanation + query);
+            PrintTestTriedStarted(permissionExplanation + query);
             Assert.False(ide.IsRoot2(), permissionExplanation + query);
 
             query =
                 $"¿Debería poder '{nameof(Read)}' alguna cosa?\r\n" +
                 " No";
-            PrintTestTry(permissionExplanation + query);
+            PrintTestTriedStarted(permissionExplanation + query);
             Assert.False(ide.Can(Read).Something2(), permissionExplanation + query);
 
             query =
                 $"¿Debería poder {nameof(Edit)} en {nameof(Discriminators.Location.City.SanFrancisco)}?\r\n" +
                 " No";
-            PrintTestTry(permissionExplanation + query);
+            PrintTestTriedStarted(permissionExplanation + query);
             Assert.False(ide.Can(Edit).Instance2(Discriminators.Location.City.SanFrancisco), permissionExplanation + query);
         }
         [Fact(DisplayName = "Test2 - Only read permission")]
@@ -767,13 +735,13 @@ namespace Fuxion.Identity.Test
             var query =
                 $"¿Debería poder '{nameof(Read)}' las '{nameof(CityDao)}'?\r\n" +
                 " Si";
-            PrintTestTry(permissionExplanation + query);
+            PrintTestTriedStarted(permissionExplanation + query);
             Assert.True(ide.Can(Read).Type2<CityDao>(), permissionExplanation + query);
 
             query =
                 $"¿Debería poder '{nameof(Create)}' las '{nameof(CityDao)}'?\r\n" +
                 " No";
-            PrintTestTry(permissionExplanation + query);
+            PrintTestTriedStarted(permissionExplanation + query);
             Assert.False(ide.Can(Create).Type2<CityDao>(), permissionExplanation + query);
         }
     }
