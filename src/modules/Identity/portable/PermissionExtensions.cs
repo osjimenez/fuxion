@@ -7,6 +7,7 @@ namespace Fuxion.Identity
 {
     public static class PermissionExtensions
     {
+        public static bool IsValid(this IPermission me) { return me.Function != null && (me.Scopes?.All(s => s.Discriminator != null) ?? true) && me.Scopes?.Select(s => s.Discriminator.TypeId).Distinct().Count() == me.Scopes?.Count(); }
         internal static bool Match(this IPermission me, IFunction function, IDiscriminator targetDiscriminator, params IDiscriminator[] discriminators)
         {
             bool res = false;
