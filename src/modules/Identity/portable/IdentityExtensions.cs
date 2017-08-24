@@ -84,21 +84,29 @@ namespace Fuxion.Identity
                             return false;
                         else
                         {
-                            var r = forAll
-                                ? discriminators.All(dis =>
-                                {
-                                    var grantPermissions = pers.Where(p => p.Value).ToList();
-                                    var deniedPermissions = pers.Where(p => !p.Value).ToList();
-                                    Printer.WriteLine($"Found '{grantPermissions.Count}' grant permissions");
-                                    Printer.WriteLine($"Found '{deniedPermissions.Count}' denied permissions");
-                                    return grantPermissions.Count > 0 && deniedPermissions.Count == 0;// || grantPermissions.Count == 0;
-                                })
-                                : discriminators.Any(dis =>
-                                {
-                                    //var pers = me.Rol.SearchPermissions(fun, dis);
-                                    //return !pers.Any(p => !p.Value && p.Scopes.Any(s => dis.TypeId == s.Discriminator.TypeId)) && pers.Any(p => p.Value);
-                                    return !pers.Any(p => !p.Value && p.Match(fun, targetDiscriminator, discriminators)) && pers.Any(p => p.Value);
-                                });
+                            var grantPermissions = pers.Where(p => p.Value).ToList();
+                            var deniedPermissions = pers.Where(p => !p.Value).ToList();
+                            Printer.WriteLine($"Found '{grantPermissions.Count}' grant permissions");
+                            Printer.WriteLine($"Found '{deniedPermissions.Count}' denied permissions");
+                            bool r = false;
+                            if (discriminators.IsNullOrEmpty())
+                            {
+                                r = grantPermissions.Count > 0 && deniedPermissions.Count == 0;
+                            }
+                            else
+                            {
+                                r = forAll
+                                    ? discriminators.All(dis =>
+                                    {
+                                        return grantPermissions.Count > 0 && deniedPermissions.Count == 0;// || grantPermissions.Count == 0;
+                                    })
+                                    : discriminators.Any(dis =>
+                                    {
+                                        //var pers = me.Rol.SearchPermissions(fun, dis);
+                                        //return !pers.Any(p => !p.Value && p.Scopes.Any(s => dis.TypeId == s.Discriminator.TypeId)) && pers.Any(p => p.Value);
+                                        return !pers.Any(p => !p.Value && p.Match(fun, targetDiscriminator, discriminators)) && pers.Any(p => p.Value);
+                                    });
+                            }
                             if (!r && me.ThrowExceptionIfCannot)
                                 throw new UnauthorizedAccessException($"The rol '{me.Rol.Name}' cannot '{me.Functions.Aggregate("", (a, c) => a + c.Name + "·", a => a.Trim('·'))}' for the given discriminators '{discriminators.Aggregate("", (a, c) => $"{a}, {c.Name}", a => a.Trim(',', ' ')) }'");
                             return r;

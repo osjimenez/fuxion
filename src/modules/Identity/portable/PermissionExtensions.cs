@@ -142,8 +142,8 @@ namespace Fuxion.Identity
                             Printer.WriteLine($"The target discriminator '{targetDiscriminator}' hasn't any scope with discriminator of its type");
                             if (discriminators.IsNullOrEmpty())
                             {
-                                Printer.WriteLine($"Haven't discriminators, TRUE");
-                                return true;
+                                Printer.WriteLine($"Haven't discriminators, VALUE");
+                                return me.Value;
                             }
                             else
                                 Printer.WriteLine($"Have some discriminators, check discriminators");
