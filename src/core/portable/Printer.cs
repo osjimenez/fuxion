@@ -1,4 +1,5 @@
 ﻿using Fuxion.Resources;
+using Fuxion.Threading;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -83,7 +84,7 @@ namespace Fuxion
         public char IndentationChar { get; set; } = ' ';
         //public char VerticalConectorChar { get; set; } = '│';
         //List<int> verticalConnectorLevels = new List<int>();
-        Dictionary<int, char> verticalConnectorLevels = new Dictionary<int, char>();
+        RefLocker<Dictionary<int, char>> verticalConnectorLevels = new RefLocker<Dictionary<int, char>>(new Dictionary<int, char>());
         [DebuggerHidden]
         public Action<string> WriteLineAction { get; set; } = m => Debug.WriteLine(m);
         List<string> lineMessages = new List<string>();
@@ -107,9 +108,10 @@ namespace Fuxion
                 for (int i = 0; i < IndentationLevel; i++)
                 {
                     var step = "";
-                    if (verticalConnectorLevels.ContainsKey(i))
+                    var t = verticalConnectorLevels.Read(dic => dic.ContainsKey(i) ? dic[i] : (int?)null);
+                    if (t != null && t.HasValue)
                     {
-                        step += verticalConnectorLevels[i];
+                        step += t.Value;
                     }
                     else
                     {
@@ -136,13 +138,19 @@ namespace Fuxion
             var o = new object();
             var currentIndentationLevel = IndentationLevel;
             if (verticalConnectorChar != null)
-                verticalConnectorLevels.Add(currentIndentationLevel, verticalConnectorChar.Value);
+                verticalConnectorLevels.Write(dic =>
+                {
+                    if (!dic.ContainsKey(currentIndentationLevel))
+                        dic.Add(currentIndentationLevel, verticalConnectorChar.Value);
+                });
+                //verticalConnectorLevels.Add(currentIndentationLevel, verticalConnectorChar.Value);
             IndentationLevel++;
             return o.AsDisposable(_ =>
             {
                 if (IndentationLevel > 0)
                     IndentationLevel--;
-                verticalConnectorLevels.Remove(currentIndentationLevel);
+                verticalConnectorLevels.Write(dic => dic.Remove(currentIndentationLevel));
+                //verticalConnectorLevels.Remove(currentIndentationLevel);
             });
         }
         [DebuggerHidden]
