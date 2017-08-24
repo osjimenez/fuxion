@@ -32,55 +32,29 @@ namespace Fuxion.Identity
             => new _RolCan(me, functions, false);
         public static IRolCan EnsureCan(this IRol me, params IFunction[] functions) 
             => new _RolCan(me, functions, true);
-        //public static bool IsRoot(this IRol me) 
-        //    => me.Can(Functions.Admin).Anything();
-        public static bool IsRoot2(this IRol me)
-            => me.Can(Functions.Admin).Anything2();
+        public static bool IsRoot(this IRol me)
+            => me.Can(Functions.Admin).Anything();
         #endregion
         #region Something
-        //public static bool Anything(this IRolCan me)
-        //{
-        //    var ime = (IInternalRolCan)me;
-        //    if (ime.Rol == null) return false;
-        //    foreach (var fun in ime.Functions)
-        //    {
-        //        var permissions = ime.Rol.SearchPermissions(fun);
-        //        if (!permissions.Any() || permissions.Any(p => p.Scopes.Any()))
-        //            return false;
-        //    }
-        //    return true;
-        //}
-        public static bool Anything2(this IRolCan me)
+        public static bool Anything(this IRolCan me)
         {
             var ime = (IInternalRolCan)me;
             if (ime.Rol == null) return false;
             foreach (var fun in ime.Functions)
             {
-                var permissions = ime.Rol.SearchPermissions2(fun, TypeDiscriminator.Empty);
+                var permissions = ime.Rol.SearchPermissions(fun, TypeDiscriminator.Empty);
                 if (!permissions.Any() || permissions.Any(p => p.Scopes.Any()))
                     return false;
             }
             return true;
         }
-        //public static bool Something(this IRolCan me)
-        //{
-        //    var ime = (IInternalRolCan)me;
-        //    if (ime.Rol == null) return false;
-        //    foreach (var fun in ime.Functions)
-        //    {
-        //        var permissions = ime.Rol.SearchPermissions(fun);
-        //        if (!permissions.Any(p => p.Value))
-        //            return false;
-        //    }
-        //    return true;
-        //}
-        public static bool Something2(this IRolCan me)
+        public static bool Something(this IRolCan me)
         {
             var ime = (IInternalRolCan)me;
             if (ime.Rol == null) return false;
             foreach (var fun in ime.Functions)
             {
-                var permissions = ime.Rol.SearchPermissions2(fun, TypeDiscriminator.Empty);
+                var permissions = ime.Rol.SearchPermissions(fun, TypeDiscriminator.Empty);
                 if (!permissions.Any(p => p.Value))
                     return false;
             }
@@ -88,36 +62,42 @@ namespace Fuxion.Identity
         }
         #endregion
         #region Can().By..<IDiscriminator>()
-        //public static bool ByAll(this IRolCan me, params IDiscriminator[] discriminators)
-        //    => ((IInternalRolCan)me).CheckDiscriminators(true, discriminators);
-        public static bool ByAll2(this IRolCan me, TypeDiscriminator typeDiscriminator, params IDiscriminator[] discriminators)
+        public static bool ByAll(this IRolCan me, TypeDiscriminator typeDiscriminator, params IDiscriminator[] discriminators)
         {
             bool res = false;
-            using (Printer.Indent2($"CALL {nameof(ByAll2)}:", '│'))
+            using (Printer.Indent2($"CALL {nameof(ByAll)}:", '│'))
             {
-                res = ((IInternalRolCan)me).CheckDiscriminators2(true, typeDiscriminator, discriminators);
+                res = ((IInternalRolCan)me).CheckDiscriminators(true, typeDiscriminator, discriminators);
             }
-            Printer.WriteLine($"● RESULT {nameof(ByAll2)}: {res}");
+            Printer.WriteLine($"● RESULT {nameof(ByAll)}: {res}");
             return res;
         }
-        //public static bool ByAny(this IRolCan me, params IDiscriminator[] discriminators)
-        //    => ((IInternalRolCan)me).CheckDiscriminators(false, discriminators);
+        public static bool ByAny(this IRolCan me, TypeDiscriminator typeDiscriminator, params IDiscriminator[] discriminators)
+            => ((IInternalRolCan)me).CheckDiscriminators(false, typeDiscriminator, discriminators);
         #endregion
         #region Can().Type's
         // Only one type
-        //public static bool Type(this IRolCan me, Type type) => me.AllTypes(type);
-        //public static bool Type<T>(this IRolCan me) => me.AllTypes(typeof(T));
-        public static bool Type2<T>(this IRolCan me)
-        {
+        public static bool Type(this IRolCan me, Type type) {
             bool res = false;
-            using (Printer.Indent2($"CALL {nameof(Type2)}:", '│'))
+            using (Printer.Indent2($"CALL {nameof(Type)}:", '│'))
             {
-                res = ((IInternalRolCan)me).CheckDiscriminators2(true,
-                    Factory.Get<TypeDiscriminatorFactory>().FromType<T>()
-                    //typeof(T).GetDiscriminatorsOfDiscriminatedProperties().ToArray()
+                res = ((IInternalRolCan)me).CheckDiscriminators(true,
+                    Factory.Get<TypeDiscriminatorFactory>().FromType(type)
                     );
             }
-            Printer.WriteLine($"● RESULT {nameof(Type2)}: {res}");
+            Printer.WriteLine($"● RESULT {nameof(Type)}: {res}");
+            return res;
+        }
+        public static bool Type<T>(this IRolCan me)
+        {
+            bool res = false;
+            using (Printer.Indent2($"CALL {nameof(Type)}:", '│'))
+            {
+                res = ((IInternalRolCan)me).CheckDiscriminators(true,
+                    Factory.Get<TypeDiscriminatorFactory>().FromType<T>()
+                    );
+            }
+            Printer.WriteLine($"● RESULT {nameof(Type)}: {res}");
             return res;
         }
         // Two types
@@ -149,65 +129,48 @@ namespace Fuxion.Identity
         #endregion
         #region Can().Instance's
         // One instance
-        //public static bool Instance<T>(this IRolCan me, T value) => me.AllInstances(new[] { value });
-        public static bool Instance2<T>(this IRolCan me, T value)
+        public static bool Instance<T>(this IRolCan me, T value)
         {
             var res = false;
-            using (Printer.Indent2($"CALL {nameof(Instance2)}:", '│'))
+            using (Printer.Indent2($"CALL {nameof(Instance)}:", '│'))
             {
-                res = me.AllInstances2(new[] { value });
+                res = me.AllInstances(new[] { value });
             }
-            Printer.WriteLine($"● RESULT {nameof(Instance2)}: {res}");
+            Printer.WriteLine($"● RESULT {nameof(Instance)}: {res}");
             return res;
         }
         // Many instances
-        //public static bool AllInstances<T>(this IRolCan me, IEnumerable<T> values) => ((IInternalRolCan)me).CheckInstances(true, values);
-        public static bool AllInstances2<T>(this IRolCan me, IEnumerable<T> values)
+        public static bool AllInstances<T>(this IRolCan me, IEnumerable<T> values)
         {
             var res = false;
-            using (Printer.Indent2($"CALL {nameof(AllInstances2)}:", '│'))
+            using (Printer.Indent2($"CALL {nameof(AllInstances)}:", '│'))
             {
-                res = ((IInternalRolCan)me).CheckInstances2(true, values);
+                res = ((IInternalRolCan)me).CheckInstances(true, values);
             }
-            Printer.WriteLine($"● RESULT {nameof(AllInstances2)}: {res}");
+            Printer.WriteLine($"● RESULT {nameof(AllInstances)}: {res}");
             return res;
         }
-        public static bool AnyInstances2<T>(this IRolCan me, IEnumerable<T> values)
+        public static bool AnyInstances<T>(this IRolCan me, IEnumerable<T> values)
         {
             var res = false;
-            using (Printer.Indent2($"CALL {nameof(AnyInstances2)}:", '│'))
+            using (Printer.Indent2($"CALL {nameof(AnyInstances)}:", '│'))
             {
-                res = ((IInternalRolCan)me).CheckInstances2(false, values);
+                res = ((IInternalRolCan)me).CheckInstances(false, values);
             }
-            Printer.WriteLine($"● RESULT {nameof(AnyInstances2)}: {res}");
+            Printer.WriteLine($"● RESULT {nameof(AnyInstances)}: {res}");
             return res;
         }
-        //public static bool AnyInstance<T>(this IRolCan me, IEnumerable<T> values) => ((IInternalRolCan)me).CheckInstances(false, values);
         // -------------------------- IMPLEMENTATION
-        //private static bool CheckInstances<T>(this IInternalRolCan me, bool forAll, IEnumerable<T> values)
-        //{
-        //    bool res = false;
-        //    using (Printer.Indent2($"CALL {nameof(CheckInstances)}:", '│'))
-        //    {
-        //        if (me.Rol == null) return false;
-        //        var r = forAll ? values.AuthorizedTo(me.Rol, me.Functions).Count() == values.Count() : values.AuthorizedTo(me.Rol, me.Functions).Any();
-        //        if (me.ThrowExceptionIfCannot && !r)
-        //            throw new UnauthorizedAccessException($"The rol '{me.Rol.Name}' cannot '{me.Functions.Aggregate("", (a, c) => a + c.Name + "·", a => a.Trim('·'))}' for the given instances '{values}'");
-        //        return r;
-        //    }
-        //    Printer.WriteLine($"● RESULT {nameof(CheckInstances)}: {res}");
-        //    return res;
-        //}
-        private static bool CheckInstances2<T>(this IInternalRolCan me, bool forAll, IEnumerable<T> values)
+        private static bool CheckInstances<T>(this IInternalRolCan me, bool forAll, IEnumerable<T> values)
         {
             bool res = false;
-            using (Printer.Indent2($"CALL {nameof(CheckInstances2)}:", '│'))
+            using (Printer.Indent2($"CALL {nameof(CheckInstances)}:", '│'))
             {
                 bool Compute()
                 {
                     if (me.Rol == null) return false;
                     bool CheckInstance(T value)
-                       => ByAll2(me, Factory.Get<TypeDiscriminatorFactory>().FromType<T>(), typeof(T).GetDiscriminatorsOfDiscriminatedProperties(value).ToArray());
+                       => ByAll(me, Factory.Get<TypeDiscriminatorFactory>().FromType<T>(), typeof(T).GetDiscriminatorsOfDiscriminatedProperties(value).ToArray());
                     var r = forAll
                         ? values.Where(value => CheckInstance(value)).Count() == values.Count()
                         : values.Where(value => CheckInstance(value)).Any();
@@ -217,7 +180,7 @@ namespace Fuxion.Identity
                 }
                 res = Compute();
             }
-            Printer.WriteLine($"● RESULT {nameof(CheckInstances2)}: {res}");
+            Printer.WriteLine($"● RESULT {nameof(CheckInstances)}: {res}");
             return res;
         }
         #endregion

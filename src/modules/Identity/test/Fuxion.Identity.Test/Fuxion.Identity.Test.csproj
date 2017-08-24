@@ -94,11 +94,10 @@
     <Compile Include="Dvo\Base.dvo.cs" />
     <Compile Include="Permission.Test.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Rol.Test.cs" />
     <Compile Include="RolExtensions.cs" />
     <Compile Include="Scope.Test.cs" />
     <Compile Include="Context.cs" />
-    <Compile Include="Test2.cs" />
+    <Compile Include="Rol.Test.cs" />
     <Compile Include="TypeDiscriminator.Test.cs" />
     <Compile Include="Helpers\TypeDiscriminatorIds.cs" />
   </ItemGroup>

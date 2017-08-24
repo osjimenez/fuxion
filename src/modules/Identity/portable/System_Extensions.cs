@@ -23,7 +23,7 @@ namespace System.Collections.Generic
         {
             if (rol == null)
                 rol = Factory.Get<IdentityManager>().GetCurrent();
-            var pre = rol.FilterExpression2<TSource>(functions);
+            var pre = rol.FilterExpression<TSource>(functions);
             return source is IQueryable<TSource>
                 ? ((IQueryable<TSource>)source).Where(pre)
                 : source.Where(pre.Compile());
@@ -43,7 +43,7 @@ namespace System.Collections.Generic
         {
             if (rol == null)
                 rol = Factory.Get<IdentityManager>().GetCurrent();
-            var pre = rol.FilterExpression2<TSource>(functions);
+            var pre = rol.FilterExpression<TSource>(functions);
             return source.Where(pre);
         }
     }

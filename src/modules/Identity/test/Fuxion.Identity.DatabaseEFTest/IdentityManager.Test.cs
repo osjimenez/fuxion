@@ -77,10 +77,10 @@ namespace Fuxion.Identity.DatabaseEFTest
             "Root can create documents", scenarios,
             "root", "root",
             new[] { "CREATE" },
-            new[] { typeof(DocumentDao) },
+            typeof(DocumentDao),
             "Verify that 'California seller' user can NOT 'Create' entities of type 'Document'",
             true })]
-        public void Check(string _, string scenarios, string username, string password, string[] functionsIds, Type[] types, string message, bool expected)
+        public void Check(string _, string scenarios, string username, string password, string[] functionsIds, Type type, string message, bool expected)
         {
             //Assert.True(false, "Require revision after change all context design");
             Printer.WriteLine($"{message}");
@@ -97,20 +97,20 @@ namespace Fuxion.Identity.DatabaseEFTest
                     {
                         Printer.WriteLine($"Username: {username}");
                         Printer.WriteLine($"Functions: {functions.Aggregate("", (a, c) => a + c.Name + "·")}");
-                        Printer.WriteLine($"Types: {types.Aggregate("", (a, c) => a + c.Name + "·")}");
+                        Printer.WriteLine($"Type: {type.Name}");
                     });
-                    var strArgs = $"\r\nscenario<{scenario}>\r\nusername<{username}>\r\nfunctions<{functions.Aggregate("", (a, c) => a + c.Name + "·")}>\r\ntypes<{types.Aggregate("", (a, c) => a + c.Name + "·")}>";
+                    var strArgs = $"\r\nscenario<{scenario}>\r\nusername<{username}>\r\nfunctions<{functions.Aggregate("", (a, c) => a + c.Name + "·")}>\r\ntype<{type.Name}>";
                     if (expected)
                         Assert.True(
                             im.GetCurrent()
                                 .Can(functions)
-                                .AllTypes2(types)
+                                .Type(type)
                             , $"Function assignment failed unexpected: {strArgs}");
                     else
                         Assert.False(
                             im.GetCurrent()
                                 .Can(functions)
-                                .AllTypes2(types)
+                                .Type(type)
                             , $"Function assignment success unexpected: {strArgs}");
                 });
             }
@@ -193,7 +193,7 @@ namespace Fuxion.Identity.DatabaseEFTest
             var im = Factory.Get<IdentityManager>();
             var rep = Factory.Get<IIdentityTestRepository>();
             im.CheckCredentials("root", "root");
-            Assert.True(im.GetCurrent().Can(Read).Type2<DocumentDao>());
+            Assert.True(im.GetCurrent().Can(Read).Type<DocumentDao>());
             var res = rep.Album.Where(o => o.Songs.AuthorizedTo2(Read).Any());
             Printer.WriteLine("res.Count(): " + res.Count());
         }
