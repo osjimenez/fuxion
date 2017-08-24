@@ -51,8 +51,8 @@ namespace Fuxion
         //public static void Indent(Action action) => Default.Indent(action);
         [DebuggerHidden]
         public static IDisposable Indent2(char? verticalConnectorChar = null) => Default.Indent2(verticalConnectorChar);
-        [DebuggerHidden]
-        public static void Indent(string message, Action action) => Default.Indent(message, action);
+        //[DebuggerHidden]
+        //public static void Indent(string message, Action action) => Default.Indent(message, action);
         [DebuggerHidden]
         public static IDisposable Indent2(string message, char? verticalConnectorChar = null) => Default.Indent2(message, verticalConnectorChar);
         [DebuggerHidden]

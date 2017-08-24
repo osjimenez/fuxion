@@ -66,12 +66,12 @@ namespace Fuxion.Identity
             discriminators = discriminators.RemoveNulls();
             using (Printer.Indent2($"CALL {nameof(CheckDiscriminators)}:", '│'))
             {
-                Printer.Indent("Input parameters", () =>
+                using (Printer.Indent2("Input parameters"))
                 {
                     Printer.WriteLine($"Rol: {me?.Rol?.Name}");
                     Printer.WriteLine($"Functions: {string.Join(",", me.Functions.Select(f => f.Name)) ?? "<null>"}");
                     Printer.Foreach($"Discriminators:", discriminators, dis => Printer.WriteLine($"{dis?.TypeName} - {dis?.Name}"));
-                });
+                }
                 if (me.Rol == null) return false;
                 bool Compute()
                 {
@@ -217,14 +217,14 @@ namespace Fuxion.Identity
                 Printer.Foreach("Deny permissions:", pers.Where(p => !p.Value), per =>
                 {
                     Expression<Func<TEntity, bool>> perExp = null;
-                    Printer.Indent($"Permission: {per}", () =>
+                    using (Printer.Indent2($"Permission: {per}"))
                     {
                         Printer.Foreach("Scopes:", per.Scopes, sco =>
                         {
                             using (Printer.Indent2($"Scope: {sco}"))
                             {
-                                // Recorro las propiedades que son del tipo de este discriminador
-                                foreach (var pro in props.Where(p => Comparer.AreEquals(p.DiscriminatorTypeId, sco.Discriminator.TypeId)).ToList())
+                            // Recorro las propiedades que son del tipo de este discriminador
+                            foreach (var pro in props.Where(p => Comparer.AreEquals(p.DiscriminatorTypeId, sco.Discriminator.TypeId)).ToList())
                                 {
                                     Printer.WriteLine($"Property: {pro.PropertyType.Name} {pro.PropertyInfo.Name}");
                                     var exp = GetContainsExpression(per.Value, sco, pro.DiscriminatorType, pro.PropertyInfo);
@@ -241,7 +241,7 @@ namespace Fuxion.Identity
                         {
                             perExp = Expression.Lambda<Func<TEntity, bool>>(Expression.Constant(false), Expression.Parameter(typeof(TEntity)));
                         }
-                    });
+                    }
                     if (perExp != null)
                     {
                         if (denyPersExp != null)
@@ -254,12 +254,12 @@ namespace Fuxion.Identity
                 Printer.Foreach("Grant permissions:", pers.Where(p => p.Value), per =>
                 {
 
-                    Printer.Indent($"Permission: {per}>", () =>
+                    using (Printer.Indent2($"Permission: {per}>"))
                     {
                         Expression<Func<TEntity, bool>> perExp = null;
                         Printer.Foreach("Scopes:", per.Scopes, sco =>
                         {
-                            Printer.Indent($"Scope: {sco}", () =>
+                            using (Printer.Indent2($"Scope: {sco}"))
                             {
                                 // Recorro las propiedades que son del tipo de este discriminador
                                 foreach (var pro in props.Where(p => Comparer.AreEquals(p.DiscriminatorTypeId, sco.Discriminator.TypeId)).ToList())
@@ -272,7 +272,7 @@ namespace Fuxion.Identity
                                     else
                                         perExp = perExp.Or(exp);
                                 }
-                            });
+                            }
                         });
                         //if (!per.Scopes.Any())
                         if (perExp == null)
@@ -286,7 +286,7 @@ namespace Fuxion.Identity
                             else
                                 grantPersExp = perExp;
                         }
-                    });
+                    }
                 });
                 if (denyPersExp != null && grantPersExp != null) res = denyPersExp.And(grantPersExp);
                 if (denyPersExp != null && grantPersExp == null) res = denyPersExp;
@@ -317,14 +317,14 @@ namespace Fuxion.Identity
             }
             void PrintBinaryExpression(BinaryExpression exp)
             {
-                Printer.Indent("(", () =>
+                using (Printer.Indent2("("))
                 {
                     PrintExpression(exp.Left);
                     if (Printer.IsLineWritePending) Printer.WriteLine("");
                     Printer.WriteLine(exp.NodeType.ToString().ToUpper());
                     PrintExpression(exp.Right);
                     if (Printer.IsLineWritePending) Printer.WriteLine("");
-                });
+                }
                 if (Printer.IsLineWritePending) Printer.WriteLine("");
                 Printer.WriteLine(")");
             }

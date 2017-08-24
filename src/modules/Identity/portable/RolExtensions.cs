@@ -83,23 +83,14 @@ namespace Fuxion.Identity
             {
                 res = ((IInternalRolCan)me).CheckDiscriminators(true,
                     Factory.Get<TypeDiscriminatorFactory>().FromType(type)
+                    //,type.GetDiscriminatorsOfDiscriminatedProperties().ToArray()
                     );
             }
             Printer.WriteLine($"● RESULT {nameof(Type)}: {res}");
             return res;
         }
-        public static bool Type<T>(this IRolCan me)
-        {
-            bool res = false;
-            using (Printer.Indent2($"CALL {nameof(Type)}:", '│'))
-            {
-                res = ((IInternalRolCan)me).CheckDiscriminators(true,
-                    Factory.Get<TypeDiscriminatorFactory>().FromType<T>()
-                    );
-            }
-            Printer.WriteLine($"● RESULT {nameof(Type)}: {res}");
-            return res;
-        }
+        public static bool Type<T>(this IRolCan me) => me.Type(typeof(T));
+        
         // Two types
         //public static bool AllTypes<T1, T2>(this IRolCan me) => me.AllTypes(typeof(T1), typeof(T2));
         //public static bool AnyType<T1, T2>(this IRolCan me) => me.AnyType(typeof(T1), typeof(T2));

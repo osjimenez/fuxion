@@ -530,7 +530,7 @@ namespace Fuxion.Test
                             }
                         });
 
-                        Printer.Indent($"Side '{side.SideName}' ({side.ChangesMessage}) = {side.StatusMessage}",() =>
+                        using (Printer.Indent2($"Side '{side.SideName}' ({side.ChangesMessage}) = {side.StatusMessage}"))
                         {
                             foreach (var pro in side.Properties)
                                 Printer.WriteLine($"Property '{pro.PropertyName}' = {pro.StatusMessage}");
@@ -539,7 +539,7 @@ namespace Fuxion.Test
                                 Printer.WriteLine($"Relation '{rel.MasterItemName}' ({rel.ChangesMessage}) = {rel.StatusMessage}");
                                 act(rel);
                             }
-                        });
+                        }
                         //Printer.Indent($"Side {side.SideName} ({side.ChangesMessage}) = {side.StatusMessage}", () => {
                         //    Printer.Foreach($"Property {pro.PropertyName}: {pro.SideValue} => {pro.MasterValue}", side.Properties, pro =>
                         //    {

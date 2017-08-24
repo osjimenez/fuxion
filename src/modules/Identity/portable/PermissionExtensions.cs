@@ -166,11 +166,11 @@ namespace Fuxion.Identity
                                 Printer.WriteLine($"The discriminator '{dis}' is related to permission scope '{scopeOfTypeOfDiscriminator}' on discriminator '{scopeDiscriminatorRelatedWithDiscriminator}'");
                                 return true;
                             }
-                            //else
-                            //{
-                            //    Printer.WriteLine($"The discriminator '{dis}' isn't related to permission scopes");
-                            //    return true;
-                            //}
+                            else
+                            {
+                                Printer.WriteLine($"The discriminator '{dis}' isn't related to permission scopes, continue");
+                                //return true;
+                            }
                         }
                         else
                         {
