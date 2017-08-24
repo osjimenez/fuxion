@@ -108,7 +108,7 @@ namespace Fuxion
                 for (int i = 0; i < IndentationLevel; i++)
                 {
                     var step = "";
-                    var t = verticalConnectorLevels.Read(dic => dic.ContainsKey(i) ? dic[i] : (int?)null);
+                    var t = verticalConnectorLevels.Read(dic => dic.ContainsKey(i) ? dic[i] : (char?)null);
                     if (t != null && t.HasValue)
                     {
                         step += t.Value;

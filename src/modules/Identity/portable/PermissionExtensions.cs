@@ -169,7 +169,8 @@ namespace Fuxion.Identity
                             else
                             {
                                 Printer.WriteLine($"The discriminator '{dis}' isn't related to permission scopes, continue");
-                                //return true;
+                                //if (dis.Id != null) return me.Value;
+                                //return dis.Id == null ? me.Value : !me.Value;
                             }
                         }
                         else

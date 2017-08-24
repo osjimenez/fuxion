@@ -225,11 +225,11 @@ namespace Fuxion.Identity
                 Printer.Foreach("Deny permissions:", pers.Where(p => !p.Value), per =>
                 {
                     Expression<Func<TEntity, bool>> perExp = null;
-                    using (Printer.Indent2($"Permission: {per}"))
+                    using (Printer.Indent2($"Permission: {per.ToOneLineString()}"))
                     {
                         Printer.Foreach("Scopes:", per.Scopes, sco =>
                         {
-                            using (Printer.Indent2($"Scope: {sco}"))
+                            using (Printer.Indent2($"Scope: {sco.ToOneLineString()}"))
                             {
                             // Recorro las propiedades que son del tipo de este discriminador
                             foreach (var pro in props.Where(p => Comparer.AreEquals(p.DiscriminatorTypeId, sco.Discriminator.TypeId)).ToList())
@@ -262,12 +262,12 @@ namespace Fuxion.Identity
                 Printer.Foreach("Grant permissions:", pers.Where(p => p.Value), per =>
                 {
 
-                    using (Printer.Indent2($"Permission: {per}>"))
+                    using (Printer.Indent2($"Permission: {per.ToOneLineString()}"))
                     {
                         Expression<Func<TEntity, bool>> perExp = null;
                         Printer.Foreach("Scopes:", per.Scopes, sco =>
                         {
-                            using (Printer.Indent2($"Scope: {sco}"))
+                            using (Printer.Indent2($"Scope: {sco.ToOneLineString()}"))
                             {
                                 // Recorro las propiedades que son del tipo de este discriminador
                                 foreach (var pro in props.Where(p => Comparer.AreEquals(p.DiscriminatorTypeId, sco.Discriminator.TypeId)).ToList())
@@ -391,7 +391,7 @@ namespace Fuxion.Identity
                 PrintExpression(exp.Operand);
             }
             #endregion
-            using (Printer.Indent2($"● RESULT {nameof(SearchPermissions)}:", '●'))
+            using (Printer.Indent2($"● RESULT {nameof(FilterExpression)}:", '●'))
             {
                 Printer.WriteLine("Expression:");
                 PrintExpression(res?.Body);
