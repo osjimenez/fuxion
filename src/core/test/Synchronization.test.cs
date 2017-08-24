@@ -521,13 +521,13 @@ namespace Fuxion.Test
 
                         var act = new Action<ItemRelationPreview>(relation =>
                         {
-                            Printer.Indent(() =>
+                            using (Printer.Indent2())
                             {
                                 foreach (var pro in relation.Properties)
                                     Printer.WriteLine($"Property '{pro.PropertyName}' = {pro.StatusMessage}");
                                 foreach (var rel in relation.Relations)
                                     Printer.WriteLine($"Relation '{rel.MasterItemName}' ({rel.ChangesMessage}) = {rel.StatusMessage}");
-                            });
+                            }
                         });
 
                         Printer.Indent($"Side '{side.SideName}' ({side.ChangesMessage}) = {side.StatusMessage}",() =>

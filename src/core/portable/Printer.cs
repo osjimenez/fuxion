@@ -47,8 +47,8 @@ namespace Fuxion
         public static void Write(string message) => Default.Write(message);
         [DebuggerHidden]
         public static void WriteLine(string message) => Default.WriteLine(message);
-        [DebuggerHidden]
-        public static void Indent(Action action) => Default.Indent(action);
+        //[DebuggerHidden]
+        //public static void Indent(Action action) => Default.Indent(action);
         [DebuggerHidden]
         public static IDisposable Indent2(char? verticalConnectorChar = null) => Default.Indent2(verticalConnectorChar);
         [DebuggerHidden]

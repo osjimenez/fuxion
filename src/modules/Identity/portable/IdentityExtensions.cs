@@ -209,8 +209,8 @@ namespace Fuxion.Identity
                 var pers = functions.SelectMany(fun => me.SearchPermissions(
                         fun,
                         Factory.Get<TypeDiscriminatorFactory>().FromType<TEntity>(),
-                        //typeof(TEntity).GetTypeInfo().GetCustomAttribute<DiscriminatorAttribute>()
-                        props.Select(p => Factory.Get<TypeDiscriminatorFactory>().FromType(p.DiscriminatorType)).ToArray()
+                        //props.Select(p => Factory.Get<TypeDiscriminatorFactory>().FromType(p.DiscriminatorType)).ToArray()
+                        typeof(TEntity).GetDiscriminatorsOfDiscriminatedProperties().ToArray()
                         ))
                     .Distinct().ToList();
                 Expression<Func<TEntity, bool>> denyPersExp = null;
