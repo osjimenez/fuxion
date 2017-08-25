@@ -171,6 +171,26 @@ namespace Fuxion.Identity.Test.Rol
                     Discriminators.Location.City.Alcorcon), permissionExplanation + query);
             }
 
+            var source = new[] { Person.AlcorconAdmin, Person.MadridAdmin };
+            query =
+                $"¿Debería filtrar para '{nameof(Create)}' una instancia de pesona con la ciudad Alcorcon?\r\n" +
+                " No";
+            PrintTestTriedStarted(permissionExplanation + query);
+            var source1 = source.AuthorizedTo(ide, Create);
+            using (Printer.Indent2("Source filtered results:"))
+            {
+                foreach (var per in source1) {
+                    Printer.WriteLine("Person: " + per);
+                }
+            }
+            Assert.True(source1.Contains(Person.AlcorconAdmin), permissionExplanation + query);
+
+            query =
+                $"¿Debería filtrar para '{nameof(Create)}' una instancia de pesona con la ciudad Madrid?\r\n" +
+                " Si";
+            PrintTestTriedStarted(permissionExplanation + query);
+            Assert.False(source.AuthorizedTo(ide, Create).Contains(Person.MadridAdmin), permissionExplanation + query);
+
             query = 
                 $"¿Debería poder '{nameof(Read)}' objetos del tipo Word?\r\n" +
                 " Si";
@@ -635,6 +655,8 @@ namespace Fuxion.Identity.Test.Rol
                 " Si";
             PrintTestTriedStarted(permissionExplanation + query);
             Assert.True(ide.Can(Read).ByAll(Factory.Get<TypeDiscriminatorFactory>().FromId(TypeDiscriminatorIds.OfficeDocument)), permissionExplanation + query);
+
+
         }
         [Fact(DisplayName = "Rol - Root permission")]
         public void RootPermission()

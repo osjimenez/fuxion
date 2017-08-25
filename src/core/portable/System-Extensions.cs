@@ -202,6 +202,18 @@ namespace System
             return (length < value.Length) ? value.Substring(value.Length - length) : value;
         }
         #endregion
+        #region IsNullOrDefault
+        public static bool IsNullOrDefault<T>(this T me)
+        {
+            //if (me == null) return true;
+
+            return EqualityComparer<T>.Default.Equals(me, default(T));
+            //var nullable = me.GetType().IsSubclassOfRawGeneric(typeof(Nullable<>));
+
+            //me.GetType().Gene
+            //return false;
+        }
+        #endregion
     }
     public static class DateTimeExtensions
     {

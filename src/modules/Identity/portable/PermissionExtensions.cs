@@ -8,7 +8,7 @@ namespace Fuxion.Identity
     public static class PermissionExtensions
     {
         public static bool IsValid(this IPermission me) { return me.Function != null && (me.Scopes?.All(s => s.Discriminator != null) ?? true) && me.Scopes?.Select(s => s.Discriminator.TypeId).Distinct().Count() == me.Scopes?.Count(); }
-        internal static bool Match(this IPermission me, IFunction function, IDiscriminator targetDiscriminator, params IDiscriminator[] discriminators)
+        internal static bool Match(this IPermission me,bool forFilter, IFunction function, IDiscriminator targetDiscriminator, params IDiscriminator[] discriminators)
         {
             bool res = false;
             using (Printer.Indent2($"CALL {nameof(Match)}:", '│'))
@@ -34,7 +34,7 @@ namespace Fuxion.Identity
                         Printer.WriteLine($"Matching failed on check the function");
                         return false;
                     }
-                    if (!me.MatchByDiscriminatorsInclusionsAndExclusions(targetDiscriminator, discriminators))
+                    if (!me.MatchByDiscriminatorsInclusionsAndExclusions(forFilter, targetDiscriminator, discriminators))
                     {
                         Printer.WriteLine($"Matching failed on check the inclusions/exclusions of discriminator");
                         return false;
@@ -79,7 +79,7 @@ namespace Fuxion.Identity
             Printer.WriteLine($"● RESULT {nameof(MatchByFunction)}: {res}");
             return res;
         }
-        internal static bool MatchByDiscriminatorsInclusionsAndExclusions(this IPermission me, IDiscriminator targetDiscriminator, params IDiscriminator[] discriminators)
+        internal static bool MatchByDiscriminatorsInclusionsAndExclusions(this IPermission me,bool forFilter, IDiscriminator targetDiscriminator, params IDiscriminator[] discriminators)
         {
             bool res = false;
             using (Printer.Indent2($"CALL {nameof(MatchByDiscriminatorsInclusionsAndExclusions)}:", '│'))
@@ -169,8 +169,9 @@ namespace Fuxion.Identity
                             else
                             {
                                 Printer.WriteLine($"The discriminator '{dis}' isn't related to permission scopes, continue");
-                                //if (dis.Id != null) return me.Value;
-                                //return dis.Id == null ? me.Value : !me.Value;
+                                if (forFilter) return true;
+                                //if (!dis.Id.IsNullOrDefault()) return me.Value;
+                                //return dis.Id.IsNullOrDefault() ? me.Value : !me.Value;
                             }
                         }
                         else
@@ -179,7 +180,7 @@ namespace Fuxion.Identity
                             //return me.Value;
                             //return true;
                             //return false;
-                            return dis.Id == null ? me.Value : !me.Value;
+                            return dis.Id.IsNullOrDefault() ? me.Value : !me.Value;
                         }
                         return false;
                         //}

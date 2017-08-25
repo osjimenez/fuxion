@@ -22,7 +22,7 @@ namespace Fuxion.Identity
             if (me.Groups != null) foreach (var gro in me.Groups) r.AddRange(gro.AllPermissions());
             return r;
         }
-        internal static IPermission[] SearchPermissions(this IRol me, IFunction function, IDiscriminator targetDiscriminator, params IDiscriminator[] discriminators)
+        internal static IPermission[] SearchPermissions(this IRol me, bool forFilter, IFunction function, IDiscriminator targetDiscriminator, params IDiscriminator[] discriminators)
         {
             IPermission[] res = null;
             using (Printer.Indent2($"CALL {nameof(SearchPermissions)}:", '│'))
@@ -51,7 +51,7 @@ namespace Fuxion.Identity
                 using (Printer.Indent2("Permissions:")) permissions.Print(PrintMode.Table);
                 using (Printer.Indent2("Iterate permissions:"))
                 {
-                    res = permissions.Where(p => p.Match(function, targetDiscriminator, discriminators)).ToArray();
+                    res = permissions.Where(p => p.Match(forFilter, function, targetDiscriminator, discriminators)).ToArray();
                 }
             }
             using (Printer.Indent2($"● RESULT {nameof(SearchPermissions)}:", '●'))
@@ -79,7 +79,7 @@ namespace Fuxion.Identity
                     foreach (var fun in me.Functions)
                     {
                         Printer.WriteLine($"Function '{fun.Name}':");
-                        var pers = SearchPermissions(me.Rol, fun, targetDiscriminator, discriminators);
+                        var pers = SearchPermissions(me.Rol, false, fun, targetDiscriminator, discriminators);
                         if (!pers.Any())
                             return false;
                         else
@@ -104,7 +104,7 @@ namespace Fuxion.Identity
                                     {
                                         //var pers = me.Rol.SearchPermissions(fun, dis);
                                         //return !pers.Any(p => !p.Value && p.Scopes.Any(s => dis.TypeId == s.Discriminator.TypeId)) && pers.Any(p => p.Value);
-                                        return !pers.Any(p => !p.Value && p.Match(fun, targetDiscriminator, discriminators)) && pers.Any(p => p.Value);
+                                        return !pers.Any(p => !p.Value && p.Match(false, fun, targetDiscriminator, discriminators)) && pers.Any(p => p.Value);
                                     });
                             }
                             if (!r && me.ThrowExceptionIfCannot)
@@ -215,12 +215,13 @@ namespace Fuxion.Identity
                 var props = typeof(TEntity).GetDiscriminatedProperties();
                 Printer.Foreach("Properties:", props, p => Printer.WriteLine($"{p.PropertyType.Name} {p.PropertyInfo.Name} - {p.DiscriminatorTypeId} {p.DiscriminatorType.Name}"));
                 var pers = functions.SelectMany(fun => me.SearchPermissions(
-                        fun,
-                        Factory.Get<TypeDiscriminatorFactory>().FromType<TEntity>(),
-                        //props.Select(p => Factory.Get<TypeDiscriminatorFactory>().FromType(p.DiscriminatorType)).ToArray()
-                        typeof(TEntity).GetDiscriminatorsOfDiscriminatedProperties().ToArray()
-                        ))
-                    .Distinct().ToList();
+                    true,
+                    fun,
+                    Factory.Get<TypeDiscriminatorFactory>().FromType<TEntity>(),
+                    //props.Select(p => Factory.Get<TypeDiscriminatorFactory>().FromType(p.DiscriminatorType)).ToArray()
+                    typeof(TEntity).GetDiscriminatorsOfDiscriminatedProperties().ToArray()
+                    ))
+                .Distinct().ToList();
                 Expression<Func<TEntity, bool>> denyPersExp = null;
                 Printer.Foreach("Deny permissions:", pers.Where(p => !p.Value), per =>
                 {
@@ -395,6 +396,7 @@ namespace Fuxion.Identity
             {
                 Printer.WriteLine("Expression:");
                 PrintExpression(res?.Body);
+                Printer.WriteLine("");
             }
             return res;
             

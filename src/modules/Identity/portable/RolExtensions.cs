@@ -42,7 +42,7 @@ namespace Fuxion.Identity
             if (ime.Rol == null) return false;
             foreach (var fun in ime.Functions)
             {
-                var permissions = ime.Rol.SearchPermissions(fun, TypeDiscriminator.Empty);
+                var permissions = ime.Rol.SearchPermissions(false, fun, TypeDiscriminator.Empty);
                 if (!permissions.Any() || permissions.Any(p => p.Scopes.Any()))
                     return false;
             }
@@ -54,7 +54,7 @@ namespace Fuxion.Identity
             if (ime.Rol == null) return false;
             foreach (var fun in ime.Functions)
             {
-                var permissions = ime.Rol.SearchPermissions(fun, TypeDiscriminator.Empty);
+                var permissions = ime.Rol.SearchPermissions(false, fun, TypeDiscriminator.Empty);
                 if (!permissions.Any(p => p.Value))
                     return false;
             }
