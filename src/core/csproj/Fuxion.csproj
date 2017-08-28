@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net47</TargetFrameworks>
+	<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>..\..\.build\NuGet\Fuxion\out~</OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\.build\AssemblyInfo.cs" Link="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)'=='net45' OR '$(TargetFramework)'=='net47'">
+    <Reference Include="Microsoft.CSharp" />
+	<Reference Include="System.Management" />
+	<Reference Include="System.IdentityModel" />
+	<Reference Include="System.ServiceModel" />
+	<Reference Include="System.Transactions" />
+	<Reference Include="System.Security" />
+	<Reference Include="System.Runtime.Serialization" />
+	<Reference Include="PresentationCore" />
+	<Reference Include="PresentationFramework" />
+	<Reference Include="WindowsBase" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\ProjectAssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  
+</Project>

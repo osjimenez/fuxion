@@ -43,8 +43,9 @@ namespace Fuxion.Licensing.Test
             var man = Factory.Get<LicensingManager>();
             string fullKey, publicKey;
             GenerateKey(out fullKey, out publicKey);
-            output.WriteLine("Full key: " + fullKey);
-            output.WriteLine("Public key: " + publicKey);
+            output.WriteLine("Full key:\r\n" + fullKey);
+            output.WriteLine("");
+            output.WriteLine("Public key:\r\n" + publicKey);
         }
         [Fact]
         public void License_Request()

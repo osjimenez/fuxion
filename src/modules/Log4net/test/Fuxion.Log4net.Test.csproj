@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Fuxion.Log4net.Test</RootNamespace>
     <AssemblyName>Fuxion.Log4net.Test</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -19,6 +19,7 @@
     <TestProjectType>UnitTest</TestProjectType>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -81,16 +82,16 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\core\portable\Fuxion.csproj">
-      <Project>{5761cb44-504f-468b-8263-39f59eebbb17}</Project>
+    <ProjectReference Include="..\..\..\core\csproj\Fuxion.csproj">
+      <Project>{0f5cb7bf-7ff8-447d-9dec-8cd0d946d208}</Project>
       <Name>Fuxion</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\SimpleInjector\portable\Fuxion.SimpleInjector.csproj">
-      <Project>{dfe9408b-2bb2-4f86-a1c0-2a050d155f82}</Project>
+    <ProjectReference Include="..\..\SimpleInjector\csproj\Fuxion.SimpleInjector.csproj">
+      <Project>{220fabfc-2076-42ca-b739-81c34913bca4}</Project>
       <Name>Fuxion.SimpleInjector</Name>
     </ProjectReference>
-    <ProjectReference Include="..\net45\Fuxion.Log4net.csproj">
-      <Project>{1cf0e88a-cd3d-4d49-8650-f5f7ff3a1334}</Project>
+    <ProjectReference Include="..\csproj\Fuxion.Log4net.csproj">
+      <Project>{a056fb31-cf60-4265-9f3b-e9202f98eebc}</Project>
       <Name>Fuxion.Log4net</Name>
     </ProjectReference>
   </ItemGroup>

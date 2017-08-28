@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Fuxion.Windows.Test</RootNamespace>
     <AssemblyName>Fuxion.Windows.Test</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -19,6 +19,7 @@
     <TestProjectType>UnitTest</TestProjectType>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -69,21 +70,17 @@
     <Compile Include="TimeSpanToStringConverter.test.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\core\net45\Fuxion-net45.csproj">
-      <Project>{b16111a4-cdf6-40e8-9bee-1d5806543cb0}</Project>
-      <Name>Fuxion-net45</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\core\portable\Fuxion.csproj">
-      <Project>{5761cb44-504f-468b-8263-39f59eebbb17}</Project>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\core\csproj\Fuxion.csproj">
+      <Project>{0f5cb7bf-7ff8-447d-9dec-8cd0d946d208}</Project>
       <Name>Fuxion</Name>
     </ProjectReference>
-    <ProjectReference Include="..\net45\Fuxion.Windows.csproj">
+    <ProjectReference Include="..\csproj\Fuxion.Windows.csproj">
       <Project>{25b99e1d-a3ba-42f3-b4bf-b6c76e6d84e4}</Project>
       <Name>Fuxion.Windows</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

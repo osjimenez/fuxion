@@ -11,11 +11,11 @@ using Xunit;
 using Xunit.Abstractions;
 using System.Xml;
 using System.Xml.Linq;
-using Fuxion.Test.Resources;
 using System.Threading;
 using System.Globalization;
 using System.Linq.Expressions;
 using Fuxion.Collections.Generic;
+using Fuxion.Test.Resources;
 
 namespace Fuxion.Test
 {

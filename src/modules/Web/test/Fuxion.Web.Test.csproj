@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Fuxion.Web.Test</RootNamespace>
     <AssemblyName>Fuxion.Web.Test</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -19,6 +19,7 @@
     <TestProjectType>UnitTest</TestProjectType>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -38,6 +39,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Flurl, Version=2.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Flurl.2.5.0\lib\net40\Flurl.dll</HintPath>
+    </Reference>
+    <Reference Include="Flurl.Http, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Flurl.Http.1.2.0\lib\net45\Flurl.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\xunit.abstractions.2.0.1\lib\net35\xunit.abstractions.dll</HintPath>
@@ -76,20 +86,12 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\core\net45\Fuxion-net45.csproj">
-      <Project>{b16111a4-cdf6-40e8-9bee-1d5806543cb0}</Project>
-      <Name>Fuxion-net45</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\core\portable\Fuxion.csproj">
-      <Project>{5761cb44-504f-468b-8263-39f59eebbb17}</Project>
+    <ProjectReference Include="..\..\..\core\csproj\Fuxion.csproj">
+      <Project>{0f5cb7bf-7ff8-447d-9dec-8cd0d946d208}</Project>
       <Name>Fuxion</Name>
     </ProjectReference>
-    <ProjectReference Include="..\net45\Fuxion.Web-net45.csproj">
-      <Project>{b407f038-98e7-40bd-9f46-dc52a854cb9d}</Project>
-      <Name>Fuxion.Web-net45</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\portable\Fuxion.Web.csproj">
-      <Project>{6f2e20c5-a508-4e9c-8514-6067b9791e1b}</Project>
+    <ProjectReference Include="..\csproj\Fuxion.Web.csproj">
+      <Project>{a5f35a41-ee28-4e19-84d4-a1bb0fda57b9}</Project>
       <Name>Fuxion.Web</Name>
     </ProjectReference>
   </ItemGroup>

@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net47</TargetFrameworks>
+	<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>..\..\..\.build\NuGet\Fuxion.Data\out~</OutputPath>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <Compile Include="..\..\..\.build\AssemblyInfo.cs" Link="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  
+    <ItemGroup Condition="'$(TargetFramework)'=='net47'">
+    <PackageReference Include="EntityFramework" Version="6.1.3" />
+  </ItemGroup>
+  
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\core\csproj\Fuxion.csproj" />
+    </ItemGroup>
+  
+    <ItemGroup>
+      <Compile Update="Properties\ProjectAssemblyInfo.cs">
+        <SubType>Code</SubType>
+      </Compile>
+    </ItemGroup>
+
+</Project>
