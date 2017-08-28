@@ -14,5 +14,7 @@ namespace Fuxion.Identity.Test.Dao
     {
         public string Id { get; set; }
         public virtual string Name { get; set; }
+
+        public override string ToString() => $"{Name} - {Id}";
     }
 }

@@ -17,6 +17,7 @@ namespace Fuxion.Identity
                 {
                     Printer.WriteLine($"Permission:");
                     new[] { me }.Print(PrintMode.Table);
+                    Printer.WriteLine($"For filter: " + forFilter);
                     Printer.WriteLine($"Function: {function?.Name ?? "<null>"}");
 
                     if (targetDiscriminator != null)
@@ -86,8 +87,9 @@ namespace Fuxion.Identity
             {
                 using (Printer.Indent2("Input parameters"))
                 {
-                    Printer.WriteLine("Permission:");
+                    Printer.WriteLine($"Permission:");
                     new[] { me }.Print(PrintMode.Table);
+                    Printer.WriteLine($"For filter: " + forFilter);
                     if (targetDiscriminator == null)
                         Printer.WriteLine($"Target discriminator: null");
                     else
@@ -169,7 +171,11 @@ namespace Fuxion.Identity
                             else
                             {
                                 Printer.WriteLine($"The discriminator '{dis}' isn't related to permission scopes, continue");
-                                if (forFilter) return true;
+                                if (forFilter)
+                                {
+                                    Printer.WriteLine($"This search is 'forFilter', TRUE");
+                                    return true;
+                                }
                                 //if (!dis.Id.IsNullOrDefault()) return me.Value;
                                 //return dis.Id.IsNullOrDefault() ? me.Value : !me.Value;
                             }

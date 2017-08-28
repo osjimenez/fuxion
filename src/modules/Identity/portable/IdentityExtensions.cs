@@ -31,6 +31,7 @@ namespace Fuxion.Identity
                 using (Printer.Indent2("Inpupt Prameters"))
                 {
                     Printer.WriteLine($"Rol: {me?.Name}");
+                    Printer.WriteLine($"For filter: " + forFilter);
                     Printer.WriteLine($"Function: {function?.Name ?? "<null>"}");
                     Printer.WriteLine($"Target discriminator: {targetDiscriminator?.ToString() ?? "<null>"}");
                     Printer.Foreach($"Discriminators:", discriminators, dis => Printer.WriteLine($"{dis?.TypeName} - {dis?.Name}"));
