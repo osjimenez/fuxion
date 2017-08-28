@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Fuxion.Factories;
 using Fuxion.Identity;
+using static Fuxion.Identity.IdentityExtensions;
 namespace System.Collections.Generic
 {
     public static class System_Extensions
@@ -11,9 +12,7 @@ namespace System.Collections.Generic
         {
             if (rol == null)
                 rol = Factory.Get<IdentityManager>().GetCurrent();
-            //var im = Factory.Get<IdentityManager>();
             var pre = rol.FilterExpression<TSource>(functions);
-            //if (pre == null) return Enumerable.Empty<TSource>();
             return source is IQueryable<TSource>
                 ? ((IQueryable<TSource>)source).Where(pre)
                 : source.Where(pre.Compile());
@@ -25,7 +24,6 @@ namespace System.Collections.Generic
             if (rol == null)
                 rol = Factory.Get<IdentityManager>().GetCurrent();
             var pre = rol.FilterExpression<TSource>(functions);
-            //if (pre == null) return Enumerable.Empty<TSource>().AsQueryable();
             return source.Where(pre);
         }
     }

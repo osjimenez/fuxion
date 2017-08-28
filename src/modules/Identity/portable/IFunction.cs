@@ -49,6 +49,18 @@ namespace Fuxion.Identity
             //return GetAllInclusions(me, new List<T>(new[] { (T)me }));
             return GetAllInclusions(me, new List<T>(new T[] { }));
         }
+        public static IEnumerable<IDiscriminator> GetAllRelated(this IDiscriminator me, ScopePropagation propagation)
+        {
+            //return GetAllInclusions(me, new List<T>(new[] { (T)me }));
+            var res = new List<IDiscriminator>();
+            if (propagation.HasFlag(ScopePropagation.ToMe))
+                res.Add(me);
+            if (propagation.HasFlag(ScopePropagation.ToInclusions))
+                res.AddRange(me.GetAllInclusions());
+            if (propagation.HasFlag(ScopePropagation.ToExclusions))
+                res.AddRange(me.GetAllExclusions());
+            return res;
+        }
         private static IEnumerable<T> GetAllExclusions<T>(this IExclusive<T> me, List<T> progress)
         {
             var res = progress;

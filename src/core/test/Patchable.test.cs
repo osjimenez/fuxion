@@ -1,4 +1,5 @@
 ﻿using Fuxion.Web;
+using Microsoft.CSharp.RuntimeBinder;
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
@@ -60,11 +61,53 @@ namespace Fuxion.Test
 
             Assert.Equal(Guid.Parse("{7F27735C-FDE1-4141-985A-214502599C63}"), id);
         }
+        [Fact(DisplayName = "Patchable - Allow non existing properties")]
+        public void NonExistingProperties()
+        {
+            Patchable<ToPatch>.NonExistingPropertiesMode = NonExistingPropertiesMode.NotAllowed;
+
+            // Create a Patchable
+            dynamic dyn = new Patchable<ToPatch>();
+            // Set non existing property
+            Assert.Throws<RuntimeBinderException>(() =>
+            {
+                dyn.Integer = 123;
+                dyn.DerivedInteger = 123;
+            });
+            Patchable<ToPatch>.NonExistingPropertiesMode = NonExistingPropertiesMode.OnlySet;
+            dyn.Integer = 123;
+            dyn.DerivedInteger = 123;
+
+            // Path a derived class
+            var derived = new DerivedToPatch();
+            (dyn as Patchable<ToPatch>).ToPatchable<DerivedToPatch>().Patch(derived);
+            Assert.Equal(123, derived.Integer);
+            Assert.Equal(123, derived.DerivedInteger);
+
+            // Get non existing property
+            var delta = dyn as Patchable<ToPatch>;
+            int res, derivedRed;
+            Assert.Throws<RuntimeBinderException>(() =>
+            {
+                res = delta.Get<int>("Integer");
+                derivedRed = delta.Get<int>("DerivedInteger");
+            });
+            Patchable<ToPatch>.NonExistingPropertiesMode = NonExistingPropertiesMode.GetAndSet;
+            res = delta.Get<int>("Integer");
+            derivedRed = delta.Get<int>("DerivedInteger");
+
+            Assert.Equal(123, res);
+            Assert.Equal(123, derivedRed);
+        }
     }
     public class ToPatch
     {
         public int Integer { get; set; }
         public string String { get; set; }
         public Guid Id { get; set; }
+    }
+    public class DerivedToPatch : ToPatch
+    {
+        public int DerivedInteger { get; set; }
     }
 }

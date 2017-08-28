@@ -11,7 +11,7 @@ namespace Fuxion.Synchronization
     {
         internal Guid Id { get; } = Guid.NewGuid();
         public string Name { get; set; }
-        public bool MakePreviewInParallel { get; set; } = true;
+        public bool MakePreviewInParallel { get; set; } = false;
         public ICollection<Work> Works { get; set; } = new List<Work>();
     }
 }

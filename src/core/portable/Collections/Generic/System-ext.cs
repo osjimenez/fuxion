@@ -24,5 +24,10 @@ namespace System.Collections.Generic
                 yield return list[actual];
             }
         }
+        public static bool IsNullOrEmpty<T>(this IEnumerable<T> me) => me == null || !me.Any();
+        public static IEnumerable<T> RemoveNulls<T>(this IEnumerable<T> me) => me.Where(i => i != null);
+        public static IQueryable<T> RemoveNulls<T>(this IQueryable<T> me) => me.Where(i => i != null);
+        public static IList<T> RemoveNulls<T>(this IList<T> me) => me.Where(i => i != null).ToList();
+        public static T[] RemoveNulls<T>(this T[] me) => me.Where(i => i != null).ToArray();
     }
 }

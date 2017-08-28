@@ -23,18 +23,18 @@ namespace Fuxion.Identity.Test
     }
     public class Context
     {
-        static List<Tuple<Delegate, object>> configurationActions = new List<Tuple<Delegate, object>>();
+        static List<(Delegate Action, object Parameter)> configurationActions = new List<(Delegate Action, object Parameter)>();
         public static void AddConfigurationAction(Delegate action, object parameter)
         {
             if (action != null)
-                configurationActions.Add(new Tuple<Delegate, object>(action, parameter));
+                configurationActions.Add((action, parameter));
         }
         public static void RunConfigurationActions()
         {
-            foreach (var act in configurationActions)
+            foreach (var act in configurationActions.ToList())
                 try
                 {
-                    act.Item1.DynamicInvoke(act.Item2);
+                    act.Action.DynamicInvoke(act.Parameter);
                 }
                 catch
                 {
@@ -44,7 +44,7 @@ namespace Fuxion.Identity.Test
 
         #region Discriminator
         static DiscriminatorContext _Discriminator;
-        public static DiscriminatorContext Discriminator
+        public static DiscriminatorContext Discriminators
         {
             get
             {
@@ -68,12 +68,12 @@ namespace Fuxion.Identity.Test
                 {
                     static CountryDao Create(string name, Action<Dao.CountryDao> configureAction = null)
                     {
-                        var res = new Dao.CountryDao { Id = name, Name = name };
+                        var res = new CountryDao { Id = name, Name = name };
                         AddConfigurationAction(configureAction, res);
                         return res;
                     }
-                    public CountryDao Usa { get; } = Create(nameof(Usa), me => me.States = new[] { Discriminator.Location.State.California, Discriminator.Location.State.NewYork });
-                    public CountryDao Spain { get; } = Create(nameof(Spain), me => me.States = new[] { Discriminator.Location.State.Madrid });
+                    public CountryDao Usa { get; } = Create(nameof(Usa), me => me.States = new[] { Discriminators.Location.State.California, Discriminators.Location.State.NewYork });
+                    public CountryDao Spain { get; } = Create(nameof(Spain), me => me.States = new[] { Discriminators.Location.State.Madrid });
                 }
                 #endregion
                 #region State
@@ -88,18 +88,18 @@ namespace Fuxion.Identity.Test
                     }
                     public StateDao California { get; } = Create(nameof(California), me =>
                     {
-                        me.Country = Discriminator.Location.Country.Usa;
-                        me.Cities = new[] { Discriminator.Location.City.SanFrancisco, Discriminator.Location.City.Berkeley };
+                        me.Country = Discriminators.Location.Country.Usa;
+                        me.Cities = new[] { Discriminators.Location.City.SanFrancisco, Discriminators.Location.City.Berkeley };
                     });
                     public StateDao NewYork { get; } = Create(nameof(NewYork), me =>
                     {
-                        me.Country = Discriminator.Location.Country.Usa;
-                        me.Cities = new[] { Discriminator.Location.City.NewYork, Discriminator.Location.City.Buffalo };
+                        me.Country = Discriminators.Location.Country.Usa;
+                        me.Cities = new[] { Discriminators.Location.City.NewYork, Discriminators.Location.City.Buffalo };
                     });
                     public StateDao Madrid { get; } = Create(nameof(Madrid), me =>
                     {
-                        me.Country = Discriminator.Location.Country.Spain;
-                        me.Cities = new[] { Discriminator.Location.City.Madrid, Discriminator.Location.City.Alcorcon };
+                        me.Country = Discriminators.Location.Country.Spain;
+                        me.Cities = new[] { Discriminators.Location.City.Madrid, Discriminators.Location.City.Alcorcon };
                     });
                 }
                 #endregion
@@ -113,12 +113,12 @@ namespace Fuxion.Identity.Test
                         AddConfigurationAction(configureAction, res);
                         return res;
                     }
-                    public CityDao SanFrancisco { get; } = Create(nameof(SanFrancisco), me => me.State = Discriminator.Location.State.California);
-                    public CityDao Berkeley { get; } = Create(nameof(Berkeley), me => me.State = Discriminator.Location.State.California);
-                    public CityDao NewYork { get; } = Create(nameof(NewYork), me => me.State = Discriminator.Location.State.NewYork);
-                    public CityDao Buffalo { get; } = Create(nameof(Buffalo), me => me.State = Discriminator.Location.State.NewYork);
-                    public CityDao Madrid { get; } = Create(nameof(Madrid), me => me.State = Discriminator.Location.State.Madrid);
-                    public CityDao Alcorcon { get; } = Create(nameof(Alcorcon), me => me.State = Discriminator.Location.State.Madrid);
+                    public CityDao SanFrancisco { get; } = Create(nameof(SanFrancisco), me => me.State = Discriminators.Location.State.California);
+                    public CityDao Berkeley { get; } = Create(nameof(Berkeley), me => me.State = Discriminators.Location.State.California);
+                    public CityDao NewYork { get; } = Create(nameof(NewYork), me => me.State = Discriminators.Location.State.NewYork);
+                    public CityDao Buffalo { get; } = Create(nameof(Buffalo), me => me.State = Discriminators.Location.State.NewYork);
+                    public CityDao Madrid { get; } = Create(nameof(Madrid), me => me.State = Discriminators.Location.State.Madrid);
+                    public CityDao Alcorcon { get; } = Create(nameof(Alcorcon), me => me.State = Discriminators.Location.State.Madrid);
                 }
                 #endregion
             }
@@ -132,7 +132,9 @@ namespace Fuxion.Identity.Test
                     AddConfigurationAction(configureAction, res);
                     return res;
                 }
-                public CategoryDao Sales { get; set; } = Create(nameof(Sales));
+                public CategoryDao Sales { get; set; } = Create(nameof(Sales), c => c.Children = new[] { Discriminators.Category.Commercial, Discriminators.Category.Marketing });
+                public CategoryDao Marketing { get; set; } = Create(nameof(Marketing), c => c.Parent = Discriminators.Category.Sales);
+                public CategoryDao Commercial { get; set; } = Create(nameof(Commercial), c => c.Parent = Discriminators.Category.Sales);
                 public CategoryDao Purchases { get; set; } = Create(nameof(Purchases));
             }
             #endregion
@@ -208,10 +210,32 @@ namespace Fuxion.Identity.Test
         }
         #endregion
         #region Person
+        //static PersonContext _Person;
+        //public static PersonContext Person
+        //{
+        //    get
+        //    {
+        //        if(_Person == null)
+        //        {
+        //            _Person = new PersonContext();
+        //            RunConfigurationActions();
+        //        }
+        //        return _Person;
+        //    }
+        //}
         public static PersonContext Person { get; } = new PersonContext();
+
         public class PersonContext : Context<PersonDao>
         {
-
+            static PersonDao Create(string name, Action<PersonDao> configureAction = null)
+            {
+                var res = new PersonDao { Id = name, Name = name };
+                AddConfigurationAction(configureAction, res);
+                return res;
+            }
+            public PersonDao Admin { get; } = Create(nameof(Admin));
+            public PersonDao MadridAdmin { get; } = Create(nameof(MadridAdmin), p => p.City = Discriminators.Location.City.Madrid);
+            public PersonDao AlcorconAdmin { get; } = Create(nameof(AlcorconAdmin), p => p.City = Discriminators.Location.City.Alcorcon);
         }
         #endregion
         #region Skill

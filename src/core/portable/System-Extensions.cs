@@ -17,17 +17,29 @@ namespace System
     public static class Extensions
     {
         #region Disposable
-        public static IDisposable AsDisposable<T>(this T me, Action<T> actionOnDispose) { return new DisposableEnvelope<T>(me, actionOnDispose); }
-        class DisposableEnvelope<T> : IDisposable
+        public static DisposableEnvelope<T> AsDisposable<T>(this T me, Action<T> actionOnDispose = null) { return new DisposableEnvelope<T>(me, actionOnDispose); }
+        public class DisposableEnvelope<T> : IDisposable
         {
-            public DisposableEnvelope(T obj, Action<T> actionOnDispose)
+            public DisposableEnvelope(T obj, Action<T> actionOnDispose = null)
             {
                 this.action = actionOnDispose;
-                this.obj = obj;
+                this.Value = obj;
             }
-            T obj;
+            T value;
+            public T Value
+            {
+                get => value; set
+                {
+                    if (disposed) throw new ObjectDisposedException(nameof(Value));
+                    this.value = value;
+                }
+            }
             Action<T> action;
-            void IDisposable.Dispose() { action(obj); }
+            bool disposed = false;
+            void IDisposable.Dispose() {
+                disposed = true;
+                action?.Invoke(Value);
+            }
         }
         #endregion
         #region Json
@@ -45,6 +57,23 @@ namespace System
         public static TResult Transform<TSource, TResult>(this TSource me, Func<TSource, TResult> transformFunction)
         {
             return transformFunction(me);
+        }
+        public static TSource Transform<TSource>(this TSource me, Action<TSource> transformFunction)
+        {
+            transformFunction(me);
+            return me;
+        }
+        public static IEnumerable<TSource> Transform<TSource>(this IEnumerable<TSource> me, Action<TSource> transformFunction)
+        {
+            foreach(var item in me)
+                transformFunction(item);
+            return me;
+        }
+        public static async Task<IEnumerable<TSource>> Transform<TSource>(this IEnumerable<TSource> me, Func<TSource, Task> transformFunction)
+        {
+            foreach (var item in me)
+                await transformFunction(item);
+            return me;
         }
         #endregion
         #region Reflections
@@ -171,6 +200,18 @@ namespace System
             }
 
             return (length < value.Length) ? value.Substring(value.Length - length) : value;
+        }
+        #endregion
+        #region IsNullOrDefault
+        public static bool IsNullOrDefault<T>(this T me)
+        {
+            //if (me == null) return true;
+
+            return EqualityComparer<T>.Default.Equals(me, default(T));
+            //var nullable = me.GetType().IsSubclassOfRawGeneric(typeof(Nullable<>));
+
+            //me.GetType().Gene
+            //return false;
         }
         #endregion
     }

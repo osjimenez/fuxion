@@ -45,7 +45,7 @@ namespace Fuxion.Identity.DatabaseEFTest
         {
             foreach (var scenario in scenarios.Split('·'))
             {
-                Printer.Indent($"Scenario = { scenario}", () =>
+                using (Printer.Indent2($"Scenario = { scenario}"))
                 {
                     Load(scenario);
                     var im = Factory.Get<IdentityManager>();
@@ -53,7 +53,7 @@ namespace Fuxion.Identity.DatabaseEFTest
                         Assert.True(im.CheckCredentials(username, password), $"Login fail unexpected: username<{username}> password<{password}>");
                     else
                         Assert.False(im.CheckCredentials(username, password), $"Login success unexpected: username<{username}> password<{password}>");
-                });
+                }
             }
         }
         #endregion
@@ -77,42 +77,42 @@ namespace Fuxion.Identity.DatabaseEFTest
             "Root can create documents", scenarios,
             "root", "root",
             new[] { "CREATE" },
-            new[] { typeof(DocumentDao) },
+            typeof(DocumentDao),
             "Verify that 'California seller' user can NOT 'Create' entities of type 'Document'",
             true })]
-        public void Check(string _, string scenarios, string username, string password, string[] functionsIds, Type[] types, string message, bool expected)
+        public void Check(string _, string scenarios, string username, string password, string[] functionsIds, Type type, string message, bool expected)
         {
             //Assert.True(false, "Require revision after change all context design");
             Printer.WriteLine($"{message}");
             Printer.WriteLine("");
             foreach (var scenario in scenarios.Split('·'))
             {
-                Printer.Indent($"Scenario = { scenario}", () =>
+                using (Printer.Indent2($"Scenario = { scenario}"))
                 {
                     Load(scenario);
                     var im = Factory.Get<IdentityManager>();
                     var functions = functionsIds.Select(id => GetById(id)).ToArray();
                     Assert.True(im.CheckCredentials(username, password), $"Login fail unexpected: username<{username}> password<{password}>");
-                    Printer.Indent("Parameters:", () =>
+                    using (Printer.Indent2("Parameters:"))
                     {
                         Printer.WriteLine($"Username: {username}");
                         Printer.WriteLine($"Functions: {functions.Aggregate("", (a, c) => a + c.Name + "·")}");
-                        Printer.WriteLine($"Types: {types.Aggregate("", (a, c) => a + c.Name + "·")}");
-                    });
-                    var strArgs = $"\r\nscenario<{scenario}>\r\nusername<{username}>\r\nfunctions<{functions.Aggregate("", (a, c) => a + c.Name + "·")}>\r\ntypes<{types.Aggregate("", (a, c) => a + c.Name + "·")}>";
+                        Printer.WriteLine($"Type: {type.Name}");
+                    }
+                    var strArgs = $"\r\nscenario<{scenario}>\r\nusername<{username}>\r\nfunctions<{functions.Aggregate("", (a, c) => a + c.Name + "·")}>\r\ntype<{type.Name}>";
                     if (expected)
                         Assert.True(
                             im.GetCurrent()
                                 .Can(functions)
-                                .AllTypes(types)
+                                .Type(type)
                             , $"Function assignment failed unexpected: {strArgs}");
                     else
                         Assert.False(
                             im.GetCurrent()
                                 .Can(functions)
-                                .AllTypes(types)
+                                .Type(type)
                             , $"Function assignment success unexpected: {strArgs}");
-                });
+                }
             }
         }
         #endregion
@@ -147,7 +147,7 @@ namespace Fuxion.Identity.DatabaseEFTest
             //Assert.True(false, "Require revision after change all context design");
             foreach (var scenario in scenarios.Split('·'))
             {
-                Printer.Indent($"Scenario = { scenario}", () =>
+                using (Printer.Indent2($"Scenario = { scenario}"))
                 {
                     Load(scenario);
                     var im = Factory.Get<IdentityManager>();
@@ -170,7 +170,7 @@ namespace Fuxion.Identity.DatabaseEFTest
                         Assert.True(list.Any(e => expectedIds.Contains(e.Id)), $"Some expected ids '{expectedIds.Aggregate("", (a, c) => a + c + "·")}' not found");
                     else
                         Assert.True(list.All(e => expectedIds.Contains(e.Id)), $"Strict expected ids '{expectedIds.Aggregate("", (a, c) => a + c + "·")}' not found");
-                });
+                }
             }
         }
         #endregion

@@ -11,7 +11,7 @@ namespace Fuxion.Identity.Test.Dvo
     {
 
     }
-    [TypeDiscriminated(false)]
+    [TypeDiscriminated(TypeDiscriminationDisableMode.DisableHierarchy)]
     public abstract class SkillDvo<TSkill> : BaseDvo<TSkill>, ISkillDvo
         where TSkill : SkillDvo<TSkill>
     {
@@ -44,21 +44,22 @@ namespace Fuxion.Identity.Test.Dvo
         //    ((INotifier<ISkillDvo>)this).PropertyChanged(null, null);
         //}
     }
+    [TypeDiscriminated(TypeDiscriminationDisableMode.DisableHierarchy)]
     public class ActorSkillDvo : SkillDvo<ActorSkillDvo>
     {
 
     }
-
+    [TypeDiscriminated(TypeDiscriminationDisableMode.DisableHierarchy)]
     public class SingerSkillDvo : SkillDvo<SingerSkillDvo>
     {
 
     }
-
+    [TypeDiscriminated(TypeDiscriminationDisableMode.DisableHierarchy)]
     public class WriterSkillDvo : SkillDvo<WriterSkillDvo>
     {
 
     }
-
+    [TypeDiscriminated(TypeDiscriminationDisableMode.DisableHierarchy)]
     public class DirectorSkillDvo : SkillDvo<DirectorSkillDvo>
     {
 

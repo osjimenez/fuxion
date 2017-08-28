@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.13
+VisualStudioVersion = 15.0.26730.8
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion", "core\portable\Fuxion.csproj", "{5761CB44-504F-468B-8263-39F59EEBBB17}"
 EndProject
@@ -541,6 +541,7 @@ Global
 		{488C959A-148E-4627-B99B-5E815347F5D7} = {A4B98BD9-2915-4F7B-ADEA-F2B26AD44EC2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {935D1C59-A88C-491F-B27D-3B0CF8AF2605}
 		EnterpriseLibraryConfigurationToolBinariesPathV6 = packages\EnterpriseLibrary.TransientFaultHandling.6.0.1304.0\lib\portable-net45+win+wp8;packages\EnterpriseLibrary.TransientFaultHandling.Data.6.0.1304.1\lib\NET45
 	EndGlobalSection
 EndGlobal
