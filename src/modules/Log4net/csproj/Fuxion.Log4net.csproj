@@ -10,6 +10,10 @@
     <OutputPath>..\..\..\.build\NuGet\Fuxion.Log4net\out~</OutputPath>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+
   <ItemGroup Condition="'$(TargetFramework)'=='net47'">
     <PackageReference Include="log4net" Version="2.0.8" />
   </ItemGroup>
