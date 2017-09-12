@@ -17,5 +17,4 @@ namespace Fuxion.Web.Test
             Debug.WriteLine("");
         }
     }
-    
 }

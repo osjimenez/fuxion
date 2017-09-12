@@ -1,0 +1,29 @@
+﻿<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>Fuxion.Licensing</id>
+    <version>$version$</version>
+    <title>Fuxion Licensing</title>
+    <authors>Oscar Jimenez, Waf Estructuras Digitales</authors>
+    <description>Fuxion Licensing</description>
+    <releaseNotes />
+    <summary/>
+    <language/>
+    <iconUrl>https://raw.githubusercontent.com/osjimenez/Fuxion/develop/res/logo/fuxion.png</iconUrl>
+    <projectUrl>https://github.com/osjimenez/Fuxion</projectUrl>
+    <licenseUrl>https://raw.githubusercontent.com/osjimenez/Fuxion/develop/LICENSE</licenseUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <dependencies>
+      <group targetFramework=".NETFramework4.6.1">
+        <dependency id="Fuxion" version="$version$" />
+      </group>
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="NETStandard.Library" version="2.0.0" />
+        <dependency id="Fuxion" version="$version$" />
+      </group>
+    </dependencies>
+    <references/>
+    <frameworkAssemblies/>
+    <tags/>
+  </metadata>
+</package>
