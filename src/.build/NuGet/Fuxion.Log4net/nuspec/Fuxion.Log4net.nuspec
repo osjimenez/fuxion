@@ -16,18 +16,22 @@
     <dependencies>
       <group targetFramework="net461">
         <dependency id="log4net" version="2.0.8" />
+        <dependency id="nugetpowertools" version="0.29.0" />
         <dependency id="Fuxion" version="$version$" />
       </group>
       <group targetFramework="net462">
         <dependency id="log4net" version="2.0.8" />
+        <dependency id="nugetpowertools" version="0.29.0" />
         <dependency id="Fuxion" version="$version$" />
       </group>
       <group targetFramework="net47">
         <dependency id="log4net" version="2.0.8" />
+        <dependency id="nugetpowertools" version="0.29.0" />
         <dependency id="Fuxion" version="$version$" />
       </group>
       <group targetFramework="netstandard2.0">
         <dependency id="NETStandard.Library" version="2.0.0" />
+        <dependency id="nugetpowertools" version="0.29.0" />
         <dependency id="Fuxion" version="$version$" />
       </group>
     </dependencies>
