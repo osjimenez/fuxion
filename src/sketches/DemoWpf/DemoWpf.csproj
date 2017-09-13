@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DemoWpf</RootNamespace>
     <AssemblyName>DemoWpf</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -41,11 +41,20 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Fuxion, Version=0.1.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Fuxion.0.1.1-alpha-NetStandard.7\lib\netstandard2.0\Fuxion.dll</HintPath>
+    <Reference Include="Fuxion, Version=0.1.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Fuxion.0.1.2-alpha-NetStandard.21\lib\net47\Fuxion.dll</HintPath>
     </Reference>
-    <Reference Include="Fuxion.Log4net, Version=0.1.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Fuxion.Log4net.0.1.1-alpha-NetStandard.7\lib\net462\Fuxion.Log4net.dll</HintPath>
+    <Reference Include="Fuxion.Licensing, Version=0.1.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Fuxion.Licensing.0.1.2-alpha-NetStandard.21\lib\net47\Fuxion.Licensing.dll</HintPath>
+    </Reference>
+    <Reference Include="Fuxion.Log4net, Version=0.1.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Fuxion.Log4net.0.1.2-alpha-NetStandard.21\lib\net47\Fuxion.Log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Fuxion.SimpleInjector, Version=0.1.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Fuxion.SimpleInjector.0.1.2-alpha-NetStandard.21\lib\net47\Fuxion.SimpleInjector.dll</HintPath>
+    </Reference>
+    <Reference Include="Fuxion.Windows, Version=0.1.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Fuxion.Windows.0.1.2-alpha-NetStandard.21\lib\net47\Fuxion.Windows.dll</HintPath>
     </Reference>
     <Reference Include="LiteDB, Version=3.1.4.0, Culture=neutral, PublicKeyToken=4ee40123013c9f27, processorArchitecture=MSIL">
       <HintPath>..\..\packages\LiteDB.3.1.4\lib\net462\LiteDB.dll</HintPath>
@@ -85,6 +94,9 @@
     </Reference>
     <Reference Include="MongoDB.Driver.Core, Version=2.4.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\MongoDB.Driver.Core.2.4.4\lib\net45\MongoDB.Driver.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="SimpleInjector, Version=4.0.8.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\SimpleInjector.4.0.8\lib\net45\SimpleInjector.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
@@ -127,6 +139,13 @@
     <Compile Include="LogWindow.xaml.cs">
       <DependentUpon>LogWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Overlay.xaml.cs">
+      <DependentUpon>Overlay.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="OverlayDialog.xaml.cs">
+      <DependentUpon>OverlayDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="OverlayManager.cs" />
     <Compile Include="TimeProvider.xaml.cs">
       <DependentUpon>TimeProvider.xaml</DependentUpon>
     </Compile>
@@ -154,6 +173,14 @@
     <Page Include="MockControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Overlay.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="OverlayDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="ResDictionary.xaml">
       <SubType>Designer</SubType>
@@ -200,6 +227,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\core\test\Fuxion.Test.csproj">
+      <Project>{bf0816da-9bf0-4a47-b4bd-1148e48439a1}</Project>
+      <Name>Fuxion.Test</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\..\packages\NETStandard.Library.2.0.0\build\netstandard2.0\NETStandard.Library.targets" Condition="Exists('..\..\packages\NETStandard.Library.2.0.0\build\netstandard2.0\NETStandard.Library.targets')" />

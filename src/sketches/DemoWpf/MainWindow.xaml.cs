@@ -4,7 +4,6 @@ using Fuxion.Configuration;
 using Fuxion.Factories;
 using Fuxion.ServiceModel;
 using Fuxion.Threading.Tasks;
-using Fuxion.Windows.Controls;
 using Fuxion.Windows.Threading;
 using SimpleInjector;
 using System;

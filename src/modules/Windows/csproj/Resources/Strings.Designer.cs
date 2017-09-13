@@ -22,7 +22,7 @@ namespace Fuxion.Windows.Resources {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class Strings {
+    internal class Strings {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace Fuxion.Windows.Resources {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
+        internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Fuxion.Windows.Resources.Strings", typeof(Strings).Assembly);
@@ -51,7 +51,7 @@ namespace Fuxion.Windows.Resources {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Globalization.CultureInfo Culture {
+        internal static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace Fuxion.Windows.Resources {
         /// <summary>
         ///   Looks up a localized string similar to days.
         /// </summary>
-        public static string days {
+        internal static string days {
             get {
                 return ResourceManager.GetString("days", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace Fuxion.Windows.Resources {
         /// <summary>
         ///   Looks up a localized string similar to hours.
         /// </summary>
-        public static string hours {
+        internal static string hours {
             get {
                 return ResourceManager.GetString("hours", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace Fuxion.Windows.Resources {
         /// <summary>
         ///   Looks up a localized string similar to milliseconds.
         /// </summary>
-        public static string milliseconds {
+        internal static string milliseconds {
             get {
                 return ResourceManager.GetString("milliseconds", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace Fuxion.Windows.Resources {
         /// <summary>
         ///   Looks up a localized string similar to minutes.
         /// </summary>
-        public static string minutes {
+        internal static string minutes {
             get {
                 return ResourceManager.GetString("minutes", resourceCulture);
             }
@@ -99,7 +99,7 @@ namespace Fuxion.Windows.Resources {
         /// <summary>
         ///   Looks up a localized string similar to months.
         /// </summary>
-        public static string months {
+        internal static string months {
             get {
                 return ResourceManager.GetString("months", resourceCulture);
             }
@@ -108,7 +108,7 @@ namespace Fuxion.Windows.Resources {
         /// <summary>
         ///   Looks up a localized string similar to seconds.
         /// </summary>
-        public static string seconds {
+        internal static string seconds {
             get {
                 return ResourceManager.GetString("seconds", resourceCulture);
             }
@@ -117,7 +117,7 @@ namespace Fuxion.Windows.Resources {
         /// <summary>
         ///   Looks up a localized string similar to ticks.
         /// </summary>
-        public static string ticks {
+        internal static string ticks {
             get {
                 return ResourceManager.GetString("ticks", resourceCulture);
             }
@@ -126,7 +126,7 @@ namespace Fuxion.Windows.Resources {
         /// <summary>
         ///   Looks up a localized string similar to years.
         /// </summary>
-        public static string years {
+        internal static string years {
             get {
                 return ResourceManager.GetString("years", resourceCulture);
             }

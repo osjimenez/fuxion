@@ -1,28 +1,25 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
+    <TargetFrameworks>net461;net47</TargetFrameworks>
 	<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 	<RootNamespace>Fuxion</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <OutputPath>..\..\..\.build\NuGet\Fuxion.Log4net\out~</OutputPath>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <Optimize>false</Optimize>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)'!='netstandard2.0'">
-    <PackageReference Include="log4net" Version="2.0.8" />
-  </ItemGroup>
-
   <ItemGroup>
-    <Compile Update="Properties\ProjectAssemblyInfo.cs">
+    <Compile Include="..\..\..\.build\AssemblyInfo.cs" Link="Properties\AssemblyInfo.cs" />
+	<Compile Update="Properties\ProjectAssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="..\..\..\.build\AssemblyInfo.cs" Link="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)'!='netstandard2.0'">
+    <PackageReference Include="log4net" Version="2.0.8" />
   </ItemGroup>
 
   <ItemGroup>

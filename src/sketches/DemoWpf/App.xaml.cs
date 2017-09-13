@@ -20,7 +20,6 @@ namespace DemoWpf
         protected override void OnStartup(StartupEventArgs e)
         {
             var tup = new ValueTupleForTest().GetTuple();
-
             //Task.WhenAll(
             //    TaskManager.StartNew(() => { }),
             //    TaskManager.StartNew(() => { throw new Exception("FALLO"); })

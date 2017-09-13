@@ -8,7 +8,7 @@ namespace Fuxion.Web.Test
 {
     public class UnitTest1
     {
-        [Fact]
+        [Fact(Skip = "Desactivado")]
         public async Task TestMethod1()
         {
             WebApiProxyProvider pro = new WebApiProxyProvider("https://numerator.azurewebsites.net");

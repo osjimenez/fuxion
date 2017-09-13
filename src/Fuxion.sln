@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.12
+VisualStudioVersion = 15.0.26730.15
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "core", "core", "{291B05EE-78EA-412F-9449-5EC4D5E0FC9C}"
 EndProject
@@ -69,17 +69,22 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Fuxion", "Fuxion", "{E77EFC9E-4465-40EF-A7B2-AD7F075979AD}"
 	ProjectSection(SolutionItems) = preProject
 		.build\NuGet\Fuxion\nuspec\Fuxion.nuspec = .build\NuGet\Fuxion\nuspec\Fuxion.nuspec
+		.build\NuGet\Fuxion\Pos.cmd = .build\NuGet\Fuxion\Pos.cmd
+		.build\NuGet\Fuxion\Pre.cmd = .build\NuGet\Fuxion\Pre.cmd
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Fuxion.SimpleInjector", "Fuxion.SimpleInjector", "{09705CF7-31FA-4927-A336-E1F04ED78B95}"
 	ProjectSection(SolutionItems) = preProject
 		.build\NuGet\Fuxion.SimpleInjector\nuspec\Fuxion.SimpleInjector.nuspec = .build\NuGet\Fuxion.SimpleInjector\nuspec\Fuxion.SimpleInjector.nuspec
+		.build\NuGet\Fuxion.SimpleInjector\Pos.cmd = .build\NuGet\Fuxion.SimpleInjector\Pos.cmd
+		.build\NuGet\Fuxion.SimpleInjector\Pre.cmd = .build\NuGet\Fuxion.SimpleInjector\Pre.cmd
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Fuxion.Log4net", "Fuxion.Log4net", "{ABF7A45F-8183-416E-8A70-A7FBF40E65F0}"
 	ProjectSection(SolutionItems) = preProject
 		.build\NuGet\Fuxion.Log4net\nuspec\Fuxion.Log4net.nuspec = .build\NuGet\Fuxion.Log4net\nuspec\Fuxion.Log4net.nuspec
-		.build\NuGet\Fuxion.Log4net\ProcessFiles.cmd = .build\NuGet\Fuxion.Log4net\ProcessFiles.cmd
+		.build\NuGet\Fuxion.Log4net\Pos.cmd = .build\NuGet\Fuxion.Log4net\Pos.cmd
+		.build\NuGet\Fuxion.Log4net\Pre.cmd = .build\NuGet\Fuxion.Log4net\Pre.cmd
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fuxion.Log4net", "modules\Log4net\csproj\Fuxion.Log4net.csproj", "{A056FB31-CF60-4265-9F3B-E9202F98EEBC}"
@@ -87,11 +92,15 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Fuxion.Licensing", "Fuxion.Licensing", "{A33EE9E7-C448-409B-991E-080129ED5B1A}"
 	ProjectSection(SolutionItems) = preProject
 		.build\NuGet\Fuxion.Licensing\nuspec\Fuxion.Licensing.nuspec = .build\NuGet\Fuxion.Licensing\nuspec\Fuxion.Licensing.nuspec
+		.build\NuGet\Fuxion.Licensing\Pos.cmd = .build\NuGet\Fuxion.Licensing\Pos.cmd
+		.build\NuGet\Fuxion.Licensing\Pre.cmd = .build\NuGet\Fuxion.Licensing\Pre.cmd
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Fuxion.Data", "Fuxion.Data", "{5C5A51B7-6256-4226-BBBA-2262818A9211}"
 	ProjectSection(SolutionItems) = preProject
 		.build\NuGet\Fuxion.Data\nuspec\Fuxion.Data.nuspec = .build\NuGet\Fuxion.Data\nuspec\Fuxion.Data.nuspec
+		.build\NuGet\Fuxion.Data\Pos.cmd = .build\NuGet\Fuxion.Data\Pos.cmd
+		.build\NuGet\Fuxion.Data\Pre.cmd = .build\NuGet\Fuxion.Data\Pre.cmd
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fuxion.Data", "modules\Data\csproj\Fuxion.Data.csproj", "{A926E5A8-A154-4BF2-9B5B-010E98B63786}"
@@ -99,22 +108,29 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Fuxion.Web", "Fuxion.Web", "{A0C41722-6616-4065-9838-D201A805F3C7}"
 	ProjectSection(SolutionItems) = preProject
 		.build\NuGet\Fuxion.Web\nuspec\Fuxion.Web.nuspec = .build\NuGet\Fuxion.Web\nuspec\Fuxion.Web.nuspec
+		.build\NuGet\Fuxion.Web\Pos.cmd = .build\NuGet\Fuxion.Web\Pos.cmd
+		.build\NuGet\Fuxion.Web\Pre.cmd = .build\NuGet\Fuxion.Web\Pre.cmd
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Fuxion.Windows", "Fuxion.Windows", "{75501A88-8D30-4E84-9ECB-0A503F201816}"
 	ProjectSection(SolutionItems) = preProject
 		.build\NuGet\Fuxion.Windows\nuspec\Fuxion.Windows.nuspec = .build\NuGet\Fuxion.Windows\nuspec\Fuxion.Windows.nuspec
-		.build\NuGet\Fuxion.Windows\ProcessFiles.cmd = .build\NuGet\Fuxion.Windows\ProcessFiles.cmd
+		.build\NuGet\Fuxion.Windows\Pos.cmd = .build\NuGet\Fuxion.Windows\Pos.cmd
+		.build\NuGet\Fuxion.Windows\Pre.cmd = .build\NuGet\Fuxion.Windows\Pre.cmd
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Fuxion.Identity", "Fuxion.Identity", "{9124D2F8-B11A-407A-8F16-6DB1D7799AF1}"
 	ProjectSection(SolutionItems) = preProject
 		.build\NuGet\Fuxion.Identity\nuspec\Fuxion.Identity.nuspec = .build\NuGet\Fuxion.Identity\nuspec\Fuxion.Identity.nuspec
+		.build\NuGet\Fuxion.Identity\Pos.cmd = .build\NuGet\Fuxion.Identity\Pos.cmd
+		.build\NuGet\Fuxion.Identity\Pre.cmd = .build\NuGet\Fuxion.Identity\Pre.cmd
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Fuxion.Domain", "Fuxion.Domain", "{9522F06B-5ABD-4991-A6A7-3270F7FAFA80}"
 	ProjectSection(SolutionItems) = preProject
 		.build\NuGet\Fuxion.Domain\nuspec\Fuxion.Domain.nuspec = .build\NuGet\Fuxion.Domain\nuspec\Fuxion.Domain.nuspec
+		.build\NuGet\Fuxion.Domain\Pos.cmd = .build\NuGet\Fuxion.Domain\Pos.cmd
+		.build\NuGet\Fuxion.Domain\Pre.cmd = .build\NuGet\Fuxion.Domain\Pre.cmd
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fuxion", "core\csproj\Fuxion.csproj", "{0F5CB7BF-7FF8-447D-9DEC-8CD0D946D208}"
@@ -129,7 +145,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fuxion.SimpleInjector", "mo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fuxion.Web", "modules\Web\csproj\Fuxion.Web.csproj", "{A5F35A41-EE28-4E19-84D4-A1BB0FDA57B9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion.Windows", "modules\Windows\csproj\Fuxion.Windows.csproj", "{25B99E1D-A3BA-42F3-B4BF-B6C76E6D84E4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoWpf-net47", "sketches\DemoWpf-net47\DemoWpf-net47.csproj", "{E9869E7F-F1B2-4E78-BC84-8D2936C51041}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoWpf-net462", "sketches\DemoWpf-net462\DemoWpf-net462.csproj", "{10E190F0-D271-4B2F-8282-4E0E209CB856}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fuxion.Windows", "modules\Windows\csproj\Fuxion.Windows.csproj", "{C52D20F2-CDC5-472F-B2D0-31A14A0722C7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -431,22 +451,54 @@ Global
 		{A5F35A41-EE28-4E19-84D4-A1BB0FDA57B9}.Release|x64.Build.0 = Release|Any CPU
 		{A5F35A41-EE28-4E19-84D4-A1BB0FDA57B9}.Release|x86.ActiveCfg = Release|Any CPU
 		{A5F35A41-EE28-4E19-84D4-A1BB0FDA57B9}.Release|x86.Build.0 = Release|Any CPU
-		{25B99E1D-A3BA-42F3-B4BF-B6C76E6D84E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{25B99E1D-A3BA-42F3-B4BF-B6C76E6D84E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{25B99E1D-A3BA-42F3-B4BF-B6C76E6D84E4}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{25B99E1D-A3BA-42F3-B4BF-B6C76E6D84E4}.Debug|ARM.Build.0 = Debug|Any CPU
-		{25B99E1D-A3BA-42F3-B4BF-B6C76E6D84E4}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{25B99E1D-A3BA-42F3-B4BF-B6C76E6D84E4}.Debug|x64.Build.0 = Debug|Any CPU
-		{25B99E1D-A3BA-42F3-B4BF-B6C76E6D84E4}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{25B99E1D-A3BA-42F3-B4BF-B6C76E6D84E4}.Debug|x86.Build.0 = Debug|Any CPU
-		{25B99E1D-A3BA-42F3-B4BF-B6C76E6D84E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{25B99E1D-A3BA-42F3-B4BF-B6C76E6D84E4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{25B99E1D-A3BA-42F3-B4BF-B6C76E6D84E4}.Release|ARM.ActiveCfg = Release|Any CPU
-		{25B99E1D-A3BA-42F3-B4BF-B6C76E6D84E4}.Release|ARM.Build.0 = Release|Any CPU
-		{25B99E1D-A3BA-42F3-B4BF-B6C76E6D84E4}.Release|x64.ActiveCfg = Release|Any CPU
-		{25B99E1D-A3BA-42F3-B4BF-B6C76E6D84E4}.Release|x64.Build.0 = Release|Any CPU
-		{25B99E1D-A3BA-42F3-B4BF-B6C76E6D84E4}.Release|x86.ActiveCfg = Release|Any CPU
-		{25B99E1D-A3BA-42F3-B4BF-B6C76E6D84E4}.Release|x86.Build.0 = Release|Any CPU
+		{E9869E7F-F1B2-4E78-BC84-8D2936C51041}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9869E7F-F1B2-4E78-BC84-8D2936C51041}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9869E7F-F1B2-4E78-BC84-8D2936C51041}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{E9869E7F-F1B2-4E78-BC84-8D2936C51041}.Debug|ARM.Build.0 = Debug|Any CPU
+		{E9869E7F-F1B2-4E78-BC84-8D2936C51041}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E9869E7F-F1B2-4E78-BC84-8D2936C51041}.Debug|x64.Build.0 = Debug|Any CPU
+		{E9869E7F-F1B2-4E78-BC84-8D2936C51041}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E9869E7F-F1B2-4E78-BC84-8D2936C51041}.Debug|x86.Build.0 = Debug|Any CPU
+		{E9869E7F-F1B2-4E78-BC84-8D2936C51041}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9869E7F-F1B2-4E78-BC84-8D2936C51041}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9869E7F-F1B2-4E78-BC84-8D2936C51041}.Release|ARM.ActiveCfg = Release|Any CPU
+		{E9869E7F-F1B2-4E78-BC84-8D2936C51041}.Release|ARM.Build.0 = Release|Any CPU
+		{E9869E7F-F1B2-4E78-BC84-8D2936C51041}.Release|x64.ActiveCfg = Release|Any CPU
+		{E9869E7F-F1B2-4E78-BC84-8D2936C51041}.Release|x64.Build.0 = Release|Any CPU
+		{E9869E7F-F1B2-4E78-BC84-8D2936C51041}.Release|x86.ActiveCfg = Release|Any CPU
+		{E9869E7F-F1B2-4E78-BC84-8D2936C51041}.Release|x86.Build.0 = Release|Any CPU
+		{10E190F0-D271-4B2F-8282-4E0E209CB856}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10E190F0-D271-4B2F-8282-4E0E209CB856}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10E190F0-D271-4B2F-8282-4E0E209CB856}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{10E190F0-D271-4B2F-8282-4E0E209CB856}.Debug|ARM.Build.0 = Debug|Any CPU
+		{10E190F0-D271-4B2F-8282-4E0E209CB856}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{10E190F0-D271-4B2F-8282-4E0E209CB856}.Debug|x64.Build.0 = Debug|Any CPU
+		{10E190F0-D271-4B2F-8282-4E0E209CB856}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{10E190F0-D271-4B2F-8282-4E0E209CB856}.Debug|x86.Build.0 = Debug|Any CPU
+		{10E190F0-D271-4B2F-8282-4E0E209CB856}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10E190F0-D271-4B2F-8282-4E0E209CB856}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10E190F0-D271-4B2F-8282-4E0E209CB856}.Release|ARM.ActiveCfg = Release|Any CPU
+		{10E190F0-D271-4B2F-8282-4E0E209CB856}.Release|ARM.Build.0 = Release|Any CPU
+		{10E190F0-D271-4B2F-8282-4E0E209CB856}.Release|x64.ActiveCfg = Release|Any CPU
+		{10E190F0-D271-4B2F-8282-4E0E209CB856}.Release|x64.Build.0 = Release|Any CPU
+		{10E190F0-D271-4B2F-8282-4E0E209CB856}.Release|x86.ActiveCfg = Release|Any CPU
+		{10E190F0-D271-4B2F-8282-4E0E209CB856}.Release|x86.Build.0 = Release|Any CPU
+		{C52D20F2-CDC5-472F-B2D0-31A14A0722C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C52D20F2-CDC5-472F-B2D0-31A14A0722C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C52D20F2-CDC5-472F-B2D0-31A14A0722C7}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{C52D20F2-CDC5-472F-B2D0-31A14A0722C7}.Debug|ARM.Build.0 = Debug|Any CPU
+		{C52D20F2-CDC5-472F-B2D0-31A14A0722C7}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C52D20F2-CDC5-472F-B2D0-31A14A0722C7}.Debug|x64.Build.0 = Debug|Any CPU
+		{C52D20F2-CDC5-472F-B2D0-31A14A0722C7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C52D20F2-CDC5-472F-B2D0-31A14A0722C7}.Debug|x86.Build.0 = Debug|Any CPU
+		{C52D20F2-CDC5-472F-B2D0-31A14A0722C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C52D20F2-CDC5-472F-B2D0-31A14A0722C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C52D20F2-CDC5-472F-B2D0-31A14A0722C7}.Release|ARM.ActiveCfg = Release|Any CPU
+		{C52D20F2-CDC5-472F-B2D0-31A14A0722C7}.Release|ARM.Build.0 = Release|Any CPU
+		{C52D20F2-CDC5-472F-B2D0-31A14A0722C7}.Release|x64.ActiveCfg = Release|Any CPU
+		{C52D20F2-CDC5-472F-B2D0-31A14A0722C7}.Release|x64.Build.0 = Release|Any CPU
+		{C52D20F2-CDC5-472F-B2D0-31A14A0722C7}.Release|x86.ActiveCfg = Release|Any CPU
+		{C52D20F2-CDC5-472F-B2D0-31A14A0722C7}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -494,10 +546,12 @@ Global
 		{17DB6EFE-CCDE-4589-9410-90A88F67BCA7} = {6A71A6F6-DAEF-4095-B9F1-FCD677D6AE23}
 		{220FABFC-2076-42CA-B739-81C34913BCA4} = {A4B98BD9-2915-4F7B-ADEA-F2B26AD44EC2}
 		{A5F35A41-EE28-4E19-84D4-A1BB0FDA57B9} = {194D3D3D-B330-492E-9731-6085C60F3415}
-		{25B99E1D-A3BA-42F3-B4BF-B6C76E6D84E4} = {3D8F0482-E13F-4701-A59B-4359A1614CEE}
+		{E9869E7F-F1B2-4E78-BC84-8D2936C51041} = {D73E328B-68C4-499C-9532-A7D9ACC4F186}
+		{10E190F0-D271-4B2F-8282-4E0E209CB856} = {D73E328B-68C4-499C-9532-A7D9ACC4F186}
+		{C52D20F2-CDC5-472F-B2D0-31A14A0722C7} = {3D8F0482-E13F-4701-A59B-4359A1614CEE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		EnterpriseLibraryConfigurationToolBinariesPathV6 = packages\EnterpriseLibrary.TransientFaultHandling.6.0.1304.0\lib\portable-net45+win+wp8;packages\EnterpriseLibrary.TransientFaultHandling.Data.6.0.1304.1\lib\NET45
 		SolutionGuid = {935D1C59-A88C-491F-B27D-3B0CF8AF2605}
+		EnterpriseLibraryConfigurationToolBinariesPathV6 = packages\EnterpriseLibrary.TransientFaultHandling.6.0.1304.0\lib\portable-net45+win+wp8;packages\EnterpriseLibrary.TransientFaultHandling.Data.6.0.1304.1\lib\NET45
 	EndGlobalSection
 EndGlobal

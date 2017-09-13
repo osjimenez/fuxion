@@ -5,7 +5,7 @@
     <version>$version$</version>
     <title>Fuxion</title>
     <authors>Oscar Jimenez, Waf Estructuras Digitales</authors>
-    <description>Fuxion Core (prototype)</description>
+    <description>Fuxion Core</description>
     <releaseNotes />
     <summary/>
     <language/>
@@ -14,10 +14,18 @@
     <licenseUrl>https://raw.githubusercontent.com/osjimenez/Fuxion/develop/LICENSE</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <dependencies>
-      <group targetFramework=".NETFramework4.6.1">
+      <group targetFramework="net461">
+        <dependency id="Newtonsoft.Json" version="10.0.3" />
+        <dependency id="System.ValueTuple" version="4.4.0" />
+      </group>
+      <group targetFramework="net462">
+        <dependency id="Newtonsoft.Json" version="10.0.3" />
+        <dependency id="System.ValueTuple" version="4.4.0" />
+      </group>
+      <group targetFramework="net47">
         <dependency id="Newtonsoft.Json" version="10.0.3" />
       </group>
-      <group targetFramework=".NETStandard2.0">
+      <group targetFramework="netstandard2.0">
         <dependency id="NETStandard.Library" version="2.0.0" />
         <dependency id="Newtonsoft.Json" version="10.0.3" />
       </group>
