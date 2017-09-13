@@ -10,20 +10,19 @@
     <OutputPath>..\..\..\.build\NuGet\Fuxion.Log4net\out~</OutputPath>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <Optimize>false</Optimize>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)'=='net47'">
+  <ItemGroup Condition="'$(TargetFramework)'!='netstandard2.0'">
     <PackageReference Include="log4net" Version="2.0.8" />
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Properties\ProjectAssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="..\..\..\.build\AssemblyInfo.cs" Link="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="NuGetPowerTools" Version="0.29.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -37,12 +36,6 @@
     <None Update="log4net.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="Properties\ProjectAssemblyInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
   </ItemGroup>
   
 </Project>
