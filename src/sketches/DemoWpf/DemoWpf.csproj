@@ -42,10 +42,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Fuxion, Version=0.1.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Fuxion.0.1.1-alpha-NetStandard.6\lib\netstandard2.0\Fuxion.dll</HintPath>
+      <HintPath>..\..\packages\Fuxion.0.1.1-alpha-NetStandard.7\lib\netstandard2.0\Fuxion.dll</HintPath>
     </Reference>
     <Reference Include="Fuxion.Log4net, Version=0.1.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Fuxion.Log4net.0.1.1-alpha-NetStandard.6\lib\net462\Fuxion.Log4net.dll</HintPath>
+      <HintPath>..\..\packages\Fuxion.Log4net.0.1.1-alpha-NetStandard.7\lib\net462\Fuxion.Log4net.dll</HintPath>
     </Reference>
     <Reference Include="LiteDB, Version=3.1.4.0, Culture=neutral, PublicKeyToken=4ee40123013c9f27, processorArchitecture=MSIL">
       <HintPath>..\..\packages\LiteDB.3.1.4\lib\net462\LiteDB.dll</HintPath>
