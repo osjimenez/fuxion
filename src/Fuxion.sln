@@ -79,6 +79,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Fuxion.Log4net", "Fuxion.Log4net", "{ABF7A45F-8183-416E-8A70-A7FBF40E65F0}"
 	ProjectSection(SolutionItems) = preProject
 		.build\NuGet\Fuxion.Log4net\nuspec\Fuxion.Log4net.nuspec = .build\NuGet\Fuxion.Log4net\nuspec\Fuxion.Log4net.nuspec
+		.build\NuGet\Fuxion.Log4net\ProcessFiles.cmd = .build\NuGet\Fuxion.Log4net\ProcessFiles.cmd
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fuxion.Log4net", "modules\Log4net\csproj\Fuxion.Log4net.csproj", "{A056FB31-CF60-4265-9F3B-E9202F98EEBC}"
