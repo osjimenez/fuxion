@@ -103,6 +103,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Fuxion.Windows", "Fuxion.Windows", "{75501A88-8D30-4E84-9ECB-0A503F201816}"
 	ProjectSection(SolutionItems) = preProject
 		.build\NuGet\Fuxion.Windows\nuspec\Fuxion.Windows.nuspec = .build\NuGet\Fuxion.Windows\nuspec\Fuxion.Windows.nuspec
+		.build\NuGet\Fuxion.Windows\ProcessFiles.cmd = .build\NuGet\Fuxion.Windows\ProcessFiles.cmd
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Fuxion.Identity", "Fuxion.Identity", "{9124D2F8-B11A-407A-8F16-6DB1D7799AF1}"
@@ -495,7 +496,7 @@ Global
 		{25B99E1D-A3BA-42F3-B4BF-B6C76E6D84E4} = {3D8F0482-E13F-4701-A59B-4359A1614CEE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {935D1C59-A88C-491F-B27D-3B0CF8AF2605}
 		EnterpriseLibraryConfigurationToolBinariesPathV6 = packages\EnterpriseLibrary.TransientFaultHandling.6.0.1304.0\lib\portable-net45+win+wp8;packages\EnterpriseLibrary.TransientFaultHandling.Data.6.0.1304.1\lib\NET45
+		SolutionGuid = {935D1C59-A88C-491F-B27D-3B0CF8AF2605}
 	EndGlobalSection
 EndGlobal
