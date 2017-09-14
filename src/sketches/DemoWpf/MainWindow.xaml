@@ -17,6 +17,6 @@
             <Button Click="HostService_Click" Content="Host Factory injected service"/>
             <Button Click="ProxyService_Click" Content="Proxy to Factory injected service"/>
         </StackPanel>
-        <fuxion:Overlay x:Name="OverlayControl" Background="#55D82A2A"/>
+        <local:Overlay x:Name="OverlayControl" Background="#55D82A2A"/>
     </Grid>
 </Window>

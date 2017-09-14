@@ -1,4 +1,4 @@
-﻿#if NET47
+﻿#if (NET461 || NET462 || NET47)
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;

@@ -19,7 +19,7 @@ namespace System
 {
     public static class Extensions
     {
-#if NET47
+#if (NET461 || NET462 || NET47)
         /// <summary>
         /// Permite una clonación en profundidad de origen. 
         /// </summary>

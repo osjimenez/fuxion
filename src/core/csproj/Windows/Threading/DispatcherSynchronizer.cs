@@ -1,4 +1,4 @@
-﻿#if NET47
+﻿#if (NET461 || NET462 || NET47)
 using Fuxion.ComponentModel;
 using Fuxion.Threading.Tasks;
 using System;
