@@ -11,21 +11,13 @@ namespace Fuxion.Identity
 {
     public interface IDiscriminator : IInclusive<IDiscriminator>, IExclusive<IDiscriminator>
     {
-        //IEnumerable<object> Inclusions { get; }
-        //IEnumerable<object> Exclusions { get; }
         object TypeId { get; }
         string TypeName { get; }
         object Id { get; }
         string Name { get; }
     }
-    //public interface IExplicitDiscriminator : IDiscriminator
-    //{
-    //    IEnumerable<IDiscriminator> GetSubDiscriminators();
-    //}
     public interface IDiscriminator<TId, TTypeId> : IDiscriminator, IInclusive<IDiscriminator<TId, TTypeId>>, IExclusive<IDiscriminator<TId, TTypeId>>
     {
-        //new IEnumerable<TId> Inclusions { get; }
-        //new IEnumerable<TId> Exclusions { get; }
         new TTypeId TypeId { get; }
         new TId Id { get; }
     }
@@ -36,9 +28,9 @@ namespace Fuxion.Identity
 
         public string TypeName { get; private set; }
 
-        public object Id { get; private set; }// = "EMPTY";
+        public object Id { get; private set; }
 
-        public string Name { get; private set; }// = "EMPTY";
+        public string Name { get; private set; }
 
         public override string ToString() => this.ToOneLineString();
 
@@ -67,13 +59,6 @@ namespace Fuxion.Identity
                });
         }
     }
-    //public class ExplicitDiscriminator : Discriminator, IExplicitDiscriminator
-    //{
-    //    public IEnumerable<IDiscriminator> GetSubDiscriminators(Type type)
-    //    {
-    //        return type.GetDiscriminatorsOfDiscriminatedProperties();
-    //    }
-    //}
     public static class DiscriminatorExtensions
     {
         public static string ToOneLineString(this IDiscriminator me)
@@ -83,9 +68,6 @@ namespace Fuxion.Identity
         public static bool IsValid(this IDiscriminator me)
         {
             return
-                //!Comparer.AreEquals(me.Id, me.Id?.GetType().GetDefaultValue())
-                //&& !string.IsNullOrWhiteSpace(me.Name)
-                //&&
                 !Comparer.AreEquals(me.TypeId, me.TypeId?.GetType().GetDefaultValue())
                 && !string.IsNullOrWhiteSpace(me.TypeName);
         }

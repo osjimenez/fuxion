@@ -8,23 +8,6 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Identity
 {
-    public class IdentityKeyValueRepositoryValue : IKeyValueEntry<string, IIdentity>
-    {
-        public string Key { get; set; }
-        public IIdentity Value { get; set; }
-    }
-    //public class IdentityManagerRepository
-    //{
-    //    public IdentityManagerRepository(
-    //        IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity> identityRepository
-    //        )
-    //    {
-    //        this.identityRepository = identityRepository;
-    //    }
-    //    IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity> identityRepository;
-    //    public IIdentity Find(string username) { return identityRepository.Find(username); }
-    //    public IEnumerable<IRol> GetRols() { return identityRepository.Find(username); }
-    //}
     public class IdentityManager
     {
         public IdentityManager(IPasswordProvider passwordProvider, ICurrentUserNameProvider currentUserNameProvider, IKeyValueRepository<IdentityKeyValueRepositoryValue,string, IIdentity> repository)//, IPrincipalProvider principalProvider)
@@ -34,8 +17,6 @@ namespace Fuxion.Identity
             Repository = repository;
         }
         public IIdentity GetCurrent() => Repository.Find(CurrentUserNameProvider.GetCurrentUserName());
-        //public event EventHandler<EventArgs<IIdentity>> CurrentChanged;
-        //public void RaiseCurrentChanged() { CurrentChanged?.Invoke(this, new EventArgs<IIdentity>(GetCurrent())); }
         public ICurrentUserNameProvider CurrentUserNameProvider { get; private set; }
         public IPasswordProvider PasswordProvider { get; private set; }
         public IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity> Repository { get; private set; }
@@ -60,9 +41,5 @@ namespace Fuxion.Identity
             }
             return res;
         }
-        //public void Logout()
-        //{
-        //    Current = null;
-        //}
     }
 }

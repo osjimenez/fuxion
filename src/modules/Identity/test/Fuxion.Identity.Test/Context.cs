@@ -185,7 +185,7 @@ namespace Fuxion.Identity.Test
                             new PermissionDao
                             {
                                 Value = true,
-                                Function = ADMIN,
+                                Function = Admin.Id.ToString(),
                                 Rol = ide,
                             },
                         };

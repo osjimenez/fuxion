@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
@@ -29,7 +30,8 @@ namespace Fuxion.Identity.Test.Rol
             // TypeDiscriminators
             c.RegisterSingleton(new TypeDiscriminatorFactory().Transform(fac =>
             {
-                fac.RegisterTree<BaseDao>(typeof(BaseDao).Assembly.DefinedTypes.ToArray());
+                fac.RegisterTree<BaseDao>(typeof(BaseDao).Assembly.DefinedTypes.Except(new[] { typeof(PermissionDao).GetTypeInfo() }).ToArray());
+                //fac.RegisterTree<BaseDao>(typeof(BaseDao).Assembly.DefinedTypes.ToArray());
                 return fac;
             }));
             // IdentityManager
@@ -657,6 +659,24 @@ namespace Fuxion.Identity.Test.Rol
             Assert.True(ide.Can(Read).ByAll(Factory.Get<TypeDiscriminatorFactory>().FromId(TypeDiscriminatorIds.OfficeDocument)), permissionExplanation + query);
 
 
+        }
+        [Fact(DisplayName = "Rol - Unknown type")]
+        public void UnknownType()
+        {
+            var ide = new IdentityDao
+            {
+                Id = "test",
+                Name = "Test"
+            };
+
+            string permissionExplanation = "Tengo:\r\n" +
+                $" - Ningún permiso\r\n";
+
+            var query =
+                $"¿Debería poder '{nameof(Edit)}' del tipo '{nameof(PermissionDao)}'?\r\n" +
+                " Si";
+            PrintTestTriedStarted(permissionExplanation + query);
+            Assert.True(ide.Can(Edit).Type<PermissionDao>(), permissionExplanation + query);
         }
         [Fact(DisplayName = "Rol - Root permission")]
         public void RootPermission()

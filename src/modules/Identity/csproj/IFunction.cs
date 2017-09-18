@@ -46,12 +46,10 @@ namespace Fuxion.Identity
         }
         public static IEnumerable<T> GetAllInclusions<T>(this IInclusive<T> me)
         {
-            //return GetAllInclusions(me, new List<T>(new[] { (T)me }));
             return GetAllInclusions(me, new List<T>(new T[] { }));
         }
         public static IEnumerable<IDiscriminator> GetAllRelated(this IDiscriminator me, ScopePropagation propagation)
         {
-            //return GetAllInclusions(me, new List<T>(new[] { (T)me }));
             var res = new List<IDiscriminator>();
             if (propagation.HasFlag(ScopePropagation.ToMe))
                 res.Add(me);
@@ -72,7 +70,6 @@ namespace Fuxion.Identity
         }
         public static IEnumerable<T> GetAllExclusions<T>(this IExclusive<T> me)
         {
-            //return GetAllExclusions(me, new List<T>(new[] { (T)me }));
             return GetAllExclusions(me, new List<T>(new T[] { }));
         }
         public static void Print(this IEnumerable<IFunction> me, PrintMode mode)
@@ -90,66 +87,31 @@ namespace Fuxion.Identity
                 case PrintMode.Table:
                     var idLength = me.Select(p => p.Id.ToString().Length).Union(new[] { "ID".Length }).Max();
                     var nameLength = me.Select(p => p.Name.ToString().Length).Union(new[] { "NAME".Length }).Max();
-                    //var typeLength = new[] { "TYPE".Length }.Concat(me.SelectMany(p => p.Scopes.Select(s => s.Discriminator.TypeName.Length))).Max();
-                    //var nameLength = new[] { "NAME".Length }.Concat(me.SelectMany(p => p.Scopes.Select(s => s.Discriminator.Name.Length))).Max();
-                    //var propagationLength = new[] { "PROPAGATION".Length }.Concat(me.SelectMany(p => p.Scopes.Select(s => s.Propagation.ToString().Length))).Max();
 
-                    Printer.WriteLine("┌" 
-                        + ("".PadRight(idLength, '─')) 
-                        + "┬" + ("".PadRight(nameLength, '─')) 
-                        //+ "┬" + ("".PadRight(typeLength, '─')) 
-                        //+ "┬" + ("".PadRight(nameLength, '─')) 
-                        //+ "┬" + ("".PadRight(propagationLength, '─')) 
+                    Printer.WriteLine("┌"
+                        + ("".PadRight(idLength, '─'))
+                        + "┬" + ("".PadRight(nameLength, '─'))
                         + "┐");
                     if (me.Any())
                     {
-                        Printer.WriteLine("│" 
-                            + ("ID".PadRight(idLength, ' ')) 
-                            + "│" + ("NAME".PadRight(nameLength, ' ')) 
-                            //+ "│" + ("TYPE".PadRight(typeLength, ' ')) 
-                            //+ "│" + ("NAME".PadRight(nameLength, ' ')) 
-                            //+ "│" + ("PROPAGATION".PadRight(propagationLength, ' ')) 
+                        Printer.WriteLine("│"
+                            + ("ID".PadRight(idLength, ' '))
+                            + "│" + ("NAME".PadRight(nameLength, ' '))
                             + "│");
-                        Printer.WriteLine("├" + ("".PadRight(idLength, '─')) 
-                            + "┼" + ("".PadRight(nameLength, '─')) 
-                            //+ "┼" + ("".PadRight(typeLength, '─'))
-                            //+ "┼" + ("".PadRight(nameLength, '─'))
-                            //+ "┼" + ("".PadRight(propagationLength, '─'))
+                        Printer.WriteLine("├" + ("".PadRight(idLength, '─'))
+                            + "┼" + ("".PadRight(nameLength, '─'))
                             + "┤");
                     }
-
                     foreach (var per in me)
                     {
-                        //var list = per.Scopes.ToList();
-                        //if (list.Count == 0)
-                        //{
-                            Printer.WriteLine("│" +
-                                    per.Id.ToString().PadRight(idLength, ' ') + "│" +
-                                    per.Name.PadRight(nameLength, ' ') + "│" + 
-                                    //("".PadRight(typeLength, ' ')) + "│" +
-                                    //("".PadRight(nameLength, ' ')) + "│" +
-                                    //("".PadRight(propagationLength, ' ')) + "│" +
-                                    "");
-                        //}
-                        //else
-                        //{
-                        //    for (int i = 0; i < list.Count; i++)
-                        //    {
-                        //        Printer.Print("│" +
-                        //            ((i == 0 ? per.Value.ToString() : "").PadRight(valueLength, ' ')) + "│" +
-                        //            ((i == 0 ? per.Function.Name : "").PadRight(functionLength, ' ')) + "│" +
-                        //            (list[i].Discriminator.TypeName.PadRight(typeLength, ' ')) + "│" +
-                        //            (list[i].Discriminator.Name.PadRight(nameLength, ' ')) + "│" +
-                        //            (list[i].Propagation.ToString().PadRight(propagationLength, ' ')) + "│");
-                        //    }
-                        //}
+                        Printer.WriteLine("│" +
+                                per.Id.ToString().PadRight(idLength, ' ') + "│" +
+                                per.Name.PadRight(nameLength, ' ') + "│" +
+                                "");
                     }
                     Printer.WriteLine("└"
-                        + ("".PadRight(idLength, '─')) 
-                        + "┴" + ("".PadRight(nameLength, '─')) 
-                        //+ "┴" + ("".PadRight(typeLength, '─'))
-                        //+ "┴" + ("".PadRight(nameLength, '─'))
-                        //+ "┴" + ("".PadRight(propagationLength, '─')) 
+                        + ("".PadRight(idLength, '─'))
+                        + "┴" + ("".PadRight(nameLength, '─'))
                         + "┘");
                     break;
             }
@@ -186,51 +148,16 @@ namespace Fuxion.Identity
         static Functions()
         {
             CreatePredefinedFunctions();
-            //Read = new Function<string>(READ);
-            //Edit = new Function<string>(EDIT);
-            //Create = new Function<string>(CREATE);
-            //Delete = new Function<string>(DELETE);
-            //Manage = new Function<string>(MANAGE);
-            //Admin = new Function<string>(ADMIN);
-            //((Function<string>)Read).Exclusions = new[] { Edit }.Cast<IFunction<string>>();
-
-            //((Function<string>)Edit).Inclusions = new[] { Read }.Cast<IFunction<string>>();
-            //((Function<string>)Edit).Exclusions = new[] { Create, Delete }.Cast<IFunction<string>>();
-
-            //((Function<string>)Create).Inclusions = new[] { Edit }.Cast<IFunction<string>>();
-            //((Function<string>)Create).Exclusions = new[] { Manage }.Cast<IFunction<string>>();
-
-            //((Function<string>)Delete).Inclusions = new[] { Edit }.Cast<IFunction<string>>();
-            //((Function<string>)Delete).Exclusions = new[] { Manage }.Cast<IFunction<string>>();
-
-            //((Function<string>)Manage).Inclusions = new[] { Create, Delete }.Cast<IFunction<string>>();
-            //((Function<string>)Manage).Exclusions = new[] { Admin }.Cast<IFunction<string>>();
-
-            //((Function<string>)Admin).Inclusions = new[] { Manage }.Cast<IFunction<string>>();
-            //dic = new Dictionary<object, IFunction>
-            //{
-            //    [((Function<string>)Read).Id] = Read,
-            //    [((Function<string>)Edit).Id] = Edit,
-            //    [((Function<string>)Create).Id] = Create,
-            //    [((Function<string>)Delete).Id] = Delete,
-            //    [((Function<string>)Manage).Id] = Manage,
-            //    [((Function<string>)Admin).Id] = Admin,
-            //};
-            //graph.AddEdge(Admin, Manage);
-            //graph.AddEdge(Manage, Edit);
-            //graph.AddEdge(Manage, Delete);
-            //graph.AddEdge(Edit, Read);
-            //graph.AddEdge(Create, Read);
         }
         static Graph<IFunction> graph = new Graph<IFunction>();
         static Dictionary<object, IFunction> dic = new Dictionary<object, IFunction>();
         #region Predefined functions
-        public const string READ = nameof(READ);
-        public const string EDIT = nameof(EDIT);
-        public const string CREATE = nameof(CREATE);
-        public const string DELETE = nameof(DELETE);
-        public const string MANAGE = nameof(MANAGE);
-        public const string ADMIN = nameof(ADMIN);
+        const string READ = nameof(READ);
+        const string EDIT = nameof(EDIT);
+        const string CREATE = nameof(CREATE);
+        const string DELETE = nameof(DELETE);
+        const string MANAGE = nameof(MANAGE);
+        const string ADMIN = nameof(ADMIN);
         public static IFunction Read { get; private set; }
         public static IFunction Edit { get; private set; }
         public static IFunction Create { get; private set; }

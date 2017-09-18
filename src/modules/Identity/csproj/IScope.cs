@@ -42,10 +42,6 @@ namespace Fuxion.Identity
                     var nameLength = new[] { "NAME".Length }.Concat(me.Select(p => p.Discriminator.Name.Length)).Max();
                     var propagationLength = new[] { "PROPAGATION".Length }.Concat(me.Select(p => p.Propagation.ToString().Length)).Max();
 
-
-                    //var type = me.Max(s => s.Discriminator.TypeName.Length);
-                    //var name = me.Max(s => s.Discriminator.Name.Length);
-                    //var pro = me.Max(s => s.Propagation.ToString().Length);
                     Printer.WriteLine("┌" + ("".PadRight(typeLength, '─')) + "┬" + ("".PadRight(nameLength, '─')) + "┬" + ("".PadRight(propagationLength, '─')) + "┐");
                     Printer.WriteLine("│" + "TYPE".PadRight(typeLength, ' ') + "│" + "NAME".PadRight(nameLength, ' ') + "│" + "PROPAGATION".PadRight(propagationLength, ' ') + "│");
                     Printer.WriteLine("├" + ("".PadRight(typeLength, '─')) + "┼" + ("".PadRight(nameLength, '─')) + "┼" + ("".PadRight(propagationLength, '─')) + "┤");

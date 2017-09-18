@@ -3,6 +3,5 @@ namespace Fuxion.Identity
 {
     public interface IGroup : IRol
     {
-        //IEnumerable<IRol> Rols { get; }
     }
 }

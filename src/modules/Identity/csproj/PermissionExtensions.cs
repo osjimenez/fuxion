@@ -8,7 +8,7 @@ namespace Fuxion.Identity
     public static class PermissionExtensions
     {
         public static bool IsValid(this IPermission me) { return me.Function != null && (me.Scopes?.All(s => s.Discriminator != null) ?? true) && me.Scopes?.Select(s => s.Discriminator.TypeId).Distinct().Count() == me.Scopes?.Count(); }
-        internal static bool Match(this IPermission me,bool forFilter, IFunction function, IDiscriminator targetDiscriminator, params IDiscriminator[] discriminators)
+        internal static bool Match(this IPermission me,bool forFilter, IFunction function, TypeDiscriminator typeDiscriminator, params IDiscriminator[] discriminators)
         {
             bool res = false;
             using (Printer.Indent2($"CALL {nameof(Match)}:", '│'))
@@ -17,14 +17,14 @@ namespace Fuxion.Identity
                 {
                     Printer.WriteLine($"Permission:");
                     new[] { me }.Print(PrintMode.Table);
-                    Printer.WriteLine($"For filter: " + forFilter);
+                    Printer.WriteLine($"'{nameof(forFilter)}': " + forFilter);
                     Printer.WriteLine($"Function: {function?.Name ?? "<null>"}");
 
-                    if (targetDiscriminator != null)
+                    if (typeDiscriminator != null)
                     {
-                        Printer.WriteLine($"Target discriminator:");
-                        new[] { targetDiscriminator }.Print(PrintMode.Table);
-                    }else Printer.WriteLine($"Target discriminator: null");
+                        Printer.WriteLine($"'{nameof(typeDiscriminator)}':");
+                        new[] { typeDiscriminator }.Print(PrintMode.Table);
+                    }else Printer.WriteLine($"'{nameof(typeDiscriminator)}': null");
                     Printer.WriteLine($"Discriminators:");
                     discriminators.Print(PrintMode.Table);
                 }
@@ -35,7 +35,7 @@ namespace Fuxion.Identity
                         Printer.WriteLine($"Matching failed on check the function");
                         return false;
                     }
-                    if (!me.MatchByDiscriminatorsInclusionsAndExclusions(forFilter, targetDiscriminator, discriminators))
+                    if (!me.MatchByDiscriminatorsInclusionsAndExclusions(forFilter, typeDiscriminator, discriminators))
                     {
                         Printer.WriteLine($"Matching failed on check the inclusions/exclusions of discriminator");
                         return false;
@@ -80,7 +80,7 @@ namespace Fuxion.Identity
             Printer.WriteLine($"● RESULT {nameof(MatchByFunction)}: {res}");
             return res;
         }
-        internal static bool MatchByDiscriminatorsInclusionsAndExclusions(this IPermission me,bool forFilter, IDiscriminator targetDiscriminator, params IDiscriminator[] discriminators)
+        internal static bool MatchByDiscriminatorsInclusionsAndExclusions(this IPermission me,bool forFilter, TypeDiscriminator typeDiscriminator, params IDiscriminator[] discriminators)
         {
             bool res = false;
             using (Printer.Indent2($"CALL {nameof(MatchByDiscriminatorsInclusionsAndExclusions)}:", '│'))
@@ -89,28 +89,26 @@ namespace Fuxion.Identity
                 {
                     Printer.WriteLine($"Permission:");
                     new[] { me }.Print(PrintMode.Table);
-                    Printer.WriteLine($"For filter: " + forFilter);
-                    if (targetDiscriminator == null)
-                        Printer.WriteLine($"Target discriminator: null");
+                    Printer.WriteLine($"'{nameof(forFilter)}': " + forFilter);
+                    if (typeDiscriminator == null)
+                        Printer.WriteLine($"'{nameof(typeDiscriminator)}': null");
                     else
                     {
-                        Printer.WriteLine($"Target discriminator:");
-                        new[] { targetDiscriminator }.Print(PrintMode.Table);
+                        Printer.WriteLine($"'{nameof(typeDiscriminator)}':");
+                        new[] { typeDiscriminator }.Print(PrintMode.Table);
                     }
-                    Printer.WriteLine("Discriminators:");
+                    Printer.WriteLine($"'{nameof(discriminators)}':");
                     discriminators.Print(PrintMode.Table);
                 }
                 if (discriminators.Any(d => Comparer.AreEquals(d.TypeId, TypeDiscriminator.TypeDiscriminatorId)))
-                    throw new ArgumentException("discriminators cannot contains a TypeDiscriminator");
-                if (targetDiscriminator == null)
-                    throw new ArgumentException("target discriminator cannot be null");
-                if (targetDiscriminator != null && !Comparer.AreEquals(targetDiscriminator.TypeId, TypeDiscriminator.TypeDiscriminatorId))
-                    throw new ArgumentException("target discriminator must be a TypeDiscriminator");
+                    throw new ArgumentException($"'{nameof(discriminators)}' cannot contains a '{nameof(TypeDiscriminator)}'");
+                if (typeDiscriminator == null)
+                    throw new ArgumentException($"'{nameof(typeDiscriminator)}' cannot be null");
                 bool Compute() {
                     // Si no hay discriminador de tipo, TRUE
-                    if (targetDiscriminator == null)
+                    if (typeDiscriminator == null)
                     {
-                        Printer.WriteLine($"'{nameof(targetDiscriminator)}' is null");
+                        Printer.WriteLine($"'{nameof(typeDiscriminator)}' is null");
                         //return true;
                     }
                     // Si el permiso no define scopes, TRUE
@@ -121,27 +119,27 @@ namespace Fuxion.Identity
                     }
                     // Compruebo el discriminador objetivo
                     {
-                        var scopeOfTypeOfTarget = me.Scopes.FirstOrDefault(s => Comparer.AreEquals(s.Discriminator.TypeId, targetDiscriminator?.TypeId));
+                        var scopeOfTypeOfTarget = me.Scopes.FirstOrDefault(s => Comparer.AreEquals(s.Discriminator.TypeId, typeDiscriminator?.TypeId));
                         if(scopeOfTypeOfTarget != null)
                         {
-                            Printer.WriteLine($"The target discriminator '{targetDiscriminator}' and permission scope '{scopeOfTypeOfTarget}' have same type '{targetDiscriminator.TypeId}', continue");
+                            Printer.WriteLine($"The {nameof(typeDiscriminator)} '{typeDiscriminator}' and permission scope '{scopeOfTypeOfTarget}' have same type '{typeDiscriminator.TypeId}', continue");
                             var scopeDiscriminatorRelatedWithTargetDiscriminator = scopeOfTypeOfTarget?.Discriminator
                                 .GetAllRelated(scopeOfTypeOfTarget.Propagation)
-                                .FirstOrDefault(rel => Comparer.AreEquals(targetDiscriminator.TypeId, rel.TypeId) && Comparer.AreEquals(targetDiscriminator.Id, rel.Id));
+                                .FirstOrDefault(rel => Comparer.AreEquals(typeDiscriminator.TypeId, rel.TypeId) && Comparer.AreEquals(typeDiscriminator.Id, rel.Id));
                             if(scopeDiscriminatorRelatedWithTargetDiscriminator != null)
                             {
-                                Printer.WriteLine($"The target discriminator '{targetDiscriminator}' is related to permission scope '{scopeOfTypeOfTarget}' on discriminator '{scopeDiscriminatorRelatedWithTargetDiscriminator}', check discriminators");
+                                Printer.WriteLine($"The {nameof(typeDiscriminator)} '{typeDiscriminator}' is related to permission scope '{scopeOfTypeOfTarget}' on discriminator '{scopeDiscriminatorRelatedWithTargetDiscriminator}', check discriminators");
 
                             }
-                            else if((TypeDiscriminator)targetDiscriminator != TypeDiscriminator.Empty)
+                            else if((TypeDiscriminator)typeDiscriminator != TypeDiscriminator.Empty)
                             {
-                                Printer.WriteLine($"The target discriminator '{targetDiscriminator}' isn't related to permission scope '{scopeOfTypeOfTarget}', FALSE");
+                                Printer.WriteLine($"The {nameof(typeDiscriminator)} '{typeDiscriminator}' isn't related to permission scope '{scopeOfTypeOfTarget}', FALSE");
                                 return false;
                             }
                         }
                         else
                         {
-                            Printer.WriteLine($"The target discriminator '{targetDiscriminator}' hasn't any scope with discriminator of its type");
+                            Printer.WriteLine($"The {nameof(typeDiscriminator)} '{typeDiscriminator}' hasn't any scope with discriminator of its type");
                             if (discriminators.IsNullOrEmpty())
                             {
                                 Printer.WriteLine($"Haven't discriminators, VALUE");
@@ -153,8 +151,6 @@ namespace Fuxion.Identity
                     }
                     // Compruebo el resto de discriminadores
                     return discriminators.All(dis => { 
-                    //foreach (var dis in discriminators)
-                    //{
                         var scopeOfTypeOfDiscriminator = me.Scopes.FirstOrDefault(s => Comparer.AreEquals(s.Discriminator.TypeId, dis.TypeId));
                         var scopeDiscriminatorRelatedWithDiscriminator = scopeOfTypeOfDiscriminator?.Discriminator
                             .GetAllRelated(scopeOfTypeOfDiscriminator.Propagation)
@@ -176,20 +172,14 @@ namespace Fuxion.Identity
                                     Printer.WriteLine($"This search is 'forFilter', TRUE");
                                     return true;
                                 }
-                                //if (!dis.Id.IsNullOrDefault()) return me.Value;
-                                //return dis.Id.IsNullOrDefault() ? me.Value : !me.Value;
                             }
                         }
                         else
                         {
                             Printer.WriteLine($"The permission hasn't any discriminator of type '{dis}', VALUE or !VALUE");
-                            //return me.Value;
-                            //return true;
-                            //return false;
                             return dis.Id.IsNullOrDefault() ? me.Value : !me.Value;
                         }
                         return false;
-                        //}
                     });
                 }
                 res = Compute();

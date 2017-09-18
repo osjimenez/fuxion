@@ -14,13 +14,10 @@ namespace Fuxion.Identity.Test.Dao
         public string Function { get; set; }
         public IList<ScopeDao> Scopes { get; set; } = new List<ScopeDao>();
         public bool Value { get; set; }
-        public override string Name { get { return $"{Rol?.Name} can{(Value?"":"'t")} {Function} with {Scopes.Count} scopes."; } }
+        public override string Name => $"{Rol?.Name} can{(Value ? "" : "'t")} {Function} with {Scopes.Count} scopes.";
 
-        public override string ToString()
-        {
-            return this.ToOneLineString();
-        }
-        IFunction IPermission.Function { get { return Functions.GetById(Function); } }
-        IEnumerable<IScope> IPermission.Scopes { get { return Scopes; } }
+        public override string ToString() => this.ToOneLineString();
+        IFunction IPermission.Function => Functions.GetById(Function);
+        IEnumerable<IScope> IPermission.Scopes => Scopes;
     }
 }

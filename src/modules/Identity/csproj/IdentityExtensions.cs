@@ -22,7 +22,7 @@ namespace Fuxion.Identity
             if (me.Groups != null) foreach (var gro in me.Groups) r.AddRange(gro.AllPermissions());
             return r;
         }
-        internal static IPermission[] SearchPermissions(this IRol me, bool forFilter, IFunction function, IDiscriminator targetDiscriminator, params IDiscriminator[] discriminators)
+        internal static IPermission[] SearchPermissions(this IRol me, bool forFilter, IFunction function, TypeDiscriminator typeDiscriminator, params IDiscriminator[] discriminators)
         {
             IPermission[] res = null;
             using (Printer.Indent2($"CALL {nameof(SearchPermissions)}:", '│'))
@@ -33,14 +33,14 @@ namespace Fuxion.Identity
                     Printer.WriteLine($"Rol: {me?.Name}");
                     Printer.WriteLine($"For filter: " + forFilter);
                     Printer.WriteLine($"Function: {function?.Name ?? "<null>"}");
-                    Printer.WriteLine($"Target discriminator: {targetDiscriminator?.ToString() ?? "<null>"}");
+                    Printer.WriteLine($"'{nameof(typeDiscriminator)}': {typeDiscriminator?.ToString() ?? "<null>"}");
                     Printer.Foreach($"Discriminators:", discriminators, dis => Printer.WriteLine($"{dis?.TypeName} - {dis?.Name}"));
                 }
                 // Function validation
                 if (!(function?.IsValid() ?? true)) throw new ArgumentException($"The '{nameof(function)}' pararameter with value '{function}' has an invalid state", nameof(function));
                 // TypeDiscriminator validation
 
-                if (!targetDiscriminator?.IsValid() ?? false) throw new InvalidStateException($"The '{targetDiscriminator}' discriminator has an invalid state");
+                if (!typeDiscriminator?.IsValid() ?? false) throw new InvalidStateException($"The '{typeDiscriminator}' discriminator has an invalid state");
                 
                 // Discriminators validation
                 var invalidDiscriminator = discriminators?.FirstOrDefault(d => !d.IsValid());
@@ -52,7 +52,7 @@ namespace Fuxion.Identity
                 using (Printer.Indent2("Permissions:")) permissions.Print(PrintMode.Table);
                 using (Printer.Indent2("Iterate permissions:"))
                 {
-                    res = permissions.Where(p => p.Match(forFilter, function, targetDiscriminator, discriminators)).ToArray();
+                    res = permissions.Where(p => p.Match(forFilter, function, typeDiscriminator, discriminators)).ToArray();
                 }
             }
             using (Printer.Indent2($"● RESULT {nameof(SearchPermissions)}:", '●'))
@@ -61,9 +61,9 @@ namespace Fuxion.Identity
             }
             return res;
         }
-        internal static bool CheckDiscriminators(this IInternalRolCan me, bool forAll, IDiscriminator targetDiscriminator, params IDiscriminator[] discriminators)
+        internal static bool CheckDiscriminators(this IInternalRolCan me, bool forAll, TypeDiscriminator typeDiscriminator, params IDiscriminator[] discriminators)
         {
-            bool res = false;
+            bool? res = null;
             discriminators = discriminators.RemoveNulls();
             using (Printer.Indent2($"CALL {nameof(CheckDiscriminators)}:", '│'))
             {
@@ -71,16 +71,29 @@ namespace Fuxion.Identity
                 {
                     Printer.WriteLine($"Rol: {me?.Rol?.Name}");
                     Printer.WriteLine($"Functions: {string.Join(",", me.Functions.Select(f => f.Name)) ?? "<null>"}");
+                    Printer.WriteLine($"'{nameof(forAll)}': {forAll}");
+                    Printer.WriteLine($"'{nameof(typeDiscriminator)}': {typeDiscriminator?.ToString() ?? "null"}");
                     Printer.Foreach($"Discriminators:", discriminators, dis => Printer.WriteLine($"{dis?.TypeName} - {dis?.Name}"));
                 }
-                if (me.Rol == null) return false;
+                // If Rol is null, return false
+                if (me.Rol == null)
+                {
+                    Printer.WriteLine($"'{nameof(me.Rol)}' is NULL");
+                    res = false;
+                }
+                // If target discriminator is null, return true
+                if (typeDiscriminator == null)
+                {
+                    Printer.WriteLine($"'{nameof(typeDiscriminator)}' is NULL");
+                    return true;
+                }
                 bool Compute()
                 {
                     //Printer.Foreach("Iterating functions:", me.Functions, fun => {
                     foreach (var fun in me.Functions)
                     {
                         Printer.WriteLine($"Function '{fun.Name}':");
-                        var pers = SearchPermissions(me.Rol, false, fun, targetDiscriminator, discriminators);
+                        var pers = SearchPermissions(me.Rol, false, fun, typeDiscriminator, discriminators);
                         if (!pers.Any())
                             return false;
                         else
@@ -105,7 +118,7 @@ namespace Fuxion.Identity
                                     {
                                         //var pers = me.Rol.SearchPermissions(fun, dis);
                                         //return !pers.Any(p => !p.Value && p.Scopes.Any(s => dis.TypeId == s.Discriminator.TypeId)) && pers.Any(p => p.Value);
-                                        return !pers.Any(p => !p.Value && p.Match(false, fun, targetDiscriminator, discriminators)) && pers.Any(p => p.Value);
+                                        return !pers.Any(p => !p.Value && p.Match(false, fun, typeDiscriminator, discriminators)) && pers.Any(p => p.Value);
                                     });
                             }
                             if (!r && me.ThrowExceptionIfCannot)
@@ -115,12 +128,13 @@ namespace Fuxion.Identity
                     }
                     return false;
                 }
-                res = Compute();
-                if(!res && me.ThrowExceptionIfCannot)
+                if(res == null)
+                    res = Compute();
+                if(!res.Value && me.ThrowExceptionIfCannot)
                     throw new UnauthorizedAccessException($"The rol '{me.Rol.Name}' cannot '{me.Functions.Aggregate("", (a, c) => a + c.Name + "·", a => a.Trim('·'))}' for the given discriminators '{discriminators.Aggregate("", (a, c) => $"{a}, {c.Name}", a => a.Trim(',', ' ')) }'");
             };
             Printer.WriteLine($"● RESULT {nameof(CheckDiscriminators)}: {res}");
-            return res;
+            return res.Value;
         }
         internal static IEnumerable<(PropertyInfo PropertyInfo, Type PropertyType, Type DiscriminatorType, object DiscriminatorTypeId)> GetDiscriminatedProperties(this Type me)
         {
@@ -219,7 +233,6 @@ namespace Fuxion.Identity
                     true,
                     fun,
                     Factory.Get<TypeDiscriminatorFactory>().FromType<TEntity>(),
-                    //props.Select(p => Factory.Get<TypeDiscriminatorFactory>().FromType(p.DiscriminatorType)).ToArray()
                     typeof(TEntity).GetDiscriminatorsOfDiscriminatedProperties().ToArray()
                     ))
                 .Distinct().ToList();
@@ -246,7 +259,6 @@ namespace Fuxion.Identity
                                 }
                             }
                         });
-                        //if (!per.Scopes.Any())
                         if (perExp == null)
                         {
                             perExp = Expression.Lambda<Func<TEntity, bool>>(Expression.Constant(false), Expression.Parameter(typeof(TEntity)));
@@ -284,7 +296,6 @@ namespace Fuxion.Identity
                                 }
                             }
                         });
-                        //if (!per.Scopes.Any())
                         if (perExp == null)
                         {
                             perExp = Expression.Lambda<Func<TEntity, bool>>(Expression.Constant(true), Expression.Parameter(typeof(TEntity)));
@@ -302,11 +313,6 @@ namespace Fuxion.Identity
                 if (denyPersExp != null && grantPersExp == null) res = denyPersExp;
                 if (denyPersExp == null && grantPersExp != null) res = grantPersExp;
                 res = res ?? Expression.Lambda<Func<TEntity, bool>>(Expression.Constant(false), Expression.Parameter(typeof(TEntity)));
-                //Printer.WriteLine("Expression:");
-                //PrintExpression(res?.Body);
-                //if (Printer.IsLineWritePending) Printer.WriteLine("");
-
-                //return res;
             }
             #region PrintExpression
             void PrintExpression(Expression exp)

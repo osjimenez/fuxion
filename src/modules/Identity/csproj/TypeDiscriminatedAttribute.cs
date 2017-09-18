@@ -8,11 +8,9 @@ namespace Fuxion.Identity
     public class TypeDiscriminatedAttribute :Attribute
     {
         public TypeDiscriminatedAttribute(string id) { Id = id; Name = id; }
-        //public TypeDiscriminatedAttribute(bool enabled) { Enabled = enabled; }
         public TypeDiscriminatedAttribute(TypeDiscriminationDisableMode disableMode) { DisableMode = disableMode; }
         public string Id { get; set; }
         public string Name { get; set; }
-        //public bool Enabled { get; set; } = true;
         public TypeDiscriminationDisableMode? DisableMode { get; private set; }
 
         public string[] ExplicitInclusions { get; set; }
