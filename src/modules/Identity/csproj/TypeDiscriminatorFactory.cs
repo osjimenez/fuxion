@@ -14,7 +14,7 @@ namespace Fuxion.Identity
         public string DiscriminatorTypeId { get; set; } = TypeDiscriminator.TypeDiscriminatorId;
         public string DiscriminatorTypeName { get; set; } = TypeDiscriminator.TypeDiscriminatorId;
         public bool AllowMoreThanOneTypeByDiscriminator { get; set; }
-        public bool AllowVirtualTypeDiscriminators { get; set; }
+        //public bool AllowVirtualTypeDiscriminators { get; set; }
         #region Classes
         [DebuggerDisplay("{" + nameof(Discriminator) + "}")]
         class Entry
@@ -201,13 +201,15 @@ namespace Fuxion.Identity
                         foreach (var avo in Search(ent.Types?.SelectMany(t => t.Attribute?.AvoidedInclusions ?? new string[] { })))
                         {
                             Debug.WriteLine($"Inclusion {avo.Id} avoided from {ent.Id}");
-                            ent.Discriminator.Inclusions.Remove(avo);
+                            //ent.Discriminator.Inclusions.Remove(avo);
+                            ent.Discriminator.Inclusions.RemoveWhere(d => d.Id == avo.Id);
                         }
                         // Exclusions
                         foreach (var avo in Search(ent.Types?.SelectMany(t => t.Attribute?.AvoidedExclusions ?? new string[] { })))
                         {
                             Debug.WriteLine($"Exclusion {avo.Id} avoided from {ent.Id}");
-                            ent.Discriminator.Inclusions.Remove(avo);
+                            //ent.Discriminator.Exclusions.Remove(avo);
+                            ent.Discriminator.Exclusions.RemoveWhere(d => d.Id == avo.Id);
                         }
                     }
                 }

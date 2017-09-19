@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -27,7 +28,13 @@ namespace System.Collections.Generic
         public static bool IsNullOrEmpty<T>(this IEnumerable<T> me) => me == null || !me.Any();
         public static IEnumerable<T> RemoveNulls<T>(this IEnumerable<T> me) => me.Where(i => i != null);
         public static IQueryable<T> RemoveNulls<T>(this IQueryable<T> me) => me.Where(i => i != null);
-        public static IList<T> RemoveNulls<T>(this IList<T> me) => me.Where(i => i != null).ToList();
+        public static ICollection<T> RemoveNulls<T>(this ICollection<T> me) => me.Where(i => i != null).ToList();
         public static T[] RemoveNulls<T>(this T[] me) => me.Where(i => i != null).ToArray();
+
+        public static void RemoveWhere<T>(this ICollection<T> me, Func<T, bool> predicate)
+        {
+            foreach (var i in me.Where(predicate).ToList())
+                me.Remove(i);
+        }
     }
 }

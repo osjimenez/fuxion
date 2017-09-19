@@ -21,7 +21,7 @@ namespace Fuxion.Identity.Test
         public static void Reset(this TypeDiscriminatorFactory me)
         {
             me.AllowMoreThanOneTypeByDiscriminator = false;
-            me.AllowVirtualTypeDiscriminators = false;
+            //me.AllowVirtualTypeDiscriminators = false;
             me.ClearRegistrations();
         }
     }
@@ -40,6 +40,17 @@ namespace Fuxion.Identity.Test
                 fac.Register<BaseDao>();
             });
         }
+        [Fact(DisplayName = "TypeDiscriminator - Register - Two trees in parallel")]
+        public void RegisterTwoTrees()
+        {
+            var fac = new TypeDiscriminatorFactory();
+            fac.AllowMoreThanOneTypeByDiscriminator = true;
+            // Register from Base
+            fac.RegisterTree<BaseDao>();
+            fac.RegisterTree(typeof(BaseDvo<>));
+
+            fac.FromType<BaseDao>();
+        }
         [Fact(DisplayName = "TypeDiscriminator - Register - All tree")]
         public void RegisterAllTree()
         {
@@ -54,7 +65,7 @@ namespace Fuxion.Identity.Test
         public void RegisterFileTree()
         {
             var fac = new TypeDiscriminatorFactory();
-            fac.AllowVirtualTypeDiscriminators = true;
+            //fac.AllowVirtualTypeDiscriminators = true;
             // Register from File
             fac.RegisterTree<FileDao>();
             TypeDiscriminator dis = null;
@@ -84,7 +95,7 @@ namespace Fuxion.Identity.Test
         {
             var fac = new TypeDiscriminatorFactory();
             fac.AllowMoreThanOneTypeByDiscriminator = true;
-            fac.AllowVirtualTypeDiscriminators = true;
+            //fac.AllowVirtualTypeDiscriminators = true;
             // Register from generic type BaseDvo<>
             fac.RegisterTree(typeof(BaseDvo<>));
             var dis = fac.FromType(typeof(LocationDvo<>));
@@ -105,8 +116,7 @@ namespace Fuxion.Identity.Test
         public void RegisterDisabgleState()
         {
             var fac = new TypeDiscriminatorFactory();
-            //fac.AllowMoreThanOneTypeByDiscriminator = true;
-            fac.AllowVirtualTypeDiscriminators = true;
+            //fac.AllowVirtualTypeDiscriminators = true;
             fac.RegisterTree<BaseDao>();
             var dis = fac.FromType<FileDao>();
             Assert.Equal(3, dis.Inclusions.Count());
@@ -143,7 +153,7 @@ namespace Fuxion.Identity.Test
 
             var dao = fac.FromType<BaseDao>();
 
-            fac.ClearRegistrations();
+            fac.Reset();
             fac.Register(typeof(BaseDao));
             fac.Register(typeof(FileDao));
             fac.Register(typeof(DocumentDao));
