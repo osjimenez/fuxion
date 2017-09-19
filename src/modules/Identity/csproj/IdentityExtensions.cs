@@ -130,8 +130,8 @@ namespace Fuxion.Identity
                 }
                 if(res == null)
                     res = Compute();
-                if(!res.Value && me.ThrowExceptionIfCannot)
-                    throw new UnauthorizedAccessException($"The rol '{me.Rol.Name}' cannot '{me.Functions.Aggregate("", (a, c) => a + c.Name + "·", a => a.Trim('·'))}' for the given discriminators '{discriminators.Aggregate("", (a, c) => $"{a}, {c.Name}", a => a.Trim(',', ' ')) }'");
+                if (!res.Value && me.ThrowExceptionIfCannot)
+                    throw new UnauthorizedAccessException($"The rol '{me.Rol.Name}' cannot '{me.Functions.Aggregate("", (a, c) => a + c.Name + "·", a => a.Trim('·'))}' of type '{typeDiscriminator.Name}' with given discriminators '{discriminators.Aggregate("", (a, c) => $"{a}, {c.TypeName + "<" + c.Name + ">"}", a => a.Trim(',', ' ')) }'");
             };
             Printer.WriteLine($"● RESULT {nameof(CheckDiscriminators)}: {res}");
             return res.Value;

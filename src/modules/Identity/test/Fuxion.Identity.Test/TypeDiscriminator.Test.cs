@@ -21,7 +21,6 @@ namespace Fuxion.Identity.Test
         public static void Reset(this TypeDiscriminatorFactory me)
         {
             me.AllowMoreThanOneTypeByDiscriminator = false;
-            //me.AllowVirtualTypeDiscriminators = false;
             me.ClearRegistrations();
         }
     }
@@ -65,7 +64,6 @@ namespace Fuxion.Identity.Test
         public void RegisterFileTree()
         {
             var fac = new TypeDiscriminatorFactory();
-            //fac.AllowVirtualTypeDiscriminators = true;
             // Register from File
             fac.RegisterTree<FileDao>();
             TypeDiscriminator dis = null;
@@ -95,7 +93,6 @@ namespace Fuxion.Identity.Test
         {
             var fac = new TypeDiscriminatorFactory();
             fac.AllowMoreThanOneTypeByDiscriminator = true;
-            //fac.AllowVirtualTypeDiscriminators = true;
             // Register from generic type BaseDvo<>
             fac.RegisterTree(typeof(BaseDvo<>));
             var dis = fac.FromType(typeof(LocationDvo<>));
@@ -116,7 +113,6 @@ namespace Fuxion.Identity.Test
         public void RegisterDisabgleState()
         {
             var fac = new TypeDiscriminatorFactory();
-            //fac.AllowVirtualTypeDiscriminators = true;
             fac.RegisterTree<BaseDao>();
             var dis = fac.FromType<FileDao>();
             Assert.Equal(3, dis.Inclusions.Count());
@@ -161,7 +157,6 @@ namespace Fuxion.Identity.Test
 
             dao = fac.FromType<BaseDao>();
         }
-        //[Fact(DisplayName = "TypeDiscriminator - Attribute - Only File")]
         [Fact(DisplayName = "TypeDiscriminator - Attribute")]
         public void TypeDiscriminatorAttribute()
         {
@@ -186,14 +181,12 @@ namespace Fuxion.Identity.Test
             fac.ClearRegistrations();
             fac.Register(typeof(BaseDvo<>));
             fac.Register(typeof(LocationDvo<>));
-            //fac.Register(typeof(LocationDvo<CityDvo>));
             fac.Register(typeof(CityDvo));
             fac.Register(typeof(CountryDvo));
 
             var dvo  = fac.FromId(TypeDiscriminatorIds.City);
             var dvo2 = fac.FromId(TypeDiscriminatorIds.Location);
             var dvo3 = fac.FromType(typeof(LocationDvo<>));
-            //var dvo3 = fac.FromType(typeof(LocationDvo<CityDvo>));
 
             Assert.True(dao.Id == dvo.Id, $"Type discriminators DAO & DVO must have same Id. Values are '{dao.Id}' and '{dvo.Id}'");
             Assert.True(dvo2.Id == dvo3.Id, $"Type discriminators DAO & DVO must have same Id. Values are '{dvo2.Id}' and '{dvo3.Id}'");
