@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Fuxion.Identity.Test.Helpers;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
@@ -9,14 +10,20 @@ using System.Threading.Tasks;
 namespace Fuxion.Identity.Test.Dao
 {
     [Table(nameof(RolDao))]
+    [TypeDiscriminated(TypeDiscriminatorIds.Rol)]
     public abstract class RolDao : BaseDao, IRol
     {
         public IList<GroupDao> Groups { get; set; } = new List<GroupDao>();
         public IList<PermissionDao> Permissions { get; set; } = new List<PermissionDao>();
         IEnumerable<IGroup> IRol.Groups { get { return Groups; } }
         IEnumerable<IPermission> IRol.Permissions { get { return Permissions; } }
+
+        [DiscriminatedBy(typeof(CategoryDao))]
+        public string CategoryId { get; set; }
+        public CategoryDao Category { get; set; }
     }
     [Table(nameof(GroupDao))]
+    [TypeDiscriminated(TypeDiscriminatorIds.Group)]
     public class GroupDao : RolDao, IGroup
     {
         public List<RolDao> Rols { get; set; } = new List<RolDao>();
@@ -25,7 +32,7 @@ namespace Fuxion.Identity.Test.Dao
 
     }
     [Table(nameof(IdentityDao))]
-    [TypeDiscriminated(nameof(IdentityDao))]
+    [TypeDiscriminated(TypeDiscriminatorIds.Identity)]
     public class IdentityDao : RolDao, IIdentity<string>
     {
         public string UserName { get; set; }

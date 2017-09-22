@@ -117,23 +117,25 @@ namespace Fuxion.Identity
                         Printer.WriteLine("Permission hasn't scopes");
                         return true;
                     }
-                    // Compruebo el discriminador objetivo
+                    var typeDiscriminatorRelatedWithAnyPermissionScope = false;
+                    // Compruebo el discriminador de tipo
+                    using (Printer.Indent2($"Checking type discriminator"))
                     {
-                        var scopeOfTypeOfTarget = me.Scopes.FirstOrDefault(s => Comparer.AreEquals(s.Discriminator.TypeId, typeDiscriminator?.TypeId));
-                        if(scopeOfTypeOfTarget != null)
+                        var scopeOfTypeOfTypeDiscriminator = me.Scopes.FirstOrDefault(s => Comparer.AreEquals(s.Discriminator.TypeId, typeDiscriminator?.TypeId));
+                        if (scopeOfTypeOfTypeDiscriminator != null)
                         {
-                            Printer.WriteLine($"The {nameof(typeDiscriminator)} '{typeDiscriminator}' and permission scope '{scopeOfTypeOfTarget}' have same type '{typeDiscriminator.TypeId}', continue");
-                            var scopeDiscriminatorRelatedWithTargetDiscriminator = scopeOfTypeOfTarget?.Discriminator
-                                .GetAllRelated(scopeOfTypeOfTarget.Propagation)
+                            Printer.WriteLine($"The {nameof(typeDiscriminator)} '{typeDiscriminator}' and permission scope '{scopeOfTypeOfTypeDiscriminator}' have same type '{typeDiscriminator.TypeId}', continue");
+                            var scopeDiscriminatorRelatedWithTargetDiscriminator = scopeOfTypeOfTypeDiscriminator?.Discriminator
+                                .GetAllRelated(scopeOfTypeOfTypeDiscriminator.Propagation)
                                 .FirstOrDefault(rel => Comparer.AreEquals(typeDiscriminator.TypeId, rel.TypeId) && Comparer.AreEquals(typeDiscriminator.Id, rel.Id));
-                            if(scopeDiscriminatorRelatedWithTargetDiscriminator != null)
+                            if (scopeDiscriminatorRelatedWithTargetDiscriminator != null)
                             {
-                                Printer.WriteLine($"The {nameof(typeDiscriminator)} '{typeDiscriminator}' is related to permission scope '{scopeOfTypeOfTarget}' on discriminator '{scopeDiscriminatorRelatedWithTargetDiscriminator}', check discriminators");
-
+                                Printer.WriteLine($"The {nameof(typeDiscriminator)} '{typeDiscriminator}' is related to permission scope '{scopeOfTypeOfTypeDiscriminator}' on discriminator '{scopeDiscriminatorRelatedWithTargetDiscriminator}', check discriminators");
+                                typeDiscriminatorRelatedWithAnyPermissionScope = true;
                             }
-                            else if((TypeDiscriminator)typeDiscriminator != TypeDiscriminator.Empty)
+                            else if ((TypeDiscriminator)typeDiscriminator != TypeDiscriminator.Empty)
                             {
-                                Printer.WriteLine($"The {nameof(typeDiscriminator)} '{typeDiscriminator}' isn't related to permission scope '{scopeOfTypeOfTarget}', FALSE");
+                                Printer.WriteLine($"The {nameof(typeDiscriminator)} '{typeDiscriminator}' isn't related to permission scope '{scopeOfTypeOfTypeDiscriminator}', FALSE");
                                 return false;
                             }
                         }
@@ -142,45 +144,68 @@ namespace Fuxion.Identity
                             Printer.WriteLine($"The {nameof(typeDiscriminator)} '{typeDiscriminator}' hasn't any scope with discriminator of its type");
                             if (discriminators.IsNullOrEmpty())
                             {
-                                Printer.WriteLine($"Haven't discriminators, VALUE");
+                                Printer.WriteLine($"Haven't discriminators, VALUE ({me.Value})");
                                 return me.Value;
                             }
                             else
                                 Printer.WriteLine($"Have some discriminators, check discriminators");
                         }
                     }
-                    // Compruebo el resto de discriminadores
-                    return discriminators.All(dis => { 
-                        var scopeOfTypeOfDiscriminator = me.Scopes.FirstOrDefault(s => Comparer.AreEquals(s.Discriminator.TypeId, dis.TypeId));
-                        var scopeDiscriminatorRelatedWithDiscriminator = scopeOfTypeOfDiscriminator?.Discriminator
-                            .GetAllRelated(scopeOfTypeOfDiscriminator.Propagation)
-                            .FirstOrDefault(rel => Comparer.AreEquals(dis.TypeId, rel.TypeId) && Comparer.AreEquals(dis.Id, rel.Id));
-
-                        if (scopeOfTypeOfDiscriminator != null)
+                    using (Printer.Indent2($"Checking discriminators:"))
+                    {
+                        // Compruebo el resto de discriminadores
+                        return discriminators.All(dis =>
                         {
-                            Printer.WriteLine($"The discriminator '{dis}' and permission scope '{scopeOfTypeOfDiscriminator}' have same type '{dis.TypeId}'");
-                            if (scopeDiscriminatorRelatedWithDiscriminator != null)
+                            var scopeOfTypeOfDiscriminator = me.Scopes.FirstOrDefault(s => Comparer.AreEquals(s.Discriminator.TypeId, dis.TypeId));
+                            var scopeDiscriminatorRelatedWithDiscriminator = scopeOfTypeOfDiscriminator?.Discriminator
+                                .GetAllRelated(scopeOfTypeOfDiscriminator.Propagation)
+                                .FirstOrDefault(rel => Comparer.AreEquals(dis.TypeId, rel.TypeId) && Comparer.AreEquals(dis.Id, rel.Id));
+
+                            if (scopeOfTypeOfDiscriminator != null)
                             {
-                                Printer.WriteLine($"The discriminator '{dis}' is related to permission scope '{scopeOfTypeOfDiscriminator}' on discriminator '{scopeDiscriminatorRelatedWithDiscriminator}'");
-                                return true;
+                                Printer.WriteLine($"The discriminator '{dis}' and permission scope '{scopeOfTypeOfDiscriminator}' have same type '{dis.TypeId}'");
+                                if (scopeDiscriminatorRelatedWithDiscriminator != null)
+                                {
+                                    Printer.WriteLine($"The discriminator '{dis}' is related to permission scope '{scopeOfTypeOfDiscriminator}' on discriminator '{scopeDiscriminatorRelatedWithDiscriminator}'");
+                                    return true;
+                                }
+                                else
+                                {
+                                    Printer.WriteLine($"The discriminator '{dis}' isn't related to permission scopes, continue");
+                                    if (forFilter)
+                                    {
+                                        Printer.WriteLine($"This search is 'forFilter', TRUE");
+                                        return true;
+                                    }
+                                }
                             }
                             else
                             {
-                                Printer.WriteLine($"The discriminator '{dis}' isn't related to permission scopes, continue");
-                                if (forFilter)
+                                Printer.WriteLine($"The permission hasn't any discriminator of type '{dis}', check typeDiscriminator");
+                                if (typeDiscriminatorRelatedWithAnyPermissionScope)
                                 {
-                                    Printer.WriteLine($"This search is 'forFilter', TRUE");
+                                    Printer.WriteLine($"The {nameof(typeDiscriminator)} '{typeDiscriminator}' is related to any permission scope, TRUE");
                                     return true;
                                 }
+                                else
+                                {
+                                    Printer.WriteLine($"The {nameof(typeDiscriminator)} '{typeDiscriminator}' isn't related to any permission scope, check if discriminator '{dis}' id is null");
+                                    if (dis.Id.IsNullOrDefault())
+                                    {
+                                        Printer.WriteLine($"Discriminator '{dis}' id is null, VALUE ({me.Value})");
+                                        return me.Value;
+                                    }
+                                    else
+                                    {
+                                        Printer.WriteLine($"Discriminator '{dis}' id isn't null, VALUE ({me.Value})");
+                                        return !me.Value;
+                                    }
+                                }
+                                //return dis.Id.IsNullOrDefault() ? me.Value : !me.Value;
                             }
-                        }
-                        else
-                        {
-                            Printer.WriteLine($"The permission hasn't any discriminator of type '{dis}', VALUE or !VALUE");
-                            return dis.Id.IsNullOrDefault() ? me.Value : !me.Value;
-                        }
-                        return false;
-                    });
+                            return false;
+                        });
+                    }
                 }
                 res = Compute();
             }

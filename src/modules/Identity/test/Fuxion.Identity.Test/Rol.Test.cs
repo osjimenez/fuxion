@@ -36,7 +36,7 @@ namespace Fuxion.Identity.Test.Rol
             }));
             // IdentityManager
             c.Register<IPasswordProvider, PasswordProviderMock>();
-            c.RegisterSingleton<ICurrentUserNameProvider>(new GenericCurrentUserNameProvider(() => Context.Rol.Identity.Root.UserName));
+            c.RegisterSingleton<ICurrentUserNameProvider>(new GenericCurrentUserNameProvider(() => Context.Rols.Identity.Root.UserName));
             c.RegisterSingleton<IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity>>(new IdentityMemoryTestRepository());
             c.Register<IdentityManager>();
 
@@ -785,6 +785,57 @@ namespace Fuxion.Identity.Test.Rol
                 " No";
             PrintTestTriedStarted(permissionExplanation + query);
             Assert.False(ide.Can(Create).Type<CityDao>(), permissionExplanation + query);
+        }
+        [Fact(DisplayName = "Rol - Type discriminator related to any permission scope")]
+        public void TypeDiscriminatorRelatedToAnyPermissionScope()
+        {
+            var ide = new IdentityDao
+            {
+                Id = "test",
+                Name = "Test",
+                Permissions = new[] {
+                    new PermissionDao {
+                        Value = true,
+                        Function = Admin.Id.ToString(),
+                        Scopes = new[]
+                        {
+                            new ScopeDao
+                            {
+                                Discriminator = Factory.Get<TypeDiscriminatorFactory>().FromType<RolDao>(),
+                                Propagation = ScopePropagation.ToMe | ScopePropagation.ToInclusions
+                            }
+                        }
+                    },
+                    new PermissionDao {
+                        Value = true,
+                        Function = Admin.Id.ToString(),
+                        Scopes = new[]
+                        {
+                            new ScopeDao
+                            {
+                                Discriminator = Factory.Get<TypeDiscriminatorFactory>().FromType<CityDao>(),
+                                Propagation = ScopePropagation.ToMe | ScopePropagation.ToInclusions
+                            }
+                        }
+                    }
+                }.ToList()
+            };
+
+            string permissionExplanation = "Tengo:\r\n" +
+                $" - Permiso ADMIN para el tipo 'Rol' y sus derivados\r\n"+
+                $" - Permiso ADMIN para el tipo 'City' y sus derivados\r\n";
+
+            var query =
+                $"¿Debería poder '{nameof(Admin)}' la instancia '{nameof(Context.Rols.Identity.Customer)}' del tipo '{nameof(RolDao)}'?\r\n" +
+                " Si";
+            PrintTestTriedStarted(permissionExplanation + query);
+            Assert.True(ide.Can(Admin).Instance(Context.Rols.Identity.Customer), permissionExplanation + query);
+
+            //query =
+            //    $"¿Debería poder '{nameof(Create)}' las '{nameof(CityDao)}'?\r\n" +
+            //    " No";
+            //PrintTestTriedStarted(permissionExplanation + query);
+            //Assert.False(ide.Can(Create).Type<CityDao>(), permissionExplanation + query);
         }
     }
 }

@@ -154,7 +154,19 @@ namespace Fuxion.Identity.Test
         }
         #endregion
         #region Rol
-        public static RolContext Rol { get; } = new RolContext();
+        static RolContext _Rols;
+        public static RolContext Rols
+        {
+            get
+            {
+                if (_Rols == null)
+                {
+                    _Rols = new RolContext();
+                    RunConfigurationActions();
+                }
+                return _Rols;
+            }
+        }
         public class RolContext : Context<RolDao>
         {
             #region Identity
@@ -180,7 +192,7 @@ namespace Fuxion.Identity.Test
 
                 public IdentityDao Root { get; } = Create(nameof(Root), ide =>
                     {
-                        ide.Groups = new[] { Rol.Group.Admins };
+                        ide.Groups = new[] { Rols.Group.Admins };
                         ide.Permissions = new PermissionDao[] {
                             new PermissionDao
                             {
@@ -190,8 +202,12 @@ namespace Fuxion.Identity.Test
                             },
                         };
                     });
-                public Dao.IdentityDao Customer { get; } = Create(nameof(Customer));
-                public Dao.IdentityDao FilmManager { get; } = Create(nameof(FilmManager));
+                public IdentityDao Customer { get; } = Create(nameof(Customer), ide =>
+                {
+                    ide.CategoryId = Discriminators.Category.Purchases.Id;
+                    ide.Category = Discriminators.Category.Purchases;
+                });
+                public IdentityDao FilmManager { get; } = Create(nameof(FilmManager));
             }
             #endregion
             #region Group

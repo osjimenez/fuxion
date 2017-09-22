@@ -122,7 +122,7 @@ namespace Fuxion.Identity
                                     });
                             }
                             if (!r && me.ThrowExceptionIfCannot)
-                                throw new UnauthorizedAccessException($"The rol '{me.Rol.Name}' cannot '{me.Functions.Aggregate("", (a, c) => a + c.Name + "·", a => a.Trim('·'))}' for the given discriminators '{discriminators.Aggregate("", (a, c) => $"{a}, {c.Name}", a => a.Trim(',', ' ')) }'");
+                                throw new UnauthorizedAccessException($"The rol '{me.Rol.Name}' cannot '{me.Functions.Aggregate("", (a, c) => a + c.Name + "·", a => a.Trim('·'))}' of type '{typeDiscriminator.Name}' with given discriminators '{discriminators.Aggregate("", (a, c) => $"{a}, {c.TypeName + "<" + c.Name + ">"}", a => a.Trim(',', ' ')) }'");
                             return r;
                         }
                     }

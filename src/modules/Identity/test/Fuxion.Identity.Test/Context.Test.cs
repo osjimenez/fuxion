@@ -30,7 +30,7 @@ namespace Fuxion.Identity.Test
             }));
             // IdentityManager
             c.Register<IPasswordProvider, PasswordProviderMock>();
-            c.RegisterSingleton<ICurrentUserNameProvider>(new GenericCurrentUserNameProvider(() => Context.Rol.Identity.Root.UserName));
+            c.RegisterSingleton<ICurrentUserNameProvider>(new GenericCurrentUserNameProvider(() => Context.Rols.Identity.Root.UserName));
             c.RegisterSingleton<IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity>>(new IdentityMemoryTestRepository());
             c.Register<IdentityManager>();
             //Factory.AddInjector(new InstanceInjector<IdentityManager>(new IdentityManager()));

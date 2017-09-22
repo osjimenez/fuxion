@@ -18,6 +18,9 @@ namespace Fuxion.Identity.Test.Helpers
         public const string Category = nameof(Category);
 
         public const string Person = nameof(Person);
+        public const string Rol = nameof(Rol);
+        public const string Identity = nameof(Identity);
+        public const string Group = nameof(Group);
 
         public const string File = nameof(File);
 
