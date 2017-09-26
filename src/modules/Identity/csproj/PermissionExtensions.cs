@@ -133,7 +133,7 @@ namespace Fuxion.Identity
                                 Printer.WriteLine($"The {nameof(typeDiscriminator)} '{typeDiscriminator}' is related to permission scope '{scopeOfTypeOfTypeDiscriminator}' on discriminator '{scopeDiscriminatorRelatedWithTargetDiscriminator}', check discriminators");
                                 typeDiscriminatorRelatedWithAnyPermissionScope = true;
                             }
-                            else if ((TypeDiscriminator)typeDiscriminator != TypeDiscriminator.Empty)
+                            else if (typeDiscriminator != TypeDiscriminator.Empty)
                             {
                                 Printer.WriteLine($"The {nameof(typeDiscriminator)} '{typeDiscriminator}' isn't related to permission scope '{scopeOfTypeOfTypeDiscriminator}', FALSE");
                                 return false;

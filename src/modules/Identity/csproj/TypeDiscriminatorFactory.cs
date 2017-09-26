@@ -11,7 +11,6 @@ namespace Fuxion.Identity
     public class TypeDiscriminatorFactory
     {
         ILog log = LogManager.Create<TypeDiscriminatorFactory>();
-        public string DiscriminatorTypeId { get; set; } = TypeDiscriminator.TypeDiscriminatorId;
         public string DiscriminatorTypeName { get; set; } = TypeDiscriminator.TypeDiscriminatorId;
         public bool AllowMoreThanOneTypeByDiscriminator { get; set; }
         #region Classes
@@ -86,7 +85,7 @@ namespace Fuxion.Identity
                     {
                         Id = id,
                         Name = id,
-                        TypeId = DiscriminatorTypeId,
+                        TypeId = TypeDiscriminator.TypeDiscriminatorId,
                         TypeName = DiscriminatorTypeName,
                     }
                 });
@@ -323,7 +322,7 @@ namespace Fuxion.Identity
                     {
                         Id = GetIdFunction(type, att),
                         Name = GetNameFunction(type, att),
-                        TypeId = DiscriminatorTypeId,
+                        TypeId = TypeDiscriminator.TypeDiscriminatorId,
                         TypeName = DiscriminatorTypeName
                     }
                 };

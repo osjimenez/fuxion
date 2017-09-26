@@ -11,6 +11,7 @@ namespace Fuxion.Identity
         IFunction Function { get; }
         IEnumerable<IScope> Scopes { get; }
         bool Value { get; }
+        IRol Rol { get; }
     }
     public class PermissionEqualityComparer : IEqualityComparer<IPermission>
     {

@@ -111,75 +111,13 @@ namespace System.Reflection
             }
             return res.ToString();
         }
-        public static IEnumerable<ConstructorInfo> GetAllConstructors(this TypeInfo typeInfo)
-        => GetAll(typeInfo, ti => ti.DeclaredConstructors);
-
-        public static IEnumerable<EventInfo> GetAllEvents(this TypeInfo typeInfo)
-            => GetAll(typeInfo, ti => ti.DeclaredEvents);
-
-        public static IEnumerable<FieldInfo> GetAllFields(this TypeInfo typeInfo)
-            => GetAll(typeInfo, ti => ti.DeclaredFields);
-
-        public static IEnumerable<MemberInfo> GetAllMembers(this TypeInfo typeInfo)
-            => GetAll(typeInfo, ti => ti.DeclaredMembers);
-
-        public static IEnumerable<MethodInfo> GetAllMethods(this TypeInfo typeInfo)
-            => GetAll(typeInfo, ti => ti.DeclaredMethods);
-
-        public static IEnumerable<TypeInfo> GetAllNestedTypes(this TypeInfo typeInfo)
-            => GetAll(typeInfo, ti => ti.DeclaredNestedTypes);
-
-        public static IEnumerable<PropertyInfo> GetAllProperties(this TypeInfo typeInfo)
-            => GetAll(typeInfo, ti => ti.DeclaredProperties);
-
-        private static IEnumerable<T> GetAll<T>(TypeInfo typeInfo, Func<TypeInfo, IEnumerable<T>> accessor)
-        {
-            while (typeInfo != null)
-            {
-                foreach (var t in accessor(typeInfo))
-                {
-                    yield return t;
-                }
-
-                typeInfo = typeInfo.BaseType?.GetTypeInfo();
-            }
-        }
-        public static bool IsNullable(this TypeInfo me)
-        {
-            return me.IsClass || me.IsGenericType && me.GetGenericTypeDefinition() == typeof(Nullable<>);
-        }
-
-
-
-
-
-
-
-
-
-
-
-        public static IEnumerable<ConstructorInfo> GetAllConstructors(this Type typeInfo)
-            => GetAll(typeInfo, ti => ti.GetAllConstructors());
-
-        public static IEnumerable<EventInfo> GetAllEvents(this Type typeInfo)
-            => GetAll(typeInfo, ti => ti.GetAllEvents());
-
-        public static IEnumerable<FieldInfo> GetAllFields(this Type typeInfo)
-            => GetAll(typeInfo, ti => ti.GetAllFields());
-
-        public static IEnumerable<MemberInfo> GetAllMembers(this Type typeInfo)
-            => GetAll(typeInfo, ti => ti.GetAllMembers());
-
-        public static IEnumerable<MethodInfo> GetAllMethods(this Type typeInfo)
-            => GetAll(typeInfo, ti => ti.GetAllMethods());
-
-        public static IEnumerable<TypeInfo> GetAllNestedTypes(this Type typeInfo)
-            => GetAll(typeInfo, ti => ti.GetAllNestedTypes());
-
-        public static IEnumerable<PropertyInfo> GetAllProperties(this Type typeInfo)
-            => GetAll(typeInfo, ti => ti.GetAllProperties());
-
+        public static IEnumerable<ConstructorInfo> GetAllConstructors(this Type typeInfo) => GetAll(typeInfo, ti => ti.GetAllConstructors());
+        public static IEnumerable<EventInfo> GetAllEvents(this Type typeInfo) => GetAll(typeInfo, ti => ti.GetAllEvents());
+        public static IEnumerable<FieldInfo> GetAllFields(this Type typeInfo) => GetAll(typeInfo, ti => ti.GetAllFields());
+        public static IEnumerable<MemberInfo> GetAllMembers(this Type typeInfo) => GetAll(typeInfo, ti => ti.GetAllMembers());
+        public static IEnumerable<MethodInfo> GetAllMethods(this Type typeInfo) => GetAll(typeInfo, ti => ti.GetAllMethods());
+        public static IEnumerable<TypeInfo> GetAllNestedTypes(this Type typeInfo) => GetAll(typeInfo, ti => ti.GetAllNestedTypes());
+        public static IEnumerable<PropertyInfo> GetAllProperties(this Type typeInfo) => GetAll(typeInfo, ti => ti.GetAllProperties());
         private static IEnumerable<T> GetAll<T>(Type typeInfo, Func<Type, IEnumerable<T>> accessor)
         {
             while (typeInfo != null)
@@ -188,7 +126,6 @@ namespace System.Reflection
                 {
                     yield return t;
                 }
-
                 typeInfo = typeInfo.BaseType?.GetTypeInfo();
             }
         }
@@ -197,7 +134,13 @@ namespace System.Reflection
             return me.IsClass || me.IsInterface || me.IsGenericType && me.GetGenericTypeDefinition() == typeof(Nullable<>);
         }
 
-
+        public static object GetDefaultValue(this Type t)
+        {
+            if (t.GetTypeInfo().IsValueType && Nullable.GetUnderlyingType(t) == null)
+                return Activator.CreateInstance(t);
+            else
+                return null;
+        }
 
 
     }

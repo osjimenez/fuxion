@@ -27,13 +27,6 @@ namespace Fuxion.Identity
     }
     public static class FunctionExtensions
     {
-        internal static object GetDefaultValue(this Type t)
-        {
-            if (t.GetTypeInfo().IsValueType && Nullable.GetUnderlyingType(t) == null)
-                return Activator.CreateInstance(t);
-            else
-                return null;
-        }
         public static bool IsValid(this IFunction me) { return !Comparer.AreEquals(me.Id,me.Id?.GetType().GetDefaultValue()) && !string.IsNullOrWhiteSpace(me.Name); }
         private static IEnumerable<T> GetAllInclusions<T>(this IInclusive<T> me, List<T> progress)
         {
@@ -259,7 +252,7 @@ namespace Fuxion.Identity
                 Inclusions = inclusions;
                 Exclusions = exclusions;
             }
-            public new T Id { get; private set; }
+            public new T Id { get; }
             protected override object GetId() => Id;
             object IFunction.Id => Id;
         }

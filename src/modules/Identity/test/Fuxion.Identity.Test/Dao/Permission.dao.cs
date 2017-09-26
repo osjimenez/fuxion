@@ -19,5 +19,6 @@ namespace Fuxion.Identity.Test.Dao
         public override string ToString() => this.ToOneLineString();
         IFunction IPermission.Function => Functions.GetById(Function);
         IEnumerable<IScope> IPermission.Scopes => Scopes;
+        IRol IPermission.Rol => Rol;
     }
 }

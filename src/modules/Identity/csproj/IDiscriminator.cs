@@ -63,7 +63,7 @@ namespace Fuxion.Identity
     {
         public static string ToOneLineString(this IDiscriminator me)
         {
-            return $"{me.TypeId} - {(string.IsNullOrWhiteSpace(me.Id?.ToString()) ? "null" : me.Id)}";
+            return $"{me.TypeName} ({(string.IsNullOrWhiteSpace(me.Name?.ToString()) ? "null" : me.Name)})";
         }
         public static bool IsValid(this IDiscriminator me)
         {
@@ -80,15 +80,15 @@ namespace Fuxion.Identity
                 case PrintMode.PropertyList:
                     break;
                 case PrintMode.Table:
-                    var typeId = me.Select(s => s.TypeId.ToString().Length).Union(new[] { "TYPE_ID".Length }).Max();
-                    var typeName = me.Select(s => s.TypeName.Length).Union(new[] { "TYPE_NAME".Length }).Max();
-                    var id = me.Select(s => s.Id?.ToString().Length).RemoveNulls().Cast<int>().Union(new[] { "ID".Length, "null".Length }).Max();
-                    var name = me.Select(s => s.Name?.Length).RemoveNulls().Cast<int>().Union(new[] { "NAME".Length, "null".Length }).Max();
-                    Printer.WriteLine("┌" + ("".PadRight(typeId, '─')) + "┬" + ("".PadRight(typeName, '─')) + "┬" + ("".PadRight(id, '─')) + "┬" + ("".PadRight(name, '─')) + "┐");
-                    Printer.WriteLine("│" + "TYPE_ID".PadRight(typeId, ' ') + "│" + "TYPE_NAME".PadRight(typeName, ' ') + "│" + "ID".PadRight(id, ' ') + "│" + "NAME".PadRight(name, ' ') + "│");
-                    Printer.WriteLine("├" + ("".PadRight(typeId, '─')) + "┼" + ("".PadRight(typeName, '─')) + "┼" + ("".PadRight(id, '─')) + "┼" + ("".PadRight(name, '─')) + "┤");
-                    foreach (var sco in me) Printer.WriteLine("│" + sco.TypeId.ToString().PadRight(typeId, ' ') + "│" + sco.TypeName.PadRight(typeName, ' ') + "│" + (sco.Id?.ToString() ?? "null").PadRight(id, ' ') + "│" + (sco.Name ?? "null").PadRight(name, ' ') + "│");
-                    Printer.WriteLine("└" + ("".PadRight(typeId, '─')) + "┴" + ("".PadRight(typeName, '─')) + "┴" + ("".PadRight(id, '─')) + "┴" + ("".PadRight(name, '─')) + "┘");
+                    var maxTypeId = me.Select(s => s.TypeId.ToString().Length).Union(new[] { "TYPE_ID".Length }).Max();
+                    var maxTypeName = me.Select(s => s.TypeName.Length).Union(new[] { "TYPE_NAME".Length }).Max();
+                    var maxId = me.Select(s => s.Id?.ToString().Length).RemoveNulls().Cast<int>().Union(new[] { "ID".Length, "null".Length }).Max();
+                    var maxName = me.Select(s => s.Name?.Length).RemoveNulls().Cast<int>().Union(new[] { "NAME".Length, "null".Length }).Max();
+                    Printer.WriteLine("┌" + ("".PadRight(maxTypeId, '─')) + "┬" + ("".PadRight(maxTypeName, '─')) + "┬" + ("".PadRight(maxId, '─')) + "┬" + ("".PadRight(maxName, '─')) + "┐");
+                    Printer.WriteLine("│" + "TYPE_ID".PadRight(maxTypeId, ' ') + "│" + "TYPE_NAME".PadRight(maxTypeName, ' ') + "│" + "ID".PadRight(maxId, ' ') + "│" + "NAME".PadRight(maxName, ' ') + "│");
+                    Printer.WriteLine("├" + ("".PadRight(maxTypeId, '─')) + "┼" + ("".PadRight(maxTypeName, '─')) + "┼" + ("".PadRight(maxId, '─')) + "┼" + ("".PadRight(maxName, '─')) + "┤");
+                    foreach (var sco in me) Printer.WriteLine("│" + sco.TypeId.ToString().PadRight(maxTypeId, ' ') + "│" + sco.TypeName.PadRight(maxTypeName, ' ') + "│" + (sco.Id?.ToString() ?? "null").PadRight(maxId, ' ') + "│" + (sco.Name ?? "null").PadRight(maxName, ' ') + "│");
+                    Printer.WriteLine("└" + ("".PadRight(maxTypeId, '─')) + "┴" + ("".PadRight(maxTypeName, '─')) + "┴" + ("".PadRight(maxId, '─')) + "┴" + ("".PadRight(maxName, '─')) + "┘");
                     break;
             }
         }
