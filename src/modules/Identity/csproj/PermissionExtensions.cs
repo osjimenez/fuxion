@@ -230,56 +230,63 @@ namespace Fuxion.Identity
                 case PrintMode.PropertyList:
                     break;
                 case PrintMode.Table:
-                    //string GetValue(bool value) => value.ToString();
-                    //string GetFunction(IFunction function) => function?.ToString() ?? "null";
-                    //string GetDiscriminatorTypeId(IDiscriminator discriminator) => discriminator?.TypeId?.ToString() ?? "null";
-                    //string GetDiscriminatorTypeName(IDiscriminator discriminator) => discriminator?.TypeName?.ToString() ?? "null";
-                    //string GetDiscriminatorId(IDiscriminator discriminator) => discriminator?.Id?.ToString() ?? "null";
-                    //string GetDiscriminatorName(IDiscriminator discriminator) => discriminator?.Name?.ToString() ?? "null";
-                    //string GetScopePropagation(IScope scope) => scope?.Propagation.ToString() ?? "null";
+                    string GetValue(IPermission permission) => permission?.Value.ToString();
+                    string GetFunction(IPermission permission) => permission?.Function?.ToString() ?? "null";
+                    string GetDiscriminatorTypeId(IScope scope) => scope.Discriminator?.TypeId?.ToString() ?? "null";
+                    string GetDiscriminatorTypeName(IScope scope) => scope.Discriminator?.TypeName?.ToString() ?? "null";
+                    string GetDiscriminatorId(IScope scope) => scope.Discriminator?.Id?.ToString() ?? "null";
+                    string GetDiscriminatorName(IScope scope) => scope.Discriminator?.Name?.ToString() ?? "null";
+                    string GetScopePropagation(IScope scope) => scope?.Propagation.ToString() ?? "null";
 
-                    //var maxValue = me.Select(p => GetValue(p.Value).Length).Union(new[] { "VALUE".Length }).Max();
-                    //var maxFunction = me.Select(p => GetFunction(p.Function).Length).Union(new[] { "FUNCTION".Length }).Max();
-                    //var maxDiscriminatorTypeId = me.SelectMany()
+                    var maxValue = me.Select(p => GetValue(p).Length).Union(new[] { "VALUE".Length }).Max();
+                    var maxFunction = me.Select(p => GetFunction(p).Length).Union(new[] { "FUNCTION".Length }).Max();
+                    var maxDiscriminatorTypeId = me.SelectMany(p => p.Scopes.Select(s => GetDiscriminatorTypeId(s).Length)).Union(new[] { "TYPE_ID".Length }).Max();
+                    var maxDiscriminatorTypeName = me.SelectMany(p => p.Scopes.Select(s => GetDiscriminatorTypeName(s).Length)).Union(new[] { "TYPE_NAME".Length }).Max();
+                    var maxDiscriminatorId = me.SelectMany(p => p.Scopes.Select(s => GetDiscriminatorId(s).Length)).Union(new[] { "ID".Length }).Max();
+                    var maxDiscriminatorName = me.SelectMany(p => p.Scopes.Select(s => GetDiscriminatorName(s).Length)).Union(new[] { "NAME".Length }).Max();
+                    var maxScopePropagation = me.SelectMany(p => p.Scopes.Select(s => GetScopePropagation(s).Length)).Union(new[] { "PROPAGATION".Length }).Max();
 
-                    var valueLength = me.Select(p => p.Value.ToString().Length).Union(new[] { "VALUE".Length }).Max();
-                    var functionLength = me.Select(p => p.Function.Name.ToString().Length).Union(new[] { "FUNCTION".Length }).Max();
-                    var typeLength = new[] { "TYPE".Length }.Concat(me.SelectMany(p => p.Scopes.Select(s => (s.Discriminator.TypeId + "-" + s.Discriminator.TypeName).Length))).Max();
-                    var nameLength = new[] { "ID".Length }.Concat(me.SelectMany(p => p.Scopes.Select(s => ((s.Discriminator.Id?.ToString() ?? "null") + "-" + (s.Discriminator.Name ?? "null")).Length))).Max();
-                    var propagationLength = new[] { "PROPAGATION".Length }.Concat(me.SelectMany(p => p.Scopes.Select(s => s.Propagation.ToString().Length))).Max();
-
-                    Printer.WriteLine("┌" + ("".PadRight(valueLength, '─')) + "┬" + ("".PadRight(functionLength, '─')) + "╥" + ("".PadRight(typeLength, '─')) + "┬" + ("".PadRight(nameLength, '─')) + "┬" + ("".PadRight(propagationLength, '─')) + "┐");
+                    // Headers
+                    Printer.WriteLine(    "┌" + ("".PadRight(maxValue, '─'))      + "┬" + ("".PadRight(maxFunction, '─'))         + "╥" + ("".PadRight(maxDiscriminatorTypeId, '─'))        + "┬" + ("".PadRight(maxDiscriminatorTypeName, '─'))          + "┬" + ("".PadRight(maxDiscriminatorId, '─'))   + "┬" + ("".PadRight(maxDiscriminatorName, '─'))     + "┬" + ("".PadRight(maxScopePropagation, '─')) + "┐");
                     if (me.Any())
                     {
-                        Printer.WriteLine("│" + ("VALUE".PadRight(valueLength, ' ')) + "│" + ("FUNCTION".PadRight(functionLength, ' ')) + "║" + ("TYPE".PadRight(typeLength, ' ')) + "│" + ("ID".PadRight(nameLength, ' ')) + "│" + ("PROPAGATION".PadRight(propagationLength, ' ')) + "│");
-                        Printer.WriteLine("├" + ("".PadRight(valueLength, '─')) + "┼" + ("".PadRight(functionLength, '─')) + "╫" + ("".PadRight(typeLength, '─')) + "┼" + ("".PadRight(nameLength, '─')) + "┼" + ("".PadRight(propagationLength, '─')) + "┤");
+                        Printer.WriteLine("│" + ("VALUE".PadRight(maxValue, ' ')) + "│" + ("FUNCTION".PadRight(maxFunction, ' ')) + "║" + ("TYPE_ID".PadRight(maxDiscriminatorTypeId, ' ')) + "│" + ("TYPE_NAME".PadRight(maxDiscriminatorTypeName, ' ')) + "│" + ("ID".PadRight(maxDiscriminatorId, ' ')) + "│" + ("NAME".PadRight(maxDiscriminatorName, ' ')) + "│" + ("PROPAGATION".PadRight(maxScopePropagation, ' ')) + "│");
+                        Printer.WriteLine("├" + ("".PadRight(maxValue, '─'))      + "┼" + ("".PadRight(maxFunction, '─'))         + "╫" + ("".PadRight(maxDiscriminatorTypeId, '─'))        + "┼" + ("".PadRight(maxDiscriminatorTypeName, '─'))          + "┼" + ("".PadRight(maxDiscriminatorId, '─'))   + "┼" + ("".PadRight(maxDiscriminatorName, '─'))     + "┼" + ("".PadRight(maxScopePropagation, '─')) + "┤");
                     }
 
-                    foreach(var per in me)
+                    // Body
+                    foreach (var per in me)
                     {
                         var list = per.Scopes.ToList();
                         if (list.Count == 0)
                         {
                             Printer.WriteLine("│" +
-                                    per.Value.ToString().PadRight(valueLength, ' ') + "│" +
-                                    per.Function.Name.PadRight(functionLength, ' ') + "║" +
-                                    ("".PadRight(typeLength, ' ')) + "│" +
-                                    ("".PadRight(nameLength, ' ')) + "│" +
-                                    ("".PadRight(propagationLength, ' ')) + "│");
+                                    GetValue(per).PadRight(maxValue, ' ') + "│" +
+                                    GetFunction(per).PadRight(maxFunction, ' ') + "║" +
+                                    ("".PadRight(maxDiscriminatorTypeId, ' ')) + "│" +
+                                    ("".PadRight(maxDiscriminatorTypeName, ' ')) + "│" +
+                                    ("".PadRight(maxDiscriminatorId, ' ')) + "│" +
+                                    ("".PadRight(maxDiscriminatorName, ' ')) + "│" +
+                                    ("".PadRight(maxScopePropagation, ' ')) + "│");
                         }
-                        else {
+                        else
+                        {
                             for (int i = 0; i < list.Count; i++)
                             {
                                 Printer.WriteLine("│" +
-                                    ((i == 0 ? per.Value.ToString() : "").PadRight(valueLength, ' ')) + "│" +
-                                    ((i == 0 ? per.Function.Name : "").PadRight(functionLength, ' ')) + "║" +
-                                    ((list[i].Discriminator.TypeId + "-" + list[i].Discriminator.TypeName).PadRight(typeLength, ' ')) + "│" +
-                                    (((list[i].Discriminator.Id?.ToString() ?? "null") + "-" + (list[i].Discriminator.Name ?? "null")).PadRight(nameLength, ' ')) + "│" +
-                                    (list[i].Propagation.ToString().PadRight(propagationLength, ' ')) + "│");
+                                    ((i == 0 ? GetValue(per) : "").PadRight(maxValue, ' ')) + "│" +
+                                    ((i == 0 ? GetFunction(per) : "").PadRight(maxFunction, ' ')) + "║" +
+                                    (GetDiscriminatorTypeId(list[i]).PadRight(maxDiscriminatorTypeId, ' ')) + "│" +
+                                    (GetDiscriminatorTypeName(list[i]).PadRight(maxDiscriminatorTypeName, ' ')) + "│" +
+                                    (GetDiscriminatorId(list[i]).PadRight(maxDiscriminatorId, ' ')) + "│" +
+                                    (GetDiscriminatorName(list[i]).PadRight(maxDiscriminatorName, ' ')) + "│" +
+                                    (GetScopePropagation(list[i]).PadRight(maxScopePropagation, ' ')) + "│");
                             }
                         }
                     }
-                    Printer.WriteLine("└" + ("".PadRight(valueLength, '─')) + "┴" + ("".PadRight(functionLength, '─')) + "╨" + ("".PadRight(typeLength, '─')) + "┴" + ("".PadRight(nameLength, '─')) + "┴" + ("".PadRight(propagationLength, '─')) + "┘");
+
+                    // Footer
+                    Printer.WriteLine(    "└" + ("".PadRight(maxValue, '─'))      + "┴" + ("".PadRight(maxFunction, '─'))         + "╨" + ("".PadRight(maxDiscriminatorTypeId, '─'))        + "┴" + ("".PadRight(maxDiscriminatorTypeName, '─'))          + "┴" + ("".PadRight(maxDiscriminatorId, '─'))   + "┴" + ("".PadRight(maxDiscriminatorName, '─'))     + "┴" + ("".PadRight(maxScopePropagation, '─')) + "┘");
                     break;
             }
         }
