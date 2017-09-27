@@ -84,6 +84,7 @@ namespace Fuxion.Identity
                     var maxTypeName = me.Select(s => s.TypeName.Length).Union(new[] { "TYPE_NAME".Length }).Max();
                     var maxId = me.Select(s => s.Id?.ToString().Length).RemoveNulls().Cast<int>().Union(new[] { "ID".Length, "null".Length }).Max();
                     var maxName = me.Select(s => s.Name?.Length).RemoveNulls().Cast<int>().Union(new[] { "NAME".Length, "null".Length }).Max();
+
                     Printer.WriteLine("┌" + ("".PadRight(maxTypeId, '─')) + "┬" + ("".PadRight(maxTypeName, '─')) + "┬" + ("".PadRight(maxId, '─')) + "┬" + ("".PadRight(maxName, '─')) + "┐");
                     Printer.WriteLine("│" + "TYPE_ID".PadRight(maxTypeId, ' ') + "│" + "TYPE_NAME".PadRight(maxTypeName, ' ') + "│" + "ID".PadRight(maxId, ' ') + "│" + "NAME".PadRight(maxName, ' ') + "│");
                     Printer.WriteLine("├" + ("".PadRight(maxTypeId, '─')) + "┼" + ("".PadRight(maxTypeName, '─')) + "┼" + ("".PadRight(maxId, '─')) + "┼" + ("".PadRight(maxName, '─')) + "┤");

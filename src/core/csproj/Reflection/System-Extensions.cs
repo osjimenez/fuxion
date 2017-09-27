@@ -111,24 +111,32 @@ namespace System.Reflection
             }
             return res.ToString();
         }
-        public static IEnumerable<ConstructorInfo> GetAllConstructors(this Type typeInfo) => GetAll(typeInfo, ti => ti.GetAllConstructors());
-        public static IEnumerable<EventInfo> GetAllEvents(this Type typeInfo) => GetAll(typeInfo, ti => ti.GetAllEvents());
-        public static IEnumerable<FieldInfo> GetAllFields(this Type typeInfo) => GetAll(typeInfo, ti => ti.GetAllFields());
-        public static IEnumerable<MemberInfo> GetAllMembers(this Type typeInfo) => GetAll(typeInfo, ti => ti.GetAllMembers());
-        public static IEnumerable<MethodInfo> GetAllMethods(this Type typeInfo) => GetAll(typeInfo, ti => ti.GetAllMethods());
-        public static IEnumerable<TypeInfo> GetAllNestedTypes(this Type typeInfo) => GetAll(typeInfo, ti => ti.GetAllNestedTypes());
-        public static IEnumerable<PropertyInfo> GetAllProperties(this Type typeInfo) => GetAll(typeInfo, ti => ti.GetAllProperties());
-        private static IEnumerable<T> GetAll<T>(Type typeInfo, Func<Type, IEnumerable<T>> accessor)
-        {
-            while (typeInfo != null)
-            {
-                foreach (var t in accessor(typeInfo))
-                {
-                    yield return t;
-                }
-                typeInfo = typeInfo.BaseType?.GetTypeInfo();
-            }
-        }
+
+        //public static IEnumerable<ConstructorInfo> GetAllConstructors(this Type me, BindingFlags bindingAtt = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance) => GetAll(me, ti => ti.GetConstructors(bindingAtt), false);
+        //public static IEnumerable<EventInfo> GetAllEvents(this Type me, BindingFlags bindingAtt = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly) => GetAll(me, ti => ti.GetEvents(bindingAtt));
+        //public static IEnumerable<FieldInfo> GetAllFields(this Type me) => GetAll(me, ti => ti.GetFields());
+        //public static IEnumerable<MemberInfo> GetAllMembers(this Type me) => GetAll(me, ti => ti.GetMembers());
+        //public static IEnumerable<MethodInfo> GetAllMethods(this Type me) => GetAll(me, ti => ti.GetMethods());
+        //public static IEnumerable<Type> GetAllNestedTypes(this Type me) => GetAll(me, ti => ti.GetNestedTypes());
+        //public static IEnumerable<PropertyInfo> GetAllProperties(this Type me) => GetAll(me, ti => ti.GetProperties());
+        //private static IEnumerable<T> GetAll<T>(Type me, Func<Type, IEnumerable<T>> accessor, bool recursive = true)
+        //{
+        //    if (recursive)
+        //    {
+        //        var res = new List<T>();
+        //        while (me != null)
+        //        {
+        //            foreach (var t in accessor(me))
+        //            {
+        //                res.Add(t);
+        //            }
+        //            me = me.BaseType?.GetTypeInfo();
+        //        }
+        //        return res;
+        //    }
+        //    else return accessor(me);
+        //}
+
         public static bool IsNullable(this Type me)
         {
             return me.IsClass || me.IsInterface || me.IsGenericType && me.GetGenericTypeDefinition() == typeof(Nullable<>);

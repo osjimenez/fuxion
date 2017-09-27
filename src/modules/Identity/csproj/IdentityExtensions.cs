@@ -32,9 +32,9 @@ namespace Fuxion.Identity
                 {
                     Printer.WriteLine($"Rol: {me?.Name}");
                     Printer.WriteLine($"For filter: " + forFilter);
-                    Printer.WriteLine($"Function: {function?.Name ?? "<null>"}");
-                    Printer.WriteLine($"'{nameof(typeDiscriminator)}': {typeDiscriminator?.ToString() ?? "<null>"}");
-                    Printer.Foreach($"Discriminators:", discriminators, dis => Printer.WriteLine($"{dis?.TypeName} - {dis?.Name}"));
+                    Printer.WriteLine($"Function: {function?.ToString() ?? "<null>"}");
+                    Printer.WriteLine($"Type discriminator: {typeDiscriminator?.ToString() ?? "<null>"}");
+                    Printer.Foreach($"Discriminators:", discriminators, dis => Printer.WriteLine($"{dis}"));
                 }
                 // Function validation
                 if (!(function?.IsValid() ?? true)) throw new ArgumentException($"The '{nameof(function)}' pararameter with value '{function}' has an invalid state", nameof(function));
@@ -71,9 +71,9 @@ namespace Fuxion.Identity
                 {
                     Printer.WriteLine($"Rol: {me?.Rol?.Name}");
                     Printer.WriteLine($"Functions: {string.Join(",", me.Functions.Select(f => f.Name)) ?? "<null>"}");
-                    Printer.WriteLine($"'{nameof(forAll)}': {forAll}");
-                    Printer.WriteLine($"'{nameof(typeDiscriminator)}': {typeDiscriminator?.ToString() ?? "null"}");
-                    Printer.Foreach($"Discriminators:", discriminators, dis => Printer.WriteLine($"{dis?.TypeName} - {dis?.Name}"));
+                    Printer.WriteLine($"For all: {forAll}");
+                    Printer.WriteLine($"Type discriminator: {typeDiscriminator?.ToString() ?? "null"}");
+                    Printer.Foreach($"Discriminators:", discriminators, dis => Printer.WriteLine($"{dis}"));
                 }
                 // If Rol is null, return false
                 if (me.Rol == null)

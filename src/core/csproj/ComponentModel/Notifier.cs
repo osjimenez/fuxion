@@ -281,7 +281,7 @@ namespace Fuxion.ComponentModel
             else
             {
                 PropertyInfo pro = null;
-                var props = GetType().GetTypeInfo().GetAllProperties().Where(p => p.Name == propertyName).ToList();
+                var props = GetType().GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).Where(p => p.Name == propertyName).ToList();
                 if (props.Count == 0) throw new NotifierException($"Cannot find a property with name '{propertyName}' in type '{GetType().GetSignature(true)}'");
                 if (props.Count > 1)
                 {
@@ -347,7 +347,7 @@ namespace Fuxion.ComponentModel
             else
             {
                 // oldLockerValue = new ValueLocker<T>((T)GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static).GetValue(this, null));
-                oldLockerValue = new ValueLocker<T>((T)GetType().GetTypeInfo().GetAllProperties().Single(p => p.Name == propertyName).GetValue(this, null));
+                oldLockerValue = new ValueLocker<T>((T)GetType().GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).Single(p => p.Name == propertyName).GetValue(this, null));
                 PropertiesDictionary[GetPropertyKey(propertyName)] = oldLockerValue;
             }
             if (raiseOnlyIfNotEquals && ((oldLockerValue == null && value == null) || EqualityComparer<T>.Default.Equals(oldLockerValue.ObjectLocked, value)))

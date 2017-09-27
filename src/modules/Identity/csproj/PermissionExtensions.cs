@@ -230,6 +230,18 @@ namespace Fuxion.Identity
                 case PrintMode.PropertyList:
                     break;
                 case PrintMode.Table:
+                    //string GetValue(bool value) => value.ToString();
+                    //string GetFunction(IFunction function) => function?.ToString() ?? "null";
+                    //string GetDiscriminatorTypeId(IDiscriminator discriminator) => discriminator?.TypeId?.ToString() ?? "null";
+                    //string GetDiscriminatorTypeName(IDiscriminator discriminator) => discriminator?.TypeName?.ToString() ?? "null";
+                    //string GetDiscriminatorId(IDiscriminator discriminator) => discriminator?.Id?.ToString() ?? "null";
+                    //string GetDiscriminatorName(IDiscriminator discriminator) => discriminator?.Name?.ToString() ?? "null";
+                    //string GetScopePropagation(IScope scope) => scope?.Propagation.ToString() ?? "null";
+
+                    //var maxValue = me.Select(p => GetValue(p.Value).Length).Union(new[] { "VALUE".Length }).Max();
+                    //var maxFunction = me.Select(p => GetFunction(p.Function).Length).Union(new[] { "FUNCTION".Length }).Max();
+                    //var maxDiscriminatorTypeId = me.SelectMany()
+
                     var valueLength = me.Select(p => p.Value.ToString().Length).Union(new[] { "VALUE".Length }).Max();
                     var functionLength = me.Select(p => p.Function.Name.ToString().Length).Union(new[] { "FUNCTION".Length }).Max();
                     var typeLength = new[] { "TYPE".Length }.Concat(me.SelectMany(p => p.Scopes.Select(s => (s.Discriminator.TypeId + "-" + s.Discriminator.TypeName).Length))).Max();

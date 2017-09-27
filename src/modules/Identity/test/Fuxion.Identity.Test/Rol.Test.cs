@@ -39,6 +39,12 @@ namespace Fuxion.Identity.Test.Rol
             c.RegisterSingleton<ICurrentUserNameProvider>(new GenericCurrentUserNameProvider(() => Context.Rols.Identity.Root.UserName));
             c.RegisterSingleton<IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity>>(new IdentityMemoryTestRepository());
             c.Register<IdentityManager>();
+            Admin.Name = "Administrar";
+            Manage.Name = "Gestionar";
+            Delete.Name = "Borrar";
+            Create.Name = "Crear";
+            Edit.Name = "Editar";
+            Read.Name = "Leer";
 
             Factory.AddInjector(new SimpleInjectorFactoryInjector(c));
         }
