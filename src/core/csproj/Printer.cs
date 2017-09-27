@@ -4,8 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using static Fuxion.PrinterInstance;
+using static System.Extensions;
 
 namespace Fuxion
 {
@@ -31,7 +34,6 @@ namespace Fuxion
         public static string GetPrinted(Action action)
         {
             StringBuilder res = new StringBuilder();
-            //var def = Printer.Default;
             var def = WriteLineAction;
             WriteLineAction = m =>
             {
@@ -48,32 +50,42 @@ namespace Fuxion
         public static void Write(string message) => Default.Write(message);
         [DebuggerHidden]
         public static void WriteLine(string message) => Default.WriteLine(message);
-        //[DebuggerHidden]
-        //public static void Indent(Action action) => Default.Indent(action);
+        public static CallResultArg<T> CallResult<T>(
+            string callMessage = "CALL {0}:",
+            string resultMessage = "RESULT {0}: {1}",
+            char verticalConnectorChar = '│',
+            char resultConnectorChar = '●',
+            [CallerMemberName] string caller = null) => Default.CallResult<T>(callMessage, resultMessage, verticalConnectorChar, resultConnectorChar, caller);
         [DebuggerHidden]
-        public static IDisposable Indent2(char? verticalConnectorChar = null) => Default.Indent2(verticalConnectorChar);
-        //[DebuggerHidden]
-        //public static void Indent(string message, Action action) => Default.Indent(message, action);
+        public static IDisposable Indent2(char? verticalConnectorChar = null) => Default.Indent(verticalConnectorChar);
         [DebuggerHidden]
-        public static IDisposable Indent2(string message, char? verticalConnectorChar = null) => Default.Indent2(message, verticalConnectorChar);
-        [DebuggerHidden]
-        public static T Indent<T>(Func<T> func) => Default.Indent(func);
-        [DebuggerHidden]
-        public static T Indent<T>(string message, Func<T> func) => Default.Indent(message, func);
-        [DebuggerHidden]
-        public static Task IndentAsync(Func<Task> func) => Default.IndentAsync(func);
-        [DebuggerHidden]
-        public static Task IndentAsync(string message, Func<Task> func) => Default.IndentAsync(message, func);
-        [DebuggerHidden]
-        public static Task<T> IndentAsync<T>(Func<Task<T>> func) => Default.IndentAsync(func);
-        [DebuggerHidden]
-        public static Task<T> IndentAsync<T>(string message, Func<Task<T>> func) => Default.IndentAsync(message, func);
+        public static IDisposable Indent2(string message, char? verticalConnectorChar = null) => Default.Indent(message, verticalConnectorChar);
         [DebuggerHidden]
         public static void Foreach<T>(string message, IEnumerable<T> items, Action<T> action, bool printMessageIfNoItems = true)
             => Default.Foreach(message, items, action, printMessageIfNoItems);
         [DebuggerHidden]
         public static Task ForeachAsync<T>(string message, IEnumerable<T> items, Func<T, Task> action, bool printMessageIfNoItems = true)
             => Default.ForeachAsync(message, items, action, printMessageIfNoItems);
+    }
+    public class CallResultArg<T> : DisposableEnvelope<T>
+    {
+        public CallResultArg(T obj, Action<T> actionOnDispose, string resultFormat, char resultConnectorChar, string caller) : base(obj, actionOnDispose) {
+            this.resultFormat = resultFormat;
+            this.resultConnectorChar = resultConnectorChar;
+            this.caller = caller;
+        }
+        string resultFormat;
+        char resultConnectorChar;
+        string caller;
+        protected override void OnDispose()
+        {
+            base.OnDispose();
+            var dis = Printer.Indent2(resultConnectorChar);
+            Printer.WriteLine(string.Format(resultFormat, caller, Value));
+            OnPrintResult?.Invoke(Value);
+            dis.Dispose();
+        }
+        public Action<T> OnPrintResult { get; set; }
     }
     class PrinterInstance : IPrinter
     {
@@ -82,8 +94,6 @@ namespace Fuxion
         public int IndentationLevel { get; set; }
         public int IndentationStep { get; set; } = 3;
         public char IndentationChar { get; set; } = ' ';
-        //public char VerticalConectorChar { get; set; } = '│';
-        //List<int> verticalConnectorLevels = new List<int>();
         RefLocker<Dictionary<int, char>> verticalConnectorLevels = new RefLocker<Dictionary<int, char>>(new Dictionary<int, char>());
         [DebuggerHidden]
         public Action<string> WriteLineAction { get; set; } = m => Debug.WriteLine(m);
@@ -119,21 +129,13 @@ namespace Fuxion
                     }
                     indent += step.PadRight(IndentationStep, IndentationChar);
                 }
-                //WriteLineAction("".PadRight(IndentationLevel * IndentationStep, IndentationChar) + string.Concat(lineMessages) + message);
                 WriteLineAction(indent + string.Concat(lineMessages) + message);
                 lineMessages.Clear();
             }
         }
         #region Indent
         [DebuggerHidden]
-        public void Indent(Action action)
-        {
-            IndentationLevel++;
-            action();
-            if (IndentationLevel > 0) IndentationLevel--;
-        }
-        [DebuggerHidden]
-        public IDisposable Indent2(char? verticalConnectorChar = null)
+        public IDisposable Indent(char? verticalConnectorChar = null)
         {
             var o = new object();
             var currentIndentationLevel = IndentationLevel;
@@ -143,27 +145,31 @@ namespace Fuxion
                     if (!dic.ContainsKey(currentIndentationLevel))
                         dic.Add(currentIndentationLevel, verticalConnectorChar.Value);
                 });
-                //verticalConnectorLevels.Add(currentIndentationLevel, verticalConnectorChar.Value);
             IndentationLevel++;
             return o.AsDisposable(_ =>
             {
                 if (IndentationLevel > 0)
                     IndentationLevel--;
                 verticalConnectorLevels.Write(dic => dic.Remove(currentIndentationLevel));
-                //verticalConnectorLevels.Remove(currentIndentationLevel);
             });
         }
         [DebuggerHidden]
-        public void Indent(string message, Action action)
+        public CallResultArg<T> CallResult<T>(
+            string callMessage = "CALL {0}:",
+            string resultMessage = "RESULT {0}: {1}",
+            char verticalConnectorChar = '│',
+            char resultConnectorChar = '●',
+            [CallerMemberName] string caller = null)
         {
-            WriteLine(message);
-            Indent(action);
+            var dis = Printer.Indent2(string.Format(callMessage, caller), verticalConnectorChar);
+            var res = new CallResultArg<T>(default(T), _ => dis.Dispose(), resultMessage, resultConnectorChar, caller);
+            return res;
         }
         [DebuggerHidden]
-        public IDisposable Indent2(string message, char? verticalConnectorChar = null)
+        public IDisposable Indent(string message, char? verticalConnectorChar = null)
         {
             WriteLine(message);
-            return Indent2(verticalConnectorChar);
+            return Indent(verticalConnectorChar);
         }
         [DebuggerHidden]
         public T Indent<T>(Func<T> func)
@@ -179,33 +185,6 @@ namespace Fuxion
             WriteLine(message);
             return Indent(func);
         }
-        [DebuggerHidden]
-        public async Task IndentAsync(Func<Task> func)
-        {
-            IndentationLevel++;
-            await func();
-            if (IndentationLevel > 0) IndentationLevel--;
-        }
-        [DebuggerHidden]
-        public Task IndentAsync(string message, Func<Task> func)
-        {
-            WriteLine(message);
-            return IndentAsync(func);
-        }
-        [DebuggerHidden]
-        public async Task<T> IndentAsync<T>(Func<Task<T>> func)
-        {
-            IndentationLevel++;
-            var res = await func();
-            if (IndentationLevel > 0) IndentationLevel--;
-            return res;
-        }
-        [DebuggerHidden]
-        public Task<T> IndentAsync<T>(string message, Func<Task<T>> func)
-        {
-            WriteLine(message);
-            return IndentAsync(func);
-        }
         #endregion
         #region Foreach
         [DebuggerHidden]
@@ -213,22 +192,22 @@ namespace Fuxion
         {
             if (!printMessageIfNoItems && !items.Any()) return;
             WriteLine(message);
-            Indent(() =>
+            using (Indent())
             {
                 foreach (var item in items)
                     action(item);
-            });
+            }
         }
         [DebuggerHidden]
-        public Task ForeachAsync<T>(string message, IEnumerable<T> items, Func<T, Task> action, bool printMessageIfNoItems = true)
+        public async Task ForeachAsync<T>(string message, IEnumerable<T> items, Func<T, Task> action, bool printMessageIfNoItems = true)
         {
-            if (!printMessageIfNoItems && !items.Any()) return Task.FromResult(0);
+            if (!printMessageIfNoItems && !items.Any()) return;
             WriteLine(message);
-            return IndentAsync(async () =>
+            using (Indent())
             {
                 foreach (var item in items)
                     await action(item);
-            });
+            }
         }
         #endregion
     }
@@ -238,33 +217,19 @@ namespace Fuxion
         int IndentationLevel { get; set; }
         int IndentationStep { get; set; }
         char IndentationChar { get; set; }
+        bool IsLineWritePending { get; }
         [DebuggerHidden]
         Action<string> WriteLineAction { get; set; }
-        bool IsLineWritePending { get; }
         [DebuggerHidden]
         void Write(string message);
         [DebuggerHidden]
         void WriteLine(string message);
         [DebuggerHidden]
-        void Indent(Action action);
+        IDisposable Indent(char? verticalConnectorChar = null);
         [DebuggerHidden]
-        IDisposable Indent2(char? verticalConnectorChar = null);
+        CallResultArg<T> CallResult<T>(string callMessage, string resultMessage, char verticalConnectorChar, char resultConnectorChar, [CallerMemberName] string caller = null);
         [DebuggerHidden]
-        void Indent(string message, Action action);
-        [DebuggerHidden]
-        IDisposable Indent2(string message, char? verticalConnectorChar = null);
-        [DebuggerHidden]
-        T Indent<T>(Func<T> func);
-        [DebuggerHidden]
-        T Indent<T>(string message, Func<T> func);
-        [DebuggerHidden]
-        Task IndentAsync(Func<Task> func);
-        [DebuggerHidden]
-        Task IndentAsync(string message, Func<Task> func);
-        [DebuggerHidden]
-        Task<T> IndentAsync<T>(Func<Task<T>> func);
-        [DebuggerHidden]
-        Task<T> IndentAsync<T>(string message, Func<Task<T>> func);
+        IDisposable Indent(string message, char? verticalConnectorChar = null);
         [DebuggerHidden]
         void Foreach<T>(string message, IEnumerable<T> items, Action<T> action, bool printMessageIfNoItems = true);
         [DebuggerHidden]

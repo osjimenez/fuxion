@@ -10,8 +10,7 @@ namespace Fuxion.Identity
         public static bool IsValid(this IPermission me) { return me.Function != null && (me.Scopes?.All(s => s.Discriminator != null) ?? true) && me.Scopes?.Select(s => s.Discriminator.TypeId).Distinct().Count() == me.Scopes?.Count(); }
         internal static bool Match(this IPermission me,bool forFilter, IFunction function, TypeDiscriminator typeDiscriminator, params IDiscriminator[] discriminators)
         {
-            bool res = false;
-            using (Printer.Indent2($"CALL {nameof(Match)}:", '│'))
+            using (var res = Printer.CallResult<bool>())
             {
                 using (Printer.Indent2("Input parameters"))
                 {
@@ -24,7 +23,8 @@ namespace Fuxion.Identity
                     {
                         Printer.WriteLine($"'{nameof(typeDiscriminator)}':");
                         new[] { typeDiscriminator }.Print(PrintMode.Table);
-                    }else Printer.WriteLine($"'{nameof(typeDiscriminator)}': null");
+                    }
+                    else Printer.WriteLine($"'{nameof(typeDiscriminator)}': null");
                     Printer.WriteLine($"Discriminators:");
                     discriminators.Print(PrintMode.Table);
                 }
@@ -42,15 +42,12 @@ namespace Fuxion.Identity
                     }
                     return true;
                 }
-                res = Compute();
+                return res.Value = Compute();
             }
-            Printer.WriteLine($"● RESULT {nameof(Match)}: {res}");
-            return res;
         }
         internal static bool MatchByFunction(this IPermission me, IFunction function)
         {
-            bool res = false;
-            using (Printer.Indent2($"CALL {nameof(MatchByFunction)}:", '│'))
+            using (var res = Printer.CallResult<bool>())
             {
                 using (Printer.Indent2("Input parameters"))
                 {
@@ -64,21 +61,20 @@ namespace Fuxion.Identity
                 if (comparer.Equals(me.Function, function))
                 {
                     Printer.WriteLine("Match with same function");
-                    res = true;
+                    return res.Value = true;
                 }
                 else if (me.Value && me.Function.GetAllInclusions().Contains(function, comparer))
                 {
                     Printer.WriteLine("Match by included function");
-                    res = true;
+                    return res.Value = true;
                 }
                 else if (!me.Value && me.Function.GetAllExclusions().Contains(function, comparer))
                 {
                     Printer.WriteLine("Match by excluded function");
-                    res = true;
+                    return res.Value = true;
                 }
+                else return res.Value = false;
             }
-            Printer.WriteLine($"● RESULT {nameof(MatchByFunction)}: {res}");
-            return res;
         }
         internal static bool MatchByDiscriminatorsInclusionsAndExclusions(this IPermission me,bool forFilter, TypeDiscriminator typeDiscriminator, params IDiscriminator[] discriminators)
         {

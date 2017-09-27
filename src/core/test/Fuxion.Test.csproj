@@ -61,6 +61,7 @@
     <Compile Include="CustomizableTimeProvider.test.cs" />
     <Compile Include="DeactivatableObservableCollection.test.cs" />
     <Compile Include="DispatcherSynchronizer.test.cs" />
+    <Compile Include="DisposableEnvelopeTest.cs" />
     <Compile Include="Factory.test.cs" />
     <Compile Include="GenericEqualityComparer.test.cs" />
     <Compile Include="HardwareId.Test.cs" />

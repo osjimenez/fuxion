@@ -17,7 +17,7 @@ namespace Fuxion.Synchronization
         Comparator<TItemA, TItemB, TKey> definition;
         public ICollection<IComparatorResultInternal> CompareSides(ISideRunner sideA, ISideRunner sideB, bool runInverted, IPrinter printer)
         {
-            return printer.Indent($"Comparing sides '{sideA?.Definition.Name}' == '{sideB?.Definition.Name}' {(runInverted ? "INVERTED" : "")}", () =>
+            using (printer.Indent($"Comparing sides '{sideA?.Definition.Name}' == '{sideB?.Definition.Name}' {(runInverted ? "INVERTED" : "")}"))
             {
                 var res = new List<IComparatorResultInternal>();
                 Dictionary<TKey, Tuple<LoadedItem, LoadedItem>> dic = new Dictionary<TKey, Tuple<LoadedItem, LoadedItem>>();
@@ -36,8 +36,8 @@ namespace Fuxion.Synchronization
                             //}).ToList() ?? Enumerable.Empty<ISideRunner>().ToList()
                             Sides = Enumerable.Empty<ISideRunner>().ToList()
                         });
-                        if(sideB?.SubSides != null)
-                            foreach(var subSide in (runInverted ? sideA : sideB).SubSides)
+                        if (sideB?.SubSides != null)
+                            foreach (var subSide in (runInverted ? sideA : sideB).SubSides)
                             {
                                 var clon = subSide.Clone();
                                 clon.Source = null;
@@ -67,14 +67,14 @@ namespace Fuxion.Synchronization
                                 //Sides = sideA.SubSides
                                 Sides = Enumerable.Empty<ISideRunner>().ToList()
                             }, item);
-                            if(sideA?.SubSides != null)
-                                foreach(var subSide in (runInverted ? sideA : sideB).SubSides)
+                            if (sideA?.SubSides != null)
+                                foreach (var subSide in (runInverted ? sideA : sideB).SubSides)
                                 {
                                     var clon = subSide.Clone();
                                     clon.Source = null;
                                     clon.Definition.Name = $"{clon.Definition.Name} ({sideB.GetItemName(item.Item)})";
                                     printer.WriteLine($"Creating side-clon '{clon.Definition.Name}-{clon.Definition.IsMaster}' with source '{sideB.GetItemName(item.Item)}'");
-                                    if(runInverted) tup.Item1.Sides.Add(clon);
+                                    if (runInverted) tup.Item1.Sides.Add(clon);
                                     else tup.Item2.Sides.Add(clon);
                                 }
                             dic.Add(key, tup);
@@ -87,7 +87,7 @@ namespace Fuxion.Synchronization
                         res.Add(r);
                 }
                 return res;
-            });
+            }
         }
         public IComparatorResultInternal CompareItems(LoadedItem itemA, LoadedItem itemB, bool runInverted, IPrinter printer)
         {

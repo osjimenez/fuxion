@@ -17,7 +17,7 @@ using System.Runtime.Serialization;
 
 namespace System
 {
-    public static class Extensions
+    public static partial class Extensions
     {
 #if (NET461 || NET462 || NET47)
         /// <summary>
@@ -60,29 +60,6 @@ namespace System
 #endif
         #region Disposable
         public static DisposableEnvelope<T> AsDisposable<T>(this T me, Action<T> actionOnDispose = null) { return new DisposableEnvelope<T>(me, actionOnDispose); }
-        public class DisposableEnvelope<T> : IDisposable
-        {
-            public DisposableEnvelope(T obj, Action<T> actionOnDispose = null)
-            {
-                this.action = actionOnDispose;
-                this.Value = obj;
-            }
-            T value;
-            public T Value
-            {
-                get => value; set
-                {
-                    if (disposed) throw new ObjectDisposedException(nameof(Value));
-                    this.value = value;
-                }
-            }
-            Action<T> action;
-            bool disposed = false;
-            void IDisposable.Dispose() {
-                disposed = true;
-                action?.Invoke(Value);
-            }
-        }
         #endregion
         #region Json
         public static string ToJson(this object me, Formatting formatting = Formatting.Indented, JsonSerializerSettings settings = null)

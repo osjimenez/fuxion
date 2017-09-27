@@ -48,7 +48,7 @@ namespace Fuxion.Synchronization
         }
         public Task Load() => TaskManager.StartNew(() =>
         {
-            printer.Indent($"Loading side '{Definition.Name}':", () =>
+            using (printer.Indent($"Loading side '{Definition.Name}':"))
             {
                 var rr = new List<LoadedItem>();
                 var res = ((Side<TSource, TItem>)Definition).OnLoad(((Side<TSource, TItem>)Definition).Source)?.Cast<object>() ?? Enumerable.Empty<object>();
@@ -62,7 +62,7 @@ namespace Fuxion.Synchronization
                     if (SubSides != null)
                         foreach (var subSide in SubSides)
                         {
-                            
+
                             var clon = subSide.Clone();
                             clon.Source = item;
                             clon.Definition.Name = $"{clon.Definition.Name.Replace("%sourceName%", GetItemName(item))}";
@@ -74,7 +74,7 @@ namespace Fuxion.Synchronization
                     rr.Add(loadedItem);
                 }
                 Entries = rr;
-            });
+            }
             printer.WriteLine($"Side '{Definition.Name}' loaded");
         });
         public ISideRunner Clone() =>

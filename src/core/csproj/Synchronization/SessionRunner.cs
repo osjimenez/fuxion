@@ -18,40 +18,40 @@ namespace Fuxion.Synchronization
         internal Session Session { get; set; }
         ICollection<WorkRunner> works = new List<WorkRunner>();
         public Guid Id { get { return Session.Id; } }
-        public Task<SessionPreview> PreviewAsync(bool includeNoneActionItems, IPrinter printer)
+        public async Task<SessionPreview> PreviewAsync(bool includeNoneActionItems, IPrinter printer)
         {
-            return printer.IndentAsync($"Previewing synchronization session '{Session.Name}' {(Session.MakePreviewInParallel ? "in parallel" : "sequentially")}",
-                async () =>
+            using (printer.Indent($"Previewing synchronization session '{Session.Name}' {(Session.MakePreviewInParallel ? "in parallel" : "sequentially")}"))
+            {
+                var res = new SessionPreview(Session.Id);
+                works = Session.Works.Select(w => new WorkRunner(w, printer)).ToList();
+                List<WorkPreview> resTask = new List<WorkPreview>();
+                if (Session.MakePreviewInParallel)
                 {
-                    var res = new SessionPreview(Session.Id);
-                    works = Session.Works.Select(w => new WorkRunner(w, printer)).ToList();
-                    List<WorkPreview> resTask = new List<WorkPreview>();
-                    if (Session.MakePreviewInParallel)
-                    {
-                        var tasks = works.Select(w => w.PreviewAsync(printer));
-                        resTask = (await Task.WhenAll(tasks)).ToList();
-                    }else
-                    {
-                        foreach (var work in works)
-                            resTask.Add(await work.PreviewAsync(printer));
-                    }
-                    res.Works = resTask.Select(w =>
-                    {
-                        w.Session = res;
-                        return w;
-                    }).ToList();
-                    // Run post preview actions
-                    foreach (var work in works.Where(w => w.Definition.PostPreviewAction != null))
-                        work.Definition.PostPreviewAction(res);
-                    // Clean results
-                    if (!includeNoneActionItems)
-                        res.CleanNoneActions();
-                    return res;
-                });
+                    var tasks = works.Select(w => w.PreviewAsync(printer));
+                    resTask = (await Task.WhenAll(tasks)).ToList();
+                }
+                else
+                {
+                    foreach (var work in works)
+                        resTask.Add(await work.PreviewAsync(printer));
+                }
+                res.Works = resTask.Select(w =>
+                {
+                    w.Session = res;
+                    return w;
+                }).ToList();
+                // Run post preview actions
+                foreach (var work in works.Where(w => w.Definition.PostPreviewAction != null))
+                    work.Definition.PostPreviewAction(res);
+                // Clean results
+                if (!includeNoneActionItems)
+                    res.CleanNoneActions();
+                return res;
+            }
         }
-        public Task RunAsync(SessionPreview preview, IPrinter printer)
+        public async Task RunAsync(SessionPreview preview, IPrinter printer)
         {
-            return printer.IndentAsync("Running session:", async () =>
+            using (printer.Indent("Running session:"))
             {
                 // Run order:
 
@@ -103,7 +103,7 @@ namespace Fuxion.Synchronization
                                 return item.NextLevels;
                             })),
                         false);
-                    await printer.ForeachAsync($"Updating level {level}", aux, 
+                    await printer.ForeachAsync($"Updating level {level}", aux,
                         async lev => nextLevels.AddRange(await ProcessRelations(lev.Items, lev.Runner, SynchronizationAction.Update)
                             .Transform(async item =>
                             {
@@ -116,7 +116,7 @@ namespace Fuxion.Synchronization
                 }
                 level = 0;
                 var processActions = new List<(int Level, Func<Task> Action)>();
-                foreach(var m in main)
+                foreach (var m in main)
                 {
                     nextLevels.AddRange(ProcessWork(m.Items, m.Runner, SynchronizationAction.Delete).Transform(item =>
                     {
@@ -129,7 +129,7 @@ namespace Fuxion.Synchronization
                 {
                     var aux = nextLevels.ToList();
                     nextLevels.Clear();
-                    foreach(var lev in aux)
+                    foreach (var lev in aux)
                     {
                         nextLevels.AddRange(ProcessRelations(lev.Items, lev.Runner, SynchronizationAction.Delete).Transform(item =>
                         {
@@ -143,7 +143,8 @@ namespace Fuxion.Synchronization
                 foreach (var act in processActions.OrderByDescending(a => a.Level))
                 {
                     if (act.Level != lastLevel)
-                        await printer.IndentAsync($"Deleting level {act.Level}", () => act.Action());
+                        using (printer.Indent($"Deleting level {act.Level}"))
+                            await act.Action();
                     else
                         await act.Action();
                     lastLevel = act.Level;
@@ -151,7 +152,7 @@ namespace Fuxion.Synchronization
                 // Run post run actions
                 foreach (var work in works.Where(w => w.Definition.PostRunAction != null))
                     work.Definition.PostRunAction(preview);
-            });
+            }
         }
         private static (ICollection<(
             ICollection<ItemRelationPreview> Items, 
