@@ -28,6 +28,25 @@ namespace Fuxion.Identity.Test
     {
         public TypeDiscriminatorTetst(ITestOutputHelper output) : base(output) { this.output = output; }
         ITestOutputHelper output;
+        [Fact(DisplayName = "TypeDiscriminator - Equality")]
+        public void Equality()
+        {
+            var fac = new TypeDiscriminatorFactory();
+            fac.AllowMoreThanOneTypeByDiscriminator = true;
+            // Register from Base
+            fac.RegisterTree<BaseDao>();
+            fac.RegisterTree(typeof(BaseDvo<>));
+
+            var d1 = fac.FromType<FileDao>();
+            var d2 = fac.FromType(typeof(FileDvo<>));
+
+            Assert.True(d1 == d2);
+            Assert.Equal(d1, d2);
+            Assert.Same(d1, d2);
+
+            var d1c = new[] { d1 };
+            Assert.True(d1c.Contains(d2));
+        }
         [Fact(DisplayName = "TypeDiscriminator - Register - Twice")]
         public void RegisterTwice()
         {

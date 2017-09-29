@@ -27,10 +27,6 @@ namespace Fuxion
             else
                 return factories[key] = new PrinterInstance { Key = key };
         }
-        public static bool Enabled { get => Default.Enabled; set => Default.Enabled = value; }
-        public static int IndentationLevel { get => Default.IndentationLevel; set => Default.IndentationLevel = value; }
-        public static int IndentationStep { get => Default.IndentationStep; set => Default.IndentationStep = value; }
-        public static char IndentationChar { get => Default.IndentationChar; set => Default.IndentationChar = value; }
         public static string GetPrinted(Action action)
         {
             StringBuilder res = new StringBuilder();
@@ -43,6 +39,12 @@ namespace Fuxion
             action?.Invoke();
             return res.ToString();
         }
+
+        #region IPrinter methods
+        public static bool Enabled { get => Default.Enabled; set => Default.Enabled = value; }
+        public static int IndentationLevel { get => Default.IndentationLevel; set => Default.IndentationLevel = value; }
+        public static int IndentationStep { get => Default.IndentationStep; set => Default.IndentationStep = value; }
+        public static char IndentationChar { get => Default.IndentationChar; set => Default.IndentationChar = value; }
         [DebuggerHidden]
         public static Action<string> WriteLineAction { get => Default.WriteLineAction; set => Default.WriteLineAction = value; }
         public static bool IsLineWritePending { get => Default.IsLineWritePending; }
@@ -66,6 +68,7 @@ namespace Fuxion
         [DebuggerHidden]
         public static Task ForeachAsync<T>(string message, IEnumerable<T> items, Func<T, Task> action, bool printMessageIfNoItems = true)
             => Default.ForeachAsync(message, items, action, printMessageIfNoItems);
+        #endregion
     }
     public class CallResultArg<T> : DisposableEnvelope<T>
     {
@@ -133,6 +136,13 @@ namespace Fuxion
                 lineMessages.Clear();
             }
         }
+        [DebuggerHidden]
+        public CallResultArg<T> CallResult<T>(string callMessage = "CALL {0}:", string resultMessage = "RESULT {0}: {1}", char verticalConnectorChar = '│', char resultConnectorChar = '●', [CallerMemberName] string caller = null)
+        {
+            var dis = Printer.Indent2(string.Format(callMessage, caller), verticalConnectorChar);
+            var res = new CallResultArg<T>(default(T), _ => dis.Dispose(), resultMessage, resultConnectorChar, caller);
+            return res;
+        }
         #region Indent
         [DebuggerHidden]
         public IDisposable Indent(char? verticalConnectorChar = null)
@@ -152,18 +162,6 @@ namespace Fuxion
                     IndentationLevel--;
                 verticalConnectorLevels.Write(dic => dic.Remove(currentIndentationLevel));
             });
-        }
-        [DebuggerHidden]
-        public CallResultArg<T> CallResult<T>(
-            string callMessage = "CALL {0}:",
-            string resultMessage = "RESULT {0}: {1}",
-            char verticalConnectorChar = '│',
-            char resultConnectorChar = '●',
-            [CallerMemberName] string caller = null)
-        {
-            var dis = Printer.Indent2(string.Format(callMessage, caller), verticalConnectorChar);
-            var res = new CallResultArg<T>(default(T), _ => dis.Dispose(), resultMessage, resultConnectorChar, caller);
-            return res;
         }
         [DebuggerHidden]
         public IDisposable Indent(string message, char? verticalConnectorChar = null)
