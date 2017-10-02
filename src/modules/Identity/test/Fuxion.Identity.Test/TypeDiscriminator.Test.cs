@@ -47,6 +47,19 @@ namespace Fuxion.Identity.Test
             var d1c = new[] { d1 };
             Assert.True(d1c.Contains(d2));
         }
+        [Fact(DisplayName = "TypeDiscriminator - Many classes, same discriminators")]
+        public void ManyClassesSameDiscriminators()
+        {
+            var fac = new TypeDiscriminatorFactory();
+            fac.AllowMoreThanOneTypeByDiscriminator = true;
+            // Register from Base
+            fac.RegisterTree(typeof(BaseDvo<>));
+
+            var d2 = fac.FromType(typeof(BaseDvo<>));
+
+            Assert.Equal(1, d2.Inclusions.Where(d => d.Name == "Person").Count());
+
+        }
         [Fact(DisplayName = "TypeDiscriminator - Register - Twice")]
         public void RegisterTwice()
         {

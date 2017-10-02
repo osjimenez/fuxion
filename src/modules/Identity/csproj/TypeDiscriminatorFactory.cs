@@ -179,7 +179,7 @@ namespace Fuxion.Identity
                         ent.Discriminator.Inclusions = Search(ent.Types?.SelectMany(t => t.Attribute?.ExplicitInclusions ?? new string[] { }))
                             .Transform(res => res.Count > 0 
                                 ? res 
-                                : ent.Types?.SelectMany(t => t.DerivedTypes.Select(t2 => t2.Entry.Discriminator)).ToList() ?? Enumerable.Empty<TypeDiscriminator>().ToList());
+                                : ent.Types?.SelectMany(t => t.DerivedTypes.Select(t2 => t2.Entry.Discriminator)).Distinct().ToList() ?? Enumerable.Empty<TypeDiscriminator>().ToList());
                         // Exclusions
                         ent.Discriminator.Exclusions = Search(ent.Types?.SelectMany(t => t.Attribute?.ExplicitExclusions ?? new string[] { }))
                             .Transform(res => res.Count > 0
