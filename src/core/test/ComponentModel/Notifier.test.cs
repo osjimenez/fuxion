@@ -12,7 +12,7 @@ using System.Linq;
 using Fuxion.Threading;
 using Xunit;
 
-namespace Fuxion.Test
+namespace Fuxion.Test.ComponentModel
 {
     public class ReferenceObjectMock
     {

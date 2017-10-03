@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Fuxion.Test
+namespace Fuxion.Test.Collections.Generic
 {
     public class GenericEqualityComparerTest
     {

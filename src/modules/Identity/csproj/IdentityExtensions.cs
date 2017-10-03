@@ -169,6 +169,12 @@ namespace Fuxion.Identity
                     functions.Print(PrintMode.Table);
                     Printer.WriteLine("Type: " + typeof(TEntity).Name);
                 }
+                var typeDiscriminator = Factory.Get<TypeDiscriminatorFactory>().FromType<TEntity>();
+                if (typeDiscriminator == null)
+                {
+                    Printer.WriteLine($"Type '{typeof(TEntity).Name}' hasn't TypeDiscriminator associated to it, no filter applies");
+                    return Expression.Lambda<Func<TEntity, bool>>(Expression.Constant(true), Expression.Parameter(typeof(TEntity)));
+                }
                 #region Methods
                 MethodInfo GetCastMethod(Type type) =>
                     typeof(Enumerable).GetTypeInfo().DeclaredMethods
@@ -264,7 +270,6 @@ namespace Fuxion.Identity
                 Expression<Func<TEntity, bool>> grantPersExp = null;
                 Printer.Foreach("Grant permissions:", pers.Where(p => p.Value), per =>
                 {
-
                     using (Printer.Indent2($"Permission: {per.ToOneLineString()}"))
                     {
                         Expression<Func<TEntity, bool>> perExp = null;

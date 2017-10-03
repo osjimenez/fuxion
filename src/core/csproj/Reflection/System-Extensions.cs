@@ -111,45 +111,5 @@ namespace System.Reflection
             }
             return res.ToString();
         }
-
-        //public static IEnumerable<ConstructorInfo> GetAllConstructors(this Type me, BindingFlags bindingAtt = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance) => GetAll(me, ti => ti.GetConstructors(bindingAtt), false);
-        //public static IEnumerable<EventInfo> GetAllEvents(this Type me, BindingFlags bindingAtt = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly) => GetAll(me, ti => ti.GetEvents(bindingAtt));
-        //public static IEnumerable<FieldInfo> GetAllFields(this Type me) => GetAll(me, ti => ti.GetFields());
-        //public static IEnumerable<MemberInfo> GetAllMembers(this Type me) => GetAll(me, ti => ti.GetMembers());
-        //public static IEnumerable<MethodInfo> GetAllMethods(this Type me) => GetAll(me, ti => ti.GetMethods());
-        //public static IEnumerable<Type> GetAllNestedTypes(this Type me) => GetAll(me, ti => ti.GetNestedTypes());
-        //public static IEnumerable<PropertyInfo> GetAllProperties(this Type me) => GetAll(me, ti => ti.GetProperties());
-        //private static IEnumerable<T> GetAll<T>(Type me, Func<Type, IEnumerable<T>> accessor, bool recursive = true)
-        //{
-        //    if (recursive)
-        //    {
-        //        var res = new List<T>();
-        //        while (me != null)
-        //        {
-        //            foreach (var t in accessor(me))
-        //            {
-        //                res.Add(t);
-        //            }
-        //            me = me.BaseType?.GetTypeInfo();
-        //        }
-        //        return res;
-        //    }
-        //    else return accessor(me);
-        //}
-
-        public static bool IsNullable(this Type me)
-        {
-            return me.IsClass || me.IsInterface || me.IsGenericType && me.GetGenericTypeDefinition() == typeof(Nullable<>);
-        }
-
-        public static object GetDefaultValue(this Type t)
-        {
-            if (t.GetTypeInfo().IsValueType && Nullable.GetUnderlyingType(t) == null)
-                return Activator.CreateInstance(t);
-            else
-                return null;
-        }
-
-
     }
 }

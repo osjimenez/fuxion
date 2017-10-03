@@ -17,7 +17,7 @@ using System.Linq.Expressions;
 using Fuxion.Collections.Generic;
 using Fuxion.Test.Resources;
 
-namespace Fuxion.Test
+namespace Fuxion.Test.Synchronization
 {
     public class SynchronizationTest : BaseTest
     {

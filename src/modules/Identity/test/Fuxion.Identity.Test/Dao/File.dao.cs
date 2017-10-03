@@ -48,7 +48,7 @@ namespace Fuxion.Identity.Test.Dao
 
     [Table(nameof(PackageDao))]
     [TypeDiscriminated(TypeDiscriminationDisableMode.DisableType)]
-    public abstract class PackageDao : FileDao
+    public class PackageDao : FileDao
     {
         public IList<FileDao> Files { get; set; }
     }

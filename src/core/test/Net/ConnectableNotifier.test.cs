@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Fuxion.Test
+namespace Fuxion.Test.Net
 {
     public class ConnectableNotifierTest
     {
@@ -17,19 +17,12 @@ namespace Fuxion.Test
         }
         ITestOutputHelper output;
         [Fact]
-        public void Connectable_First() {
-            var con = new ConnectableNotifierMock(output);
-            con.ConnectionMode = ConnectionMode.Automatic;
-            while (!con.IsConnected) { }
-            Assert.Equal(con.Counter, 1);
-        }
-        [Fact]
         public void Connectable_NestedTask()
         {
             var con = new ConnectableNotifierMock(output);
             con.ConnectionMode = ConnectionMode.Automatic;
             while (!con.IsConnected) { }
-            Assert.Equal(con.Counter, 1);
+            Assert.Equal(1, con.Counter);
         }
     }
     public class ConnectableNotifierMock : ConnectableNotifier<ConnectableNotifierMock>

@@ -7,43 +7,44 @@ using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Fuxion.Test
+namespace Fuxion.Test.Threading.Tasks
 {
-    public class TaskManagerTest
+    public class TaskManagerTest : BaseTest
     {
-        public TaskManagerTest(ITestOutputHelper output)
-        {
-            this.output = output;
-        }
-        ITestOutputHelper output;
+        public TaskManagerTest(ITestOutputHelper output) : base(output) { }
+        //public TaskManagerTest(ITestOutputHelper output)
+        //{
+        //    this.output = output;
+        //}
+        //ITestOutputHelper output;
         #region Help methods
         private Task Start_void()
         {
-            output.WriteLine($"Start at {DateTime.Now.ToLongTimeString()}");
+            Printer.WriteLine($"Start at {DateTime.Now.ToLongTimeString()}");
             return null;
         }
         private Task<int> Start_int()
         {
-            output.WriteLine($"Start at {DateTime.Now.ToLongTimeString()}");
+            Printer.WriteLine($"Start at {DateTime.Now.ToLongTimeString()}");
             return null;
         }
         private void Do_void(Task task, params int[] pars)
         {
-            output.WriteLine($"Parameters = '{pars.Aggregate("", (a, c) => $"{a}-{c}", a => a.Trim('-'))}'");
+            Printer.WriteLine($"Parameters = '{pars.Aggregate("", (a, c) => $"{a}-{c}", a => a.Trim('-'))}'");
             try
             {
                 task.Sleep(TimeSpan.FromMilliseconds(1));
             }
             catch (Exception ex)
             {
-                output.WriteLine("Exception: " + ex.Message);
+                Printer.WriteLine("Exception: " + ex.Message);
                 Assert.True(false, "Task is not managed by TaskManager");
             }
-            output.WriteLine($"Finished at {DateTime.Now.ToLongTimeString()}");
+            Printer.WriteLine($"Finished at {DateTime.Now.ToLongTimeString()}");
         }
         private async Task Do_void_async(Task task, params int[] pars)
         {
-            output.WriteLine($"Parameters = '{pars.Aggregate("", (a, c) => $"{a}-{c}", a => a.Trim('-'))}'");
+            Printer.WriteLine($"Parameters = '{pars.Aggregate("", (a, c) => $"{a}-{c}", a => a.Trim('-'))}'");
             await Task.Delay(100);
             try
             {
@@ -51,10 +52,10 @@ namespace Fuxion.Test
             }
             catch (Exception ex)
             {
-                output.WriteLine("Exception: " + ex.Message);
+                Printer.WriteLine("Exception: " + ex.Message);
                 Assert.True(false, "Task is not managed by TaskManager");
             }
-            output.WriteLine($"Finished at {DateTime.Now.ToLongTimeString()}");
+            Printer.WriteLine($"Finished at {DateTime.Now.ToLongTimeString()}");
         }
         private int Do_int(Task task, params int[] pars)
         {
@@ -70,7 +71,7 @@ namespace Fuxion.Test
         {
             if (task is Task<Task>)
             {
-                output.WriteLine("Return task is Task<Task>> !!!");
+                Printer.WriteLine("Return task is Task<Task>> !!!");
                 (task as Task<Task>).Unwrap().Wait();
             }
             else task.Wait();
@@ -86,13 +87,13 @@ namespace Fuxion.Test
         {
             Task task = null;
             var dt = DateTime.Now;
-            output.WriteLine("Inicio en " + dt.ToString("HH:mm:ss.fff"));
+            Printer.WriteLine("Inicio en " + dt.ToString("HH:mm:ss.fff"));
             task = TaskManager.StartNew(() => {
                 //task.Sleep(TimeSpan.FromMilliseconds(2500), TimeSpan.FromMilliseconds(500));
                 task.Sleep(TimeSpan.FromMilliseconds(2500));
             });
             task.CancelAndWait();
-            output.WriteLine("Cancelado en " + DateTime.Now.ToString("HH:mm:ss.fff"));
+            Printer.WriteLine("Cancelado en " + DateTime.Now.ToString("HH:mm:ss.fff"));
             Assert.True(dt.AddSeconds(1) > DateTime.Now);
             //Assert.True(dt.AddMilliseconds(400) < DateTime.Now);
         }
@@ -173,13 +174,6 @@ namespace Fuxion.Test
             task = TaskManager.StartNew((p1, p2, p3, p4, p5, p6, p7, p8) => Do_void(task, p1, p2, p3, p4, p5, p6, p7, p8), 1, 2, 3, 4, 5, 6, 7, 8);
             Assert_void(task);
         }
-        //[Fact]
-        //public void TaskManager_void_StartNew_p1_p2_p3_p4_p5_p6_p7_p8_p9()
-        //{
-        //    var task = Start_void();
-        //    task = TaskManager.StartNew((p1, p2, p3, p4, p5, p6, p7, p8, p9) => Do_void(task, p1, p2, p3, p4, p5, p6, p7, p8, p9), 1, 2, 3, 4, 5, 6, 7, 8, 9);
-        //    Assert_void(task);
-        //}
         #endregion
         #region void_StartNew_async
         [Fact]

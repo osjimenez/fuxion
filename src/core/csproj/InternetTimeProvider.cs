@@ -24,7 +24,7 @@ namespace Fuxion
         }
 
         public InternetTimeServerType ServerType { get; set; } = InternetTimeServerType.Ntp;
-        public string ServerAddress { get; set; } = "time.windows.com";//= "time.nist.gov";
+        public string ServerAddress { get; set; } = "time.google.com";//= "time.nist.gov";
 
         public TimeSpan Timeout { get; set; }
         private DateTime GetUtc() {

@@ -4,7 +4,7 @@ using System.Collections.Specialized;
 using Fuxion.Collections.ObjectModel;
 using Xunit;
 
-namespace Fuxion.Test
+namespace Fuxion.Test.Collections.ObjectModel
 {
     public class DeactivatableObservableCollectionTest
     {

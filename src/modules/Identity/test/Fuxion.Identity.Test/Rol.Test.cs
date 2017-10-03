@@ -792,6 +792,32 @@ namespace Fuxion.Identity.Test.Rol
             PrintTestTriedStarted(permissionExplanation + query);
             Assert.False(ide.Can(Create).Type<CityDao>(), permissionExplanation + query);
         }
+        [Fact(DisplayName = "Rol - Type not discriminated")]
+        public void TypeNotDiscriminated()
+        {
+            var ide = new IdentityDao
+            {
+                Id = "test",
+                Name = "Test",
+                Permissions = new[] {
+                    new PermissionDao {
+                        Value = true,
+                        Function = Read.Id.ToString(),
+                    }
+                }.ToList()
+            };
+
+            string permissionExplanation = "Tengo:\r\n" +
+                $" - Permiso ONLY READ\r\n";
+
+            var query =
+                $"¿Debería poder '{nameof(Read)}' los '{nameof(PackageDao)}' (estan deshabilitados)?\r\n" +
+                " Si";
+            PrintTestTriedStarted(permissionExplanation + query);
+            Assert.True(ide.Can(Read).Type<PackageDao>(), permissionExplanation + query);
+            Assert.True(ide.Can(Read).Instance(File.Package.Package1), permissionExplanation + query);
+            Assert.True(new[] { File.Package.Package1 }.AuthorizedTo(ide, Read).Any(), permissionExplanation + query);
+        }
         [Fact(DisplayName = "Rol - Type discriminator related to any permission scope")]
         public void TypeDiscriminatorRelatedToAnyPermissionScope()
         {

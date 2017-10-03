@@ -12,24 +12,17 @@ namespace Fuxion
     public class AverageTimeProvider : ITimeProvider
     {
         Random ran = new Random((int)DateTime.Now.Ticks);
-
         public ILog Log { get; set; }
-        //public ITimeProvider BaseProvider { get; set; }
         List<Entry> Providers { get; set; } = new List<Entry>();
         public int RandomizedProvidersPerTry { get; set; } = 5;
         public int MaxFailsPerTry { get; set; } = 4;
-        //public DateTime LastVerifiedValue { get; set; }
-        //TimeSpan VerificationExpirationInterval { get; set; }
         public DateTime GetUtc()
         {
-            //await Task.Delay(500).ConfigureAwait(false);
             Log?.Notice($"Get UTC time using {RandomizedProvidersPerTry} randomized servers with a maximum of {MaxFailsPerTry} fails.");
             var res = TaskManager.StartNew(async () =>
             {
                 if (Providers.Count(p => p.IsRandomized) < RandomizedProvidersPerTry)
                     throw new Exception($"At least {RandomizedProvidersPerTry} providers must be added");
-
-                //var ents = Providers.ToList();
                 var ents = Providers.TakeRandomly(RandomizedProvidersPerTry, ran).ToList();
                 Log?.Debug($@"Selected servers: {ents.Aggregate("", (a, c) => a + "\r\n - " + c.Provider)}");
 
@@ -38,7 +31,6 @@ namespace Fuxion
                 DateTime[] results = null;
                 try
                 {
-                    //Task.WaitAll(ents.Select(en => en.Task).ToArray());
                     results = await Task.WhenAll(ents.Select(en => en.Task).ToArray()).ConfigureAwait(false);
                 }
                 catch
@@ -71,7 +63,6 @@ namespace Fuxion
         {
             Providers.Add(new Entry
             {
-                //CanFail = canFail,
                 IsRandomized = isRandomized,
                 Provider = provider
             });
@@ -82,10 +73,8 @@ namespace Fuxion
         class Entry
         {
             public ITimeProvider Provider { get; set; }
-            //public bool CanFail { get; set; }
             public bool IsRandomized { get; set; }
             internal Task<DateTime> Task { get; set; }
-
             public override string ToString() { return Provider.ToString(); }
         }
     }

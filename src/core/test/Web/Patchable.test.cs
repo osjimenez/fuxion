@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Fuxion.Test
+namespace Fuxion.Test.Web
 {
     public class PatchableTest
     {
@@ -65,7 +65,6 @@ namespace Fuxion.Test
         public void NonExistingProperties()
         {
             Patchable<ToPatch>.NonExistingPropertiesMode = NonExistingPropertiesMode.NotAllowed;
-
             // Create a Patchable
             dynamic dyn = new Patchable<ToPatch>();
             // Set non existing property

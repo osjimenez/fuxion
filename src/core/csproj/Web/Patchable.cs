@@ -19,7 +19,8 @@ namespace Fuxion.Web
     }
     public sealed class Patchable<T> : DynamicObject where T : class
     {
-        private List<(PropertyInfo Property, string PropertyName, object Value)> Properties = new List<(PropertyInfo Property, string PropertyName, object Value)>();
+        private Dictionary<string, (PropertyInfo Property, object Value)> dic = new Dictionary<string, (PropertyInfo Property, object Value)>();
+        //private List<(PropertyInfo Property, string PropertyName, object Value)> Properties = new List<(PropertyInfo Property, string PropertyName, object Value)>();
         //private IDictionary<PropertyInfo, object> _changedProperties = new Dictionary<PropertyInfo, object>();
         //public IEnumerable<string> ChangedPropertyNames { get { return _changedProperties.Keys.Select(p => p.Name); } }
         public static NonExistingPropertiesMode NonExistingPropertiesMode { get; set; }
@@ -38,35 +39,66 @@ namespace Fuxion.Web
         //    return true;
         //}
         #region GET
-        public override bool TryGetMember(GetMemberBinder binder, out object result)
+        public object Get(string propertyName)
         {
-            if(Properties.Any(p => p.PropertyName == binder.Name))
-            //if (_changedProperties.Any(p => p.Key.Name == binder.Name))
+            var pro = typeof(T).GetRuntimeProperty(propertyName);
+            if (dic.ContainsKey(propertyName))
             {
-                var pro = Properties.First(p => p.PropertyName == binder.Name);
+                if (pro == null && 
+                    (NonExistingPropertiesMode == NonExistingPropertiesMode.NotAllowed || NonExistingPropertiesMode == NonExistingPropertiesMode.OnlySet)
+                    )
+                    throw new RuntimeBinderException($"Type '{typeof(T).GetSignature(false)}' not has a property with name '{propertyName}'");
+                return dic[propertyName].Value;
+            }
+            else
+            {
                 switch (NonExistingPropertiesMode)
                 {
-                    case NonExistingPropertiesMode.GetAndSet:
-                        result = pro.Value;
-                        return true;
                     case NonExistingPropertiesMode.NotAllowed:
                     case NonExistingPropertiesMode.OnlySet:
+                        throw new RuntimeBinderException($"Type '{GetType().GetSignature(false)}' not has a property with name '{propertyName}'");
+                    case NonExistingPropertiesMode.GetAndSet:
                     default:
-                        return base.TryGetMember(binder, out result);
+                        return null;
                 }
             }
-            return base.TryGetMember(binder, out result);
         }
-        public object Get(string propName)
+        public override bool TryGetMember(GetMemberBinder binder, out object result)
         {
-            var binder = Microsoft.CSharp.RuntimeBinder.Binder.GetMember(CSharpBinderFlags.None,
-                  propName, this.GetType(),
-                  new List<CSharpArgumentInfo>{
-                       CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.None, null)});
-            var callsite = CallSite<Func<CallSite, object, object>>.Create(binder);
-
-            return callsite.Target(callsite, this);
+            result = Get(binder.Name);
+            return true;
+            //return base.TryGetMember(binder, out result);
         }
+        //public override bool TryGetMember(GetMemberBinder binder, out object result)
+        //{
+        //    if(Properties.Any(p => p.PropertyName == binder.Name))
+        //    {
+        //        var pro = Properties.First(p => p.PropertyName == binder.Name);
+        //        switch (NonExistingPropertiesMode)
+        //        {
+        //            case NonExistingPropertiesMode.GetAndSet:
+        //                result = pro.Value;
+        //                return true;
+        //            case NonExistingPropertiesMode.NotAllowed:
+        //            case NonExistingPropertiesMode.OnlySet:
+        //            default:
+        //                return base.TryGetMember(binder, out result);
+        //        }
+        //    }
+        //    return base.TryGetMember(binder, out result);
+        //}
+        //public object Get(string propName)
+        //{
+
+
+        //    var binder = Microsoft.CSharp.RuntimeBinder.Binder.GetMember(CSharpBinderFlags.None,
+        //          propName, this.GetType(),
+        //          new List<CSharpArgumentInfo>{
+        //               CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.None, null)});
+        //    var callsite = CallSite<Func<CallSite, object, object>>.Create(binder);
+
+        //    return callsite.Target(callsite, this);
+        //}
         public TMember Get<TMember>(string memberName) => (TMember)CastValue(typeof(TMember), Get(memberName));
         #endregion
         #region SET
@@ -75,7 +107,9 @@ namespace Fuxion.Web
             var pro = typeof(T).GetRuntimeProperty(binder.Name);
             if (pro != null)
             {
-                Properties.Add((pro, pro.Name, value));
+                dic[pro.Name] = (pro, value);
+                //dic.Add(pro.Name, (pro, value));
+                //Properties.Add((pro, pro.Name, value));
                 //_changedProperties.Add(pro, value);
                 return true;
             }
@@ -85,7 +119,7 @@ namespace Fuxion.Web
                 {
                     case NonExistingPropertiesMode.OnlySet:
                     case NonExistingPropertiesMode.GetAndSet:
-                        Properties.Add((null, binder.Name, value));
+                        dic.Add(binder.Name, (null, value));
                         return true;
                     case NonExistingPropertiesMode.NotAllowed:
                     default:
@@ -107,35 +141,30 @@ namespace Fuxion.Web
         #endregion
         public void Patch(T obj)
         {
-            foreach(var pro in Properties)
-            //foreach (var t in _changedProperties)
+            foreach(var pro in dic)
             {
-                var isList = pro.Property.PropertyType.GetTypeInfo().IsGenericType && pro.Property.PropertyType.IsSubclassOfRawGeneric(typeof(IEnumerable<>));
-                //var isList = t.Key.PropertyType.GetTypeInfo().IsGenericType && t.Key.PropertyType.IsSubclassOfRawGeneric(typeof(IEnumerable<>));
+                var property = pro.Value.Property ?? obj.GetType().GetProperty(pro.Key);
+                if (property == null) continue;
+                var isList = property.PropertyType.GetTypeInfo().IsGenericType && property.PropertyType.IsSubclassOfRawGeneric(typeof(IEnumerable<>));
                 if (isList)
                 {
-                    var listType = typeof(List<>).MakeGenericType(pro.Property.PropertyType.GenericTypeArguments[0]);
-                    //var listType = typeof(List<>).MakeGenericType(t.Key.PropertyType.GenericTypeArguments[0]);
+                    var listType = typeof(List<>).MakeGenericType(property.PropertyType.GenericTypeArguments[0]);
                     var list = Activator.CreateInstance(listType) as IList;
-                    foreach (var item in pro.Value as IList)
-                    //foreach (var item in t.Value as IList)
+                    foreach (var item in pro.Value.Value as IList)
                     {
                         if (item is JToken)
                         {
                             var jobj = item as JToken;
-                            var proType = pro.Property.PropertyType.GetTypeInfo().GenericTypeArguments[0];
-                            //var proType = t.Key.PropertyType.GetTypeInfo().GenericTypeArguments[0];
+                            var proType = property.PropertyType.GetTypeInfo().GenericTypeArguments[0];
                             var obj2 = jobj.ToObject(proType);
                             list.Add(obj2);
                         }
                     }
-                    pro.Property.SetValue(obj, list);
-                    //t.Key.SetValue(obj, list);
+                    property.SetValue(obj, list);
                 }
                 else
                 {
-                    pro.Property.SetValue(obj, CastValue(pro.Property.PropertyType, pro.Value));
-                    //t.Key.SetValue(obj, CastValue(t.Key.PropertyType, t.Value));
+                    property.SetValue(obj, CastValue(property.PropertyType, pro.Value.Value));
                 }
             }
         }
@@ -157,24 +186,25 @@ namespace Fuxion.Web
         
         
 
-        public Patchable<R> ToPatchable<R>() where R : class
+        public Patchable<R> ToPatchable<R>(bool allowNonExistingProperties = false) where R : class
         {
             var res = new Patchable<R>();
             //var dic = new Dictionary<PropertyInfo, object>();
-            var list = new List<(PropertyInfo Property, string PropertyName, object Value)>();
-            foreach (var pair in Properties)
+            //var list = new List<(PropertyInfo Property, string PropertyName, object Value)>();
+            var dd = new Dictionary<string, (PropertyInfo Property, object Value)>();
+            foreach (var pair in dic)
             //foreach (var pair in _changedProperties)
             {
-                var pro = typeof(R).GetRuntimeProperty(pair.PropertyName);
-                if (pro == null) throw new InvalidCastException($"Property '{pair.PropertyName}' cannot be trasfered to type '{typeof(R).Name}'");
+                var pro = typeof(R).GetRuntimeProperty(pair.Key);
+                if (pro == null && !allowNonExistingProperties) throw new InvalidCastException($"Property '{pair.Key}' cannot be trasfered to type '{typeof(R).Name}'");
                 //dic.Add(pro, pair.Value);
-                list.Add((pro, pro.Name, pair.Value));
+                dd.Add(pair.Key, pair.Value);
             }
             //res._changedProperties = dic;
-            res.Properties = list;
+            res.dic = dd;
             return res;
         }
-        public bool Has(string memberName) => Properties.Any(p => p.PropertyName == memberName);
+        public bool Has(string memberName) => dic.ContainsKey(memberName);
         //public bool Has(string memberName) => ChangedPropertyNames.Contains(memberName);
         //public PatchableHas<T> Has
         //{

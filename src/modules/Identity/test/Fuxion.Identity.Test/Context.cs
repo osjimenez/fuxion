@@ -326,6 +326,12 @@ namespace Fuxion.Identity.Test
             public PackageContext Package { get; } = new PackageContext();
             public class PackageContext : Context<PackageDao>
             {
+                static PackageDao Create(string name, Action<PackageDao> configureAction = null)
+                {
+                    var res = new PackageDao { Id = name, Name = name };
+                    AddConfigurationAction(configureAction, res);
+                    return res;
+                }
                 #region Album
                 public AlbumContext Album { get; } = new AlbumContext();
                 public class AlbumContext : Context<AlbumDao>
@@ -333,7 +339,7 @@ namespace Fuxion.Identity.Test
                     static AlbumDao Create(string name, Action<AlbumDao> configureAction = null)
                     {
                         var res = new AlbumDao { Id = name, Name = name };
-                        configureAction?.Invoke(res);
+                        AddConfigurationAction(configureAction, res);
                         return res;
                     }
                     public AlbumDao Album1 { get; } = Create(nameof(Album1));
@@ -343,6 +349,7 @@ namespace Fuxion.Identity.Test
                 public SoftwareContext Sofware { get; } = new SoftwareContext();
                 public class SoftwareContext : Context<SoftwareDao> { }
                 #endregion
+                public PackageDao Package1 { get; } = Create(nameof(Package1));
             }
             #endregion
         }

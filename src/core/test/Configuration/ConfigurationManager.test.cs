@@ -11,12 +11,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Fuxion.Test
+namespace Fuxion.Test.Configuration
 {
     public class ConfigurationManagerTest
     {
-        string xmlPath = @"G:\Dev\Fuxion\Repo\src\core\test\bin\Debug\config.xml";
-        string jsonPath = @"G:\Dev\Fuxion\Repo\src\core\test\bin\Debug\config.json";
+        string xmlPath = @"config.xml";
+        string jsonPath = @"config.json";
 
         private void TestFile(Func<IConfigurationManager> managerCreator)
         {

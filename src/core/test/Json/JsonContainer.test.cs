@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Fuxion.Test
+namespace Fuxion.Test.Json
 {
     public class JsonContainerTest : BaseTest
     {

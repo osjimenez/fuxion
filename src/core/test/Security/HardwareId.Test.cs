@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Fuxion.Test
+namespace Fuxion.Test.Security
 {
     public class HardwareIdTest : BaseTest
     {
