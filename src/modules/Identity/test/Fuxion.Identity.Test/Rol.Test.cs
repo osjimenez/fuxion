@@ -811,12 +811,12 @@ namespace Fuxion.Identity.Test.Rol
                 $" - Permiso ONLY READ\r\n";
 
             var query =
-                $"¿Debería poder '{nameof(Read)}' los '{nameof(PackageDao)}' (estan deshabilitados)?\r\n" +
+                $"¿Debería poder '{nameof(Admin)}' los '{nameof(PackageDao)}' (estan deshabilitados)?\r\n" +
                 " Si";
             PrintTestTriedStarted(permissionExplanation + query);
-            Assert.True(ide.Can(Read).Type<PackageDao>(), permissionExplanation + query);
-            Assert.True(ide.Can(Read).Instance(File.Package.Package1), permissionExplanation + query);
-            Assert.True(new[] { File.Package.Package1 }.AuthorizedTo(ide, Read).Any(), permissionExplanation + query);
+            Assert.True(ide.Can(Admin).Type<PackageDao>(), permissionExplanation + query);
+            Assert.True(ide.Can(Admin).Instance(File.Package.Package1), permissionExplanation + query);
+            Assert.True(new[] { File.Package.Package1 }.AuthorizedTo(ide, Admin).Any(), permissionExplanation + query);
         }
         [Fact(DisplayName = "Rol - Type discriminator related to any permission scope")]
         public void TypeDiscriminatorRelatedToAnyPermissionScope()

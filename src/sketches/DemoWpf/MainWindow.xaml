@@ -15,8 +15,9 @@
         <StackPanel>
             <Button Click="Synchronizer_Click" Content="Synchronizer" MouseRightButtonDown="Button_MouseRightButtonDown"/>
             <Button Click="HostService_Click" Content="Host Factory injected service"/>
+            <Button Click="SearchService_Click" Content="Seach for service"/>
             <Button Click="ProxyService_Click" Content="Proxy to Factory injected service"/>
         </StackPanel>
-        <local:Overlay x:Name="OverlayControl" Background="#55D82A2A"/>
+        <!--<local:Overlay x:Name="OverlayControl" Background="#55D82A2A"/>-->
     </Grid>
 </Window>

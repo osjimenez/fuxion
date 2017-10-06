@@ -121,4 +121,7 @@
   <data name="Fuxion" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Fuxion.pfx;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="Waf" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Waf Services Self-Signed.pfx;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
 </root>

@@ -71,13 +71,13 @@ namespace Fuxion.Identity
                 // If Rol is null, return false
                 if (me.Rol == null)
                 {
-                    Printer.WriteLine($"'{nameof(me.Rol)}' is NULL");
+                    Printer.WriteLine($"Rol is NULL, return FALSE");
                     return res.Value = false;
                 }
                 // If target discriminator is null, return true
                 if (typeDiscriminator == null)
                 {
-                    Printer.WriteLine($"'{nameof(typeDiscriminator)}' is NULL");
+                    Printer.WriteLine($"TypeDiscriminator is NULL, return TRUE");
                     return res.Value = true;
                 }
                 bool Compute()
@@ -161,20 +161,6 @@ namespace Fuxion.Identity
         {
             using(var res = Printer.CallResult<Expression<Func<TEntity, bool>>>())
             {
-                using (Printer.Indent2("Input parameters:"))
-                {
-                    Printer.WriteLine("Rol:");
-                    new[] { me }.Print(PrintMode.Table);
-                    Printer.WriteLine("Functions:");
-                    functions.Print(PrintMode.Table);
-                    Printer.WriteLine("Type: " + typeof(TEntity).Name);
-                }
-                var typeDiscriminator = Factory.Get<TypeDiscriminatorFactory>().FromType<TEntity>();
-                if (typeDiscriminator == null)
-                {
-                    Printer.WriteLine($"Type '{typeof(TEntity).Name}' hasn't TypeDiscriminator associated to it, no filter applies");
-                    return Expression.Lambda<Func<TEntity, bool>>(Expression.Constant(true), Expression.Parameter(typeof(TEntity)));
-                }
                 #region Methods
                 MethodInfo GetCastMethod(Type type) =>
                     typeof(Enumerable).GetTypeInfo().DeclaredMethods
@@ -221,92 +207,6 @@ namespace Fuxion.Identity
                     var curExp = Expression.Lambda<Func<TEntity, bool>>((value ? (Expression)containsExpression : Expression.Not(containsExpression)), entityParameter);
                     return curExp;
                 }
-                #endregion 
-                var props = typeof(TEntity).GetDiscriminatedProperties();
-                Printer.Foreach("Properties:", props, p => Printer.WriteLine($"{p.PropertyType.Name} {p.PropertyInfo.Name} - {p.DiscriminatorTypeId} {p.DiscriminatorType.Name}"));
-                var pers = functions.SelectMany(fun => me.SearchPermissions(
-                    true,
-                    fun,
-                    Factory.Get<TypeDiscriminatorFactory>().FromType<TEntity>(),
-                    typeof(TEntity).GetDiscriminatorsOfDiscriminatedProperties().ToArray()
-                    ))
-                .Distinct().ToList();
-                Expression<Func<TEntity, bool>> denyPersExp = null;
-                Printer.Foreach("Deny permissions:", pers.Where(p => !p.Value), per =>
-                {
-                    Expression<Func<TEntity, bool>> perExp = null;
-                    using (Printer.Indent2($"Permission: {per.ToOneLineString()}"))
-                    {
-                        Printer.Foreach("Scopes:", per.Scopes, sco =>
-                        {
-                            using (Printer.Indent2($"Scope: {sco.ToOneLineString()}"))
-                            {
-                                // Recorro las propiedades que son del tipo de este discriminador
-                                foreach (var pro in props.Where(p => AreEquals(p.DiscriminatorTypeId, sco.Discriminator.TypeId)).ToList())
-                                {
-                                    Printer.WriteLine($"Property: {pro.PropertyType.Name} {pro.PropertyInfo.Name}");
-                                    var exp = GetContainsExpression(per.Value, sco, pro.DiscriminatorType, pro.PropertyInfo);
-                                    if (exp == null) exp = Expression.Lambda<Func<TEntity, bool>>(Expression.Constant(false), Expression.Parameter(typeof(TEntity)));
-                                    if (perExp == null)
-                                        perExp = exp;
-                                    else
-                                        perExp = perExp.And(exp);
-                                }
-                            }
-                        });
-                        if (perExp == null)
-                        {
-                            perExp = Expression.Lambda<Func<TEntity, bool>>(Expression.Constant(false), Expression.Parameter(typeof(TEntity)));
-                        }
-                    }
-                    if (perExp != null)
-                    {
-                        if (denyPersExp != null)
-                            denyPersExp = denyPersExp.And(perExp);
-                        else
-                            denyPersExp = perExp;
-                    }
-                });
-                Expression<Func<TEntity, bool>> grantPersExp = null;
-                Printer.Foreach("Grant permissions:", pers.Where(p => p.Value), per =>
-                {
-                    using (Printer.Indent2($"Permission: {per.ToOneLineString()}"))
-                    {
-                        Expression<Func<TEntity, bool>> perExp = null;
-                        Printer.Foreach("Scopes:", per.Scopes, sco =>
-                        {
-                            using (Printer.Indent2($"Scope: {sco.ToOneLineString()}"))
-                            {
-                                // Recorro las propiedades que son del tipo de este discriminador
-                                foreach (var pro in props.Where(p => AreEquals(p.DiscriminatorTypeId, sco.Discriminator.TypeId)).ToList())
-                                {
-                                    Printer.WriteLine($"Property: {pro.PropertyType.Name} {pro.PropertyInfo.Name}");
-                                    var exp = GetContainsExpression(per.Value, sco, pro.DiscriminatorType, pro.PropertyInfo);
-                                    if (exp == null) exp = Expression.Lambda<Func<TEntity, bool>>(Expression.Constant(false), Expression.Parameter(typeof(TEntity)));
-                                    if (perExp == null)
-                                        perExp = exp;
-                                    else
-                                        perExp = perExp.Or(exp);
-                                }
-                            }
-                        });
-                        if (perExp == null)
-                        {
-                            perExp = Expression.Lambda<Func<TEntity, bool>>(Expression.Constant(true), Expression.Parameter(typeof(TEntity)));
-                        }
-                        if (perExp != null)
-                        {
-                            if (grantPersExp != null)
-                                grantPersExp = grantPersExp.Or(perExp);
-                            else
-                                grantPersExp = perExp;
-                        }
-                    }
-                });
-                if (denyPersExp != null && grantPersExp != null) res.Value = denyPersExp.And(grantPersExp);
-                if (denyPersExp != null && grantPersExp == null) res.Value = denyPersExp;
-                if (denyPersExp == null && grantPersExp != null) res.Value = grantPersExp;
-                res.Value = res.Value ?? Expression.Lambda<Func<TEntity, bool>>(Expression.Constant(false), Expression.Parameter(typeof(TEntity)));
                 #region PrintExpression
                 void PrintExpression(Expression exp)
                 {
@@ -392,12 +292,115 @@ namespace Fuxion.Identity
                     PrintExpression(exp.Operand);
                 }
                 #endregion
+                #endregion 
+                using (Printer.Indent2("Input parameters:"))
+                {
+                    Printer.WriteLine("Rol:");
+                    new[] { me }.Print(PrintMode.Table);
+                    Printer.WriteLine("Functions:");
+                    functions.Print(PrintMode.Table);
+                    Printer.WriteLine("Type: " + typeof(TEntity).Name);
+                }
                 res.OnPrintResult = r =>
                 {
                     Printer.WriteLine("Expression:");
                     PrintExpression(r?.Body);
                     Printer.WriteLine("");
                 };
+                var typeDiscriminator = Factory.Get<TypeDiscriminatorFactory>().FromType<TEntity>();
+                if (typeDiscriminator == null)
+                {
+                    Printer.WriteLine($"Type '{typeof(TEntity).Name}' hasn't TypeDiscriminator associated to it, no filter applies");
+                    return res.Value = Expression.Lambda<Func<TEntity, bool>>(Expression.Constant(true), Expression.Parameter(typeof(TEntity)));
+                }
+                
+                var props = typeof(TEntity).GetDiscriminatedProperties();
+                Printer.Foreach("Properties:", props, p => Printer.WriteLine($"{p.PropertyType.Name} {p.PropertyInfo.Name} - {p.DiscriminatorTypeId} {p.DiscriminatorType.Name}"));
+                var pers = functions.SelectMany(fun => me.SearchPermissions(
+                    true,
+                    fun,
+                    Factory.Get<TypeDiscriminatorFactory>().FromType<TEntity>(),
+                    typeof(TEntity).GetDiscriminatorsOfDiscriminatedProperties().ToArray()
+                    ))
+                .Distinct().ToList();
+                Expression<Func<TEntity, bool>> denyPersExp = null;
+                Printer.Foreach("Deny permissions:", pers.Where(p => !p.Value), per =>
+                {
+                    Expression<Func<TEntity, bool>> perExp = null;
+                    using (Printer.Indent2($"Permission: {per.ToOneLineString()}"))
+                    {
+                        Printer.Foreach("Scopes:", per.Scopes, sco =>
+                        {
+                            using (Printer.Indent2($"Scope: {sco.ToOneLineString()}"))
+                            {
+                                // Recorro las propiedades que son del tipo de este discriminador
+                                foreach (var pro in props.Where(p => AreEquals(p.DiscriminatorTypeId, sco.Discriminator.TypeId)).ToList())
+                                {
+                                    Printer.WriteLine($"Property: {pro.PropertyType.Name} {pro.PropertyInfo.Name}");
+                                    var exp = GetContainsExpression(per.Value, sco, pro.DiscriminatorType, pro.PropertyInfo);
+                                    if (exp == null) exp = Expression.Lambda<Func<TEntity, bool>>(Expression.Constant(false), Expression.Parameter(typeof(TEntity)));
+                                    if (perExp == null)
+                                        perExp = exp;
+                                    else
+                                        perExp = perExp.And(exp);
+                                }
+                            }
+                        });
+                        if (perExp == null)
+                        {
+                            perExp = Expression.Lambda<Func<TEntity, bool>>(Expression.Constant(false), Expression.Parameter(typeof(TEntity)));
+                        }
+                    }
+                    if (perExp != null)
+                    {
+                        if (denyPersExp != null)
+                            denyPersExp = denyPersExp.And(perExp);
+                        else
+                            denyPersExp = perExp;
+                    }
+                });
+                Expression<Func<TEntity, bool>> grantPersExp = null;
+                Printer.Foreach("Grant permissions:", pers.Where(p => p.Value), per =>
+                {
+                    using (Printer.Indent2($"Permission: {per.ToOneLineString()}"))
+                    {
+                        Expression<Func<TEntity, bool>> perExp = null;
+                        Printer.Foreach("Scopes:", per.Scopes, sco =>
+                        {
+                            using (Printer.Indent2($"Scope: {sco.ToOneLineString()}"))
+                            {
+                                // Recorro las propiedades que son del tipo de este discriminador
+                                foreach (var pro in props.Where(p => AreEquals(p.DiscriminatorTypeId, sco.Discriminator.TypeId)).ToList())
+                                {
+                                    Printer.WriteLine($"Property: {pro.PropertyType.Name} {pro.PropertyInfo.Name}");
+                                    var exp = GetContainsExpression(per.Value, sco, pro.DiscriminatorType, pro.PropertyInfo);
+                                    if (exp == null) exp = Expression.Lambda<Func<TEntity, bool>>(Expression.Constant(false), Expression.Parameter(typeof(TEntity)));
+                                    if (perExp == null)
+                                        perExp = exp;
+                                    else
+                                        perExp = perExp.Or(exp);
+                                }
+                            }
+                        });
+                        if (perExp == null)
+                        {
+                            perExp = Expression.Lambda<Func<TEntity, bool>>(Expression.Constant(true), Expression.Parameter(typeof(TEntity)));
+                        }
+                        if (perExp != null)
+                        {
+                            if (grantPersExp != null)
+                                grantPersExp = grantPersExp.Or(perExp);
+                            else
+                                grantPersExp = perExp;
+                        }
+                    }
+                });
+                if (denyPersExp != null && grantPersExp != null) res.Value = denyPersExp.And(grantPersExp);
+                if (denyPersExp != null && grantPersExp == null) res.Value = denyPersExp;
+                if (denyPersExp == null && grantPersExp != null) res.Value = grantPersExp;
+                res.Value = res.Value ?? Expression.Lambda<Func<TEntity, bool>>(Expression.Constant(false), Expression.Parameter(typeof(TEntity)));
+                
+
                 return res.Value;
             }
         }

@@ -41,6 +41,7 @@
 	<Reference Include="System.Management" />
 	<Reference Include="System.IdentityModel" />
 	<Reference Include="System.ServiceModel" />
+	<Reference Include="System.ServiceModel.Discovery" />
 	<Reference Include="System.Transactions" />
 	<Reference Include="System.Security" />
 	<Reference Include="System.Runtime.Serialization" />

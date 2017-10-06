@@ -5,15 +5,18 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IdentityModel.Selectors;
 using System.Linq;
+using System.Net;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
 using System.ServiceModel.Description;
+using System.ServiceModel.Discovery;
 using System.ServiceModel.Security;
 using System.Text;
 using System.Threading.Tasks;
 using System.Transactions;
+using System.Xml.Linq;
 
 namespace Fuxion.ServiceModel
 {
@@ -50,6 +53,19 @@ namespace Fuxion.ServiceModel
         public static IHost ConfigureHost(this IHost me, Action<ServiceHost> action)
         {
             action((me as _Host).ServiceHost);
+            return me;
+        }
+        public static IHost MakeDiscoverable(this IHost me)
+        {
+            var edb = new EndpointDiscoveryBehavior();
+            edb.Extensions.Add(new XElement("NetBiosName", Environment.MachineName));
+            var dns = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (var ip in dns.AddressList)
+                if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                    edb.Extensions.Add(new XElement("IpAddress", ip.ToString()));
+            (me as _Host).ServiceHost.Description.Endpoints.First().EndpointBehaviors.Add(edb);
+            (me as _Host).ServiceHost.Description.Behaviors.Add(new ServiceDiscoveryBehavior());
+            (me as _Host).ServiceHost.AddServiceEndpoint(new UdpDiscoveryEndpoint());
             return me;
         }
         public static IHost InstanceContextMode(this IHost me, InstanceContextMode mode)
