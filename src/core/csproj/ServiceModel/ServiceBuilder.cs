@@ -55,14 +55,18 @@ namespace Fuxion.ServiceModel
             action((me as _Host).ServiceHost);
             return me;
         }
-        public static IHost MakeDiscoverable(this IHost me)
+        public static IHost MakeDiscoverable(this IHost me, bool allowIPv6Addresses = false)
         {
             var edb = new EndpointDiscoveryBehavior();
             edb.Extensions.Add(new XElement("NetBiosName", Environment.MachineName));
             var dns = Dns.GetHostEntry(Dns.GetHostName());
             foreach (var ip in dns.AddressList)
+            {
                 if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
                     edb.Extensions.Add(new XElement("IpAddress", ip.ToString()));
+                if (allowIPv6Addresses && ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6)
+                    edb.Extensions.Add(new XElement("IpV6Address", ip.ToString()));
+            }
             (me as _Host).ServiceHost.Description.Endpoints.First().EndpointBehaviors.Add(edb);
             (me as _Host).ServiceHost.Description.Behaviors.Add(new ServiceDiscoveryBehavior());
             (me as _Host).ServiceHost.AddServiceEndpoint(new UdpDiscoveryEndpoint());
@@ -237,7 +241,7 @@ namespace Fuxion.ServiceModel
                     if (configureTcpBinding != null)
                         b = configureTcpBinding(b);
                 });
-                e = e.WithAddress($"net.tcp://{host}:{port}/{path}");
+                e = e.WithAddress($"net.tcp://{host}:{port}/{path.Trim('/')}");
             });
             proxy = proxy.WithCredentials(c => {
                 if (configureClientCredentials != null)
@@ -260,7 +264,7 @@ namespace Fuxion.ServiceModel
                     if (configureTcpBinding != null)
                         b = configureTcpBinding(b);
                 });
-                e = e.WithAddress($"net.tcp://{host}:{port}/{path}", dnsName);
+                e = e.WithAddress($"net.tcp://{host}:{port}/{path.Trim('/')}", dnsName);
             });
             proxy = proxy.WithCredentials(c => {
                 c = c.UserName(username);
@@ -272,6 +276,20 @@ namespace Fuxion.ServiceModel
             });
             configureChannelFactory?.Invoke((proxy as _Proxy<TContract>).ChannelFactory);
             return proxy;
+        }
+        public static IProxy<TContract> MaxItemsInObjectGraph<TContract>(this IProxy<TContract> me, int maxItemsInObjectGraph)
+        {
+            var proxy = (me as _Proxy<TContract>);
+            foreach (var op in proxy.ChannelFactory.Endpoint.Contract.Operations)
+            {
+                var dataContractBehavior = op.Behaviors.Find<DataContractSerializerOperationBehavior>() as DataContractSerializerOperationBehavior;
+                if (dataContractBehavior != null)
+                {
+                    dataContractBehavior.MaxItemsInObjectGraph = int.MaxValue;
+                }
+            }
+
+            return me;
         }
         public static TContract Create<TContract>(this IProxy<TContract> me)
         {

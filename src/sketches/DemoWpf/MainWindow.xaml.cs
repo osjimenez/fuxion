@@ -120,17 +120,6 @@ namespace DemoWpf
                         }
                     })
                     .MakeDiscoverable()
-                    //.ConfigureHost(host => {
-                    //    var edb = new EndpointDiscoveryBehavior();
-                    //    edb.Extensions.Add(new XElement("NetBiosName", Environment.MachineName));
-                    //    var dns = Dns.GetHostEntry(Dns.GetHostName());
-                    //    foreach (var ip in dns.AddressList)
-                    //        if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
-                    //            edb.Extensions.Add(new XElement("IpAddress", ip.ToString()));
-                    //    host.Description.Endpoints.First().EndpointBehaviors.Add(edb);
-                    //    host.Description.Behaviors.Add(new ServiceDiscoveryBehavior());
-                    //    host.AddServiceEndpoint(new UdpDiscoveryEndpoint());
-                    //})
                 .OpenAsync(afterOpenAction: _ => Debug.WriteLine($"{Thread.CurrentThread.ManagedThreadId} - Service host opened"));
         }
         class ServiceValidator : UserNamePasswordValidator
@@ -229,8 +218,8 @@ namespace DemoWpf
             //var proxy = await ServiceBuilder.Proxy(new CustomDuplexChannelFactory<IFactoryService>(this))
 
             //var proxy = await ServiceBuilder.Proxy((endpoint) => new CustomDuplexChannelFactory<IFactoryService>(this, endpoint))
-
-            var proxy = ServiceBuilder.Proxy(this, (instance, endpoint) => new CustomDuplexChannelFactory<IFactoryService>(instance, endpoint))
+            //var proxy = ServiceBuilder.Proxy(this, (instance, endpoint) => new CustomDuplexChannelFactory<IFactoryService>(instance, endpoint))
+            var proxy = ServiceBuilder.Proxy<IFactoryService>(this)
                 .DefaultTcpSecurizedProxy("localhost", 6666, "FactoryService", "fuxion.demo", "username", "password", "0DFF4D21124E15D8B3365B03E65AE4B9F4A52FF3")
                 .Create();
             //.OpenAsync(afterOpenAction: _ => Debug.WriteLine($"{Thread.CurrentThread.ManagedThreadId} - Proxy opened"));
