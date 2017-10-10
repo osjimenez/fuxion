@@ -119,7 +119,7 @@ namespace DemoWpf
                             throw new AuthenticationException("Invalid username or password");
                         }
                     })
-                    .MakeDiscoverable()
+                .MakeDiscoverable()
                 .OpenAsync(afterOpenAction: _ => Debug.WriteLine($"{Thread.CurrentThread.ManagedThreadId} - Service host opened"));
         }
         class ServiceValidator : UserNamePasswordValidator
@@ -184,33 +184,40 @@ namespace DemoWpf
         }
         public void SearchService_Click(object sender, RoutedEventArgs args)
         {
-            var dis = new DiscoveryClient(new UdpDiscoveryEndpoint());
-            dis.FindProgressChanged += (s, e) =>
-            {
-                //if (!e.EndpointDiscoveryMetadata.Extensions.Any(ex => ex.Name == "NetBiosName")) return;
-                //string netbios = e.EndpointDiscoveryMetadata.Extensions.First(ex => ex.Name == "NetBiosName").Value;
-                //int port = e.EndpointDiscoveryMetadata.Address.Uri.Port;
-                //IEnumerable<string> ipList = e.EndpointDiscoveryMetadata.Extensions.Where(ex => ex.Name == "IpAddress").Select(ex => ex.Value);
-                //if (FoundServices.Any(fs => fs.NetBiosName == netbios))
-                //{
-                //    FoundService ser = FoundServices.First(fs => fs.NetBiosName == netbios);
-                //    foreach (string ip in ipList.Intersect(ser.IpAddressList))
-                //        ser.IpAddressList.Add(ip);
-                //}
-                //else
-                //    FoundServices.Add(new FoundService
-                //    {
-                //        IpAddressList = new List<string>(ipList),
-                //        NetBiosName = netbios,
-                //        Port = port
-                //    });
-                Debug.WriteLine("");
-            };
-            dis.FindCompleted += (s, e) =>
-            {
-                dis.FindAsync(new FindCriteria(typeof(IFactoryService)));
-            };
-            dis.FindAsync(new FindCriteria(typeof(IFactoryService)));
+            ServiceBuilder.DiscoverServices<IFactoryService>()
+                .OnFind(res =>
+                {
+                    Debug.WriteLine(res.NetBiosName);
+                    res.Manager.Stop();
+                })
+                .Start();
+            //var dis = new DiscoveryClient(new UdpDiscoveryEndpoint());
+            //dis.FindProgressChanged += (s, e) =>
+            //{
+            //    //if (!e.EndpointDiscoveryMetadata.Extensions.Any(ex => ex.Name == "NetBiosName")) return;
+            //    //string netbios = e.EndpointDiscoveryMetadata.Extensions.First(ex => ex.Name == "NetBiosName").Value;
+            //    //int port = e.EndpointDiscoveryMetadata.Address.Uri.Port;
+            //    //IEnumerable<string> ipList = e.EndpointDiscoveryMetadata.Extensions.Where(ex => ex.Name == "IpAddress").Select(ex => ex.Value);
+            //    //if (FoundServices.Any(fs => fs.NetBiosName == netbios))
+            //    //{
+            //    //    FoundService ser = FoundServices.First(fs => fs.NetBiosName == netbios);
+            //    //    foreach (string ip in ipList.Intersect(ser.IpAddressList))
+            //    //        ser.IpAddressList.Add(ip);
+            //    //}
+            //    //else
+            //    //    FoundServices.Add(new FoundService
+            //    //    {
+            //    //        IpAddressList = new List<string>(ipList),
+            //    //        NetBiosName = netbios,
+            //    //        Port = port
+            //    //    });
+            //    Debug.WriteLine("");
+            //};
+            //dis.FindCompleted += (s, e) =>
+            //{
+            //    dis.FindAsync(new FindCriteria(typeof(IFactoryService)));
+            //};
+            //dis.FindAsync(new FindCriteria(typeof(IFactoryService)));
         }
         public void ProxyService_Click(object sender, RoutedEventArgs args)
         {

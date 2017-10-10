@@ -14,20 +14,23 @@ using System.ServiceModel.Description;
 using System.ServiceModel.Discovery;
 using System.ServiceModel.Security;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Transactions;
 using System.Xml.Linq;
+using static Fuxion.ServiceModel.ServiceBuilderFluentExtensions;
 
 namespace Fuxion.ServiceModel
 {
     public static class ServiceBuilder
     {
         #region Static methods
-        public static IHost Host<TService>() { return new _Host(typeof(TService)); }
-        public static IProxy<TContract> Proxy<TContract>() { return new _Proxy<TContract>(e => new ChannelFactory<TContract>(e)); }
-        public static IProxy<TContract> Proxy<TContract>(object callbackInstance) { return new _Proxy<TContract>(callbackInstance, (i, e) => new DuplexChannelFactory<TContract>(callbackInstance, e)); }
-        public static IProxy<TContract> Proxy<TContract>(Func<ServiceEndpoint, ChannelFactory<TContract>> createCustomChannelFactoryFunction) { return new _Proxy<TContract>(createCustomChannelFactoryFunction); }
-        public static IProxy<TContract> Proxy<TContract>(object callbackInstance, Func<object, ServiceEndpoint, ChannelFactory<TContract>> createCustomDuplexChannelFactoryFunction) { return new _Proxy<TContract>(callbackInstance, createCustomDuplexChannelFactoryFunction); }
+        public static IHost Host<TService>() => new _Host(typeof(TService));
+        public static IProxy<TContract> Proxy<TContract>() => new _Proxy<TContract>(e => new ChannelFactory<TContract>(e));
+        public static IProxy<TContract> Proxy<TContract>(object callbackInstance) => new _Proxy<TContract>(callbackInstance, (i, e) => new DuplexChannelFactory<TContract>(callbackInstance, e));
+        public static IProxy<TContract> Proxy<TContract>(Func<ServiceEndpoint, ChannelFactory<TContract>> createCustomChannelFactoryFunction) => new _Proxy<TContract>(createCustomChannelFactoryFunction);
+        public static IProxy<TContract> Proxy<TContract>(object callbackInstance, Func<object, ServiceEndpoint, ChannelFactory<TContract>> createCustomDuplexChannelFactoryFunction) => new _Proxy<TContract>(callbackInstance, createCustomDuplexChannelFactoryFunction);
+        public static IDiscoveryManager DiscoverServices<TContract>() => new DiscoveryManager<TContract>();
         #endregion
     }
     public static class ServiceBuilderFluentExtensions
@@ -55,18 +58,24 @@ namespace Fuxion.ServiceModel
             action((me as _Host).ServiceHost);
             return me;
         }
-        public static IHost MakeDiscoverable(this IHost me, bool allowIPv6Addresses = false)
+        public static IHost MakeDiscoverable(this IHost me,
+            DiscoveryMetadataElement metadata = DiscoveryMetadataElement.NetBiosName | DiscoveryMetadataElement.IpV4Addresses,
+            Action<EndpointDiscoveryBehavior> configureEndpointBehavior = null)
         {
             var edb = new EndpointDiscoveryBehavior();
-            edb.Extensions.Add(new XElement("NetBiosName", Environment.MachineName));
+            if (metadata.HasFlag(DiscoveryMetadataElement.NetBiosName))
+                edb.Extensions.Add(new XElement("NetBiosName", Environment.MachineName));
             var dns = Dns.GetHostEntry(Dns.GetHostName());
             foreach (var ip in dns.AddressList)
             {
-                if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
-                    edb.Extensions.Add(new XElement("IpAddress", ip.ToString()));
-                if (allowIPv6Addresses && ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6)
+                if (metadata.HasFlag(DiscoveryMetadataElement.IpV4Addresses) && 
+                    ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                    edb.Extensions.Add(new XElement("IpV4Address", ip.ToString()));
+                if (metadata.HasFlag(DiscoveryMetadataElement.IpV6Addresses) && 
+                    ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6)
                     edb.Extensions.Add(new XElement("IpV6Address", ip.ToString()));
             }
+            configureEndpointBehavior?.Invoke(edb);
             (me as _Host).ServiceHost.Description.Endpoints.First().EndpointBehaviors.Add(edb);
             (me as _Host).ServiceHost.Description.Behaviors.Add(new ServiceDiscoveryBehavior());
             (me as _Host).ServiceHost.AddServiceEndpoint(new UdpDiscoveryEndpoint());
@@ -204,6 +213,16 @@ namespace Fuxion.ServiceModel
         {
             return TaskManager.StartNew((iHost, time, before, after) => iHost.Open(time, before, after), me, timeout, beforeOpenAction, afterOpenAction);
         }
+        #region Host classes
+        internal class _Host : IHost
+        {
+            public _Host(Type serviceType)
+            {
+                ServiceHost = new ServiceHost(serviceType);
+            }
+            public ServiceHost ServiceHost { get; set; }
+        }
+        #endregion
         #endregion
         #region Proxy
         public static IProxy<TContract> AddEndpoint<TContract>(this IProxy<TContract> me, Action<IEndpoint> action)
@@ -316,6 +335,31 @@ namespace Fuxion.ServiceModel
         {
             return TaskManager.StartNew((iProxy, time, before, after) => iProxy.Open(time, before, after), me, timeout, beforeOpenAction, afterOpenAction);
         }
+        #region Proxy classes
+        internal class _Proxy<TContract> : IProxy<TContract>
+        {
+            public _Proxy(Func<ServiceEndpoint, ChannelFactory<TContract>> createCustomChannelFactoryFunction)
+            {
+                CreateCustomChannelFactoryFunction = createCustomChannelFactoryFunction;
+            }
+            public _Proxy(object callbackInstance, Func<object, ServiceEndpoint, ChannelFactory<TContract>> createCustomDuplexChannelFactoryFunction)
+            {
+                CallbackInstance = callbackInstance;
+                CreateCustomDuplexChannelFactoryFunction = createCustomDuplexChannelFactoryFunction;
+            }
+            internal object CallbackInstance { get; set; }
+            internal Func<ServiceEndpoint, ChannelFactory<TContract>> CreateCustomChannelFactoryFunction { get; set; }
+            internal Func<object, ServiceEndpoint, ChannelFactory<TContract>> CreateCustomDuplexChannelFactoryFunction { get; set; }
+            public ChannelFactory<TContract> ChannelFactory { get; set; }
+            public void SetEndpoint(ServiceEndpoint endpoint)
+            {
+                if (CallbackInstance != null)
+                    ChannelFactory = CreateCustomDuplexChannelFactoryFunction(CallbackInstance, endpoint);
+                else
+                    ChannelFactory = CreateCustomChannelFactoryFunction(endpoint);
+            }
+        }
+        #endregion
         #endregion
         #region Endpoint
         public static IEndpoint WithContract(this IEndpoint me, Func<ContractDescription> contractFunction)
@@ -354,6 +398,12 @@ namespace Fuxion.ServiceModel
             (me as _Endpoint).ServiceEndpoint.Address = new EndpointAddress(new Uri(url), new DnsEndpointIdentity(dnsName));
             return me;
         }
+        #region Endpoint classes
+        class _Endpoint : IEndpoint
+        {
+            public ServiceEndpoint ServiceEndpoint { get; set; }
+        }
+        #endregion
         #endregion
         #region Binding
         public static TBinding OpenTimeout<TBinding>(this TBinding me, TimeSpan openTimeout) where TBinding : IBinding
@@ -386,6 +436,23 @@ namespace Fuxion.ServiceModel
             (me as _Binding).LocalClientMaxClockSkew = localClientMaxClockSkew;
             return me;
         }
+        #region Binding classes
+        abstract class _Binding : IBinding
+        {
+            public abstract Binding CreateBinding();
+            public virtual void ConfigureBinding(Binding binding)
+            {
+                binding.CloseTimeout = CloseTimeout;
+            }
+
+            public TimeSpan CloseTimeout { get; set; } = TimeSpan.FromMinutes(1);
+            public TimeSpan OpenTimeout { get; set; } = TimeSpan.FromMinutes(1);
+            public TimeSpan ReceiveTimeout { get; set; } = TimeSpan.FromMinutes(1);
+            public TimeSpan SendTimeout { get; set; } = TimeSpan.FromMinutes(1);
+            public TimeSpan LocalServiceMaxClockSkew { get; set; } = TimeSpan.FromMinutes(5);
+            public TimeSpan LocalClientMaxClockSkew { get; set; } = TimeSpan.FromMinutes(5);
+        }
+        #endregion
         #endregion
         #region TcpBinding
         public static TBinding InactivityTimeout<TBinding>(this TBinding me, TimeSpan inactivityTimeout) where TBinding : IBinding
@@ -448,6 +515,59 @@ namespace Fuxion.ServiceModel
             (me as _TcpBinding).ConfigureTcpBindingAction = action;
             return me;
         }
+        #region TcpBinding classes
+        class _TcpBinding : _Binding, ITcpBinding
+        {
+            public override Binding CreateBinding()
+            {
+                Binding bin;
+                var tcpBin = new NetTcpBinding();
+                tcpBin.ReliableSession.InactivityTimeout = InactivityTimeout;
+                tcpBin.MaxBufferPoolSize = MaxBufferPoolSize;
+                tcpBin.MaxBufferSize = MaxBufferSize;
+                tcpBin.MaxConnections = MaxConnections;
+                tcpBin.MaxReceivedMessageSize = MaxReceivedMessageSize;
+                tcpBin.ReaderQuotas.MaxBytesPerRead = ReaderQuotas_MaxBytesPerRead;
+                tcpBin.ReaderQuotas.MaxStringContentLength = ReaderQuotas_MaxStringContentLength;
+                tcpBin.ReaderQuotas.MaxArrayLength = ReaderQuotas_MaxArrayLength;
+                tcpBin.Security.Mode = SecurityMode;
+                tcpBin.Security.Message.ClientCredentialType = ClientCredentialType;
+                tcpBin.TransferMode = TransferMode;
+                ConfigureTcpBindingAction?.Invoke(tcpBin);
+                bin = tcpBin;
+
+                // Check if ClockSkew has default values (300 segundos)
+                if (LocalClientMaxClockSkew != TimeSpan.FromMinutes(5) || LocalServiceMaxClockSkew != TimeSpan.FromMinutes(5))
+                {
+                    CustomBinding cusBin = new CustomBinding(tcpBin);
+                    SecurityBindingElement security = cusBin.Elements.Find<SecurityBindingElement>();
+                    if (security != null)
+                    {
+                        security.LocalServiceSettings.MaxClockSkew = LocalServiceMaxClockSkew;
+                        security.LocalClientSettings.MaxClockSkew = LocalClientMaxClockSkew;
+                    }
+                    bin = cusBin;
+                }
+                bin.CloseTimeout = CloseTimeout;
+                bin.OpenTimeout = OpenTimeout;
+                bin.ReceiveTimeout = ReceiveTimeout;
+                bin.SendTimeout = SendTimeout;
+                return bin;
+            }
+            public TimeSpan InactivityTimeout { get; set; } = TimeSpan.FromMinutes(10);
+            public long MaxBufferPoolSize { get; set; } = 524288;
+            public int MaxBufferSize { get; set; } = 65536;
+            public int MaxConnections { get; set; } = 10;
+            public long MaxReceivedMessageSize { get; set; } = 65536;
+            public SecurityMode SecurityMode { get; set; } = SecurityMode.None;
+            public MessageCredentialType ClientCredentialType { get; set; } = MessageCredentialType.None;
+            public TransferMode TransferMode { get; set; } = TransferMode.Buffered;
+            public int ReaderQuotas_MaxStringContentLength { get; set; } = 8192;
+            public int ReaderQuotas_MaxArrayLength { get; set; } = 16384;
+            public int ReaderQuotas_MaxBytesPerRead { get; set; } = 4096;
+            public Action<NetTcpBinding> ConfigureTcpBindingAction { get; set; }
+        }
+        #endregion
         #endregion
         #region ServiceCredentials
         public static IServiceCredentials ServiceCertificate(this IServiceCredentials me, X509Certificate2 certificate)
@@ -474,6 +594,24 @@ namespace Fuxion.ServiceModel
             cre.ServiceCredentials.UserNameAuthentication.CustomUserNamePasswordValidator = new ServiceValidator(userNameValidationAction);
             return me;
         }
+        #region ServiceCredentials classes
+        class _ServiceCredentials : IServiceCredentials
+        {
+            public ServiceCredentials ServiceCredentials { get; set; }
+        }
+        class ServiceValidator : UserNamePasswordValidator
+        {
+            public ServiceValidator(Action<string, string> userNameValidationAction)
+            {
+                this.userNameValidationAction = userNameValidationAction;
+            }
+            Action<string, string> userNameValidationAction;
+            public override void Validate(string userName, string password)
+            {
+                userNameValidationAction(userName, password);
+            }
+        }
+        #endregion
         #endregion
         #region ClientCrdentials
         public static IClientCredentials UserName(this IClientCredentials me, string userName)
@@ -515,142 +653,25 @@ namespace Fuxion.ServiceModel
             });
             return me;
         }
-        #endregion
-    }
-    class ServiceValidator : UserNamePasswordValidator
-    {
-        public ServiceValidator(Action<string, string> userNameValidationAction)
+        #region ClientCredentials
+        class _ClientCredentials : IClientCredentials
         {
-            this.userNameValidationAction = userNameValidationAction;
+            public ClientCredentials ClientCredentials { get; set; }
         }
-        Action<string, string> userNameValidationAction;
-        public override void Validate(string userName, string password)
+        class CertificateValidator : X509CertificateValidator
         {
-            userNameValidationAction(userName, password);
-        }
-    }
-    class CertificateValidator : X509CertificateValidator
-    {
-        public CertificateValidator(Action<X509Certificate2> certificateValidationAction)
-        {
-            this.certificateValidationAction = certificateValidationAction;
-        }
-        Action<X509Certificate2> certificateValidationAction;
-        public override void Validate(X509Certificate2 certificate)
-        {
-            certificateValidationAction(certificate);
-        }
-    }
-    class _Host : IHost
-    {
-        public _Host(Type serviceType)
-        {
-            ServiceHost = new ServiceHost(serviceType);
-        }
-        public ServiceHost ServiceHost { get; set; }
-    }
-    class _Proxy<TContract> : IProxy<TContract>
-    {
-        public _Proxy(Func<ServiceEndpoint, ChannelFactory<TContract>> createCustomChannelFactoryFunction)
-        {
-            CreateCustomChannelFactoryFunction = createCustomChannelFactoryFunction;
-        }
-        public _Proxy(object callbackInstance, Func<object, ServiceEndpoint, ChannelFactory<TContract>> createCustomDuplexChannelFactoryFunction)
-        {
-            CallbackInstance = callbackInstance;
-            CreateCustomDuplexChannelFactoryFunction = createCustomDuplexChannelFactoryFunction;
-        }
-        internal object CallbackInstance { get; set; }
-        internal Func<ServiceEndpoint, ChannelFactory<TContract>> CreateCustomChannelFactoryFunction { get; set; }
-        internal Func<object, ServiceEndpoint, ChannelFactory<TContract>> CreateCustomDuplexChannelFactoryFunction { get; set; }
-        public ChannelFactory<TContract> ChannelFactory { get; set; }
-        public void SetEndpoint(ServiceEndpoint endpoint)
-        {
-            if (CallbackInstance != null)
-                ChannelFactory = CreateCustomDuplexChannelFactoryFunction(CallbackInstance, endpoint);
-            else
-                ChannelFactory = CreateCustomChannelFactoryFunction(endpoint);
-        }
-    }
-    class _Endpoint : IEndpoint
-    {
-        public ServiceEndpoint ServiceEndpoint { get; set; }
-    }
-    abstract class _Binding : IBinding
-    {
-        public abstract Binding CreateBinding();
-        public virtual void ConfigureBinding(Binding binding)
-        {
-            binding.CloseTimeout = CloseTimeout;
-        }
-
-        public TimeSpan CloseTimeout { get; set; } = TimeSpan.FromMinutes(1);
-        public TimeSpan OpenTimeout { get; set; } = TimeSpan.FromMinutes(1);
-        public TimeSpan ReceiveTimeout { get; set; } = TimeSpan.FromMinutes(1);
-        public TimeSpan SendTimeout { get; set; } = TimeSpan.FromMinutes(1);
-        public TimeSpan LocalServiceMaxClockSkew { get; set; } = TimeSpan.FromMinutes(5);
-        public TimeSpan LocalClientMaxClockSkew { get; set; } = TimeSpan.FromMinutes(5);
-    }
-    class _TcpBinding : _Binding, ITcpBinding
-    {
-        public override Binding CreateBinding()
-        {
-            Binding bin;
-            var tcpBin = new NetTcpBinding();
-            tcpBin.ReliableSession.InactivityTimeout = InactivityTimeout;
-            tcpBin.MaxBufferPoolSize = MaxBufferPoolSize;
-            tcpBin.MaxBufferSize = MaxBufferSize;
-            tcpBin.MaxConnections = MaxConnections;
-            tcpBin.MaxReceivedMessageSize = MaxReceivedMessageSize;
-            tcpBin.ReaderQuotas.MaxBytesPerRead = ReaderQuotas_MaxBytesPerRead;
-            tcpBin.ReaderQuotas.MaxStringContentLength = ReaderQuotas_MaxStringContentLength;
-            tcpBin.ReaderQuotas.MaxArrayLength = ReaderQuotas_MaxArrayLength;
-            tcpBin.Security.Mode = SecurityMode;
-            tcpBin.Security.Message.ClientCredentialType = ClientCredentialType;
-            tcpBin.TransferMode = TransferMode;
-            ConfigureTcpBindingAction?.Invoke(tcpBin);
-            bin = tcpBin;
-
-            // Check if ClockSkew has default values (300 segundos)
-            if (LocalClientMaxClockSkew != TimeSpan.FromMinutes(5) || LocalServiceMaxClockSkew != TimeSpan.FromMinutes(5))
+            public CertificateValidator(Action<X509Certificate2> certificateValidationAction)
             {
-                CustomBinding cusBin = new CustomBinding(tcpBin);
-                SecurityBindingElement security = cusBin.Elements.Find<SecurityBindingElement>();
-                if (security != null)
-                {
-                    security.LocalServiceSettings.MaxClockSkew = LocalServiceMaxClockSkew;
-                    security.LocalClientSettings.MaxClockSkew = LocalClientMaxClockSkew;
-                }
-                bin = cusBin;
+                this.certificateValidationAction = certificateValidationAction;
             }
-            bin.CloseTimeout = CloseTimeout;
-            bin.OpenTimeout = OpenTimeout;
-            bin.ReceiveTimeout = ReceiveTimeout;
-            bin.SendTimeout = SendTimeout;
-            return bin;
+            Action<X509Certificate2> certificateValidationAction;
+            public override void Validate(X509Certificate2 certificate)
+            {
+                certificateValidationAction(certificate);
+            }
         }
-
-        public TimeSpan InactivityTimeout { get; set; } = TimeSpan.FromMinutes(10);
-        public long MaxBufferPoolSize { get; set; } = 524288;
-        public int MaxBufferSize { get; set; } = 65536;
-        public int MaxConnections { get; set; } = 10;
-        public long MaxReceivedMessageSize { get; set; } = 65536;
-        public SecurityMode SecurityMode { get; set; } = SecurityMode.None;
-        public MessageCredentialType ClientCredentialType { get; set; } = MessageCredentialType.None;
-        public TransferMode TransferMode { get; set; } = TransferMode.Buffered;
-        public int ReaderQuotas_MaxStringContentLength { get; set; } = 8192;
-        public int ReaderQuotas_MaxArrayLength { get; set; } = 16384;
-        public int ReaderQuotas_MaxBytesPerRead { get; set; } = 4096;
-
-        public Action<NetTcpBinding> ConfigureTcpBindingAction { get; set; }
-    }
-    class _ServiceCredentials : IServiceCredentials
-    {
-        public ServiceCredentials ServiceCredentials { get; set; }
-    }
-    class _ClientCredentials : IClientCredentials
-    {
-        public ClientCredentials ClientCredentials { get; set; }
+        #endregion
+        #endregion
     }
     public interface IHost { }
     public interface IProxy<TProxy> { }
@@ -659,5 +680,75 @@ namespace Fuxion.ServiceModel
     public interface ITcpBinding : IBinding { }
     public interface IServiceCredentials { }
     public interface IClientCredentials { }
+    #region Discovery classes
+    [Flags]
+    public enum DiscoveryMetadataElement
+    {
+        NetBiosName = 1,
+        IpV4Addresses = 2,
+        IpV6Addresses = 4,
+    }
+    public class DiscoveryResult
+    {
+        public IDiscoveryManager Manager { get; set; }
+        public EndpointDiscoveryMetadata Metadata { get; set; }
+        public string NetBiosName { get; set; }
+        public List<string> IpV4Addresses { get; set; }
+        public List<string> IpV6Addresses { get; set; }
+        public int? Port { get; set; }
+    }
+    public interface IDiscoveryManager
+    {
+        IDiscoveryManager Start();
+        IDiscoveryManager OnFind(Action<DiscoveryResult> action);
+        IDiscoveryManager Stop();
+    }
+    public class DiscoveryManager<TContract> : IDiscoveryManager
+    {
+        public DiscoveryManager()
+        {
+            dis = new DiscoveryClient(new UdpDiscoveryEndpoint());
+            dis.FindProgressChanged += FindProgressChanged;
+            dis.FindCompleted += FindCompleted;
+        }
+        List<Action<DiscoveryResult>> onFindActions = new List<Action<DiscoveryResult>>();
+        DiscoveryClient dis;
+        string userState = "".RandomString(10);
+        public FindCriteria Criteria { get; set; } = new FindCriteria(typeof(TContract));
+        public IDiscoveryManager OnFind(Action<DiscoveryResult> action)
+        {
+            onFindActions.Add(action);
+            return this;
+        }
+        public IDiscoveryManager Start()
+        {
+            dis.FindAsync(Criteria, userState);
+            return this;
+        }
+        public IDiscoveryManager Stop()
+        {
+            dis.CancelAsync(userState);
+            return this;
+        }
+        private void FindProgressChanged(object sender, FindProgressChangedEventArgs e)
+        {
+            var res = new DiscoveryResult
+            {
+                Manager = this,
+                Metadata = e.EndpointDiscoveryMetadata,
+                NetBiosName = e.EndpointDiscoveryMetadata?.Extensions?.FirstOrDefault(ex => ex.Name == "NetBiosName")?.Value,
+                Port = e.EndpointDiscoveryMetadata?.Address?.Uri?.Port,
+                IpV4Addresses = e.EndpointDiscoveryMetadata?.Extensions?.Where(ex => ex.Name == "IpV4Address").Select(ex => ex.Value).ToList(),
+                IpV6Addresses = e.EndpointDiscoveryMetadata?.Extensions?.Where(ex => ex.Name == "IpV6Address").Select(ex => ex.Value).ToList()
+            };
+            foreach (var action in onFindActions) action(res);
+        }
+        private void FindCompleted(object sender, FindCompletedEventArgs e)
+        {
+            if (!e.Cancelled)
+                Start();
+        }
+    }
+    #endregion
 }
 #endif

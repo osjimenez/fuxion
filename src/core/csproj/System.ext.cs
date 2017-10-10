@@ -228,6 +228,14 @@ namespace System
 
             return (length < value.Length) ? value.Substring(value.Length - length) : value;
         }
+        public static string RandomString(this string me, int length, Random ran = null)
+        {
+            const string defaultStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            if (ran == null) ran = new Random((int)DateTime.Now.Ticks);
+            var str = string.IsNullOrWhiteSpace(me) ? defaultStr : me;
+            return new string(Enumerable.Repeat(str, length)
+                .Select(s => s[ran.Next(s.Length)]).ToArray());
+        }
         #endregion
         #region IsNullOrDefault
         public static bool IsNullOrDefault<T>(this T me) => EqualityComparer<T>.Default.Equals(me, default(T));
