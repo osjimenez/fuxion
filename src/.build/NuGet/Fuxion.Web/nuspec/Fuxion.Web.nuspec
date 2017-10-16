@@ -17,26 +17,26 @@
       <group targetFramework="net461">
         <dependency id="Fuxion" version="$version$" />
         <dependency id="Flurl" version="2.5.0" />
-        <dependency id="Flurl.Http" version="1.2.0" />
+        <dependency id="Flurl.Http" version="2.0.1" />
         <dependency id="System.Net.Http" version="4.3.2" />
       </group>
       <group targetFramework="net462">
         <dependency id="Fuxion" version="$version$" />
         <dependency id="Flurl" version="2.5.0" />
-        <dependency id="Flurl.Http" version="1.2.0" />
+        <dependency id="Flurl.Http" version="2.0.1" />
         <dependency id="System.Net.Http" version="4.3.2" />
       </group>
       <group targetFramework="net47">
         <dependency id="Fuxion" version="$version$" />
         <dependency id="Flurl" version="2.5.0" />
-        <dependency id="Flurl.Http" version="1.2.0" />
+        <dependency id="Flurl.Http" version="2.0.1" />
         <dependency id="System.Net.Http" version="4.3.2" />
       </group>
       <group targetFramework="netstandard2.0">
         <dependency id="NETStandard.Library" version="2.0.0" />
         <dependency id="Fuxion" version="$version$" />
         <dependency id="Flurl" version="2.5.0" />
-        <dependency id="Flurl.Http" version="1.2.0" />
+        <dependency id="Flurl.Http" version="2.0.1" />
         <dependency id="System.Net.Http" version="4.3.2" />
       </group>
     </dependencies>

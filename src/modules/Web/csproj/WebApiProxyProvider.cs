@@ -1,5 +1,6 @@
 ﻿using Flurl;
 using Flurl.Http;
+using Flurl.Http.Configuration;
 using Fuxion.Net;
 using Newtonsoft.Json;
 using System;
@@ -22,20 +23,20 @@ namespace Fuxion.Web
             {"Accept-Language", System.Globalization.CultureInfo.CurrentCulture.ToString() },
         }.ToList();
 
-        List<Action<string, bool, bool, System.Net.Http.HttpClient>> callInterceptors = new List<Action<string, bool, bool, System.Net.Http.HttpClient>>();
-        public void AddCallInterceptor(Action<string, bool, bool, System.Net.Http.HttpClient> interceptionCallAction)
+        List<Action<string, bool, bool, FlurlHttpSettings>> callInterceptors = new List<Action<string, bool, bool, FlurlHttpSettings>>();
+        public void AddCallInterceptor(Action<string, bool, bool, FlurlHttpSettings> interceptionCallAction)
         {
             callInterceptors.Add(interceptionCallAction);
         }
 
         #region Common methods
-        internal IFlurlClient GetClient(Url pathSegment = null, bool anonymous = false, bool useBaseUrl = true)
+        internal IFlurlRequest GetClient(Url pathSegment = null, bool anonymous = false, bool useBaseUrl = true)
         {
             var url = useBaseUrl ? BaseUrl
                 .AppendPathSegment(API_SEGMENT)
                 .AppendPathSegment(pathSegment.Path)
                 .SetQueryParams(pathSegment.QueryParams) : pathSegment;
-            IFlurlClient client = new FlurlClient(url);
+            IFlurlRequest client = new FlurlRequest(url);
             foreach (var hea in Headers)
                 client = client.WithHeader(hea.Key, hea.Value);
             //var client = url
@@ -46,7 +47,7 @@ namespace Fuxion.Web
 
             client = client.WithHeader("ClientVersion", "1.0.0");
             foreach (var inter in callInterceptors)
-                client.ConfigureHttpClient(httpClient =>
+                client.ConfigureRequest(httpClient =>
                 {
                     inter(pathSegment, anonymous, useBaseUrl, httpClient);
                 });

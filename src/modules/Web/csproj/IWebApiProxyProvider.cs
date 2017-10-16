@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Flurl.Http.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,6 +23,6 @@ namespace Fuxion.Web
         Task<T> Get<T>(string path, bool anonymous = false, bool useBaseUrl = true);
         Task<List<T>> GetList<T>(string path, bool anonymous = false, bool useBaseUrl = true);
 
-        void AddCallInterceptor(Action<string, bool, bool, System.Net.Http.HttpClient> interceptionCallAction);
+        void AddCallInterceptor(Action<string, bool, bool, FlurlHttpSettings> interceptionCallAction);
     }
 }
