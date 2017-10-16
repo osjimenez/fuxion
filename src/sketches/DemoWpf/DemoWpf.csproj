@@ -41,9 +41,6 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Fuxion.Licensing, Version=0.1.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Fuxion.Licensing.0.1.4\lib\net47\Fuxion.Licensing.dll</HintPath>
-    </Reference>
     <Reference Include="Fuxion.Log4net, Version=0.1.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Fuxion.Log4net.0.1.4\lib\net47\Fuxion.Log4net.dll</HintPath>
     </Reference>
@@ -134,6 +131,9 @@
     <Compile Include="ConvertersWindow.xaml.cs">
       <DependentUpon>ConvertersWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Licensing.xaml.cs">
+      <DependentUpon>Licensing.xaml</DependentUpon>
+    </Compile>
     <Compile Include="LogWindow.xaml.cs">
       <DependentUpon>LogWindow.xaml</DependentUpon>
     </Compile>
@@ -148,6 +148,10 @@
       <DependentUpon>TimeProvider.xaml</DependentUpon>
     </Compile>
     <Page Include="ConvertersWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Licensing.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -235,6 +239,14 @@
     <ProjectReference Include="..\..\core\test\Fuxion.Test.csproj">
       <Project>{bf0816da-9bf0-4a47-b4bd-1148e48439a1}</Project>
       <Name>Fuxion.Test</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\modules\Licensing\csproj\Fuxion.Licensing.csproj">
+      <Project>{17db6efe-ccde-4589-9410-90a88f67bca7}</Project>
+      <Name>Fuxion.Licensing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\modules\Licensing\test\Fuxion.Licensing.Test.csproj">
+      <Project>{3c4db006-a025-4a7d-92b4-1dc638d7a71f}</Project>
+      <Name>Fuxion.Licensing.Test</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

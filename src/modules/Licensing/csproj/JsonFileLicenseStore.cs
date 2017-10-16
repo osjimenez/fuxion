@@ -3,6 +3,7 @@ using Fuxion.Threading;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -13,27 +14,38 @@ namespace Fuxion.Licensing
 {
     public class JsonFileLicenseStore : ILicenseStore
     {
-        public JsonFileLicenseStore(string licensesFilePath = "licenses.json", Type[] knownLicenseTypes = null)
+        public JsonFileLicenseStore(Type[] knownLicenseTypes = null, string licensesFileName = "licenses.json", bool listenFileForChanges = true)
         {
             this.knownLicenseTypes = knownLicenseTypes ?? new Type[] { };
-            pathLocker = new ValueLocker<string>(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), licensesFilePath));
-            if (File.Exists(pathLocker.Read(path => path)))
-                listLocker = new ValueLocker<List<LicenseContainer>>(JsonConvert.DeserializeObject<LicenseContainer[]>(
-                    pathLocker.Read(path => File.ReadAllText(path))
-                    ).ToList());
-            else
-                listLocker = new ValueLocker<List<LicenseContainer>>(new List<LicenseContainer>());
+            var licensesFilePath = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), licensesFileName);
+            LoadFile(licensesFilePath);
+            if (listenFileForChanges)
+            {
+                var w = new FileSystemWatcher(Path.GetDirectoryName(licensesFilePath), licensesFileName);
+                w.Created += (s, e) => LoadFile(e.FullPath);
+                w.Changed += (s, e) => LoadFile(e.FullPath);
+                w.Deleted += (s, e) => LoadFile(e.FullPath);
+                w.Renamed += (s, e) => LoadFile(e.FullPath);
+                w.EnableRaisingEvents = true;
+            }
         }
         Type[] knownLicenseTypes;
         ValueLocker<string> pathLocker;
-        ValueLocker<List<LicenseContainer>> listLocker;
+        ValueLocker<List<LicenseContainer>> listLocker= new ValueLocker<List<LicenseContainer>>(new List<LicenseContainer>());
 
         public event EventHandler<EventArgs<LicenseContainer>> LicenseAdded;
         public event EventHandler<EventArgs<LicenseContainer>> LicenseRemoved;
-
-        public string FilePath => pathLocker.Read(p => p);
         
-        public IQueryable<LicenseContainer> Query() { return listLocker.Read(licenses => licenses.ToArray().AsQueryable()); }
+        private void LoadFile(string licensesFilePath)
+        {
+            listLocker.Write(l => l.Clear());
+            pathLocker = new ValueLocker<string>(licensesFilePath);
+            if (File.Exists(pathLocker.Read(path => path)))
+                listLocker.Write(l => l.AddRange(JsonConvert.DeserializeObject<LicenseContainer[]>(
+                    pathLocker.Read(path => File.ReadAllText(path))
+                    )));
+        }
+        public IQueryable<LicenseContainer> Query() { return listLocker.Read(licenses => licenses.AsQueryable()); }
         public void Add(LicenseContainer license)
         {
             Type licenseType = null;
