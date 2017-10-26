@@ -45,7 +45,7 @@ namespace Fuxion.Identity.Test
             Assert.Same(d1, d2);
 
             var d1c = new[] { d1 };
-            Assert.True(d1c.Contains(d2));
+            Assert.Contains(d2, d1c);
         }
         [Fact(DisplayName = "TypeDiscriminator - Many classes, same discriminators")]
         public void ManyClassesSameDiscriminators()
@@ -57,7 +57,7 @@ namespace Fuxion.Identity.Test
 
             var d2 = fac.FromType(typeof(BaseDvo<>));
 
-            Assert.Equal(1, d2.Inclusions.Where(d => d.Name == "Person").Count());
+            Assert.Single(d2.Inclusions.Where(d => d.Name == "Person"));
 
         }
         [Fact(DisplayName = "TypeDiscriminator - Register - Twice")]
@@ -66,7 +66,7 @@ namespace Fuxion.Identity.Test
             var fac = new TypeDiscriminatorFactory();
             // Register from Base
             fac.Register<BaseDao>();
-            Assert.Throws(typeof(Exception), () =>
+            Assert.Throws<Exception>(() =>
             {
                 fac.Register<BaseDao>();
             });
@@ -90,7 +90,7 @@ namespace Fuxion.Identity.Test
             fac.RegisterTree<BaseDao>();
             var dis = fac.FromType<DocumentDao>();
             Assert.Equal(2, dis.Inclusions.Count());
-            Assert.Equal(1, dis.Exclusions.Count());
+            Assert.Single(dis.Exclusions);
         }
         [Fact(DisplayName = "TypeDiscriminator - Register - File tree")]
         public void RegisterFileTree()
@@ -99,7 +99,7 @@ namespace Fuxion.Identity.Test
             // Register from File
             fac.RegisterTree<FileDao>();
             TypeDiscriminator dis = null;
-            Assert.Throws(typeof(TypeDiscriminatorRegistrationValidationException), () =>
+            Assert.Throws<TypeDiscriminatorRegistrationValidationException>(() =>
             {
                 dis = fac.FromType<DocumentDao>();
             });
@@ -108,7 +108,7 @@ namespace Fuxion.Identity.Test
             fac.Register<BaseDao>();
             dis = fac.FromType<DocumentDao>();
             Assert.Equal(2, dis.Inclusions.Count());
-            Assert.Equal(1, dis.Exclusions.Count());
+            Assert.Single(dis.Exclusions);
         }
         [Fact(DisplayName = "TypeDiscriminator - Register - Generic")]
         public void RegisterGeneric()
@@ -118,7 +118,7 @@ namespace Fuxion.Identity.Test
             fac.Register(typeof(BaseDvo<>));
             var dis = fac.FromType(typeof(DocumentDvo<>));
             Assert.Equal(2, dis.Inclusions.Count());
-            Assert.Equal(1, dis.Exclusions.Count());
+            Assert.Single(dis.Exclusions);
         }
         [Fact(DisplayName = "TypeDiscriminator - Register - Only File")]
         public void RegisterOnlyttttFile()
@@ -129,15 +129,15 @@ namespace Fuxion.Identity.Test
             fac.RegisterTree(typeof(BaseDvo<>));
             var dis = fac.FromType(typeof(LocationDvo<>));
             Assert.Equal(3, dis.Inclusions.Count());
-            Assert.Equal(1, dis.Exclusions.Count());
+            Assert.Single(dis.Exclusions);
 
             fac.Reset();
             fac.AllowMoreThanOneTypeByDiscriminator = false;
             // Register from generic type LocationDvo<>
             fac.RegisterTree(typeof(LocationDvo<>));
             dis = fac.FromType<CityDvo>();
-            Assert.Equal(0, dis.Inclusions.Count());
-            Assert.Equal(1, dis.Exclusions.Count());
+            Assert.Empty(dis.Inclusions);
+            Assert.Single(dis.Exclusions);
 
             fac.Reset();
         }
@@ -148,10 +148,10 @@ namespace Fuxion.Identity.Test
             fac.RegisterTree<BaseDao>();
             var dis = fac.FromType<FileDao>();
             Assert.Equal(3, dis.Inclusions.Count());
-            Assert.Equal(1, dis.Exclusions.Count());
+            Assert.Single(dis.Exclusions);
             dis = fac.FromType<BaseDao>();
             Assert.Equal(7, dis.Inclusions.Count());
-            Assert.Equal(0, dis.Exclusions.Count());
+            Assert.Empty(dis.Exclusions);
         }
         [Fact(DisplayName = "TypeDiscriminator - Create")]
         public void Create()
@@ -168,7 +168,7 @@ namespace Fuxion.Identity.Test
             Assert.Equal(TypeDiscriminator.TypeDiscriminatorId, dis.TypeId);
             Assert.Equal(fac.DiscriminatorTypeName, dis.TypeName);
             Assert.Equal(2, dis.Inclusions.Count());
-            Assert.Equal(1, dis.Exclusions.Count());
+            Assert.Single(dis.Exclusions);
         }
         [Fact(DisplayName = "TypeDiscriminator - New test")]
         public void NewTest()
@@ -245,7 +245,7 @@ namespace Fuxion.Identity.Test
 
             var res = fac.AllFromId(TypeDiscriminatorIds.Person);
 
-            Assert.Equal(1, res.Count());
+            Assert.Single(res);
         }
     }
 }

@@ -20,7 +20,7 @@ namespace Fuxion.Windows.Data
         public Visibility MaximizedValue { get; set; }
         public Visibility MinimizedValue { get; set; }
         public Visibility NormalValue { get; set; }
-        public override Visibility Convert(WindowState source, object parameter, CultureInfo culture)
+        public override Visibility Convert(WindowState source, CultureInfo culture)
         {
             switch (source)
             {

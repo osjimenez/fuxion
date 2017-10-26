@@ -199,13 +199,13 @@ namespace Fuxion.Identity
                         foreach (var avo in Search(ent.Types?.SelectMany(t => t.Attribute?.AvoidedInclusions ?? new string[] { })))
                         {
                             Debug.WriteLine($"Inclusion {avo.Id} avoided from {ent.Id}");
-                            ent.Discriminator.Inclusions.RemoveWhere(d => d.Id == avo.Id);
+                            ent.Discriminator.Inclusions.RemoveAll(d => d.Id == avo.Id);
                         }
                         // Exclusions
                         foreach (var avo in Search(ent.Types?.SelectMany(t => t.Attribute?.AvoidedExclusions ?? new string[] { })))
                         {
                             Debug.WriteLine($"Exclusion {avo.Id} avoided from {ent.Id}");
-                            ent.Discriminator.Exclusions.RemoveWhere(d => d.Id == avo.Id);
+                            ent.Discriminator.Exclusions.RemoveAll(d => d.Id == avo.Id);
                         }
                     }
                 }

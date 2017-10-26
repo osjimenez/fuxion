@@ -17,7 +17,7 @@ namespace Fuxion.Windows.Data
         public Visibility ClosingValue { get; set; } = Visibility.Collapsed;
         public Visibility ClosedValue { get; set; } = Visibility.Collapsed;
         public Visibility FaultedValue { get; set; } = Visibility.Collapsed;
-        public override Visibility Convert(ConnectionState source, object parameter, CultureInfo culture)
+        public override Visibility Convert(ConnectionState source, CultureInfo culture)
         {
             switch (source)
             {
@@ -34,7 +34,7 @@ namespace Fuxion.Windows.Data
                 case ConnectionState.Faulted:
                     return FaultedValue;
                 default:
-                    return Visibility.Visible;
+                    throw new NotSupportedException($"The value '{source}' is not supported for '{nameof(Convert)}' method");
             }
         }
     }

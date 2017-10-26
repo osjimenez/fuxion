@@ -1,4 +1,5 @@
 ﻿using Fuxion.Windows.Data;
+using Fuxion.Windows.Resources;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -25,10 +26,30 @@ namespace Fuxion.Windows.Test
         {
             var con = new TimeSpanToStringConverter();
             con.Mode = TimeSpanToStringMode.PerElements;
-            //con.NumberOfElements = 3;
-            output.WriteLine($"1.18:53:58.1234567 => {con.Convert(TimeSpan.Parse("1.18:53:58.1234567"), null, CultureInfo.CurrentCulture)}");
-            output.WriteLine($"0.18:53:58.1234567 => {con.Convert(TimeSpan.Parse("0.18:53:58.1234567"), null, CultureInfo.CurrentCulture)}");
-            output.WriteLine($"0.00:53:58.1234567 => {con.Convert(TimeSpan.Parse("0.00:53:58.1234567"), null, CultureInfo.CurrentCulture)}");
+            
+            var res = con.Convert(TimeSpan.Parse("1.18:53:58.1234567"), CultureInfo.CurrentCulture);
+            Assert.Contains($"1 {Strings.day}", res);
+            Assert.Contains($"18 {Strings.hours}", res);
+            Assert.Contains($"53 {Strings.minutes}", res);
+            Assert.Contains($"58 {Strings.seconds}", res);
+            Assert.Contains($"123 {Strings.milliseconds}", res);
+
+            con.NumberOfElements = 3;
+
+            res = con.Convert(TimeSpan.Parse("1.18:53:58.1234567"), CultureInfo.CurrentCulture);
+            Assert.Contains($"1 {Strings.day}", res);
+            Assert.Contains($"18 {Strings.hours}", res);
+            Assert.Contains($"53 {Strings.minutes}", res);
+            Assert.DoesNotContain($"58 {Strings.seconds}", res);
+            Assert.DoesNotContain($"123 {Strings.milliseconds}", res);
+
+            res = con.Convert(TimeSpan.Parse("0.18:53:58.1234567"), CultureInfo.CurrentCulture);
+            Assert.DoesNotContain($"0 {Strings.day}", res);
+            Assert.Contains($"18 {Strings.hours}", res);
+            Assert.Contains($"53 {Strings.minutes}", res);
+            Assert.Contains($"58 {Strings.seconds}", res);
+            Assert.DoesNotContain($"123 {Strings.milliseconds}", res);
+
         }
     }
 }

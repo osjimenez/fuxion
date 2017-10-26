@@ -9,32 +9,30 @@ using System.Windows.Data;
 
 namespace Fuxion.Windows.Data
 {
-    public sealed class BooleanToBooleanMultiConverter : IMultiValueConverter
+    public sealed class BooleanToBooleanMultiConverter : GenericMultiConverter<bool, bool>
     {
-        public MultiBooleanConverterMode Mode { get; set; } = MultiBooleanConverterMode.AllTrue;
+        public BooleanMultiConverterMode Mode { get; set; } = BooleanMultiConverterMode.AllTrue;
         public bool TrueValue { get; set; } = true;
         public bool FalseValue { get; set; } = false;
-        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        public bool EmptyValue { get; set; } = false;
+        public bool NullValue { get; set; } = false;
+        public override bool Convert(bool[] source, CultureInfo culture)
         {
-            if (!values.All(v => v is bool)) throw new NotSupportedException($"Not all values are booleans");
-            var vals = values.Cast<bool>();
+            if (source == null) return NullValue;
+            if (!source.Any()) return EmptyValue;
             switch (Mode)
             {
-                case MultiBooleanConverterMode.AllTrue:
-                    return vals.Any(v => !v) ? FalseValue : TrueValue;
-                case MultiBooleanConverterMode.AnyTrue:
-                    return vals.Any(v => v) ? TrueValue : FalseValue;
-                case MultiBooleanConverterMode.AllFalse:
-                    return vals.Any(v => v) ? FalseValue : TrueValue;
-                case MultiBooleanConverterMode.AnyFalse:
-                    return vals.Any(v => !v) ? TrueValue : FalseValue;
+                case BooleanMultiConverterMode.AllTrue:
+                    return source.Any(v => !v) ? FalseValue : TrueValue;
+                case BooleanMultiConverterMode.AnyTrue:
+                    return source.Any(v => v) ? TrueValue : FalseValue;
+                case BooleanMultiConverterMode.AllFalse:
+                    return source.Any(v => v) ? FalseValue : TrueValue;
+                case BooleanMultiConverterMode.AnyFalse:
+                    return source.Any(v => !v) ? TrueValue : FalseValue;
                 default:
                     throw new NotSupportedException($"The value of Mode '{Mode}' is not supported");
             }
-        }
-        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException($"Method '{nameof(ConvertBack)}' is not implemented");
         }
     }
 }

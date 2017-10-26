@@ -22,7 +22,7 @@ namespace Fuxion.Windows.Resources {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Strings {
+    public class Strings {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace Fuxion.Windows.Resources {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Fuxion.Windows.Resources.Strings", typeof(Strings).Assembly);
@@ -51,7 +51,7 @@ namespace Fuxion.Windows.Resources {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -61,72 +61,144 @@ namespace Fuxion.Windows.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to day.
+        /// </summary>
+        public static string day {
+            get {
+                return ResourceManager.GetString("day", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to days.
         /// </summary>
-        internal static string days {
+        public static string days {
             get {
                 return ResourceManager.GetString("days", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to hour.
+        /// </summary>
+        public static string hour {
+            get {
+                return ResourceManager.GetString("hour", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to hours.
         /// </summary>
-        internal static string hours {
+        public static string hours {
             get {
                 return ResourceManager.GetString("hours", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to millisecond.
+        /// </summary>
+        public static string millisecond {
+            get {
+                return ResourceManager.GetString("millisecond", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to milliseconds.
         /// </summary>
-        internal static string milliseconds {
+        public static string milliseconds {
             get {
                 return ResourceManager.GetString("milliseconds", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to minute.
+        /// </summary>
+        public static string minute {
+            get {
+                return ResourceManager.GetString("minute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to minutes.
         /// </summary>
-        internal static string minutes {
+        public static string minutes {
             get {
                 return ResourceManager.GetString("minutes", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to month.
+        /// </summary>
+        public static string month {
+            get {
+                return ResourceManager.GetString("month", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to months.
         /// </summary>
-        internal static string months {
+        public static string months {
             get {
                 return ResourceManager.GetString("months", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to second.
+        /// </summary>
+        public static string second {
+            get {
+                return ResourceManager.GetString("second", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to seconds.
         /// </summary>
-        internal static string seconds {
+        public static string seconds {
             get {
                 return ResourceManager.GetString("seconds", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to tick.
+        /// </summary>
+        public static string tick {
+            get {
+                return ResourceManager.GetString("tick", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ticks.
         /// </summary>
-        internal static string ticks {
+        public static string ticks {
             get {
                 return ResourceManager.GetString("ticks", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to year.
+        /// </summary>
+        public static string year {
+            get {
+                return ResourceManager.GetString("year", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to years.
         /// </summary>
-        internal static string years {
+        public static string years {
             get {
                 return ResourceManager.GetString("years", resourceCulture);
             }

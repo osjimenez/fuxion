@@ -31,11 +31,6 @@ namespace System.Collections.Generic
         public static ICollection<T> RemoveNulls<T>(this ICollection<T> me) => me.Where(i => i != null).ToList();
         public static T[] RemoveNulls<T>(this T[] me) => me.Where(i => i != null).ToArray();
 
-        public static void RemoveWhere<T>(this ICollection<T> me, Func<T, bool> predicate)
-        {
-            foreach (var i in me.Where(predicate).ToList())
-                me.Remove(i);
-        }
         // TODO - Remove outliers: http://www.ehow.com/how_5201412_calculate-outliers.html
         public static IEnumerable<int> RemoveOutliers(this IEnumerable<int> list, Action<string> outputConsole = null)
         {

@@ -10,11 +10,11 @@ namespace Fuxion.Windows.Data
 {
     public class BooleanToNegateBooleanConverter : GenericConverter<bool, bool>
     {
-        public override bool Convert(bool source, object parameter, CultureInfo culture)
+        public override bool Convert(bool source, CultureInfo culture)
         {
             return !source;
         }
-        public override bool ConvertBack(bool result, object parameter, CultureInfo culture)
+        public override bool ConvertBack(bool result, CultureInfo culture)
         {
             return !result;
         }

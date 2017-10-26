@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.16
+VisualStudioVersion = 15.0.27004.2006
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "core", "core", "{291B05EE-78EA-412F-9449-5EC4D5E0FC9C}"
 EndProject
@@ -151,7 +151,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoWpf-net462", "sketches\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fuxion.Windows", "modules\Windows\csproj\Fuxion.Windows.csproj", "{C52D20F2-CDC5-472F-B2D0-31A14A0722C7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreConsole", "sketches\CoreConsole\CoreConsole.csproj", "{8E17FC57-10F6-4865-B757-2DDA7712FD7B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreConsole", "sketches\CoreConsole\CoreConsole.csproj", "{8E17FC57-10F6-4865-B757-2DDA7712FD7B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

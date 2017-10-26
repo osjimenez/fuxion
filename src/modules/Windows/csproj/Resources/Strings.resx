@@ -117,26 +117,50 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="day" xml:space="preserve">
+    <value>day</value>
+  </data>
   <data name="days" xml:space="preserve">
     <value>days</value>
+  </data>
+  <data name="hour" xml:space="preserve">
+    <value>hour</value>
   </data>
   <data name="hours" xml:space="preserve">
     <value>hours</value>
   </data>
+  <data name="millisecond" xml:space="preserve">
+    <value>millisecond</value>
+  </data>
   <data name="milliseconds" xml:space="preserve">
     <value>milliseconds</value>
+  </data>
+  <data name="minute" xml:space="preserve">
+    <value>minute</value>
   </data>
   <data name="minutes" xml:space="preserve">
     <value>minutes</value>
   </data>
+  <data name="month" xml:space="preserve">
+    <value>month</value>
+  </data>
   <data name="months" xml:space="preserve">
     <value>months</value>
+  </data>
+  <data name="second" xml:space="preserve">
+    <value>second</value>
   </data>
   <data name="seconds" xml:space="preserve">
     <value>seconds</value>
   </data>
+  <data name="tick" xml:space="preserve">
+    <value>tick</value>
+  </data>
   <data name="ticks" xml:space="preserve">
     <value>ticks</value>
+  </data>
+  <data name="year" xml:space="preserve">
+    <value>year</value>
   </data>
   <data name="years" xml:space="preserve">
     <value>years</value>

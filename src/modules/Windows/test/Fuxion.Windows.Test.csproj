@@ -40,6 +40,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\xunit.abstractions.2.0.1\lib\net35\xunit.abstractions.dll</HintPath>
@@ -60,13 +61,11 @@
         <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
       </ItemGroup>
     </When>
-    <Otherwise>
-      <ItemGroup>
-        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
-      </ItemGroup>
-    </Otherwise>
+    <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="BooleanToBooleanMultiConverter.test.cs" />
+    <Compile Include="BooleanToVisibilityMultiConverter.test.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TimeSpanToStringConverter.test.cs" />
   </ItemGroup>
@@ -77,6 +76,10 @@
     <ProjectReference Include="..\..\..\core\csproj\Fuxion.csproj">
       <Project>{0f5cb7bf-7ff8-447d-9dec-8cd0d946d208}</Project>
       <Name>Fuxion</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\core\test\Fuxion.Test.csproj">
+      <Project>{BF0816DA-9BF0-4A47-B4BD-1148E48439A1}</Project>
+      <Name>Fuxion.Test</Name>
     </ProjectReference>
     <ProjectReference Include="..\csproj\Fuxion.Windows.csproj">
       <Project>{c52d20f2-cdc5-472f-b2d0-31a14a0722c7}</Project>

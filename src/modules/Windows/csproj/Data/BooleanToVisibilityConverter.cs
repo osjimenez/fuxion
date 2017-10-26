@@ -14,11 +14,11 @@ namespace Fuxion.Windows.Data
         public Visibility TrueValue { get; set; } = Visibility.Visible;
         public Visibility FalseValue { get; set; } = Visibility.Collapsed;
 
-        public override Visibility Convert(bool source, object parameter, CultureInfo culture)
+        public override Visibility Convert(bool source, CultureInfo culture)
         {
             return source ? TrueValue : FalseValue;
         }
-        public override bool ConvertBack(Visibility result, object parameter, CultureInfo culture)
+        public override bool ConvertBack(Visibility result, CultureInfo culture)
         {
             if (result == TrueValue) return true;
             if (result == FalseValue) return false;
