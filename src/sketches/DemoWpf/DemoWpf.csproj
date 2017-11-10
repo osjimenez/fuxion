@@ -41,17 +41,23 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Fuxion.Log4net, Version=0.1.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Fuxion.Log4net.0.1.4\lib\net47\Fuxion.Log4net.dll</HintPath>
+    <Reference Include="Fuxion, Version=0.1.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Fuxion.0.1.5\lib\net47\Fuxion.dll</HintPath>
     </Reference>
-    <Reference Include="Fuxion.SimpleInjector, Version=0.1.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Fuxion.SimpleInjector.0.1.4\lib\net47\Fuxion.SimpleInjector.dll</HintPath>
+    <Reference Include="Fuxion.Licensing, Version=0.1.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Fuxion.Licensing.0.1.5\lib\net47\Fuxion.Licensing.dll</HintPath>
     </Reference>
-    <Reference Include="Fuxion.Windows, Version=0.1.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Fuxion.Windows.0.1.4\lib\net47\Fuxion.Windows.dll</HintPath>
+    <Reference Include="Fuxion.Log4net, Version=0.1.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Fuxion.Log4net.0.1.5\lib\net47\Fuxion.Log4net.dll</HintPath>
     </Reference>
-    <Reference Include="LiteDB, Version=3.1.4.0, Culture=neutral, PublicKeyToken=4ee40123013c9f27, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\LiteDB.3.1.4\lib\net462\LiteDB.dll</HintPath>
+    <Reference Include="Fuxion.SimpleInjector, Version=0.1.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Fuxion.SimpleInjector.0.1.5\lib\net47\Fuxion.SimpleInjector.dll</HintPath>
+    </Reference>
+    <Reference Include="Fuxion.Windows, Version=0.1.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Fuxion.Windows.0.1.5\lib\net47\Fuxion.Windows.dll</HintPath>
+    </Reference>
+    <Reference Include="LiteDB, Version=4.0.0.0, Culture=neutral, PublicKeyToken=4ee40123013c9f27, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\LiteDB.4.0.0\lib\net40\LiteDB.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
@@ -89,8 +95,8 @@
     <Reference Include="MongoDB.Driver.Core, Version=2.4.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\MongoDB.Driver.Core.2.4.4\lib\net45\MongoDB.Driver.Core.dll</HintPath>
     </Reference>
-    <Reference Include="SimpleInjector, Version=4.0.11.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\SimpleInjector.4.0.11\lib\net45\SimpleInjector.dll</HintPath>
+    <Reference Include="SimpleInjector, Version=4.0.12.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\SimpleInjector.4.0.12\lib\net45\SimpleInjector.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
@@ -125,7 +131,7 @@
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="Validation, Version=2.4.0.0, Culture=neutral, PublicKeyToken=2fc06f0d701809a7, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Validation.2.4.15\lib\net45\Validation.dll</HintPath>
+      <HintPath>..\..\packages\Validation.2.4.18\lib\net45\Validation.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
@@ -221,6 +227,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="log4net.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -234,23 +241,14 @@
     </None>
     <AppDesigner Include="Properties\" />
     <None Include="Resources\Fuxion.pfx" />
-    <None Include="Resources\Waf Services Self-Signed.pfx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\core\csproj\Fuxion.csproj">
-      <Project>{0f5cb7bf-7ff8-447d-9dec-8cd0d946d208}</Project>
-      <Name>Fuxion</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\core\test\Fuxion.Test.csproj">
       <Project>{bf0816da-9bf0-4a47-b4bd-1148e48439a1}</Project>
       <Name>Fuxion.Test</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\modules\Licensing\csproj\Fuxion.Licensing.csproj">
-      <Project>{17db6efe-ccde-4589-9410-90a88f67bca7}</Project>
-      <Name>Fuxion.Licensing</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\modules\Licensing\test\Fuxion.Licensing.Test.csproj">
       <Project>{3c4db006-a025-4a7d-92b4-1dc638d7a71f}</Project>

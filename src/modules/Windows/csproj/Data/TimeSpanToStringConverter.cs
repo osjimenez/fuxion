@@ -8,6 +8,7 @@ namespace Fuxion.Windows.Data
     {
         PerElements,
         PerTotals,
+        Ticks,
     }
     public class TimeSpanToStringConverter : GenericConverter<TimeSpan?,string>
     {
@@ -53,13 +54,16 @@ namespace Fuxion.Windows.Data
                         count++;
                     }
                     if (count >= NumberOfElements) return res.Trim(',', ' ');
-                    if (ts.Ticks > 0)
-                    {
-                        res += $"{ts.Ticks} {(ts.Ticks > 1 ? Strings.ticks : Strings.tick)}, ";
-                        count++;
-                    }
-                    if (count >= NumberOfElements) return res.Trim(',', ' ');
+                    //if (ts.Ticks > 0)
+                    //{
+                    //    res += $"{ts.Ticks} {(ts.Ticks > 1 ? Strings.ticks : Strings.tick)}, ";
+                    //    count++;
+                    //}
+                    //if (count >= NumberOfElements) return res.Trim(',', ' ');
                     return res.Trim(',', ' ');
+                case TimeSpanToStringMode.Ticks:
+                    res += $"{ts.Ticks} {(ts.Ticks > 1 ? Strings.ticks : Strings.tick)}, ";
+                    return res;
                 default:
                     return ts.ToString();
             }

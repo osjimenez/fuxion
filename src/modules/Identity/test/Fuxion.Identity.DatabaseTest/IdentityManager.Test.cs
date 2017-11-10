@@ -26,7 +26,7 @@ namespace Fuxion.Identity.DatabaseTest
             //rep.Database.EnsureDeleted();
             if (rep.Database.EnsureCreated() || !rep.Identity.Any())
             {
-                var ides = Context.Rol.Identity.GetAll();
+                var ides = Rols.Identity.GetAll();
                 var iii = ides.ToArray();
                 rep.Identity.AddRange(ides);
                 rep.AttachRange(ides);

@@ -64,7 +64,7 @@ namespace Fuxion.Identity.Test
             //graph.AddEdge(Read, CustomCycle);
             //Assert.True(graph.HasCycles());
             //Assert.True(false, "Graph is not used yet in Functions class");
-            Assert.Throws(typeof(GraphCyclicException), () => AddCustom(CreateCustom("CUSTOM", new[] { Edit }, new[] { Read })));
+            Assert.Throws<GraphCyclicException>(() => AddCustom(CreateCustom("CUSTOM", new[] { Edit }, new[] { Read })));
             foreach (var fun in GetAll())
             {
                 if (fun.Inclusions != null)

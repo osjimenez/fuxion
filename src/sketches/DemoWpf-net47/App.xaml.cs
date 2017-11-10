@@ -14,11 +14,11 @@ namespace DemoWpf_net47
     {
         protected override void OnStartup(StartupEventArgs e)
         {
-            var tup = new ValueTupleForTest();
-            if (tup.GetTuple().uno == 1)
-            {
+            //var tup = new ValueTupleForTest();
+            //if (tup.GetTuple().uno == 1)
+            //{
 
-            }
+            //}
             base.OnStartup(e);
         }
     }

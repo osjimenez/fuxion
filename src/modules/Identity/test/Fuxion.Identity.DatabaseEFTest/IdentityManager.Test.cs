@@ -63,7 +63,7 @@ namespace Fuxion.Identity.DatabaseEFTest
             "Root can create and delete documents", scenarios,
             "root", "root",
             new[] { "CREATE", "DELETE" },
-            new[] { typeof(DocumentDao) },
+            typeof(DocumentDao),
             "Verify that 'root' user can 'Create' and 'Delete' entities of type 'Document'",
             true })]
         //[InlineData(new object[] {
@@ -117,7 +117,7 @@ namespace Fuxion.Identity.DatabaseEFTest
         }
         #endregion
         #region Filter
-        [Theory]
+        //[Theory]
         //[InlineData(new object[] {
         //    "Two discriminators of same type", scenarios,
         //    "root", "root",

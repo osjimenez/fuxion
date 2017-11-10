@@ -2,7 +2,6 @@
 using Fuxion.Licensing.Test.Mocks;
 using Fuxion.Test;
 using Newtonsoft.Json;
-using PCLCrypto;
 using SimpleInjector;
 using System;
 using System.Collections.Generic;
@@ -12,7 +11,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
-using static PCLCrypto.WinRTCrypto;
 namespace Fuxion.Licensing.Test
 {
     [Collection("Licensing")]

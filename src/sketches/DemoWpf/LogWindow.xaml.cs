@@ -1,6 +1,5 @@
 ﻿using Fuxion.Logging;
 using Fuxion.Threading.Tasks;
-using LiteDB;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
 using System;
@@ -18,6 +17,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using MongoDB.Driver;
+using LiteDB;
+
 namespace DemoWpf
 {
     public partial class LogWindow : Window

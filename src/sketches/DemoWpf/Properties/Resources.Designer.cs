@@ -69,15 +69,5 @@ namespace DemoWpf.Properties {
                 return ((byte[])(obj));
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] Waf {
-            get {
-                object obj = ResourceManager.GetObject("Waf", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
     }
 }
