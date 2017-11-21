@@ -123,6 +123,12 @@
   <data name="Changes" xml:space="preserve">
     <value>Changes</value>
   </data>
+  <data name="day" xml:space="preserve">
+    <value>day</value>
+  </data>
+  <data name="days" xml:space="preserve">
+    <value>days</value>
+  </data>
   <data name="Delete" xml:space="preserve">
     <value>Delete</value>
   </data>
@@ -138,8 +144,32 @@
   <data name="EntityWillBeUpdated" xml:space="preserve">
     <value>The entity of type '{0}' called '{1}' will be updated on '{2}'</value>
   </data>
+  <data name="hour" xml:space="preserve">
+    <value>hour</value>
+  </data>
+  <data name="hours" xml:space="preserve">
+    <value>hours</value>
+  </data>
   <data name="Insert" xml:space="preserve">
     <value>Insert</value>
+  </data>
+  <data name="millisecond" xml:space="preserve">
+    <value>millisecond</value>
+  </data>
+  <data name="milliseconds" xml:space="preserve">
+    <value>milliseconds</value>
+  </data>
+  <data name="minute" xml:space="preserve">
+    <value>minute</value>
+  </data>
+  <data name="minutes" xml:space="preserve">
+    <value>minutes</value>
+  </data>
+  <data name="month" xml:space="preserve">
+    <value>month</value>
+  </data>
+  <data name="months" xml:space="preserve">
+    <value>months</value>
   </data>
   <data name="PropertyWillBeChanged" xml:space="preserve">
     <value>The property '{0}' will be changed from '{1}' to '{2}'</value>
@@ -156,7 +186,25 @@
   <data name="RelationWillBeUpdated" xml:space="preserve">
     <value>A relation with entity of type '{0}' called '{1}' will be updated to '{2}'</value>
   </data>
+  <data name="second" xml:space="preserve">
+    <value>second</value>
+  </data>
+  <data name="seconds" xml:space="preserve">
+    <value>seconds</value>
+  </data>
+  <data name="tick" xml:space="preserve">
+    <value>tick</value>
+  </data>
+  <data name="ticks" xml:space="preserve">
+    <value>ticks</value>
+  </data>
   <data name="Update" xml:space="preserve">
     <value>Update</value>
+  </data>
+  <data name="year" xml:space="preserve">
+    <value>year</value>
+  </data>
+  <data name="years" xml:space="preserve">
+    <value>years</value>
   </data>
 </root>

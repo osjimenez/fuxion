@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
-
+using Fuxion.Resources;
 namespace Fuxion.Test
 {
     public class SystemExtensionsTest
@@ -18,7 +18,7 @@ namespace Fuxion.Test
         }
         ITestOutputHelper output;
 
-        [Fact(DisplayName = "System - IsNullOrDefault")]
+        [Fact(DisplayName = "Object - IsNullOrDefault")]
         public void IsNullOrDefaultTest()
         {
             string s = null;
@@ -53,7 +53,7 @@ namespace Fuxion.Test
         class Derived : Base { }
         #endregion
         #region Transform
-        [Fact]
+        [Fact(DisplayName = "Object - Transform")]
         public void TransfromTest()
         {
             var res = new TransformationSource
@@ -68,6 +68,61 @@ namespace Fuxion.Test
         {
             public int Integer { get; set; }
             public string String { get; set; }
+        }
+        #endregion
+        #region TimeSpan
+        [Fact(DisplayName = "TimeSpan - ToTimeString")]
+        public void TimeSpan_ToTimeString()
+        {
+            var res = TimeSpan.Parse("1.18:53:58.1234567").ToTimeString();
+            Assert.Contains($"1 {Strings.day}", res);
+            Assert.Contains($"18 {Strings.hours}", res);
+            Assert.Contains($"53 {Strings.minutes}", res);
+            Assert.Contains($"58 {Strings.seconds}", res);
+            Assert.Contains($"123 {Strings.milliseconds}", res);
+
+            res = TimeSpan.Parse("1.18:53:58.1234567").ToTimeString(3);
+            Assert.Contains($"1 {Strings.day}", res);
+            Assert.Contains($"18 {Strings.hours}", res);
+            Assert.Contains($"53 {Strings.minutes}", res);
+            Assert.DoesNotContain($"58 {Strings.seconds}", res);
+            Assert.DoesNotContain($"123 {Strings.milliseconds}", res);
+
+            res = TimeSpan.Parse("0.18:53:58.1234567").ToTimeString(3);
+            Assert.DoesNotContain($"0 {Strings.day}", res);
+            Assert.Contains($"18 {Strings.hours}", res);
+            Assert.Contains($"53 {Strings.minutes}", res);
+            Assert.Contains($"58 {Strings.seconds}", res);
+            Assert.DoesNotContain($"123 {Strings.milliseconds}", res);
+
+            res = TimeSpan.Parse("1.18:53:58.1234567").ToTimeString(6);
+            output.WriteLine("ToTimeString: "+res);
+
+            // Only letters
+
+            res = TimeSpan.Parse("1.18:53:58.1234567").ToTimeString(onlyLetters: true);
+            Assert.Contains($"1 d", res);
+            Assert.Contains($"18 h", res);
+            Assert.Contains($"53 m", res);
+            Assert.Contains($"58 s", res);
+            Assert.Contains($"123 ms", res);
+
+            res = TimeSpan.Parse("1.18:53:58.1234567").ToTimeString(3, true);
+            Assert.Contains($"1 d", res);
+            Assert.Contains($"18 h", res);
+            Assert.Contains($"53 m", res);
+            Assert.DoesNotContain($"58 s", res);
+            Assert.DoesNotContain($"123 ms", res);
+
+            res = TimeSpan.Parse("0.18:53:58.1234567").ToTimeString(3, true);
+            Assert.DoesNotContain($"0 d", res);
+            Assert.Contains($"18 h", res);
+            Assert.Contains($"53 m", res);
+            Assert.Contains($"58 s", res);
+            Assert.DoesNotContain($"123 ms", res);
+
+            res = TimeSpan.Parse("1.18:53:58.1234567").ToTimeString(6, true);
+            output.WriteLine("ToTimeString (onlyLetters): " + res);
         }
         #endregion
     }

@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization;
+using Fuxion.Resources;
 
 namespace System
 {
@@ -159,18 +160,41 @@ namespace System
         }
         #endregion
         #region TimeSpan
-        public static string ToTimeString(this TimeSpan ts)
+        public static string ToTimeString(this TimeSpan ts, int numberOfElements = 5, bool onlyLetters = false)
         {
             string res = "";
-            if (ts.Days > 0) res += ts.Days + "d ";
-            if (ts.Hours > 0) res += ts.Hours + "h ";
-            if (ts.Minutes > 0) res += ts.Minutes + "m ";
-            if (ts.Seconds > 0) res += ts.Seconds + "s ";
-            if (ts.Milliseconds > 0) res += ts.Milliseconds + "ms ";
-            //if (ts.Ticks > 0) res += ts.Ticks + " ticks ";
-            res = res.Trim();
-            if (string.IsNullOrWhiteSpace(res)) res = "0ms";
-            return res;
+            int count = 0;
+            if (count >= numberOfElements) return res.Trim(',', ' ');
+            if (ts.Days > 0)
+            {
+                res += $"{ts.Days} {(onlyLetters ? "d" : (ts.Days > 1 ? Strings.days : Strings.day))}{(onlyLetters ? "" : ",")} ";
+                count++;
+            }
+            if (count >= numberOfElements) return res.Trim(',', ' ');
+            if (ts.Hours > 0)
+            {
+                res += $"{ts.Hours} {(onlyLetters ? "h" : (ts.Hours > 1 ? Strings.hours : Strings.hour))}{(onlyLetters ? "" : ",")} ";
+                count++;
+            }
+            if (count >= numberOfElements) return res.Trim(',', ' ');
+            if (ts.Minutes > 0)
+            {
+                res += $"{ts.Minutes} {(onlyLetters ? "m" : (ts.Minutes > 1 ? Strings.minutes : Strings.minute))}{(onlyLetters ? "" : ",")} ";
+                count++;
+            }
+            if (count >= numberOfElements) return res.Trim(',', ' ');
+            if (ts.Seconds > 0)
+            {
+                res += $"{ts.Seconds} {(onlyLetters ? "s" : (ts.Seconds > 1 ? Strings.seconds : Strings.minute))}{(onlyLetters ? "" : ",")} ";
+                count++;
+            }
+            if (count >= numberOfElements) return res.Trim(',', ' ');
+            if (ts.Milliseconds > 0)
+            {
+                res += $"{ts.Milliseconds} {(onlyLetters ? "ms" : (ts.Milliseconds > 1 ? Strings.milliseconds : Strings.millisecond))}{(onlyLetters ? "" : ",")} ";
+                count++;
+            }
+            return res.Trim(',', ' ');
         }
         #endregion
         #region String

@@ -22,7 +22,7 @@ namespace Fuxion.Resources {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Strings {
+    public class Strings {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace Fuxion.Resources {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Fuxion.Resources.Strings", typeof(Strings).Assembly);
@@ -51,7 +51,7 @@ namespace Fuxion.Resources {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace Fuxion.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Change.
         /// </summary>
-        internal static string Change {
+        public static string Change {
             get {
                 return ResourceManager.GetString("Change", resourceCulture);
             }
@@ -72,16 +72,34 @@ namespace Fuxion.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Changes.
         /// </summary>
-        internal static string Changes {
+        public static string Changes {
             get {
                 return ResourceManager.GetString("Changes", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to day.
+        /// </summary>
+        public static string day {
+            get {
+                return ResourceManager.GetString("day", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to days.
+        /// </summary>
+        public static string days {
+            get {
+                return ResourceManager.GetString("days", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delete.
         /// </summary>
-        internal static string Delete {
+        public static string Delete {
             get {
                 return ResourceManager.GetString("Delete", resourceCulture);
             }
@@ -90,7 +108,7 @@ namespace Fuxion.Resources {
         /// <summary>
         ///   Looks up a localized string similar to The entity of type &apos;{0}&apos; called &apos;{1}&apos; will be added to &apos;{2}&apos;.
         /// </summary>
-        internal static string EntityWillBeAdded {
+        public static string EntityWillBeAdded {
             get {
                 return ResourceManager.GetString("EntityWillBeAdded", resourceCulture);
             }
@@ -99,7 +117,7 @@ namespace Fuxion.Resources {
         /// <summary>
         ///   Looks up a localized string similar to The entity of type &apos;{0}&apos; called &apos;{1}&apos; will be deleted from &apos;{2}&apos;.
         /// </summary>
-        internal static string EntityWillBeDeleted {
+        public static string EntityWillBeDeleted {
             get {
                 return ResourceManager.GetString("EntityWillBeDeleted", resourceCulture);
             }
@@ -108,7 +126,7 @@ namespace Fuxion.Resources {
         /// <summary>
         ///   Looks up a localized string similar to The entity of type &apos;{0}&apos; called &apos;{1}&apos; will be ignored.
         /// </summary>
-        internal static string EntityWillBeIgnored {
+        public static string EntityWillBeIgnored {
             get {
                 return ResourceManager.GetString("EntityWillBeIgnored", resourceCulture);
             }
@@ -117,25 +135,97 @@ namespace Fuxion.Resources {
         /// <summary>
         ///   Looks up a localized string similar to The entity of type &apos;{0}&apos; called &apos;{1}&apos; will be updated on &apos;{2}&apos;.
         /// </summary>
-        internal static string EntityWillBeUpdated {
+        public static string EntityWillBeUpdated {
             get {
                 return ResourceManager.GetString("EntityWillBeUpdated", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to hour.
+        /// </summary>
+        public static string hour {
+            get {
+                return ResourceManager.GetString("hour", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to hours.
+        /// </summary>
+        public static string hours {
+            get {
+                return ResourceManager.GetString("hours", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Insert.
         /// </summary>
-        internal static string Insert {
+        public static string Insert {
             get {
                 return ResourceManager.GetString("Insert", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to millisecond.
+        /// </summary>
+        public static string millisecond {
+            get {
+                return ResourceManager.GetString("millisecond", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to milliseconds.
+        /// </summary>
+        public static string milliseconds {
+            get {
+                return ResourceManager.GetString("milliseconds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to minute.
+        /// </summary>
+        public static string minute {
+            get {
+                return ResourceManager.GetString("minute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to minutes.
+        /// </summary>
+        public static string minutes {
+            get {
+                return ResourceManager.GetString("minutes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to month.
+        /// </summary>
+        public static string month {
+            get {
+                return ResourceManager.GetString("month", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to months.
+        /// </summary>
+        public static string months {
+            get {
+                return ResourceManager.GetString("months", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The property &apos;{0}&apos; will be changed from &apos;{1}&apos; to &apos;{2}&apos;.
         /// </summary>
-        internal static string PropertyWillBeChanged {
+        public static string PropertyWillBeChanged {
             get {
                 return ResourceManager.GetString("PropertyWillBeChanged", resourceCulture);
             }
@@ -144,7 +234,7 @@ namespace Fuxion.Resources {
         /// <summary>
         ///   Looks up a localized string similar to A relation with entity of type &apos;{0}&apos; called &apos;{1}&apos; will be added to &apos;{2}&apos;.
         /// </summary>
-        internal static string RelationWillBeAdded {
+        public static string RelationWillBeAdded {
             get {
                 return ResourceManager.GetString("RelationWillBeAdded", resourceCulture);
             }
@@ -153,7 +243,7 @@ namespace Fuxion.Resources {
         /// <summary>
         ///   Looks up a localized string similar to A relation with entity of type &apos;{0}&apos; called &apos;{1}&apos; will be deleted from &apos;{2}&apos;.
         /// </summary>
-        internal static string RelationWillBeDeleted {
+        public static string RelationWillBeDeleted {
             get {
                 return ResourceManager.GetString("RelationWillBeDeleted", resourceCulture);
             }
@@ -162,7 +252,7 @@ namespace Fuxion.Resources {
         /// <summary>
         ///   Looks up a localized string similar to A relation with entity of type &apos;{0}&apos; called &apos;{1}&apos; will be ignored.
         /// </summary>
-        internal static string RelationWillBeIgnored {
+        public static string RelationWillBeIgnored {
             get {
                 return ResourceManager.GetString("RelationWillBeIgnored", resourceCulture);
             }
@@ -171,18 +261,72 @@ namespace Fuxion.Resources {
         /// <summary>
         ///   Looks up a localized string similar to A relation with entity of type &apos;{0}&apos; called &apos;{1}&apos; will be updated to &apos;{2}&apos;.
         /// </summary>
-        internal static string RelationWillBeUpdated {
+        public static string RelationWillBeUpdated {
             get {
                 return ResourceManager.GetString("RelationWillBeUpdated", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to second.
+        /// </summary>
+        public static string second {
+            get {
+                return ResourceManager.GetString("second", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to seconds.
+        /// </summary>
+        public static string seconds {
+            get {
+                return ResourceManager.GetString("seconds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to tick.
+        /// </summary>
+        public static string tick {
+            get {
+                return ResourceManager.GetString("tick", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ticks.
+        /// </summary>
+        public static string ticks {
+            get {
+                return ResourceManager.GetString("ticks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Update.
         /// </summary>
-        internal static string Update {
+        public static string Update {
             get {
                 return ResourceManager.GetString("Update", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to year.
+        /// </summary>
+        public static string year {
+            get {
+                return ResourceManager.GetString("year", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to years.
+        /// </summary>
+        public static string years {
+            get {
+                return ResourceManager.GetString("years", resourceCulture);
             }
         }
     }

@@ -21,8 +21,8 @@ namespace Fuxion.Windows.Test
             this.output = output;
         }
         ITestOutputHelper output;
-        [Fact]
-        public void TimeSpanToStringConverter_First()
+        [Fact(DisplayName = "TimeSpanToStringConverter - PerElement")]
+        public void TimeSpanToStringConverter_PerElements()
         {
             var con = new TimeSpanToStringConverter();
             con.Mode = TimeSpanToStringMode.PerElements;
@@ -49,12 +49,6 @@ namespace Fuxion.Windows.Test
             Assert.Contains($"53 {Strings.minutes}", res);
             Assert.Contains($"58 {Strings.seconds}", res);
             Assert.DoesNotContain($"123 {Strings.milliseconds}", res);
-
-            con.NumberOfElements = 6;
-            con.Mode = TimeSpanToStringMode.Ticks;
-            res = con.Convert(TimeSpan.Parse("1.18:53:58.1234567"), CultureInfo.CurrentCulture);
-            output.WriteLine(res);
-
         }
     }
 }
