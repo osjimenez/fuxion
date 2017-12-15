@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using static Fuxion.Identity.Test.Repositories.IdentityMemoryTestRepository;
 namespace Fuxion.Identity.DatabaseTest
 {
-    class IdentityDatabaseRepository : DbContext, IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity>
+    class IdentityDatabaseRepository : DbContext, IKeyValueRepository<string, IIdentity>
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

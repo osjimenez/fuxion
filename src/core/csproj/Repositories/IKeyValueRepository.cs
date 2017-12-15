@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Repositories
 {
-    public interface IKeyValueRepository<TKeyValueEntry, TKey, TValue>
-        where TKeyValueEntry : IKeyValueEntry<TKey,TValue>
+    public interface IKeyValueRepository<TKey, TValue>
     {
         Task<bool> ExistAsync(TKey key);
         bool Exist(TKey key);

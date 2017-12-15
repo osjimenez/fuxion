@@ -6,14 +6,13 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Repositories
 {
-    public class MemoryCachedKeyValueRepository<TKeyValueEntry, TKey, TValue> : IKeyValueRepository<TKeyValueEntry, TKey, TValue>
-        where TKeyValueEntry : IKeyValueEntry<TKey, TValue>
+    public class MemoryCachedKeyValueRepository<TKey, TValue> : IKeyValueRepository<TKey, TValue>
     {
-        public MemoryCachedKeyValueRepository(IKeyValueRepository<TKeyValueEntry, TKey, TValue> originRepository)
+        public MemoryCachedKeyValueRepository(IKeyValueRepository<TKey, TValue> originRepository)
         {
             _origin = originRepository;
         }
-        IKeyValueRepository<TKeyValueEntry, TKey, TValue> _origin;
+        IKeyValueRepository<TKey, TValue> _origin;
         Dictionary<TKey, MemoryKeyValueRepositoryValue<TValue>> dic = new Dictionary<TKey, MemoryKeyValueRepositoryValue<TValue>>();
 
         public async Task<bool> ExistAsync(TKey key)

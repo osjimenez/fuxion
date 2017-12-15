@@ -12,7 +12,7 @@ namespace Fuxion.Identity.Test.Dao
     [TypeDiscriminated(Base, AdditionalInclusions = new[] { Media })]
     public abstract class BaseDao
     {
-        public string Id { get; set; }
+        public string Id { get; set; } = string.Empty.RandomString(10);
         public virtual string Name { get; set; }
 
         public override string ToString() => $"{Name} - {Id}";
