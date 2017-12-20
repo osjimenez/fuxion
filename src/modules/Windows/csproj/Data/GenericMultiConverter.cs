@@ -21,6 +21,10 @@ namespace Fuxion.Windows.Data
                 if (IgnoreUnsetValues) values = values.Where(v => v != DependencyProperty.UnsetValue).ToArray();
                 else if (values.Any(v => v == DependencyProperty.UnsetValue)) return UnsetValue;
             }
+            else
+            {
+                if (values.Any(v => v == DependencyProperty.UnsetValue)) throw new NotSupportedException($"Some values are DependencyProperty.UnsetValue. To support unset values use '{nameof(AllowUnsetValues)}' property of the '{GetType().Name}' class");
+            }
             // value must be TSource, call Convert
             // value is null and TSource is nullable, call Convert
             if (
@@ -64,6 +68,10 @@ namespace Fuxion.Windows.Data
                 // if unset values must be ignored, remove it from values
                 if (IgnoreUnsetValues) values = values.Where(v => v != DependencyProperty.UnsetValue).ToArray();
                 else if (values.Any(v => v == DependencyProperty.UnsetValue)) return UnsetValue;
+            }
+            else
+            {
+                if (values.Any(v => v == DependencyProperty.UnsetValue)) throw new NotSupportedException($"Some values are DependencyProperty.UnsetValue. To support unset values use '{nameof(AllowUnsetValues)}' property of the '{GetType().Name}' class");
             }
             // value must be TSource, call Convert
             // value is null and TSource is nullable, call Convert

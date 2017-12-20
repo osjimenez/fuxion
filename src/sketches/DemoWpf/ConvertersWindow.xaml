@@ -11,7 +11,7 @@
         <fuxion:ICollectionCountToVisibilityConverter x:Key="ICollectionCountToVisibilityConverter" 
                                                       NullValue="Visible"/>
         <fuxion:ICollectionCountToBooleanConverter x:Key="ICollectionCountToBooleanConverter" />
-        <fuxion:BooleanToVisibilityMultiConverter x:Key="BooleanToVisibilityMultiConverter" Mode="AnyTrue" AllowUnsetValues="True" IgnoreUnsetValues="False" UnsetValue="Collapsed"/>
+        <fuxion:BooleanToVisibilityMultiConverter x:Key="BooleanToVisibilityMultiConverter" Mode="AnyTrue" />
     </Window.Resources>
     <StackPanel>
         <StackPanel.Visibility>

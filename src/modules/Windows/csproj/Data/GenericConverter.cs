@@ -18,6 +18,7 @@ namespace Fuxion.Windows.Data
         {
             // if allow unset value
             if (AllowUnsetValue && value == DependencyProperty.UnsetValue) return UnsetValue;
+            if (value == DependencyProperty.UnsetValue) throw new NotSupportedException($"The value is DependencyProperty.UnsetValue. To support unset values use '{nameof(AllowUnsetValue)}' property of the '{GetType().Name}' class");
             // value must be TSource, call Convert
             // value is null and TSource is nullable, call Convert
             if (value is TSource
@@ -57,6 +58,7 @@ namespace Fuxion.Windows.Data
             if (typeof(TParameter) != typeof(object) && !(parameter is TParameter)) throw new NotSupportedException($"The parameter must be of type '{typeof(TParameter).Name}'");
             // if allow unset value
             if (AllowUnsetValue && value == DependencyProperty.UnsetValue) return UnsetValue;
+            if (value == DependencyProperty.UnsetValue) throw new NotSupportedException($"The value is DependencyProperty.UnsetValue. To support unset values use '{nameof(AllowUnsetValue)}' property of the '{GetType().Name}' class");
             // value must be TSource, call Convert
             // value is null and TSource is nullable, call Convert
             if (value is TSource
