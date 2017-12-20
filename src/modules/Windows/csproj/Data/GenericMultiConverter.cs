@@ -3,12 +3,24 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Data;
 using System.Reflection;
+using System.Windows;
+
 namespace Fuxion.Windows.Data
 {
     public abstract class GenericMultiConverter<TSource, TResult> : IMultiValueConverter
     {
+        public bool AllowUnsetValues { get; set; }
+        public bool IgnoreUnsetValues { get; set; } = true;
+        public TResult UnsetValue { get; set; }
         object IMultiValueConverter.Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
+            // if allow any unset value
+            if (AllowUnsetValues)
+            {
+                // if unset values must be ignored, remove it from values
+                if (IgnoreUnsetValues) values = values.Where(v => v != DependencyProperty.UnsetValue).ToArray();
+                else if (values.Any(v => v == DependencyProperty.UnsetValue)) return UnsetValue;
+            }
             // value must be TSource, call Convert
             // value is null and TSource is nullable, call Convert
             if (
@@ -40,9 +52,19 @@ namespace Fuxion.Windows.Data
     }
     public abstract class GenericMultiConverter<TSource, TResult, TParameter> : IMultiValueConverter
     {
+        public bool AllowUnsetValues { get; set; }
+        public bool IgnoreUnsetValues { get; set; } = true;
+        public TResult UnsetValue { get; set; }
         object IMultiValueConverter.Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             if (typeof(TParameter) != typeof(object) && !(parameter is TParameter)) throw new NotSupportedException($"The parameter must be of type '{typeof(TParameter).Name}'");
+            // if allow any unset value
+            if (AllowUnsetValues)
+            {
+                // if unset values must be ignored, remove it from values
+                if (IgnoreUnsetValues) values = values.Where(v => v != DependencyProperty.UnsetValue).ToArray();
+                else if (values.Any(v => v == DependencyProperty.UnsetValue)) return UnsetValue;
+            }
             // value must be TSource, call Convert
             // value is null and TSource is nullable, call Convert
             if (

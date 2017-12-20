@@ -6,12 +6,18 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Reflection;
+using System.Windows;
+
 namespace Fuxion.Windows.Data
 {
     public abstract class GenericConverter<TSource, TResult> : IValueConverter
     {
+        public bool AllowUnsetValue { get; set; }
+        public TResult UnsetValue { get; set; }
         object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            // if allow unset value
+            if (AllowUnsetValue && value == DependencyProperty.UnsetValue) return UnsetValue;
             // value must be TSource, call Convert
             // value is null and TSource is nullable, call Convert
             if (value is TSource
@@ -44,9 +50,13 @@ namespace Fuxion.Windows.Data
     }
     public abstract class GenericConverter<TSource, TResult, TParameter> : IValueConverter
     {
+        public bool AllowUnsetValue { get; set; }
+        public TResult UnsetValue { get; set; }
         object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (typeof(TParameter) != typeof(object) && !(parameter is TParameter)) throw new NotSupportedException($"The parameter must be of type '{typeof(TParameter).Name}'");
+            // if allow unset value
+            if (AllowUnsetValue && value == DependencyProperty.UnsetValue) return UnsetValue;
             // value must be TSource, call Convert
             // value is null and TSource is nullable, call Convert
             if (value is TSource

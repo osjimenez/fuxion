@@ -11,8 +11,15 @@
         <fuxion:ICollectionCountToVisibilityConverter x:Key="ICollectionCountToVisibilityConverter" 
                                                       NullValue="Visible"/>
         <fuxion:ICollectionCountToBooleanConverter x:Key="ICollectionCountToBooleanConverter" />
+        <fuxion:BooleanToVisibilityMultiConverter x:Key="BooleanToVisibilityMultiConverter" Mode="AnyTrue" AllowUnsetValues="True" IgnoreUnsetValues="False" UnsetValue="Collapsed"/>
     </Window.Resources>
     <StackPanel>
+        <StackPanel.Visibility>
+            <MultiBinding Converter="{StaticResource BooleanToVisibilityMultiConverter}">
+                <Binding Path="IsEnabled1" />
+                <Binding Path="IsEnabled22" />
+            </MultiBinding>
+        </StackPanel.Visibility>
         <TextBlock Text="Hello" Visibility="{Binding List, Converter={StaticResource ICollectionCountToVisibilityConverter}}"/>
         <CheckBox IsChecked="{Binding List, Converter={StaticResource ICollectionCountToBooleanConverter}}"/>
     </StackPanel>

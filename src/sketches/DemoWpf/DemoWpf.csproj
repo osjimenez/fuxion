@@ -41,21 +41,6 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Fuxion, Version=0.1.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Fuxion.0.1.5\lib\net47\Fuxion.dll</HintPath>
-    </Reference>
-    <Reference Include="Fuxion.Licensing, Version=0.1.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Fuxion.Licensing.0.1.5\lib\net47\Fuxion.Licensing.dll</HintPath>
-    </Reference>
-    <Reference Include="Fuxion.Log4net, Version=0.1.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Fuxion.Log4net.0.1.5\lib\net47\Fuxion.Log4net.dll</HintPath>
-    </Reference>
-    <Reference Include="Fuxion.SimpleInjector, Version=0.1.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Fuxion.SimpleInjector.0.1.5\lib\net47\Fuxion.SimpleInjector.dll</HintPath>
-    </Reference>
-    <Reference Include="Fuxion.Windows, Version=0.1.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Fuxion.Windows.0.1.5\lib\net47\Fuxion.Windows.dll</HintPath>
-    </Reference>
     <Reference Include="LiteDB, Version=4.0.0.0, Culture=neutral, PublicKeyToken=4ee40123013c9f27, processorArchitecture=MSIL">
       <HintPath>..\..\packages\LiteDB.4.0.0\lib\net40\LiteDB.dll</HintPath>
     </Reference>
@@ -250,13 +235,33 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\core\csproj\Fuxion.csproj">
+      <Project>{0f5cb7bf-7ff8-447d-9dec-8cd0d946d208}</Project>
+      <Name>Fuxion</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\core\test\Fuxion.Test.csproj">
       <Project>{bf0816da-9bf0-4a47-b4bd-1148e48439a1}</Project>
       <Name>Fuxion.Test</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\modules\Licensing\csproj\Fuxion.Licensing.csproj">
+      <Project>{17db6efe-ccde-4589-9410-90a88f67bca7}</Project>
+      <Name>Fuxion.Licensing</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\modules\Licensing\test\Fuxion.Licensing.Test.csproj">
       <Project>{3c4db006-a025-4a7d-92b4-1dc638d7a71f}</Project>
       <Name>Fuxion.Licensing.Test</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\modules\Log4net\csproj\Fuxion.Log4net.csproj">
+      <Project>{a056fb31-cf60-4265-9f3b-e9202f98eebc}</Project>
+      <Name>Fuxion.Log4net</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\modules\SimpleInjector\csproj\Fuxion.SimpleInjector.csproj">
+      <Project>{220fabfc-2076-42ca-b739-81c34913bca4}</Project>
+      <Name>Fuxion.SimpleInjector</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\modules\Windows\csproj\Fuxion.Windows.csproj">
+      <Project>{c52d20f2-cdc5-472f-b2d0-31a14a0722c7}</Project>
+      <Name>Fuxion.Windows</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

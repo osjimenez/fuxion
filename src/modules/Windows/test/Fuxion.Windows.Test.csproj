@@ -41,7 +41,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
+    <Reference Include="WindowsBase" />
     <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\xunit.abstractions.2.0.1\lib\net35\xunit.abstractions.dll</HintPath>
     </Reference>
@@ -66,6 +68,8 @@
   <ItemGroup>
     <Compile Include="BooleanToBooleanMultiConverter.test.cs" />
     <Compile Include="BooleanToVisibilityMultiConverter.test.cs" />
+    <Compile Include="GenericConverterTest.cs" />
+    <Compile Include="GenericMultiConverterTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TimeSpanToStringConverter.test.cs" />
   </ItemGroup>

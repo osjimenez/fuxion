@@ -30,8 +30,9 @@ namespace DemoWpf
             c.RegisterSingleton<LicensingManager>();
             Factory.AddInjector(new SimpleInjectorFactoryInjector(c));
             //new MainWindow().Show();
-            new Licensing().Show();
+            //new Licensing().Show();
             //new TimeProvider().Show();
+            new ConvertersWindow().Show();
         }
     }
     public class HardwareIdHelper : IHardwareIdProvider

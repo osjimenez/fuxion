@@ -31,5 +31,7 @@ namespace DemoWpf
     public class ViewModel
     {
         public List<string> List { get; set; }
+        public bool IsEnabled1 { get; set; } = false;
+        public bool IsEnabled2 { get; set; } = true;
     }
 }
