@@ -29,19 +29,19 @@ namespace Fuxion.Identity.DatabaseEFTest
         }
         protected override void Seed(IdentityDatabaseEFTestRepository context)
         {
-            //context.Identity.AddRange(Identities);
-            //context.Album.AddRange(Albums);
-            //context.Song.AddRange(Songs);
+            context.Identity.AddRange(Rols.Identity.GetAll());
+            context.Album.AddRange(File.Package.Album.GetAll());
+            context.Song.AddRange(File.Media.Song.GetAll());
             //context.Circle.AddRange(Circles);
-            //context.Group.AddRange(Groups);
-            //context.Document.AddRange(Documents);
+            context.Group.AddRange(Rols.Group.GetAll());
+            context.Document.AddRange(File.Document.GetAll());
             context.SaveChanges();
             base.Seed(context);
         }
     }
-    public class IdentityDatabaseEFTestRepository : DbContext, IIdentityTestRepository, IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity>
+    public class IdentityDatabaseEFTestRepository : DbContext, IIdentityTestRepository, IKeyValueRepository<string, IIdentity>
     {
-        public IdentityDatabaseEFTestRepository() : base(nameof(IdentityDatabaseEFTestRepository))
+        public IdentityDatabaseEFTestRepository() : base($"Server=.;Initial Catalog={nameof(IdentityDatabaseEFTestRepository)};Integrated Security=True")
         {
 
         }

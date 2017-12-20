@@ -20,7 +20,7 @@ namespace Fuxion.Identity.Test.Repositories
         IEnumerable<DocumentDao> Document { get; }
         IEnumerable<T> GetByType<T>();
     }
-    public class IdentityMemoryTestRepository : IIdentityTestRepository, IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity>
+    public class IdentityMemoryTestRepository : IIdentityTestRepository, IKeyValueRepository<string, IIdentity>
     {
         public IEnumerable<AlbumDao> Album { get { return Context.File.Package.Album.GetAll(); } }
         public IEnumerable<SongDao> Song { get { return Context.File.Media.Song.GetAll(); } }

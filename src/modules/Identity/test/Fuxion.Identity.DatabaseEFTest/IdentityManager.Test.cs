@@ -25,7 +25,8 @@ namespace Fuxion.Identity.DatabaseEFTest
             };
         }
 #if DEBUG
-        public const string scenarios = MEMORY;//+"·"+DATABASE;
+        //public const string scenarios = MEMORY;//+"·"+DATABASE;
+        public const string scenarios = DATABASE;
 #else
         public const string scenarios = MEMORY+"·"+DATABASE;
 #endif
@@ -174,28 +175,5 @@ namespace Fuxion.Identity.DatabaseEFTest
             }
         }
         #endregion
-        [Fact]
-        public void DemoTest()
-        {
-            Load(MEMORY);
-            var im = Factory.Get<IdentityManager>();
-            var rep = Factory.Get<IIdentityTestRepository>();
-            im.CheckCredentials("cus", "cus");
-            var res = rep.Document.AuthorizedTo(Read);
-            //Assert.True(im.Current.Can(Read).OfType<Order>());
-            //var res = rep.Album.Where(o => o.Songs.AuthorizedTo(Edit).Any());
-            Printer.WriteLine("res.Count(): " + res.Count());
-        }
-        [Fact]
-        public void DemoTest2()
-        {
-            Load(MEMORY);
-            var im = Factory.Get<IdentityManager>();
-            var rep = Factory.Get<IIdentityTestRepository>();
-            im.CheckCredentials("root", "root");
-            Assert.True(im.GetCurrent().Can(Read).Type<DocumentDao>());
-            var res = rep.Album.Where(o => o.Songs.AuthorizedTo(Read).Any());
-            Printer.WriteLine("res.Count(): " + res.Count());
-        }
     }
 }

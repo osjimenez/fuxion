@@ -32,7 +32,7 @@ namespace Fuxion.Identity.DatabaseEFTest
                     con.RegisterSingleton<ICurrentUserNameProvider>(new AlwaysRootCurrentUserNameProvider());
                     con.RegisterSingleton<IPasswordProvider>(new PasswordProviderMock());
                     var rep = new IdentityMemoryTestRepository();
-                    con.RegisterSingleton<IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity>>(rep);
+                    con.RegisterSingleton<IKeyValueRepository<string, IIdentity>>(rep);
                     con.RegisterSingleton<IIdentityTestRepository>(rep);
                     con.RegisterSingleton<IdentityManager>();
 
@@ -53,7 +53,7 @@ namespace Fuxion.Identity.DatabaseEFTest
                     con.RegisterSingleton<IPasswordProvider>(new PasswordProviderMock());
                     var rep = new IdentityDatabaseEFTestRepository();
                     rep.Initialize();
-                    con.RegisterSingleton<IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity>>(new MemoryCachedKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity>(rep));
+                    con.RegisterSingleton<IKeyValueRepository<string, IIdentity>>(new MemoryCachedKeyValueRepository<string, IIdentity>(rep));
                     con.RegisterSingleton<IIdentityTestRepository>(rep);
                     con.RegisterSingleton<IdentityManager>();
 

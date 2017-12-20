@@ -182,7 +182,7 @@ namespace Fuxion.Identity.Test
                         Name = name
                     };
                     byte[] salt, hash;
-                    new PasswordProviderMock().Generate("test", out salt, out hash);
+                    new PasswordProviderMock().Generate("root", out salt, out hash);
                     res.PasswordHash = hash;
                     res.PasswordSalt = salt;
                     AddConfigurationAction(configureAction, res);

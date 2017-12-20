@@ -37,7 +37,7 @@ namespace Fuxion.Identity.Test.Rol
             // IdentityManager
             c.Register<IPasswordProvider, PasswordProviderMock>();
             c.RegisterSingleton<ICurrentUserNameProvider>(new GenericCurrentUserNameProvider(() => Context.Rols.Identity.Root.UserName));
-            c.RegisterSingleton<IKeyValueRepository<IdentityKeyValueRepositoryValue, string, IIdentity>>(new IdentityMemoryTestRepository());
+            c.RegisterSingleton<IKeyValueRepository<string, IIdentity>>(new IdentityMemoryTestRepository());
             c.Register<IdentityManager>();
             Admin.Name = "Administrar";
             Manage.Name = "Gestionar";
