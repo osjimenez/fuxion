@@ -3,6 +3,7 @@ using Fuxion.ComponentModel.DataAnnotations;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
@@ -17,14 +18,19 @@ namespace Fuxion.Test.ComponentModel.DataAnnotations
         public ValidatorTest(ITestOutputHelper output) : base(output)
         {
         }
+        private void PrintValidatorResults(IEnumerable<ValidatorEntry2> res)
+        {
+            Output.WriteLine("Printing validator entries:");
+            foreach (var r in res)
+                Output.WriteLine($"   - {r.Path} - {r.PropertyName} - {r.Message}");
+        }
         [Fact(DisplayName = "Validator - Default values are valid")]
         public void DefaultIsValid()
         {
             var obj = new ValidatableMock();
             var val = new Validator2();
             var res = val.Validate(obj);
-            foreach (var r in res)
-                Output.WriteLine(r.Message);
+            PrintValidatorResults(res);
             Assert.Empty(res);
         }
         [Fact(DisplayName = "Validator - Manual validation")]
@@ -32,98 +38,186 @@ namespace Fuxion.Test.ComponentModel.DataAnnotations
         {
             var obj = new ValidatableMock();
             var val = new Validator2();
-            obj.Id = 0; // Make invalid for Id
-            obj.Name = "Oscar678901"; // Make invalid for Name
-            obj.Sub = null; // Make invalid for Sub
+            obj.Id = 0; // Make invalid because must be greater than 0
+            obj.Name = "Fuxion678901"; // Make doubly invalid because contains 'Oscar' and has more than 10 character length
+            obj.RecursiveValidatable = null; // Make invalid because is required
 
             var res = val.Validate(obj);
-            foreach (var r in res)
-                Output.WriteLine(r.Message);
-            Assert.True(res.Count() == 4);
+            PrintValidatorResults(res);
+            Assert.Equal(4, res.Count());
+            Assert.Equal(1, res.Count(r => string.IsNullOrEmpty(r.Path) && r.PropertyName == nameof(obj.Id)));
+            Assert.Equal(2, res.Count(r => string.IsNullOrEmpty(r.Path) && r.PropertyName == nameof(obj.Name)));
+            Assert.Equal(1, res.Count(r => string.IsNullOrEmpty(r.Path) && r.PropertyName == nameof(obj.RecursiveValidatable)));
+
+            res = val.Validate(obj, nameof(obj.Name));
+            Assert.Equal(2, res.Count());
         }
-        [Fact(DisplayName = "Validator - Manual sub-validation")]
-        public void ManualSubValidation()
+        [Fact(DisplayName = "Validator - Manual recursive validatable")]
+        public void ManualRecursiveValidatable()
         {
             var obj = new ValidatableMock();
             var val = new Validator2();
-            obj.Sub.Id = 0; // Make invalid for Id
+            obj.RecursiveValidatable.Id = 0; // Make invalid because must be greater than 0
 
             var res = val.Validate(obj);
-            foreach (var r in res)
-                Output.WriteLine(r.Message);
-            Assert.True(res.Count() == 1);
+            PrintValidatorResults(res);
+            Assert.Equal(1, res.Count(r => r.Path == $"{nameof(obj.RecursiveValidatable)}" && r.PropertyName == nameof(obj.Id)));
         }
-        [Fact(DisplayName = "Validator - Manual sub-validation collection")]
-        public void ManualSubValidationCollection()
+        [Fact(DisplayName = "Validator - Manual recursive validatable collection")]
+        public void ManualRecursiveValidatableCollection()
         {
             var obj = new ValidatableMock();
             var val = new Validator2();
-            obj.SubCollection.First().Id = 0; // Make invalid for id
+            var first = obj.RecursiveValidatableCollection.First();
+            first.Id = 0; // Make invalid because must be greater than 0
 
             var res = val.Validate(obj);
-            foreach (var r in res)
-                Output.WriteLine(r.Message);
-            Assert.True(res.Count() == 1);
+            PrintValidatorResults(res);
+            Assert.Single(res);
+            Assert.Equal(1, res.Count(r => r.Path == $"{nameof(obj.RecursiveValidatableCollection)}[{first}]" && r.PropertyName == nameof(obj.Id)));
         }
-    }
-    //[MetadataType(typeof(ValidatableMockMetadata))]
-    public class ValidatableMock : Notifier<ValidatableMock>
-    {
-        [Range(1, int.MaxValue, ErrorMessage = "Id must be greater than 0")]
-        public int Id
+        [Fact(DisplayName = "Validator - Automatic validation")]
+        public void AutomaticValidation()
         {
-            get => GetValue(() => 1);
-            set => SetValue(value);
+            var obj = new ValidatableMock();
+            var val = new Validator2();
+            var counter = 0;
+            ((INotifyCollectionChanged)val.Entries).CollectionChanged += (s, e) => counter++;
+
+            obj.Id = 0; // Make invalid because must be greater than 0
+
+            val.RegisterNotifier(obj);
+            PrintValidatorResults(val.Entries);
+
+            Assert.Equal(1, counter);
+            Assert.Single(val.Entries);
+            Assert.Equal(1, val.Entries.Count(r => string.IsNullOrEmpty(r.Path) && r.PropertyName == nameof(obj.Id)));
+
+            obj.Name = "Fuxion789.12"; // Make doubly invalid because contains 'Oscar' and has more than 10 character length
+            PrintValidatorResults(val.Entries);
+            Assert.Equal(3, counter);
+            Assert.Equal(3, val.Entries.Count);
+            Assert.Equal(2, val.Entries.Count(r => string.IsNullOrEmpty(r.Path) && r.PropertyName == nameof(obj.Name)));
+
+            obj.Id = 1; // Make valid because is greater than 0
+            PrintValidatorResults(val.Entries);
+            Assert.DoesNotContain(val.Entries, r => string.IsNullOrEmpty(r.Path) && r.PropertyName == nameof(obj.Id));
+            Assert.Equal(4, counter);
+            Assert.Equal(2, val.Entries.Count);
+
+            val.UnregisterNotifier(obj);
+            Assert.Empty(val.Entries);
         }
-        [Required(ErrorMessage = "Name is required")]
-        [StringLength(10,ErrorMessage = "Name length must be at maximum 10")]
-        [CustomValidation(typeof(ValidatableMock), nameof(ValidatableMock.ValidateName))]
-        public string Name
+        [Fact(DisplayName = "Validator - Automatic recursive validatable")]
+        public void AutomaticRecursiveValidatable()
         {
-            get => GetValue(() => "Ogcar");
-            set => SetValue(value);
+            var obj = new ValidatableMock();
+            var val = new Validator2();
+            var counter = 0;
+            ((INotifyCollectionChanged)val.Entries).CollectionChanged += (s, e) => counter++;
+
+            obj.RecursiveValidatable.Id = 0; // Make invalid because must be greater than 0
+
+            val.RegisterNotifier(obj);
+            PrintValidatorResults(val.Entries);
+            Assert.Equal(1, counter);
+            Assert.Single(val.Entries);
+            Assert.Equal(1, val.Entries.Count(r => r.Path == $"{nameof(obj.RecursiveValidatable)}" && r.PropertyName == nameof(obj.Id)));
+
+            obj.RecursiveValidatable.Name = "Fuxion678901"; // Make invalid because has more than 10 character length
+            PrintValidatorResults(val.Entries);
+            Assert.Equal(2, counter);
+            Assert.Equal(2, val.Entries.Count);
+            Assert.Equal(1, val.Entries.Count(r => r.Path == $"{nameof(obj.RecursiveValidatable)}" && r.PropertyName == nameof(obj.Name)));
+
+            obj.RecursiveValidatable.Id = 1;
+            Assert.Equal(0, val.Entries.Count(r => r.Path == $"{nameof(obj.RecursiveValidatable)}" && r.PropertyName == nameof(obj.Id)));
+
+            val.UnregisterNotifier(obj.RecursiveValidatable);
+            Assert.Empty(val.Entries);
         }
-        public static ValidationResult ValidateName(string value)
+        [Fact(DisplayName = "Validator - Automatic recursive validatable collection")]
+        public void AutomaticRecusiveValidatableCollection()
         {
-            if (value.ToLower().Contains("oscar"))
-                return new ValidationResult("Name cannot contains 'Oscar'");
-            return ValidationResult.Success;
+            var obj = new ValidatableMock();
+            var val = new Validator2();
+            val.RegisterNotifier(obj);
+            var counter = 0;
+            ((INotifyCollectionChanged)val.Entries).CollectionChanged += (s, e) => counter++;
+            var first = obj.RecursiveValidatableCollection.First();
+
+            first.Id = 0; // Make invalid because must be greater than 0
+            PrintValidatorResults(val.Entries);
+            var tt = $"{nameof(obj.RecursiveValidatableCollection)}.{first}.{nameof(obj.Id)}";
+            Assert.Equal(1, counter);
+            Assert.Single(val.Entries);
+            Assert.Equal(1, val.Entries.Count(r => r.Path == $"{nameof(obj.RecursiveValidatableCollection)}[{first}]" && r.PropertyName == nameof(obj.Id)));
+
+            first.Name = "Fuxion678901"; // Make invalid because has more than 10 character length
+            PrintValidatorResults(val.Entries);
+            Assert.Equal(2, counter);
+            Assert.Equal(2, val.Entries.Count);
+            Assert.Equal(1, val.Entries.Count(r => r.Path == $"{nameof(obj.RecursiveValidatableCollection)}[{first}]" && r.PropertyName == nameof(obj.Name)));
+
+            first.Id = 1; // Make valid
+            Assert.Equal(3, counter);
+            Assert.Single(val.Entries);
+            Assert.Equal(0, val.Entries.Count(r => r.Path == $"{nameof(obj.RecursiveValidatableCollection)}[{first}]" && r.PropertyName == nameof(obj.Id)));
+            // When Id is valid again, and change to 0, the entry for name must change its Path for new first.ToString result
+            Assert.Equal(1, val.Entries.Count(r => r.Path == $"{nameof(obj.RecursiveValidatableCollection)}[{first}]" && r.PropertyName == nameof(obj.Name)));
+
+            var added = new RecursiveValidatableMock
+            {
+                Id = 1,
+                Name = "Valid"
+            };
+            obj.RecursiveValidatableCollection.Add(added);
+
+            added.Id = -1; // Make invalid because must be greater than 0
+            PrintValidatorResults(val.Entries);
+            Assert.Equal(4, counter);
+            Assert.Equal(2, val.Entries.Count);
+            Assert.Equal(1, val.Entries.Count(r => r.Path == $"{nameof(obj.RecursiveValidatableCollection)}[{added}]" && r.PropertyName == nameof(obj.Id)));
+
+            obj.RecursiveValidatableCollection.Remove(added);
+            PrintValidatorResults(val.Entries);
+            Assert.Equal(0, val.Entries.Count(r => r.Path == $"{nameof(obj.RecursiveValidatableCollection)}[{added}]" && r.PropertyName == nameof(obj.Id)));
+
+            added.Name = "Fuxion678901"; // Make invalid because has more than 10 character length
+            PrintValidatorResults(val.Entries);
+            Assert.Equal(5, counter);
+            Assert.Single(val.Entries);
+            Assert.Equal(0, val.Entries.Count(r => r.Path == $"{nameof(obj.RecursiveValidatableCollection)}[{added}]" && r.PropertyName == nameof(obj.Name)));
+
+            val.UnregisterNotifier(first);
+            Assert.Empty(val.Entries);
         }
-        [Required(ErrorMessage = "Sub is mandatory")]
-        [SubValidatable]
-        public SubValidatableMock Sub
+        [Fact(DisplayName = "Validator - Automatic recursive validatable collection ensure elements")]
+        public void AutomaticRecusiveValidatableCollection2()
         {
-            get => GetValue(() => new SubValidatableMock());
-            set => SetValue(value);
-        }
-        [SubValidatable]
-        public ObservableCollection<SubValidatableMock> SubCollection
-        {
-            get => GetValue(() => new ObservableCollection<SubValidatableMock>(new[] { new SubValidatableMock() }));
-            set => SetValue(value);
-        }
-    }
-    public class ValidatableMockMetadata
-    {
-        [Required(ErrorMessage = "Id is required")]
-        [Range(1, int.MaxValue, ErrorMessage = "Id must be greater than 0")]
-        public int Id { get; set; }
-    }
-    public class SubValidatableMock : Notifier<SubValidatableMock>
-    {
-        [Required]
-        [Range(1, int.MaxValue, ErrorMessage = "Id must be greater than 0 - SUB")]
-        public int Id
-        {
-            get => GetValue(() => 1);
-            set => SetValue(value);
-        }
-        [Required(ErrorMessage = "Name is required - SUB")]
-        [StringLength(10, ErrorMessage = "Name length must be at maximum 10 - SUB")]
-        public string Name
-        {
-            get => GetValue(() => "Ogcar");
-            set => SetValue(value);
+            var obj = new ValidatableMock();
+            var val = new Validator2();
+            val.RegisterNotifier(obj);
+            var counter = 0;
+            ((INotifyCollectionChanged)val.Entries).CollectionChanged += (s, e) => counter++;
+            var first = obj.RecursiveValidatableCollection.First();
+
+            obj.RecursiveValidatableCollection.Remove(first);
+
+            Assert.Equal(1, counter);
+            Assert.Single(val.Entries);
+            Assert.Equal(1, val.Entries.Count(r => r.Path == $"" && r.PropertyName == nameof(obj.RecursiveValidatableCollection)));
+
+            var added = new RecursiveValidatableMock
+            {
+                Id = 1,
+                Name = "Valid"
+            };
+            obj.RecursiveValidatableCollection.Add(added);
+
+            Assert.Equal(2, counter);
+            Assert.Empty(val.Entries);
+            Assert.Equal(0, val.Entries.Count(r => r.Path == $"" && r.PropertyName == nameof(obj.RecursiveValidatableCollection)));
         }
     }
 }

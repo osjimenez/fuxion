@@ -19,6 +19,7 @@ namespace DemoWpf.Validation
     {
         public ValidationViewModel()
         {
+            Validator.RegisterNotifier(this);
             //Validator = new ValidationHelper();
             //NotifyDataErrorInfoAdapter = new NotifyDataErrorInfoAdapter(Validator);
 
@@ -28,9 +29,21 @@ namespace DemoWpf.Validation
 
         public GenericCommand DoCommand => new GenericCommand(() =>
         {
-            var validationResults = new List<ValidationResult>();
-            Validator.TryValidateObject(this, new ValidationContext(this), validationResults);
+            //var validationResults = new List<ValidationResult>();
+            //Validator.TryValidateObject(this, new ValidationContext(this), validationResults);
             Debug.WriteLine("");
+        });
+        public GenericCommand AddCommand => new GenericCommand(() =>
+        {
+            ValidationRecursiveCollection.Add(new ValidationRecursiveViewModel(Validator)
+            {
+                Id = -1,
+                Name = "Osca"
+            });
+        });
+        public GenericCommand<ValidationRecursiveViewModel> RemoveCommand => new GenericCommand<ValidationRecursiveViewModel>(ent =>
+        {
+            ValidationRecursiveCollection.Remove(ent);
         });
 
         [Required(ErrorMessage = "El id es requerido amigo mio !!")]
@@ -38,56 +51,92 @@ namespace DemoWpf.Validation
         public int? Id { get => GetValue<int?>(() => 1); set => SetValue(value); }
         [Required(AllowEmptyStrings = false, ErrorMessage = "Ponme un nombre, chiquitin !")]
         [StringLength(10, ErrorMessage = "El nombre no puede exceder de 10 caracteres de longitud")]
-        [CustomValidation(typeof(CustomValidations), nameof(CustomValidations.ValidateName))]
-        public string Name { get => GetValue<string>(() => "Oscar"); set => SetValue(value); }
+        [CustomValidation(typeof(ValidationViewModel), nameof(ValidationViewModel.ValidateName))]
+        public string Name { get => GetValue(() => "Osca"); set => SetValue(value); }
+        public static ValidationResult ValidateName(string value)
+        {
+            if (value.ToLower().Contains("oscar"))
+                return new ValidationResult("El nombre no puede ser Oscar");
+            return ValidationResult.Success;
+        }
+        [Required(ErrorMessage = "ValidationRecursive debe setearse")]
+        [RecursiveValidation]
+        public ValidationRecursiveViewModel ValidationRecursive {
+            get => GetValue(() => new ValidationRecursiveViewModel(Validator));
+            set => SetValue(value);
+        }
+        [RecursiveValidation]
+        [EnsureMinimumElements(1,ErrorMessage = "El menos debe haber un elemento")]
+        public ObservableCollection<ValidationRecursiveViewModel> ValidationRecursiveCollection
+        {
+            get => GetValue(() => new ObservableCollection<ValidationRecursiveViewModel>(new[]{
+                new ValidationRecursiveViewModel(Validator)
+                {
+                    Id = -1,
+                    Name = "Oscar"
+                }
+            }));
+            set => SetValue(value);
+        }
 
-
-        // check for general model error    
+        public Validator2 Validator
+        {
+            get => GetValue(() =>
+            {
+                var val = new Validator2();
+                //val.RegisterNotifier(this);
+                return val;
+            });
+        }
+        #region IDataErrorInfo
         public string Error => null;
-        // check for property errors    
         public string this[string columnName]
         {
             get
             {
-                var validationResults = new List<ValidationResult>();
-
-                
-                if (Validator.TryValidateProperty(
-                        GetType().GetProperty(columnName).GetValue(this)
-                        , new ValidationContext(this)
-                        {
-                            MemberName = columnName
-                        }
-                        , validationResults))
-                    return null;
-
-                return validationResults.First().ErrorMessage;
+                var res = Validator.Validate(this, columnName);
+                if (res.Any())
+                    return res.First().Message;
+                return null;
             }
         }
-
-
-        public Validator2 Validator2 { get => GetValue(() => new Validator2(this)); }
-        //protected ValidationHelper Validator { get; private set; }
-        //private NotifyDataErrorInfoAdapter NotifyDataErrorInfoAdapter { get; set; }
-
-        //#region INotifyDataErrorInfo
-        //public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged
-        //{
-        //    add { NotifyDataErrorInfoAdapter.ErrorsChanged += value; }
-        //    remove { NotifyDataErrorInfoAdapter.ErrorsChanged -= value; }
-        //}
-        //public bool HasErrors => NotifyDataErrorInfoAdapter.HasErrors;
-        //public IEnumerable GetErrors(string propertyName) => NotifyDataErrorInfoAdapter.GetErrors(propertyName);
-        //#endregion
+        #endregion
     }
-    public static class CustomValidations
+    public class ValidationRecursiveViewModel : Notifier<ValidationRecursiveViewModel>, IDataErrorInfo
     {
+        public ValidationRecursiveViewModel(Validator2 validator) { Validator = validator; } 
+
+        [Required(ErrorMessage = "El id es requerido amigo mio !!")]
+        [Range(1, 999999, ErrorMessage = "El id debe ser mayor que 0.")]
+        public int? Id { get => GetValue<int?>(() => 1); set => SetValue(value); }
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Ponme un nombre, chiquitin !")]
+        [StringLength(10, ErrorMessage = "El nombre no puede exceder de 10 caracteres de longitud")]
+        [CustomValidation(typeof(ValidationViewModel), nameof(ValidationViewModel.ValidateName))]
+        public string Name { get => GetValue(() => "Osca"); set => SetValue(value); }
         public static ValidationResult ValidateName(string value)
         {
-            if(value.ToLower().Contains("oscar"))
+            if (value.ToLower().Contains("oscar"))
                 return new ValidationResult("El nombre no puede ser Oscar");
             return ValidationResult.Success;
         }
+        public Validator2 Validator
+        {
+            get => GetValue<Validator2>();
+            set => SetValue(value);
+        }
+        #region IDataErrorInfo
+        public string Error => null;
+        public string this[string columnName]
+        {
+            get
+            {
+                var res = Validator.Validate(this, columnName);
+                if (res.Any())
+                    return res.First().Message;
+                return null;
+            }
+        }
+        #endregion
+        public override string ToString() => Name;
     }
-    
 }
