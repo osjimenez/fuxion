@@ -1,0 +1,58 @@
+﻿<Window x:Class="DemoWpf.Validation.ValidationWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DemoWpf.Validation"
+        mc:Ignorable="d"
+        Title="ValidationWindow" Height="300" Width="300">
+    <Window.Resources>
+        <Style x:Key="textBoxInError" TargetType="TextBox">
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="true">
+                    <Setter Property="ToolTip" Value="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    <StackPanel Margin="10">
+        <Border BorderThickness="3" BorderBrush="Red" Margin="0,0,0,5" Visibility="Visible">
+            <StackPanel>
+                <Border Background="Red">
+                    <TextBlock Text="Validación de datos" Foreground="White" Margin="10,3"/>
+                </Border>
+                <ItemsControl Margin="10,5" ItemsSource="{Binding Validator2.Entries}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="● " />
+                                <TextBlock Grid.Column="1" Text="{Binding }" />
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </Border>
+        <TextBlock Text="Identificador:" />
+        <TextBox Name="IdTextBox" 
+                 Text="{Binding Id, Mode=TwoWay,
+                    NotifyOnValidationError=True,
+                    ValidatesOnDataErrors=True,
+                    UpdateSourceTrigger=PropertyChanged}" 
+                Style="{StaticResource textBoxInError}"/>
+        <!--<TextBlock Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=IdTextBox}" Foreground="Red"/>-->
+        <TextBlock Text="Nombre:" />
+        <TextBox Name="NameTextBox" 
+                 Text="{Binding Name, Mode=TwoWay,
+                    NotifyOnValidationError=True,
+                    ValidatesOnDataErrors=True,
+                    UpdateSourceTrigger=PropertyChanged}"
+                 Style="{StaticResource textBoxInError}"/>
+        <!--<TextBlock Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=NameTextBox}" Foreground="Red"/>-->
+        <Button Content="Save" Command="{Binding DoCommand}" />
+    </StackPanel>
+</Window>

@@ -1,4 +1,5 @@
-﻿using Fuxion;
+﻿using DemoWpf.Validation;
+using Fuxion;
 using Fuxion.Factories;
 using Fuxion.Licensing;
 using Fuxion.Licensing.Test;
@@ -32,7 +33,8 @@ namespace DemoWpf
             //new MainWindow().Show();
             //new Licensing().Show();
             //new TimeProvider().Show();
-            new ConvertersWindow().Show();
+            //new ConvertersWindow().Show();
+            new ValidationWindow().Show();
         }
     }
     public class HardwareIdHelper : IHardwareIdProvider
