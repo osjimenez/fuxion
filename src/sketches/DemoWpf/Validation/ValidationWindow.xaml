@@ -18,15 +18,17 @@
         <fuxion:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <fuxion:BooleanToNegateBooleanConverter x:Key="BooleanToNegateBooleanConverter" />
         <fuxion:NullToBooleanConverter x:Key="NullToBooleanConverter" />
+        <fuxion:ICollectionCountToVisibilityConverter x:Key="ICollectionCountToVisibilityConverter" />
         <fuxion:StringNullOrWhiteSpaceToVisibilityConverter x:Key="StringNullOrWhiteSpaceToVisibilityConverter" />
     </Window.Resources>
     <StackPanel Margin="10">
-        <Border BorderThickness="3" BorderBrush="Red" Margin="0,0,0,5" Visibility="Visible">
+        <Border BorderThickness="3" BorderBrush="Red" Margin="0,0,0,5" 
+                Visibility="{Binding Validator.HasMessages, Converter={StaticResource BooleanToVisibilityConverter}}">
             <StackPanel>
                 <Border Background="Red">
-                    <TextBlock Text="Validación de datos" Foreground="White" Margin="10,3"/>
+                    <TextBlock Text="Validación de datos (Bindeo desglosado)" Foreground="White" Margin="10,3"/>
                 </Border>
-                <ItemsControl Margin="10,5" ItemsSource="{Binding Validator.Entries}">
+                <ItemsControl Margin="10,5" ItemsSource="{Binding Validator.Messages}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <StackPanel>
@@ -42,6 +44,15 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
+            </StackPanel>
+        </Border>
+        <Border BorderThickness="3" BorderBrush="Red" Margin="0,0,0,5" 
+                Visibility="{Binding Validator.HasMessages, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <StackPanel>
+                <Border Background="Red">
+                    <TextBlock Text="Validación de datos (Bindeo directo a Messages)" Foreground="White" Margin="10,3"/>
+                </Border>
+                <ItemsControl Margin="10,5" ItemsSource="{Binding Validator.Messages}"/>
             </StackPanel>
         </Border>
         <TextBlock Text="Identificador:" />
@@ -60,7 +71,8 @@
                     ValidatesOnDataErrors=True,
                     UpdateSourceTrigger=PropertyChanged}"
                  Style="{StaticResource textBoxInError}"/>
-
+        <TextBlock Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=NameTextBox}" Foreground="Red"
+                   Visibility="{Binding (Validation.HasError), ElementName=NameTextBox, Converter={StaticResource BooleanToVisibilityConverter}}"/>
         <Border Padding="10" DataContext="{Binding ValidationRecursive}">
             <StackPanel>
                 <TextBlock Text="Identificador:" />
@@ -70,7 +82,8 @@
                             ValidatesOnDataErrors=True,
                             UpdateSourceTrigger=PropertyChanged}" 
                         Style="{StaticResource textBoxInError}"/>
-                <!--<TextBlock Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=IdTextBox}" Foreground="Red"/>-->
+                <TextBlock Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=IdTextBox2}" Foreground="Red"
+                   Visibility="{Binding (Validation.HasError), ElementName=IdTextBox2, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                 <TextBlock Text="Nombre:" />
                 <TextBox Name="NameTextBox2" 
                          Text="{Binding Name, Mode=TwoWay,
@@ -78,7 +91,8 @@
                             ValidatesOnDataErrors=True,
                             UpdateSourceTrigger=PropertyChanged}"
                          Style="{StaticResource textBoxInError}"/>
-                <!--<TextBlock Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=NameTextBox}" Foreground="Red"/>-->
+                <TextBlock Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=NameTextBox2}" Foreground="Red"
+                   Visibility="{Binding (Validation.HasError), ElementName=NameTextBox2, Converter={StaticResource BooleanToVisibilityConverter}}"/>
             </StackPanel>
         </Border>
 
@@ -94,27 +108,31 @@
                             IsEnabled="{Binding SelectedItem, Converter={StaticResource NullToBooleanConverter}, ElementName=RecursiveCollectionListView}"/>
                 </StackPanel>
                 <ListView Name="RecursiveCollectionListView" Grid.Column="1" ItemsSource="{Binding ValidationRecursiveCollection}">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel>
-                            <TextBlock Text="Identificador:" />
-                            <TextBox Text="{Binding Id, Mode=TwoWay,
-                                        NotifyOnValidationError=True,
-                                        ValidatesOnDataErrors=True,
-                                        UpdateSourceTrigger=PropertyChanged}" 
-                                    Style="{StaticResource textBoxInError}"/>
-                            <!--<TextBlock Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=IdTextBox}" Foreground="Red"/>-->
-                            <TextBlock Text="Nombre:" />
-                            <TextBox Text="{Binding Name, Mode=TwoWay,
-                                        NotifyOnValidationError=True,
-                                        ValidatesOnDataErrors=True,
-                                        UpdateSourceTrigger=PropertyChanged}"
-                                     Style="{StaticResource textBoxInError}"/>
-                            <!--<TextBlock Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=NameTextBox}" Foreground="Red"/>-->
-                        </StackPanel>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <TextBlock Text="Identificador:" />
+                                <TextBox Name="IdTextBox3" Text="{Binding Id, Mode=TwoWay,
+                                            NotifyOnValidationError=True,
+                                            ValidatesOnDataErrors=True,
+                                            UpdateSourceTrigger=PropertyChanged}" 
+                                        Style="{StaticResource textBoxInError}"/>
+                                <TextBlock Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=IdTextBox3}" Foreground="Red"
+                                                Visibility="{Binding (Validation.HasError), ElementName=IdTextBox3, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                <TextBlock Text="Nombre:" />
+                                <TextBox Name="NameTextBox3" Text="{Binding Name, Mode=TwoWay,
+                                            NotifyOnValidationError=True,
+                                            ValidatesOnDataErrors=True,
+                                            UpdateSourceTrigger=PropertyChanged}"
+                                         Style="{StaticResource textBoxInError}"/>
+                                <TextBlock Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=NameTextBox3}" Foreground="Red"
+                                                Visibility="{Binding (Validation.HasError), ElementName=NameTextBox3, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                <TextBlock Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=RecursiveCollectionListView}" Foreground="Red"
+                                                Visibility="{Binding (Validation.HasError), ElementName=RecursiveCollectionListView, Converter={StaticResource BooleanToVisibilityConverter}}"/>
             </Grid>
         </Border>
 

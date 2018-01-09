@@ -19,13 +19,7 @@ namespace DemoWpf.Validation
         public ValidationWindow()
         {
             InitializeComponent();
-            DataContext = ViewModel;
+            DataContext = new ValidationViewModel();
         }
-        ValidationViewModel ViewModel { get; set; } = new ValidationViewModel();
-        //private void Validation_Error(object sender, ValidationErrorEventArgs e)
-        //{
-        //    if (e.Action == ValidationErrorEventAction.Added) ValidationViewModel.Errors += 1;
-        //    if (e.Action == ValidationErrorEventAction.Removed) ValidationViewModel.Errors -= 1;
-        //}
     }
 }

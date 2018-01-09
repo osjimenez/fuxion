@@ -11,18 +11,18 @@ using System.Reflection;
 using System.Text;
 namespace Fuxion.ComponentModel.DataAnnotations
 {
-    public class Validator2 : Notifier<Validator2>
+    public class NotifierValidator : Notifier<NotifierValidator>
     {
-        public Validator2()
+        public NotifierValidator()
         {
-            Entries = new ReadOnlyObservableCollection<ValidatorEntry2>(_entries);
-            _entries.CollectionChanged += (s, e) => HasEntries = Entries.Count > 0;
+            Messages = new ReadOnlyObservableCollection<NotifierValidatorMessage>(_messages);
+            _messages.CollectionChanged += (s, e) => HasMessages = Messages.Count > 0;
         }
 
-        ObservableCollection<ValidatorEntry2> _entries = new ObservableCollection<ValidatorEntry2>();
-        public ReadOnlyObservableCollection<ValidatorEntry2> Entries { get; private set; }
+        ObservableCollection<NotifierValidatorMessage> _messages = new ObservableCollection<NotifierValidatorMessage>();
+        public ReadOnlyObservableCollection<NotifierValidatorMessage> Messages { get; private set; }
 
-        public bool HasEntries
+        public bool HasMessages
         {
             get => GetValue<bool>();
             private set => SetValue(value);
@@ -71,28 +71,28 @@ namespace Fuxion.ComponentModel.DataAnnotations
         public void UnregisterNotifier(INotifyPropertyChanged notifier)
         {
             notifier.PropertyChanged -= Notifier_PropertyChanged;
-            _entries.RemoveIf(e => e.Object == notifier);
+            _messages.RemoveIf(e => e.Object == notifier);
             notifierPaths.Remove(notifier);
         }
         private void Notifier_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            _entries.RemoveIf(ent => ent.Object == sender && ent.PropertyName == e.PropertyName);
-            foreach (var ent in _entries.Where(ent => ent.Object == sender))
+            _messages.RemoveIf(ent => ent.Object == sender && ent.PropertyName == e.PropertyName);
+            foreach (var ent in _messages.Where(ent => ent.Object == sender))
                 ent.Path = notifierPaths[sender]();
             RefreshEntries(sender, e.PropertyName, notifierPaths[sender]);
         }
         private void RefreshEntries(object instance, string propertyName, Func<string> pathFunc)
         {
-            _entries.RemoveIf(e => e.Object == instance && (string.IsNullOrWhiteSpace(propertyName) || e.PropertyName == propertyName));
+            _messages.RemoveIf(e => e.Object == instance && (string.IsNullOrWhiteSpace(propertyName) || e.PropertyName == propertyName));
             var newEntries = Validate(instance, propertyName, pathFunc);
             foreach (var ent in newEntries)
-                if (!_entries.Contains(ent))
-                    _entries.Add(ent);
+                if (!_messages.Contains(ent))
+                    _messages.Add(ent);
         }
-        public ICollection<ValidatorEntry2> Validate(object instance, string propertyName = null) => Validate(instance, propertyName, () => "");
-        private ICollection<ValidatorEntry2> Validate(object instance, string propertyName, Func<string> pathFunc)
+        public ICollection<NotifierValidatorMessage> Validate(object instance, string propertyName = null) => Validate(instance, propertyName, () => "");
+        private ICollection<NotifierValidatorMessage> Validate(object instance, string propertyName, Func<string> pathFunc)
         {
-            if (instance == null) return new ValidatorEntry2[0];
+            if (instance == null) return new NotifierValidatorMessage[0];
             // Validate all properties of the instance
             var insRes = TypeDescriptor.GetProperties(instance.GetType())
                 .Cast<PropertyDescriptor>()
@@ -100,7 +100,7 @@ namespace Fuxion.ComponentModel.DataAnnotations
                 .Where(pro => pro.Attributes.OfType<ValidationAttribute>().Any())
                 .SelectMany(pro => pro.Attributes.OfType<ValidationAttribute>()
                     .Where(att => !att.IsValid(pro.GetValue(instance)))
-                    .Select(att => new ValidatorEntry2(instance)
+                    .Select(att => new NotifierValidatorMessage(instance)
                     {
                         Message = att.FormatErrorMessage(string.Empty),
                         Path = pathFunc(),
@@ -116,7 +116,7 @@ namespace Fuxion.ComponentModel.DataAnnotations
                 .Where(pro => pro.Attributes.OfType<ValidationAttribute>().Any())
                 .SelectMany(pro => pro.Attributes.OfType<ValidationAttribute>()
                     .Where(att => !att.IsValid(TypeDescriptor.GetProperties(instance).Cast<PropertyDescriptor>().First(p => p.Name == pro.Name).GetValue(instance)))
-                    .Select(att => new ValidatorEntry2(instance)
+                    .Select(att => new NotifierValidatorMessage(instance)
                     {
                         Message = att.FormatErrorMessage(string.Empty),
                         Path = pathFunc(),
@@ -139,7 +139,7 @@ namespace Fuxion.ComponentModel.DataAnnotations
                 .Where(pro => pro.PropertyType.IsSubclassOfRawGeneric(typeof(IEnumerable<>)))
                 .SelectMany(pro =>
                 {
-                    List<ValidatorEntry2> res = new List<ValidatorEntry2>();
+                    List<NotifierValidatorMessage> res = new List<NotifierValidatorMessage>();
                     var ienu = (IEnumerable)pro.GetValue(instance);
                     foreach (var t in ienu)
                     {
@@ -151,46 +151,4 @@ namespace Fuxion.ComponentModel.DataAnnotations
             return insRes.Concat(subIns).Concat(subColIns).OrderBy(r => r.Path).ThenBy(r => r.PropertyName).ToList();
         }
     }
-    public class ValidatorEntry2 : Notifier<ValidatorEntry2>
-    {
-        public ValidatorEntry2(object @object)
-        {
-            Object = @object;
-        }
-        internal object Object { get; set; }
-        public string Path
-        {
-            get => GetValue<string>();
-            internal set => SetValue(value);
-        }
-        public string PropertyName
-        {
-            get => GetValue<string>();
-            internal set => SetValue(value);
-        }
-        public string Message
-        {
-            get => GetValue<string>();
-            internal set => SetValue(value);
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (obj is ValidatorEntry2 ve)
-                return ve.Object == Object && ve.Path == Path && ve.PropertyName == PropertyName && ve.Message == Message;
-            return base.Equals(obj);
-        }
-        public override int GetHashCode() => Object.GetHashCode() ^ Path.GetHashCode() ^ PropertyName.GetHashCode() ^ Message.GetHashCode();
-    }
-    //public class ValidatorEntryCollection : INotifyCollectionChanged
-    //{
-    //    public event NotifyCollectionChangedEventHandler CollectionChanged;
-
-    //    public ReadOnlyObservableCollection<ValidatorEntryNamedCollection> ByPath { get; set; }
-    //    public ReadOnlyObservableCollection<ValidatorEntryNamedCollection> ByPropertyName { get; set; }
-    //}
-    //public class ValidatorEntryNamedCollection : ValidatorEntryCollection, INotifyCollectionChanged
-    //{
-    //    public string Name { get; set; }
-    //}
 }

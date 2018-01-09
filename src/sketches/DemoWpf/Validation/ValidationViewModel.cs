@@ -1,5 +1,6 @@
 ﻿using Fuxion.ComponentModel;
 using Fuxion.ComponentModel.DataAnnotations;
+using Fuxion.Threading.Tasks;
 using Fuxion.Windows.Input;
 using System;
 using System.Collections;
@@ -11,11 +12,12 @@ using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace DemoWpf.Validation
 {
-    public class ValidationViewModel : Notifier<ValidationViewModel>, IDataErrorInfo //, INotifyDataErrorInfo
+    public class ValidationViewModel : Notifier<ValidationViewModel>, IDataErrorInfo //,INotifyDataErrorInfo
     {
         public ValidationViewModel()
         {
@@ -66,7 +68,7 @@ namespace DemoWpf.Validation
             set => SetValue(value);
         }
         [RecursiveValidation]
-        [EnsureMinimumElements(1,ErrorMessage = "El menos debe haber un elemento")]
+        [EnsureMinimumElements(1, ErrorMessage = "El menos debe haber un elemento")]
         public ObservableCollection<ValidationRecursiveViewModel> ValidationRecursiveCollection
         {
             get => GetValue(() => new ObservableCollection<ValidationRecursiveViewModel>(new[]{
@@ -79,11 +81,11 @@ namespace DemoWpf.Validation
             set => SetValue(value);
         }
 
-        public Validator2 Validator
+        public NotifierValidator Validator
         {
             get => GetValue(() =>
             {
-                var val = new Validator2();
+                var val = new NotifierValidator();
                 //val.RegisterNotifier(this);
                 return val;
             });
@@ -104,7 +106,7 @@ namespace DemoWpf.Validation
     }
     public class ValidationRecursiveViewModel : Notifier<ValidationRecursiveViewModel>, IDataErrorInfo
     {
-        public ValidationRecursiveViewModel(Validator2 validator) { Validator = validator; } 
+        public ValidationRecursiveViewModel(NotifierValidator validator) { Validator = validator; } 
 
         [Required(ErrorMessage = "El id es requerido amigo mio !!")]
         [Range(1, 999999, ErrorMessage = "El id debe ser mayor que 0.")]
@@ -119,9 +121,9 @@ namespace DemoWpf.Validation
                 return new ValidationResult("El nombre no puede ser Oscar");
             return ValidationResult.Success;
         }
-        public Validator2 Validator
+        public NotifierValidator Validator
         {
-            get => GetValue<Validator2>();
+            get => GetValue<NotifierValidator>();
             set => SetValue(value);
         }
         #region IDataErrorInfo
