@@ -12,7 +12,7 @@ namespace Fuxion.Test
     {
         public BaseTest(ITestOutputHelper output)
         {
-            this.output = output;
+            Output = output;
             Printer.WriteLineAction = m =>
             {
                 try
@@ -23,6 +23,6 @@ namespace Fuxion.Test
                 catch { }
             };
         }
-        ITestOutputHelper output;
+        protected ITestOutputHelper Output { get; private set; }
     }
 }

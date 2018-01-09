@@ -42,13 +42,16 @@ namespace Fuxion.Windows.Input
         {
             if (parameter is TParameter par)
                 return canExecute != null ? canExecute(par) : true;
+            if (typeof(TParameter).IsNullable() && parameter == null)
+                return canExecute != null ? canExecute(default(TParameter)) : true;
             throw new InvalidCastException($"The parameter of type '{parameter.GetType().Name}' couldn't casted to '{typeof(TParameter).Name}' as was declared for command parameter.");
         }
         public void Execute(object parameter)
         {
             if (parameter is TParameter par)
                 action(par);
-            throw new InvalidCastException($"The parameter of type '{parameter.GetType().Name}' couldn't casted to '{typeof(TParameter).Name}' as was declared for command parameter.");
+            else
+                throw new InvalidCastException($"The parameter of type '{parameter.GetType().Name}' couldn't casted to '{typeof(TParameter).Name}' as was declared for command parameter.");
         }
         public void RaiseCanExecuteChanged()
         {
