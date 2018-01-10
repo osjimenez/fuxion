@@ -71,15 +71,20 @@ namespace System.Threading.Tasks
         //            return default(TResult);
         //    }
         //}
-        public static void Sleep(this Task task, TimeSpan timeout)
+        public static bool Sleep(this Task task, TimeSpan timeout, bool rethrowException = false)
         {
             try
             {
                 // Share the token with Delay method to break the operation if task will canceled
                 Task.Delay(timeout, task.GetCancellationToken(true).Value).Wait();
+                return true;
             }
             // If task was cancelled, nothing happens
-            catch (AggregateException aex) when (aex.InnerException is TaskCanceledException) { }
+            catch (AggregateException aex) when (aex.InnerException is TaskCanceledException)
+            {
+                if (rethrowException) throw aex.InnerException;
+                return false;
+            }
         }
     }
 }
