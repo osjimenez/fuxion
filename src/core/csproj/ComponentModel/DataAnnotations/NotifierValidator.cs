@@ -28,20 +28,25 @@ namespace Fuxion.ComponentModel.DataAnnotations
             private set => SetValue(value);
         }
 
-        Dictionary<object, Func<string>> notifierPaths = new Dictionary<object, Func<string>>();
+        Dictionary<object, Func<string>> paths = new Dictionary<object, Func<string>>();
 
         public void RegisterNotifier(INotifyPropertyChanged notifier, bool recursive = true) => RegisterNotifier(notifier, recursive, () => "");
         private void RegisterNotifier(INotifyPropertyChanged notifier, bool recursive, Func<string> pathFunc)
         {
-            if (notifierPaths.ContainsKey(notifier)) throw new DuplicateNotifierException();
-            notifierPaths.Add(notifier, pathFunc);
+            if (notifier == null) throw new NullReferenceException($"The parameter '{nameof(notifier)}' cannot be null");
+            if (paths.ContainsKey(notifier)) throw new DuplicateNotifierException();
+            paths.Add(notifier, pathFunc);
             notifier.PropertyChanged += Notifier_PropertyChanged;
             if (!recursive) return;
             foreach (var pro in TypeDescriptor.GetProperties(notifier.GetType())
                 .Cast<PropertyDescriptor>()
                 .Where(pro => pro.Attributes.OfType<RecursiveValidationAttribute>().Any())
                 .Where(pro => typeof(INotifyPropertyChanged).IsAssignableFrom(pro.PropertyType)))
-                RegisterNotifier((INotifyPropertyChanged)pro.GetValue(notifier), true, () => $"{pro.Name}");
+            {
+                var val = (INotifyPropertyChanged)pro.GetValue(notifier);
+                if(val != null)
+                    RegisterNotifier(val, true, () => $"{pro.Name}");
+            }
             foreach (var pro in TypeDescriptor.GetProperties(notifier.GetType())
                 .Cast<PropertyDescriptor>()
                 .Where(pro => pro.Attributes.OfType<RecursiveValidationAttribute>().Any())
@@ -50,7 +55,7 @@ namespace Fuxion.ComponentModel.DataAnnotations
                 RegisterNotifierCollection(notifier, pro, pathFunc);
             RefreshEntries(notifier, null, pathFunc);
         }
-        private void RegisterNotifierCollection(object notifier, PropertyDescriptor property, Func<string> pathFunc)
+        private void RegisterNotifierCollection(INotifyPropertyChanged notifier, PropertyDescriptor property, Func<string> pathFunc)
         {
             var collection = (INotifyCollectionChanged)property.GetValue(notifier);
             foreach (var item in (IEnumerable)collection)
@@ -70,21 +75,42 @@ namespace Fuxion.ComponentModel.DataAnnotations
         }
         public void UnregisterNotifier(INotifyPropertyChanged notifier)
         {
+            if (notifier == null) throw new NullReferenceException($"The parameter '{nameof(notifier)}' cannot be null");
             notifier.PropertyChanged -= Notifier_PropertyChanged;
             _messages.RemoveIf(e => e.Object == notifier);
-            notifierPaths.Remove(notifier);
+            paths.Remove(notifier);
         }
         private void Notifier_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            _messages.RemoveIf(ent => ent.Object == sender && ent.PropertyName == e.PropertyName);
+            //_messages.RemoveIf(ent => ent.Object == sender && ent.PropertyName == e.PropertyName);
+
             foreach (var ent in _messages.Where(ent => ent.Object == sender))
-                ent.Path = notifierPaths[sender]();
-            RefreshEntries(sender, e.PropertyName, notifierPaths[sender]);
+                ent.Path = paths[sender]();
+
+            var notifier = TypeDescriptor.GetProperties(sender)
+                .Cast<PropertyDescriptor>()
+                .Where(pro => pro.DisplayName == e.PropertyName)
+                .Where(pro => typeof(INotifyPropertyChanged).IsAssignableFrom(pro.PropertyType))
+                .Select(pro => (INotifyPropertyChanged)pro.GetValue(sender))
+                .Where(obj => obj != null)
+                .FirstOrDefault();
+            if (notifier != null) RegisterNotifier(notifier, true, () => paths[sender]() + e.PropertyName);
+
+            var collection = TypeDescriptor.GetProperties(sender)
+                .Cast<PropertyDescriptor>()
+                .Where(pro => pro.DisplayName == e.PropertyName)
+                .Where(pro => typeof(INotifyCollectionChanged).IsAssignableFrom(pro.PropertyType))
+                .Where(pro => (INotifyCollectionChanged)pro.GetValue(sender) != null)
+                //.Where(obj => obj != null)
+                .FirstOrDefault();
+            if (collection != null) RegisterNotifierCollection((INotifyPropertyChanged)sender, collection, paths[sender]);
+
+            RefreshEntries(sender, e.PropertyName, paths[sender]);
         }
         private void RefreshEntries(object instance, string propertyName, Func<string> pathFunc)
         {
-            _messages.RemoveIf(e => e.Object == instance && (string.IsNullOrWhiteSpace(propertyName) || e.PropertyName == propertyName));
             var newEntries = Validate(instance, propertyName, pathFunc);
+            _messages.RemoveIf(e => !newEntries.Contains(e) && e.Object == instance && (string.IsNullOrWhiteSpace(propertyName) || e.PropertyName == propertyName));
             foreach (var ent in newEntries)
                 if (!_messages.Contains(ent))
                     _messages.Add(ent);
@@ -141,10 +167,11 @@ namespace Fuxion.ComponentModel.DataAnnotations
                 {
                     List<NotifierValidatorMessage> res = new List<NotifierValidatorMessage>();
                     var ienu = (IEnumerable)pro.GetValue(instance);
-                    foreach (var t in ienu)
-                    {
-                        res.AddRange(Validate(t, null, () => $"{pro.DisplayName}[{t.ToString()}]"));
-                    }
+                    if(ienu != null)
+                        foreach (var t in ienu)
+                        {
+                            res.AddRange(Validate(t, null, () => $"{pro.DisplayName}[{t.ToString()}]"));
+                        }
                     return res;
                 });
 

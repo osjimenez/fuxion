@@ -136,6 +136,37 @@ namespace Fuxion.Test.ComponentModel.DataAnnotations
             val.UnregisterNotifier(obj.RecursiveValidatable);
             Assert.Empty(val.Messages);
         }
+        [Fact(DisplayName = "Validator - Automatic recursive validatable null")]
+        public void AutomaticRecursiveValidatableNull()
+        {
+            var obj = new ValidatableMock();
+            var val = new NotifierValidator();
+            var counter = 0;
+            ((INotifyCollectionChanged)val.Messages).CollectionChanged += (s, e) => counter++;
+
+            obj.RecursiveValidatable = null; // Make invalid because is required
+
+            val.RegisterNotifier(obj);
+            PrintValidatorResults(val.Messages);
+            Assert.Equal(1, counter);
+            Assert.Single(val.Messages);
+            Assert.Equal(1, val.Messages.Count(r => r.Path == $"" && r.PropertyName == nameof(obj.RecursiveValidatable)));
+
+            obj.RecursiveValidatable = new RecursiveValidatableMock();
+
+            PrintValidatorResults(val.Messages);
+            Assert.Equal(2, counter);
+            Assert.Empty(val.Messages);
+            Assert.Equal(0, val.Messages.Count(r => r.Path == $"" && r.PropertyName == nameof(obj.RecursiveValidatable)));
+
+            obj.RecursiveValidatable.Id = -1;
+            Assert.Equal(3, counter);
+            Assert.Single(val.Messages);
+            Assert.Equal(1, val.Messages.Count(r => r.Path == $"{nameof(obj.RecursiveValidatable)}" && r.PropertyName == nameof(obj.Id)));
+
+            val.UnregisterNotifier(obj.RecursiveValidatable);
+            Assert.Empty(val.Messages);
+        }
         [Fact(DisplayName = "Validator - Automatic recursive validatable collection")]
         public void AutomaticRecusiveValidatableCollection()
         {
@@ -148,7 +179,6 @@ namespace Fuxion.Test.ComponentModel.DataAnnotations
 
             first.Id = 0; // Make invalid because must be greater than 0
             PrintValidatorResults(val.Messages);
-            var tt = $"{nameof(obj.RecursiveValidatableCollection)}.{first}.{nameof(obj.Id)}";
             Assert.Equal(1, counter);
             Assert.Single(val.Messages);
             Assert.Equal(1, val.Messages.Count(r => r.Path == $"{nameof(obj.RecursiveValidatableCollection)}[{first}]" && r.PropertyName == nameof(obj.Id)));
@@ -193,7 +223,7 @@ namespace Fuxion.Test.ComponentModel.DataAnnotations
             Assert.Empty(val.Messages);
         }
         [Fact(DisplayName = "Validator - Automatic recursive validatable collection ensure elements")]
-        public void AutomaticRecusiveValidatableCollection2()
+        public void AutomaticRecusiveValidatableCollectionEnsureElements()
         {
             var obj = new ValidatableMock();
             var val = new NotifierValidator();
@@ -208,16 +238,45 @@ namespace Fuxion.Test.ComponentModel.DataAnnotations
             Assert.Single(val.Messages);
             Assert.Equal(1, val.Messages.Count(r => r.Path == $"" && r.PropertyName == nameof(obj.RecursiveValidatableCollection)));
 
-            var added = new RecursiveValidatableMock
-            {
-                Id = 1,
-                Name = "Valid"
-            };
+            var added = new RecursiveValidatableMock();
             obj.RecursiveValidatableCollection.Add(added);
 
             Assert.Equal(2, counter);
             Assert.Empty(val.Messages);
             Assert.Equal(0, val.Messages.Count(r => r.Path == $"" && r.PropertyName == nameof(obj.RecursiveValidatableCollection)));
+        }
+        [Fact(DisplayName = "Validator - Automatic recursive validatable collection null")]
+        public void AutomaticRecusiveValidatableCollectionNull()
+        {
+            var obj = new ValidatableMock();
+            var val = new NotifierValidator();
+            val.RegisterNotifier(obj);
+            var counter = 0;
+            ((INotifyCollectionChanged)val.Messages).CollectionChanged += (s, e) => counter++;
+
+            obj.RecursiveValidatableCollection = null;
+
+            PrintValidatorResults(val.Messages);
+            Assert.Equal(1, counter);
+            Assert.Single(val.Messages);
+            Assert.Equal(1, val.Messages.Count(r => r.Path == $"" && r.PropertyName == nameof(obj.RecursiveValidatableCollection)));
+
+            obj.RecursiveValidatableCollection = new ObservableCollection<RecursiveValidatableMock>();
+            PrintValidatorResults(val.Messages);
+            var added = new RecursiveValidatableMock();
+            obj.RecursiveValidatableCollection.Add(added);
+
+            PrintValidatorResults(val.Messages);
+            Assert.Equal(2, counter);
+            Assert.Empty(val.Messages);
+            Assert.Equal(0, val.Messages.Count(r => r.Path == $"" && r.PropertyName == nameof(obj.RecursiveValidatableCollection)));
+
+            added.Id = -1;
+
+            PrintValidatorResults(val.Messages);
+            Assert.Equal(3, counter);
+            Assert.Single(val.Messages);
+            Assert.Equal(1, val.Messages.Count(r => r.Path == $"{nameof(obj.RecursiveValidatableCollection)}[{added}]" && r.PropertyName == nameof(obj.Id)));
         }
     }
 }
