@@ -31,16 +31,14 @@
                 <ItemsControl Margin="10,5" ItemsSource="{Binding Validator.Messages}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <StackPanel>
-                                <WrapPanel>
-                                    <TextBlock Text="● " />
-                                    <TextBlock Grid.Column="1" Text="{Binding Path}" />
-                                    <TextBlock Text=" ● " Visibility="{Binding Path, Converter={StaticResource StringNullOrWhiteSpaceToVisibilityConverter}}"/>
-                                    <TextBlock Grid.Column="1" Text="{Binding PropertyName}" />
-                                    <TextBlock Text=" = " />
-                                    <TextBlock Grid.Column="1" Text="{Binding Message}" />
-                                </WrapPanel>
-                            </StackPanel>
+                            <WrapPanel>
+                                <TextBlock Text="● " />
+                                <TextBlock Grid.Column="1" Text="{Binding Path}" />
+                                <TextBlock Text=" ● " Visibility="{Binding Path, Converter={StaticResource StringNullOrWhiteSpaceToVisibilityConverter}}"/>
+                                <TextBlock Grid.Column="1" Text="{Binding PropertyName}" />
+                                <TextBlock Text=" = " />
+                                <TextBlock Grid.Column="1" Text="{Binding Message}" />
+                            </WrapPanel>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>

@@ -34,7 +34,7 @@ namespace Fuxion.ComponentModel.DataAnnotations
         private void RegisterNotifier(INotifyPropertyChanged notifier, bool recursive, Func<string> pathFunc)
         {
             if (notifier == null) throw new NullReferenceException($"The parameter '{nameof(notifier)}' cannot be null");
-            if (paths.ContainsKey(notifier)) throw new DuplicateNotifierException();
+            if (paths.ContainsKey(notifier)) return;//throw new DuplicateNotifierException();
             paths.Add(notifier, pathFunc);
             notifier.PropertyChanged += Notifier_PropertyChanged;
             if (!recursive) return;
