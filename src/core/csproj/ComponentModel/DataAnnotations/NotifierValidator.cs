@@ -82,8 +82,6 @@ namespace Fuxion.ComponentModel.DataAnnotations
         }
         private void Notifier_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            //_messages.RemoveIf(ent => ent.Object == sender && ent.PropertyName == e.PropertyName);
-
             foreach (var ent in _messages.Where(ent => ent.Object == sender))
                 ent.Path = paths[sender]();
 
@@ -103,11 +101,11 @@ namespace Fuxion.ComponentModel.DataAnnotations
                 .Where(pro => pro.Attributes.OfType<RecursiveValidationAttribute>().Any())
                 .Where(pro => typeof(INotifyCollectionChanged).IsAssignableFrom(pro.PropertyType))
                 .Where(pro => (INotifyCollectionChanged)pro.GetValue(sender) != null)
-                //.Where(obj => obj != null)
                 .FirstOrDefault();
             if (collection != null) RegisterNotifierCollection((INotifyPropertyChanged)sender, collection, paths[sender]);
 
-            RefreshEntries(sender, e.PropertyName, paths[sender]);
+            var conditionalAtt = sender.GetType().GetCustomAttribute<ConditionalValidationAttribute>(true, false, true);
+            RefreshEntries(sender, conditionalAtt != null ? null : e.PropertyName, paths[sender]);
         }
         private void RefreshEntries(object instance, string propertyName, Func<string> pathFunc)
         {
@@ -121,6 +119,8 @@ namespace Fuxion.ComponentModel.DataAnnotations
         private ICollection<NotifierValidatorMessage> Validate(object instance, string propertyName, Func<string> pathFunc)
         {
             if (instance == null) return new NotifierValidatorMessage[0];
+            var conditionalAtt = instance.GetType().GetCustomAttribute<ConditionalValidationAttribute>(true, false, true);
+            if(conditionalAtt != null && !conditionalAtt.Check(instance)) return new NotifierValidatorMessage[0];
             // Validate all properties of the instance
             var insRes = TypeDescriptor.GetProperties(instance.GetType())
                 .Cast<PropertyDescriptor>()

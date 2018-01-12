@@ -108,6 +108,32 @@ namespace Fuxion.Test.ComponentModel.DataAnnotations
             val.UnregisterNotifier(obj);
             Assert.Empty(val.Messages);
         }
+        [Fact(DisplayName = "Validator - Automatic conditional validation")]
+        public void AutomaticConditionalValidation()
+        {
+            var obj = new ValidatableMock();
+            var val = new NotifierValidator();
+            var counter = 0;
+            ((INotifyCollectionChanged)val.Messages).CollectionChanged += (s, e) => counter++;
+
+            obj.Id = 0; // Make invalid because must be greater than 0
+            obj.Name = "Fuxion789.12"; // Make doubly invalid because contains 'Oscar' and has more than 10 character length
+
+            val.RegisterNotifier(obj);
+            
+            PrintValidatorResults(val.Messages);
+            Assert.Equal(3, counter);
+            Assert.Equal(3, val.Messages.Count);
+            Assert.Equal(2, val.Messages.Count(r => string.IsNullOrEmpty(r.Path) && r.PropertyName == nameof(obj.Name)));
+
+            obj.IsValid = false; // Disable all validations
+            
+            PrintValidatorResults(val.Messages);
+            Assert.DoesNotContain(val.Messages, r => string.IsNullOrEmpty(r.Path) && r.PropertyName == nameof(obj.Id));
+            Assert.DoesNotContain(val.Messages, r => string.IsNullOrEmpty(r.Path) && r.PropertyName == nameof(obj.Name));
+            Assert.Equal(6, counter);
+            Assert.Empty(val.Messages);
+        }
         [Fact(DisplayName = "Validator - Automatic recursive validatable")]
         public void AutomaticRecursiveValidatable()
         {

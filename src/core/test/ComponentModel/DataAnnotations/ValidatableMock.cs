@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 namespace Fuxion.Test.ComponentModel.DataAnnotations
 {
     [MetadataType(typeof(ValidatableMockMetadata))]
+    [ConditionalValidation(typeof(ValidatableMock), nameof(MustBeValidate))]
     public class ValidatableMock : Notifier<ValidatableMock>
     {
         // The validation attributes for 'Id' are in a metadata type
@@ -47,6 +48,13 @@ namespace Fuxion.Test.ComponentModel.DataAnnotations
             get => GetValue(() => new ObservableCollection<RecursiveValidatableMock>(new[] { new RecursiveValidatableMock() }));
             set => SetValue(value);
         }
+        public bool IsValid
+        {
+            get => GetValue(() => true);
+            set => SetValue(value);
+        }
+        public bool MustBeValidate() => IsValid;
+
 
         public override string ToString() => $"ValidatableMock({Id})";
     }

@@ -53,6 +53,7 @@
                 <ItemsControl Margin="10,5" ItemsSource="{Binding Validator.Messages}"/>
             </StackPanel>
         </Border>
+        <CheckBox Content="Es válido" IsChecked="{Binding IsValid}" />
         <TextBlock Text="Identificador:" />
         <TextBox Name="IdTextBox" 
                  Text="{Binding Id, Mode=TwoWay,

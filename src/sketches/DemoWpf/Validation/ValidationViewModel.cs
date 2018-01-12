@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 
 namespace DemoWpf.Validation
 {
+    [ConditionalValidation(typeof(ValidationViewModel),nameof(MustBeValidate))]
     public class ValidationViewModel : Notifier<ValidationViewModel>, IDataErrorInfo //,INotifyDataErrorInfo
     {
         public ValidationViewModel()
@@ -47,6 +48,9 @@ namespace DemoWpf.Validation
         {
             ValidationRecursiveCollection.Remove(ent);
         });
+
+        public bool IsValid { get => GetValue(() => true); set => SetValue(value); }
+        public bool MustBeValidate() => IsValid;
 
         [Required(ErrorMessage = "El id es requerido amigo mio !!")]
         [Range(1, 999999, ErrorMessage = "El id debe ser mayor que 0.")]
