@@ -52,13 +52,17 @@ namespace DemoWpf.Validation
         public bool IsValid { get => GetValue(() => true); set => SetValue(value); }
         public bool MustBeValidate() => IsValid;
 
-        [Required(ErrorMessage = "El id es requerido amigo mio !!")]
-        [Range(1, 999999, ErrorMessage = "El id debe ser mayor que 0.")]
+        [Display(Name = nameof(Id), ResourceType = typeof(TextLocalized))]
+        [Required(ErrorMessageResourceType = typeof(TextLocalized), ErrorMessageResourceName = nameof(TextLocalized.Required))]
+        [Range(1, 100, ErrorMessageResourceType = typeof(TextLocalized), ErrorMessageResourceName = nameof(TextLocalized.Range))]
         public int? Id { get => GetValue<int?>(() => -1); set => SetValue(value); }
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Ponme un nombre, chiquitin !")]
-        [StringLength(10, ErrorMessage = "El nombre no puede exceder de 10 caracteres de longitud")]
+
+        [Display(Name = nameof(Name), ResourceType = typeof(TextLocalized))]
+        [Required(ErrorMessageResourceType = typeof(TextLocalized), ErrorMessageResourceName = nameof(TextLocalized.Required))]
+        [StringLength(10, ErrorMessageResourceType = typeof(TextLocalized), ErrorMessageResourceName = nameof(TextLocalized.StringLength))]
         [CustomValidation(typeof(ValidationViewModel), nameof(ValidationViewModel.ValidateName))]
         public string Name { get => GetValue(() => "Osca"); set => SetValue(value); }
+
         public static ValidationResult ValidateName(string value)
         {
             if (value.ToLower().Contains("oscar"))

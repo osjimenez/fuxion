@@ -147,6 +147,11 @@
     <Compile Include="TimeProvider.xaml.cs">
       <DependentUpon>TimeProvider.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Validation\TextLocalized.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TextLocalized.resx</DependentUpon>
+    </Compile>
     <Compile Include="Validation\ValidationViewModel.cs" />
     <Compile Include="Validation\ValidationWindow.xaml.cs">
       <DependentUpon>ValidationWindow.xaml</DependentUpon>
@@ -222,6 +227,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Validation\TextLocalized.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>TextLocalized.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="log4net.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

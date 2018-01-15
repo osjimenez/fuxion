@@ -71,13 +71,13 @@ namespace Fuxion.ComponentModel.DataAnnotations
         {
             var collection = (INotifyCollectionChanged)property.GetValue(notifier);
             foreach (var item in (IEnumerable)collection)
-                if (typeof(INotifyPropertyChanged).IsAssignableFrom(item.GetType())) RegisterNotifier((INotifyPropertyChanged)item, true, () => $"{(pathFunc() + property.DisplayName).Trim('.')}[{item.ToString()}]");
+                if (typeof(INotifyPropertyChanged).IsAssignableFrom(item.GetType())) RegisterNotifier((INotifyPropertyChanged)item, true, () => $"{(pathFunc() + property.GetDisplayName()).Trim('.')}[{item.ToString()}]");
             collection.CollectionChanged += (s, e) =>
             {
                 if (e.NewItems != null)
                     foreach (var item in e.NewItems)
                         if (typeof(INotifyPropertyChanged).IsAssignableFrom(item.GetType()))
-                            RegisterNotifier((INotifyPropertyChanged)item, true, () => $"{(pathFunc()+property.DisplayName).Trim('.')}[{item.ToString()}]");
+                            RegisterNotifier((INotifyPropertyChanged)item, true, () => $"{(pathFunc()+property.GetDisplayName()).Trim('.')}[{item.ToString()}]");
                 if (e.OldItems != null)
                     foreach (var item in e.OldItems)
                         if (typeof(INotifyPropertyChanged).IsAssignableFrom(item.GetType()))
@@ -99,7 +99,7 @@ namespace Fuxion.ComponentModel.DataAnnotations
 
             var notifier = TypeDescriptor.GetProperties(sender)
                 .Cast<PropertyDescriptor>()
-                .Where(pro => pro.DisplayName == e.PropertyName)
+                .Where(pro => pro.Name == e.PropertyName)
                 .Where(pro => pro.Attributes.OfType<RecursiveValidationAttribute>().Any())
                 .Where(pro => typeof(INotifyPropertyChanged).IsAssignableFrom(pro.PropertyType))
                 .Select(pro => (INotifyPropertyChanged)pro.GetValue(sender))
@@ -109,7 +109,7 @@ namespace Fuxion.ComponentModel.DataAnnotations
 
             var collection = TypeDescriptor.GetProperties(sender)
                 .Cast<PropertyDescriptor>()
-                .Where(pro => pro.DisplayName == e.PropertyName)
+                .Where(pro => pro.Name == e.PropertyName)
                 .Where(pro => pro.Attributes.OfType<RecursiveValidationAttribute>().Any())
                 .Where(pro => typeof(INotifyCollectionChanged).IsAssignableFrom(pro.PropertyType))
                 .Where(pro => (INotifyCollectionChanged)pro.GetValue(sender) != null)
@@ -142,9 +142,9 @@ namespace Fuxion.ComponentModel.DataAnnotations
                     .Where(att => !att.IsValid(pro.GetValue(instance)))
                     .Select(att => new NotifierValidatorMessage(instance)
                     {
-                        Message = att.FormatErrorMessage(string.Empty),
+                        Message = att.FormatErrorMessage(pro.GetDisplayName()),
                         Path = pathFunc(),
-                        PropertyName = pro.DisplayName,
+                        PropertyName = pro.GetDisplayName(),
                     }));
             // Validate all properties of the metadata type
             var metaAtt = instance.GetType().GetCustomAttribute<MetadataTypeAttribute>(true, false, true);
@@ -158,9 +158,9 @@ namespace Fuxion.ComponentModel.DataAnnotations
                     .Where(att => !att.IsValid(TypeDescriptor.GetProperties(instance).Cast<PropertyDescriptor>().First(p => p.Name == pro.Name).GetValue(instance)))
                     .Select(att => new NotifierValidatorMessage(instance)
                     {
-                        Message = att.FormatErrorMessage(string.Empty),
+                        Message = att.FormatErrorMessage(pro.GetDisplayName()),
                         Path = pathFunc(),
-                        PropertyName = pro.DisplayName,
+                        PropertyName = pro.GetDisplayName(),
                     }));
                 insRes = insRes.Concat(metaRes);
             }
@@ -170,7 +170,7 @@ namespace Fuxion.ComponentModel.DataAnnotations
                 .Where(pro => propertyName == null || pro.Name == propertyName)
                 .Where(pro => pro.Attributes.OfType<RecursiveValidationAttribute>().Any())
                 .Where(pro => !pro.PropertyType.IsSubclassOfRawGeneric(typeof(IEnumerable<>)))
-                .SelectMany(pro => Validate(pro.GetValue(instance), null, () => $"{pro.DisplayName}"));
+                .SelectMany(pro => Validate(pro.GetValue(instance), null, () => $"{pro.GetDisplayName()}"));
             // Validate all sub collection validatables
             var subColIns = TypeDescriptor.GetProperties(instance.GetType())
                 .Cast<PropertyDescriptor>()
@@ -184,7 +184,7 @@ namespace Fuxion.ComponentModel.DataAnnotations
                     if(ienu != null)
                         foreach (var t in ienu)
                         {
-                            res.AddRange(Validate(t, null, () => $"{pro.DisplayName}[{t.ToString()}]"));
+                            res.AddRange(Validate(t, null, () => $"{pro.GetDisplayName()}[{t.ToString()}]"));
                         }
                     return res;
                 });
