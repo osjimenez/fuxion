@@ -16,11 +16,23 @@ namespace Fuxion.ComponentModel.DataAnnotations
         public NotifierValidator()
         {
             Messages = new ReadOnlyObservableCollection<NotifierValidatorMessage>(_messages);
-            _messages.CollectionChanged += (s, e) => HasMessages = Messages.Count > 0;
+            StringMessages = new ReadOnlyObservableCollection<string>(_stringMessages);
+            _messages.CollectionChanged += (s, e) =>
+            {
+                if (e.NewItems != null)
+                    foreach (var item in e.NewItems.Cast<NotifierValidatorMessage>())
+                        _stringMessages.Add(item.Message);
+                if (e.OldItems != null)
+                    foreach (var item in e.OldItems.Cast<NotifierValidatorMessage>())
+                        _stringMessages.Remove(item.Message);
+                HasMessages = Messages.Count > 0;
+            };
         }
 
         ObservableCollection<NotifierValidatorMessage> _messages = new ObservableCollection<NotifierValidatorMessage>();
         public ReadOnlyObservableCollection<NotifierValidatorMessage> Messages { get; private set; }
+        ObservableCollection<string> _stringMessages = new ObservableCollection<string>();
+        public ReadOnlyObservableCollection<string> StringMessages { get; private set; }
 
         public bool HasMessages
         {

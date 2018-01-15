@@ -20,6 +20,7 @@
         <fuxion:NullToBooleanConverter x:Key="NullToBooleanConverter" />
         <fuxion:ICollectionCountToVisibilityConverter x:Key="ICollectionCountToVisibilityConverter" />
         <fuxion:StringNullOrWhiteSpaceToVisibilityConverter x:Key="StringNullOrWhiteSpaceToVisibilityConverter" />
+        <fuxion:INotifyCollectionChangedToRemovedDuplicatesINotifyCollectionChangedConverter x:Key="INotifyCollectionChangedToRemovedDuplicatesINotifyCollectionChangedConverter" />
     </Window.Resources>
     <StackPanel Margin="10">
         <Border BorderThickness="3" BorderBrush="Red" Margin="0,0,0,5" 
@@ -50,7 +51,7 @@
                 <Border Background="Red">
                     <TextBlock Text="Validación de datos (Bindeo directo a Messages)" Foreground="White" Margin="10,3"/>
                 </Border>
-                <ItemsControl Margin="10,5" ItemsSource="{Binding Validator.Messages}"/>
+                <ItemsControl Margin="10,5" ItemsSource="{Binding Validator.StringMessages, Converter={StaticResource INotifyCollectionChangedToRemovedDuplicatesINotifyCollectionChangedConverter}}"/>
             </StackPanel>
         </Border>
         <CheckBox Content="Es válido" IsChecked="{Binding IsValid}" />
@@ -59,8 +60,7 @@
                  Text="{Binding Id, Mode=TwoWay,
                     NotifyOnValidationError=True,
                     ValidatesOnDataErrors=True,
-                    UpdateSourceTrigger=PropertyChanged}" 
-                Style="{StaticResource textBoxInError}"/>
+                    UpdateSourceTrigger=PropertyChanged}"/>
         <TextBlock Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=IdTextBox}" Foreground="Red"
                    Visibility="{Binding (Validation.HasError), ElementName=IdTextBox, Converter={StaticResource BooleanToVisibilityConverter}}"/>
         <TextBlock Text="Nombre:" />

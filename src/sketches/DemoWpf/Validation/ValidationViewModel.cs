@@ -54,7 +54,7 @@ namespace DemoWpf.Validation
 
         [Required(ErrorMessage = "El id es requerido amigo mio !!")]
         [Range(1, 999999, ErrorMessage = "El id debe ser mayor que 0.")]
-        public int? Id { get => GetValue<int?>(() => 1); set => SetValue(value); }
+        public int? Id { get => GetValue<int?>(() => -1); set => SetValue(value); }
         [Required(AllowEmptyStrings = false, ErrorMessage = "Ponme un nombre, chiquitin !")]
         [StringLength(10, ErrorMessage = "El nombre no puede exceder de 10 caracteres de longitud")]
         [CustomValidation(typeof(ValidationViewModel), nameof(ValidationViewModel.ValidateName))]
