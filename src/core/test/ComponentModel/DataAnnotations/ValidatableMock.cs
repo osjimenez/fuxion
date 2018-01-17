@@ -20,6 +20,7 @@ namespace Fuxion.Test.ComponentModel.DataAnnotations
             get => GetValue(() => 1);
             set => SetValue(value);
         }
+        [Display(Name = "Nombre")]
         [Required(ErrorMessage = "Name is required")]
         [StringLength(10, ErrorMessage = "Name length must be at maximum 10")]
         [CustomValidation(typeof(ValidatableMock), nameof(ValidatableMock.ValidateIfNameContainsOscar))]
@@ -73,6 +74,7 @@ namespace Fuxion.Test.ComponentModel.DataAnnotations
             get => GetValue(() => 1);
             set => SetValue(value);
         }
+        [Display(Name = "Nombre")]
         [Required(ErrorMessage = "Name is required")]
         [StringLength(10, ErrorMessage = "Name length must be at maximum 10")]
         public string Name

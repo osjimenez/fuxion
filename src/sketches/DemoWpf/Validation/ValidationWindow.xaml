@@ -36,7 +36,7 @@
                                 <TextBlock Text="● " />
                                 <TextBlock Grid.Column="1" Text="{Binding Path}" />
                                 <TextBlock Text=" ● " Visibility="{Binding Path, Converter={StaticResource StringNullOrWhiteSpaceToVisibilityConverter}}"/>
-                                <TextBlock Grid.Column="1" Text="{Binding PropertyName}" />
+                                <TextBlock Grid.Column="1" Text="{Binding PropertyDisplayName}" />
                                 <TextBlock Text=" = " />
                                 <TextBlock Grid.Column="1" Text="{Binding Message}" />
                             </WrapPanel>

@@ -144,7 +144,8 @@ namespace Fuxion.ComponentModel.DataAnnotations
                     {
                         Message = att.FormatErrorMessage(pro.GetDisplayName()),
                         Path = pathFunc(),
-                        PropertyName = pro.GetDisplayName(),
+                        PropertyDisplayName = pro.GetDisplayName(),
+                        PropertyName = pro.Name,
                     }));
             // Validate all properties of the metadata type
             var metaAtt = instance.GetType().GetCustomAttribute<MetadataTypeAttribute>(true, false, true);
@@ -160,6 +161,7 @@ namespace Fuxion.ComponentModel.DataAnnotations
                     {
                         Message = att.FormatErrorMessage(pro.GetDisplayName()),
                         Path = pathFunc(),
+                        PropertyDisplayName = pro.GetDisplayName(),
                         PropertyName = pro.GetDisplayName(),
                     }));
                 insRes = insRes.Concat(metaRes);

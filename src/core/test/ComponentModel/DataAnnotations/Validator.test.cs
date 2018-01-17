@@ -93,7 +93,7 @@ namespace Fuxion.Test.ComponentModel.DataAnnotations
             Assert.Single(val.Messages);
             Assert.Equal(1, val.Messages.Count(r => string.IsNullOrEmpty(r.Path) && r.PropertyName == nameof(obj.Id)));
 
-            obj.Name = "Fuxion789.12"; // Make doubly invalid because contains 'Oscar' and has more than 10 character length
+            obj.Name = "Fuxion789.12"; // Make doubly invalid because contains 'Fuxion' and has more than 10 character length
             PrintValidatorResults(val.Messages);
             Assert.Equal(3, counter);
             Assert.Equal(3, val.Messages.Count);
@@ -117,7 +117,7 @@ namespace Fuxion.Test.ComponentModel.DataAnnotations
             ((INotifyCollectionChanged)val.Messages).CollectionChanged += (s, e) => counter++;
 
             obj.Id = 0; // Make invalid because must be greater than 0
-            obj.Name = "Fuxion789.12"; // Make doubly invalid because contains 'Oscar' and has more than 10 character length
+            obj.Name = "Fuxion789.12"; // Make doubly invalid because contains 'Fuxion' and has more than 10 character length
 
             val.RegisterNotifier(obj);
             
@@ -157,7 +157,16 @@ namespace Fuxion.Test.ComponentModel.DataAnnotations
             Assert.Equal(1, val.Messages.Count(r => r.Path == $"{nameof(obj.RecursiveValidatable)}" && r.PropertyName == nameof(obj.Name)));
 
             obj.RecursiveValidatable.Id = 1;
+            PrintValidatorResults(val.Messages);
+            Assert.Equal(3, counter);
+            Assert.Single(val.Messages);
             Assert.Equal(0, val.Messages.Count(r => r.Path == $"{nameof(obj.RecursiveValidatable)}" && r.PropertyName == nameof(obj.Id)));
+
+            obj.RecursiveValidatable.Name = "Valid";
+            PrintValidatorResults(val.Messages);
+            Assert.Equal(4, counter);
+            Assert.Empty(val.Messages);
+            Assert.Equal(0, val.Messages.Count(r => r.Path == $"{nameof(obj.RecursiveValidatable)}" && r.PropertyName == nameof(obj.Name)));
 
             val.UnregisterNotifier(obj.RecursiveValidatable);
             Assert.Empty(val.Messages);

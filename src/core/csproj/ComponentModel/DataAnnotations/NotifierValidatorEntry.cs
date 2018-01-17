@@ -17,6 +17,11 @@
             get => GetValue<string>();
             internal set => SetValue(value);
         }
+        public string PropertyDisplayName
+        {
+            get => GetValue<string>();
+            internal set => SetValue(value);
+        }
         public string Message
         {
             get => GetValue<string>();
