@@ -63,6 +63,7 @@
                     UpdateSourceTrigger=PropertyChanged}"/>
         <TextBlock Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=IdTextBox}" Foreground="Red"
                    Visibility="{Binding (Validation.HasError), ElementName=IdTextBox, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+        <CheckBox Content="El nombre debe estar en minúsculas" IsChecked="{Binding NameMustBeLower}" />
         <TextBlock Text="Nombre:" />
         <TextBox Name="NameTextBox" 
                  Text="{Binding Name, Mode=TwoWay,

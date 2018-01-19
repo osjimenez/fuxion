@@ -72,18 +72,26 @@ namespace DemoWpf.Validation
         [Range(1, 100, ErrorMessageResourceType = typeof(TextLocalized), ErrorMessageResourceName = nameof(TextLocalized.Range))]
         public int? Id { get => GetValue<int?>(() => 1); set => SetValue(value); }
 
+        public bool NameMustBeLower { get => GetValue<bool>(); set => SetValue(value); }
         [Display(Name = nameof(Name), ResourceType = typeof(TextLocalized))]
         [Required(ErrorMessageResourceType = typeof(TextLocalized), ErrorMessageResourceName = nameof(TextLocalized.Required))]
         [StringLength(10, ErrorMessageResourceType = typeof(TextLocalized), ErrorMessageResourceName = nameof(TextLocalized.StringLength))]
         [CustomValidation(typeof(ValidationViewModel), nameof(ValidationViewModel.ValidateName))]
+        [CustomValidationWithContext(typeof(ValidationViewModel), nameof(ValidationViewModel.ValidateNameCrossField))]
         public string Name { get => GetValue(() => "Osca"); set => SetValue(value); }
-
         public static ValidationResult ValidateName(string value)
         {
             if (value.ToLower().Contains("oscar"))
-                return new ValidationResult("El nombre no puede ser Oscar");
+                return new ValidationResult($"El '{TextLocalized.Name}' no puede ser Oscar");
             return ValidationResult.Success;
         }
+        public static ValidationResult ValidateNameCrossField(string value, ValidationContext context)
+        {
+            if (((ValidationViewModel)context.ObjectInstance).NameMustBeLower && value.ToLower() != value)
+                return new ValidationResult($"El '{TextLocalized.Name}' debe estar en minúsculas");
+            return ValidationResult.Success;
+        }
+
         [Required(ErrorMessage = "ValidationRecursive debe setearse")]
         [RecursiveValidation]
         public ValidationRecursiveViewModel ValidationRecursive {
@@ -91,7 +99,8 @@ namespace DemoWpf.Validation
             set => SetValue(value);
         }
         [RecursiveValidation]
-        [EnsureMinimumElements(1, ErrorMessage = "El menos debe haber un elemento")]
+        [Display(Name = "Colección recursiva")]
+        [EnsureMinimumElements(1, ErrorMessageResourceType = typeof(TextLocalized), ErrorMessageResourceName = nameof(TextLocalized.AtLeastOneElement))]
         public ObservableCollection<ValidationRecursiveViewModel> ValidationRecursiveCollection
         {
             get => GetValue(() => new ObservableCollection<ValidationRecursiveViewModel>(new[]{

@@ -61,6 +61,15 @@ namespace DemoWpf.Validation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Al menos debe haber &apos;{1}&apos; elementos en &apos;{0}&apos;.
+        /// </summary>
+        public static string AtLeastOneElement {
+            get {
+                return ResourceManager.GetString("AtLeastOneElement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Identificador.
         /// </summary>
         public static string Id {

@@ -142,14 +142,29 @@ namespace Fuxion.ComponentModel.DataAnnotations
                 .Where(pro => propertyName == null || pro.Name == propertyName)
                 .Where(pro => pro.Attributes.OfType<ValidationAttribute>().Any())
                 .SelectMany(pro => pro.Attributes.OfType<ValidationAttribute>()
-                    .Where(att => !att.IsValid(pro.GetValue(instance)))
-                    .Select(att => new NotifierValidatorMessage(instance)
+                    .Select(att =>
                     {
-                        Message = att.FormatErrorMessage(pro.GetDisplayName()),
+                        var val = pro.GetValue(instance);
+                        return new
+                        {
+                            Attribute = att,
+                            att.RequiresValidationContext,
+                            Value = val,
+                            Context = new ValidationContext(instance),
+                            IsValid = att.RequiresValidationContext ? null : (bool?)att.IsValid(val),
+                            Result = att.GetValidationResult(val, new ValidationContext(instance))
+                        };
+                    })
+                    .Where(tup => (tup.RequiresValidationContext && tup.Result != ValidationResult.Success) || (!tup.RequiresValidationContext && !tup.IsValid.Value))
+                    .Select(tup => new NotifierValidatorMessage(instance)
+                    {
+                        Message = tup.RequiresValidationContext
+                            ? tup.Result.ErrorMessage
+                            : tup.Attribute.FormatErrorMessage(pro.GetDisplayName()),
                         Path = pathFunc(),
                         PropertyDisplayName = pro.GetDisplayName(),
                         PropertyName = pro.Name,
-                    }));
+                    })).ToList();
             // Validate all properties of the metadata type
             var metaAtt = instance.GetType().GetCustomAttribute<MetadataTypeAttribute>(true, false, true);
             if (metaAtt != null)
@@ -159,15 +174,30 @@ namespace Fuxion.ComponentModel.DataAnnotations
                 .Where(pro => propertyName == null || pro.Name == propertyName)
                 .Where(pro => pro.Attributes.OfType<ValidationAttribute>().Any())
                 .SelectMany(pro => pro.Attributes.OfType<ValidationAttribute>()
-                    .Where(att => !att.IsValid(TypeDescriptor.GetProperties(instance).Cast<PropertyDescriptor>().First(p => p.Name == pro.Name).GetValue(instance)))
-                    .Select(att => new NotifierValidatorMessage(instance)
+                    .Select(att =>
                     {
-                        Message = att.FormatErrorMessage(pro.GetDisplayName()),
+                        var val = TypeDescriptor.GetProperties(instance).Cast<PropertyDescriptor>().First(p => p.Name == pro.Name).GetValue(instance);
+                        return new
+                        {
+                            Attribute = att,
+                            att.RequiresValidationContext,
+                            Value = val,
+                            Context = new ValidationContext(instance),
+                            IsValid = att.RequiresValidationContext ? null : (bool?)att.IsValid(val),
+                            Result = att.GetValidationResult(val, new ValidationContext(instance))
+                        };
+                    })
+                    .Where(tup => (tup.RequiresValidationContext && tup.Result != ValidationResult.Success) || (!tup.RequiresValidationContext && !tup.IsValid.Value))
+                    .Select(tup => new NotifierValidatorMessage(instance)
+                    {
+                        Message = tup.RequiresValidationContext
+                            ? tup.Result.ErrorMessage
+                            : tup.Attribute.FormatErrorMessage(pro.GetDisplayName()),
                         Path = pathFunc(),
                         PropertyDisplayName = pro.GetDisplayName(),
                         PropertyName = pro.Name,
-                    }));
-                insRes = insRes.Concat(metaRes);
+                    })).ToList();
+                insRes = insRes.Concat(metaRes).ToList();
             }
             // Validate all sub validatables
             var subIns = TypeDescriptor.GetProperties(instance.GetType())
@@ -175,7 +205,7 @@ namespace Fuxion.ComponentModel.DataAnnotations
                 .Where(pro => propertyName == null || pro.Name == propertyName)
                 .Where(pro => pro.Attributes.OfType<RecursiveValidationAttribute>().Any())
                 .Where(pro => !pro.PropertyType.IsSubclassOfRawGeneric(typeof(IEnumerable<>)))
-                .SelectMany(pro => Validate(pro.GetValue(instance), null, () => $"{pro.GetDisplayName()}"));
+                .SelectMany(pro => Validate(pro.GetValue(instance), null, () => $"{pro.GetDisplayName()}")).ToList();
             // Validate all sub collection validatables
             var subColIns = TypeDescriptor.GetProperties(instance.GetType())
                 .Cast<PropertyDescriptor>()
@@ -192,7 +222,7 @@ namespace Fuxion.ComponentModel.DataAnnotations
                             res.AddRange(Validate(t, null, () => $"{pro.GetDisplayName()}[{t.ToString()}]"));
                         }
                     return res;
-                });
+                }).ToList();
 
             return insRes.Concat(subIns).Concat(subColIns).OrderBy(r => r.Path).ThenBy(r => r.PropertyDisplayName).ToList();
         }
