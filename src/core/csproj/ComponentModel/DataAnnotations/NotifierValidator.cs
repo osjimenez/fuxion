@@ -197,10 +197,10 @@ namespace Fuxion.ComponentModel.DataAnnotations
             return insRes.Concat(subIns).Concat(subColIns).OrderBy(r => r.Path).ThenBy(r => r.PropertyDisplayName).ToList();
         }
 
-        public void ClearCustoms() => _messages.RemoveIf(m => m.Object == null);
+        public void ClearCustoms() => _messages.RemoveIf(m => m.Object is CustomValidatorEntryObject);
         public IDisposable AddCustom(string message, string path = null, string propertyName = null, string propertyDisplayName = null)
         {
-            var res = new object().AsDisposable(o => _messages.RemoveIf(m => m.Object == o));
+            var res = new CustomValidatorEntryObject().AsDisposable(o => _messages.RemoveIf(m => m.Object == o));
             _messages.Add(new NotifierValidatorMessage(res.Value)
             {
                 Path = path,
@@ -210,5 +210,6 @@ namespace Fuxion.ComponentModel.DataAnnotations
             });
             return res;
         }
+        class CustomValidatorEntryObject { }
     }
 }

@@ -330,20 +330,9 @@ namespace Fuxion.Test.ComponentModel.DataAnnotations
 
             Assert.Empty(val.Messages);
 
-
-            //obj.Id = 0; // Make invalid because must be greater than 0
-            //obj.Name = "Fuxion678901"; // Make doubly invalid because contains 'Oscar' and has more than 10 character length
-            //obj.RecursiveValidatable = null; // Make invalid because is required
-
-            //var res = val.Validate(obj);
-            //PrintValidatorResults(res);
-            //Assert.Equal(4, res.Count());
-            //Assert.Equal(1, res.Count(r => string.IsNullOrEmpty(r.Path) && r.PropertyName == nameof(obj.Id)));
-            //Assert.Equal(2, res.Count(r => string.IsNullOrEmpty(r.Path) && r.PropertyName == nameof(obj.Name)));
-            //Assert.Equal(1, res.Count(r => string.IsNullOrEmpty(r.Path) && r.PropertyName == nameof(obj.RecursiveValidatable)));
-
-            //res = val.Validate(obj, nameof(obj.Name));
-            //Assert.Equal(2, res.Count());
+            val.AddCustom("Test for custom validations", "Path", "PropertyName", "PropertyDisplayName");
+            val.ClearCustoms();
+            Assert.Empty(val.Messages);
         }
     }
 }
