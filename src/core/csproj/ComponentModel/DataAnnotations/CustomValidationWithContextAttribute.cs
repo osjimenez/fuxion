@@ -31,7 +31,7 @@ namespace Fuxion.ComponentModel.DataAnnotations
         public string Method { get; }
         protected override ValidationResult IsValid(object value, ValidationContext context)
         {
-            var res =  (ValidationResult)context.ObjectInstance.GetType().GetMethod(Method).Invoke(context.ObjectInstance, new object[] { value, context });
+            var res =  (ValidationResult)context.ObjectInstance.GetType().GetMethod(Method, BindingFlags.Static | BindingFlags.Public).Invoke(context.ObjectInstance, new object[] { value, context });
             return res;
         }
         public override string FormatErrorMessage(string name)
