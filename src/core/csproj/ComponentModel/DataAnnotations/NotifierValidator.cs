@@ -17,16 +17,17 @@ namespace Fuxion.ComponentModel.DataAnnotations
         {
             Messages = new ReadOnlyObservableCollection<NotifierValidatorMessage>(_messages);
             StringMessages = new ReadOnlyObservableCollection<string>(_stringMessages);
-            _messages.CollectionChanged += (s, e) =>
+            ((INotifyCollectionChanged)Messages).CollectionChanged += (s, e) =>
             {
+                HasMessages = Messages.Count > 0;
                 if (e.NewItems != null)
                     foreach (var item in e.NewItems.Cast<NotifierValidatorMessage>())
                         _stringMessages.Add(item.Message);
                 if (e.OldItems != null)
                     foreach (var item in e.OldItems.Cast<NotifierValidatorMessage>())
                         _stringMessages.Remove(item.Message);
-                HasMessages = Messages.Count > 0;
             };
+            ((INotifyCollectionChanged)Messages).CollectionChanged += (s, e) => ValidationChanged?.Invoke(this, EventArgs.Empty);
         }
 
         ObservableCollection<NotifierValidatorMessage> _messages = new ObservableCollection<NotifierValidatorMessage>();
@@ -39,6 +40,8 @@ namespace Fuxion.ComponentModel.DataAnnotations
             get => GetValue<bool>();
             private set => SetValue(value);
         }
+
+        public event EventHandler ValidationChanged;
 
         Dictionary<object, Func<string>> paths = new Dictionary<object, Func<string>>();
 
@@ -162,7 +165,7 @@ namespace Fuxion.ComponentModel.DataAnnotations
                         Message = att.FormatErrorMessage(pro.GetDisplayName()),
                         Path = pathFunc(),
                         PropertyDisplayName = pro.GetDisplayName(),
-                        PropertyName = pro.GetDisplayName(),
+                        PropertyName = pro.Name,
                     }));
                 insRes = insRes.Concat(metaRes);
             }
@@ -191,7 +194,21 @@ namespace Fuxion.ComponentModel.DataAnnotations
                     return res;
                 });
 
-            return insRes.Concat(subIns).Concat(subColIns).OrderBy(r => r.Path).ThenBy(r => r.PropertyName).ToList();
+            return insRes.Concat(subIns).Concat(subColIns).OrderBy(r => r.Path).ThenBy(r => r.PropertyDisplayName).ToList();
+        }
+
+        public void ClearCustoms() => _messages.RemoveIf(m => m.Object == null);
+        public IDisposable AddCustom(string message, string path = null, string propertyName = null, string propertyDisplayName = null)
+        {
+            var res = new object().AsDisposable(o => _messages.RemoveIf(m => m.Object == o));
+            _messages.Add(new NotifierValidatorMessage(res.Value)
+            {
+                Path = path,
+                PropertyName = propertyName,
+                PropertyDisplayName = propertyDisplayName,
+                Message = message
+            });
+            return res;
         }
     }
 }

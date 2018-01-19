@@ -135,6 +135,6 @@
             </Grid>
         </Border>
 
-        <Button Content="Save" Command="{Binding DoCommand}" IsEnabled="{Binding Validator.HasEntries, Converter={StaticResource BooleanToNegateBooleanConverter}}" />
+        <Button Content="Save" Command="{Binding SaveCommand}" />
     </StackPanel>
 </Window>

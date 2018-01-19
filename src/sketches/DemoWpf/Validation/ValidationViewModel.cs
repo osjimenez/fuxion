@@ -14,6 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace DemoWpf.Validation
 {
@@ -23,19 +24,33 @@ namespace DemoWpf.Validation
         public ValidationViewModel()
         {
             Validator.RegisterNotifier(this);
+            Validator.ValidationChanged += (s, e) => SaveCommand.RaiseCanExecuteChanged();
             //Validator = new ValidationHelper();
             //NotifyDataErrorInfoAdapter = new NotifyDataErrorInfoAdapter(Validator);
 
             //Validator.AddRule(nameof(Name),
             //      () => RuleResult.Assert(!string.IsNullOrEmpty(Name), "Name is required"));
+            PropertyChanged += (s, e) =>
+            {
+                e.Case(() => Name, a =>
+                {
+                    foreach (var dis in nameDisposables)
+                        dis.Dispose();
+                    nameDisposables = new List<IDisposable>();
+                });
+            };
         }
-
-        public GenericCommand DoCommand => new GenericCommand(() =>
-        {
-            //var validationResults = new List<ValidationResult>();
-            //Validator.TryValidateObject(this, new ValidationContext(this), validationResults);
-            Debug.WriteLine("");
-        });
+        List<IDisposable> nameDisposables = new List<IDisposable>();
+        public GenericCommand SaveCommand => GetValue(() => new GenericCommand(() =>
+         {
+             Validator.ClearCustoms();
+             if (Name.Contains("O"))
+             {
+                 nameDisposables.Add(Validator.AddCustom($"El nombre '{Name}' esta repetido"));
+             }
+             if (Validator.HasMessages) SaveCommand.RaiseCanExecuteChanged();
+             else MessageBox.Show("Saved !!!");
+         }, () => !Validator.HasMessages));
         public GenericCommand AddCommand => new GenericCommand(() =>
         {
             ValidationRecursiveCollection.Add(new ValidationRecursiveViewModel(Validator)
@@ -55,7 +70,7 @@ namespace DemoWpf.Validation
         [Display(Name = nameof(Id), ResourceType = typeof(TextLocalized))]
         [Required(ErrorMessageResourceType = typeof(TextLocalized), ErrorMessageResourceName = nameof(TextLocalized.Required))]
         [Range(1, 100, ErrorMessageResourceType = typeof(TextLocalized), ErrorMessageResourceName = nameof(TextLocalized.Range))]
-        public int? Id { get => GetValue<int?>(() => -1); set => SetValue(value); }
+        public int? Id { get => GetValue<int?>(() => 1); set => SetValue(value); }
 
         [Display(Name = nameof(Name), ResourceType = typeof(TextLocalized))]
         [Required(ErrorMessageResourceType = typeof(TextLocalized), ErrorMessageResourceName = nameof(TextLocalized.Required))]
@@ -82,8 +97,8 @@ namespace DemoWpf.Validation
             get => GetValue(() => new ObservableCollection<ValidationRecursiveViewModel>(new[]{
                 new ValidationRecursiveViewModel(Validator)
                 {
-                    Id = -1,
-                    Name = "Oscar"
+                    Id = 1,
+                    Name = "Osca"
                 }
             }));
             set => SetValue(value);

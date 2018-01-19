@@ -76,6 +76,7 @@ namespace Fuxion.Test.ComponentModel.DataAnnotations
             Assert.Single(res);
             Assert.Equal(1, res.Count(r => r.Path == $"{nameof(obj.RecursiveValidatableCollection)}[{first}]" && r.PropertyName == nameof(obj.Id)));
         }
+
         [Fact(DisplayName = "Validator - Automatic validation")]
         public void AutomaticValidation()
         {
@@ -312,6 +313,37 @@ namespace Fuxion.Test.ComponentModel.DataAnnotations
             Assert.Equal(3, counter);
             Assert.Single(val.Messages);
             Assert.Equal(1, val.Messages.Count(r => r.Path == $"{nameof(obj.RecursiveValidatableCollection)}[{added}]" && r.PropertyName == nameof(obj.Id)));
+        }
+
+        [Fact(DisplayName = "Validator - Custom validation")]
+        public void CustomValidation()
+        {
+            //var obj = new ValidatableMock();
+            var val = new NotifierValidator();
+
+            var dis = val.AddCustom("Test for custom validations", "Path", "PropertyName", "PropertyDisplayName");
+
+            Assert.Single(val.Messages);
+            Assert.Equal(1, val.Messages.Count(r => r.Path == "Path" && r.PropertyName == "PropertyName" && r.PropertyDisplayName == "PropertyDisplayName"));
+
+            dis.Dispose();
+
+            Assert.Empty(val.Messages);
+
+
+            //obj.Id = 0; // Make invalid because must be greater than 0
+            //obj.Name = "Fuxion678901"; // Make doubly invalid because contains 'Oscar' and has more than 10 character length
+            //obj.RecursiveValidatable = null; // Make invalid because is required
+
+            //var res = val.Validate(obj);
+            //PrintValidatorResults(res);
+            //Assert.Equal(4, res.Count());
+            //Assert.Equal(1, res.Count(r => string.IsNullOrEmpty(r.Path) && r.PropertyName == nameof(obj.Id)));
+            //Assert.Equal(2, res.Count(r => string.IsNullOrEmpty(r.Path) && r.PropertyName == nameof(obj.Name)));
+            //Assert.Equal(1, res.Count(r => string.IsNullOrEmpty(r.Path) && r.PropertyName == nameof(obj.RecursiveValidatable)));
+
+            //res = val.Validate(obj, nameof(obj.Name));
+            //Assert.Equal(2, res.Count());
         }
     }
 }
