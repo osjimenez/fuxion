@@ -12,14 +12,13 @@ namespace Fuxion.ComponentModel.DataAnnotations
         public CustomValidationWithContextAttribute(Type type, string method)
         {
             Type = type;
-            Method = method;
+            Method = type.GetMethod(method, BindingFlags.Static | BindingFlags.Public);
 
-            var meth = type.GetMethod(method, BindingFlags.Static | BindingFlags.Public);
-            if (meth != null)
+            if (Method != null)
             {
-                if (meth.ReturnType == typeof(ValidationResult))
+                if (Method.ReturnType == typeof(ValidationResult))
                 {
-                    var pars = meth.GetParameters();
+                    var pars = Method.GetParameters();
                     if (pars.Count() != 2 || pars.Last().ParameterType != typeof(ValidationContext))
                             throw new ArgumentException($"Method '{method}' in type '{type.Name}' specified for this '{nameof(ConditionalValidationAttribute)}' must has 2 parameters. First must be of type of property and second must be '{nameof(ValidationContext)}'");
                 }
@@ -28,10 +27,10 @@ namespace Fuxion.ComponentModel.DataAnnotations
             else throw new ArgumentException($"Method '{method}' in type '{type.Name}' specified for this '{nameof(ConditionalValidationAttribute)}' was not found. This method must be public and non static.");
         }
         public Type Type { get; }
-        public string Method { get; }
+        public MethodInfo Method { get; }
         protected override ValidationResult IsValid(object value, ValidationContext context)
         {
-            var res =  (ValidationResult)context.ObjectInstance.GetType().GetMethod(Method, BindingFlags.Static | BindingFlags.Public).Invoke(context.ObjectInstance, new object[] { value, context });
+            var res = (ValidationResult)Method.Invoke(context.ObjectInstance, new object[] { value, context });
             return res;
         }
         public override string FormatErrorMessage(string name)
