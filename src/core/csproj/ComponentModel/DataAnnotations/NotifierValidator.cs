@@ -49,7 +49,7 @@ namespace Fuxion.ComponentModel.DataAnnotations
         private void RegisterNotifier(INotifyPropertyChanged notifier, bool recursive, Func<string> pathFunc)
         {
             if (notifier == null) throw new NullReferenceException($"The parameter '{nameof(notifier)}' cannot be null");
-            if (paths.ContainsKey(notifier)) return;//throw new DuplicateNotifierException();
+            if (paths.ContainsKey(notifier)) return;
             paths.Add(notifier, pathFunc);
             notifier.PropertyChanged += Notifier_PropertyChanged;
             if (!recursive) return;
@@ -64,29 +64,31 @@ namespace Fuxion.ComponentModel.DataAnnotations
             }
             foreach (var pro in TypeDescriptor.GetProperties(notifier.GetType())
                 .Cast<PropertyDescriptor>()
-                //.Where(pro => pro.Attributes.OfType<RecursiveValidationAttribute>().Any())
                 .Where(pro => typeof(INotifyCollectionChanged).IsAssignableFrom(pro.PropertyType))
-                .Where(pro => pro.PropertyType.IsSubclassOfRawGeneric(typeof(IEnumerable<>))))
+                .Where(pro => pro.PropertyType.IsSubclassOfRawGeneric(typeof(IEnumerable<>)))
+                .Where(pro => pro.GetValue(notifier) != null))
                 RegisterNotifierCollection(notifier, pro, pathFunc);
             RefreshEntries(notifier, null, pathFunc);
         }
-        private void RegisterNotifierCollection(INotifyPropertyChanged notifier, PropertyDescriptor property, Func<string> pathFunc)
+        private void RegisterNotifierCollection(INotifyPropertyChanged notifier, PropertyDescriptor collectionProperty, Func<string> pathFunc)
         {
-            var recursive = property.Attributes.OfType<RecursiveValidationAttribute>().Any();
-            var collection = (INotifyCollectionChanged)property.GetValue(notifier);
-            foreach (var item in (IEnumerable)collection)
-                if (typeof(INotifyPropertyChanged).IsAssignableFrom(item.GetType())) RegisterNotifier((INotifyPropertyChanged)item, true, () => $"{(pathFunc() + property.GetDisplayName()).Trim('.')}[{item.ToString()}]");
+            var recursive = collectionProperty.Attributes.OfType<RecursiveValidationAttribute>().Any();
+            var collection = (INotifyCollectionChanged)collectionProperty.GetValue(notifier);
+            if (recursive)
+                foreach (var item in (IEnumerable)collection)
+                    if (typeof(INotifyPropertyChanged).IsAssignableFrom(item.GetType()))
+                        RegisterNotifier((INotifyPropertyChanged)item, true, () => $"{(pathFunc() + collectionProperty.GetDisplayName()).Trim('.')}[{item.ToString()}]");
             collection.CollectionChanged += (s, e) =>
             {
                 if (recursive && e.NewItems != null)
                     foreach (var item in e.NewItems)
                         if (typeof(INotifyPropertyChanged).IsAssignableFrom(item.GetType()))
-                            RegisterNotifier((INotifyPropertyChanged)item, true, () => $"{(pathFunc()+property.GetDisplayName()).Trim('.')}[{item.ToString()}]");
+                            RegisterNotifier((INotifyPropertyChanged)item, true, () => $"{(pathFunc()+collectionProperty.GetDisplayName()).Trim('.')}[{item.ToString()}]");
                 if (recursive && e.OldItems != null)
                     foreach (var item in e.OldItems)
                         if (typeof(INotifyPropertyChanged).IsAssignableFrom(item.GetType()))
                             UnregisterNotifier((INotifyPropertyChanged)item);
-                RefreshEntries(notifier, property.Name, pathFunc);
+                RefreshEntries(notifier, collectionProperty.Name, pathFunc);
             };
         }
         public void UnregisterNotifier(INotifyPropertyChanged notifier)
@@ -111,14 +113,14 @@ namespace Fuxion.ComponentModel.DataAnnotations
                 .FirstOrDefault();
             if (notifier != null) RegisterNotifier(notifier, true, () => paths[sender]() + e.PropertyName);
 
-            var collection = TypeDescriptor.GetProperties(sender)
+            var collectionProperty = TypeDescriptor.GetProperties(sender)
                 .Cast<PropertyDescriptor>()
                 .Where(pro => pro.Name == e.PropertyName)
-                //.Where(pro => pro.Attributes.OfType<RecursiveValidationAttribute>().Any())
                 .Where(pro => typeof(INotifyCollectionChanged).IsAssignableFrom(pro.PropertyType))
+                .Where(pro => pro.PropertyType.IsSubclassOfRawGeneric(typeof(IEnumerable<>)))
                 .Where(pro => (INotifyCollectionChanged)pro.GetValue(sender) != null)
                 .FirstOrDefault();
-            if (collection != null) RegisterNotifierCollection((INotifyPropertyChanged)sender, collection, paths[sender]);
+            if (collectionProperty != null) RegisterNotifierCollection((INotifyPropertyChanged)sender, collectionProperty, paths[sender]);
 
             var conditionalAtt = sender.GetType().GetCustomAttribute<ConditionalValidationAttribute>(true, false, true);
             RefreshEntries(sender, conditionalAtt != null ? null : e.PropertyName, paths[sender]);
