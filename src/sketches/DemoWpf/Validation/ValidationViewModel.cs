@@ -25,11 +25,6 @@ namespace DemoWpf.Validation
         {
             Validator.RegisterNotifier(this);
             Validator.ValidationChanged += (s, e) => SaveCommand.RaiseCanExecuteChanged();
-            //Validator = new ValidationHelper();
-            //NotifyDataErrorInfoAdapter = new NotifyDataErrorInfoAdapter(Validator);
-
-            //Validator.AddRule(nameof(Name),
-            //      () => RuleResult.Assert(!string.IsNullOrEmpty(Name), "Name is required"));
             PropertyChanged += (s, e) =>
             {
                 e.Case(() => Name, a =>
@@ -55,7 +50,7 @@ namespace DemoWpf.Validation
         {
             ValidationRecursiveCollection.Add(new ValidationRecursiveViewModel(Validator)
             {
-                Id = -1,
+                Id = 1,
                 Name = "Osca"
             });
         });

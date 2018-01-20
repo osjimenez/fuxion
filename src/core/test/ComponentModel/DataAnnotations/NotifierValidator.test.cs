@@ -13,11 +13,9 @@ using Xunit.Abstractions;
 
 namespace Fuxion.Test.ComponentModel.DataAnnotations
 {
-    public class ValidatorTest : BaseTest
+    public class NotifierValidatorTest : BaseTest
     {
-        public ValidatorTest(ITestOutputHelper output) : base(output)
-        {
-        }
+        public NotifierValidatorTest(ITestOutputHelper output) : base(output) { }
         private void PrintValidatorResults(IEnumerable<NotifierValidatorMessage> res)
         {
             Output.WriteLine("Printing validator entries:");

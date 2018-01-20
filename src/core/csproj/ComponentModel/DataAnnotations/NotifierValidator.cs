@@ -64,7 +64,7 @@ namespace Fuxion.ComponentModel.DataAnnotations
             }
             foreach (var pro in TypeDescriptor.GetProperties(notifier.GetType())
                 .Cast<PropertyDescriptor>()
-                .Where(pro => pro.Attributes.OfType<RecursiveValidationAttribute>().Any())
+                //.Where(pro => pro.Attributes.OfType<RecursiveValidationAttribute>().Any())
                 .Where(pro => typeof(INotifyCollectionChanged).IsAssignableFrom(pro.PropertyType))
                 .Where(pro => pro.PropertyType.IsSubclassOfRawGeneric(typeof(IEnumerable<>))))
                 RegisterNotifierCollection(notifier, pro, pathFunc);
@@ -72,16 +72,17 @@ namespace Fuxion.ComponentModel.DataAnnotations
         }
         private void RegisterNotifierCollection(INotifyPropertyChanged notifier, PropertyDescriptor property, Func<string> pathFunc)
         {
+            var recursive = property.Attributes.OfType<RecursiveValidationAttribute>().Any();
             var collection = (INotifyCollectionChanged)property.GetValue(notifier);
             foreach (var item in (IEnumerable)collection)
                 if (typeof(INotifyPropertyChanged).IsAssignableFrom(item.GetType())) RegisterNotifier((INotifyPropertyChanged)item, true, () => $"{(pathFunc() + property.GetDisplayName()).Trim('.')}[{item.ToString()}]");
             collection.CollectionChanged += (s, e) =>
             {
-                if (e.NewItems != null)
+                if (recursive && e.NewItems != null)
                     foreach (var item in e.NewItems)
                         if (typeof(INotifyPropertyChanged).IsAssignableFrom(item.GetType()))
                             RegisterNotifier((INotifyPropertyChanged)item, true, () => $"{(pathFunc()+property.GetDisplayName()).Trim('.')}[{item.ToString()}]");
-                if (e.OldItems != null)
+                if (recursive && e.OldItems != null)
                     foreach (var item in e.OldItems)
                         if (typeof(INotifyPropertyChanged).IsAssignableFrom(item.GetType()))
                             UnregisterNotifier((INotifyPropertyChanged)item);
@@ -113,7 +114,7 @@ namespace Fuxion.ComponentModel.DataAnnotations
             var collection = TypeDescriptor.GetProperties(sender)
                 .Cast<PropertyDescriptor>()
                 .Where(pro => pro.Name == e.PropertyName)
-                .Where(pro => pro.Attributes.OfType<RecursiveValidationAttribute>().Any())
+                //.Where(pro => pro.Attributes.OfType<RecursiveValidationAttribute>().Any())
                 .Where(pro => typeof(INotifyCollectionChanged).IsAssignableFrom(pro.PropertyType))
                 .Where(pro => (INotifyCollectionChanged)pro.GetValue(sender) != null)
                 .FirstOrDefault();
@@ -145,14 +146,18 @@ namespace Fuxion.ComponentModel.DataAnnotations
                     .Select(att =>
                     {
                         var val = pro.GetValue(instance);
+                        var context = new ValidationContext(instance)
+                        {
+                            MemberName = pro.Name
+                        };
                         return new
                         {
                             Attribute = att,
                             att.RequiresValidationContext,
                             Value = val,
-                            Context = new ValidationContext(instance),
+                            Context = context,
                             IsValid = att.RequiresValidationContext ? null : (bool?)att.IsValid(val),
-                            Result = att.GetValidationResult(val, new ValidationContext(instance))
+                            Result = att.GetValidationResult(val, context)
                         };
                     })
                     .Where(tup => (tup.RequiresValidationContext && tup.Result != ValidationResult.Success) || (!tup.RequiresValidationContext && !tup.IsValid.Value))
