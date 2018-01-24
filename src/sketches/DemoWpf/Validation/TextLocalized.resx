@@ -120,6 +120,9 @@
   <data name="AtLeastOneElement" xml:space="preserve">
     <value>Al menos debe haber '{1}' elementos en '{0}'</value>
   </data>
+  <data name="ElementDuplicated" xml:space="preserve">
+    <value>El elemento '{1}' esta repetido en el campo '{0}'</value>
+  </data>
   <data name="Id" xml:space="preserve">
     <value>Identificador</value>
   </data>

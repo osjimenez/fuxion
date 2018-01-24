@@ -74,20 +74,26 @@ namespace Fuxion.ComponentModel.DataAnnotations
         {
             var recursive = collectionProperty.Attributes.OfType<RecursiveValidationAttribute>().Any();
             var collection = (INotifyCollectionChanged)collectionProperty.GetValue(notifier);
-            if (recursive)
-                foreach (var item in (IEnumerable)collection)
-                    if (typeof(INotifyPropertyChanged).IsAssignableFrom(item.GetType()))
-                        RegisterNotifier((INotifyPropertyChanged)item, true, () => $"{(pathFunc() + collectionProperty.GetDisplayName()).Trim('.')}[{item.ToString()}]");
+			if (recursive)
+				foreach (var item in (IEnumerable)collection)
+					if (item is INotifyPropertyChanged npc)
+					{
+						npc.PropertyChanged += (_, __) => RefreshEntries(notifier, collectionProperty.Name, pathFunc);
+						RegisterNotifier(npc, true, () => $"{(pathFunc() + collectionProperty.GetDisplayName()).Trim('.')}[{item.ToString()}]");
+					}
             collection.CollectionChanged += (s, e) =>
             {
-                if (recursive && e.NewItems != null)
-                    foreach (var item in e.NewItems)
-                        if (typeof(INotifyPropertyChanged).IsAssignableFrom(item.GetType()))
-                            RegisterNotifier((INotifyPropertyChanged)item, true, () => $"{(pathFunc()+collectionProperty.GetDisplayName()).Trim('.')}[{item.ToString()}]");
+				if (recursive && e.NewItems != null)
+					foreach (var item in e.NewItems)
+						if (item is INotifyPropertyChanged npc)
+						{
+							npc.PropertyChanged += (_, __) => RefreshEntries(notifier, collectionProperty.Name, pathFunc);
+							RegisterNotifier(npc, true, () => $"{(pathFunc() + collectionProperty.GetDisplayName()).Trim('.')}[{item.ToString()}]");
+						}
                 if (recursive && e.OldItems != null)
                     foreach (var item in e.OldItems)
-                        if (typeof(INotifyPropertyChanged).IsAssignableFrom(item.GetType()))
-                            UnregisterNotifier((INotifyPropertyChanged)item);
+                        if (item is INotifyPropertyChanged npc)
+                            UnregisterNotifier(npc);
                 RefreshEntries(notifier, collectionProperty.Name, pathFunc);
             };
         }
@@ -100,9 +106,6 @@ namespace Fuxion.ComponentModel.DataAnnotations
         }
         private void Notifier_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            foreach (var ent in _messages.Where(ent => ent.Object == sender))
-                ent.Path = paths[sender]();
-
             var notifier = TypeDescriptor.GetProperties(sender)
                 .Cast<PropertyDescriptor>()
                 .Where(pro => pro.Name == e.PropertyName)
@@ -168,7 +171,7 @@ namespace Fuxion.ComponentModel.DataAnnotations
                         Message = tup.RequiresValidationContext
                             ? tup.Result.ErrorMessage
                             : tup.Attribute.FormatErrorMessage(pro.GetDisplayName()),
-                        Path = pathFunc(),
+                        PathFunc = pathFunc,
                         PropertyDisplayName = pro.GetDisplayName(),
                         PropertyName = pro.Name,
                     })).ToList();
@@ -200,7 +203,7 @@ namespace Fuxion.ComponentModel.DataAnnotations
                         Message = tup.RequiresValidationContext
                             ? tup.Result.ErrorMessage
                             : tup.Attribute.FormatErrorMessage(pro.GetDisplayName()),
-                        Path = pathFunc(),
+                        PathFunc = pathFunc,
                         PropertyDisplayName = pro.GetDisplayName(),
                         PropertyName = pro.Name,
                     })).ToList();
@@ -238,13 +241,13 @@ namespace Fuxion.ComponentModel.DataAnnotations
         public IDisposable AddCustom(string message, string path = null, string propertyName = null, string propertyDisplayName = null)
         {
             var res = new CustomValidatorEntryObject().AsDisposable(o => _messages.RemoveIf(m => m.Object == o));
-            _messages.Add(new NotifierValidatorMessage(res.Value)
-            {
-                Path = path,
-                PropertyName = propertyName,
-                PropertyDisplayName = propertyDisplayName,
-                Message = message
-            });
+			_messages.Add(new NotifierValidatorMessage(res.Value)
+			{
+				PathFunc = () => path,
+				PropertyName = propertyName,
+				PropertyDisplayName = propertyDisplayName,
+				Message = message
+			});
             return res;
         }
         class CustomValidatorEntryObject { }

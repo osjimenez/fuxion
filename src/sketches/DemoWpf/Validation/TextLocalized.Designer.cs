@@ -70,6 +70,15 @@ namespace DemoWpf.Validation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to El elemento &apos;{1}&apos; esta repetido en el campo &apos;{0}&apos;.
+        /// </summary>
+        public static string ElementDuplicated {
+            get {
+                return ResourceManager.GetString("ElementDuplicated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Identificador.
         /// </summary>
         public static string Id {

@@ -224,7 +224,8 @@ namespace Fuxion.Test.ComponentModel.DataAnnotations
             Assert.Equal(1, val.Messages.Count(r => r.Path == $"{nameof(obj.RecursiveValidatableCollection)}[{first}]" && r.PropertyName == nameof(obj.Name)));
 
             first.Id = 1; // Make valid
-            Assert.Equal(3, counter);
+			PrintValidatorResults(val.Messages);
+			Assert.Equal(3, counter);
             Assert.Single(val.Messages);
             Assert.Equal(0, val.Messages.Count(r => r.Path == $"{nameof(obj.RecursiveValidatableCollection)}[{first}]" && r.PropertyName == nameof(obj.Id)));
             // When Id is valid again, and change to 0, the entry for name must change its Path for new first.ToString result

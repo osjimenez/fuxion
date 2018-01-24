@@ -1,4 +1,6 @@
-﻿namespace Fuxion.ComponentModel.DataAnnotations
+﻿using System;
+
+namespace Fuxion.ComponentModel.DataAnnotations
 {
     public class NotifierValidatorMessage : Notifier<NotifierValidatorMessage>
     {
@@ -7,11 +9,8 @@
             Object = @object;
         }
         internal object Object { get; set; }
-        public string Path
-        {
-            get => GetValue<string>();
-            internal set => SetValue(value);
-        }
+		internal Func<string> PathFunc { get; set; }
+		public string Path => PathFunc();
         public string PropertyName
         {
             get => GetValue<string>();
