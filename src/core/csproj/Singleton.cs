@@ -104,8 +104,11 @@ namespace Fuxion
             Instance.subscriptions.Add(new SubscriptionItem { Type = typeof(T), Key = key, Action = changeAction });
             if (raiseAddIfAlreadyAdded && Instance.objects.ContainsKey(key)) changeAction(new SingletonSubscriptionArgs<T>(default(T), (T)Instance.objects[key], SingletonAction.Add));
         }
-        #endregion
-        class SingletonKey
+		#endregion
+		#region Constants
+		public static ISingletonConstants Constants => null;
+		#endregion
+		class SingletonKey
         {
             private SingletonKey(Type type, object key)
             {
@@ -155,7 +158,6 @@ namespace Fuxion
             }
         }
     }
-
     public enum SingletonAction
     {
         Add,
@@ -174,4 +176,8 @@ namespace Fuxion
         public T PreviousValue { get; set; }
         public T ActualValue { get; set; }
     }
+	public interface ISingletonConstants
+	{
+		
+	}
 }
