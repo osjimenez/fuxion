@@ -52,6 +52,8 @@ namespace Fuxion.Windows.Input
 		{
 			if (parameter is TParameter par)
 				Execute(par);
+			else if (typeof(TParameter).IsNullable() && parameter == null)
+				Execute(default(TParameter));
 			else
 				throw new InvalidCastException($"The parameter of type '{parameter.GetType().Name}' couldn't casted to '{typeof(TParameter).Name}' as was declared for command parameter.");
 		}
