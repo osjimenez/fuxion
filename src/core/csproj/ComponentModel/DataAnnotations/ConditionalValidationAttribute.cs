@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace Fuxion.ComponentModel.DataAnnotations
+namespace System.ComponentModel.DataAnnotations
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
     public class ConditionalValidationAttribute : Attribute

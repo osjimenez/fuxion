@@ -6,7 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace Fuxion.ComponentModel.DataAnnotations
+namespace System.ComponentModel.DataAnnotations
 {
     public class EnsureNoDuplicatesAttribute : ValidationAttribute
 	{

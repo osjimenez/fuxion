@@ -6,7 +6,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace Fuxion.ComponentModel.DataAnnotations
+namespace System.ComponentModel.DataAnnotations
 {
     public class EnsureMinimumElementsAttribute : ValidationAttribute
     {
