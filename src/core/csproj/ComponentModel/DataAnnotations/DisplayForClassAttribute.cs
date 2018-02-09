@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace Fuxion.ComponentModel.DataAnnotations
+namespace System.ComponentModel.DataAnnotations
 {
 	[AttributeUsage(AttributeTargets.Class)]
 	public class DisplayForClassAttribute : Attribute
 	{
 		protected readonly DisplayAttribute Attribute = new DisplayAttribute();
+		public bool IsFemale { get; set; }
 		public string ShortName
 		{
 			get => Attribute.ShortName;
