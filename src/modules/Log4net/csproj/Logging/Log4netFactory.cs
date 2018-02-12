@@ -27,8 +27,9 @@ namespace Fuxion.Logging
         private static readonly WrapperMap s_wrapperMap = new WrapperMap(new WrapperCreationHandler(WrapperCreationHandler));
 		private static ILoggerWrapper WrapperCreationHandler(ILogger logger) { return new Log4netLog(logger); }
 		private static ILog4netLog WrapLogger(ILogger logger) { return (ILog4netLog)s_wrapperMap.GetWrapper(logger); }
-        public ILog Create(Type declaringType) { return WrapLogger(LoggerManager.GetLogger(Assembly.GetCallingAssembly(), declaringType.FullName)); }
-        public void Initialize() { XmlConfigurator.ConfigureAndWatch(new FileInfo(ConfigurationFilePath)); }
+		public ILog Create(Type declaringType) => WrapLogger(LoggerManager.GetLogger(Assembly.GetCallingAssembly(), declaringType.FullName));
+		public ILog Create(string loggerName) => WrapLogger(LoggerManager.GetLogger(Assembly.GetCallingAssembly(), loggerName));
+		public void Initialize() { XmlConfigurator.ConfigureAndWatch(new FileInfo(ConfigurationFilePath)); }
 	}
 }
 #endif

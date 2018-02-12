@@ -10,7 +10,12 @@ namespace Fuxion.Logging
 		{
 			this.declaringType = declaringType;
 		}
+		public WrapLog(string loggerName)
+		{
+			this.loggerName = loggerName;
+		}
 		Type declaringType;
+		string loggerName;
 		ILog log;
 		readonly ILog nullLog = new NullLog();
 		private ILog ActualLog
@@ -22,7 +27,9 @@ namespace Fuxion.Logging
 				if (LogManager.factory == null)
 					return nullLog;
 				else
-					return log = LogManager.Create(declaringType);
+					return declaringType != null
+						? log = LogManager.Create(declaringType)
+						: log = LogManager.Create(loggerName);
 			}
 		}
 		#region ILog

@@ -8,6 +8,7 @@ namespace Fuxion.Logging
 	public interface ILogFactory
 	{
 		ILog Create(Type declaringType);
+		ILog Create(string loggerName);
 		void Initialize();
 	}
 }
