@@ -11,7 +11,7 @@ using System.Windows.Data;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Fuxion.Windows.Test
+namespace Fuxion.Windows.Test.Data
 {
     public class GenericConverterTest : BaseTest
     {

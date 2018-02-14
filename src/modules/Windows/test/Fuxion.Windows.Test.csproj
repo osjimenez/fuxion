@@ -43,6 +43,8 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Xaml" />
     <Reference Include="WindowsBase" />
     <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\xunit.abstractions.2.0.1\lib\net35\xunit.abstractions.dll</HintPath>
@@ -66,12 +68,13 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
-    <Compile Include="BooleanToBooleanMultiConverter.test.cs" />
-    <Compile Include="BooleanToVisibilityMultiConverter.test.cs" />
-    <Compile Include="GenericConverterTest.cs" />
-    <Compile Include="GenericMultiConverterTest.cs" />
+    <Compile Include="Data\BooleanToBooleanMultiConverter.test.cs" />
+    <Compile Include="Data\BooleanToVisibilityMultiConverter.test.cs" />
+    <Compile Include="Data\GenericConverterTest.cs" />
+    <Compile Include="Data\GenericMultiConverterTest.cs" />
+    <Compile Include="Markup\DisplayExtension.test.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TimeSpanToStringConverter.test.cs" />
+    <Compile Include="Data\TimeSpanToStringConverter.test.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

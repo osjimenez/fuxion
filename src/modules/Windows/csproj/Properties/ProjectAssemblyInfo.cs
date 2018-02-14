@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Markup;
 
@@ -8,6 +9,7 @@ using System.Windows.Markup;
 
 [assembly: XmlnsPrefix("fuxion", "fuxion")]
 [assembly: XmlnsDefinition("fuxion", "Fuxion.Windows.Data")]
+[assembly: XmlnsDefinition("fuxion", "Fuxion.Windows.Markup")]
 [assembly: XmlnsDefinition("fuxion", "Fuxion.Windows.Resources")]
 [assembly: XmlnsDefinition("fuxion", "Fuxion.Windows.Helpers")]
 
@@ -19,3 +21,5 @@ using System.Windows.Markup;
                                               //(used if a resource is not found in the page, 
                                               // app, or any theme specific resource dictionaries)
 )]
+
+[assembly: InternalsVisibleTo("Fuxion.Windows.Test")]

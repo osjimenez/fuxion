@@ -10,7 +10,7 @@ using System.Windows;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Fuxion.Windows.Test
+namespace Fuxion.Windows.Test.Data
 {
 
     public class BooleanToBooleanMultiConverterTest : BaseTest

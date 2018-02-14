@@ -20,7 +20,7 @@
                 <Binding Path="IsEnabled22" />
             </MultiBinding>
         </StackPanel.Visibility>
-        <TextBlock Text="Hello" Visibility="{Binding List, Converter={StaticResource ICollectionCountToVisibilityConverter}}"/>
+        <TextBlock Text="{fuxion:Display List}" Visibility="{Binding List, Converter={StaticResource ICollectionCountToVisibilityConverter}}"/>
         <CheckBox IsChecked="{Binding List, Converter={StaticResource ICollectionCountToBooleanConverter}}"/>
     </StackPanel>
 </Window>

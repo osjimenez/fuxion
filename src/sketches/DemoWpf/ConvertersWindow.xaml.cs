@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,6 +31,7 @@ namespace DemoWpf
     }
     public class ViewModel
     {
+		[Display(Name = "Lista")]
         public List<string> List { get; set; }
         public bool IsEnabled1 { get; set; } = false;
         public bool IsEnabled2 { get; set; } = true;
