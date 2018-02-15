@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Markup;
 using Xunit;
@@ -37,8 +38,8 @@ namespace Fuxion.Windows.Test.Markup
 			thread.Start();
 			return tcs.Task;
 		}
-		[Fact(DisplayName = "DisplayMarkupExtension - Create chain")]
-		public async Task DisplayMarkupExtension_CreateChain()
+		[Fact(DisplayName = "DisplayExtension - Create chain")]
+		public async Task DisplayExtension_CreateChain()
 		{
 			await StartSTATask(() =>
 			{
@@ -65,104 +66,111 @@ namespace Fuxion.Windows.Test.Markup
 				Assert.True(valueLink.PreviousLink == subDtoLink);
 			});
 		}
-		[Fact(DisplayName = "DisplayMarkupExtension - Direct property")]
-		public async Task DisplayMarkupExtension_DirectProperty()
+		private T RegisterFrameworkElement<T>(object property, string bindPath) where T : FrameworkElement, new()
+		{
+			var ext = new DisplayExtension(bindPath)
+			{
+				Printer = Printer.Default
+			};
+			var element = new T();
+			var ser = new ServiceProviderMock(element, property);
+			var provider = ser.GetService(null) as ProvideValueTargetMock;
+			ext.ProvideValue(ser);
+			return element;
+		}
+		private T RegisterFrameworkContentElement<T>(object property, string bindPath) where T : FrameworkContentElement, new()
+		{
+			var ext = new DisplayExtension(bindPath)
+			{
+				Printer = Printer.Default
+			};
+			var element = new T();
+			var ser = new ServiceProviderMock(element, property);
+			var provider = ser.GetService(null) as ProvideValueTargetMock;
+			ext.ProvideValue(ser);
+			return element;
+		}
+		[Fact(DisplayName = "DisplayExtension - Direct property")]
+		public async Task DisplayExtension_DirectProperty()
 		{
 			await StartSTATask(() =>
 			{
-				Thread.CurrentThread.SetApartmentState(ApartmentState.STA);
-
-				var ext = new DisplayExtension("Dto")
-				{
-					Printer = Printer.Default
-				};
-				var ser = new ServiceProviderMock();
-				var provider = ser.GetService(null) as ProvideValueTargetMock;
-				ext.ProvideValue(ser);
+				var textBlock = RegisterFrameworkElement<TextBlock>(TextBox.TextProperty, "Dto");
 
 				var expectedValue = ViewModelMock.DtoDisplayName;
 
-				Assert.NotEqual(expectedValue, provider.textBlock.Text);
-				provider.textBlock.DataContext = new ViewModelMock();
-				Assert.Equal(expectedValue, provider.textBlock.Text);
+				Assert.NotEqual(expectedValue, textBlock.Text);
+				textBlock.DataContext = new ViewModelMock();
+				Assert.Equal(expectedValue, textBlock.Text);
 			});
 		}
-		[Fact(DisplayName = "DisplayMarkupExtension - Two level property")]
-		public async Task DisplayMarkupExtension_TwoLevelProperty()
+		[Fact(DisplayName = "DisplayExtension - Direct property FrameworkContentElement")]
+		public async Task DisplayExtension_DirectPropertyFrameworkContentElement()
 		{
 			await StartSTATask(() =>
 			{
-				Thread.CurrentThread.SetApartmentState(ApartmentState.STA);
+				var contentElement = RegisterFrameworkContentElement<FrameworkContentElement>(FrameworkContentElement.TagProperty, "Dto");
 
-				var ext = new DisplayExtension("Dto.Dto2")
-				{
-					Printer = Printer.Default
-				};
-				var ser = new ServiceProviderMock();
-				var provider = ser.GetService(null) as ProvideValueTargetMock;
-				ext.ProvideValue(ser);
+				var expectedValue = ViewModelMock.DtoDisplayName;
+
+				Assert.NotEqual(expectedValue, contentElement.Tag);
+				contentElement.DataContext = new ViewModelMock();
+				Assert.Equal(expectedValue, contentElement.Tag);
+			});
+		}
+		[Fact(DisplayName = "DisplayExtension - Two level property")]
+		public async Task DisplayExtension_TwoLevelProperty()
+		{
+			await StartSTATask(() =>
+			{
+				var textBlock = RegisterFrameworkElement<TextBlock>(TextBox.TextProperty, "Dto.Dto2");
 
 				var expectedValue = DtoMock.Dto2DisplayName;
 
-				Assert.NotEqual(expectedValue, provider.textBlock.Text);
+				Assert.NotEqual(expectedValue, textBlock.Text);
 				var viewModel = new ViewModelMock();
-				provider.textBlock.DataContext = viewModel;
-				Assert.NotEqual(expectedValue, provider.textBlock.Text);
+				textBlock.DataContext = viewModel;
+				Assert.NotEqual(expectedValue, textBlock.Text);
 				viewModel.Dto = new DtoMock();
-				Assert.Equal(expectedValue, provider.textBlock.Text);
+				Assert.Equal(expectedValue, textBlock.Text);
 			});
 		}
-		[Fact(DisplayName = "DisplayMarkupExtension - Three level property")]
-		public async Task DisplayMarkupExtension_ThreeLevelProperty()
+		[Fact(DisplayName = "DisplayExtension - Three level property")]
+		public async Task DisplayExtension_ThreeLevelProperty()
 		{
 			await StartSTATask(() =>
 			{
-				Thread.CurrentThread.SetApartmentState(ApartmentState.STA);
-
-				var ext = new DisplayExtension("Dto.Dto2.Dto3")
-				{
-					Printer = Printer.Default
-				};
-				var ser = new ServiceProviderMock();
-				var provider = ser.GetService(null) as ProvideValueTargetMock;
-				ext.ProvideValue(ser);
+				var textBlock = RegisterFrameworkElement<TextBlock>(TextBox.TextProperty, "Dto.Dto2.Dto3");
 
 				var expectedValue = Dto2Mock.Dto3DisplayName;
 
-				Assert.NotEqual(expectedValue, provider.textBlock.Text);
+				Assert.NotEqual(expectedValue, textBlock.Text);
 				var viewModel = new ViewModelMock();
-				provider.textBlock.DataContext = viewModel;
-				Assert.NotEqual(expectedValue, provider.textBlock.Text);
+				textBlock.DataContext = viewModel;
+				Assert.NotEqual(expectedValue, textBlock.Text);
 				var dto = new DtoMock();
 				viewModel.Dto = dto;
-				Assert.NotEqual(expectedValue, provider.textBlock.Text);
+				Assert.NotEqual(expectedValue, textBlock.Text);
 				dto.Dto2 = new Dto2Mock();
-				Assert.Equal(expectedValue, provider.textBlock.Text);
+				Assert.Equal(expectedValue, textBlock.Text);
 
 				dto.Dto2 = null;
-				Assert.NotEqual(expectedValue, provider.textBlock.Text);
+				Assert.NotEqual(expectedValue, textBlock.Text);
 			});
 		}
-		[Fact(DisplayName = "DisplayMarkupExtension - Three level property without DisplayAttribute")]
-		public async Task DisplayMarkupExtension_ThreeLevelProperty2()
+		[Fact(DisplayName = "DisplayExtension - Three level property without Display")]
+		public async Task DisplayExtension_ThreeLevelPropertyWithoutDisplay()
 		{
 			await StartSTATask(() =>
 			{
-				Thread.CurrentThread.SetApartmentState(ApartmentState.STA);
-
-				var ext = new DisplayExtension("Dto.Dto2.Dto3WithoutDisplayAttribute")
-				{
-					Printer = Printer.Default
-				};
 				DisplayExtension.NonAttrributePrefix = "prefix:";
 				DisplayExtension.NonAttrributeSufix = ":sufix";
-				var ser = new ServiceProviderMock();
-				var provider = ser.GetService(null) as ProvideValueTargetMock;
-				ext.ProvideValue(ser);
+				var textBlock = RegisterFrameworkElement<TextBlock>(TextBox.TextProperty, "Dto.Dto2.Dto3WithoutDisplayAttribute");
 
 				string expectedValue = DisplayExtension.NonAttrributePrefix + "Dto3WithoutDisplayAttribute" + DisplayExtension.NonAttrributeSufix;
 
-				Assert.NotEqual(expectedValue, provider.textBlock.Text);
+				Assert.NotEqual(expectedValue, textBlock.Text);
+				Assert.Equal("", textBlock.Text);
 				var viewModel = new ViewModelMock
 				{
 					Dto = new DtoMock
@@ -170,55 +178,56 @@ namespace Fuxion.Windows.Test.Markup
 						Dto2 = new Dto2Mock()
 					}
 				};
-				provider.textBlock.DataContext = viewModel;
-				Assert.Equal(expectedValue, provider.textBlock.Text);
+				textBlock.DataContext = viewModel;
+				Assert.Equal(expectedValue, textBlock.Text);
 			});
 		}
-		[Fact(DisplayName = "DisplayMarkupExtension - Four level property")]
-		public async Task DisplayMarkupExtension_FourLevelProperty()
+		[Fact(DisplayName = "DisplayExtension - Four level property")]
+		public async Task DisplayExtension_FourLevelProperty()
 		{
 			await StartSTATask(() =>
 			{
-				Thread.CurrentThread.SetApartmentState(ApartmentState.STA);
-
-				var ext = new DisplayExtension("Dto.Dto2.Dto3.Value")
-				{
-					Printer = Printer.Default
-				};
-				var ser = new ServiceProviderMock();
-				var provider = ser.GetService(null) as ProvideValueTargetMock;
-				ext.ProvideValue(ser);
+				var textBlock = RegisterFrameworkElement<TextBlock>(TextBox.TextProperty, "Dto.Dto2.Dto3.Value");
 
 				var expectedValue = Dto3Mock.ValueDisplayName;
 
-				Assert.NotEqual(expectedValue, provider.textBlock.Text);
+				Assert.NotEqual(expectedValue, textBlock.Text);
 				var viewModel = new ViewModelMock();
-				provider.textBlock.DataContext = viewModel;
-				Assert.NotEqual(expectedValue, provider.textBlock.Text);
+				textBlock.DataContext = viewModel;
+				Assert.NotEqual(expectedValue, textBlock.Text);
 				var dto = new DtoMock();
 				viewModel.Dto = dto;
-				Assert.NotEqual(expectedValue, provider.textBlock.Text);
+				Assert.NotEqual(expectedValue, textBlock.Text);
 				var dto2 = new Dto2Mock();
 				dto.Dto2 = dto2;
-				Assert.NotEqual(expectedValue, provider.textBlock.Text);
+				Assert.NotEqual(expectedValue, textBlock.Text);
 				dto2.Dto3 = new Dto3Mock();
-				Assert.Equal(expectedValue, provider.textBlock.Text);
+				Assert.Equal(expectedValue, textBlock.Text);
 
 				dto2.Dto3 = null;
-				Assert.NotEqual(expectedValue, provider.textBlock.Text);
+				Assert.NotEqual(expectedValue, textBlock.Text);
 			});
 		}
 	}
 	public class ServiceProviderMock : IServiceProvider
 	{
-		ProvideValueTargetMock provideValueTargetMock = new ProvideValueTargetMock();
+		public ServiceProviderMock(object targetObject, object targetProperty)
+		{
+			provideValueTargetMock = new ProvideValueTargetMock(targetObject, targetProperty);
+		}
+		ProvideValueTargetMock provideValueTargetMock;
 		public object GetService(Type serviceType) => provideValueTargetMock;
 	}
 	public class ProvideValueTargetMock : IProvideValueTarget
 	{
+		public ProvideValueTargetMock(object targetObject, object targetProperty)
+		{
+			TargetObject = targetObject;
+			TargetProperty = targetProperty;
+		}
 		public TextBlock textBlock = new TextBlock();
-		public object TargetObject => textBlock;
-		public object TargetProperty => TextBlock.TextProperty;
+		public object TargetObject { get; set; }
+		public object TargetProperty { get; set; }
 	}
 	public class ViewModelMock : Notifier<ViewModelMock>
 	{

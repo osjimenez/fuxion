@@ -150,8 +150,11 @@ namespace Fuxion.Windows.Markup
 				printer?.WriteLine($"   ContextAttribute: {(ContextAttribute?.ToString() ?? "null")}");
 				printer?.WriteLine($"   TargetElement: {(TargetObject?.ToString() ?? "null")}");
 				printer?.WriteLine($"   TargetProperty: {(TargetProperty?.Name ?? "null")}");
+				var nonAttributeValue = ContextProperty?.Name;
+				if (nonAttributeValue != null)
+					nonAttributeValue = DisplayExtension.NonAttrributePrefix + nonAttributeValue + DisplayExtension.NonAttrributeSufix;
 				if (TargetObject != null)
-					TargetProperty?.SetValue(TargetObject, ContextAttribute?.GetName() ?? DisplayExtension.NonAttrributePrefix + ContextProperty?.Name + DisplayExtension.NonAttrributeSufix);
+					TargetProperty?.SetValue(TargetObject, ContextAttribute?.GetName() ?? nonAttributeValue);
 			}
 			else NextLink.SetValue();
 		}
