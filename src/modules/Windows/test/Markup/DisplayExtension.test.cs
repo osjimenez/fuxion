@@ -154,11 +154,13 @@ namespace Fuxion.Windows.Test.Markup
 				{
 					Printer = Printer.Default
 				};
+				DisplayExtension.NonAttrributePrefix = "prefix:";
+				DisplayExtension.NonAttrributeSufix = ":sufix";
 				var ser = new ServiceProviderMock();
 				var provider = ser.GetService(null) as ProvideValueTargetMock;
 				ext.ProvideValue(ser);
 
-				string expectedValue = "Dto3WithoutDisplayAttribute";
+				string expectedValue = DisplayExtension.NonAttrributePrefix + "Dto3WithoutDisplayAttribute" + DisplayExtension.NonAttrributeSufix;
 
 				Assert.NotEqual(expectedValue, provider.textBlock.Text);
 				var viewModel = new ViewModelMock

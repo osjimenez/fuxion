@@ -29,6 +29,10 @@ namespace Fuxion.Windows.Markup
 			for (int i = 0; i < chain.Count; i++)
 				chain[i].PreviousLink = i == 0 ? null : chain[i - 1];
 		}
+
+		public static string NonAttrributePrefix { get; set; }
+		public static string NonAttrributeSufix { get; set; }
+
 		IPrinter _Printer;
 		internal IPrinter Printer {
 			get => _Printer;
@@ -137,7 +141,7 @@ namespace Fuxion.Windows.Markup
 				printer?.WriteLine($"   TargetElement: {(TargetElement?.ToString() ?? "null")}");
 				printer?.WriteLine($"   TargetProperty: {(TargetProperty?.Name ?? "null")}");
 				if (TargetElement != null)
-					TargetProperty?.SetValue(TargetElement, ContextAttribute?.GetName() ?? ContextProperty?.Name);
+					TargetProperty?.SetValue(TargetElement, ContextAttribute?.GetName() ?? DisplayExtension.NonAttrributePrefix + ContextProperty?.Name + DisplayExtension.NonAttrributeSufix);
 			}
 			else NextLink.SetValue();
 		}
