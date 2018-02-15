@@ -53,15 +53,34 @@ namespace Fuxion.Windows.Markup
 				
 				var first = chain.First();
 				
-				first.TargetElement = provider.TargetObject as FrameworkElement;
-				first.TargetElement.DataContextChanged += (s, e) =>
+				if(provider.TargetObject is FrameworkElement element)
 				{
-					Printer?.WriteLine("DataContextChanged: " + e.NewValue);
-					first.DataContext = e.NewValue;
-					first.SetValue();
-				};
+					first.TargetObject = element;
+					element.DataContextChanged += (s, e) =>
+					{
+						Printer?.WriteLine("DataContextChanged: " + e.NewValue);
+						first.DataContext = e.NewValue;
+						first.SetValue();
+					};
+					first.DataContext = element;
+				}
+				else if (provider.TargetObject is FrameworkContentElement contentElement)
+				{
+					first.TargetObject = contentElement;
+					contentElement.DataContextChanged += (s, e) =>
+					{
+						Printer?.WriteLine("DataContextChanged: " + e.NewValue);
+						first.DataContext = e.NewValue;
+						first.SetValue();
+					};
+					first.DataContext = contentElement;
+				}
+				else
+				{
+					first.TargetObject = provider.TargetObject;
+					first.DataContext = first.TargetObject;
+				}
 				first.TargetDependencyProperty = provider.TargetProperty as DependencyProperty;
-				first.DataContext = first.TargetElement.DataContext;
 				first.SetValue();
 			}
 			return null;
@@ -104,11 +123,9 @@ namespace Fuxion.Windows.Markup
 					ContextNotifier.PropertyChanged += EventHandler;
 			}
 		}
-		object Context => DataContext != null
-			? DataContext
-			: PreviousLink?.Context != null
-				? PreviousLink?.ContextProperty.GetValue(PreviousLink.Context) 
-				: null;
+		object Context => DataContext ?? (PreviousLink?.Context != null
+				? PreviousLink?.ContextProperty?.GetValue(PreviousLink.Context)
+				: null);
 		Type ContextType => Context?.GetType();
 		PropertyInfo ContextProperty => ContextType?.GetProperty(PropertyName);
 		DisplayAttribute ContextAttribute => ContextProperty?.GetCustomAttribute<DisplayAttribute>(true, false);
@@ -119,13 +136,13 @@ namespace Fuxion.Windows.Markup
 			get => _TargetDependencyProperty ?? PreviousLink?.TargetDependencyProperty;
 			set => _TargetDependencyProperty = value;
 		}
-		FrameworkElement _TargetElement;
-		public FrameworkElement TargetElement
+		object _TargetElement;
+		public object TargetObject
 		{
-			get => _TargetElement ?? PreviousLink?.TargetElement;
+			get => _TargetElement ?? PreviousLink?.TargetObject;
 			set => _TargetElement = value;
 		}
-		public PropertyInfo TargetProperty => TargetElement?.GetType().GetProperty(TargetDependencyProperty?.Name);
+		public PropertyInfo TargetProperty => TargetObject?.GetType().GetProperty(TargetDependencyProperty?.Name);
 
 		public void SetValue()
 		{
@@ -138,10 +155,10 @@ namespace Fuxion.Windows.Markup
 				printer?.WriteLine($"   ContextType: {(ContextType?.Name ?? "null")}");
 				printer?.WriteLine($"   ContextProperty: {(ContextProperty?.Name ?? "null")}");
 				printer?.WriteLine($"   ContextAttribute: {(ContextAttribute?.ToString() ?? "null")}");
-				printer?.WriteLine($"   TargetElement: {(TargetElement?.ToString() ?? "null")}");
+				printer?.WriteLine($"   TargetElement: {(TargetObject?.ToString() ?? "null")}");
 				printer?.WriteLine($"   TargetProperty: {(TargetProperty?.Name ?? "null")}");
-				if (TargetElement != null)
-					TargetProperty?.SetValue(TargetElement, ContextAttribute?.GetName() ?? DisplayExtension.NonAttrributePrefix + ContextProperty?.Name + DisplayExtension.NonAttrributeSufix);
+				if (TargetObject != null)
+					TargetProperty?.SetValue(TargetObject, ContextAttribute?.GetName() ?? DisplayExtension.NonAttrributePrefix + ContextProperty?.Name + DisplayExtension.NonAttrributeSufix);
 			}
 			else NextLink.SetValue();
 		}
