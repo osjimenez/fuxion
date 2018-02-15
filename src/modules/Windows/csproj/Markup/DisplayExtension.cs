@@ -62,7 +62,6 @@ namespace Fuxion.Windows.Markup
 						first.DataContext = e.NewValue;
 						first.SetValue();
 					};
-					first.DataContext = element;
 				}
 				else if (provider.TargetObject is FrameworkContentElement contentElement)
 				{
@@ -73,12 +72,6 @@ namespace Fuxion.Windows.Markup
 						first.DataContext = e.NewValue;
 						first.SetValue();
 					};
-					first.DataContext = contentElement;
-				}
-				else
-				{
-					first.TargetObject = provider.TargetObject;
-					first.DataContext = first.TargetObject;
 				}
 				first.TargetDependencyProperty = provider.TargetProperty as DependencyProperty;
 				first.SetValue();
