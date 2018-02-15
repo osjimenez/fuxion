@@ -44,7 +44,10 @@ namespace Fuxion.Windows.Test.Markup
 			{
 				Thread.CurrentThread.SetApartmentState(ApartmentState.STA);
 
-				var ext = new DisplayExtension("Dto.SubDto.Value");
+				var ext = new DisplayExtension("Dto.SubDto.Value")
+				{
+					Printer = Printer.Default
+				};
 				var dtoLink = ext.chain.First();
 				var subDtoLink = ext.chain.Skip(1).First();
 				var valueLink = ext.chain.Skip(2).First();
@@ -140,6 +143,35 @@ namespace Fuxion.Windows.Test.Markup
 				Assert.NotEqual(expectedValue, provider.textBlock.Text);
 			});
 		}
+		[Fact(DisplayName = "DisplayMarkupExtension - Three level property without DisplayAttribute")]
+		public async Task DisplayMarkupExtension_ThreeLevelProperty2()
+		{
+			await StartSTATask(() =>
+			{
+				Thread.CurrentThread.SetApartmentState(ApartmentState.STA);
+
+				var ext = new DisplayExtension("Dto.Dto2.Dto3WithoutDisplayAttribute")
+				{
+					Printer = Printer.Default
+				};
+				var ser = new ServiceProviderMock();
+				var provider = ser.GetService(null) as ProvideValueTargetMock;
+				ext.ProvideValue(ser);
+
+				string expectedValue = "Dto3WithoutDisplayAttribute";
+
+				Assert.NotEqual(expectedValue, provider.textBlock.Text);
+				var viewModel = new ViewModelMock
+				{
+					Dto = new DtoMock
+					{
+						Dto2 = new Dto2Mock()
+					}
+				};
+				provider.textBlock.DataContext = viewModel;
+				Assert.Equal(expectedValue, provider.textBlock.Text);
+			});
+		}
 		[Fact(DisplayName = "DisplayMarkupExtension - Four level property")]
 		public async Task DisplayMarkupExtension_FourLevelProperty()
 		{
@@ -210,6 +242,11 @@ namespace Fuxion.Windows.Test.Markup
 		public const string Dto3DisplayName = nameof(Dto3Mock) + " display name";
 		[Display(Name = Dto3DisplayName)]
 		public Dto3Mock Dto3
+		{
+			get => GetValue<Dto3Mock>();
+			set => SetValue(value);
+		}
+		public Dto3Mock Dto3WithoutDisplayAttribute
 		{
 			get => GetValue<Dto3Mock>();
 			set => SetValue(value);

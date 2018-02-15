@@ -28,7 +28,6 @@ namespace Fuxion.Windows.Markup
 			chain.Reverse();
 			for (int i = 0; i < chain.Count; i++)
 				chain[i].PreviousLink = i == 0 ? null : chain[i - 1];
-			//this.bindPath = bindPath;
 		}
 		IPrinter _Printer;
 		internal IPrinter Printer {
@@ -41,13 +40,8 @@ namespace Fuxion.Windows.Markup
 			}
 		}
 		internal List<NotifierChainLink> chain = new List<NotifierChainLink>();
-		//string bindPath;
-		//object LastDataContext;
-		//FrameworkElement TargetElement;
-		//DependencyProperty TargetProperty;
 		public override object ProvideValue(IServiceProvider serviceProvider)
 		{
-			//UnsubscribeChain();
 			if (serviceProvider.GetService(typeof(IProvideValueTarget)) is IProvideValueTarget provider)
 			{
 				
@@ -68,11 +62,6 @@ namespace Fuxion.Windows.Markup
 			}
 			return null;
 		}
-		//private void UnsubscribeChain()
-		//{
-		//	foreach (var link in chain.Where(l => l.ContextNotifier != null))
-		//		link.ContextNotifier.PropertyChanged -= link.EventHandler;
-		//}
 	}
 	internal class NotifierChainLink
 	{
@@ -148,7 +137,7 @@ namespace Fuxion.Windows.Markup
 				printer?.WriteLine($"   TargetElement: {(TargetElement?.ToString() ?? "null")}");
 				printer?.WriteLine($"   TargetProperty: {(TargetProperty?.Name ?? "null")}");
 				if (TargetElement != null)
-					TargetProperty?.SetValue(TargetElement, ContextAttribute?.GetName());
+					TargetProperty?.SetValue(TargetElement, ContextAttribute?.GetName() ?? ContextProperty?.Name);
 			}
 			else NextLink.SetValue();
 		}
