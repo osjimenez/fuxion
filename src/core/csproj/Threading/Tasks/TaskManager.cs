@@ -8,7 +8,7 @@ namespace Fuxion.Threading.Tasks
 {
     public static class TaskManager
     {
-        readonly static RefLocker<List<ITaskManagerEntry>> tasks = new RefLocker<List<ITaskManagerEntry>>(new List<ITaskManagerEntry>());
+        readonly static Locker<List<ITaskManagerEntry>> tasks = new Locker<List<ITaskManagerEntry>>(new List<ITaskManagerEntry>());
         private static void AddEntry(ITaskManagerEntry entry)
         {
             entry.Task.ContinueWith((t) => tasks.Write(l =>

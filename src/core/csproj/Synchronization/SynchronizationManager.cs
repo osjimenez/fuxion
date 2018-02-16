@@ -34,7 +34,7 @@ namespace Fuxion.Synchronization
         }
         ILog log = LogManager.Create<SynchronizationManager>();
         Task cleanEntriesTask = null;
-        ValueLocker<ICollection<SessionEntry>> runners = new ValueLocker<ICollection<SessionEntry>>(new List<SessionEntry>());
+        Locker<ICollection<SessionEntry>> runners = new Locker<ICollection<SessionEntry>>(new List<SessionEntry>());
         public IPrinter Printer { get; set; } = Fuxion.Printer.Default;
         public TimeSpan CheckOutdatedSessionsInterval { get; set; } = TimeSpan.FromMinutes(1);
         public TimeSpan SessionOutdateLimit { get; set; } = TimeSpan.FromMinutes(60);

@@ -43,7 +43,7 @@ namespace Fuxion.Identity.DatabaseTest
                 return _IdentityManager;
             }
         }
-        [Fact]
+        [Fact(Skip = "Desactivado")]
         public void CheckCredentials()
         {
             // Check when null values
@@ -60,7 +60,7 @@ namespace Fuxion.Identity.DatabaseTest
             // Check when success
             Assert.True(IM.CheckCredentials("root", "root"));
         }
-        [Fact]
+        [Fact(Skip = "Desactivado")]
         public void CheckFunctionAssigned()
         {
             var r1 = IM.GetCurrent().Can(Read).Type<DocumentDao>();

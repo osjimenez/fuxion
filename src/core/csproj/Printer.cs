@@ -97,7 +97,7 @@ namespace Fuxion
         public int IndentationLevel { get; set; }
         public int IndentationStep { get; set; } = 3;
         public char IndentationChar { get; set; } = ' ';
-        RefLocker<Dictionary<int, char>> verticalConnectorLevels = new RefLocker<Dictionary<int, char>>(new Dictionary<int, char>());
+        Locker<Dictionary<int, char>> verticalConnectorLevels = new Locker<Dictionary<int, char>>(new Dictionary<int, char>());
         [DebuggerHidden]
         public Action<string> WriteLineAction { get; set; } = m => Debug.WriteLine(m);
         List<string> lineMessages = new List<string>();

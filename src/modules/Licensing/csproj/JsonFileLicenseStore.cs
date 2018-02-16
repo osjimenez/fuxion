@@ -30,8 +30,8 @@ namespace Fuxion.Licensing
             }
         }
         Type[] knownLicenseTypes;
-        ValueLocker<string> pathLocker;
-        ValueLocker<List<LicenseContainer>> listLocker= new ValueLocker<List<LicenseContainer>>(new List<LicenseContainer>());
+        Locker<string> pathLocker;
+        Locker<List<LicenseContainer>> listLocker= new Locker<List<LicenseContainer>>(new List<LicenseContainer>());
 
         public event EventHandler<EventArgs<LicenseContainer>> LicenseAdded;
         public event EventHandler<EventArgs<LicenseContainer>> LicenseRemoved;
@@ -39,7 +39,7 @@ namespace Fuxion.Licensing
         private void LoadFile(string licensesFilePath)
         {
             listLocker.Write(l => l.Clear());
-            pathLocker = new ValueLocker<string>(licensesFilePath);
+            pathLocker = new Locker<string>(licensesFilePath);
             if (File.Exists(pathLocker.Read(path => path)))
                 listLocker.Write(l => l.AddRange(JsonConvert.DeserializeObject<LicenseContainer[]>(
                     pathLocker.Read(path => File.ReadAllText(path))

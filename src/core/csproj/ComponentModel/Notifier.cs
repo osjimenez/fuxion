@@ -299,14 +299,13 @@ namespace Fuxion.ComponentModel
 			OnRaisePropertyChanged(propertyName, oldValue, newValue);
 			return true;
 		}
-		private ValueLocker<T> GetLockerProperty<T>(Func<T> defaultValueFunction = null, [CallerMemberName] string propertyName = null)
+		private Locker<T> GetLockerProperty<T>(Func<T> defaultValueFunction = null, [CallerMemberName] string propertyName = null)
 		{
 			if (propertyName == null) throw new ArgumentNullException("propertyName");
-			object objValue;
-			if (PropertiesDictionary.TryGetValue(GetPropertyKey(propertyName), out objValue))
-				return (ValueLocker<T>)objValue;
+			if (PropertiesDictionary.TryGetValue(GetPropertyKey(propertyName), out object objValue))
+				return (Locker<T>)objValue;
 			T defaultValue = defaultValueFunction == null ? default(T) : defaultValueFunction();
-			var defaultLocker = new ValueLocker<T>(defaultValue);
+			var defaultLocker = new Locker<T>(defaultValue);
 			PropertiesDictionary[GetPropertyKey(propertyName)] = defaultLocker;
 			return defaultLocker;
 		}
@@ -315,8 +314,10 @@ namespace Fuxion.ComponentModel
 		private T OnGetLockedValue<T>(Func<T> defaultValueFunction = null, [CallerMemberName] string propertyName = null)
 		{
 			if (propertyName == null) throw new ArgumentNullException("propertyName");
-			ValueLocker<T> locker = GetLockerProperty(defaultValueFunction, propertyName);
-			T value = locker.ObjectLocked;
+			Locker<T> locker = GetLockerProperty(defaultValueFunction, propertyName);
+			T value = locker.Read(_ => _);
+			//T value = locker.ObjectLocked;
+
 			//T interceptedValue = OnRaisePropertyRead(propertyName, value);
 			//if (!EqualityComparer<T>.Default.Equals(value, interceptedValue))
 			//    ((ValueLocker<T>)PropertiesDictionary[propertyName]).WriteRef(interceptedValue);
@@ -328,7 +329,7 @@ namespace Fuxion.ComponentModel
 		private bool OnSetLockedValue<T>(T value, bool raiseOnlyIfNotEquals = true, [CallerMemberName] string propertyName = null)
 		{
 			if (propertyName == null) throw new ArgumentNullException("propertyName");
-			ValueLocker<T> oldLockerValue;
+			Locker<T> oldLockerValue;
 			if (PropertiesDictionary.ContainsKey(GetPropertyKey(propertyName)))
 			{
 				oldLockerValue = GetLockerProperty<T>(propertyName: propertyName);
@@ -337,14 +338,14 @@ namespace Fuxion.ComponentModel
 			else
 			{
 				// oldLockerValue = new ValueLocker<T>((T)GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static).GetValue(this, null));
-				oldLockerValue = new ValueLocker<T>((T)GetType().GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).Single(p => p.Name == propertyName).GetValue(this, null));
+				oldLockerValue = new Locker<T>((T)GetType().GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).Single(p => p.Name == propertyName).GetValue(this, null));
 				PropertiesDictionary[GetPropertyKey(propertyName)] = oldLockerValue;
 			}
-			if (raiseOnlyIfNotEquals && ((oldLockerValue == null && value == null) || EqualityComparer<T>.Default.Equals(oldLockerValue.ObjectLocked, value)))
+			if (raiseOnlyIfNotEquals && ((oldLockerValue == null && value == null) || EqualityComparer<T>.Default.Equals(oldLockerValue.Read(_ => _), value)))
 				return false;
-			T oldValue = oldLockerValue.ObjectLocked;
+			T oldValue = oldLockerValue.Read(_ => _);
 			//if (!OnRaisePropertyChanging(propertyName, oldValue, value)) return false;
-			((ValueLocker<T>)PropertiesDictionary[GetPropertyKey(propertyName)]).WriteRef(value);
+			((Locker<T>)PropertiesDictionary[GetPropertyKey(propertyName)]).WriteObject(value);
 			OnRaisePropertyChanged(propertyName, oldValue, value);
 			return true;
 		}
@@ -370,9 +371,9 @@ namespace Fuxion.ComponentModel
 			//return interceptedValue;
 			return field;
 		}
-		protected bool SetLockedField<T>(ref ValueLocker<T> lockedField, T value, bool raiseOnlyIfNotEquals = true, [CallerMemberName] String propertyName = null) where T : struct => OnSetLockedField(propertyName, ref lockedField, value, raiseOnlyIfNotEquals);
-		protected bool SetLockedField(ref ValueLocker<string> lockedField, string value, bool raiseOnlyIfNotEquals = true, [CallerMemberName] String propertyName = null) => OnSetLockedField(propertyName, ref lockedField, value, raiseOnlyIfNotEquals);
-		private bool OnSetLockedField<T>(string propertyName, ref ValueLocker<T> lockedField, T value, bool raiseOnlyIfNotEquals)
+		protected bool SetLockedField<T>(ref Locker<T> lockedField, T value, bool raiseOnlyIfNotEquals = true, [CallerMemberName] String propertyName = null) where T : struct => OnSetLockedField(propertyName, ref lockedField, value, raiseOnlyIfNotEquals);
+		protected bool SetLockedField(ref Locker<string> lockedField, string value, bool raiseOnlyIfNotEquals = true, [CallerMemberName] String propertyName = null) => OnSetLockedField(propertyName, ref lockedField, value, raiseOnlyIfNotEquals);
+		private bool OnSetLockedField<T>(string propertyName, ref Locker<T> lockedField, T value, bool raiseOnlyIfNotEquals)
 		{
 			if (propertyName == null) throw new ArgumentNullException("propertyName");
 			T oldValue = OnGetLockedField(ref lockedField, propertyName);
@@ -381,23 +382,23 @@ namespace Fuxion.ComponentModel
 				&&
 				(
 					(lockedField == null && value == null) ||
-					(lockedField != null && lockedField.ObjectLocked == null && value == null) ||
-					(lockedField != null && lockedField.ObjectLocked != null && lockedField.ObjectLocked.Equals(value))
+					(lockedField != null && lockedField.Read(_ => _) == null && value == null) ||
+					(lockedField != null && lockedField.Read(_ => _) != null && lockedField.Read(_ => _).Equals(value))
 					)
 				)
 				return false;
 			//if (!OnRaisePropertyChanging(propertyName, oldValue, value)) return false;
-			if (lockedField == null) lockedField = new ValueLocker<T>(value);
-			else lockedField.WriteRef(value);
+			if (lockedField == null) lockedField = new Locker<T>(value);
+			else lockedField.WriteObject(value);
 			OnRaisePropertyChanged(propertyName, oldValue, value);
 			return true;
 		}
-		protected T GetLockedField<T>(ref ValueLocker<T> lockedField, [CallerMemberName] string propertyName = null) where T : struct { return OnGetLockedField(ref lockedField, propertyName); }
-		protected string GetLockedField(ref ValueLocker<string> lockedField, [CallerMemberName] string propertyName = null) { return OnGetLockedField(ref lockedField, propertyName); }
-		private T OnGetLockedField<T>(ref ValueLocker<T> lockedField, [CallerMemberName] string propertyName = null)
+		protected T GetLockedField<T>(ref Locker<T> lockedField, [CallerMemberName] string propertyName = null) where T : struct { return OnGetLockedField(ref lockedField, propertyName); }
+		protected string GetLockedField(ref Locker<string> lockedField, [CallerMemberName] string propertyName = null) { return OnGetLockedField(ref lockedField, propertyName); }
+		private T OnGetLockedField<T>(ref Locker<T> lockedField, [CallerMemberName] string propertyName = null)
 		{
 			if (propertyName == null) throw new ArgumentNullException("propertyName");
-			T value = lockedField == null ? default(T) : lockedField.ObjectLocked;
+			T value = lockedField == null ? default(T) : lockedField.Read(_ => _);
 			//T interceptedValue = OnRaisePropertyRead(propertyName, value);
 			//if (EqualityComparer<T>.Default.Equals(value, interceptedValue)) return interceptedValue;
 			//if (lockedField == null) lockedField = new ValueLocker<T>(interceptedValue);

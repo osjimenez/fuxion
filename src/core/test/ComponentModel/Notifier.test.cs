@@ -89,7 +89,7 @@ namespace Fuxion.Test.ComponentModel
         }
         #endregion
         #region Integer_FieldImplemented
-        private ValueLocker<int> _Integer_FieldImplemented_WithoutDefault_RaiseAlways_Locked;
+        private Locker<int> _Integer_FieldImplemented_WithoutDefault_RaiseAlways_Locked;
         public int Integer_FieldImplemented_WithoutDefault_RaiseAlways_Locked
         {
             get { return GetLockedField(ref _Integer_FieldImplemented_WithoutDefault_RaiseAlways_Locked); }
@@ -101,7 +101,7 @@ namespace Fuxion.Test.ComponentModel
             get { return GetField(ref _Integer_FieldImplemented_WithoutDefault_RaiseAlways_NotLocked); }
             set { SetField(ref _Integer_FieldImplemented_WithoutDefault_RaiseAlways_NotLocked, value, false); }
         }
-        private ValueLocker<int> _Integer_FieldImplemented_WithoutDefault_RaiseOnChange_Locked;
+        private Locker<int> _Integer_FieldImplemented_WithoutDefault_RaiseOnChange_Locked;
         public int Integer_FieldImplemented_WithoutDefault_RaiseOnChange_Locked
         {
             get { return GetLockedField(ref _Integer_FieldImplemented_WithoutDefault_RaiseOnChange_Locked); }
@@ -113,7 +113,7 @@ namespace Fuxion.Test.ComponentModel
             get { return GetField(ref _Integer_FieldImplemented_WithoutDefault_RaiseOnChange_NotLocked); }
             set { SetField(ref _Integer_FieldImplemented_WithoutDefault_RaiseOnChange_NotLocked, value); }
         }
-        private ValueLocker<int> _Integer_FieldImplemented_WithDefault_RaiseAlways_Locked = new ValueLocker<int>(111);
+        private Locker<int> _Integer_FieldImplemented_WithDefault_RaiseAlways_Locked = new Locker<int>(111);
         public int Integer_FieldImplemented_WithDefault_RaiseAlways_Locked
         {
             get { return GetLockedField(ref _Integer_FieldImplemented_WithDefault_RaiseAlways_Locked); }
@@ -125,7 +125,7 @@ namespace Fuxion.Test.ComponentModel
             get { return GetField(ref _Integer_FieldImplemented_WithDefault_RaiseAlways_NotLocked); }
             set { SetField(ref _Integer_FieldImplemented_WithDefault_RaiseAlways_NotLocked, value, false); }
         }
-        private ValueLocker<int> _Integer_FieldImplemented_WithDefault_RaiseOnChange_Locked = new ValueLocker<int>(111);
+        private Locker<int> _Integer_FieldImplemented_WithDefault_RaiseOnChange_Locked = new Locker<int>(111);
         public int Integer_FieldImplemented_WithDefault_RaiseOnChange_Locked
         {
             get { return GetLockedField(ref _Integer_FieldImplemented_WithDefault_RaiseOnChange_Locked); }
@@ -181,7 +181,7 @@ namespace Fuxion.Test.ComponentModel
         }
         #endregion
         #region String_FieldImplemented
-        private ValueLocker<string> _String_FieldImplemented_WithoutDefault_RaiseAlways_Locked;
+        private Locker<string> _String_FieldImplemented_WithoutDefault_RaiseAlways_Locked;
         public string String_FieldImplemented_WithoutDefault_RaiseAlways_Locked
         {
             get { return GetLockedField(ref _String_FieldImplemented_WithoutDefault_RaiseAlways_Locked); }
@@ -193,7 +193,7 @@ namespace Fuxion.Test.ComponentModel
             get { return GetField(ref _String_FieldImplemented_WithoutDefault_RaiseAlways_NotLocked); }
             set { SetField(ref _String_FieldImplemented_WithoutDefault_RaiseAlways_NotLocked, value, false); }
         }
-        private ValueLocker<string> _String_FieldImplemented_WithoutDefault_RaiseOnChange_Locked;
+        private Locker<string> _String_FieldImplemented_WithoutDefault_RaiseOnChange_Locked;
         public string String_FieldImplemented_WithoutDefault_RaiseOnChange_Locked
         {
             get { return GetLockedField(ref _String_FieldImplemented_WithoutDefault_RaiseOnChange_Locked); }
@@ -205,7 +205,7 @@ namespace Fuxion.Test.ComponentModel
             get { return GetField(ref _String_FieldImplemented_WithoutDefault_RaiseOnChange_NotLocked); }
             set { SetField(ref _String_FieldImplemented_WithoutDefault_RaiseOnChange_NotLocked, value); }
         }
-        private ValueLocker<string> _String_FieldImplemented_WithDefault_RaiseAlways_Locked = new ValueLocker<string>("aaa");
+        private Locker<string> _String_FieldImplemented_WithDefault_RaiseAlways_Locked = new Locker<string>("aaa");
         public string String_FieldImplemented_WithDefault_RaiseAlways_Locked
         {
             get { return GetLockedField(ref _String_FieldImplemented_WithDefault_RaiseAlways_Locked); }
@@ -217,7 +217,7 @@ namespace Fuxion.Test.ComponentModel
             get { return GetField(ref _String_FieldImplemented_WithDefault_RaiseAlways_NotLocked); }
             set { SetField(ref _String_FieldImplemented_WithDefault_RaiseAlways_NotLocked, value, false); }
         }
-        private ValueLocker<string> _String_FieldImplemented_WithDefault_RaiseOnChange_Locked = new ValueLocker<string>("aaa");
+        private Locker<string> _String_FieldImplemented_WithDefault_RaiseOnChange_Locked = new Locker<string>("aaa");
         public string String_FieldImplemented_WithDefault_RaiseOnChange_Locked
         {
             get { return GetLockedField(ref _String_FieldImplemented_WithDefault_RaiseOnChange_Locked); }

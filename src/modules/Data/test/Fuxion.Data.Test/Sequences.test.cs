@@ -21,13 +21,13 @@ namespace Fuxion.Data.Test
         }
         TestContext con;
 
-        [Fact]
+        [Fact(Skip = "Desactivado")]
         public void CreateAndDeleteSequence()
         {
             con.CreateSequence("T");
             con.DeleteSequence("T");
         }
-        [Fact]
+        [Fact(Skip = "Desactivado")]
         public void GetSequenceValue()
         {
             con.CreateSequence("T");
@@ -39,7 +39,7 @@ namespace Fuxion.Data.Test
             Assert.Equal(2, val);
             con.DeleteSequence("T");
         }
-        [Fact]
+        [Fact(Skip = "Desactivado")]
         public void SetSequenceValue()
         {
             con.CreateSequence("T");
