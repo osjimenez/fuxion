@@ -3,35 +3,18 @@ using Fuxion.Threading.Tasks;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-
 namespace Fuxion.Threading
 {
-	//public delegate void ActionRef<T>(ref T obj);
-	//public delegate void ActionRef<T, U>(ref T obj, U param1);
-	//public delegate TResult FuncRef<T, TResult>(ref T arg);
-	//public interface ILocker<out TObjectLocked>
-	//{
-	//	void Read(Action<TObjectLocked> action);
-	//	TResult Read<TResult>(Func<TObjectLocked, TResult> func);
-	//	void Write(Action<TObjectLocked> action);
-	//	TResult Write<TResult>(Func<TObjectLocked, TResult> func);
-	//}
-	public class Locker<TObjectLocked>
+	public class Locker<TObjectLocked> : IDisposable
 	{
 		public Locker(TObjectLocked objectLocked, LockRecursionPolicy recursionPolicy = LockRecursionPolicy.NoRecursion) { this.objectLocked = objectLocked; }
+
 		ReaderWriterLockSlim _ReaderWriterLockSlim = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 		TObjectLocked objectLocked;
         ILog log = LogManager.Create<Locker<TObjectLocked>>();
-		//public TObjectLocked ObjectLocked
-		//{
-		//	get { return Read(obj => obj); }
-		//    protected set
-		//    {
-  //              _ReaderWriterLockSlim.EnterWriteLock();
-		//        objectLocked = value;
-  //              _ReaderWriterLockSlim.ExitWriteLock();
-		//    }
-		//}
+
+		public void Dispose() => _ReaderWriterLockSlim.Dispose();
+
 		public void Read(Action<TObjectLocked> action)
 		{
             try
@@ -214,16 +197,6 @@ namespace Fuxion.Threading
         public Task<TResult> WriteAsync<T, TResult>(Action<TObjectLocked, T, TResult> func, T param) { return DelegateWriteAsync<TResult>(func, param); }
         public Task<TResult> WriteAsync<T1, T2, TResult>(Action<TObjectLocked, T1, T2, TResult> func, T1 param1, T2 param2) { return DelegateWriteAsync<TResult>(func, param1, param2); }
         public Task<TResult> WriteAsync<T1, T2, T3, TResult>(Action<TObjectLocked, T1, T2, T3, TResult> func, T1 param1, T2 param2, T3 param3) { return DelegateWriteAsync<TResult>(func, param1, param2, param3); }
-        #endregion
-
-    }
-	//public class ValueLocker<TObjectLocked> : BaseLocker<TObjectLocked>, ILocker<TObjectLocked>
-	//{
-	//	public ValueLocker(TObjectLocked objectLocked, LockRecursionPolicy recursionPolicy = LockRecursionPolicy.NoRecursion) : base(objectLocked, recursionPolicy) { }
-	//    public void WriteRef(TObjectLocked value) { ObjectLocked = value; }
-	//}
-	//public class RefLocker<TObjectLocked> : BaseLocker<TObjectLocked>, ILocker<TObjectLocked>
-	//{
-	//	public RefLocker(TObjectLocked objectLocked, LockRecursionPolicy recursionPolicy = LockRecursionPolicy.NoRecursion) : base(objectLocked, recursionPolicy) { }
-	//}
+		#endregion
+	}
 }
