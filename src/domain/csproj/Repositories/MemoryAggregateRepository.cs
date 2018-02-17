@@ -47,7 +47,7 @@ namespace Fuxion.Domain.Repositories
         {
             Debug.WriteLine($"MemoryEventSourcedRepository<{typeof(TAggregate).Name}>.Save(T eventSourced) - Have {eventSourced.Events.Count()} events to save");
             _list.AddRange(eventSourced.Events);
-            return Task.FromResult(0);
+            return Task.CompletedTask;
         }
     }
 }

@@ -43,11 +43,11 @@ namespace Fuxion.Test.Net
                 throw new NotImplementedException();
             }
             output.WriteLine($"Return OnConnect()");
-            return Task.FromResult(0);
+            return Task.CompletedTask;
         }
         protected override Task OnDisconnect()
         {
-            return Task.FromResult(0);
+            return Task.CompletedTask;
         }
     }
 }
