@@ -200,10 +200,10 @@ namespace Fuxion.Net
 		}
 		protected async Task<bool> ReconnectOnFailure()
 		{
-			await Disconnect();
 			State = ConnectionState.Faulted;
 			if (ConnectionMode == ConnectionMode.Automatic)
 			{
+				await Disconnect();
 				await Connect();
 				return true;
 			}
