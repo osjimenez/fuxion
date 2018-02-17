@@ -165,12 +165,12 @@ namespace Fuxion.Net
 			switch (State)
 			{
 				case ConnectionState.Created:
-				case ConnectionState.Faulted:
 				case ConnectionState.Closed:
 					throw new InvalidOperationException("No se puede desconectar porque la conexión no esta activa.");
 				case ConnectionState.Closing:
 					await disconnectionTask;
 					break;
+				case ConnectionState.Faulted:
 				case ConnectionState.Opening:
 				case ConnectionState.Opened:
 					disconnectionTask = TaskManager.Create<bool>(async () =>
