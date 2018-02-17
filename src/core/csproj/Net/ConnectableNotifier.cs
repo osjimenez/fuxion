@@ -204,6 +204,7 @@ namespace Fuxion.Net
 			if (ConnectionMode == ConnectionMode.Automatic)
 			{
 				await Disconnect();
+				ConnectionMode = ConnectionMode.Automatic;
 				await Connect();
 				return true;
 			}
