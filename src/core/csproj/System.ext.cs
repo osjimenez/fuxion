@@ -260,9 +260,22 @@ namespace System
             return new string(Enumerable.Repeat(str, length)
                 .Select(s => s[ran.Next(s.Length)]).ToArray());
         }
-        #endregion
-        #region IsNullOrDefault
-        public static bool IsNullOrDefault<T>(this T me) => EqualityComparer<T>.Default.Equals(me, default(T));
+		#endregion
+		#region IsBetween
+		public static bool IsBetween(this short me, short minimum, short maximum) => minimum <= me && me <= maximum;
+		public static bool IsBetween(this ushort me, ushort minimum, ushort maximum) => minimum <= me && me <= maximum;
+		public static bool IsBetween(this int me, int minimum, int maximum) => minimum <= me && me <= maximum;
+		public static bool IsBetween(this uint me, uint minimum, uint maximum) => minimum <= me && me <= maximum;
+		public static bool IsBetween(this long me, long minimum, long maximum) => minimum <= me && me <= maximum;
+		public static bool IsBetween(this ulong me, ulong minimum, ulong maximum) => minimum <= me && me <= maximum;
+		public static bool IsBetween(this decimal me, decimal minimum, decimal maximum) => minimum <= me && me <= maximum;
+		public static bool IsBetween(this double me, double minimum, double maximum) => minimum <= me && me <= maximum;
+		public static bool IsBetween(this float me, float minimum, float maximum) => minimum <= me && me <= maximum;
+		public static bool IsBetween(this DateTime me, DateTime minimum, DateTime maximum) => minimum <= me && me <= maximum;
+		public static bool IsBetween(this TimeSpan me, TimeSpan minimum, TimeSpan maximum) => minimum <= me && me <= maximum;
+		#endregion
+		#region IsNullOrDefault
+		public static bool IsNullOrDefault<T>(this T me) => EqualityComparer<T>.Default.Equals(me, default(T));
         #endregion
         #region DateTime
         public static DateTime AverageDateTime(this IEnumerable<DateTime> me)

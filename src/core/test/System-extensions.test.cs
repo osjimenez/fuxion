@@ -17,8 +17,16 @@ namespace Fuxion.Test
             this.output = output;
         }
         ITestOutputHelper output;
-
-        [Fact(DisplayName = "Object - IsNullOrDefault")]
+		[Fact(DisplayName = "IsBetween - First")]
+		public void IsBetween()
+		{
+			Assert.True(3.IsBetween(2, 4)); // With margin
+			Assert.True(3.IsBetween(3, 4)); // Low limited
+			Assert.True(3.IsBetween(3, 3)); // High limited
+			Assert.False(3.IsBetween(1, 2)); // Low out of range
+			Assert.False(3.IsBetween(4, 5)); // High out of range
+		}
+		[Fact(DisplayName = "Object - IsNullOrDefault")]
         public void IsNullOrDefaultTest()
         {
             string s = null;
