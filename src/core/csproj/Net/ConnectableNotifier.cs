@@ -160,9 +160,7 @@ namespace Fuxion.Net
 		}
 		Task<bool> disconnectionTask;
 		protected abstract Task OnDisconnect();
-		public Task Disconnect() => Disconnect(false);
-		protected Task<bool> ReconnectOnFailure() => Disconnect(true);
-		private async Task<bool> Disconnect(bool isFaultedConnection)
+		public async Task Disconnect()
 		{
 			switch (State)
 			{
@@ -171,7 +169,8 @@ namespace Fuxion.Net
 				case ConnectionState.Closed:
 					throw new InvalidOperationException("No se puede desconectar porque la conexión no esta activa.");
 				case ConnectionState.Closing:
-					return await disconnectionTask;
+					await disconnectionTask;
+					break;
 				case ConnectionState.Opening:
 				case ConnectionState.Opened:
 					disconnectionTask = TaskManager.Create<bool>(async () =>
@@ -182,15 +181,6 @@ namespace Fuxion.Net
 						try
 						{
 							await OnDisconnect();
-							if (isFaultedConnection)
-							{
-								State = ConnectionState.Faulted;
-								if (ConnectionMode == ConnectionMode.Automatic)
-								{
-									await Connect();
-									return true;
-								}
-							}
 						}
 						catch (Exception ex)
 						{
@@ -202,10 +192,22 @@ namespace Fuxion.Net
 					});
 					disconnectionTask.OnCancelRequested(() => IsDisconnectCancellationRequested = true);
 					disconnectionTask.Start();
-					return await disconnectionTask;
+					await disconnectionTask;
+					break;
 				default:
 					throw new NotImplementedException($"El estado '{State}' no ha sido implementado en la operación de desconexión.");
 			}
+		}
+		protected async Task<bool> ReconnectOnFailure()
+		{
+			await Disconnect();
+			State = ConnectionState.Faulted;
+			if (ConnectionMode == ConnectionMode.Automatic)
+			{
+				await Connect();
+				return true;
+			}
+			return false;
 		}
 		#endregion
 		#region KeepAlive
