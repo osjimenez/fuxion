@@ -53,7 +53,8 @@ namespace Fuxion.Windows.Documents
 			return IsBasicType(objType)
 				? (Block)new Paragraph().Transform(p =>
 				{
-					p.Inlines.Add(new Bold(new Run($"{name} = ")));
+					//p.Inlines.Add(new Bold(new Run("●")));
+					p.Inlines.Add(new Bold(new Run($"  ●  {name} = ")));
 					var valStr = obj?.ToString();
 					if (valStr?.Contains('\r') ?? false)
 						p.Inlines.Add(new LineBreak());
@@ -74,6 +75,7 @@ namespace Fuxion.Windows.Documents
 					enumerableCount++;
 
 			var button = new ToggleButton();
+			button.Margin = new Thickness(1, 0, 1, 0);
 			button.Click += (s, e) =>
 			{
 				try
@@ -88,6 +90,7 @@ namespace Fuxion.Windows.Documents
 							foreach (var item in obj as IEnumerable)
 							{
 								var list = new List();
+								list.MarkerStyle = TextMarkerStyle.None;
 								list.ListItems.Add(new ListItem().Transform(i => i.Blocks.Add(item.ProcessProperty($"{name} [{counter++}]", item.GetType()))));
 								Blocks.Add(list);
 							}
@@ -95,6 +98,7 @@ namespace Fuxion.Windows.Documents
 						else
 						{
 							var list = new List();
+							list.MarkerStyle = TextMarkerStyle.None;
 							foreach (var pro in obj.GetType().GetProperties().Where(p => !p.GetIndexParameters().Any()).OrderBy(p => p.Name))
 							{
 								try

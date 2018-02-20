@@ -26,6 +26,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Strings.resx</DependentUpon>
     </Compile>
+    <Compile Update="UserControl1.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   
   <ItemGroup>

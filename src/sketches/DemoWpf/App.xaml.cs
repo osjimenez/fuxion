@@ -7,6 +7,7 @@ using Fuxion.Licensing.Test.Mocks;
 using Fuxion.Logging;
 using Fuxion.Security;
 using Fuxion.Threading.Tasks;
+using Fuxion.Windows.Input;
 using SimpleInjector;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using Fuxion.Windows.Controls;
+using DemoWpf.Windows;
 
 namespace DemoWpf
 {
@@ -23,19 +26,20 @@ namespace DemoWpf
     {
         protected override void OnStartup(StartupEventArgs e)
         {
-            Factory.AddInjector(new InstanceInjector<ILogFactory>(new Log4netFactory()));
+			Factory.AddInjector(new InstanceInjector<ILogFactory>(new Log4netFactory()));
             Container c = new Container();
             c.RegisterSingleton<ILicenseStore>(new JsonFileLicenseStore(new[] { typeof(LicenseMock) }));
             c.RegisterSingleton<ILicenseProvider>(new LicenseProviderMock());
             c.Register<IHardwareIdProvider, HardwareIdHelper>();
             c.RegisterSingleton<LicensingManager>();
             Factory.AddInjector(new SimpleInjectorFactoryInjector(c));
-            //new MainWindow().Show();
-            //new Licensing().Show();
-            //new TimeProvider().Show();
-            //new ConvertersWindow().Show();
-            new ValidationWindow().Show();
-        }
+			//new MainWindow().Show();
+			//new Licensing().Show();
+			//new TimeProvider().Show();
+			//new ConvertersWindow().Show();
+			//new ValidationWindow().Show();
+			new UnhandledExceptionWindowTest().Show();
+		}
     }
     public class HardwareIdHelper : IHardwareIdProvider
     {

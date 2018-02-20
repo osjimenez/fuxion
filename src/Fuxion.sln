@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2020
+VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "core", "core", "{291B05EE-78EA-412F-9449-5EC4D5E0FC9C}"
 EndProject
@@ -152,6 +152,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fuxion.Windows", "modules\Windows\csproj\Fuxion.Windows.csproj", "{C52D20F2-CDC5-472F-B2D0-31A14A0722C7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreConsole", "sketches\CoreConsole\CoreConsole.csproj", "{8E17FC57-10F6-4865-B757-2DDA7712FD7B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion.Windows.Controls", "modules\Windows\Fuxion.Windows.Controls\Fuxion.Windows.Controls.csproj", "{E51B208C-A63A-4EA2-93B6-8AE3C263BFA9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -517,6 +519,22 @@ Global
 		{8E17FC57-10F6-4865-B757-2DDA7712FD7B}.Release|x64.Build.0 = Release|Any CPU
 		{8E17FC57-10F6-4865-B757-2DDA7712FD7B}.Release|x86.ActiveCfg = Release|Any CPU
 		{8E17FC57-10F6-4865-B757-2DDA7712FD7B}.Release|x86.Build.0 = Release|Any CPU
+		{E51B208C-A63A-4EA2-93B6-8AE3C263BFA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E51B208C-A63A-4EA2-93B6-8AE3C263BFA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E51B208C-A63A-4EA2-93B6-8AE3C263BFA9}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{E51B208C-A63A-4EA2-93B6-8AE3C263BFA9}.Debug|ARM.Build.0 = Debug|Any CPU
+		{E51B208C-A63A-4EA2-93B6-8AE3C263BFA9}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E51B208C-A63A-4EA2-93B6-8AE3C263BFA9}.Debug|x64.Build.0 = Debug|Any CPU
+		{E51B208C-A63A-4EA2-93B6-8AE3C263BFA9}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E51B208C-A63A-4EA2-93B6-8AE3C263BFA9}.Debug|x86.Build.0 = Debug|Any CPU
+		{E51B208C-A63A-4EA2-93B6-8AE3C263BFA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E51B208C-A63A-4EA2-93B6-8AE3C263BFA9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E51B208C-A63A-4EA2-93B6-8AE3C263BFA9}.Release|ARM.ActiveCfg = Release|Any CPU
+		{E51B208C-A63A-4EA2-93B6-8AE3C263BFA9}.Release|ARM.Build.0 = Release|Any CPU
+		{E51B208C-A63A-4EA2-93B6-8AE3C263BFA9}.Release|x64.ActiveCfg = Release|Any CPU
+		{E51B208C-A63A-4EA2-93B6-8AE3C263BFA9}.Release|x64.Build.0 = Release|Any CPU
+		{E51B208C-A63A-4EA2-93B6-8AE3C263BFA9}.Release|x86.ActiveCfg = Release|Any CPU
+		{E51B208C-A63A-4EA2-93B6-8AE3C263BFA9}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -568,9 +586,10 @@ Global
 		{10E190F0-D271-4B2F-8282-4E0E209CB856} = {D73E328B-68C4-499C-9532-A7D9ACC4F186}
 		{C52D20F2-CDC5-472F-B2D0-31A14A0722C7} = {3D8F0482-E13F-4701-A59B-4359A1614CEE}
 		{8E17FC57-10F6-4865-B757-2DDA7712FD7B} = {D73E328B-68C4-499C-9532-A7D9ACC4F186}
+		{E51B208C-A63A-4EA2-93B6-8AE3C263BFA9} = {3D8F0482-E13F-4701-A59B-4359A1614CEE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {935D1C59-A88C-491F-B27D-3B0CF8AF2605}
 		EnterpriseLibraryConfigurationToolBinariesPathV6 = packages\EnterpriseLibrary.TransientFaultHandling.6.0.1304.0\lib\portable-net45+win+wp8;packages\EnterpriseLibrary.TransientFaultHandling.Data.6.0.1304.1\lib\NET45
+		SolutionGuid = {935D1C59-A88C-491F-B27D-3B0CF8AF2605}
 	EndGlobalSection
 EndGlobal
