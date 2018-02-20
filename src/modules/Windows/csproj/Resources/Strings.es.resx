@@ -123,11 +123,23 @@
   <data name="days" xml:space="preserve">
     <value>días</value>
   </data>
+  <data name="Element" xml:space="preserve">
+    <value>Elemento</value>
+  </data>
+  <data name="Elements" xml:space="preserve">
+    <value>Elementos</value>
+  </data>
+  <data name="ErrorExpandingItem" xml:space="preserve">
+    <value>Error al desplegar el item</value>
+  </data>
   <data name="hour" xml:space="preserve">
     <value>hora</value>
   </data>
   <data name="hours" xml:space="preserve">
     <value>horas</value>
+  </data>
+  <data name="List" xml:space="preserve">
+    <value>Lista</value>
   </data>
   <data name="millisecond" xml:space="preserve">
     <value>milisegundo</value>

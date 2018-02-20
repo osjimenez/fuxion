@@ -79,6 +79,33 @@ namespace Fuxion.Windows.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Elemento.
+        /// </summary>
+        public static string Element {
+            get {
+                return ResourceManager.GetString("Element", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Elementos.
+        /// </summary>
+        public static string Elements {
+            get {
+                return ResourceManager.GetString("Elements", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error when expanding the item.
+        /// </summary>
+        public static string ErrorExpandingItem {
+            get {
+                return ResourceManager.GetString("ErrorExpandingItem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to hour.
         /// </summary>
         public static string hour {
@@ -93,6 +120,15 @@ namespace Fuxion.Windows.Resources {
         public static string hours {
             get {
                 return ResourceManager.GetString("hours", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to List.
+        /// </summary>
+        public static string List {
+            get {
+                return ResourceManager.GetString("List", resourceCulture);
             }
         }
         

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Fuxion.Windows.Resources;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -104,7 +105,7 @@ namespace Fuxion.Windows.Documents
 								{
 									list.ListItems.Add(new ListItem()
 										.Transform(item => item.Blocks.Add(new Paragraph()
-										.Transform(p => p.Inlines.Add(new Bold(new Run($"Error el desplegar el item:\r\n'{ex.GetType().Name}': {ex.Message}")
+										.Transform(p => p.Inlines.Add(new Bold(new Run(Strings.ErrorExpandingItem + $":\r\n'{ex.GetType().Name}': {ex.Message}")
 										.Transform<Run>(r => r.Foreground = Brushes.Red)))))));
 								}
 							}
@@ -125,7 +126,7 @@ namespace Fuxion.Windows.Documents
 				catch (Exception ex)
 				{
 					ResetBlocks();
-					Blocks.Add(new Paragraph().Transform(p => p.Inlines.Add(new Bold(new Run($"Error el desplegar el item:\r\n'{ex.GetType().Name}': {ex.Message}")
+					Blocks.Add(new Paragraph().Transform(p => p.Inlines.Add(new Bold(new Run(Strings.ErrorExpandingItem + $":\r\n'{ex.GetType().Name}': {ex.Message}")
 						.Transform<Run>(r => r.Foreground = Brushes.Red)))));
 				}
 			};
@@ -137,13 +138,13 @@ namespace Fuxion.Windows.Documents
 			header.Inlines.Add(inlineContainer);
 			if (expandEnumerable)
 			{
-				header.Inlines.Add(new Bold(new Run("Listado ")));
+				header.Inlines.Add(new Bold(new Run($"{Strings.List} ")));
 				header.Foreground = Brushes.DarkBlue;
 			}
 			else
 				header.Inlines.Add(new Bold(new Run(name)));
 			if (isEnumerable)
-				header.Inlines.Add(new Bold(new Run($" [{enumerableCount} elemento{(enumerableCount == 1 ? "" : "s")}]")));
+				header.Inlines.Add(new Bold(new Run($" [{enumerableCount} {(enumerableCount == 1 ? Strings.Element : Strings.Elements)}]")));
 			if (obj == null)
 			{
 				header.Inlines.Add(new Bold(new Run(" = ")));
