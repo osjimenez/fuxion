@@ -42,7 +42,7 @@ namespace Fuxion.Windows.Documents
 		public static IEnumerable<Block> ToBlocks(this object obj)
 		{
 			if (obj == null) throw new ArgumentNullException(nameof(obj));
-			foreach (var pro in obj.GetType().GetProperties().Where(p => !p.GetIndexParameters().Any()))
+			foreach (var pro in obj.GetType().GetProperties().Where(p => !p.GetIndexParameters().Any()).OrderBy(p => p.Name))
 				yield return ProcessProperty(pro.GetValue(obj), pro.Name, pro.PropertyType);
 		}
 		internal static Block ProcessProperty(this object obj, string name, Type type)
@@ -94,7 +94,7 @@ namespace Fuxion.Windows.Documents
 						else
 						{
 							var list = new List();
-							foreach (var pro in obj.GetType().GetProperties().Where(p => !p.GetIndexParameters().Any()))
+							foreach (var pro in obj.GetType().GetProperties().Where(p => !p.GetIndexParameters().Any()).OrderBy(p => p.Name))
 							{
 								try
 								{
