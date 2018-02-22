@@ -97,9 +97,9 @@ namespace System
 		}
 		#endregion
 		#region Reflections
-		public static bool IsNullable(this Type me)
+		public static bool IsNullable(this Type me, bool valueTypesAreNotNullables = true)
 		{
-			return me.IsClass || me.IsInterface || me.IsGenericType && me.GetGenericTypeDefinition() == typeof(Nullable<>);
+			return !(valueTypesAreNotNullables && (typeof(ValueType).IsAssignableFrom(me))) && (me.IsClass || me.IsInterface || me.IsGenericType && me.GetGenericTypeDefinition() == typeof(Nullable<>));
 		}
 		public static object GetDefaultValue(this Type me)
 			=> me.GetTypeInfo().IsValueType && Nullable.GetUnderlyingType(me) == null

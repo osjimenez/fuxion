@@ -8,11 +8,11 @@ namespace Fuxion
 		public NamedEnumValue(Enum value)
 		{
 			Value = value;
-			Name = value.GetType()
+			Name = value?.GetType()
 				.GetField(value.ToString())
 				.GetCustomAttributes(false)
 				.OfType<DisplayAttribute>()
-				.FirstOrDefault()?.GetName() ?? value.ToString();
+				.FirstOrDefault()?.GetName() ?? value?.ToString();
 		}
 		public string Name { get; }
 		public Enum Value { get; }

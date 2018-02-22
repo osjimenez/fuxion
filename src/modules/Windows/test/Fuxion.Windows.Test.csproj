@@ -70,6 +70,7 @@
   <ItemGroup>
     <Compile Include="Data\BooleanToBooleanMultiConverter.test.cs" />
     <Compile Include="Data\BooleanToVisibilityMultiConverter.test.cs" />
+    <Compile Include="Data\EnumToNamedEnumValueConverter.test.cs" />
     <Compile Include="Data\GenericConverterTest.cs" />
     <Compile Include="Data\GenericMultiConverterTest.cs" />
     <Compile Include="Markup\DisplayExtension.test.cs" />

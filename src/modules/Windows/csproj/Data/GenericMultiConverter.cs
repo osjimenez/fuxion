@@ -9,7 +9,13 @@ namespace Fuxion.Windows.Data
 {
     public abstract class GenericMultiConverter<TSource, TResult> : IMultiValueConverter
     {
-        public bool AllowUnsetValues { get; set; }
+		public GenericMultiConverter() { }
+		public GenericMultiConverter(bool valueTypesAreNotNullables) : this()
+		{
+			this.valueTypesAreNotNullables = valueTypesAreNotNullables;
+		}
+		bool valueTypesAreNotNullables = true;
+		public bool AllowUnsetValues { get; set; }
         public bool IgnoreUnsetValues { get; set; } = true;
         public TResult UnsetValue { get; set; }
         object IMultiValueConverter.Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
@@ -30,7 +36,7 @@ namespace Fuxion.Windows.Data
             if (
                 values.All(value => value is TSource
                 ||
-                (value == null && typeof(TSource).IsNullable())
+                (value == null && typeof(TSource).IsNullable(valueTypesAreNotNullables))
                 ))
                 return Convert(values.Cast<TSource>().ToArray(), culture);
             // In any other case, value is not supported exception
@@ -42,10 +48,10 @@ namespace Fuxion.Windows.Data
             // value is null and TResult is nullable, call ConvertBack
             if (value is TResult
                 ||
-                (value == null && typeof(TResult).IsNullable()))
+                (value == null && typeof(TResult).IsNullable(valueTypesAreNotNullables)))
                 return ConvertBack((TResult)value, culture).Cast<object>().ToArray();
             // value is null and Tsource is nullable, return null
-            if (value == null && typeof(TSource).IsNullable())
+            if (value == null && typeof(TSource).IsNullable(valueTypesAreNotNullables))
                 return null;
             // In any other case, value is not supported exception
             throw new NotSupportedException($"The value '{value}' is not supported for '{nameof(ConvertBack)}' method, must be of type '{typeof(TResult).Name}'");
@@ -56,7 +62,13 @@ namespace Fuxion.Windows.Data
     }
     public abstract class GenericMultiConverter<TSource, TResult, TParameter> : IMultiValueConverter
     {
-        public bool AllowUnsetValues { get; set; }
+		public GenericMultiConverter() { }
+		public GenericMultiConverter(bool valueTypesAreNotNullables) : this()
+		{
+			this.valueTypesAreNotNullables = valueTypesAreNotNullables;
+		}
+		bool valueTypesAreNotNullables = true;
+		public bool AllowUnsetValues { get; set; }
         public bool IgnoreUnsetValues { get; set; } = true;
         public TResult UnsetValue { get; set; }
         object IMultiValueConverter.Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
@@ -78,7 +90,7 @@ namespace Fuxion.Windows.Data
             if (
                 values.All(value => value is TSource
                 ||
-                (value == null && typeof(TSource).IsNullable())
+                (value == null && typeof(TSource).IsNullable(valueTypesAreNotNullables))
                 ))
                 return Convert(values.Cast<TSource>().ToArray(), (TParameter)parameter, culture);
             // In any other case, value is not supported exception
@@ -91,10 +103,10 @@ namespace Fuxion.Windows.Data
             // value is null and TResult is nullable, call ConvertBack
             if (value is TResult
                 ||
-                (value == null && typeof(TResult).IsNullable()))
+                (value == null && typeof(TResult).IsNullable(valueTypesAreNotNullables)))
                 return ConvertBack((TResult)value, (TParameter)parameter, culture).Cast<object>().ToArray();
             // value is null and Tsource is nullable, return null
-            if (value == null && typeof(TSource).IsNullable())
+            if (value == null && typeof(TSource).IsNullable(valueTypesAreNotNullables))
                 return null;
             // In any other case, value is not supported exception
             throw new NotSupportedException($"The value '{value}' is not supported for '{nameof(ConvertBack)}' method, must be of type '{typeof(TResult).Name}'");
