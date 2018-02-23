@@ -71,8 +71,9 @@
     <Compile Include="Data\BooleanToBooleanMultiConverter.test.cs" />
     <Compile Include="Data\BooleanToVisibilityMultiConverter.test.cs" />
     <Compile Include="Data\EnumToNamedEnumValueConverter.test.cs" />
-    <Compile Include="Data\GenericConverterTest.cs" />
-    <Compile Include="Data\GenericMultiConverterTest.cs" />
+    <Compile Include="Data\GenericConverter.test.cs" />
+    <Compile Include="Data\GenericMultiConverter.test.cs" />
+    <Compile Include="Data\NullToVisibilityConverter.test.cs" />
     <Compile Include="Markup\DisplayExtension.test.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Data\TimeSpanToStringConverter.test.cs" />
