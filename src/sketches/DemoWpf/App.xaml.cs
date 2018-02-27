@@ -19,6 +19,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using Fuxion.Windows.Controls;
 using DemoWpf.Windows;
+using DemoWpf.Repositories;
 
 namespace DemoWpf
 {
@@ -33,12 +34,14 @@ namespace DemoWpf
             c.Register<IHardwareIdProvider, HardwareIdHelper>();
             c.RegisterSingleton<LicensingManager>();
             Factory.AddInjector(new SimpleInjectorFactoryInjector(c));
+
 			//new MainWindow().Show();
 			//new Licensing().Show();
 			//new TimeProvider().Show();
 			//new ConvertersWindow().Show();
 			//new ValidationWindow().Show();
-			new UnhandledExceptionWindowTest().Show();
+			//new UnhandledExceptionWindowTest().Show();
+			new RepositoriesWindow().Show();
 		}
     }
     public class HardwareIdHelper : IHardwareIdProvider

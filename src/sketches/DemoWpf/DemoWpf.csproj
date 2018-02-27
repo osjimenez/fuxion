@@ -80,6 +80,9 @@
     <Reference Include="MongoDB.Driver.Core, Version=2.4.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\MongoDB.Driver.Core.2.4.4\lib\net45\MongoDB.Driver.Core.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.11.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="SimpleInjector, Version=4.0.12.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
       <HintPath>..\..\packages\SimpleInjector.4.0.12\lib\net45\SimpleInjector.dll</HintPath>
     </Reference>
@@ -144,6 +147,9 @@
       <DependentUpon>OverlayDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="OverlayManager.cs" />
+    <Compile Include="Repositories\RepositoriesWindow.xaml.cs">
+      <DependentUpon>RepositoriesWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="TimeProvider.xaml.cs">
       <DependentUpon>TimeProvider.xaml</DependentUpon>
     </Compile>
@@ -195,6 +201,10 @@
     <Page Include="OverlayDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Repositories\RepositoriesWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ResDictionary.xaml">
       <SubType>Designer</SubType>

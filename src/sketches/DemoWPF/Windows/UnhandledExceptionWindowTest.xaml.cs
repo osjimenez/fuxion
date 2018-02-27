@@ -50,7 +50,7 @@ namespace DemoWpf.Windows
 					Message = "Se ha producido un error grave",
 					Buttons = UnhandledExceptionWindowButtons.CloseWindow,
 					CanShowDetails = true,
-					SendReportCommand = new GenericCommand<string>(content => MessageBox.Show("Report sent with content:\r\n" + content))
+					//SendReportCommand = new GenericCommand<string>(content => MessageBox.Show("Report sent with content:\r\n" + content))
 				};
 				win.ShowDialog();
 			}

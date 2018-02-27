@@ -48,8 +48,22 @@ namespace Fuxion.Test
             i2 = 1;
             Assert.False(i2.IsNullOrDefault());
         }
-        #region CloneWithJson
-        [Fact(DisplayName = "System - CloneWithJson")]
+		[Fact(DisplayName = "Type - IsNullable")]
+		public void TypeIsNullable()
+		{
+			Assert.False(typeof(MockStruct).IsNullable());
+			Assert.True(typeof(MockStruct?).IsNullable());
+
+			Assert.False(typeof(int).IsNullable());
+			Assert.True(typeof(int?).IsNullable());
+
+			Assert.True(typeof(MockClass).IsNullable());
+
+			Assert.False(typeof(MockEnum).IsNullable());
+			Assert.True(typeof(MockEnum?).IsNullable());
+		}
+		#region CloneWithJson
+		[Fact(DisplayName = "System - CloneWithJson")]
         public void CloneWithJsonTest()
         {
             Base b = new Derived();
@@ -134,4 +148,7 @@ namespace Fuxion.Test
         }
         #endregion
     }
+	public struct MockStruct { }
+	public class MockClass { }
+	public enum MockEnum { One, Two }
 }
