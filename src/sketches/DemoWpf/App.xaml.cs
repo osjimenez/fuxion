@@ -38,10 +38,10 @@ namespace DemoWpf
 			//new MainWindow().Show();
 			//new Licensing().Show();
 			//new TimeProvider().Show();
-			//new ConvertersWindow().Show();
+			new ConvertersWindow().Show();
 			//new ValidationWindow().Show();
 			//new UnhandledExceptionWindowTest().Show();
-			new RepositoriesWindow().Show();
+			//new RepositoriesWindow().Show();
 		}
     }
     public class HardwareIdHelper : IHardwareIdProvider

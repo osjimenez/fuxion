@@ -73,6 +73,7 @@
     <Compile Include="Data\EnumToNamedEnumValueConverter.test.cs" />
     <Compile Include="Data\GenericConverter.test.cs" />
     <Compile Include="Data\GenericMultiConverter.test.cs" />
+    <Compile Include="Data\StringToCapitalizedStringConverter.cs.test.cs" />
     <Compile Include="Data\NullToVisibilityConverter.test.cs" />
     <Compile Include="Markup\DisplayExtension.test.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

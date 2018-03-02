@@ -144,7 +144,8 @@ namespace System
 			sb.Append('>');
 			return sb.ToString();
 		}
-		public static bool IsSubclassOfRawGeneric(this Type me, Type generic)
+		public static bool IsSubclassOfRawGeneric(this Type me, Type generic) => GetSubclassOfRawGeneric(me, generic) != null;
+		public static Type GetSubclassOfRawGeneric(this Type me, Type generic)
 		{
 			Queue<Type> toProcess = new Queue<Type>(new[] { me });
 			while (toProcess.Count > 0)
@@ -153,14 +154,14 @@ namespace System
 				var cur = actual.GetTypeInfo().IsGenericType ? actual.GetGenericTypeDefinition() : actual;
 				if (cur.GetTypeInfo().IsGenericType && generic.GetGenericTypeDefinition() == cur.GetGenericTypeDefinition())
 				{
-					return true;
+					return actual;
 				}
 				foreach (var inter in actual.GetTypeInfo().ImplementedInterfaces)
 					toProcess.Enqueue(inter);
 				if (actual.GetTypeInfo().BaseType != null)
 					toProcess.Enqueue(actual.GetTypeInfo().BaseType);
 			}
-			return false;
+			return null;
 		}
 		#endregion
 		#region TimeSpan

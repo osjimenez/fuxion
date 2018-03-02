@@ -40,7 +40,7 @@ namespace Fuxion.Windows.Data
                 ))
                 return Convert(values.Cast<TSource>().ToArray(), culture);
             // In any other case, value is not supported exception
-            throw new NotSupportedException($"The values '{values.Aggregate("", (a, c) => a + ", " + c.ToString(), a => a.Trim(',', ' '))}' are not supported for '{nameof(Convert)}' method, all must be of type '{typeof(TSource).Name}'");
+            throw new NotSupportedException($"The values '{values.Aggregate("", (a, c) => a + ", " + c.ToString(), a => a.Trim(',', ' '))}' are not supported for '{GetType().Name}.{nameof(Convert)}' method, all must be of type '{typeof(TSource).Name}'");
         }
         object[] IMultiValueConverter.ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
@@ -54,7 +54,7 @@ namespace Fuxion.Windows.Data
             if (value == null && typeof(TSource).IsNullable(valueTypesAreNotNullables))
                 return null;
             // In any other case, value is not supported exception
-            throw new NotSupportedException($"The value '{value}' is not supported for '{nameof(ConvertBack)}' method, must be of type '{typeof(TResult).Name}'");
+            throw new NotSupportedException($"The value '{value}' is not supported for '{GetType().Name}.{nameof(ConvertBack)}' method, must be of type '{typeof(TResult).Name}'");
         }
         public abstract TResult Convert(TSource[] source, CultureInfo culture);
         public virtual TSource[] ConvertBack(TResult result, CultureInfo culture)
@@ -94,7 +94,7 @@ namespace Fuxion.Windows.Data
                 ))
                 return Convert(values.Cast<TSource>().ToArray(), (TParameter)parameter, culture);
             // In any other case, value is not supported exception
-            throw new NotSupportedException($"The values '{values.Aggregate("", (a, c) => a + ", " + c.ToString(), a => a.Trim(',', ' '))}' are not supported for '{nameof(Convert)}' method, all must be of type '{typeof(TSource).Name}'");
+            throw new NotSupportedException($"The values '{values.Aggregate("", (a, c) => a + ", " + c.ToString(), a => a.Trim(',', ' '))}' are not supported for '{GetType().Name}.{nameof(Convert)}' method, all must be of type '{typeof(TSource).Name}'");
         }
         object[] IMultiValueConverter.ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
@@ -109,7 +109,7 @@ namespace Fuxion.Windows.Data
             if (value == null && typeof(TSource).IsNullable(valueTypesAreNotNullables))
                 return null;
             // In any other case, value is not supported exception
-            throw new NotSupportedException($"The value '{value}' is not supported for '{nameof(ConvertBack)}' method, must be of type '{typeof(TResult).Name}'");
+            throw new NotSupportedException($"The value '{value}' is not supported for '{GetType().Name}.{nameof(ConvertBack)}' method, must be of type '{typeof(TResult).Name}'");
         }
         public abstract TResult Convert(TSource[] source, TParameter parameter, CultureInfo culture);
         public virtual TSource[] ConvertBack(TResult result, TParameter parameter, CultureInfo culture)
