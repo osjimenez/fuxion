@@ -158,9 +158,9 @@ namespace Fuxion.Net
 			get => GetValue<bool>();
 			private set => SetValue(value);
 		}
-		Task<bool> disconnectionTask;
+		Task disconnectionTask;
 		protected abstract Task OnDisconnect();
-		public async Task Disconnect()
+		async Task Disconnect(bool mustClose)
 		{
 			switch (State)
 			{
@@ -173,7 +173,7 @@ namespace Fuxion.Net
 				case ConnectionState.Faulted:
 				case ConnectionState.Opening:
 				case ConnectionState.Opened:
-					disconnectionTask = TaskManager.Create<bool>(async () =>
+					disconnectionTask = TaskManager.Create(async () =>
 					{
 						IsDisconnectCancellationRequested = false;
 						State = ConnectionState.Closing;
@@ -186,9 +186,11 @@ namespace Fuxion.Net
 						{
 							log.Error("Error '" + ex.GetType().Name + "' en el método 'OnDisconnect': " + ex.Message, ex);
 						}
-						ConnectionMode = ConnectionMode.Manual;
-						State = ConnectionState.Closed;
-						return false;
+						if (mustClose)
+						{
+							ConnectionMode = ConnectionMode.Manual;
+							State = ConnectionState.Closed;
+						}
 					});
 					disconnectionTask.OnCancelRequested(() => IsDisconnectCancellationRequested = true);
 					disconnectionTask.Start();
@@ -198,13 +200,13 @@ namespace Fuxion.Net
 					throw new NotImplementedException($"El estado '{State}' no ha sido implementado en la operación de desconexión.");
 			}
 		}
+		public Task Disconnect() => Disconnect(true);
 		protected async Task<bool> ReconnectOnFailure()
 		{
 			State = ConnectionState.Faulted;
 			if (ConnectionMode == ConnectionMode.Automatic)
 			{
-				await Disconnect();
-				ConnectionMode = ConnectionMode.Automatic;
+				await Disconnect(false);
 				await Connect();
 				return true;
 			}
