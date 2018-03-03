@@ -176,7 +176,8 @@ namespace Fuxion.Net
 					disconnectionTask = TaskManager.Create(async () =>
 					{
 						IsDisconnectCancellationRequested = false;
-						State = ConnectionState.Closing;
+						if (mustClose)
+							State = ConnectionState.Closing;
 						new[] { connectionTask, keepAliveTask }.CancelAndWait(throwExceptionIfNotRunning: false);
 						try
 						{
