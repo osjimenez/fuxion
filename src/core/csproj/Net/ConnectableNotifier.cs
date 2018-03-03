@@ -109,7 +109,6 @@ namespace Fuxion.Net
 				case ConnectionState.Created: //Si esta creado o en error creo una nueva tarea de conexión
 				case ConnectionState.Faulted:
 				case ConnectionState.Closed:
-					LastConnectionAttemptErrorMessage = null;
 					State = ConnectionState.Opening;
 					connectionTask = TaskManager.Create(async () =>
 					{
