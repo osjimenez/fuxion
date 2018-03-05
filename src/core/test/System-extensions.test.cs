@@ -62,6 +62,32 @@ namespace Fuxion.Test
 			Assert.False(typeof(MockEnum).IsNullable());
 			Assert.True(typeof(MockEnum?).IsNullable());
 		}
+		[Fact(DisplayName = "Type - IsNullableValue<T>")]
+		public void TypeIsNullableStruct()
+		{
+			Assert.False(typeof(int).IsNullableValue<int>());
+			Assert.True(typeof(int?).IsNullableValue<int>());
+
+			Assert.False(typeof(int).IsNullableValue<long>());
+			Assert.False(typeof(int?).IsNullableValue<long>());
+
+			Assert.False(typeof(MockEnum).IsNullableValue<MockEnum>());
+			Assert.True(typeof(MockEnum?).IsNullableValue<MockEnum>());
+		}
+		[Fact(DisplayName = "Type - IsNullableEnum")]
+		public void TypeIsNullableEnum()
+		{
+			Assert.False(typeof(MockStruct).IsNullableEnum());
+			Assert.False(typeof(MockStruct?).IsNullableEnum());
+
+			Assert.False(typeof(int).IsNullableEnum());
+			Assert.False(typeof(int?).IsNullableEnum());
+
+			Assert.False(typeof(MockClass).IsNullableEnum());
+
+			Assert.False(typeof(MockEnum).IsNullableEnum());
+			Assert.True(typeof(MockEnum?).IsNullableEnum());
+		}
 		#region CloneWithJson
 		[Fact(DisplayName = "System - CloneWithJson")]
         public void CloneWithJsonTest()

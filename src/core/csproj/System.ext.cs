@@ -105,6 +105,10 @@ namespace System
 				return true;
 			return false;
 		}
+		public static bool IsNullableValue<T>(this Type me) where T : struct
+			=> me.IsGenericType && me.GetGenericTypeDefinition() == typeof(Nullable<>) && me.GetGenericArguments()[0] == typeof(T);
+		public static bool IsNullableEnum(this Type me, bool valueTypesAreNotNullables = true)
+			=> me.IsGenericType && me.GetGenericTypeDefinition() == typeof(Nullable<>) && me.GetGenericArguments()[0].IsEnum;
 		public static object GetDefaultValue(this Type me)
 			=> me.GetTypeInfo().IsValueType && Nullable.GetUnderlyingType(me) == null
 				? Activator.CreateInstance(me)
