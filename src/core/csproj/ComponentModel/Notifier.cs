@@ -328,7 +328,7 @@ namespace Fuxion.ComponentModel
 		protected bool SetLockedValue(string value, bool raiseOnlyIfNotEquals = true, [CallerMemberName] string propertyName = null) { return OnSetLockedValue(value, raiseOnlyIfNotEquals, propertyName); }
 		private bool OnSetLockedValue<T>(T value, bool raiseOnlyIfNotEquals = true, [CallerMemberName] string propertyName = null)
 		{
-			if (propertyName == null) throw new ArgumentNullException("propertyName");
+			if (propertyName == null) throw new ArgumentNullException(nameof(propertyName));
 			Locker<T> oldLockerValue;
 			if (PropertiesDictionary.ContainsKey(GetPropertyKey(propertyName)))
 			{
@@ -416,17 +416,16 @@ namespace Fuxion.ComponentModel
 		//[EditorBrowsable(EditorBrowsableState.Never)]
 		[XmlIgnore]
 		[JsonIgnore]
-		protected bool UseSynchronizerOnRaisePropertyChanged { get { return GetValue(() => true); } set { SetValue(value); } }
-		protected void RaisePropertyChanged<T>(Expression<Func<object>> expression, T previousValue, T actualValue)
-			=> RaisePropertyChanged(expression.GetMemberName(), previousValue, actualValue);
-		protected void RaisePropertyChanged<T>(string propertyName, T previousValue, T actualValue)
-		{
-			//PropertyInfo prop = GetType().GetTypeInfo().GetAllProperties().Single(p => p.Name == propertyName);
-			//if (prop == null) throw new ArgumentException("No se ha encontrado la propiedad '" + propertyName + "' en el tipo '" + GetType().Name + "'.");
-			OnRaisePropertyChanged(propertyName, previousValue, actualValue);
-		}
+		protected bool UseSynchronizerOnRaisePropertyChanged { get => GetValue(() => true); set => SetValue(value); }
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[XmlIgnore]
+		[JsonIgnore]
+		public bool IsPropertyChangedEnabled { get => GetValue(() => true); set => SetValue(value); }
+		protected void RaisePropertyChanged<T>(Expression<Func<object>> expression, T previousValue, T actualValue) => RaisePropertyChanged(expression.GetMemberName(), previousValue, actualValue);
+		protected void RaisePropertyChanged<T>(string propertyName, T previousValue, T actualValue) => OnRaisePropertyChanged(propertyName, previousValue, actualValue);
 		protected virtual void OnRaisePropertyChanged<T>(string propertyName, T previousValue, T actualValue)
 		{
+			if (!IsPropertyChangedEnabled) return;
 			var action = new Action<string, T, T>((pro, pre, act) =>
 			{
 				PropertyChangedEvent?.Invoke(this, new PropertyChangedEventArgs(pro));
@@ -439,13 +438,11 @@ namespace Fuxion.ComponentModel
 
 		#region Binding
 		public INotifierBinding<TNotifier, TProperty> Binding<TProperty>(Expression<Func<TProperty>> sourcePropertyExpression)
-		{
-			return new NotifierBinding<TNotifier, TProperty>
+			=> new NotifierBinding<TNotifier, TProperty>
 			{
 				Notifier = this,
 				SourcePropertyExpression = sourcePropertyExpression
 			};
-		}
 		#endregion
 	}
 	public interface INotifierBinding<TNotifier, TProperty> where TNotifier : class, INotifier<TNotifier>
