@@ -12,6 +12,7 @@ using System.Windows.Markup;
 [assembly: XmlnsDefinition("fuxion", "Fuxion.Windows.Markup")]
 [assembly: XmlnsDefinition("fuxion", "Fuxion.Windows.Resources")]
 [assembly: XmlnsDefinition("fuxion", "Fuxion.Windows.Helpers")]
+[assembly: XmlnsDefinition("fuxion", "Fuxion.Windows.Controls")]
 
 [assembly: ThemeInfo(
     ResourceDictionaryLocation.None, //where theme specific resource dictionaries are located

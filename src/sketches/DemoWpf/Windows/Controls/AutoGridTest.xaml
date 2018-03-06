@@ -1,0 +1,81 @@
+﻿<Window x:Class="DemoWpf.Windows.Controls.AutoGridTest"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:local="clr-namespace:DemoWpf.Windows.Controls"
+		xmlns:fuxion="fuxion"
+		mc:Ignorable="d"
+		Title="AutoGridTest" Height="550" Width="500">
+	<Window.Resources>
+		<Style TargetType="Rectangle" >
+			<Setter Property="Fill" Value="SteelBlue" />
+			<Setter Property="HorizontalAlignment" Value="Stretch" />
+			<Setter Property="VerticalAlignment" Value="Stretch" />
+		</Style>
+	</Window.Resources>
+	<ScrollViewer VerticalScrollBarVisibility="Auto">
+		<StackPanel Grid.IsSharedSizeScope="True">
+			<Expander Header="Información personal" Margin="10" IsExpanded="True">
+				<fuxion:AutoGrid Columns				= "Auto			;	3			;	*"
+					ColumnSharedSizeGroups				= "A			;				;"
+					ColumnContentMargins				= "10,0,5,0		;	0,3			;	5,3" 
+					ColumnHorizontalContentAlignments	= "Right		;	Stretch		;	Stretch" 
+					ColumnVerticalContentAlignments		= "Center		;	Top			;	Top">
+
+					<TextBlock Text="First name"/>
+					<Rectangle />
+					<fuxion:AutoGrid Columns			= "*			;	Auto		;	3			;	2*" 
+					 ColumnContentMargins				= "0,2,2,0		;	5,2,2,0		;	0			;	5,0,0,0" 
+					 ColumnHorizontalContentAlignments	= "Stretch		;	Stretch		;	Stretch		;	Stretch" 
+					 ColumnVerticalContentAlignments	= "Center">
+						<TextBox Text="Tomb"/>
+						<TextBlock Text="Last name" />
+						<Rectangle />
+						<TextBox Text="Raider"/>
+					</fuxion:AutoGrid>
+
+					<TextBlock Text="Nick"/>
+					<Rectangle VerticalAlignment="Stretch"/>
+					<TextBox Text="Tommy" />
+
+					<TextBlock Text="Genre"/>
+					<Rectangle VerticalAlignment="Stretch"/>
+					<ComboBox Text="Tommy" SelectedValue="Male">
+						<ComboBoxItem Content="Male"/>
+						<ComboBoxItem Content="Female"/>
+					</ComboBox>
+
+					<TextBlock Text="Age"/>
+					<Rectangle />
+					<fuxion:AutoGrid Columns="*; Auto" ColumnContentMargins="0; 5,0,0,0" ColumnVerticalContentAlignments="Center">
+						<TextBox Text="20" Height="35" VerticalContentAlignment="Center"/>
+						<TextBlock Text=" years" />
+					</fuxion:AutoGrid>
+
+					<TextBlock Text="Description"/>
+					<Rectangle />
+					<TextBox Text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book." TextWrapping="Wrap"/>
+				</fuxion:AutoGrid>
+			</Expander>
+			<Expander Header="Operador" Margin="10" IsExpanded="True">
+				<fuxion:AutoGrid Columns				= "Auto			;	3			;	*" 
+					ColumnSharedSizeGroups				= "A			;				;"
+					ColumnContentMargins				= "10,5,5,0		;	0,3			;	5,3" 
+					ColumnHorizontalContentAlignments	= "Right		;	Stretch		;	Stretch" 
+					ColumnVerticalContentAlignments		= "Center		;	Top			;	Top"
+					Orientation="Vertical">
+
+					<TextBlock Text="Nombre de inicio de sesión"/>
+					<TextBlock Text="Contraseña"/>
+					
+					<Rectangle />
+					<Rectangle VerticalAlignment="Stretch"/>
+					
+					<TextBox Text="root" />
+					<PasswordBox />
+				</fuxion:AutoGrid>
+			</Expander>
+		</StackPanel>
+	</ScrollViewer>
+</Window>

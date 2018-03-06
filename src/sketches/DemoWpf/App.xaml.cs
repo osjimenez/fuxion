@@ -20,6 +20,7 @@ using System.Windows;
 using Fuxion.Windows.Controls;
 using DemoWpf.Windows;
 using DemoWpf.Repositories;
+using DemoWpf.Windows.Controls;
 
 namespace DemoWpf
 {
@@ -38,10 +39,11 @@ namespace DemoWpf
 			//new MainWindow().Show();
 			//new Licensing().Show();
 			//new TimeProvider().Show();
-			new ConvertersWindow().Show();
+			//new ConvertersWindow().Show();
 			//new ValidationWindow().Show();
 			//new UnhandledExceptionWindowTest().Show();
 			//new RepositoriesWindow().Show();
+			new AutoGridTest().Show();
 		}
     }
     public class HardwareIdHelper : IHardwareIdProvider

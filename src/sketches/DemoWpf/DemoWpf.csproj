@@ -162,6 +162,9 @@
     <Compile Include="Validation\ValidationWindow.xaml.cs">
       <DependentUpon>ValidationWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\Controls\AutoGridTest.xaml.cs">
+      <DependentUpon>AutoGridTest.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\UnhandledExceptionWindowTest.xaml.cs">
       <DependentUpon>UnhandledExceptionWindowTest.xaml</DependentUpon>
     </Compile>
@@ -215,6 +218,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Validation\ValidationWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Controls\AutoGridTest.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

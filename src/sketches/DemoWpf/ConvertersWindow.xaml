@@ -8,25 +8,25 @@
         xmlns:fuxion="fuxion"
         mc:Ignorable="d"
         Title="ConvertersWindow" Height="300" Width="300">
-    <Window.Resources>
-        <fuxion:ICollectionCountToVisibilityConverter x:Key="ICollectionCountToVisibilityConverter" 
+	<Window.Resources>
+		<fuxion:ICollectionCountToVisibilityConverter x:Key="ICollectionCountToVisibilityConverter" 
                                                       NullValue="Visible"/>
-        <fuxion:ICollectionCountToBooleanConverter x:Key="ICollectionCountToBooleanConverter" />
-        <fuxion:BooleanToVisibilityMultiConverter x:Key="BooleanToVisibilityMultiConverter" Mode="AnyTrue" />
+		<fuxion:ICollectionCountToBooleanConverter x:Key="ICollectionCountToBooleanConverter" />
+		<fuxion:BooleanToVisibilityMultiConverter x:Key="BooleanToVisibilityMultiConverter" Mode="AnyTrue" />
 		<fuxion:PipeConverter x:Key="PipeConverter">
 			<fuxion:EnumToNamedEnumValueConverter />
 			<fuxion:NamedEnumValueToStringConverter />
 		</fuxion:PipeConverter>
-    </Window.Resources>
-    <StackPanel>
-        <!--<StackPanel.Visibility>
+	</Window.Resources>
+	<StackPanel>
+		<!--<StackPanel.Visibility>
             <MultiBinding Converter="{StaticResource BooleanToVisibilityMultiConverter}">
                 <Binding Path="IsEnabled1" />
                 <Binding Path="IsEnabled22" />
             </MultiBinding>
         </StackPanel.Visibility>-->
-        <TextBlock Text="{fuxion:Display List}" Visibility="{Binding List, Converter={StaticResource ICollectionCountToVisibilityConverter}}"/>
-        <CheckBox IsChecked="{Binding List, Converter={StaticResource ICollectionCountToBooleanConverter}}"/>
+		<TextBlock Text="{fuxion:Display List}" Visibility="{Binding List, Converter={StaticResource ICollectionCountToVisibilityConverter}}"/>
+		<CheckBox IsChecked="{Binding List, Converter={StaticResource ICollectionCountToBooleanConverter}}"/>
 		<TextBlock Text="{Binding MyEnum, Converter={StaticResource PipeConverter}}"/>
 		<!--<TextBlock>
 			<TextBlock.Text>
@@ -37,5 +37,5 @@
 				</Binding>
 			</TextBlock.Text>
 		</TextBlock>-->
-    </StackPanel>
+	</StackPanel>
 </Window>
