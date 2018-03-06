@@ -10,25 +10,27 @@
 	<Window.Resources>
 		<Style TargetType="Rectangle" >
 			<Setter Property="Fill" Value="SteelBlue" />
-			<Setter Property="HorizontalAlignment" Value="Stretch" />
-			<Setter Property="VerticalAlignment" Value="Stretch" />
 		</Style>
 	</Window.Resources>
 	<ScrollViewer VerticalScrollBarVisibility="Auto">
 		<StackPanel Grid.IsSharedSizeScope="True">
 			<Expander Header="Información personal" Margin="10" IsExpanded="True">
-				<fuxion:AutoGrid Columns				= "Auto			;	3			;	*"
-					ColumnSharedSizeGroups				= "A			;				;"
-					ColumnContentMargins				= "10,0,5,0		;	0,3			;	5,3" 
-					ColumnHorizontalContentAlignments	= "Right		;	Stretch		;	Stretch" 
-					ColumnVerticalContentAlignments		= "Center		;	Top			;	Top">
+				<fuxion:AutoGrid>
+					<Grid.ColumnDefinitions>
+						<fuxion:AutoColumnDefinition SharedSizeGroup="FirstColumn" ContentMargin="10,3,5,3" HorizontalContentAlignment="Right" VerticalContentAlignment="Center"/>
+						<fuxion:AutoColumnDefinition Width="3" ContentMargin="0,3"/>
+						<fuxion:AutoColumnDefinition ContentMargin="5,3" VerticalContentAlignment="Top"/>
+					</Grid.ColumnDefinitions>
 
 					<TextBlock Text="First name"/>
 					<Rectangle />
-					<fuxion:AutoGrid Columns			= "*			;	Auto		;	3			;	2*" 
-					 ColumnContentMargins				= "0,2,2,0		;	5,2,2,0		;	0			;	5,0,0,0" 
-					 ColumnHorizontalContentAlignments	= "Stretch		;	Stretch		;	Stretch		;	Stretch" 
-					 ColumnVerticalContentAlignments	= "Center">
+					<fuxion:AutoGrid>
+						<Grid.ColumnDefinitions>
+							<fuxion:AutoColumnDefinition />
+							<fuxion:AutoColumnDefinition Width="Auto" ContentMargin="5,0" />
+							<fuxion:AutoColumnDefinition Width="3"/>
+							<fuxion:AutoColumnDefinition Width="2*" ContentMargin="5,0,0,0" />
+						</Grid.ColumnDefinitions>
 						<TextBox Text="Tomb"/>
 						<TextBlock Text="Last name" />
 						<Rectangle />
@@ -36,11 +38,11 @@
 					</fuxion:AutoGrid>
 
 					<TextBlock Text="Nick"/>
-					<Rectangle VerticalAlignment="Stretch"/>
+					<Rectangle />
 					<TextBox Text="Tommy" />
 
 					<TextBlock Text="Genre"/>
-					<Rectangle VerticalAlignment="Stretch"/>
+					<Rectangle />
 					<ComboBox Text="Tommy" SelectedValue="Male">
 						<ComboBoxItem Content="Male"/>
 						<ComboBoxItem Content="Female"/>
@@ -48,7 +50,11 @@
 
 					<TextBlock Text="Age"/>
 					<Rectangle />
-					<fuxion:AutoGrid Columns="*; Auto" ColumnContentMargins="0; 5,0,0,0" ColumnVerticalContentAlignments="Center">
+					<fuxion:AutoGrid>
+						<Grid.ColumnDefinitions>
+							<fuxion:AutoColumnDefinition />
+							<fuxion:AutoColumnDefinition Width="Auto" ContentMargin="5,0,0,0" VerticalContentAlignment="Center"/>
+						</Grid.ColumnDefinitions>
 						<TextBox Text="20" Height="35" VerticalContentAlignment="Center"/>
 						<TextBlock Text=" years" />
 					</fuxion:AutoGrid>
@@ -59,23 +65,29 @@
 				</fuxion:AutoGrid>
 			</Expander>
 			<Expander Header="Operador" Margin="10" IsExpanded="True">
-				<fuxion:AutoGrid Columns				= "Auto			;	3			;	*" 
-					ColumnSharedSizeGroups				= "A			;				;"
-					ColumnContentMargins				= "10,5,5,0		;	0,3			;	5,3" 
-					ColumnHorizontalContentAlignments	= "Right		;	Stretch		;	Stretch" 
-					ColumnVerticalContentAlignments		= "Center		;	Top			;	Top"
-					Orientation="Vertical">
+				<fuxion:AutoGrid>
+					<Grid.ColumnDefinitions>
+						<fuxion:AutoColumnDefinition SharedSizeGroup="FirstColumn" 
+													 HorizontalContentAlignment="Right" 
+													 VerticalContentAlignment="Center"
+													 ContentMargin="10,3,5,3"/>
+						<fuxion:AutoColumnDefinition Width="3" 
+													 ContentMargin="0,3"/>
+						<fuxion:AutoColumnDefinition Width="*" 
+													 HorizontalContentAlignment="Stretch"
+													 VerticalContentAlignment="Center"
+													 ContentMargin="5,3"/>
+					</Grid.ColumnDefinitions>
+					<TextBlock Text="Nombre de usuario"/>
+					<Rectangle/>
+					<TextBox Text="root"/>
 
-					<TextBlock Text="Nombre de inicio de sesión"/>
-					<TextBlock Text="Contraseña"/>
-					
-					<Rectangle />
-					<Rectangle VerticalAlignment="Stretch"/>
-					
-					<TextBox Text="root" />
+					<TextBlock Text="Contraseña" />
+					<Rectangle/>
 					<PasswordBox />
 				</fuxion:AutoGrid>
 			</Expander>
 		</StackPanel>
 	</ScrollViewer>
 </Window>
+
