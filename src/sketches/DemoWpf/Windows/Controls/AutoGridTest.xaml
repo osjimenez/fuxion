@@ -17,9 +17,9 @@
 			<Expander Header="Información personal" Margin="10" IsExpanded="True">
 				<fuxion:AutoGrid>
 					<Grid.ColumnDefinitions>
-						<fuxion:AutoColumnDefinition SharedSizeGroup="FirstColumn" ContentMargin="10,3,5,3" HorizontalContentAlignment="Right" VerticalContentAlignment="Center"/>
-						<fuxion:AutoColumnDefinition Width="3" ContentMargin="0,3"/>
-						<fuxion:AutoColumnDefinition ContentMargin="5,3" VerticalContentAlignment="Top"/>
+						<fuxion:AutoColumnDefinition SharedSizeGroup="FirstColumn"	ContentMargin="10,3,5,3"	HorizontalContentAlignment="Right"	VerticalContentAlignment="Center"/>
+						<fuxion:AutoColumnDefinition Width="3"						ContentMargin="0,3"/>
+						<fuxion:AutoColumnDefinition								ContentMargin="5,3"												VerticalContentAlignment="Center"/>
 					</Grid.ColumnDefinitions>
 
 					<TextBlock Text="First name"/>
@@ -27,9 +27,9 @@
 					<fuxion:AutoGrid>
 						<Grid.ColumnDefinitions>
 							<fuxion:AutoColumnDefinition />
-							<fuxion:AutoColumnDefinition Width="Auto" ContentMargin="5,0" />
+							<fuxion:AutoColumnDefinition Width="Auto"	ContentMargin="5,0" />
 							<fuxion:AutoColumnDefinition Width="3"/>
-							<fuxion:AutoColumnDefinition Width="2*" ContentMargin="5,0,0,0" />
+							<fuxion:AutoColumnDefinition Width="2*"		ContentMargin="5,0,0,0" />
 						</Grid.ColumnDefinitions>
 						<TextBox Text="Tomb"/>
 						<TextBlock Text="Last name" />
@@ -43,7 +43,7 @@
 
 					<TextBlock Text="Genre"/>
 					<Rectangle />
-					<ComboBox Text="Tommy" SelectedValue="Male">
+					<ComboBox>
 						<ComboBoxItem Content="Male"/>
 						<ComboBoxItem Content="Female"/>
 					</ComboBox>
@@ -67,17 +67,11 @@
 			<Expander Header="Operador" Margin="10" IsExpanded="True">
 				<fuxion:AutoGrid>
 					<Grid.ColumnDefinitions>
-						<fuxion:AutoColumnDefinition SharedSizeGroup="FirstColumn" 
-													 HorizontalContentAlignment="Right" 
-													 VerticalContentAlignment="Center"
-													 ContentMargin="10,3,5,3"/>
-						<fuxion:AutoColumnDefinition Width="3" 
-													 ContentMargin="0,3"/>
-						<fuxion:AutoColumnDefinition Width="*" 
-													 HorizontalContentAlignment="Stretch"
-													 VerticalContentAlignment="Center"
-													 ContentMargin="5,3"/>
+						<fuxion:AutoColumnDefinition SharedSizeGroup="FirstColumn"	ContentMargin="10,3,5,3"	HorizontalContentAlignment="Right"	VerticalContentAlignment="Center"/>
+						<fuxion:AutoColumnDefinition Width="3"						ContentMargin="0,3"/>
+						<fuxion:AutoColumnDefinition								ContentMargin="5,3"												VerticalContentAlignment="Center"/>
 					</Grid.ColumnDefinitions>
+
 					<TextBlock Text="Nombre de usuario"/>
 					<Rectangle/>
 					<TextBox Text="root"/>
@@ -90,4 +84,3 @@
 		</StackPanel>
 	</ScrollViewer>
 </Window>
-

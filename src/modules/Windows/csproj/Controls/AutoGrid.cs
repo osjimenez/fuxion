@@ -7,35 +7,14 @@ namespace Fuxion.Windows.Controls
 {
 	public class AutoGrid : Grid
 	{
-		bool _shouldReindex = true;
-		private int GetChildColumnIndex(UIElement child)
-		{
-			var index = Children.IndexOf(child);
-			int colIndex = 0;
-			//if (Orientation == Orientation.Horizontal)
-				colIndex = index % ColumnDefinitions.Count;
-			//else
-			//	colIndex = (int)System.Math.Floor((decimal)index / RowDefinitions.Count);
-			return colIndex;
-		}
-		private int GetChildRowIndex(UIElement child)
-		{
-			var index = Children.IndexOf(child);
-			int rowIndex = 0;
-			//if (Orientation == Orientation.Horizontal)
-			rowIndex = index / ColumnDefinitions.Count;
-			//else
-			//	colIndex = (int)System.Math.Floor((decimal)index / RowDefinitions.Count);
-			return rowIndex;
-		}
+		bool mustRelayout = true;
+		private int GetChildColumnIndex(UIElement child) => Children.IndexOf(child) % ColumnDefinitions.Count;
+		private int GetChildRowIndex(UIElement child) => Children.IndexOf(child) / ColumnDefinitions.Count;
 		internal void PerformLayout(bool force = false)
 		{
-			Debug.WriteLine("PerformLayout");
-			//bool isVertical = Orientation == Orientation.Vertical;
-			if (_shouldReindex || force)
+			if (mustRelayout || force)
 			{
-				_shouldReindex = false;
-				Debug.WriteLine("_shouldReindex = false");
+				mustRelayout = false;
 				RowDefinitions.Clear();
 				for(int i = 0; i < System.Math.Ceiling((decimal)Children.Count / ColumnDefinitions.Count); i++)
 				{
@@ -63,8 +42,7 @@ namespace Fuxion.Windows.Controls
 		}
 		protected override void OnVisualChildrenChanged(DependencyObject visualAdded, DependencyObject visualRemoved)
 		{
-			Debug.WriteLine("_shouldReindex = true");
-			_shouldReindex = true;
+			mustRelayout = true;
 			base.OnVisualChildrenChanged(visualAdded, visualRemoved);
 		}
 		#endregion Overrides
