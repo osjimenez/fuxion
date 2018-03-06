@@ -221,6 +221,8 @@ namespace Fuxion.Windows.Controls
 					})));
 		#endregion
 
+		// Pending cleanup 
+
 		#region ColumnWidth
 		/// <summary>
 		/// Gets or sets the fixed column width
@@ -252,11 +254,6 @@ namespace Fuxion.Windows.Controls
 				grid.ColumnDefinitions[i].Width = (GridLength)e.NewValue;
 		}
 		#endregion
-
-
-
-
-
 		/// <summary>
 		/// Gets or sets a value indicating whether the children are automatically indexed.
 		/// <remarks>
@@ -372,11 +369,6 @@ namespace Fuxion.Windows.Controls
 				grid.ColumnDefinitions.Add(
 					new ColumnDefinition() { Width = width });
 		}
-
-
-
-
-
 		/// <summary>
 		/// Handle the fixed row height changed event
 		/// </summary>
@@ -392,11 +384,6 @@ namespace Fuxion.Windows.Controls
 			for (int i = 0; i < grid.RowDefinitions.Count; i++)
 				grid.RowDefinitions[i].Height = (GridLength)e.NewValue;
 		}
-		
-
-
-
-
 		/// <summary>
 		/// Handles the row count changed event
 		/// </summary>
