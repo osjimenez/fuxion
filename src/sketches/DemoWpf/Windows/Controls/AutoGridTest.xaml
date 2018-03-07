@@ -6,12 +6,17 @@
 		xmlns:local="clr-namespace:DemoWpf.Windows.Controls"
 		xmlns:fuxion="fuxion"
 		mc:Ignorable="d"
-		Title="AutoGridTest" Height="550" Width="500">
+		Title="AutoGridTest" Height="250" Width="500">
+	<Window.DataContext>
+		<local:ViewModel/>
+	</Window.DataContext>
 	<Window.Resources>
 		<Style TargetType="Rectangle" >
 			<Setter Property="Fill" Value="SteelBlue" />
 		</Style>
 	</Window.Resources>
+	<TabControl>
+		<TabItem Header="Expanders">
 	<ScrollViewer VerticalScrollBarVisibility="Auto">
 		<StackPanel Grid.IsSharedSizeScope="True">
 			<Expander Header="Información personal" Margin="10" IsExpanded="True">
@@ -83,4 +88,58 @@
 			</Expander>
 		</StackPanel>
 	</ScrollViewer>
+		</TabItem>
+		<TabItem Header="Full Height">
+			<fuxion:AutoGrid VerticalAlignment="Top">
+				<fuxion:AutoGrid.Resources>
+					<Style x:Key="CollapsedStyle" TargetType="{x:Type FrameworkElement}">
+						<Setter Property="Visibility" Value="Visible" />
+						<Setter Property="Tag" Value="Ako" />
+					</Style>
+					<Style TargetType="TextBlock" BasedOn="{StaticResource CollapsedStyle}">
+						<Style.Triggers>
+							<Trigger Property="Tag" Value="{x:Null}">
+								<Setter Property="Visibility" Value="Collapsed"/>
+							</Trigger>
+						</Style.Triggers>
+					</Style>
+					<Style TargetType="Rectangle" BasedOn="{StaticResource CollapsedStyle}">
+						<Setter Property="Fill" Value="SteelBlue" />
+						<Style.Triggers>
+							<Trigger Property="Tag" Value="{x:Null}">
+								<Setter Property="Visibility" Value="Collapsed"/>
+							</Trigger>
+						</Style.Triggers>
+					</Style>
+					<Style TargetType="TextBox" BasedOn="{StaticResource CollapsedStyle}">
+						<Style.Triggers>
+							<Trigger Property="Grid.Column" Value="2">
+								<Setter Property="FontWeight" Value="Bold"/>
+							</Trigger>
+							<Trigger Property="Text" Value="">
+								<Setter Property="Visibility" Value="Collapsed"/>
+							</Trigger>
+						</Style.Triggers>
+					</Style>
+				</fuxion:AutoGrid.Resources>
+				<Grid.ColumnDefinitions>
+					<fuxion:AutoColumnDefinition Width="Auto"	ContentMargin="10,3,5,3"	HorizontalContentAlignment="Right" VerticalContentAlignment="Center"/>
+					<fuxion:AutoColumnDefinition Width="3"		ContentMargin="0,3"/>
+					<fuxion:AutoColumnDefinition				ContentMargin="5,3,10,3"										VerticalContentAlignment="Center"/>
+				</Grid.ColumnDefinitions>
+				<!-- NAME -->
+				<TextBlock Text="{fuxion:Display Name}"/>
+				<Rectangle />
+				<TextBox Text="{Binding Name}"/>
+				<!-- NAME -->
+				<TextBlock Text="{fuxion:Display Genre}" Tag="{Binding Genre}"/>
+				<Rectangle Tag="{Binding Genre}"/>
+				<TextBox Text="{Binding Genre}"/>
+				<!-- AGE -->
+				<TextBlock Text="{fuxion:Display Age}"/>
+				<Rectangle />
+				<TextBox Text="{Binding Age}"/>
+			</fuxion:AutoGrid>
+		</TabItem>
+	</TabControl>
 </Window>
