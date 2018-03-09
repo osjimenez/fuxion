@@ -104,6 +104,8 @@ namespace System
 				return false;
 			if (me.IsClass || me.IsInterface || me.IsGenericType && me.GetGenericTypeDefinition() == typeof(Nullable<>))
 				return true;
+			//if (!(valueTypesAreNotNullables && typeof(ValueType).IsAssignableFrom(me)))
+			//	return true;
 			return false;
 		}
 		public static bool IsNullableValue<T>(this Type me) where T : struct

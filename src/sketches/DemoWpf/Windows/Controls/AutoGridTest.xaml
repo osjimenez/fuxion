@@ -17,79 +17,79 @@
 	</Window.Resources>
 	<TabControl>
 		<TabItem Header="Expanders">
-	<ScrollViewer VerticalScrollBarVisibility="Auto">
-		<StackPanel Grid.IsSharedSizeScope="True">
-			<Expander Header="Información personal" Margin="10" IsExpanded="True">
-				<fuxion:AutoGrid>
-					<Grid.ColumnDefinitions>
-						<fuxion:AutoColumnDefinition SharedSizeGroup="FirstColumn"	ContentMargin="10,3,5,3"	HorizontalContentAlignment="Right"	VerticalContentAlignment="Center"/>
-						<fuxion:AutoColumnDefinition Width="3"						ContentMargin="0,3"/>
-						<fuxion:AutoColumnDefinition								ContentMargin="5,3"												VerticalContentAlignment="Center"/>
-					</Grid.ColumnDefinitions>
+			<ScrollViewer VerticalScrollBarVisibility="Auto">
+				<StackPanel Grid.IsSharedSizeScope="True">
+					<Expander Header="Información personal" Margin="10" IsExpanded="True">
+						<fuxion:AutoGrid>
+							<Grid.ColumnDefinitions>
+								<fuxion:AutoColumnDefinition SharedSizeGroup="FirstColumn"	ContentMargin="10,3,5,3"	HorizontalContentAlignment="Right"	VerticalContentAlignment="Center"/>
+								<fuxion:AutoColumnDefinition Width="3"						ContentMargin="0,3"/>
+								<fuxion:AutoColumnDefinition								ContentMargin="5,3"												VerticalContentAlignment="Center"/>
+							</Grid.ColumnDefinitions>
 
-					<TextBlock Text="First name"/>
-					<Rectangle />
-					<fuxion:AutoGrid>
-						<Grid.ColumnDefinitions>
-							<fuxion:AutoColumnDefinition />
-							<fuxion:AutoColumnDefinition Width="Auto"	ContentMargin="5,0" />
-							<fuxion:AutoColumnDefinition Width="3"/>
-							<fuxion:AutoColumnDefinition Width="2*"		ContentMargin="5,0,0,0" />
-						</Grid.ColumnDefinitions>
-						<TextBox Text="Tomb"/>
-						<TextBlock Text="Last name" />
-						<Rectangle />
-						<TextBox Text="Raider"/>
-					</fuxion:AutoGrid>
+							<TextBlock Text="First name"/>
+							<Rectangle />
+							<fuxion:AutoGrid>
+								<Grid.ColumnDefinitions>
+									<fuxion:AutoColumnDefinition />
+									<fuxion:AutoColumnDefinition Width="Auto"	ContentMargin="5,0" />
+									<fuxion:AutoColumnDefinition Width="3"/>
+									<fuxion:AutoColumnDefinition Width="2*"		ContentMargin="5,0,0,0" />
+								</Grid.ColumnDefinitions>
+								<TextBox Text="Tomb"/>
+								<TextBlock Text="Last name" />
+								<Rectangle />
+								<TextBox Text="Raider"/>
+							</fuxion:AutoGrid>
 
-					<TextBlock Text="Nick"/>
-					<Rectangle />
-					<TextBox Text="Tommy" />
+							<TextBlock Text="Nick"/>
+							<Rectangle />
+							<TextBox Text="Tommy" />
 
-					<TextBlock Text="Genre"/>
-					<Rectangle />
-					<ComboBox>
-						<ComboBoxItem Content="Male"/>
-						<ComboBoxItem Content="Female"/>
-					</ComboBox>
+							<TextBlock Text="Genre"/>
+							<Rectangle />
+							<ComboBox>
+								<ComboBoxItem Content="Male"/>
+								<ComboBoxItem Content="Female"/>
+							</ComboBox>
 
-					<TextBlock Text="Age"/>
-					<Rectangle />
-					<fuxion:AutoGrid>
-						<Grid.ColumnDefinitions>
-							<fuxion:AutoColumnDefinition />
-							<fuxion:AutoColumnDefinition Width="Auto" ContentMargin="5,0,0,0" VerticalContentAlignment="Center"/>
-						</Grid.ColumnDefinitions>
-						<TextBox Text="20" Height="35" VerticalContentAlignment="Center"/>
-						<TextBlock Text=" years" />
-					</fuxion:AutoGrid>
+							<TextBlock Text="Age"/>
+							<Rectangle />
+							<fuxion:AutoGrid>
+								<Grid.ColumnDefinitions>
+									<fuxion:AutoColumnDefinition />
+									<fuxion:AutoColumnDefinition Width="Auto" ContentMargin="5,0,0,0" VerticalContentAlignment="Center"/>
+								</Grid.ColumnDefinitions>
+								<TextBox Text="20" Height="35" VerticalContentAlignment="Center"/>
+								<TextBlock Text=" years" />
+							</fuxion:AutoGrid>
 
-					<TextBlock Text="Description"/>
-					<Rectangle />
-					<TextBox Text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book." TextWrapping="Wrap"/>
-				</fuxion:AutoGrid>
-			</Expander>
-			<Expander Header="Operador" Margin="10" IsExpanded="True">
-				<fuxion:AutoGrid>
-					<Grid.ColumnDefinitions>
-						<fuxion:AutoColumnDefinition SharedSizeGroup="FirstColumn"	ContentMargin="10,3,5,3"	HorizontalContentAlignment="Right"	VerticalContentAlignment="Center"/>
-						<fuxion:AutoColumnDefinition Width="3"						ContentMargin="0,3"/>
-						<fuxion:AutoColumnDefinition								ContentMargin="5,3"												VerticalContentAlignment="Center"/>
-					</Grid.ColumnDefinitions>
+							<TextBlock Text="Description"/>
+							<Rectangle />
+							<TextBox Text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book." TextWrapping="Wrap"/>
+						</fuxion:AutoGrid>
+					</Expander>
+					<Expander Header="Operador" Margin="10" IsExpanded="True">
+						<fuxion:AutoGrid>
+							<Grid.ColumnDefinitions>
+								<fuxion:AutoColumnDefinition SharedSizeGroup="FirstColumn"	ContentMargin="10,3,5,3"	HorizontalContentAlignment="Right"	VerticalContentAlignment="Center"/>
+								<fuxion:AutoColumnDefinition Width="3"						ContentMargin="0,3"/>
+								<fuxion:AutoColumnDefinition								ContentMargin="5,3"												VerticalContentAlignment="Center"/>
+							</Grid.ColumnDefinitions>
 
-					<TextBlock Text="Nombre de usuario"/>
-					<Rectangle/>
-					<TextBox Text="root"/>
+							<TextBlock Text="Nombre de usuario"/>
+							<Rectangle/>
+							<TextBox Text="root"/>
 
-					<TextBlock Text="Contraseña" />
-					<Rectangle/>
-					<PasswordBox />
-				</fuxion:AutoGrid>
-			</Expander>
-		</StackPanel>
-	</ScrollViewer>
+							<TextBlock Text="Contraseña" />
+							<Rectangle/>
+							<PasswordBox />
+						</fuxion:AutoGrid>
+					</Expander>
+				</StackPanel>
+			</ScrollViewer>
 		</TabItem>
-		<TabItem Header="Full Height">
+		<TabItem Header="Vertical alignment">
 			<fuxion:AutoGrid VerticalAlignment="Top">
 				<fuxion:AutoGrid.Resources>
 					<Style x:Key="CollapsedStyle" TargetType="{x:Type FrameworkElement}">
@@ -139,6 +139,16 @@
 				<TextBlock Text="{fuxion:Display Age}"/>
 				<Rectangle />
 				<TextBox Text="{Binding Age}"/>
+			</fuxion:AutoGrid>
+		</TabItem>
+		<TabItem Header="Zero columns">
+			<fuxion:AutoGrid VerticalAlignment="Top">
+				<Grid.ColumnDefinitions>
+				</Grid.ColumnDefinitions>
+				<!-- NAME -->
+				<TextBlock Text="{fuxion:Display Name}"/>
+				<Rectangle />
+				<TextBox Text="{Binding Name}"/>
 			</fuxion:AutoGrid>
 		</TabItem>
 	</TabControl>

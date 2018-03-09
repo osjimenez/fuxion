@@ -16,6 +16,7 @@ namespace Fuxion.Windows.Controls
 			{
 				mustRelayout = false;
 				RowDefinitions.Clear();
+				if (ColumnDefinitions.Count == 0) return;
 				for(int i = 0; i < System.Math.Ceiling((decimal)Children.Count / ColumnDefinitions.Count); i++)
 				{
 					RowDefinitions.Add(new RowDefinition());
