@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization;
 using Fuxion.Resources;
+using System.Globalization;
 
 namespace System
 {
@@ -99,9 +100,9 @@ namespace System
 		#region Reflections
 		public static bool IsNullable(this Type me, bool valueTypesAreNotNullables = true)
 		{
+			if (valueTypesAreNotNullables && me == typeof(Enum))
+				return false;
 			if (me.IsClass || me.IsInterface || me.IsGenericType && me.GetGenericTypeDefinition() == typeof(Nullable<>))
-				return true;
-			if (!(valueTypesAreNotNullables && typeof(ValueType).IsAssignableFrom(me)))
 				return true;
 			return false;
 		}
@@ -267,6 +268,15 @@ namespace System
 			return new string(Enumerable.Repeat(str, length)
 				.Select(s => s[ran.Next(s.Length)]).ToArray());
 		}
+		public static string ToTitleCase(this string me, CultureInfo culture = null)
+		{
+			var cul = culture ?? CultureInfo.CurrentCulture;
+			return cul.TextInfo.ToTitleCase(me.ToLower());
+		}
+		public static string ToCamelCase(this string me, CultureInfo culture = null)
+			=> me.ToTitleCase().Replace(" ", "").Transform(s => s.Substring(0, 1).ToLower() + s.Substring(1, s.Length - 1));
+		public static string ToPascalCase(this string me, CultureInfo culture = null)
+			=> me.ToTitleCase().Replace(" ", "");
 		#endregion
 		#region IsBetween
 		public static bool IsBetween(this short me, short minimum, short maximum) => minimum <= me && me <= maximum;

@@ -17,15 +17,15 @@ namespace Fuxion.Windows.Data
 			switch (Capitalization)
 			{
 				case StringCapitalization.ToUpper:
-					return culture.TextInfo.ToUpper(source);
+					return source.ToUpper(culture);
 				case StringCapitalization.ToLower:
-					return culture.TextInfo.ToLower(source);
+					return source.ToLower(culture);
 				case StringCapitalization.ToTitleCase:
-					return culture.TextInfo.ToTitleCase(source);
+					return source.ToTitleCase(culture);
 				case StringCapitalization.ToCamelCase:
-					return culture.TextInfo.ToTitleCase(source).Replace(" ", "").Transform(s => s.Substring(0, 1).ToLower() + s.Substring(1, s.Length - 1));
+					return source.ToCamelCase(culture);
 				case StringCapitalization.ToPascalCase:
-					return culture.TextInfo.ToTitleCase(source).Replace(" ","");
+					return source.ToPascalCase(culture);
 				default:
 					return source;
 			}
