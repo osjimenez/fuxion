@@ -43,8 +43,8 @@ namespace Fuxion.Threading.Tasks
         public TaskScheduler TaskScheduler { get; set; }
         public TaskCreationOptions TaskCreationOptions { get; set; }
 
-        public void Start()
-        {
+		public void DoConcurrency()
+		{
 			switch (BurstMode)
 			{
 				case BurstMode.WaitForPrevious:
@@ -57,6 +57,9 @@ namespace Fuxion.Threading.Tasks
 				default:
 					break;
 			}
+		}
+        public void Start()
+        {
 			Task.Start(TaskScheduler);
         }
 
@@ -77,12 +80,20 @@ namespace Fuxion.Threading.Tasks
         public ActionTaskManagerEntry(Action action, TaskScheduler scheduler, TaskCreationOptions options, BurstMode burstMode = BurstMode.Coupled, Delegate @delegate = null)
             : base(@delegate ?? action, scheduler, options, burstMode)
         {
-            Task = new Task(action, CancellationTokenSource.Token, TaskCreationOptions);
+			Task = new Task(() =>
+			{
+				DoConcurrency();
+				action();
+			}, CancellationTokenSource.Token, TaskCreationOptions);
         }
         public ActionTaskManagerEntry(Action<object> action, object state, TaskScheduler scheduler, TaskCreationOptions options, BurstMode burstMode = BurstMode.Coupled)
             : base(action, scheduler, default(TaskCreationOptions), burstMode)
         {
-            Task = new Task(action, state, CancellationTokenSource.Token, TaskCreationOptions);
+            Task = new Task(st=>
+			{
+				DoConcurrency();
+				action(st);
+			}, state, CancellationTokenSource.Token, TaskCreationOptions);
         }
 	}
     class FuncTaskManagerEntry<TResult> : TaskManagerEntry
@@ -90,12 +101,20 @@ namespace Fuxion.Threading.Tasks
         public FuncTaskManagerEntry(Func<TResult> func, TaskScheduler scheduler, TaskCreationOptions options, BurstMode burstMode = BurstMode.Coupled, Delegate @delegate = null)
             : base(@delegate ?? func, scheduler, options, burstMode)
         {
-            Task = new Task<TResult>(func, CancellationTokenSource.Token, TaskCreationOptions);
+            Task = new Task<TResult>(()=>
+			{
+				DoConcurrency();
+				return func();
+			}, CancellationTokenSource.Token, TaskCreationOptions);
         }
         public FuncTaskManagerEntry(Func<object, TResult> func, object state, TaskScheduler scheduler, TaskCreationOptions options, BurstMode burstMode = BurstMode.Coupled)
             : base(func, scheduler, default(TaskCreationOptions), burstMode)
         {
-            Task = new Task<TResult>(func, state, CancellationTokenSource.Token, TaskCreationOptions);
+			Task = new Task<TResult>(st =>
+			{
+				DoConcurrency();
+				return func(st);
+			}, state, CancellationTokenSource.Token, TaskCreationOptions);
         }
 	}
 }

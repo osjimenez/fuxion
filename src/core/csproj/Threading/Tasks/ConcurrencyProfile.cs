@@ -4,28 +4,6 @@ using System.Text;
 
 namespace Fuxion.Threading.Tasks
 {
-	public enum ConcurrencyMode
-	{
-		/// <summary>
-		/// All calls will be execute in parallel, at the moment of each call. This is the default behavior.
-		/// </summary>
-		Parallely,
-		/// <summary>
-		/// All calls will be executed one by one sequentially in a queue, no parallelization occur.
-		/// </summary>
-		Sequentially,
-
-		/// <summary>
-		/// All calls will be executed one by one sequentially in a queue, no parallelization occur. When a call ends, only last call in the queue will be executed, the others will be cancelled.
-		/// </summary>
-		SequentiallyAndExecuteOnlyLast,
-
-		
-		CancelPrevious,
-		CancelAndWaitPrevious,
-
-
-	}
 	public struct ConcurrencyProfile
 	{
 		public static readonly ConcurrencyProfile RunInParallel = new ConcurrencyProfile();
