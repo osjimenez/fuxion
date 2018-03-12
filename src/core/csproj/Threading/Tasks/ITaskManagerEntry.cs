@@ -9,13 +9,12 @@ namespace Fuxion.Threading.Tasks
 {
     internal interface ITaskManagerEntry
     {
-		object BurstKey { get; }
-        Task Task { get; }
+		BurstMode BurstMode { get; }
+		Delegate Delegate { get; }
+		Task Task { get; }
         bool IsCancellationRequested { get; }
         TaskScheduler TaskScheduler { get; }
         TaskCreationOptions TaskCreationOptions { get; }
-        //AutoResetEvent AutoResetEvent { get; }
-        //bool IsSleeping { get; set; }
         event EventHandler CancelRequested;
         void Cancel();
         void Start();

@@ -26,33 +26,38 @@ namespace Fuxion.Threading.Tasks
 				throw new ArgumentException("Task wasn't created with TaskManager.");
 			return res;
 		}
-		internal static ICollection<ITaskManagerEntry> SearchEntriesByBurstKey(object burstKey, bool throwExceptionIfNotFound = true)
+		//internal static ICollection<ITaskManagerEntry> SearchEntriesByBurstKey(object burstKey, bool throwExceptionIfNotFound = true)
+		//{
+		//	return tasks.Read(l => l.Where(e => e.BurstKey == burstKey).ToList());
+		//}
+
+		internal static ICollection<ITaskManagerEntry> SearchEntriesByDelegate(Delegate @delegate)
 		{
-			return tasks.Read(l => l.Where(e => e.BurstKey == burstKey).ToList());
+			return tasks.Read(l => l.Where(e => e.Delegate == @delegate).ToList());
 		}
 
 		public static Task Current => tasks.Read(l => l.FirstOrDefault(e => e.Task.Id == Task.CurrentId.Value)).Task;
 
 		#region Action
-		private static ITaskManagerEntry CreateEntry(Action action, TaskScheduler scheduler = null, TaskCreationOptions options = default(TaskCreationOptions))
+		private static ITaskManagerEntry CreateEntry(Action action, TaskScheduler scheduler = null, TaskCreationOptions options = default(TaskCreationOptions), BurstMode burstMode = BurstMode.Coupled)
 		{
-			var entry = new ActionTaskManagerEntry(action, scheduler, options);
+			var entry = new ActionTaskManagerEntry(action, scheduler, options, burstMode);
 			AddEntry(entry);
 			return entry;
 		}
-		public static Task Create(Action action, TaskScheduler scheduler = null, TaskCreationOptions options = default(TaskCreationOptions))
-			=> CreateEntry(action, scheduler, options).Task;
-		public static Task Create(Func<Task> asyncAction, TaskScheduler scheduler = null, TaskCreationOptions options = default(TaskCreationOptions))
-			=> CreateEntry(new Action(() => asyncAction().Wait()), scheduler, options).Task;
-		public static Task StartNew(Action action, TaskScheduler scheduler = null, TaskCreationOptions options = default(TaskCreationOptions))
+		public static Task Create(Action action, TaskScheduler scheduler = null, TaskCreationOptions options = default(TaskCreationOptions), BurstMode burstMode = BurstMode.Coupled)
+			=> CreateEntry(action, scheduler, options, burstMode).Task;
+		public static Task Create(Func<Task> asyncAction, TaskScheduler scheduler = null, TaskCreationOptions options = default(TaskCreationOptions), BurstMode burstMode = BurstMode.Coupled)
+			=> CreateEntry(new Action(() => asyncAction().Wait()), scheduler, options, burstMode).Task;
+		public static Task StartNew(Action action, TaskScheduler scheduler = null, TaskCreationOptions options = default(TaskCreationOptions), BurstMode burstMode = BurstMode.Coupled)
 		{
-			var task = Create(action, scheduler, options);
+			var task = Create(action, scheduler, options, burstMode);
 			SearchEntry(task).Start();
 			return task;
 		}
-		public static Task StartNew(Func<Task> asyncAction, TaskScheduler scheduler = null, TaskCreationOptions options = default(TaskCreationOptions))
+		public static Task StartNew(Func<Task> asyncAction, TaskScheduler scheduler = null, TaskCreationOptions options = default(TaskCreationOptions), BurstMode burstMode = BurstMode.Coupled)
 		{
-			var task = Create(asyncAction, scheduler, options);
+			var task = Create(asyncAction, scheduler, options, burstMode);
 			SearchEntry(task).Start();
 			return task;
 		}
@@ -332,44 +337,29 @@ namespace Fuxion.Threading.Tasks
 		}
 		#endregion
 		#region Func<TResult>
-		private static ITaskManagerEntry CreateEntry<TResult>(Func<TResult> func, TaskScheduler scheduler = null, TaskCreationOptions options = default(TaskCreationOptions), object burstKey = null)
+		private static ITaskManagerEntry CreateEntry<TResult>(Func<TResult> func, TaskScheduler scheduler = null, TaskCreationOptions options = default(TaskCreationOptions), BurstMode burstMode = BurstMode.Coupled, Delegate @delegate = null)
 		{
-			var entry = new FuncTaskManagerEntry<TResult>(func, scheduler, options, burstKey);
+			var entry = new FuncTaskManagerEntry<TResult>(func, scheduler, options, burstMode, @delegate);
 			AddEntry(entry);
 			return entry;
 		}
-		public static Task<TResult> Create<TResult>(Func<TResult> func, TaskScheduler scheduler = null, TaskCreationOptions options = default(TaskCreationOptions))
+		public static Task<TResult> Create<TResult>(Func<TResult> func, TaskScheduler scheduler = null, TaskCreationOptions options = default(TaskCreationOptions), BurstMode burstMode = BurstMode.Coupled)
 		{
-			return (Task<TResult>)CreateEntry(func, scheduler, options).Task;
+			return (Task<TResult>)CreateEntry(func, scheduler, options, burstMode).Task;
 		}
-		public static Task<TResult> CreateBurst<TResult>(object burstKey, Func<TResult> func, TaskScheduler scheduler = null, TaskCreationOptions options = default(TaskCreationOptions))
+		public static Task<TResult> Create<TResult>(Func<Task<TResult>> func, TaskScheduler scheduler = null, TaskCreationOptions options = default(TaskCreationOptions), BurstMode burstMode = BurstMode.Coupled)
 		{
-			return (Task<TResult>)CreateEntry(func, scheduler, options, burstKey).Task;
+			return (Task<TResult>)CreateEntry(new Func<TResult>(() => func().Result), scheduler, options, burstMode, func).Task;
 		}
-		public static Task<TResult> Create<TResult>(Func<Task<TResult>> func, TaskScheduler scheduler = null, TaskCreationOptions options = default(TaskCreationOptions))
+		public static Task<TResult> StartNew<TResult>(Func<TResult> func, TaskScheduler scheduler = null, TaskCreationOptions options = default(TaskCreationOptions), BurstMode burstMode = BurstMode.Coupled)
 		{
-			return (Task<TResult>)CreateEntry(new Func<TResult>(() => func().Result)).Task;
-		}
-		public static Task<TResult> StartNew<TResult>(Func<TResult> func, TaskScheduler scheduler = null, TaskCreationOptions options = default(TaskCreationOptions))
-		{
-			var task = Create(func, scheduler, options);
+			var task = Create(func, scheduler, options, burstMode);
 			SearchEntry(task).Start();
 			return task;
 		}
-		public static Task<TResult> StartNewBurst<TResult>(object burstKey, Func<TResult> func, TaskScheduler scheduler = null, TaskCreationOptions options = default(TaskCreationOptions))
+		public static Task<TResult> StartNew<TResult>(Func<Task<TResult>> asyncFunc, TaskScheduler scheduler = null, TaskCreationOptions options = default(TaskCreationOptions), BurstMode burstMode = BurstMode.Coupled)
 		{
-			//return StartNew(async () =>
-			//{
-			foreach (var t in SearchEntriesByBurstKey(burstKey, false))
-				t.Cancel();
-			var task = CreateBurst(burstKey, func, scheduler, options);
-			SearchEntry(task).Start();
-			return task;
-			//});
-		}
-		public static Task<TResult> StartNew<TResult>(Func<Task<TResult>> asyncFunc, TaskScheduler scheduler = null, TaskCreationOptions options = default(TaskCreationOptions))
-		{
-			var task = Create(asyncFunc, scheduler, options);
+			var task = Create(asyncFunc, scheduler, options, burstMode);
 			SearchEntry(task).Start();
 			return task;
 		}
@@ -646,5 +636,11 @@ namespace Fuxion.Threading.Tasks
 			return task;
 		}
 		#endregion
+	}
+	public enum BurstMode
+	{
+		Coupled,
+		WaitForPrevious,
+		CancelPrevious,
 	}
 }
