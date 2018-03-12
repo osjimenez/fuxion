@@ -9,6 +9,7 @@ namespace Fuxion.Threading.Tasks
 {
     internal interface ITaskManagerEntry
     {
+		object BurstKey { get; }
         Task Task { get; }
         bool IsCancellationRequested { get; }
         TaskScheduler TaskScheduler { get; }

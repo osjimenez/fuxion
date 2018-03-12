@@ -10,16 +10,19 @@ namespace Fuxion.Threading.Tasks
 {
     abstract class TaskManagerEntry : ITaskManagerEntry
     {
-        protected TaskManagerEntry(TaskScheduler scheduler, TaskCreationOptions options)
+        protected TaskManagerEntry(TaskScheduler scheduler, TaskCreationOptions options, object burstKey)
         {
             CancellationTokenSource = new CancellationTokenSource();
             //AutoResetEvent = new AutoResetEvent(false);
             TaskScheduler = scheduler ?? TaskScheduler.Default;
             TaskCreationOptions = options;
+			BurstKey = burstKey;
         }
 
         private ILog log = LogManager.Create(typeof(TaskManagerEntry));
         Task _Task;
+
+		public object BurstKey { get; set; }
         public Task Task
         {
             get { return _Task; }
@@ -58,26 +61,26 @@ namespace Fuxion.Threading.Tasks
     }
     class ActionTaskManagerEntry : TaskManagerEntry
     {
-        public ActionTaskManagerEntry(Action action, TaskScheduler scheduler, TaskCreationOptions options)
-            : base(scheduler, options)
+        public ActionTaskManagerEntry(Action action, TaskScheduler scheduler, TaskCreationOptions options, object burstKey = null)
+            : base(scheduler, options, burstKey)
         {
             Task = new Task(action, CancellationTokenSource.Token, TaskCreationOptions);
         }
-        public ActionTaskManagerEntry(Action<object> action, object state, TaskScheduler scheduler, TaskCreationOptions options)
-            : base(null, default(TaskCreationOptions))
+        public ActionTaskManagerEntry(Action<object> action, object state, TaskScheduler scheduler, TaskCreationOptions options, object burstKey = null)
+            : base(null, default(TaskCreationOptions), burstKey)
         {
             Task = new Task(action, state, CancellationTokenSource.Token, TaskCreationOptions);
         }
     }
     class FuncTaskManagerEntry<TResult> : TaskManagerEntry
     {
-        public FuncTaskManagerEntry(Func<TResult> func, TaskScheduler scheduler, TaskCreationOptions options)
-            : base(scheduler, options)
+        public FuncTaskManagerEntry(Func<TResult> func, TaskScheduler scheduler, TaskCreationOptions options, object burstKey = null)
+            : base(scheduler, options, burstKey)
         {
             Task = new Task<TResult>(func, CancellationTokenSource.Token, TaskCreationOptions);
         }
-        public FuncTaskManagerEntry(Func<object, TResult> func, object state, TaskScheduler scheduler, TaskCreationOptions options)
-            : base(null, default(TaskCreationOptions))
+        public FuncTaskManagerEntry(Func<object, TResult> func, object state, TaskScheduler scheduler, TaskCreationOptions options, object burstKey = null)
+            : base(null, default(TaskCreationOptions), burstKey)
         {
             Task = new Task<TResult>(func, state, CancellationTokenSource.Token, TaskCreationOptions);
         }

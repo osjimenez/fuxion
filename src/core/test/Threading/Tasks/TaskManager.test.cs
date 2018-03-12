@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
@@ -12,11 +13,6 @@ namespace Fuxion.Test.Threading.Tasks
     public class TaskManagerTest : BaseTest
     {
         public TaskManagerTest(ITestOutputHelper output) : base(output) { }
-        //public TaskManagerTest(ITestOutputHelper output)
-        //{
-        //    this.output = output;
-        //}
-        //ITestOutputHelper output;
         #region Help methods
         private Task Start_void()
         {
@@ -79,10 +75,10 @@ namespace Fuxion.Test.Threading.Tasks
         private void Assert_int(Task<int> task)
         {
             var res = task.Result;
-            Assert.Equal(res, 2);
+            Assert.Equal(2, res);
         }
         #endregion
-        [Fact]
+        [Fact(DisplayName = "TaskManager - SleepCancelation")]
         public void TaskManager_SleepCancelation()
         {
             Task task = null;
@@ -97,8 +93,9 @@ namespace Fuxion.Test.Threading.Tasks
             Assert.True(dt.AddSeconds(1) > DateTime.Now);
             //Assert.True(dt.AddMilliseconds(400) < DateTime.Now);
         }
-        [Fact]
-        public Task TaskManager_Sleep()
+        [Fact(DisplayName = "TaskManager - Sleep")]
+
+		public Task TaskManager_Sleep()
         {
             Task task = null;
             var dt = DateTime.Now;
@@ -110,8 +107,52 @@ namespace Fuxion.Test.Threading.Tasks
                 Assert.True(dt.AddSeconds(2) < DateTime.Now);
             });
         }
-        #region void_StartNew
-        [Fact]
+		[Fact(DisplayName = "TaskManager - Burst")]
+		public async void TaskManager_Burst()
+		{
+			var t1 = Burst2();
+			var t2 = Burst2();
+			var t3 = Burst2();
+			try
+			{
+				await Task.WhenAll(
+					t1,
+					t2,
+					t3);
+			}
+			catch (TaskCanceledException)
+			{
+
+			}
+			Output.WriteLine($"Can: {t1.IsCanceled},{t2.IsCanceled},{t3.IsCanceled}");
+			Assert.True(t1.IsCanceled);
+			Assert.True(t2.IsCanceled);
+			Assert.False(t3.IsCanceled);
+			Assert.Equal("Done", t3.Result);
+		}
+		private Task<string> Burst() => TaskManager.StartNewBurst(nameof(Burst), () =>
+			{
+				Thread.Sleep(1000);
+				if (TaskManager.Current.IsCancellationRequested())
+					//return "Cancelled";
+					throw new TaskCanceledException();
+				return "Done";
+			});
+		private Task<string> Burst2()
+			=> TaskManager.StartNewBurst(nameof(Burst), () =>
+			{
+				try
+				{
+					Task.Delay(100, TaskManager.Current.GetCancellationToken().Value);
+				}
+				catch (TaskCanceledException)
+				{
+					return "Cancelled";
+				}
+				return "Done";
+			});
+		#region void_StartNew
+		[Fact]
         public void TaskManager_void_StartNew()
         {
             var task = Start_void();
