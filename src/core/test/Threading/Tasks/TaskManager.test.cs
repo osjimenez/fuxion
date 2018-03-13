@@ -1,5 +1,6 @@
 ﻿using Fuxion.Threading.Tasks;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -108,142 +109,150 @@ namespace Fuxion.Test.Threading.Tasks
             });
         }
 
-		[Theory(DisplayName = "TaskManager - StartNew")]
-		//						   isAsync	 isThrow	 create
-		[InlineData(new object[] { true		,true		,true  })]
-		[InlineData(new object[] { false	,true		,true  })]
-		[InlineData(new object[] { true		,false		,true  })]
-		[InlineData(new object[] { false	,false		,true  })]
-		[InlineData(new object[] { true		,true		,false })]
-		[InlineData(new object[] { false	,true		,false })]
-		[InlineData(new object[] { true		,false		,false })]
-		[InlineData(new object[] { false	,false		,false })]
-		public async void TaskManager_StartNew(bool isAsync, bool isThrow, bool create)
+		public static IEnumerable<object[]> GenerateStartNewValues(int length)
 		{
-			int runDelay = 1000;
-			int interval = 100;
-			#region Run modes
-			Task<string> Sync_NoThrow_NoCreate() => TaskManager.StartNew(() =>
+			for (int i = 0; i < System.Math.Pow(2, length); i++)
 			{
-				Thread.Sleep(runDelay);
-				if (TaskManager.Current.IsCancellationRequested())
-					return "Cancelled";
-				return "Done";
-			}, burstMode: BurstMode.CancelPrevious);
-			Task<string> Sync_NoThrow_Create()
-			{
-				var task = TaskManager.Create(() =>
-				{
-					Thread.Sleep(runDelay);
-					if (TaskManager.Current.IsCancellationRequested())
-						return "Cancelled";
-					return "Done";
-				}, burstMode: BurstMode.CancelPrevious);
-				task.Start();
-				return task;
+				BitArray b = new BitArray(new int[] { i });
+				yield return b.Cast<bool>().Take(length).Cast<object>().ToArray();
 			}
-			Task<string> Sync_Throw_NoCreate() => TaskManager.StartNew(() =>
+		}
+		[Theory(DisplayName = "TaskManager - StartNew")]
+		[MemberData(nameof(GenerateStartNewValues), 7)]
+		public async void TaskManager_StartNew(bool @void, bool sync, bool create, bool sequentially, bool onlyLast, bool cancel, bool wait)
+		{
+			// test constants
+			int runDelay = 100;
+			int interval = 30;
+			string cancelledResult = "Canceled";
+			string doneResult = "Done";
+
+			var concurrencyProfile = new ConcurrencyProfile
 			{
-				Task.Delay(runDelay, TaskManager.Current.GetCancellationToken().Value).Wait();
-				return "Done";
-			}, burstMode: BurstMode.CancelPrevious);
-			Task<string> Sync_Throw_Create()
+				Sequentially = sequentially,
+				ExecuteOnlyLast = onlyLast,
+				CancelPrevious = cancel,
+				WaitForCancelPrevious = wait
+			};
+			#region Run modes
+			Task Action_Sync()
 			{
-				var task = TaskManager.Create(() =>
+				void Do() => Task.Delay(runDelay, TaskManager.Current.GetCancellationToken().Value).Wait();
+				if (create)
+				{
+					var task = TaskManager.Create(() => Do(), concurrencyProfile: concurrencyProfile);
+					task.Start();
+					return task;
+				}
+				else return TaskManager.StartNew(() => Do(), concurrencyProfile: concurrencyProfile);
+			}
+			Task Action_Async()
+			{
+				Task Do() => Task.Delay(runDelay, TaskManager.Current.GetCancellationToken().Value);
+				if (create)
+				{
+					var task = TaskManager.Create(async () => await Do(), concurrencyProfile: concurrencyProfile);
+					task.Start();
+					return task;
+				}
+				else return TaskManager.StartNew(async () => await Do(), concurrencyProfile: concurrencyProfile);
+			}
+			Task<string> Func_Sync()
+			{
+				string Do()
 				{
 					Task.Delay(runDelay, TaskManager.Current.GetCancellationToken().Value).Wait();
-					return "Done";
-				}, burstMode: BurstMode.CancelPrevious);
-				task.Start();
-				return task;
+					return doneResult;
+				}
+				if (create)
+				{
+					var task = TaskManager.Create(() => Do(), concurrencyProfile: concurrencyProfile);
+					task.Start();
+					return task;
+				}
+				else return TaskManager.StartNew(() => Do(), concurrencyProfile: concurrencyProfile);
 			}
-			Task<string> Async_NoThrow_NoCreate() => TaskManager.StartNew(async () =>
+			Task<string> Func_Async()
 			{
-				try
+				async Task<string> Do()
 				{
 					await Task.Delay(runDelay, TaskManager.Current.GetCancellationToken().Value);
+					return doneResult;
 				}
-				catch (TaskCanceledException)
+				if (create)
 				{
-					return "Cancelled";
+					var task = TaskManager.Create(async () => await Do(), concurrencyProfile: concurrencyProfile);
+					task.Start();
+					return task;
 				}
-				return "Done";
-			}, burstMode: BurstMode.CancelPrevious);
-			Task<string> Async_NoThrow_Create()
-			{
-				var task = TaskManager.Create(async () =>
-				{
-					try
-					{
-						await Task.Delay(runDelay, TaskManager.Current.GetCancellationToken().Value);
-					}
-					catch (TaskCanceledException)
-					{
-						return "Cancelled";
-					}
-					return "Done";
-				}, burstMode: BurstMode.CancelPrevious);
-				task.Start();
-				return task;
-			}
-			Task<string> Async_Throw_NoCreate() => TaskManager.StartNew(async () =>
-			{
-				await Task.Delay(runDelay, TaskManager.Current.GetCancellationToken().Value);
-				return "Done";
-			}, burstMode: BurstMode.CancelPrevious);
-			Task<string> Async_Throw_Create()
-			{
-				var task = TaskManager.Create(async () =>
-				{
-					await Task.Delay(runDelay, TaskManager.Current.GetCancellationToken().Value);
-					return "Done";
-				}, burstMode: BurstMode.CancelPrevious);
-				task.Start();
-				return task;
+				else return TaskManager.StartNew(async () => await Do(), concurrencyProfile: concurrencyProfile);
 			}
 			#endregion
 
+			var results = new(bool WasCancelled, string Result)[3];
+
 			#region Run
-			Task<string>[] res = new Task<string>[3];
+			Task<(bool WasCancelled, string Result)>[] res = new Task<(bool WasCancelled, string Result)>[3];
 			for (int i = 0; i < 3; i++)
 			{
-				res[i] = TaskManager.StartNew(async () => {
+				res[i] = Task.Run(async () =>
+				{
 					try
 					{
-						return isAsync
-							? isThrow
-								? create
-									? await Async_Throw_Create()
-									: await Async_Throw_NoCreate()
-								: create
-									? await Async_NoThrow_Create()
-									: await Async_NoThrow_NoCreate()
-							: isThrow
-								? create
-									? await Sync_Throw_Create()
-									: await Sync_Throw_NoCreate()
-								: create
-									? await Sync_NoThrow_Create()
-									: await Sync_NoThrow_NoCreate();
+						if (@void)
+						{
+							if (sync)
+								await Action_Sync();
+							else
+								await Action_Async();
+							return (false, doneResult);
+						}
+						else
+						{
+							return sync
+								? (false, await Func_Sync())
+								: (false, await Func_Async());
+						}
 					}
 					catch (TaskCanceledException)
 					{
-						return "Cancelled";
+						return (true, cancelledResult);
 					}
 					catch (AggregateException ex) when (ex.Flatten().InnerException is TaskCanceledException)
 					{
-						return "Cancelled";
+						return (true, cancelledResult);
 					}
 				});
 				await Task.Delay(interval);
 			}
 			await Task.WhenAll(res);
+			results[0] = res[0].Result;
+			results[1] = res[1].Result;
+			results[2] = res[2].Result;			
 			#endregion
 
 			#region Assert
-			Assert.Equal("Cancelled", res[0].Result);
-			Assert.Equal("Cancelled", res[1].Result);
-			Assert.Equal("Done", res[2].Result);
+			if (cancel)
+			{
+				Assert.True(results[0].WasCancelled);
+				Assert.True(results[1].WasCancelled);
+				Assert.True(!results[2].WasCancelled);
+				if (!@void)
+				{
+					Assert.Equal(cancelledResult, results[0].Result);
+					Assert.Equal(cancelledResult, results[1].Result);
+					Assert.Equal(doneResult, results[2].Result);
+				}
+			}
+			else
+			{
+				if (!@void)
+				{
+					Assert.Equal(doneResult, results[0].Result);
+					Assert.Equal(doneResult, results[1].Result);
+					Assert.Equal(doneResult, results[2].Result);
+				}
+			}
 			#endregion
 		}
 		#region void_StartNew

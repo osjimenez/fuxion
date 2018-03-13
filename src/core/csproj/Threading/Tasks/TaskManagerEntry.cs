@@ -10,19 +10,19 @@ namespace Fuxion.Threading.Tasks
 {
     abstract class TaskManagerEntry : ITaskManagerEntry
     {
-        protected TaskManagerEntry(Delegate @delegate, TaskScheduler scheduler, TaskCreationOptions options, BurstMode burstMode)
+        protected TaskManagerEntry(Delegate @delegate, TaskScheduler scheduler, TaskCreationOptions options, ConcurrencyProfile concurrencyProfile)
         {
             CancellationTokenSource = new CancellationTokenSource();
 			Delegate = @delegate;
             TaskScheduler = scheduler ?? TaskScheduler.Default;
             TaskCreationOptions = options;
-			BurstMode = burstMode;
+			ConcurrencyProfile = concurrencyProfile;
         }
 
         private ILog log = LogManager.Create(typeof(TaskManagerEntry));
         Task _Task;
 
-		public BurstMode BurstMode { get; set; }
+		public ConcurrencyProfile ConcurrencyProfile { get; set; }
         public Task Task
         {
             get { return _Task; }
@@ -45,18 +45,14 @@ namespace Fuxion.Threading.Tasks
 
 		public void DoConcurrency()
 		{
-			switch (BurstMode)
+			TaskManager.Tasks.Read(l =>
 			{
-				case BurstMode.WaitForPrevious:
-					break;
-				case BurstMode.CancelPrevious:
-					foreach (var task in TaskManager.SearchEntriesByDelegate(Delegate).Where(t => t != this && !t.IsCancellationRequested))
+				if (ConcurrencyProfile.CancelPrevious)
+				{
+					foreach (var task in l.Where(e => e.Delegate == Delegate).ToList().Where(t => t != this && !t.IsCancellationRequested))
 						task.Cancel();
-					break;
-				case BurstMode.Coupled:
-				default:
-					break;
-			}
+				}
+			});
 		}
         public void Start()
         {
@@ -77,8 +73,8 @@ namespace Fuxion.Threading.Tasks
     }
     class ActionTaskManagerEntry : TaskManagerEntry
     {
-        public ActionTaskManagerEntry(Action action, TaskScheduler scheduler, TaskCreationOptions options, BurstMode burstMode = BurstMode.Coupled, Delegate @delegate = null)
-            : base(@delegate ?? action, scheduler, options, burstMode)
+        public ActionTaskManagerEntry(Action action, TaskScheduler scheduler, TaskCreationOptions options, ConcurrencyProfile concurrencyProfile = default(ConcurrencyProfile), Delegate @delegate = null)
+            : base(@delegate ?? action, scheduler, options, concurrencyProfile)
         {
 			Task = new Task(() =>
 			{
@@ -86,8 +82,8 @@ namespace Fuxion.Threading.Tasks
 				action();
 			}, CancellationTokenSource.Token, TaskCreationOptions);
         }
-        public ActionTaskManagerEntry(Action<object> action, object state, TaskScheduler scheduler, TaskCreationOptions options, BurstMode burstMode = BurstMode.Coupled)
-            : base(action, scheduler, default(TaskCreationOptions), burstMode)
+        public ActionTaskManagerEntry(Action<object> action, object state, TaskScheduler scheduler, TaskCreationOptions options, ConcurrencyProfile concurrencyProfile = default(ConcurrencyProfile))
+            : base(action, scheduler, default(TaskCreationOptions), concurrencyProfile)
         {
             Task = new Task(st=>
 			{
@@ -98,8 +94,8 @@ namespace Fuxion.Threading.Tasks
 	}
     class FuncTaskManagerEntry<TResult> : TaskManagerEntry
     {
-        public FuncTaskManagerEntry(Func<TResult> func, TaskScheduler scheduler, TaskCreationOptions options, BurstMode burstMode = BurstMode.Coupled, Delegate @delegate = null)
-            : base(@delegate ?? func, scheduler, options, burstMode)
+        public FuncTaskManagerEntry(Func<TResult> func, TaskScheduler scheduler, TaskCreationOptions options, ConcurrencyProfile concurrencyProfile = default(ConcurrencyProfile), Delegate @delegate = null)
+            : base(@delegate ?? func, scheduler, options, concurrencyProfile)
         {
             Task = new Task<TResult>(()=>
 			{
@@ -107,8 +103,8 @@ namespace Fuxion.Threading.Tasks
 				return func();
 			}, CancellationTokenSource.Token, TaskCreationOptions);
         }
-        public FuncTaskManagerEntry(Func<object, TResult> func, object state, TaskScheduler scheduler, TaskCreationOptions options, BurstMode burstMode = BurstMode.Coupled)
-            : base(func, scheduler, default(TaskCreationOptions), burstMode)
+        public FuncTaskManagerEntry(Func<object, TResult> func, object state, TaskScheduler scheduler, TaskCreationOptions options, ConcurrencyProfile concurrencyProfile = default(ConcurrencyProfile))
+            : base(func, scheduler, default(TaskCreationOptions), concurrencyProfile)
         {
 			Task = new Task<TResult>(st =>
 			{

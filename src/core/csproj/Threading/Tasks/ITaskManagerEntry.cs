@@ -9,7 +9,7 @@ namespace Fuxion.Threading.Tasks
 {
     internal interface ITaskManagerEntry
     {
-		BurstMode BurstMode { get; }
+		ConcurrencyProfile ConcurrencyProfile { get; }
 		Delegate Delegate { get; }
 		Task Task { get; }
         bool IsCancellationRequested { get; }
