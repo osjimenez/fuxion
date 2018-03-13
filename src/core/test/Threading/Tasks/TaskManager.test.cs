@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -13,7 +14,18 @@ namespace Fuxion.Test.Threading.Tasks
 {
     public class TaskManagerTest : BaseTest
     {
-        public TaskManagerTest(ITestOutputHelper output) : base(output) { }
+		public TaskManagerTest(ITestOutputHelper output) : base(output)
+		{
+			Printer.WriteLineAction = m =>
+			{
+				try
+				{
+					output.WriteLine($"({Task.CurrentId}) {m}");
+					Debug.WriteLine($"({Task.CurrentId}) {m}");
+				}
+				catch { }
+			};
+		}
         #region Help methods
         private Task Start_void()
         {
@@ -111,19 +123,24 @@ namespace Fuxion.Test.Threading.Tasks
 
 		public static IEnumerable<object[]> GenerateStartNewValues(int length)
 		{
+			var res = new List<object[]>();
 			for (int i = 0; i < System.Math.Pow(2, length); i++)
 			{
 				BitArray b = new BitArray(new int[] { i });
-				yield return b.Cast<bool>().Take(length).Cast<object>().ToArray();
+				var bits = b.Cast<bool>().Take(length).ToArray();
+				// Solo dejo los @void y sync
+				//if (!bits[4])
+					res.Add(bits.Cast<object>().ToArray());
 			}
+			return res;
 		}
 		[Theory(DisplayName = "TaskManager - StartNew")]
-		[MemberData(nameof(GenerateStartNewValues), 7)]
-		public async void TaskManager_StartNew(bool @void, bool sync, bool create, bool sequentially, bool onlyLast, bool cancel, bool wait)
+		[MemberData(nameof(GenerateStartNewValues), 6)]
+		public async void TaskManager_StartNew(bool @void, bool sync, bool create, bool sequentially, bool onlyLast, bool cancel)//, bool wait)
 		{
 			// test constants
-			int runDelay = 100;
-			int interval = 30;
+			int runDelay = 500;
+			int interval = runDelay / 10;
 			string cancelledResult = "Canceled";
 			string doneResult = "Done";
 
@@ -132,12 +149,42 @@ namespace Fuxion.Test.Threading.Tasks
 				Sequentially = sequentially,
 				ExecuteOnlyLast = onlyLast,
 				CancelPrevious = cancel,
-				WaitForCancelPrevious = wait
+				//WaitForCancelPrevious = wait
 			};
+			object seqLock = new object();
+			string seq = null;
+			int seqNum = 1;
 			#region Run modes
 			Task Action_Sync()
 			{
-				void Do() => Task.Delay(runDelay, TaskManager.Current.GetCancellationToken().Value).Wait();
+				void Do()
+				{
+					var mySeqNum = seqNum++;
+					Printer.WriteLine("Do");
+					try
+					{
+						lock (seqLock)
+						{
+							seq += $"S{mySeqNum}-";
+							Printer.WriteLine("Start");
+						}
+						Task.Delay(runDelay, TaskManager.Current.GetCancellationToken().Value).Wait();
+						lock (seqLock)
+						{
+							seq += $"E{mySeqNum}-";
+							Printer.WriteLine("End");
+						}
+					}
+					catch
+					{
+						lock (seqLock)
+						{
+							seq += $"E{mySeqNum}X-";
+							Printer.WriteLine("End - in catch");
+						}
+						throw;
+					}
+				}
 				if (create)
 				{
 					var task = TaskManager.Create(() => Do(), concurrencyProfile: concurrencyProfile);
@@ -148,7 +195,34 @@ namespace Fuxion.Test.Threading.Tasks
 			}
 			Task Action_Async()
 			{
-				Task Do() => Task.Delay(runDelay, TaskManager.Current.GetCancellationToken().Value);
+				async Task Do()
+				{
+					var mySeqNum = seqNum++;
+					Printer.WriteLine("Do");
+					try
+					{
+						lock (seqLock)
+						{
+							seq += $"S{mySeqNum}-";
+							Printer.WriteLine("Start");
+						}
+						await Task.Delay(runDelay, TaskManager.Current.GetCancellationToken().Value);
+						lock (seqLock)
+						{
+							seq += $"E{mySeqNum}-";
+							Printer.WriteLine("End");
+						}
+					}
+					catch
+					{
+						lock (seqLock)
+						{
+							seq += $"E{mySeqNum}X-";
+							Printer.WriteLine("End - in catch");
+						}
+						throw;
+					}
+				}
 				if (create)
 				{
 					var task = TaskManager.Create(async () => await Do(), concurrencyProfile: concurrencyProfile);
@@ -161,8 +235,32 @@ namespace Fuxion.Test.Threading.Tasks
 			{
 				string Do()
 				{
-					Task.Delay(runDelay, TaskManager.Current.GetCancellationToken().Value).Wait();
-					return doneResult;
+					var mySeqNum = seqNum++;
+					Printer.WriteLine("Do");
+					try
+					{
+						lock (seqLock)
+						{
+							seq += $"S{mySeqNum}-";
+							Printer.WriteLine("Start");
+						}
+						Task.Delay(runDelay, TaskManager.Current.GetCancellationToken().Value).Wait();
+						lock (seqLock)
+						{
+							seq += $"E{mySeqNum}-";
+							Printer.WriteLine("End");
+						}
+						return doneResult;
+					}
+					catch
+					{
+						lock (seqLock)
+						{
+							seq += $"E{mySeqNum}X-";
+							Printer.WriteLine("End - in catch");
+						}
+						throw;
+					}
 				}
 				if (create)
 				{
@@ -176,8 +274,32 @@ namespace Fuxion.Test.Threading.Tasks
 			{
 				async Task<string> Do()
 				{
-					await Task.Delay(runDelay, TaskManager.Current.GetCancellationToken().Value);
-					return doneResult;
+					var mySeqNum = seqNum++;
+					Printer.WriteLine("Do");
+					try
+					{
+						lock (seqLock)
+						{
+							seq += $"S{mySeqNum}-";
+							Printer.WriteLine("Start");
+						}
+						await Task.Delay(runDelay, TaskManager.Current.GetCancellationToken().Value);
+						lock (seqLock)
+						{
+							seq += $"E{mySeqNum}-";
+							Printer.WriteLine("End");
+						}
+						return doneResult;
+					}
+					catch
+					{
+						lock (seqLock)
+						{
+							seq += $"E{mySeqNum}X-";
+							Printer.WriteLine("End - in catch");
+						}
+						throw;
+					}
 				}
 				if (create)
 				{
@@ -214,12 +336,19 @@ namespace Fuxion.Test.Threading.Tasks
 								: (false, await Func_Async());
 						}
 					}
+					catch (TaskCanceledByConcurrencyException)
+					{
+						Printer.WriteLine("TaskCanceledByConcurrencyException");
+						return (true, cancelledResult);
+					}
 					catch (TaskCanceledException)
 					{
+						Printer.WriteLine("TaskCanceledException");
 						return (true, cancelledResult);
 					}
 					catch (AggregateException ex) when (ex.Flatten().InnerException is TaskCanceledException)
 					{
+						Printer.WriteLine("AggregateException");
 						return (true, cancelledResult);
 					}
 				});
@@ -228,31 +357,126 @@ namespace Fuxion.Test.Threading.Tasks
 			await Task.WhenAll(res);
 			results[0] = res[0].Result;
 			results[1] = res[1].Result;
-			results[2] = res[2].Result;			
+			results[2] = res[2].Result;
+			seq = seq.Trim('-');
+			for (var i = 0; i < results.Length; i++)
+				Printer.WriteLine($"Result {i}: WasCanceled<{results[i].WasCancelled}>,Result<{results[i].Result}>");
+			Printer.WriteLine($"Sequence: " + seq);
 			#endregion
 
 			#region Assert
-			if (cancel)
+
+			if (sequentially)
 			{
-				Assert.True(results[0].WasCancelled);
-				Assert.True(results[1].WasCancelled);
-				Assert.True(!results[2].WasCancelled);
-				if (!@void)
+				if (cancel)
 				{
-					Assert.Equal(cancelledResult, results[0].Result);
-					Assert.Equal(cancelledResult, results[1].Result);
-					Assert.Equal(doneResult, results[2].Result);
+					if (onlyLast)
+					{
+						Assert.Equal("S1-E1", seq);
+					}
+					else
+					{
+						Assert.Equal("S1-E1X-S2-E2X-S3-E3", seq);
+					}
+				}
+				else
+				{
+					if (onlyLast)
+					{
+						Assert.Equal("S1-E1", seq);
+					}
+					else
+					{
+						Assert.Equal("S1-E1-S2-E2-S3-E3", seq);
+					}
 				}
 			}
 			else
 			{
-				if (!@void)
+				if (cancel)
 				{
-					Assert.Equal(doneResult, results[0].Result);
-					Assert.Equal(doneResult, results[1].Result);
-					Assert.Equal(doneResult, results[2].Result);
+					if (onlyLast)
+					{
+						Assert.Contains("S1", seq);
+						Assert.Contains("E1", seq);
+					}
+					else
+					{
+						Assert.Contains("S1", seq);
+						Assert.Contains("E1X", seq);
+						Assert.Contains("S2", seq);
+						Assert.Contains("E2X", seq);
+						Assert.Contains("S3", seq);
+						Assert.Contains("E3", seq);
+					}
+				}
+				else
+				{
+					if (onlyLast)
+					{
+						Assert.Contains("S1", seq);
+						Assert.Contains("E1", seq);
+					}
+					else
+					{
+						Assert.Contains("S1", seq);
+						Assert.Contains("E1", seq);
+						Assert.Contains("S2", seq);
+						Assert.Contains("E2", seq);
+						Assert.Contains("S2", seq);
+						Assert.Contains("E2", seq);
+					}
 				}
 			}
+			
+
+
+			//if (cancel)
+			//{
+			//	Assert.True(results[0].WasCancelled);
+			//	Assert.True(results[1].WasCancelled);
+			//	Assert.True(!results[2].WasCancelled);
+			//	if (!@void)
+			//	{
+			//		Assert.Equal(cancelledResult, results[0].Result);
+			//		Assert.Equal(cancelledResult, results[1].Result);
+			//		Assert.Equal(doneResult, results[2].Result);
+			//	}
+			//}
+			//else
+			//{
+			//	if (!@void)
+			//	{
+			//		if (onlyLast)
+			//		{
+			//			Assert.Equal(cancelledResult, results[0].Result);
+			//			Assert.Equal(cancelledResult, results[1].Result);
+			//			Assert.Equal(doneResult, results[2].Result);
+			//		}
+			//		else
+			//		{
+			//			Assert.Equal(doneResult, results[0].Result);
+			//			Assert.Equal(doneResult, results[1].Result);
+			//			Assert.Equal(doneResult, results[2].Result);
+			//		}
+			//	}
+			//}
+			//if (sequentially)
+			//{
+			//	if(cancel)
+			//		Assert.Equal("S1-E1X-S2-E2X-S3-E3", seq);
+			//	else if(onlyLast)
+			//		Assert.Equal("S1-E1", seq);
+			//	else
+			//		Assert.Equal("S1-E1-S2-E2-S3-E3", seq);
+			//}
+			//if (onlyLast)
+			//{
+			//	//if (cancel)
+			//	//	Assert.Equal("S1-E1X", seq);
+			//	//else
+			//	//	Assert.Equal("", seq);
+			//}
 			#endregion
 		}
 		#region void_StartNew

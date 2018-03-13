@@ -13,6 +13,6 @@ namespace Fuxion.Threading.Tasks
 		public bool Sequentially { get; set; }
 		public bool ExecuteOnlyLast { get; set; }
 		public bool CancelPrevious { get; set; }
-		public bool WaitForCancelPrevious { get; set; }
+		//public bool WaitForCancelPrevious { get; set; }
 	}
 }

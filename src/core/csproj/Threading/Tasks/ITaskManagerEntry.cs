@@ -19,5 +19,5 @@ namespace Fuxion.Threading.Tasks
         void Cancel();
         void Start();
         CancellationTokenSource CancellationTokenSource { get; }
-    }
+	}
 }
