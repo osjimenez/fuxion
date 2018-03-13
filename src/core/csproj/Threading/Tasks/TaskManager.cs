@@ -15,7 +15,11 @@ namespace Fuxion.Threading.Tasks
 			{
 				l.Remove(entry);
 			}));
-			Tasks.Write(l => l.Add(entry));
+			Tasks.Write(l =>
+			{
+				Printer.WriteLine("Adding entry");
+				l.Add(entry);
+			});
 		}
 		internal static ITaskManagerEntry SearchEntry(Task task, bool throwExceptionIfNotFound = true)
 		{
@@ -46,6 +50,7 @@ namespace Fuxion.Threading.Tasks
 			=> Create(asyncAction, null, options, concurrencyProfile);
 		public static Task StartNew(Action action, TaskScheduler scheduler = null, TaskCreationOptions options = default(TaskCreationOptions), ConcurrencyProfile concurrencyProfile = default(ConcurrencyProfile))
 		{
+			Printer.WriteLine("StartNew");
 			var task = Create(action, scheduler, options, concurrencyProfile);
 			SearchEntry(task).Start();
 			return task;

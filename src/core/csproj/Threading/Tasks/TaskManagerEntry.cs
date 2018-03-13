@@ -70,26 +70,13 @@ namespace Fuxion.Threading.Tasks
 		public void DoConcurrency()
 		{
 			Printer.WriteLine("DoConcurrency");
-			TaskManager.Tasks.Read(l =>
-			{
-				Printer.WriteLine("DoConcurrency inside");
-				List<ITaskManagerEntry> allPrevious = new List<ITaskManagerEntry>();
-				foreach(var e in l)
-				{
-					if(e.Delegate == Delegate)
-					{
-						if(e == this)
-						{
-							break;
-						}
-						allPrevious.Add(e);
-					}
-				}
+			var allPrevious = TaskManager.Tasks.Read(l => l.Take(l.IndexOf(this)).Where(e => e.Delegate.Method == Delegate.Method && e.Delegate.Target.GetType() == Delegate.Target.GetType()).ToList());
+			//TaskManager.Tasks.Read(l =>
+			//{
+			//	var allPrevious = l.Take(l.IndexOf(this)).Where(e => e.Delegate.Method == Delegate.Method && e.Delegate.Target.GetType() == Delegate.Target.GetType()).ToList();
+			
 				Previous = allPrevious.LastOrDefault();
-				string GetPreviousIds()
-				{
-					return allPrevious.Select(e => e.Task.Id).Aggregate("", (c, a) => c + "," + a, a => a.Trim(','));
-				}
+				string GetPreviousIds() => allPrevious.Select(e => e.Task.Id).Aggregate("", (c, a) => c + "," + a, a => a.Trim(','));
 				Printer.WriteLine($"I have '{allPrevious.Count}' previous '{GetPreviousIds()}'");
 				if (ConcurrencyProfile.CancelPrevious)
 				{
@@ -123,13 +110,12 @@ namespace Fuxion.Threading.Tasks
 				}
 				if (ConcurrencyProfile.ExecuteOnlyLast)
 				{
-					if(Next != null)
+					if (Next != null)
 					{
 						throw new TaskCanceledByConcurrencyException();
 					}
 				}
-			});
-			
+			//});
 		}
 		public void Start() => Task.Start(TaskScheduler);
 
