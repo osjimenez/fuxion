@@ -65,57 +65,50 @@ namespace Fuxion.Threading.Tasks
 					((TaskManagerEntry)value)._Previous = this;
 			}
 		}
-
-		//ITaskManagerEntry previousEntry = null;
 		public void DoConcurrency()
 		{
 			Printer.WriteLine("DoConcurrency");
 			var allPrevious = TaskManager.Tasks.Read(l => l.Take(l.IndexOf(this)).Where(e => e.Delegate.Method == Delegate.Method && e.Delegate.Target.GetType() == Delegate.Target.GetType()).ToList());
-			//TaskManager.Tasks.Read(l =>
-			//{
-			//	var allPrevious = l.Take(l.IndexOf(this)).Where(e => e.Delegate.Method == Delegate.Method && e.Delegate.Target.GetType() == Delegate.Target.GetType()).ToList();
-			
-				Previous = allPrevious.LastOrDefault();
-				string GetPreviousIds() => allPrevious.Select(e => e.Task.Id).Aggregate("", (c, a) => c + "," + a, a => a.Trim(','));
-				Printer.WriteLine($"I have '{allPrevious.Count}' previous '{GetPreviousIds()}'");
-				if (ConcurrencyProfile.CancelPrevious)
+			Previous = allPrevious.LastOrDefault();
+			string GetPreviousIds() => allPrevious.Select(e => e.Task.Id).Aggregate("", (c, a) => c + "," + a, a => a.Trim(','));
+			Printer.WriteLine($"I have '{allPrevious.Count}' previous '{GetPreviousIds()}'");
+			if (ConcurrencyProfile.CancelPrevious)
+			{
+				Printer.WriteLine($"Canceling '{allPrevious.Count}' previous '{GetPreviousIds()}'");
+				foreach (var entry in allPrevious)
+					entry.Cancel();
+			}
+			if (ConcurrencyProfile.Sequentially)
+			{
+				Printer.WriteLine("Make sequential");
+				if (Previous != null)
 				{
-					Printer.WriteLine($"Canceling '{allPrevious.Count}' previous '{GetPreviousIds()}'");
-					foreach (var entry in allPrevious)
-						entry.Cancel();
-				}
-				if (ConcurrencyProfile.Sequentially)
-				{
-					Printer.WriteLine("Make sequential");
-					if (Previous != null)
+					Printer.WriteLine($"Wait for previous entry '{Previous.Task.Id}'");
+					try
 					{
-						Printer.WriteLine($"Wait for previous entry '{Previous.Task.Id}'");
-						try
-						{
-							Previous.Task.Wait();
-						}
-						catch (TaskCanceledException)
-						{
-							Printer.WriteLine("Previous entry was canceled");
-						}
-						catch (AggregateException ex) when (ex.Flatten().InnerException is TaskCanceledException)
-						{
-							Printer.WriteLine("Previous entry was canceled");
-						}
+						Previous.Task.Wait();
 					}
-					else
+					catch (TaskCanceledException)
 					{
-						Printer.WriteLine("NOT Have previous entry");
+						Printer.WriteLine("Previous entry was canceled");
+					}
+					catch (AggregateException ex) when (ex.Flatten().InnerException is TaskCanceledException)
+					{
+						Printer.WriteLine("Previous entry was canceled");
 					}
 				}
-				if (ConcurrencyProfile.ExecuteOnlyLast)
+				else
 				{
-					if (Next != null)
-					{
-						throw new TaskCanceledByConcurrencyException();
-					}
+					Printer.WriteLine("NOT Have previous entry");
 				}
-			//});
+			}
+			if (ConcurrencyProfile.ExecuteOnlyLast)
+			{
+				if (Next != null)
+				{
+					throw new TaskCanceledByConcurrencyException();
+				}
+			}
 		}
 		public void Start() => Task.Start(TaskScheduler);
 

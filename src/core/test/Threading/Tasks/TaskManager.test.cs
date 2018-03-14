@@ -30,71 +30,7 @@ namespace Fuxion.Test.Threading.Tasks
 				catch { }
 			};
 		}
-		#region Help methods
-		private Task Start_void()
-		{
-			Printer.WriteLine($"Start at {DateTime.Now.ToLongTimeString()}");
-			return null;
-		}
-		private Task<int> Start_int()
-		{
-			Printer.WriteLine($"Start at {DateTime.Now.ToLongTimeString()}");
-			return null;
-		}
-		private void Do_void(Task task, params int[] pars)
-		{
-			Printer.WriteLine($"Parameters = '{pars.Aggregate("", (a, c) => $"{a}-{c}", a => a.Trim('-'))}'");
-			try
-			{
-				task.Sleep(TimeSpan.FromMilliseconds(1));
-			}
-			catch (Exception ex)
-			{
-				Printer.WriteLine("Exception: " + ex.Message);
-				Assert.True(false, "Task is not managed by TaskManager");
-			}
-			Printer.WriteLine($"Finished at {DateTime.Now.ToLongTimeString()}");
-		}
-		private async Task Do_void_async(Task task, params int[] pars)
-		{
-			Printer.WriteLine($"Parameters = '{pars.Aggregate("", (a, c) => $"{a}-{c}", a => a.Trim('-'))}'");
-			await Task.Delay(100);
-			try
-			{
-				task.Sleep(TimeSpan.FromMilliseconds(100));
-			}
-			catch (Exception ex)
-			{
-				Printer.WriteLine("Exception: " + ex.Message);
-				Assert.True(false, "Task is not managed by TaskManager");
-			}
-			Printer.WriteLine($"Finished at {DateTime.Now.ToLongTimeString()}");
-		}
-		private int Do_int(Task task, params int[] pars)
-		{
-			Do_void(task, pars);
-			return 2;
-		}
-		private async Task<int> Do_int_async(Task task, params int[] pars)
-		{
-			await Do_void_async(task, pars);
-			return 2;
-		}
-		private void Assert_void(Task task)
-		{
-			if (task is Task<Task>)
-			{
-				Printer.WriteLine("Return task is Task<Task>> !!!");
-				(task as Task<Task>).Unwrap().Wait();
-			}
-			else task.Wait();
-		}
-		private void Assert_int(Task<int> task)
-		{
-			var res = task.Result;
-			Assert.Equal(2, res);
-		}
-		#endregion
+
 		[Fact(DisplayName = "TaskManager - SleepCancelation")]
 		public void TaskManager_SleepCancelation()
 		{
@@ -112,14 +48,12 @@ namespace Fuxion.Test.Threading.Tasks
 			//Assert.True(dt.AddMilliseconds(400) < DateTime.Now);
 		}
 		[Fact(DisplayName = "TaskManager - Sleep")]
-
 		public Task TaskManager_Sleep()
 		{
 			Task task = null;
 			var dt = DateTime.Now;
 			task = TaskManager.StartNew(() =>
 			{
-				//task.Sleep(TimeSpan.FromMilliseconds(2500), TimeSpan.FromMilliseconds(500));
 				task.Sleep(TimeSpan.FromMilliseconds(2500));
 			});
 			return task.ContinueWith(_ =>
@@ -128,72 +62,45 @@ namespace Fuxion.Test.Threading.Tasks
 			});
 		}
 
-		public static IEnumerable<object[]> GenerateStartNewValues2(int length)
+		public static IEnumerable<object[]> GenerateTheoryParameters(int maxParNum)
 		{
 			var res = new List<object[]>();
-			for (int i = 0; i < System.Math.Pow(2, length); i++)
+			for (int i = 0; i < System.Math.Pow(2, 6); i++)
 			{
 				BitArray b = new BitArray(new int[] { i });
-				var bits = b.Cast<bool>().Take(length).ToList();
-				if (!bits[0] || !bits[1] || !bits[3] || bits[4] || !bits[5]) continue;
+				var bits = b.Cast<bool>().Take(6).ToList();
+				//if (!bits[3] || bits[4] || !bits[5]) continue; // Disable cases generation
 				var strings = new[] {
-					bits[0] ? "VOID  " : "RESULT",
-					bits[1] ? "SYNC  " : "ASYNC ",
-					bits[2] ? "CREATE" : "START ",
-					bits[3] ? "SEQUEN" : "PARALL",
-					bits[4] ? "LAST  " : "ALL   ",
-					bits[5] ? "CANCEL" : "NO_CAN",
+					bits[0] ? "VOID  " : "RESULT", // 0
+					bits[1] ? "SYNC  " : "ASYNC ", // 1
+					bits[2] ? "CREATE" : "START ", // 2
+					bits[3] ? "SEQUEN" : "PARALL", // 3
+					bits[4] ? "LAST  " : "ALL   ", // 4
+					bits[5] ? "CANCEL" : "NO_CAN", // 5
 					};
-				for (int j = 0; j < 2; j++)
+				for (int j = 0; j < maxParNum + 1; j++)
 					res.Add(strings.Cast<object>().ToList().Transform(ss => ss.Add(j)).ToArray());
 			}
 			return res;
 		}
-
 		[Theory(DisplayName = "TaskManager")]
-		[MemberData(nameof(GenerateStartNewValues2), 6)]
+		[MemberData(nameof(GenerateTheoryParameters), 9)]
 		public async void TaskManager_Theory2(params object[] _)
-		{
-			bool @void = (string)_[0] == "VOID  ";
-			bool sync = (string)_[1] == "SYNC  ";
-			bool create = (string)_[2] == "CREATE";
-			bool sequentially = (string)_[3] == "SEQUEN";
-			bool onlyLast = (string)_[4] == "LAST  ";
-			bool cancel = (string)_[5] == "CANCEL";
-			await TaskManager_StartNew(@void, sync, create, sequentially, onlyLast, cancel, (int)_[6]);
-		}
+			=> await TaskManager_Theory((string)_[0], (string)_[1], (string)_[2], (string)_[3], (string)_[4], (string)_[5], (int)_[6]);
 		[Theory(DisplayName = "TaskManager")]
-		[MemberData(nameof(GenerateStartNewValues2), 6)]
-		public async void TaskManager_Theory(string r, string c, string m, string p, string o, string n, int np)
+		[MemberData(nameof(GenerateTheoryParameters), 9)]
+		public async Task TaskManager_Theory(string r, string c, string m, string p, string o, string n, int parNum)
 		{
+			#region Variables
+			// Convert parameters to bool
 			bool @void = r == "VOID  ";
 			bool sync = c == "SYNC  ";
 			bool create = m == "CREATE";
 			bool sequentially = p == "SEQUEN";
 			bool onlyLast = o == "LAST  ";
 			bool cancel = n == "CANCEL";
-			await TaskManager_StartNew(@void, sync, create, sequentially, onlyLast, cancel, np);
-		}
-		public static IEnumerable<object[]> GenerateStartNewValues(int length)
-		{
-			var res = new List<object[]>();
-			for (int i = 0; i < System.Math.Pow(2, length); i++)
-			{
-				BitArray b = new BitArray(new int[] { i });
-				var bits = b.Cast<bool>().Take(length).ToArray();
-				if (!bits[0] || !bits[1] || !bits[3] || bits[4] || !bits[5]) continue;
-				for (int j = 0; j < 2; j++)
-					res.Add(bits.Cast<object>().ToList().Transform(ss => ss.Add(j)).ToArray());
-			}
-			return res;
-		}
-		//[Theory(DisplayName = "TaskManager - StartNew")]
-		//[MemberData(nameof(GenerateStartNewValues), 6)]
-		//public async Task TaskManager_StartNew(bool @void, bool sync, bool create, bool sequentially, bool onlyLast, bool cancel, int numPars)
-		internal async Task TaskManager_StartNew(bool @void, bool sync, bool create, bool sequentially, bool onlyLast, bool cancel, int numPars)
-		{
-			// test constants
-			int runDelay = 10;
+
+			int runDelay = 5;
 			string cancelledResult = "Canceled";
 			string doneResult = "Done";
 
@@ -211,7 +118,7 @@ namespace Fuxion.Test.Threading.Tasks
 				Printer.WriteLine($"{nameof(sequentially)}: {sequentially}");
 				Printer.WriteLine($"{nameof(onlyLast)}: {onlyLast}");
 				Printer.WriteLine($"{nameof(cancel)}: {cancel}");
-				Printer.WriteLine($"{nameof(numPars)}: {numPars}");
+				Printer.WriteLine($"{nameof(parNum)}: {parNum}");
 			}
 			Printer.WriteLine("==============");
 
@@ -224,7 +131,9 @@ namespace Fuxion.Test.Threading.Tasks
 			AutoResetEvent are = new AutoResetEvent(true);
 			object seqLocker = new object();
 			string seq = null;
-			#region Run modes
+			var results = new(bool WasCancelled, string Result)[3];
+
+			#region Methods
 			void AddToSeq(string val)
 			{
 				lock (seqLocker)
@@ -236,28 +145,48 @@ namespace Fuxion.Test.Threading.Tasks
 			{
 				var res = new List<object>();
 				res.Add(del);
-				for (var i = 0; i < numPars; i++)
-					res.Add(i.ToString());
-				if(!create) res.Add(null);
+				for (var i = 0; i < parNum; i++)
+					res.Add(i);
+				if (!create) res.Add(null);
 				res.Add(null);
 				res.Add(pro);
 				return res.ToArray();
 			}
 			MethodInfo GetMethod()
 			{
-				var met = typeof(TaskManager).GetMethods()
-							.Where(m => m.Name == (create ? nameof(TaskManager.Create) : nameof(TaskManager.StartNew)))
-							.Where(m => m.GetGenericArguments().Count() == (@void ? numPars : numPars + 1))
-							.Where(m => m.GetParameters().First().ParameterType.Name.StartsWith(@void ? "Action" : "Func"))
-							.Single();
-				if(met.IsGenericMethod)
-					met = met.MakeGenericMethod(met.GetGenericArguments().Select(a => typeof(string)).ToArray());
+				var mets = typeof(TaskManager).GetMethods().ToList();
+				mets = mets.Where(me => me.Name == (create ? nameof(TaskManager.Create) : nameof(TaskManager.StartNew))).ToList();
+				mets = mets.Where(me => me.GetParameters().Count() == (3 + parNum + (create ? 0 : 1))).ToList();
+				mets = mets.Where(me => me.GetGenericArguments().Count() == (@void ? parNum : parNum + 1)).ToList();
+				mets = mets.Where(me => me.GetParameters().First().ParameterType.Name.StartsWith(@void && sync
+								? "Action"
+								: "Func")).ToList();
+
+				mets = mets.Where(me => me.GetParameters().First().ParameterType.GetGenericArguments().Count() == (!sync
+								? parNum + 1
+								: @void
+									? parNum
+									: parNum + 1)).ToList();
+				mets = mets.Where(me =>
+					@void && parNum == 0
+					||
+					sync && !typeof(Task).IsAssignableFrom(me.GetParameters().First().ParameterType.GetGenericArguments().Last())
+					||
+					!sync && typeof(Task).IsAssignableFrom(me.GetParameters().First().ParameterType.GetGenericArguments().Last())).ToList();
+				var met = mets.Single();
+				if (met.IsGenericMethod)
+				{
+					var args = met.GetGenericArguments().Select(a => typeof(int)).ToArray();
+					if (!@void)
+						args[args.Length - 1] = typeof(string);
+					met = met.MakeGenericMethod(args);
+				}
 				Printer.WriteLine("Method: " + met.GetSignature(true, true, true, false, true, false));
 				return met;
 			}
-			Task Action_Sync(int order)
+			Delegate GetDelegate(int order)
 			{
-				void Do()
+				void Void_Sync()
 				{
 					Printer.WriteLine($"Do {order}");
 					try
@@ -275,144 +204,259 @@ namespace Fuxion.Test.Threading.Tasks
 						throw;
 					}
 				}
-				Delegate del = null;
-				if (del == null)
+				async Task Void_Async()
 				{
-					switch (numPars)
+					Printer.WriteLine($"Do {order}");
+					try
 					{
-						case 0:
-							del = new Action(() => Do());
-							break;
-						case 1:
-							del = new Action<string>(s => Do());
-							break;
-						default:
-							break;
+						AddToSeq($"S{order}-");
+						Printer.WriteLine("Start " + order);
+						await Task.Delay(runDelay, TaskManager.Current.GetCancellationToken().Value);
+						AddToSeq($"E{order}-");
+						Printer.WriteLine("End " + order);
+					}
+					catch
+					{
+						AddToSeq($"E{order}X-");
+						Printer.WriteLine($"End {order} - in catch");
+						throw;
 					}
 				}
+				string Result_Sync()
+				{
+					Printer.WriteLine($"Do {order}");
+					try
+					{
+						AddToSeq($"S{order}-");
+						Printer.WriteLine("Start " + order);
+						Task.Delay(runDelay, TaskManager.Current.GetCancellationToken().Value).Wait();
+						AddToSeq($"E{order}-");
+						Printer.WriteLine("End " + order);
+						return $"{doneResult}_{parNum}";
+					}
+					catch
+					{
+						AddToSeq($"E{order}X-");
+						Printer.WriteLine($"End {order} - in catch");
+						throw;
+					}
+				}
+				async Task<string> Result_Async()
+				{
+					Printer.WriteLine($"Do {order}");
+					try
+					{
+						AddToSeq($"S{order}-");
+						Printer.WriteLine("Start " + order);
+						await Task.Delay(runDelay, TaskManager.Current.GetCancellationToken().Value);
+						AddToSeq($"E{order}-");
+						Printer.WriteLine("End " + order);
+						return $"{doneResult}_{parNum}";
+					}
+					catch
+					{
+						AddToSeq($"E{order}X-");
+						Printer.WriteLine($"End {order} - in catch");
+						throw;
+					}
+				}
+				if (@void)
+				{
+					if (sync)
+					{
+						switch (parNum)
+						{
+							case 0:
+								return new Action(() => Void_Sync());
+							case 1:
+								return new Action<int>(s => Void_Sync());
+							case 2:
+								return new Action<int, int>((s1, s2) => Void_Sync());
+							case 3:
+								return new Action<int, int, int>((s1, s2, s3) => Void_Sync());
+							case 4:
+								return new Action<int, int, int, int>((s1, s2, s3, s4) => Void_Sync());
+							case 5:
+								return new Action<int, int, int, int, int>((s1, s2, s3, s4, s5) => Void_Sync());
+							case 6:
+								return new Action<int, int, int, int, int, int>((s1, s2, s3, s4, s5, s6) => Void_Sync());
+							case 7:
+								return new Action<int, int, int, int, int, int, int>((s1, s2, s3, s4, s5, s6, s7) => Void_Sync());
+							case 8:
+								return new Action<int, int, int, int, int, int, int, int>((s1, s2, s3, s4, s5, s6, s7, s8) => Void_Sync());
+							case 9:
+								return new Action<int, int, int, int, int, int, int, int, int>((s1, s2, s3, s4, s5, s6, s7, s8, s9) => Void_Sync());
+							default:
+								return null;
+						}
+					}
+					else
+					{
+						switch (parNum)
+						{
+							case 0:
+								return new Func<Task>(() => Void_Async());
+							case 1:
+								return new Func<int, Task>(s => Void_Async());
+							case 2:
+								return new Func<int, int, Task>((s1, s2) => Void_Async());
+							case 3:
+								return new Func<int, int, int, Task>((s1, s2, s3) => Void_Async());
+							case 4:
+								return new Func<int, int, int, int, Task>((s1, s2, s3, s4) => Void_Async());
+							case 5:
+								return new Func<int, int, int, int, int, Task>((s1, s2, s3, s4, s5) => Void_Async());
+							case 6:
+								return new Func<int, int, int, int, int, int, Task>((s1, s2, s3, s4, s5, s6) => Void_Async());
+							case 7:
+								return new Func<int, int, int, int, int, int, int, Task>((s1, s2, s3, s4, s5, s6, s7) => Void_Async());
+							case 8:
+								return new Func<int, int, int, int, int, int, int, int, Task>((s1, s2, s3, s4, s5, s6, s7, s8) => Void_Async());
+							case 9:
+								return new Func<int, int, int, int, int, int, int, int, int, Task>((s1, s2, s3, s4, s5, s6, s7, s8, s9) => Void_Async());
+							default:
+								return null;
+						}
+					}
+				}
+				else
+				{
+					if (sync)
+					{
+						switch (parNum)
+						{
+							case 0:
+								return new Func<string>(() => Result_Sync());
+							case 1:
+								return new Func<int, string>(s => Result_Sync());
+							case 2:
+								return new Func<int, int, string>((s1, s2) => Result_Sync());
+							case 3:
+								return new Func<int, int, int, string>((s1, s2, s3) => Result_Sync());
+							case 4:
+								return new Func<int, int, int, int, string>((s1, s2, s3, s4) => Result_Sync());
+							case 5:
+								return new Func<int, int, int, int, int, string>((s1, s2, s3, s4, s5) => Result_Sync());
+							case 6:
+								return new Func<int, int, int, int, int, int, string>((s1, s2, s3, s4, s5, s6) => Result_Sync());
+							case 7:
+								return new Func<int, int, int, int, int, int, int, string>((s1, s2, s3, s4, s5, s6, s7) => Result_Sync());
+							case 8:
+								return new Func<int, int, int, int, int, int, int, int, string>((s1, s2, s3, s4, s5, s6, s7, s8) => Result_Sync());
+							case 9:
+								return new Func<int, int, int, int, int, int, int, int, int, string>((s1, s2, s3, s4, s5, s6, s7, s8, s9) => Result_Sync());
+							default:
+								return null;
+						}
+					}
+					else
+					{
+						switch (parNum)
+						{
+							case 0:
+								return new Func<Task<string>>(() => Result_Async());
+							case 1:
+								return new Func<int, Task<string>>(s => Result_Async());
+							case 2:
+								return new Func<int, int, Task<string>>((s1, s2) => Result_Async());
+							case 3:
+								return new Func<int, int, int, Task<string>>((s1, s2, s3) => Result_Async());
+							case 4:
+								return new Func<int, int, int, int, Task<string>>((s1, s2, s3, s4) => Result_Async());
+							case 5:
+								return new Func<int, int, int, int, int, Task<string>>((s1, s2, s3, s4, s5) => Result_Async());
+							case 6:
+								return new Func<int, int, int, int, int, int, Task<string>>((s1, s2, s3, s4, s5, s6) => Result_Async());
+							case 7:
+								return new Func<int, int, int, int, int, int, int, Task<string>>((s1, s2, s3, s4, s5, s6, s7) => Result_Async());
+							case 8:
+								return new Func<int, int, int, int, int, int, int, int, Task<string>>((s1, s2, s3, s4, s5, s6, s7, s8) => Result_Async());
+							case 9:
+								return new Func<int, int, int, int, int, int, int, int, int, Task<string>>((s1, s2, s3, s4, s5, s6, s7, s8, s9) => Result_Async());
+							default:
+								return null;
+						}
+					}
+				}
+			}
+			Task Action_Sync(int order)
+			{
 				try
 				{
 					if (create)
 					{
-						var task = (Task)GetMethod().Invoke(null, GenerateParameters(del, concurrencyProfile));
+						var task = (Task)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), concurrencyProfile));
 						task.Start();
 						return task;
-					}else return (Task)GetMethod().Invoke(null, GenerateParameters(del, concurrencyProfile));
+					}
+					else return (Task)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), concurrencyProfile));
 				}
 				catch (Exception ex)
 				{
-					Printer.WriteLine($"===== {ex.GetType().Name}: {ex.Message}");
+					Printer.WriteLine($"Error '{ex.GetType().Name}': {ex.Message}");
 					throw;
 				}
 				finally { are.Set(); }
 			}
-			Task Action_Async(int num)
+			Task Action_Async(int order)
 			{
-				async Task Do()
+				try
 				{
-					Printer.WriteLine($"Do {num}");
-					try
+					if (create)
 					{
-						AddToSeq($"S{num}-");
-						Printer.WriteLine("Start " + num);
-						await Task.Delay(runDelay, TaskManager.Current.GetCancellationToken().Value);
-						AddToSeq($"E{num}-");
-						Printer.WriteLine("End " + num);
+						var task = (Task)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), concurrencyProfile));
+						task.Start();
+						return task;
 					}
-					catch
-					{
-						AddToSeq($"E{num}X-");
-						Printer.WriteLine($"End {num} - in catch");
-						throw;
-					}
+					else return (Task)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), concurrencyProfile));
 				}
-				if (create)
+				catch (Exception ex)
 				{
-					var task = TaskManager.Create(async () => await Do(), concurrencyProfile: concurrencyProfile);
-					are.Set();
-					task.Start();
-					return task;
+					Printer.WriteLine($"Error '{ex.GetType().Name}': {ex.Message}");
+					throw;
 				}
-				else
-				{
-					var task = TaskManager.StartNew(async () => await Do(), concurrencyProfile: concurrencyProfile);
-					are.Set();
-					return task;
-				}
+				finally { are.Set(); }
 			}
-			Task<string> Func_Sync(int num)
+			Task<string> Func_Sync(int order)
 			{
-				string Do()
+				try
 				{
-					Printer.WriteLine($"Do {num}");
-					try
+					if (create)
 					{
-						AddToSeq($"S{num}-");
-						Printer.WriteLine("Start " + num);
-						Task.Delay(runDelay, TaskManager.Current.GetCancellationToken().Value).Wait();
-						AddToSeq($"E{num}-");
-						Printer.WriteLine("End " + num);
-						return doneResult;
+						var task = (Task<string>)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), concurrencyProfile));
+						task.Start();
+						return task;
 					}
-					catch
-					{
-						AddToSeq($"E{num}X-");
-						Printer.WriteLine($"End {num} - in catch");
-						throw;
-					}
+					else return (Task<string>)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), concurrencyProfile));
 				}
-				if (create)
+				catch (Exception ex)
 				{
-					var task = TaskManager.Create(() => Do(), concurrencyProfile: concurrencyProfile);
-					are.Set();
-					task.Start();
-					return task;
+					Printer.WriteLine($"Error '{ex.GetType().Name}': {ex.Message}");
+					throw;
 				}
-				else
-				{
-					var task = TaskManager.StartNew(() => Do(), concurrencyProfile: concurrencyProfile);
-					are.Set();
-					return task;
-				}
+				finally { are.Set(); }
 			}
-			Task<string> Func_Async(int num)
+			Task<string> Func_Async(int order)
 			{
-				async Task<string> Do()
+				try
 				{
-					Printer.WriteLine($"Do {num}");
-					try
+					if (create)
 					{
-						AddToSeq($"S{num}-");
-						Printer.WriteLine("Start " + num);
-						await Task.Delay(runDelay, TaskManager.Current.GetCancellationToken().Value);
-						AddToSeq($"E{num}-");
-						Printer.WriteLine("End " + num);
-						return doneResult;
+						var task = (Task<string>)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), concurrencyProfile));
+						task.Start();
+						return task;
 					}
-					catch
-					{
-						AddToSeq($"E{num}X-");
-						Printer.WriteLine($"End {num} - in catch");
-						throw;
-					}
+					else return (Task<string>)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), concurrencyProfile));
 				}
-				if (create)
+				catch (Exception ex)
 				{
-					var task = TaskManager.Create(async () => await Do(), concurrencyProfile: concurrencyProfile);
-					are.Set();
-					task.Start();
-					return task;
+					Printer.WriteLine($"Error '{ex.GetType().Name}': {ex.Message}");
+					throw;
 				}
-				else
-				{
-					var task = TaskManager.StartNew(async () => await Do(), concurrencyProfile: concurrencyProfile);
-					are.Set();
-					return task;
-				}
+				finally { are.Set(); }
 			}
 			#endregion
-
-			var results = new(bool WasCancelled, string Result)[3];
+			#endregion
 
 			#region Run
 			using (Printer.Indent2("Run"))
@@ -479,8 +523,7 @@ namespace Fuxion.Test.Threading.Tasks
 			}
 			#endregion
 
-			#region Assert
-
+			#region Assert sequence
 			if (sequentially)
 			{
 				if (cancel)
@@ -488,7 +531,7 @@ namespace Fuxion.Test.Threading.Tasks
 					if (onlyLast)
 					{
 						// Only last call executed sequentially canceling previous
-						Assert.True(seq == "S1-E1-S2-E2-S3-E3" || seq == "S1-E1-S2-E2X-S3-E3" || seq == "S1-E1X-S2-E2X-S3-E3" || seq == "S1-E1X-S2-E2-S3-E3" 
+						Assert.True(seq == "S1-E1-S2-E2-S3-E3" || seq == "S1-E1-S2-E2X-S3-E3" || seq == "S1-E1X-S2-E2X-S3-E3" || seq == "S1-E1X-S2-E2-S3-E3"
 							|| seq == "S1-E1-S3-E3" || seq == "S1-E1X-S3-E3"
 							|| seq == "S2-E2-S3-E3" || seq == "S2-E2X-S3-E3"
 							|| seq == "S3-E3");
@@ -552,287 +595,15 @@ namespace Fuxion.Test.Threading.Tasks
 				}
 			}
 			#endregion
+
+			#region Assert results
+			if (!@void)
+			{
+				if (!results[0].WasCancelled) Assert.Equal($"{doneResult}_{parNum}", results[0].Result);
+				if (!results[1].WasCancelled) Assert.Equal($"{doneResult}_{parNum}", results[1].Result);
+				if (!results[2].WasCancelled) Assert.Equal($"{doneResult}_{parNum}", results[2].Result);
+			}
+			#endregion
 		}
-		#region void_StartNew
-		[Fact]
-		public void TaskManager_void_StartNew()
-		{
-			var task = Start_void();
-			task = TaskManager.StartNew(() => Do_void(task));
-			Assert_void(task);
-		}
-		[Fact]
-		public void TaskManager_void_StartNew_p1()
-		{
-			var task = Start_void();
-			task = TaskManager.StartNew(p1 => Do_void(task, p1), 1);
-			Assert_void(task);
-		}
-		[Fact]
-		public void TaskManager_void_StartNew_p1_p2()
-		{
-			var task = Start_void();
-			task = TaskManager.StartNew((p1, p2) => Do_void(task, p1, p2), 1, 2);
-			Assert_void(task);
-		}
-		[Fact]
-		public void TaskManager_void_StartNew_p1_p2_p3()
-		{
-			var task = Start_void();
-			task = TaskManager.StartNew((p1, p2, p3) => Do_void(task, p1, p2, p3), 1, 2, 3);
-			Assert_void(task);
-		}
-		[Fact]
-		public void TaskManager_void_StartNew_p1_p2_p3_p4()
-		{
-			var task = Start_void();
-			task = TaskManager.StartNew((p1, p2, p3, p4) => Do_void(task, p1, p2, p3, p4), 1, 2, 3, 4);
-			Assert_void(task);
-		}
-		[Fact]
-		public void TaskManager_void_StartNew_p1_p2_p3_p4_p5()
-		{
-			var task = Start_void();
-			task = TaskManager.StartNew((p1, p2, p3, p4, p5) => Do_void(task, p1, p2, p3, p4, p5), 1, 2, 3, 4, 5);
-			Assert_void(task);
-		}
-		[Fact]
-		public void TaskManager_void_StartNew_p1_p2_p3_p4_p5_p6()
-		{
-			var task = Start_void();
-			task = TaskManager.StartNew((p1, p2, p3, p4, p5, p6) => Do_void(task, p1, p2, p3, p4, p5, p6), 1, 2, 3, 4, 5, 6);
-			Assert_void(task);
-		}
-		[Fact]
-		public void TaskManager_void_StartNew_p1_p2_p3_p4_p5_p6_p7()
-		{
-			var task = Start_void();
-			task = TaskManager.StartNew((p1, p2, p3, p4, p5, p6, p7) => Do_void(task, p1, p2, p3, p4, p5, p6, p7), 1, 2, 3, 4, 5, 6, 7);
-			Assert_void(task);
-		}
-		[Fact]
-		public void TaskManager_void_StartNew_p1_p2_p3_p4_p5_p6_p7_p8()
-		{
-			var task = Start_void();
-			task = TaskManager.StartNew((p1, p2, p3, p4, p5, p6, p7, p8) => Do_void(task, p1, p2, p3, p4, p5, p6, p7, p8), 1, 2, 3, 4, 5, 6, 7, 8);
-			Assert_void(task);
-		}
-		#endregion
-		#region void_StartNew_async
-		[Fact]
-		public void TaskManager_void_StartNew_async()
-		{
-			var task = Start_void();
-			task = TaskManager.StartNew(async () => await Do_void_async(task));
-			Assert_void(task);
-		}
-		[Fact]
-		public void TaskManager_void_Startnew_async_p1()
-		{
-			Task task = Start_void();
-			task = TaskManager.StartNew(async p1 => await Do_void_async(task, p1), 1);
-			Assert_void(task);
-		}
-		[Fact]
-		public void TaskManager_void_StartNew_async_p1_p2()
-		{
-			Task task = Start_void();
-			task = TaskManager.StartNew(async (p1, p2) => await Do_void_async(task, p1, p2), 1, 2);
-			Assert_void(task);
-		}
-		[Fact]
-		public void TaskManager_void_StartNew_async_p1_p2_p3()
-		{
-			Task task = Start_void();
-			task = TaskManager.StartNew(async (p1, p2, p3) => await Do_void_async(task, p1, p2, p3), 1, 2, 3);
-			Assert_void(task);
-		}
-		[Fact]
-		public void TaskManager_void_StartNew_async_p1_p2_p3_p4()
-		{
-			Task task = Start_void();
-			task = TaskManager.StartNew(async (p1, p2, p3, p4) => await Do_void_async(task, p1, p2, p3, p4), 1, 2, 3, 4);
-			Assert_void(task);
-		}
-		[Fact]
-		public void TaskManager_void_StartNew_async_p1_p2_p3_p4_p5()
-		{
-			Task task = Start_void();
-			task = TaskManager.StartNew(async (p1, p2, p3, p4, p5) => await Do_void_async(task, p1, p2, p3, p4, p5), 1, 2, 3, 4, 5);
-			Assert_void(task);
-		}
-		[Fact]
-		public void TaskManager_void_StartNew_async_p1_p2_p3_p4_p5_p6()
-		{
-			Task task = Start_void();
-			task = TaskManager.StartNew(async (p1, p2, p3, p4, p5, p6) => await Do_void_async(task, p1, p2, p3, p4, p5, p6), 1, 2, 3, 4, 5, 6);
-			Assert_void(task);
-		}
-		[Fact]
-		public void TaskManager_void_StartNew_async_p1_p2_p3_p4_p5_p6_p7()
-		{
-			Task task = Start_void();
-			task = TaskManager.StartNew(async (p1, p2, p3, p4, p5, p6, p7) => await Do_void_async(task, p1, p2, p3, p4, p5, p6, p7), 1, 2, 3, 4, 5, 6, 7);
-			Assert_void(task);
-		}
-		[Fact]
-		public void TaskManager_void_StartNew_async_p1_p2_p3_p4_p5_p6_p7_p8()
-		{
-			Task task = Start_void();
-			task = TaskManager.StartNew(async (p1, p2, p3, p4, p5, p6, p7, p8) => await Do_void_async(task, p1, p2, p3, p4, p5, p6, p7, p8), 1, 2, 3, 4, 5, 6, 7, 8);
-			Assert_void(task);
-		}
-		//[Fact]
-		//public void TaskManager_void_StartNew_async_p1_p2_p3_p4_p5_p6_p7_p8_p9()
-		//{
-		//    Task task = Start_void();
-		//    task = TaskManager.StartNew(async (p1, p2, p3, p4, p5, p6, p7, p8, p9) => await Do_void_async(task, p1, p2, p3, p4, p5, p6, p7, p8, p9), 1, 2, 3, 4, 5, 6, 7, 8, 9);
-		//    Assert_void(task);
-		//}
-		#endregion
-		#region int_StartNew
-		[Fact]
-		public void TaskManager_int_StartNew()
-		{
-			var task = Start_int();
-			task = TaskManager.StartNew(() => Do_int(task));
-			Assert_int(task);
-		}
-		[Fact]
-		public void TaskManager_int_StartNew_p1()
-		{
-			var task = Start_int();
-			task = TaskManager.StartNew(p1 => Do_int(task, p1), 1);
-			Assert_int(task);
-		}
-		[Fact]
-		public void TaskManager_int_StartNew_p1_p2()
-		{
-			var task = Start_int();
-			task = TaskManager.StartNew((p1, p2) => Do_int(task, p1, p2), 1, 2);
-			Assert_int(task);
-		}
-		[Fact]
-		public void TaskManager_int_StartNew_p1_p2_p3()
-		{
-			var task = Start_int();
-			task = TaskManager.StartNew((p1, p2, p3) => Do_int(task, p1, p2, p3), 1, 2, 3);
-			Assert_int(task);
-		}
-		[Fact]
-		public void TaskManager_int_StartNew_p1_p2_p3_p4()
-		{
-			var task = Start_int();
-			task = TaskManager.StartNew((p1, p2, p3, p4) => Do_int(task, p1, p2, p3, p4), 1, 2, 3, 4);
-			Assert_int(task);
-		}
-		[Fact]
-		public void TaskManager_int_StartNew_p1_p2_p3_p4_p5()
-		{
-			var task = Start_int();
-			task = TaskManager.StartNew((p1, p2, p3, p4, p5) => Do_int(task, p1, p2, p3, p4, p5), 1, 2, 3, 4, 5);
-			Assert_int(task);
-		}
-		[Fact]
-		public void TaskManager_int_StartNew_p1_p2_p3_p4_p5_p6()
-		{
-			var task = Start_int();
-			task = TaskManager.StartNew((p1, p2, p3, p4, p5, p6) => Do_int(task, p1, p2, p3, p4, p5, p6), 1, 2, 3, 4, 5, 6);
-			Assert_int(task);
-		}
-		[Fact]
-		public void TaskManager_int_StartNew_p1_p2_p3_p4_p5_p6_p7()
-		{
-			var task = Start_int();
-			task = TaskManager.StartNew((p1, p2, p3, p4, p5, p6, p7) => Do_int(task, p1, p2, p3, p4, p5, p6, p7), 1, 2, 3, 4, 5, 6, 7);
-			Assert_int(task);
-		}
-		[Fact]
-		public void TaskManager_int_StartNew_p1_p2_p3_p4_p5_p6_p7_p8()
-		{
-			var task = Start_int();
-			task = TaskManager.StartNew((p1, p2, p3, p4, p5, p6, p7, p8) => Do_int(task, p1, p2, p3, p4, p5, p6, p7, p8), 1, 2, 3, 4, 5, 6, 7, 8);
-			Assert_int(task);
-		}
-		//[Fact]
-		//public void TaskManager_int_StartNew_p1_p2_p3_p4_p5_p6_p7_p8_p9()
-		//{
-		//    var task = Start_int();
-		//    task = TaskManager.StartNew((p1, p2, p3, p4, p5, p6, p7, p8, p9) => Do_int(task, p1, p2, p3, p4, p5, p6, p7, p8, p9), 1, 2, 3, 4, 5, 6, 7, 8, 9);
-		//    Assert_int(task);
-		//}
-		#endregion
-		#region int_StartNew_async
-		[Fact]
-		public void TaskManager_int_StartNew_async()
-		{
-			var task = Start_int();
-			task = TaskManager.StartNew(async () => await Do_int_async(task));
-			Assert_int(task);
-		}
-		[Fact]
-		public void TaskManager_int_StartNew_async_p1()
-		{
-			var task = Start_int();
-			task = TaskManager.StartNew(async p1 => await Do_int_async(task, p1), 1);
-			Assert_int(task);
-		}
-		[Fact]
-		public void TaskManager_int_StartNew_async_p1_p2()
-		{
-			var task = Start_int();
-			task = TaskManager.StartNew(async (p1, p2) => await Do_int_async(task, p1, p2), 1, 2);
-			Assert_int(task);
-		}
-		[Fact]
-		public void TaskManager_int_StartNew_async_p1_p2_p3()
-		{
-			var task = Start_int();
-			task = TaskManager.StartNew(async (p1, p2, p3) => await Do_int_async(task, p1, p2, p3), 1, 2, 3);
-			Assert_int(task);
-		}
-		[Fact]
-		public void TaskManager_int_StartNew_async_p1_p2_p3_p4()
-		{
-			var task = Start_int();
-			task = TaskManager.StartNew(async (p1, p2, p3, p4) => await Do_int_async(task, p1, p2, p3, p4), 1, 2, 3, 4);
-			Assert_int(task);
-		}
-		[Fact]
-		public void TaskManager_int_StartNew_async_p1_p2_p3_p4_p5()
-		{
-			var task = Start_int();
-			task = TaskManager.StartNew(async (p1, p2, p3, p4, p5) => await Do_int_async(task, p1, p2, p3, p4, p5), 1, 2, 3, 4, 5);
-			Assert_int(task);
-		}
-		[Fact]
-		public void TaskManager_int_StartNew_async_p1_p2_p3_p4_p5_p6()
-		{
-			var task = Start_int();
-			task = TaskManager.StartNew(async (p1, p2, p3, p4, p5, p6) => await Do_int_async(task, p1, p2, p3, p4, p5, p6), 1, 2, 3, 4, 5, 6);
-			Assert_int(task);
-		}
-		[Fact]
-		public void TaskManager_int_StartNew_async_p1_p2_p3_p4_p5_p6_p7()
-		{
-			var task = Start_int();
-			task = TaskManager.StartNew(async (p1, p2, p3, p4, p5, p6, p7) => await Do_int_async(task, p1, p2, p3, p4, p5, p6, p7), 1, 2, 3, 4, 5, 6, 7);
-			Assert_int(task);
-		}
-		[Fact]
-		public void TaskManager_int_StartNew_async_p1_p2_p3_p4_p5_p6_p7_p8()
-		{
-			var task = Start_int();
-			task = TaskManager.StartNew(async (p1, p2, p3, p4, p5, p6, p7, p8) => await Do_int_async(task, p1, p2, p3, p4, p5, p6, p7, p8), 1, 2, 3, 4, 5, 6, 7, 8);
-			Assert_int(task);
-		}
-		//[Fact]
-		//public void TaskManager_int_StartNew_async_p1_p2_p3_p4_p5_p6_p7_p8_p9()
-		//{
-		//    var task = Start_int();
-		//    task = TaskManager.StartNew(async (p1, p2, p3, p4, p5, p6, p7, p8, p9) => await Do_int_async(task, p1, p2, p3, p4, p5, p6, p7, p8, p9), 1, 2, 3, 4, 5, 6, 7, 8, 9);
-		//    Assert_int(task);
-		//}
-		#endregion
 	}
 }

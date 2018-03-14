@@ -50,27 +50,6 @@ namespace System.Threading.Tasks
 			var entry = TaskManager.SearchEntry(task, throwExceptionIfNotRunning);
 			return entry?.CancellationTokenSource.Token;
 		}
-		//public static TResult WaitResult<TResult>(this Task<TResult> task, TimeSpan timeout = default(TimeSpan), bool rethrowException = true)
-		//{
-		//    try
-		//    {
-		//        var tt = task.ConfigureAwait(false);
-		//        if (timeout == default(TimeSpan)) task.Wait();
-		//        else task.Wait(timeout);
-		//        return task.Result;
-		//    }
-		//    catch (AggregateException aex)
-		//    {
-		//        if (rethrowException)
-		//        {
-		//            aex = aex.Flatten();
-		//            if (aex.InnerExceptions.Count == 1) throw aex.InnerException;
-		//            throw aex;
-		//        }
-		//        else
-		//            return default(TResult);
-		//    }
-		//}
 		public static bool Sleep(this Task task, TimeSpan timeout, bool rethrowException = false)
 		{
 			try
