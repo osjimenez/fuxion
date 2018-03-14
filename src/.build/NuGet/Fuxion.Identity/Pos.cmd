@@ -1,15 +1,9 @@
-mkdir src\.build\NuGet\Fuxion.Identity\nuspec\lib\net461
-copy  src\.build\NuGet\Fuxion.Identity\out~\net461\Fuxion.Identity.dll src\.build\NuGet\Fuxion.Identity\nuspec\lib\net461\Fuxion.Identity.dll
-copy  src\.build\NuGet\Fuxion.Identity\out~\net461\Fuxion.Identity.pdb src\.build\NuGet\Fuxion.Identity\nuspec\lib\net461\Fuxion.Identity.pdb
+rem NET 4.7.1
+mkdir src\.build\NuGet\Fuxion.Identity\nuspec\lib\net471
+copy  src\.build\NuGet\Fuxion.Identity\out~\net471\Fuxion.Identity.dll src\.build\NuGet\Fuxion.Identity\nuspec\lib\net471\Fuxion.Identity.dll
+copy  src\.build\NuGet\Fuxion.Identity\out~\net471\Fuxion.Identity.pdb src\.build\NuGet\Fuxion.Identity\nuspec\lib\net471\Fuxion.Identity.pdb
 
-mkdir src\.build\NuGet\Fuxion.Identity\nuspec\lib\net462
-copy  src\.build\NuGet\Fuxion.Identity\out~\net461\Fuxion.Identity.dll src\.build\NuGet\Fuxion.Identity\nuspec\lib\net462\Fuxion.Identity.dll
-copy  src\.build\NuGet\Fuxion.Identity\out~\net461\Fuxion.Identity.pdb src\.build\NuGet\Fuxion.Identity\nuspec\lib\net462\Fuxion.Identity.pdb
-
-mkdir src\.build\NuGet\Fuxion.Identity\nuspec\lib\net47
-copy  src\.build\NuGet\Fuxion.Identity\out~\net47\Fuxion.Identity.dll src\.build\NuGet\Fuxion.Identity\nuspec\lib\net47\Fuxion.Identity.dll
-copy  src\.build\NuGet\Fuxion.Identity\out~\net47\Fuxion.Identity.pdb src\.build\NuGet\Fuxion.Identity\nuspec\lib\net47\Fuxion.Identity.pdb
-                              
+rem NET Standard 2.0
 mkdir src\.build\NuGet\Fuxion.Identity\nuspec\lib\netstandard2.0
 copy  src\.build\NuGet\Fuxion.Identity\out~\netstandard2.0\Fuxion.Identity.dll src\.build\NuGet\Fuxion.Identity\nuspec\lib\netstandard2.0\Fuxion.Identity.dll
 copy  src\.build\NuGet\Fuxion.Identity\out~\netstandard2.0\Fuxion.Identity.pdb src\.build\NuGet\Fuxion.Identity\nuspec\lib\netstandard2.0\Fuxion.Identity.pdb
