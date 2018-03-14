@@ -142,8 +142,8 @@ namespace Fuxion.Threading.Tasks
 				action();
 			}, CancellationTokenSource.Token, TaskCreationOptions);
 		}
-		public ActionTaskManagerEntry(Action<object> action, object state, TaskScheduler scheduler, TaskCreationOptions options, ConcurrencyProfile concurrencyProfile = default(ConcurrencyProfile))
-			: base(action, scheduler, default(TaskCreationOptions), concurrencyProfile)
+		public ActionTaskManagerEntry(Action<object> action, object state, TaskScheduler scheduler, TaskCreationOptions options, ConcurrencyProfile concurrencyProfile = default(ConcurrencyProfile), Delegate @delegate = null)
+			: base(@delegate ?? action, scheduler, default(TaskCreationOptions), concurrencyProfile)
 		{
 			Task = new Task(st =>
 			{
@@ -164,8 +164,8 @@ namespace Fuxion.Threading.Tasks
 				return res;
 			}, CancellationTokenSource.Token, TaskCreationOptions);
 		}
-		public FuncTaskManagerEntry(Func<object, TResult> func, object state, TaskScheduler scheduler, TaskCreationOptions options, ConcurrencyProfile concurrencyProfile = default(ConcurrencyProfile))
-			: base(func, scheduler, default(TaskCreationOptions), concurrencyProfile)
+		public FuncTaskManagerEntry(Func<object, TResult> func, object state, TaskScheduler scheduler, TaskCreationOptions options, ConcurrencyProfile concurrencyProfile = default(ConcurrencyProfile), Delegate @delegate = null)
+			: base(@delegate ?? func, scheduler, default(TaskCreationOptions), concurrencyProfile)
 		{
 			Task = new Task<TResult>(st =>
 			{

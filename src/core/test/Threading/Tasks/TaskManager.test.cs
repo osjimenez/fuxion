@@ -4,6 +4,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -126,6 +128,52 @@ namespace Fuxion.Test.Threading.Tasks
 			});
 		}
 
+		public static IEnumerable<object[]> GenerateStartNewValues2(int length)
+		{
+			var res = new List<object[]>();
+			for (int i = 0; i < System.Math.Pow(2, length); i++)
+			{
+				BitArray b = new BitArray(new int[] { i });
+				var bits = b.Cast<bool>().Take(length).ToList();
+				if (!bits[0] || !bits[1] || !bits[3] || bits[4] || !bits[5]) continue;
+				var strings = new[] {
+					bits[0] ? "VOID  " : "RESULT",
+					bits[1] ? "SYNC  " : "ASYNC ",
+					bits[2] ? "CREATE" : "START ",
+					bits[3] ? "SEQUEN" : "PARALL",
+					bits[4] ? "LAST  " : "ALL   ",
+					bits[5] ? "CANCEL" : "NO_CAN",
+					};
+				for (int j = 0; j < 2; j++)
+					res.Add(strings.Cast<object>().ToList().Transform(ss => ss.Add(j)).ToArray());
+			}
+			return res;
+		}
+
+		[Theory(DisplayName = "TaskManager")]
+		[MemberData(nameof(GenerateStartNewValues2), 6)]
+		public async void TaskManager_Theory2(params object[] _)
+		{
+			bool @void = (string)_[0] == "VOID  ";
+			bool sync = (string)_[1] == "SYNC  ";
+			bool create = (string)_[2] == "CREATE";
+			bool sequentially = (string)_[3] == "SEQUEN";
+			bool onlyLast = (string)_[4] == "LAST  ";
+			bool cancel = (string)_[5] == "CANCEL";
+			await TaskManager_StartNew(@void, sync, create, sequentially, onlyLast, cancel, (int)_[6]);
+		}
+		[Theory(DisplayName = "TaskManager")]
+		[MemberData(nameof(GenerateStartNewValues2), 6)]
+		public async void TaskManager_Theory(string r, string c, string m, string p, string o, string n, int np)
+		{
+			bool @void = r == "VOID  ";
+			bool sync = c == "SYNC  ";
+			bool create = m == "CREATE";
+			bool sequentially = p == "SEQUEN";
+			bool onlyLast = o == "LAST  ";
+			bool cancel = n == "CANCEL";
+			await TaskManager_StartNew(@void, sync, create, sequentially, onlyLast, cancel, np);
+		}
 		public static IEnumerable<object[]> GenerateStartNewValues(int length)
 		{
 			var res = new List<object[]>();
@@ -133,14 +181,16 @@ namespace Fuxion.Test.Threading.Tasks
 			{
 				BitArray b = new BitArray(new int[] { i });
 				var bits = b.Cast<bool>().Take(length).ToArray();
-				//if (bits[0] && bits[1] && !bits[2] && bits[3])// && !bits[4])
-					res.Add(bits.Cast<object>().ToArray());
+				if (!bits[0] || !bits[1] || !bits[3] || bits[4] || !bits[5]) continue;
+				for (int j = 0; j < 2; j++)
+					res.Add(bits.Cast<object>().ToList().Transform(ss => ss.Add(j)).ToArray());
 			}
 			return res;
 		}
-		[Theory(DisplayName = "TaskManager - StartNew")]
-		[MemberData(nameof(GenerateStartNewValues), 6)]
-		public async void TaskManager_StartNew(bool @void, bool sync, bool create, bool sequentially, bool onlyLast, bool cancel)
+		//[Theory(DisplayName = "TaskManager - StartNew")]
+		//[MemberData(nameof(GenerateStartNewValues), 6)]
+		//public async Task TaskManager_StartNew(bool @void, bool sync, bool create, bool sequentially, bool onlyLast, bool cancel, int numPars)
+		internal async Task TaskManager_StartNew(bool @void, bool sync, bool create, bool sequentially, bool onlyLast, bool cancel, int numPars)
 		{
 			// test constants
 			int runDelay = 10;
@@ -161,6 +211,7 @@ namespace Fuxion.Test.Threading.Tasks
 				Printer.WriteLine($"{nameof(sequentially)}: {sequentially}");
 				Printer.WriteLine($"{nameof(onlyLast)}: {onlyLast}");
 				Printer.WriteLine($"{nameof(cancel)}: {cancel}");
+				Printer.WriteLine($"{nameof(numPars)}: {numPars}");
 			}
 			Printer.WriteLine("==============");
 
@@ -181,39 +232,79 @@ namespace Fuxion.Test.Threading.Tasks
 					seq += val;
 				}
 			}
-			Task Action_Sync(int num)
+			object[] GenerateParameters(Delegate del, ConcurrencyProfile pro)
+			{
+				var res = new List<object>();
+				res.Add(del);
+				for (var i = 0; i < numPars; i++)
+					res.Add(i.ToString());
+				if(!create) res.Add(null);
+				res.Add(null);
+				res.Add(pro);
+				return res.ToArray();
+			}
+			MethodInfo GetMethod()
+			{
+				var met = typeof(TaskManager).GetMethods()
+							.Where(m => m.Name == (create ? nameof(TaskManager.Create) : nameof(TaskManager.StartNew)))
+							.Where(m => m.GetGenericArguments().Count() == (@void ? numPars : numPars + 1))
+							.Where(m => m.GetParameters().First().ParameterType.Name.StartsWith(@void ? "Action" : "Func"))
+							.Single();
+				if(met.IsGenericMethod)
+					met = met.MakeGenericMethod(met.GetGenericArguments().Select(a => typeof(string)).ToArray());
+				Printer.WriteLine("Method: " + met.GetSignature(true, true, true, false, true, false));
+				return met;
+			}
+			Task Action_Sync(int order)
 			{
 				void Do()
 				{
-					Printer.WriteLine($"Do {num}");
+					Printer.WriteLine($"Do {order}");
 					try
 					{
-						AddToSeq($"S{num}-");
-						Printer.WriteLine("Start " + num);
+						AddToSeq($"S{order}-");
+						Printer.WriteLine("Start " + order);
 						Task.Delay(runDelay, TaskManager.Current.GetCancellationToken().Value).Wait();
-						AddToSeq($"E{num}-");
-						Printer.WriteLine("End " + num);
+						AddToSeq($"E{order}-");
+						Printer.WriteLine("End " + order);
 					}
 					catch
 					{
-						AddToSeq($"E{num}X-");
-						Printer.WriteLine($"End {num} - in catch");
+						AddToSeq($"E{order}X-");
+						Printer.WriteLine($"End {order} - in catch");
 						throw;
 					}
 				}
-				if (create)
+				Delegate del = null;
+				if (del == null)
 				{
-					var task = TaskManager.Create(() => Do(), concurrencyProfile: concurrencyProfile);
-					are.Set();
-					task.Start();
-					return task;
+					switch (numPars)
+					{
+						case 0:
+							del = new Action(() => Do());
+							break;
+						case 1:
+							del = new Action<string>(s => Do());
+							break;
+						default:
+							break;
+					}
 				}
-				else
+				try
 				{
-					var task = TaskManager.StartNew(() => Do(), concurrencyProfile: concurrencyProfile);
-					are.Set();
-					return task;
+					if (create)
+					{
+						var task = (Task)GetMethod().Invoke(null, GenerateParameters(del, concurrencyProfile));
+						task.Start();
+						return task;
+					}else return (Task)GetMethod().Invoke(null, GenerateParameters(del, concurrencyProfile));
 				}
+				catch (Exception ex)
+				{
+					Printer.WriteLine($"===== {ex.GetType().Name}: {ex.Message}");
+					throw;
+				}
+				finally { are.Set(); }
 			}
 			Task Action_Async(int num)
 			{

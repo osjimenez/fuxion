@@ -4,11 +4,11 @@ using System.Text;
 
 namespace Fuxion.Threading.Tasks
 {
-	public class ConcurrencyProfile
+	public struct ConcurrencyProfile
 	{
-		//public static readonly ConcurrencyProfile RunInParallel = new ConcurrencyProfile();
-		//public static readonly ConcurrencyProfile RunSequentially = new ConcurrencyProfile { Sequentially = true };
-		//public static readonly ConcurrencyProfile RunSequentiallyAndExecuteOnlyLast = new ConcurrencyProfile { Sequentially = true, ExecuteOnlyLast = true };
+		public static readonly ConcurrencyProfile RunInParallel = new ConcurrencyProfile();
+		public static readonly ConcurrencyProfile RunSequentially = new ConcurrencyProfile { Sequentially = true };
+		public static readonly ConcurrencyProfile RunSequentiallyAndExecuteOnlyLast = new ConcurrencyProfile { Sequentially = true, ExecuteOnlyLast = true };
 
 		public bool Sequentially { get; set; }
 		public bool ExecuteOnlyLast { get; set; }
