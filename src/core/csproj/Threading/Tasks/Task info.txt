@@ -1,2 +1,0 @@
-﻿Async/Await - Best Practices in Asynchronous Programming
-https://msdn.microsoft.com/en-us/magazine/jj991977.aspx

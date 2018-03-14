@@ -1,4 +1,4 @@
-﻿#if (NET461 || NET462 || NET47)
+﻿#if (NET471)
 using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;

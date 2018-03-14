@@ -14,15 +14,7 @@
     <licenseUrl>https://raw.githubusercontent.com/osjimenez/Fuxion/develop/LICENSE</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <dependencies>
-      <group targetFramework="net461">
-        <dependency id="log4net" version="2.0.8" />
-        <dependency id="Fuxion" version="$version$" />
-      </group>
-      <group targetFramework="net462">
-        <dependency id="log4net" version="2.0.8" />
-        <dependency id="Fuxion" version="$version$" />
-      </group>
-      <group targetFramework="net47">
+      <group targetFramework="net471">
         <dependency id="log4net" version="2.0.8" />
         <dependency id="Fuxion" version="$version$" />
       </group>

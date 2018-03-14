@@ -17,26 +17,23 @@ using System.Windows.Shapes;
 
 namespace DemoWpf
 {
-    /// <summary>
-    /// Interaction logic for ConvertersWindow.xaml
-    /// </summary>
-    public partial class ConvertersWindow : Window
-    {
-        public ConvertersWindow()
-        {
-            InitializeComponent();
-            var vm = new ViewModel();
-            vm.List = new List<string>();
-            vm.List.Add("Hello");
-            DataContext = vm;
-        }
-    }
-    public class ViewModel
-    {
+	public partial class ConvertersWindow : Window
+	{
+		public ConvertersWindow()
+		{
+			InitializeComponent();
+			var vm = new ViewModel();
+			vm.List = new List<string>();
+			vm.List.Add("Hello");
+			DataContext = vm;
+		}
+	}
+	public class ViewModel
+	{
 		[Display(Name = "Lista")]
-        public List<string> List { get; set; }
-        public bool IsEnabled1 { get; set; } = false;
-        public bool IsEnabled2 { get; set; } = true;
+		public List<string> List { get; set; }
+		public bool IsEnabled1 { get; set; } = false;
+		public bool IsEnabled2 { get; set; } = true;
 		public MyEnum MyEnum { get; set; } = MyEnum.Two;
 	}
 	public enum MyEnum
@@ -55,7 +52,7 @@ namespace DemoWpf
 		Nine,
 		Ten
 	}
-	[ValueConversion(typeof(MyEnum),typeof(int), ParameterType = typeof(int))]
+	[ValueConversion(typeof(MyEnum), typeof(int), ParameterType = typeof(int))]
 	public class MyEnumToIntConverter : GenericConverter<MyEnum, int, int>
 	{
 		public override int Convert(MyEnum source, int parameter, CultureInfo culture)

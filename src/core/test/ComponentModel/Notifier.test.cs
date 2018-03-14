@@ -321,7 +321,7 @@ namespace Fuxion.Test.ComponentModel
             TestInitialize();
         }
         //[TestInitialize]
-        public void TestInitialize()
+        private void TestInitialize()
         {
             //Eliminar todos los contadores
             counters.Clear();

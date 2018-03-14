@@ -14,29 +14,25 @@
     <licenseUrl>https://raw.githubusercontent.com/osjimenez/Fuxion/develop/LICENSE</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <dependencies>
-      <group targetFramework="net461">
+      <group targetFramework="net471">
         <dependency id="Fuxion" version="$version$" />
-        <dependency id="Flurl" version="2.5.0" />
-        <dependency id="Flurl.Http" version="2.0.1" />
+        <dependency id="Flurl" version="2.7.0" />
+        <dependency id="Flurl.Http" version="2.2.1" />
         <dependency id="System.Net.Http" version="4.3.3" />
-      </group>
-      <group targetFramework="net462">
-        <dependency id="Fuxion" version="$version$" />
-        <dependency id="Flurl" version="2.5.0" />
-        <dependency id="Flurl.Http" version="2.0.1" />
-        <dependency id="System.Net.Http" version="4.3.3" />
-      </group>
-      <group targetFramework="net47">
-        <dependency id="Fuxion" version="$version$" />
-        <dependency id="Flurl" version="2.5.0" />
-        <dependency id="Flurl.Http" version="2.0.1" />
-        <dependency id="System.Net.Http" version="4.3.3" />
+        <dependency id="Microsoft.AspNet.WebApi.Core" version="5.2.4" />
       </group>
       <group targetFramework="netstandard2.0">
-        <dependency id="NETStandard.Library" version="2.0.0" />
         <dependency id="Fuxion" version="$version$" />
-        <dependency id="Flurl" version="2.5.0" />
-        <dependency id="Flurl.Http" version="2.0.1" />
+        <dependency id="Flurl" version="2.7.0" />
+        <dependency id="Flurl.Http" version="2.2.1" />
+        <dependency id="System.Net.Http" version="4.3.3" />
+        <dependency id="Microsoft.AspNetCore.All" version="2.0.6" />
+      </group>
+      <group targetFramework="netcoreapp2.0">
+        <dependency id="NETStandard.Library" version="2.0.1" />
+        <dependency id="Fuxion" version="$version$" />
+        <dependency id="Flurl" version="2.7.0" />
+        <dependency id="Flurl.Http" version="2.2.1" />
         <dependency id="System.Net.Http" version="4.3.3" />
       </group>
     </dependencies>

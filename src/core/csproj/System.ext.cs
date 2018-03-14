@@ -21,18 +21,18 @@ namespace System
 {
 	public static partial class Extensions
 	{
-#if (NET461 || NET462 || NET47)
-        /// <summary>
-        /// Permite una clonación en profundidad de origen. 
-        /// </summary>
-        /// <param name="origen">Objeto serializable</param>
-        /// <exception cref="ArgumentExcepcion">
-        /// Se produce cuando el objeto no es serializable.
-        /// </exception>
-        /// <remarks>Extraido desde 
-        /// http://es.debugmodeon.com/articulo/clonar-objetos-de-estructura-compleja
-        /// </remarks>
-        public static T Clone<T>(this T source)
+#if (NET471)
+		/// <summary>
+		/// Permite una clonación en profundidad de origen. 
+		/// </summary>
+		/// <param name="origen">Objeto serializable</param>
+		/// <exception cref="ArgumentExcepcion">
+		/// Se produce cuando el objeto no es serializable.
+		/// </exception>
+		/// <remarks>Extraido desde 
+		/// http://es.debugmodeon.com/articulo/clonar-objetos-de-estructura-compleja
+		/// </remarks>
+		public static T Clone<T>(this T source)
         {
             // Verificamos que sea serializable antes de hacer la copia            
             if (!typeof(T).IsSerializable)

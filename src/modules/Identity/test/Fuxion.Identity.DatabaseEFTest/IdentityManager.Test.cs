@@ -118,7 +118,7 @@ namespace Fuxion.Identity.DatabaseEFTest
         }
         #endregion
         #region Filter
-        //[Theory]
+        //[Theory(Skip = "Skipped")]
         //[InlineData(new object[] {
         //    "Two discriminators of same type", scenarios,
         //    "root", "root",
@@ -143,7 +143,7 @@ namespace Fuxion.Identity.DatabaseEFTest
         //    new[] { CircleList.CIRCLE_1 },
         //    true,
         //    new string[] { } })]
-        public void Filter(string _, string scenarios, string username, string password, string[] functionsIds, Type type, string[] expectedIds, bool allowOtherResults, string[] unexpectedIds)
+        private void Filter(string _, string scenarios, string username, string password, string[] functionsIds, Type type, string[] expectedIds, bool allowOtherResults, string[] unexpectedIds)
         {
             //Assert.True(false, "Require revision after change all context design");
             foreach (var scenario in scenarios.Split('·'))

@@ -13,7 +13,7 @@ namespace Fuxion.Identity.DatabaseTest
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseInMemoryDatabase();
+            optionsBuilder.UseInMemoryDatabase("MEMORY");
             //optionsBuilder.UseSqlServer(@"Data Source=.\sqlexpress;Initial Catalog=FuxionIdentity;Integrated Security=True");
             base.OnConfiguring(optionsBuilder);
         }
