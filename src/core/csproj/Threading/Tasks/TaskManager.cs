@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Fuxion.Logging;
 namespace Fuxion.Threading.Tasks
 {
+	[DebuggerStepThrough]
 	public static class TaskManager
 	{
 		readonly internal static Locker<List<ITaskManagerEntry>> Tasks = new Locker<List<ITaskManagerEntry>>(new List<ITaskManagerEntry>());

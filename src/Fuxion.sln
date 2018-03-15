@@ -151,6 +151,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreConsole", "sketches\Cor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion.Windows.Controls", "modules\Windows\Fuxion.Windows.Controls\Fuxion.Windows.Controls.csproj", "{E51B208C-A63A-4EA2-93B6-8AE3C263BFA9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoNuget", "sketches\DemoNuget\DemoNuget.csproj", "{7632DEC0-4476-4594-A9C7-536238264CF2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -499,6 +501,22 @@ Global
 		{E51B208C-A63A-4EA2-93B6-8AE3C263BFA9}.Release|x64.Build.0 = Release|Any CPU
 		{E51B208C-A63A-4EA2-93B6-8AE3C263BFA9}.Release|x86.ActiveCfg = Release|Any CPU
 		{E51B208C-A63A-4EA2-93B6-8AE3C263BFA9}.Release|x86.Build.0 = Release|Any CPU
+		{7632DEC0-4476-4594-A9C7-536238264CF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7632DEC0-4476-4594-A9C7-536238264CF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7632DEC0-4476-4594-A9C7-536238264CF2}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{7632DEC0-4476-4594-A9C7-536238264CF2}.Debug|ARM.Build.0 = Debug|Any CPU
+		{7632DEC0-4476-4594-A9C7-536238264CF2}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{7632DEC0-4476-4594-A9C7-536238264CF2}.Debug|x64.Build.0 = Debug|Any CPU
+		{7632DEC0-4476-4594-A9C7-536238264CF2}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7632DEC0-4476-4594-A9C7-536238264CF2}.Debug|x86.Build.0 = Debug|Any CPU
+		{7632DEC0-4476-4594-A9C7-536238264CF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7632DEC0-4476-4594-A9C7-536238264CF2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7632DEC0-4476-4594-A9C7-536238264CF2}.Release|ARM.ActiveCfg = Release|Any CPU
+		{7632DEC0-4476-4594-A9C7-536238264CF2}.Release|ARM.Build.0 = Release|Any CPU
+		{7632DEC0-4476-4594-A9C7-536238264CF2}.Release|x64.ActiveCfg = Release|Any CPU
+		{7632DEC0-4476-4594-A9C7-536238264CF2}.Release|x64.Build.0 = Release|Any CPU
+		{7632DEC0-4476-4594-A9C7-536238264CF2}.Release|x86.ActiveCfg = Release|Any CPU
+		{7632DEC0-4476-4594-A9C7-536238264CF2}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -549,9 +567,10 @@ Global
 		{C52D20F2-CDC5-472F-B2D0-31A14A0722C7} = {3D8F0482-E13F-4701-A59B-4359A1614CEE}
 		{8E17FC57-10F6-4865-B757-2DDA7712FD7B} = {D73E328B-68C4-499C-9532-A7D9ACC4F186}
 		{E51B208C-A63A-4EA2-93B6-8AE3C263BFA9} = {3D8F0482-E13F-4701-A59B-4359A1614CEE}
+		{7632DEC0-4476-4594-A9C7-536238264CF2} = {D73E328B-68C4-499C-9532-A7D9ACC4F186}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {935D1C59-A88C-491F-B27D-3B0CF8AF2605}
 		EnterpriseLibraryConfigurationToolBinariesPathV6 = packages\EnterpriseLibrary.TransientFaultHandling.6.0.1304.0\lib\portable-net45+win+wp8;packages\EnterpriseLibrary.TransientFaultHandling.Data.6.0.1304.1\lib\NET45
+		SolutionGuid = {935D1C59-A88C-491F-B27D-3B0CF8AF2605}
 	EndGlobalSection
 EndGlobal
