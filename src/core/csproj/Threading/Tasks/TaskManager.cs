@@ -40,16 +40,20 @@ namespace Fuxion.Threading.Tasks
 			AddEntry(entry);
 			return entry;
 		}
+		[DebuggerStepThrough]
 		public static Task Create(Action action, TaskCreationOptions options = default(TaskCreationOptions), ConcurrencyProfile concurrencyProfile = default(ConcurrencyProfile))
 			=> CreateEntry(action, null, options, concurrencyProfile).Task;
+		[DebuggerStepThrough]
 		public static Task Create(Func<Task> func, TaskCreationOptions options = default(TaskCreationOptions), ConcurrencyProfile concurrencyProfile = default(ConcurrencyProfile))
 			=> CreateEntry(new Action(() => func().Wait()), null, options, concurrencyProfile, func).Task;
+		[DebuggerStepThrough]
 		public static Task StartNew(Action action, TaskScheduler scheduler = null, TaskCreationOptions options = default(TaskCreationOptions), ConcurrencyProfile concurrencyProfile = default(ConcurrencyProfile))
 		{
 			var task = CreateEntry(action, scheduler, options, concurrencyProfile).Task;
 			SearchEntry(task).Start();
 			return task;
 		}
+		[DebuggerStepThrough]
 		public static Task StartNew(Func<Task> func, TaskScheduler scheduler = null, TaskCreationOptions options = default(TaskCreationOptions), ConcurrencyProfile concurrencyProfile = default(ConcurrencyProfile))
 		{
 			var task = CreateEntry(new Action(() => func().Wait()), scheduler, options, concurrencyProfile, func).Task;
