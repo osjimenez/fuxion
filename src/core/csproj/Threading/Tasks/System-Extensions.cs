@@ -59,9 +59,10 @@ namespace System.Threading.Tasks
 				return true;
 			}
 			// If task was cancelled, nothing happens
-			catch (AggregateException aex) when (aex.InnerException is TaskCanceledException)
+			catch (Exception ex) when (ex is TaskCanceledException || ex is AggregateException aex && aex.Flatten().InnerException is TaskCanceledException)
 			{
-				if (rethrowException) throw aex.InnerException;
+				if (rethrowException)
+					throw ex is AggregateException aex2 && aex2.Flatten().InnerException is TaskCanceledException tce ? tce : ex;
 				return false;
 			}
 		}
