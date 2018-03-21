@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -67,39 +68,39 @@ namespace Fuxion.Threading.Tasks
 		}
 		public void DoConcurrency()
 		{
-			Printer.WriteLine("DoConcurrency");
+			Debug.WriteLine("DoConcurrency");
 			var allPrevious = TaskManager.Tasks.Read(l => l.Take(l.IndexOf(this)).Where(e => e.Delegate.Method == Delegate.Method && e.Delegate.Target.GetType() == Delegate.Target.GetType()).ToList());
 			Previous = allPrevious.LastOrDefault();
 			string GetPreviousIds() => allPrevious.Select(e => e.Task.Id).Aggregate("", (c, a) => c + "," + a, a => a.Trim(','));
-			Printer.WriteLine($"I have '{allPrevious.Count}' previous '{GetPreviousIds()}'");
+			Debug.WriteLine($"I have '{allPrevious.Count}' previous '{GetPreviousIds()}'");
 			if (ConcurrencyProfile.CancelPrevious)
 			{
-				Printer.WriteLine($"Canceling '{allPrevious.Count}' previous '{GetPreviousIds()}'");
+				Debug.WriteLine($"Canceling '{allPrevious.Count}' previous '{GetPreviousIds()}'");
 				foreach (var entry in allPrevious)
 					entry.Cancel();
 			}
 			if (ConcurrencyProfile.Sequentially)
 			{
-				Printer.WriteLine("Make sequential");
+				Debug.WriteLine("Make sequential");
 				if (Previous != null)
 				{
-					Printer.WriteLine($"Wait for previous entry '{Previous.Task.Id}'");
+					Debug.WriteLine($"Wait for previous entry '{Previous.Task.Id}'");
 					try
 					{
 						Previous.Task.Wait();
 					}
 					catch (TaskCanceledException)
 					{
-						Printer.WriteLine("Previous entry was canceled");
+						Debug.WriteLine("Previous entry was canceled");
 					}
 					catch (AggregateException ex) when (ex.Flatten().InnerException is TaskCanceledException)
 					{
-						Printer.WriteLine("Previous entry was canceled");
+						Debug.WriteLine("Previous entry was canceled");
 					}
 				}
 				else
 				{
-					Printer.WriteLine("NOT Have previous entry");
+					Debug.WriteLine("NOT Have previous entry");
 				}
 			}
 			if (ConcurrencyProfile.ExecuteOnlyLast)
