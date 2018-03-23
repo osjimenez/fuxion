@@ -19,19 +19,20 @@ namespace Fuxion
 		public override string ToString() => Name;
 		public static implicit operator NamedEnumValue(Enum @enum) => new NamedEnumValue(@enum);
 		public static implicit operator Enum(NamedEnumValue value) => value.Value;
-		public static bool operator ==(Enum @enum, NamedEnumValue value) => @enum.Equals(value.Value);
-		public static bool operator !=(Enum @enum, NamedEnumValue value) => !@enum.Equals(value.Value);
-		public static bool operator ==(NamedEnumValue value, Enum @enum) => @enum.Equals(value.Value);
-		public static bool operator !=(NamedEnumValue value, Enum @enum) => !@enum.Equals(value.Value);
+		public static bool operator ==(Enum @enum, NamedEnumValue value) => @enum == null && value.Value == null || value.Equals(@enum);
+		public static bool operator !=(Enum @enum, NamedEnumValue value) => @enum == null && value.Value != null || !value.Equals(@enum);
+		public static bool operator ==(NamedEnumValue value, Enum @enum) => @enum == null && value.Value == null || value.Equals(@enum);
+		public static bool operator !=(NamedEnumValue value, Enum @enum) => @enum == null && value.Value != null || !value.Equals(@enum);
+
 		public override bool Equals(object obj)
 		{
 			if (obj is Enum @enum)
-				return @enum.Equals(Value);
+				return Equals(@enum);
 			if (obj is NamedEnumValue value)
-				return value.Value.Equals(Value);
+				return Equals(value.Value);
 			return false;
 		}
 		public override int GetHashCode() => Value.GetHashCode();
-		public bool Equals(Enum @enum) => @enum.Equals(Value);
+		public bool Equals(Enum @enum) => @enum != null && @enum.Equals(Value) || @enum == null && Value == null;
 	}
 }

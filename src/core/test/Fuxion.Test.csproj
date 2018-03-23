@@ -62,6 +62,7 @@
     <Compile Include="ComponentModel\DataAnnotations\NotifierValidator.test.cs" />
     <Compile Include="ComponentModel\DataAnnotations\ValidatableMock.cs" />
     <Compile Include="Configuration\ConfigurationManager.test.cs" />
+    <Compile Include="NamedEnumValue.Test.cs" />
     <Compile Include="Net\ConnectableNotifier.test.cs" />
     <Compile Include="Collections\ObjectModel\DeactivatableObservableCollection.test.cs" />
     <Compile Include="Factories\Factory.test.cs" />

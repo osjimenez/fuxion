@@ -5,7 +5,7 @@ using System.Text;
 
 namespace System.ComponentModel.DataAnnotations
 {
-	[AttributeUsage(AttributeTargets.Class)]
+	[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
 	public class DisplayForClassAttribute : Attribute
 	{
 		protected readonly DisplayAttribute Attribute = new DisplayAttribute();
