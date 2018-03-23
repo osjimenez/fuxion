@@ -51,8 +51,9 @@ namespace Fuxion.Identity
             if (att != null && !string.IsNullOrWhiteSpace(att.Name)) return att.Name;
             return type.Name;
         };
+		public Func<string, string> GetVirtualNameFunction { get; set; } = (virtualId) => virtualId;
 
-        private void Initialize()
+		private void Initialize()
         {
             ValidateEntries();
 #if DEBUG
@@ -84,7 +85,7 @@ namespace Fuxion.Identity
                     Discriminator = new TypeDiscriminator
                     {
                         Id = id,
-                        Name = id,
+                        Name = GetVirtualNameFunction(id),
                         TypeId = TypeDiscriminator.TypeDiscriminatorId,
                         TypeName = DiscriminatorTypeName,
                     }
