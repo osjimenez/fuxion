@@ -84,6 +84,7 @@
     <Compile Include="Dao\Rol.dao.cs" />
     <Compile Include="Dao\Scope.dao.cs" />
     <Compile Include="Function.Test.cs" />
+    <Compile Include="Helpers\PasswordProviderTest.cs" />
     <Compile Include="Repositories\IdentityMemoryRepository.cs" />
     <Compile Include="Mocks\PasswordProvider.cs" />
     <Compile Include="Mocks\GuidDiscriminator.cs" />
