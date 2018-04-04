@@ -28,7 +28,7 @@ namespace System.Threading.Tasks
 					Task.WaitAll(me.Where(t => t != null && !t.IsCanceled).ToArray());
 			}
 			// If task was cancelled, nothing happens
-			catch (AggregateException aex) when (aex.InnerException is TaskCanceledException) { }
+			catch (Exception ex) when (ex is TaskCanceledException || ex is AggregateException aex && aex.Flatten().InnerException is TaskCanceledException) { }
 		}
 		public static void OnCancelRequested(this Task task, Action action) => TaskManager.SearchEntry(task, true).CancelRequested += (s, e) => action();
 		public static Task OnCancel(this Task task, Action action) => task.ContinueWith(t => action(), TaskContinuationOptions.OnlyOnCanceled);

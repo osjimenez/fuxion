@@ -1,12 +1,9 @@
-﻿using Fuxion.Logging;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
+﻿using System;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Fuxion.Logging;
 
 namespace Fuxion.Threading.Tasks
 {
@@ -20,31 +17,10 @@ namespace Fuxion.Threading.Tasks
 			TaskCreationOptions = options;
 			ConcurrencyProfile = concurrencyProfile;
 		}
-
-		private ILog log = LogManager.Create(typeof(TaskManagerEntry));
-		Task _Task;
-
-		public ConcurrencyProfile ConcurrencyProfile { get; set; }
-		public Task Task
-		{
-			get { return _Task; }
-			set
-			{
-				_Task = value;
-				_Task.ContinueWith(t =>
-				{
-					string toLog = "La tarea finalizó con " + t.Exception.InnerExceptions.Count + " errores.";
-					if (t.Exception.InnerExceptions.Count == 1)
-					{
-						toLog += " Error '" + t.Exception.InnerException.GetType().Name + "': " + t.Exception.InnerException.Message;
-					}
-					log.Error(toLog, t.Exception);
-				}, TaskContinuationOptions.OnlyOnFaulted);
-			}
-		}
-		public TaskScheduler TaskScheduler { get; set; }
-		public TaskCreationOptions TaskCreationOptions { get; set; }
+		readonly ILog log = LogManager.Create(typeof(TaskManagerEntry));
+		ITaskManagerEntry _Next;
 		ITaskManagerEntry _Previous;
+		Task _Task;
 		public ITaskManagerEntry Previous
 		{
 			get => _Previous;
@@ -52,10 +28,9 @@ namespace Fuxion.Threading.Tasks
 			{
 				_Previous = value;
 				if (value != null)
-					((TaskManagerEntry)value)._Next = this;
+					((TaskManagerEntry) value)._Next = this;
 			}
 		}
-		ITaskManagerEntry _Next;
 		public ITaskManagerEntry Next
 		{
 			get => _Next;
@@ -63,111 +38,97 @@ namespace Fuxion.Threading.Tasks
 			{
 				_Next = value;
 				if (value != null)
-					((TaskManagerEntry)value)._Previous = this;
+					((TaskManagerEntry) value)._Previous = this;
 			}
 		}
-		public void DoConcurrency()
+		public ConcurrencyProfile ConcurrencyProfile { get; set; }
+		public Task Task
 		{
-			Debug.WriteLine("DoConcurrency");
-			var allPrevious = TaskManager.Tasks.Read(l => l.Take(l.IndexOf(this)).Where(e => e.Delegate.Method == Delegate.Method && e.Delegate.Target.GetType() == Delegate.Target.GetType()).ToList());
-			Previous = allPrevious.LastOrDefault();
-			string GetPreviousIds() => allPrevious.Select(e => e.Task.Id).Aggregate("", (c, a) => c + "," + a, a => a.Trim(','));
-			Debug.WriteLine($"I have '{allPrevious.Count}' previous '{GetPreviousIds()}'");
-			if (ConcurrencyProfile.CancelPrevious)
+			get => _Task;
+			set
 			{
-				Debug.WriteLine($"Canceling '{allPrevious.Count}' previous '{GetPreviousIds()}'");
-				foreach (var entry in allPrevious)
-					entry.Cancel();
-			}
-			if (ConcurrencyProfile.Sequentially)
-			{
-				Debug.WriteLine("Make sequential");
-				if (Previous != null)
+				_Task = value;
+				_Task.ContinueWith(t =>
 				{
-					Debug.WriteLine($"Wait for previous entry '{Previous.Task.Id}'");
-					try
+					var toLog = "La tarea finalizó con " + t.Exception.InnerExceptions.Count + " errores.";
+					Exception ex = t.Exception;
+					if (t.Exception.InnerExceptions.Count == 1)
 					{
-						Previous.Task.Wait();
+						ex = t.Exception.InnerExceptions[0];
+						toLog += " Error '" + ex.GetType().Name + "': " + ex.Message;
 					}
-					catch (TaskCanceledException)
-					{
-						Debug.WriteLine("Previous entry was canceled");
-					}
-					catch (AggregateException ex) when (ex.Flatten().InnerException is TaskCanceledException)
-					{
-						Debug.WriteLine("Previous entry was canceled");
-					}
-				}
-				else
-				{
-					Debug.WriteLine("NOT Have previous entry");
-				}
-			}
-			if (ConcurrencyProfile.ExecuteOnlyLast)
-			{
-				if (Next != null)
-				{
-					throw new TaskCanceledByConcurrencyException();
-				}
+					if (ex is TaskCanceledByConcurrencyException tccex)
+						log.Debug(toLog, tccex);
+					else
+						log.Error(toLog, ex);
+				}, TaskContinuationOptions.OnlyOnFaulted);
 			}
 		}
+		public TaskScheduler TaskScheduler { get; set; }
+		public TaskCreationOptions TaskCreationOptions { get; set; }
 		public void Start() => Task.Start(TaskScheduler);
-
 		public event EventHandler CancelRequested;
 		public bool IsCancellationRequested => CancellationTokenSource.IsCancellationRequested;
 		public CancellationTokenSource CancellationTokenSource { get; set; }
-
 		public Delegate Delegate { get; set; }
-
 		public void Cancel()
 		{
 			CancellationTokenSource.Cancel();
 			CancelRequested?.Invoke(this, EventArgs.Empty);
 		}
+		public void DoConcurrency()
+		{
+			var allPrevious = TaskManager.Tasks.Read(l => l.Take(l.IndexOf(this)).Where(e => e.Delegate.Method == Delegate.Method && e.Delegate.Target.GetType() == Delegate.Target.GetType()).ToList());
+			Previous = allPrevious.LastOrDefault();
+			if (ConcurrencyProfile.CancelPrevious)
+				foreach (var entry in allPrevious)
+					entry.Cancel();
+			if (ConcurrencyProfile.Sequentially)
+				if (Previous != null)
+					try
+					{
+						Previous.Task.Wait();
+					}
+					// If task was cancelled, nothing happens
+					catch (Exception ex) when (ex is TaskCanceledException || ex is AggregateException aex && aex.Flatten().InnerException is TaskCanceledException)
+					{
+						Debug.WriteLine("Previous entry was canceled");
+					}
+			if (ConcurrencyProfile.ExecuteOnlyLast)
+				if (Next != null)
+					throw new TaskCanceledByConcurrencyException();
+		}
 	}
+
 	class ActionTaskManagerEntry : TaskManagerEntry
 	{
-		public ActionTaskManagerEntry(Action action, TaskScheduler scheduler, TaskCreationOptions options, ConcurrencyProfile concurrencyProfile = default(ConcurrencyProfile), Delegate @delegate = null)
-			: base(@delegate ?? action, scheduler, options, concurrencyProfile)
+		public ActionTaskManagerEntry(Action action, TaskScheduler scheduler, TaskCreationOptions options, ConcurrencyProfile concurrencyProfile = default(ConcurrencyProfile), Delegate @delegate = null) : base(@delegate ?? action, scheduler, options, concurrencyProfile) => Task = new Task(() =>
 		{
-			Task = new Task(() =>
-			{
-				DoConcurrency();
-				action();
-			}, CancellationTokenSource.Token, TaskCreationOptions);
-		}
-		public ActionTaskManagerEntry(Action<object> action, object state, TaskScheduler scheduler, TaskCreationOptions options, ConcurrencyProfile concurrencyProfile = default(ConcurrencyProfile), Delegate @delegate = null)
-			: base(@delegate ?? action, scheduler, default(TaskCreationOptions), concurrencyProfile)
+			DoConcurrency();
+			action();
+		}, CancellationTokenSource.Token, TaskCreationOptions);
+		public ActionTaskManagerEntry(Action<object> action, object state, TaskScheduler scheduler, TaskCreationOptions options, ConcurrencyProfile concurrencyProfile = default(ConcurrencyProfile), Delegate @delegate = null) : base(@delegate ?? action, scheduler, default(TaskCreationOptions), concurrencyProfile) => Task = new Task(st =>
 		{
-			Task = new Task(st =>
-			{
-				DoConcurrency();
-				action(st);
-			}, state, CancellationTokenSource.Token, TaskCreationOptions);
-		}
+			DoConcurrency();
+			action(st);
+		}, state, CancellationTokenSource.Token, TaskCreationOptions);
 	}
+
 	class FuncTaskManagerEntry<TResult> : TaskManagerEntry
 	{
-		public FuncTaskManagerEntry(Func<TResult> func, TaskScheduler scheduler, TaskCreationOptions options, ConcurrencyProfile concurrencyProfile = default(ConcurrencyProfile), Delegate @delegate = null)
-			: base(@delegate ?? func, scheduler, options, concurrencyProfile)
+		public FuncTaskManagerEntry(Func<TResult> func, TaskScheduler scheduler, TaskCreationOptions options, ConcurrencyProfile concurrencyProfile = default(ConcurrencyProfile), Delegate @delegate = null) : base(@delegate ?? func, scheduler, options, concurrencyProfile) => Task = new Task<TResult>(() =>
 		{
-			Task = new Task<TResult>(() =>
-			{
-				DoConcurrency();
-				var res = func();
-				return res;
-			}, CancellationTokenSource.Token, TaskCreationOptions);
-		}
-		public FuncTaskManagerEntry(Func<object, TResult> func, object state, TaskScheduler scheduler, TaskCreationOptions options, ConcurrencyProfile concurrencyProfile = default(ConcurrencyProfile), Delegate @delegate = null)
-			: base(@delegate ?? func, scheduler, default(TaskCreationOptions), concurrencyProfile)
+			DoConcurrency();
+			var res = func();
+			return res;
+		}, CancellationTokenSource.Token, TaskCreationOptions);
+		public FuncTaskManagerEntry(Func<object, TResult> func, object state, TaskScheduler scheduler, TaskCreationOptions options, ConcurrencyProfile concurrencyProfile = default(ConcurrencyProfile), Delegate @delegate = null) : base(@delegate ?? func, scheduler, default(TaskCreationOptions), concurrencyProfile) => Task = new Task<TResult>(st =>
 		{
-			Task = new Task<TResult>(st =>
-			{
-				DoConcurrency();
-				var res = func(st);
-				return res;
-			}, state, CancellationTokenSource.Token, TaskCreationOptions);
-		}
+			DoConcurrency();
+			var res = func(st);
+			return res;
+		}, state, CancellationTokenSource.Token, TaskCreationOptions);
 	}
+
 	public class TaskCanceledByConcurrencyException : TaskCanceledException { }
 }
