@@ -26,17 +26,23 @@ namespace Fuxion.Windows.Threading
             if (Dispatcher == null || Dispatcher.CheckAccess())
                 return Task.FromResult(method.DynamicInvoke(args));
             // I'm in another thread than dispatcher, runs asynchronously
-            return Dispatcher.BeginInvoke(method, args).Task;
-        }
+			if (!Dispatcher.HasShutdownStarted)
+				return Dispatcher.BeginInvoke(method, args).Task;
+			return Task.CompletedTask;
+		}
         private Task<TResult> InvokeFuncDelegate<TResult>(Delegate method, params object[] args)
         {
             // No dispatcher or i'm in the same thread of dispatcher, runs synchronously
             if (Dispatcher == null || Dispatcher.CheckAccess())
                 return Task.FromResult((TResult)method.DynamicInvoke(args));
-            // I'm in another thread than dispatcher, runs asynchronously
-            var ope = Dispatcher.BeginInvoke(method, args);
-            return ope.Task.ContinueWith((t, o) => ((TResult)((DispatcherOperation)o).Result), ope, TaskContinuationOptions.ExecuteSynchronously);
-        }
+			// I'm in another thread than dispatcher, runs asynchronously
+			if (!Dispatcher.HasShutdownStarted)
+			{
+				var ope = Dispatcher.BeginInvoke(method, args);
+				return ope.Task.ContinueWith((t, o) => ((TResult) ((DispatcherOperation) o).Result), ope, TaskContinuationOptions.ExecuteSynchronously);
+			}
+			return Task.FromResult(default(TResult));
+		}
         #region Invoke Actions
         public async Task Invoke(Action action) { await InvokeActionDelegate(action); }
         public async Task Invoke<T>(Action<T> action, T param) { await InvokeActionDelegate(action, param); }
