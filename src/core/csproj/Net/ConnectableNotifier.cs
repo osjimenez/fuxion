@@ -91,11 +91,7 @@ namespace Fuxion.Net
 			get => GetValue<string>();
 			set => SetValue(value);
 		}
-		protected bool IsConnectCancellationRequested
-		{
-			get => GetValue<bool>();
-			set => SetValue(value);
-		}
+		protected bool IsConnectCancellationRequested => connectionTask.IsCancellationRequested();
 		public event EventHandler<EventArgs<bool>> IsConnectedChanged;
 		public bool IsConnected => State == ConnectionState.Opened;
 		Task connectionTask;
@@ -112,7 +108,7 @@ namespace Fuxion.Net
 					State = ConnectionState.Opening;
 					connectionTask = TaskManager.Create(async () =>
 					{
-						IsConnectCancellationRequested = false;
+						SetValue(IsConnectCancellationRequested, true, nameof(IsConnectCancellationRequested));
 						while (!IsConnectCancellationRequested)
 						{
 							try
@@ -136,7 +132,7 @@ namespace Fuxion.Net
 							}
 						}
 					});
-					connectionTask.OnCancelRequested(() => IsConnectCancellationRequested = true);
+					connectionTask.OnCancelRequested(() => SetValue(IsConnectCancellationRequested, true, nameof(IsConnectCancellationRequested)));
 					connectionTask.Start();
 					await connectionTask;
 					break;
@@ -152,11 +148,7 @@ namespace Fuxion.Net
 		}
 		#endregion
 		#region Disconnect
-		protected bool IsDisconnectCancellationRequested
-		{
-			get => GetValue<bool>();
-			private set => SetValue(value);
-		}
+		protected bool IsDisconnectCancellationRequested => disconnectionTask.IsCancellationRequested();
 		Task disconnectionTask;
 		protected abstract Task OnDisconnect();
 		async Task Disconnect(bool mustClose)
@@ -174,7 +166,7 @@ namespace Fuxion.Net
 				case ConnectionState.Opened:
 					disconnectionTask = TaskManager.Create(async () =>
 					{
-						IsDisconnectCancellationRequested = false;
+						SetValue(IsDisconnectCancellationRequested, true, nameof(IsDisconnectCancellationRequested));
 						if (mustClose)
 							State = ConnectionState.Closing;
 						new[] { connectionTask, keepAliveTask }.CancelAndWait(throwExceptionIfNotRunning: false);
@@ -192,7 +184,7 @@ namespace Fuxion.Net
 							State = ConnectionState.Closed;
 						}
 					});
-					disconnectionTask.OnCancelRequested(() => IsDisconnectCancellationRequested = true);
+					disconnectionTask.OnCancelRequested(() => SetValue(IsDisconnectCancellationRequested, true, nameof(IsDisconnectCancellationRequested)));
 					disconnectionTask.Start();
 					await disconnectionTask;
 					break;
@@ -214,11 +206,7 @@ namespace Fuxion.Net
 		}
 		#endregion
 		#region KeepAlive
-		protected bool IsKeepAliveCancellationRequested
-		{
-			get => GetValue<bool>();
-			set => SetValue(value);
-		}
+		protected bool IsKeepAliveCancellationRequested => keepAliveTask.IsCancellationRequested();
 		public bool IsKeepAliveEnable
 		{
 			get => GetValue<bool>();
@@ -240,7 +228,7 @@ namespace Fuxion.Net
 
 			keepAliveTask = TaskManager.Create(async () =>
 			{
-				IsKeepAliveCancellationRequested = false;
+				SetValue(IsKeepAliveCancellationRequested, true, nameof(IsKeepAliveCancellationRequested));
 				while (!IsKeepAliveCancellationRequested)
 				{
 					keepAliveTask.Sleep(KeepAliveInterval);
@@ -256,7 +244,7 @@ namespace Fuxion.Net
 					}
 				}
 			});
-			keepAliveTask.OnCancelRequested(() => IsKeepAliveCancellationRequested = true);
+			keepAliveTask.OnCancelRequested(() => SetValue(IsKeepAliveCancellationRequested, true, nameof(IsKeepAliveCancellationRequested)));
 			keepAliveTask.Start();
 		}
 		#endregion
