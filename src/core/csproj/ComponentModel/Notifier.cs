@@ -1,5 +1,6 @@
 ﻿using Fuxion.Factories;
 using Fuxion.Threading;
+using Fuxion.Windows.Threading;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -12,6 +13,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using System.Threading;
+using System.Windows.Threading;
 using System.Xml.Serialization;
 
 namespace Fuxion.ComponentModel
@@ -217,14 +219,13 @@ namespace Fuxion.ComponentModel
 	[DataContract(IsReference = true)]
 	//[DataContract]
 	//[JsonConverter(typeof(NotifierJsonConverter))]
-	public abstract class Notifier<TNotifier> : INotifier<TNotifier> where TNotifier : class, INotifier<TNotifier>
+	public abstract class Notifier<TNotifier> : INotifier<TNotifier>, IDispatchable where TNotifier : class, INotifier<TNotifier>
 	{
 		protected Notifier()
 		{
 			// El constructor no será invocado al deserializar la clase porque se utiliza el método FormatterServices.GetUninitializedObject
 			// y este crea el objeto sin estado, no se llamará al constructor ni se crearán las instancias de los campos de la clase.
 			PropertiesDictionary = new Dictionary<string, object>();
-			Synchronizer = Factory.Get<INotifierSynchronizer>();
 			OnInitialize();
 		}
 		[EditorBrowsable(EditorBrowsableState.Never)]
@@ -233,10 +234,13 @@ namespace Fuxion.ComponentModel
 		{
 			//Este método será llamado al deserializar la clase en vez del contructor
 			PropertiesDictionary = new Dictionary<string, object>();
-			Synchronizer = Factory.Get<INotifierSynchronizer>();
 			OnInitialize();
 		}
 		protected virtual void OnInitialize() { }
+
+		[XmlIgnore]
+		[JsonIgnore]
+		bool IDispatchable.UseDispatcher { get; set; } = true;
 
 		#region Events
 		event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged { add { PropertyChangedEvent += value; } remove { PropertyChangedEvent -= value; } }
@@ -412,14 +416,6 @@ namespace Fuxion.ComponentModel
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		[XmlIgnore]
 		[JsonIgnore]
-		public INotifierSynchronizer Synchronizer { get; set; }
-		//[EditorBrowsable(EditorBrowsableState.Never)]
-		[XmlIgnore]
-		[JsonIgnore]
-		protected bool UseSynchronizerOnRaisePropertyChanged { get => GetValue(() => true); set => SetValue(value); }
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		[XmlIgnore]
-		[JsonIgnore]
 		public bool IsPropertyChangedEnabled { get => GetValue(() => true); set => SetValue(value); }
 		protected void RaisePropertyChanged<T>(Expression<Func<object>> expression, T previousValue, T actualValue) => RaisePropertyChanged(expression.GetMemberName(), previousValue, actualValue);
 		protected void RaisePropertyChanged<T>(string propertyName, T previousValue, T actualValue) => OnRaisePropertyChanged(propertyName, previousValue, actualValue);
@@ -431,8 +427,7 @@ namespace Fuxion.ComponentModel
 				PropertyChangedEvent?.Invoke(this, new PropertyChangedEventArgs(pro));
 				PropertyChanged?.Invoke(this as TNotifier, new NotifierPropertyChangedEventArgs<TNotifier>(pro, (TNotifier)(INotifier<TNotifier>)this, pre, act));
 			});
-			if (UseSynchronizerOnRaisePropertyChanged && Synchronizer != null) Synchronizer.Invoke(action, propertyName, previousValue, actualValue).Wait();
-			else action(propertyName, previousValue, actualValue);
+			this.Invoke(action, propertyName, previousValue, actualValue);
 		}
 		#endregion
 

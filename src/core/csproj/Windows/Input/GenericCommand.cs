@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows.Threading;
+using Fuxion.Windows.Threading;
 
 namespace Fuxion.Windows.Input
 {
-	public class GenericCommand : ICommand
+	public class GenericCommand : ICommand, IDispatchable
 	{
 		public GenericCommand(Action action, Func<bool> canExecute = null)
 		{
@@ -16,16 +19,17 @@ namespace Fuxion.Windows.Input
 		Action action;
 		Func<bool> canExecute;
 
-		public event EventHandler CanExecuteChanged;
-		bool ICommand.CanExecute(object parameter) => CanExecute();
-		public bool CanExecute() => canExecute != null ? canExecute() : true;
-		public void RaiseCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+		bool IDispatchable.UseDispatcher { get; set; } = true;
 
-		void ICommand.Execute(object parameter) => Execute();
-		public void Execute() => action();
-		
+		public event EventHandler CanExecuteChanged;
+		bool ICommand.CanExecute(object parameter) => CanExecute().Result;
+		public Task<bool> CanExecute() => this.Invoke(() => canExecute != null ? canExecute() : true);
+		public Task RaiseCanExecuteChanged() => this.Invoke(() => CanExecuteChanged?.Invoke(this, EventArgs.Empty));
+
+		void ICommand.Execute(object parameter) => Execute().Wait();
+		public Task Execute() => this.Invoke(action);
 	}
-	public class GenericCommand<TParameter> : ICommand
+	public class GenericCommand<TParameter> : ICommand, IDispatchable
 	{
 		public GenericCommand(Action<TParameter> action, Func<TParameter, bool> canExecute = null)
 		{
@@ -36,28 +40,29 @@ namespace Fuxion.Windows.Input
 		Action<TParameter> action;
 		Func<TParameter, bool> canExecute;
 
+		bool IDispatchable.UseDispatcher { get; set; } = true;
+
 		public event EventHandler CanExecuteChanged;
 		bool ICommand.CanExecute(object parameter)
 		{
 			if (parameter is TParameter par)
-				return canExecute != null ? CanExecute(par) : true;
-			if (typeof(TParameter).IsNullable() && parameter == null)
-				return canExecute != null ? CanExecute(default(TParameter)) : true;
+				return CanExecute(par).Result;
+			if (parameter == null && typeof(TParameter).IsNullable())
+				return CanExecute(default(TParameter)).Result;
 			throw new InvalidCastException($"The parameter of type '{parameter.GetType().Name}' couldn't casted to '{typeof(TParameter).Name}' as was declared for command parameter.");
 		}
-		public bool CanExecute(TParameter parameter) => canExecute(parameter);
-		public void RaiseCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+		public Task<bool> CanExecute(TParameter parameter) => this.Invoke(canExecute, parameter);
+		public Task RaiseCanExecuteChanged() => this.Invoke(() => CanExecuteChanged?.Invoke(this, EventArgs.Empty));
 
 		void ICommand.Execute(object parameter)
 		{
 			if (parameter is TParameter par)
-				Execute(par);
+				Execute(par).Wait();
 			else if (typeof(TParameter).IsNullable() && parameter == null)
-				Execute(default(TParameter));
+				Execute(default(TParameter)).Wait();
 			else
 				throw new InvalidCastException($"The parameter of type '{parameter.GetType().Name}' couldn't casted to '{typeof(TParameter).Name}' as was declared for command parameter.");
 		}
-		public void Execute(TParameter parameter) => action(parameter);
-		
+		public Task Execute(TParameter parameter) => this.Invoke(action, parameter);
 	}
 }

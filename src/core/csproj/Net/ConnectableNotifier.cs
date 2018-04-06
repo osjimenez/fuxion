@@ -5,6 +5,7 @@ using Fuxion.Logging;
 using Fuxion.ComponentModel;
 using System;
 using Fuxion.Threading.Tasks;
+using Fuxion.Windows.Threading;
 
 namespace Fuxion.Net
 {
@@ -37,10 +38,7 @@ namespace Fuxion.Net
 					if (p.PreviousValue == ConnectionState.Opened || p.ActualValue == ConnectionState.Opened)
 					{
 						RaisePropertyChanged(() => IsConnected, p.PreviousValue == ConnectionState.Opened, p.ActualValue == ConnectionState.Opened);
-						if (Synchronizer != null)
-							Synchronizer.Invoke(actualValue => IsConnectedChanged?.Invoke(this, new EventArgs<bool>(actualValue == ConnectionState.Opened)), p.ActualValue);
-						else
-							IsConnectedChanged?.Invoke(this, new EventArgs<bool>(p.ActualValue == ConnectionState.Opened));
+						this.Invoke(actualValue => IsConnectedChanged?.Invoke(this, new EventArgs<bool>(actualValue == ConnectionState.Opened)), p.ActualValue);
 					}
 				});
 			};

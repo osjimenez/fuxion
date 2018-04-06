@@ -276,7 +276,7 @@ namespace DemoWpf
                 not.Integer = 3;
             });
             await task;
-            not.Synchronizer = new DispatcherSynchronizer();
+            //not.Synchronizer = new DispatcherSynchronizer();
             task = TaskManager.StartNew(() =>
             {
                 Debug.WriteLine($"Task started in Thread '{Thread.CurrentThread.ManagedThreadId}'");

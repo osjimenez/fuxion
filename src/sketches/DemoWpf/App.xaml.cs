@@ -21,6 +21,7 @@ using Fuxion.Windows.Controls;
 using DemoWpf.Windows;
 using DemoWpf.Repositories;
 using DemoWpf.Windows.Controls;
+using DemoWpf.Windows.Threading;
 
 namespace DemoWpf
 {
@@ -43,7 +44,8 @@ namespace DemoWpf
 			//new ValidationWindow().Show();
 			//new UnhandledExceptionWindowTest().Show();
 			//new RepositoriesWindow().Show();
-			new AutoGridTest().Show();
+			//new AutoGridTest().Show();
+			new IDispatchableTest().Show();
 		}
     }
     public class HardwareIdHelper : IHardwareIdProvider
