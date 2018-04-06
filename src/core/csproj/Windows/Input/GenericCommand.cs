@@ -23,7 +23,7 @@ namespace Fuxion.Windows.Input
 
 		public event EventHandler CanExecuteChanged;
 		bool ICommand.CanExecute(object parameter) => CanExecute();
-		public Task<bool> CanExecuteAsync() => this.Invoke(() => canExecute != null ? canExecute() : true);
+		public Task<bool> CanExecuteAsync() => canExecute != null ? this.Invoke(canExecute) : Task.FromResult(true);
 		public bool CanExecute() => CanExecuteAsync().Result;
 		public Task RaiseCanExecuteChangedAsync() => this.Invoke(() => CanExecuteChanged?.Invoke(this, EventArgs.Empty));
 		public void RaiseCanExecuteChanged() => RaiseCanExecuteChangedAsync().Wait();
@@ -54,7 +54,7 @@ namespace Fuxion.Windows.Input
 				return CanExecute(default(TParameter));
 			throw new InvalidCastException($"The parameter of type '{parameter.GetType().Name}' couldn't casted to '{typeof(TParameter).Name}' as was declared for command parameter.");
 		}
-		public Task<bool> CanExecuteAsync(TParameter parameter) => this.Invoke(canExecute, parameter);
+		public Task<bool> CanExecuteAsync(TParameter parameter) => canExecute != null ? this.Invoke(canExecute, parameter) : Task.FromResult(true);
 		public bool CanExecute(TParameter parameter) => CanExecuteAsync(parameter).Result;
 		public Task RaiseCanExecuteChangedAsync() => this.Invoke(() => CanExecuteChanged?.Invoke(this, EventArgs.Empty));
 		public void RaiseCanExecuteChanged() => RaiseCanExecuteChangedAsync().Wait();
