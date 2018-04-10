@@ -1,6 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Fuxion.ComponentModel.DataAnnotations {
+﻿namespace System.ComponentModel.DataAnnotations
+{
 	// http://emailregex.com/
 	public class ValidEmailAttribute : RegularExpressionAttribute
 	{

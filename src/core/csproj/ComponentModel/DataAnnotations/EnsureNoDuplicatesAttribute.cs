@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.Collections;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace System.ComponentModel.DataAnnotations
 {
-    public class EnsureNoDuplicatesAttribute : ValidationAttribute
+	public class EnsureNoDuplicatesAttribute : ValidationAttribute
 	{
 		public EnsureNoDuplicatesAttribute(Type type, string comparassionMethodName)
 		{
