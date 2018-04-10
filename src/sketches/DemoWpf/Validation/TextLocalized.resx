@@ -126,6 +126,15 @@
   <data name="Id" xml:space="preserve">
     <value>Identificador</value>
   </data>
+  <data name="InvalidEmail" xml:space="preserve">
+    <value>El campo '{0}' no es un correo electrónico válido. </value>
+  </data>
+  <data name="InvalidHostname" xml:space="preserve">
+    <value>El campo '{0}' no es una dirección IP o nombre de host válido.</value>
+  </data>
+  <data name="InvalidIPAddress" xml:space="preserve">
+    <value>El campo '{0}' no es una dirección IP válida.</value>
+  </data>
   <data name="Name" xml:space="preserve">
     <value>Nombre</value>
   </data>

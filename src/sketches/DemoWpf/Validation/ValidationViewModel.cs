@@ -111,6 +111,16 @@ namespace DemoWpf.Validation
 		}
 		public static bool CompareValidationRecursiveViewModelByName(ValidationRecursiveViewModel a, ValidationRecursiveViewModel b) => a.Name == b.Name;
 
+		[NullableEmailAddress(ErrorMessageResourceType = typeof(TextLocalized), ErrorMessageResourceName = nameof(TextLocalized.InvalidEmail))]
+		public string Email { get => GetValue<string>(); set => SetValue(value); }
+
+		[Hostname(ErrorMessageResourceType = typeof(TextLocalized), ErrorMessageResourceName = nameof(TextLocalized.InvalidHostname))]
+		public string Hostname { get => GetValue<string>(); set => SetValue(value); }
+
+		[IpAddress(ErrorMessageResourceType = typeof(TextLocalized), ErrorMessageResourceName = nameof(TextLocalized.InvalidIPAddress))]
+		public string IPAddress { get => GetValue<string>(); set => SetValue(value); }
+
+
 		public NotifierValidator Validator
 		{
 			get => GetValue(() =>

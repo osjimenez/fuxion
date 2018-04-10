@@ -41,11 +41,11 @@ namespace DemoWpf
 			//new Licensing().Show();
 			//new TimeProvider().Show();
 			//new ConvertersWindow().Show();
-			//new ValidationWindow().Show();
+			new ValidationWindow().Show();
 			//new UnhandledExceptionWindowTest().Show();
 			//new RepositoriesWindow().Show();
 			//new AutoGridTest().Show();
-			new IDispatchableTest().Show();
+			//new IDispatchableTest().Show();
 		}
     }
     public class HardwareIdHelper : IHardwareIdProvider

@@ -71,9 +71,25 @@
                     ValidatesOnDataErrors=True,
                     UpdateSourceTrigger=PropertyChanged}"
                  Style="{StaticResource textBoxInError}"/>
-        <TextBlock Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=NameTextBox}" Foreground="Red"
-                   Visibility="{Binding (Validation.HasError), ElementName=NameTextBox, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-        <Border Padding="10" DataContext="{Binding ValidationRecursive}">
+		<TextBlock Text="Email:" />
+		<TextBox Text="{Binding Email, Mode=TwoWay,
+                            NotifyOnValidationError=True,
+                            ValidatesOnDataErrors=True,
+                            UpdateSourceTrigger=PropertyChanged}"
+				 Style="{StaticResource textBoxInError}"/>
+		<TextBlock Text="Hostname:" />
+		<TextBox Text="{Binding Hostname, Mode=TwoWay,
+                            NotifyOnValidationError=True,
+                            ValidatesOnDataErrors=True,
+                            UpdateSourceTrigger=PropertyChanged}"
+				 Style="{StaticResource textBoxInError}"/>
+		<TextBlock Text="IP:" />
+		<TextBox Text="{Binding IPAddress, Mode=TwoWay,
+                            NotifyOnValidationError=True,
+                            ValidatesOnDataErrors=True,
+                            UpdateSourceTrigger=PropertyChanged}"
+				 Style="{StaticResource textBoxInError}"/>
+		<Border Padding="10" DataContext="{Binding ValidationRecursive}">
             <StackPanel>
                 <TextBlock Text="Identificador:" />
                 <TextBox Name="IdTextBox2" 
@@ -91,7 +107,7 @@
                             ValidatesOnDataErrors=True,
                             UpdateSourceTrigger=PropertyChanged}"
                          Style="{StaticResource textBoxInError}"/>
-                <TextBlock Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=NameTextBox2}" Foreground="Red"
+				<TextBlock Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=NameTextBox2}" Foreground="Red"
                    Visibility="{Binding (Validation.HasError), ElementName=NameTextBox2, Converter={StaticResource BooleanToVisibilityConverter}}"/>
             </StackPanel>
         </Border>

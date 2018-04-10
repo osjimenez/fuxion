@@ -88,6 +88,33 @@ namespace DemoWpf.Validation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to El campo &apos;{0}&apos; no es un correo electrónico válido. .
+        /// </summary>
+        public static string InvalidEmail {
+            get {
+                return ResourceManager.GetString("InvalidEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to El campo &apos;{0}&apos; no es una dirección IP o nombre de host válido..
+        /// </summary>
+        public static string InvalidHostname {
+            get {
+                return ResourceManager.GetString("InvalidHostname", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to El campo &apos;{0}&apos; no es una dirección IP válida..
+        /// </summary>
+        public static string InvalidIPAddress {
+            get {
+                return ResourceManager.GetString("InvalidIPAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Nombre.
         /// </summary>
         public static string Name {
