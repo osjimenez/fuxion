@@ -20,11 +20,11 @@ namespace System.ComponentModel.DataAnnotations
 				{
 					var pars = method.GetParameters();
 					if (pars.Count() != 2 || pars.Last().ParameterType != typeof(ValidationContext))
-						throw new ArgumentException($"Method '{methodName}' in type '{type.Name}' specified for this '{nameof(ConditionalValidationAttribute)}' must has 2 parameters. First must be of type of property and second must be '{nameof(ValidationContext)}'");
+						throw new ArgumentException($"Method '{methodName}' in type '{type.Name}' specified for this '{nameof(CustomValidationWithContextAttribute)}' must has 2 parameters. First must be of type of property and second must be '{nameof(ValidationContext)}'");
 				}
-				else throw new ArgumentException($"Method '{methodName}' in type '{type.Name}' specified for this '{nameof(ConditionalValidationAttribute)}' must return '{nameof(ValidationResult)}'");
+				else throw new ArgumentException($"Method '{methodName}' in type '{type.Name}' specified for this '{nameof(CustomValidationWithContextAttribute)}' must return '{nameof(ValidationResult)}'");
 			}
-			else throw new ArgumentException($"Method '{methodName}' in type '{type.Name}' specified for this '{nameof(ConditionalValidationAttribute)}' was not found. This method must be public and static.");
+			else throw new ArgumentException($"Method '{methodName}' in type '{type.Name}' specified for this '{nameof(CustomValidationWithContextAttribute)}' was not found. This method must be public and static.");
 		}
 
 		Type type;
