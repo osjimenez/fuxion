@@ -36,7 +36,7 @@ namespace DemoWpf.Windows.Threading
 	{
 		public ViewModel()
 		{
-			((IDispatchable)this).UseDispatcher = false;
+			((IInvokable)this).UseInvoker = false;
 		}
 		public void Test()
 		{

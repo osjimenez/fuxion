@@ -219,7 +219,7 @@ namespace Fuxion.ComponentModel
 	[DataContract(IsReference = true)]
 	//[DataContract]
 	//[JsonConverter(typeof(NotifierJsonConverter))]
-	public abstract class Notifier<TNotifier> : INotifier<TNotifier>, IDispatchable where TNotifier : class, INotifier<TNotifier>
+	public abstract class Notifier<TNotifier> : INotifier<TNotifier>, IInvokable where TNotifier : class, INotifier<TNotifier>
 	{
 		protected Notifier()
 		{
@@ -240,7 +240,7 @@ namespace Fuxion.ComponentModel
 
 		[XmlIgnore]
 		[JsonIgnore]
-		bool IDispatchable.UseDispatcher { get; set; } = true;
+		bool IInvokable.UseInvoker { get; set; } = true;
 
 		#region Events
 		event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged { add { PropertyChangedEvent += value; } remove { PropertyChangedEvent -= value; } }

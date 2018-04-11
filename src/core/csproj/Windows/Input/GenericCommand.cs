@@ -8,7 +8,7 @@ using Fuxion.Windows.Threading;
 
 namespace Fuxion.Windows.Input
 {
-	public class GenericCommand : ICommand, IDispatchable
+	public class GenericCommand : ICommand, IInvokable
 	{
 		public GenericCommand(Action action, Func<bool> canExecute = null)
 		{
@@ -19,7 +19,7 @@ namespace Fuxion.Windows.Input
 		Action action;
 		Func<bool> canExecute;
 
-		bool IDispatchable.UseDispatcher { get; set; } = true;
+		bool IInvokable.UseInvoker { get; set; } = true;
 
 		public event EventHandler CanExecuteChanged;
 		bool ICommand.CanExecute(object parameter) => CanExecute();
@@ -32,7 +32,7 @@ namespace Fuxion.Windows.Input
 		public Task ExecuteAsync() => this.Invoke(action);
 		public void Execute() => ExecuteAsync().Wait();
 	}
-	public class GenericCommand<TParameter> : ICommand, IDispatchable
+	public class GenericCommand<TParameter> : ICommand, IInvokable
 	{
 		public GenericCommand(Action<TParameter> action, Func<TParameter, bool> canExecute = null)
 		{
@@ -43,7 +43,7 @@ namespace Fuxion.Windows.Input
 		Action<TParameter> action;
 		Func<TParameter, bool> canExecute;
 
-		bool IDispatchable.UseDispatcher { get; set; } = true;
+		bool IInvokable.UseInvoker { get; set; } = true;
 
 		public event EventHandler CanExecuteChanged;
 		bool ICommand.CanExecute(object parameter)
