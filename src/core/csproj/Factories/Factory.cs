@@ -101,7 +101,7 @@ namespace Fuxion.Factories
             }
             return res;
         }
-        public IEnumerable<T> GetMany<T>(bool concatAllPipeResults = false) { return pipe.SelectMany(fac => fac.GetMany(typeof(T)).Cast<T>()); }
+		public IEnumerable<T> GetMany<T>(bool concatAllPipeResults = false) => GetMany(typeof(T), concatAllPipeResults).Cast<T>();//{ return pipe.SelectMany(fac => fac.GetMany(typeof(T)).Cast<T>()); }
         public IEnumerable<object> GetMany(Type type, bool concatAllPipeResults = false)
         {
             List<IEnumerable<object>> res = new List<IEnumerable<object>>();
@@ -112,7 +112,7 @@ namespace Fuxion.Factories
                 {
                     if (fac is ICheckableInjector)
                     {
-                        if ((fac as ICheckableInjector).CheckGet(type))
+                        if ((fac as ICheckableInjector).CheckGetMany(type))
                             res.Add(fac.GetMany(type));
                     }
                     else res.Add(fac.GetMany(type));

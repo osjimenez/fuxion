@@ -19,14 +19,14 @@ namespace Fuxion.Factories
         public object Get(Type type)
         {
             if (typeof(T) != type) throw new FactoryCreationException($"InstanceFactory<{typeof(T).Name}> only give instances of type '{typeof(T).Name}'");
-            if (instance == null && instanceCreationFunction == null) throw new FactoryCreationException($"This InstanceFactory<> only create single objects. Use '{nameof(GetMany)}' method to obtain multiple instances.");
+            if (instance == null && instanceCreationFunction == null) throw new FactoryCreationException($"This InstanceFactory<> only create multiple objects. Use '{nameof(GetMany)}' method to obtain multiple instances.");
             if (instance == null) instance = instanceCreationFunction();
             return instance;
         }
         public IEnumerable<object> GetMany(Type type)
         {
             if (typeof(T) != type) throw new FactoryCreationException($"InstanceFactory<{typeof(T).Name}> only give instances of type '{typeof(T).Name}'");
-            if (instances == null && instancesCreationFunction == null) throw new FactoryCreationException($"This InstanceFactory<> only create multiple objects. Use '{nameof(Get)}' method to obtain an instance.");
+            if (instances == null && instancesCreationFunction == null) throw new FactoryCreationException($"This InstanceFactory<> only create a single object. Use '{nameof(Get)}' method to obtain an instance.");
             if (instances == null) instances = instancesCreationFunction();
             return (IEnumerable<object>)instances;
         }

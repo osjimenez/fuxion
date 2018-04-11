@@ -22,6 +22,7 @@ using DemoWpf.Windows;
 using DemoWpf.Repositories;
 using DemoWpf.Windows.Controls;
 using DemoWpf.Windows.Threading;
+using Fuxion.Windows.Threading;
 
 namespace DemoWpf
 {
@@ -29,13 +30,16 @@ namespace DemoWpf
     {
         protected override void OnStartup(StartupEventArgs e)
         {
-			Factory.AddInjector(new InstanceInjector<ILogFactory>(new Log4netFactory()));
-            Container c = new Container();
-            c.RegisterSingleton<ILicenseStore>(new JsonFileLicenseStore(new[] { typeof(LicenseMock) }));
+			Container c = new Container();
+
+			c.Register<ILogFactory, Log4netFactory>();
+
+			c.RegisterSingleton<ILicenseStore>(new JsonFileLicenseStore(new[] { typeof(LicenseMock) }));
             c.RegisterSingleton<ILicenseProvider>(new LicenseProviderMock());
             c.Register<IHardwareIdProvider, HardwareIdHelper>();
             c.RegisterSingleton<LicensingManager>();
-            Factory.AddInjector(new SimpleInjectorFactoryInjector(c));
+			c.Verify();
+			Factory.AddInjector(new SimpleInjectorFactoryInjector(c));
 
 			//new MainWindow().Show();
 			//new Licensing().Show();
@@ -48,7 +52,7 @@ namespace DemoWpf
 			//new IDispatchableTest().Show();
 		}
     }
-    public class HardwareIdHelper : IHardwareIdProvider
+	public class HardwareIdHelper : IHardwareIdProvider
     {
         public Guid GetId()
         {
