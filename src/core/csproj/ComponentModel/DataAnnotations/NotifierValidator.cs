@@ -43,15 +43,15 @@ namespace Fuxion.ComponentModel.DataAnnotations
 
         public event EventHandler ValidationChanged;
 
-        Dictionary<object, Func<string>> paths = new Dictionary<object, Func<string>>();
+		List<(object Notifier, Func<string> GetMessageFunction)> paths = new List<(object Notifier, Func<string> GetMessageFunction)>();
 
         public void RegisterNotifier(INotifyPropertyChanged notifier, bool recursive = true) => RegisterNotifier(notifier, recursive, () => "");
         private void RegisterNotifier(INotifyPropertyChanged notifier, bool recursive, Func<string> pathFunc)
         {
             if (notifier == null) throw new NullReferenceException($"The parameter '{nameof(notifier)}' cannot be null");
-            if (paths.ContainsKey(notifier)) return;
-            paths.Add(notifier, pathFunc);
-            notifier.PropertyChanged += Notifier_PropertyChanged;
+			if (paths.Any(n => n.GetHashCode() == notifier.GetHashCode())) return;
+			paths.Add((notifier, pathFunc));
+			notifier.PropertyChanged += Notifier_PropertyChanged;
             if (!recursive) return;
             foreach (var pro in TypeDescriptor.GetProperties(notifier.GetType())
                 .Cast<PropertyDescriptor>()
@@ -102,8 +102,8 @@ namespace Fuxion.ComponentModel.DataAnnotations
             if (notifier == null) throw new NullReferenceException($"The parameter '{nameof(notifier)}' cannot be null");
             notifier.PropertyChanged -= Notifier_PropertyChanged;
             _messages.RemoveIf(e => e.Object == notifier);
-            paths.Remove(notifier);
-        }
+			paths.RemoveIf(p => p.Notifier.GetHashCode() == notifier.GetHashCode());
+		}
         private void Notifier_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             var notifier = TypeDescriptor.GetProperties(sender)
@@ -114,20 +114,22 @@ namespace Fuxion.ComponentModel.DataAnnotations
                 .Select(pro => (INotifyPropertyChanged)pro.GetValue(sender))
                 .Where(obj => obj != null)
                 .FirstOrDefault();
-            if (notifier != null) RegisterNotifier(notifier, true, () => paths[sender]() + e.PropertyName);
+			if (notifier != null)
+				RegisterNotifier(notifier, true, () => paths.First(p => p.Notifier.GetHashCode() == sender.GetHashCode()).GetMessageFunction() + e.PropertyName);
 
-            var collectionProperty = TypeDescriptor.GetProperties(sender)
+			var collectionProperty = TypeDescriptor.GetProperties(sender)
                 .Cast<PropertyDescriptor>()
                 .Where(pro => pro.Name == e.PropertyName)
                 .Where(pro => typeof(INotifyCollectionChanged).IsAssignableFrom(pro.PropertyType))
                 .Where(pro => pro.PropertyType.IsSubclassOfRawGeneric(typeof(IEnumerable<>)))
                 .Where(pro => (INotifyCollectionChanged)pro.GetValue(sender) != null)
                 .FirstOrDefault();
-            if (collectionProperty != null) RegisterNotifierCollection((INotifyPropertyChanged)sender, collectionProperty, paths[sender]);
+			if (collectionProperty != null)
+				RegisterNotifierCollection((INotifyPropertyChanged)sender, collectionProperty, paths.First(p => p.Notifier.GetHashCode() == sender.GetHashCode()).GetMessageFunction);
 
-            var conditionalAtt = sender.GetType().GetCustomAttribute<ConditionalValidationAttribute>(true, false, true);
-            RefreshEntries(sender, conditionalAtt != null ? null : e.PropertyName, paths[sender]);
-        }
+			var conditionalAtt = sender.GetType().GetCustomAttribute<ConditionalValidationAttribute>(true, false, true);
+            RefreshEntries(sender, conditionalAtt != null ? null : e.PropertyName, paths.First(p=>p.Notifier.GetHashCode() == sender.GetHashCode()).GetMessageFunction);
+		}
         private void RefreshEntries(object instance, string propertyName, Func<string> pathFunc)
         {
             var newEntries = Validate(instance, propertyName, pathFunc);

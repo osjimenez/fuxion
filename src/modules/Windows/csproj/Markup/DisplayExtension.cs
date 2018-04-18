@@ -14,13 +14,26 @@ namespace Fuxion.Windows.Markup
 {
 	public class DisplayExtension : MarkupExtension
 	{
-		public DisplayExtension(string bindPath)
+		public DisplayExtension(string bindExpression)
 		{
-			var pros = bindPath.Split('.');
+#if DEBUG
+			Printer = Fuxion.Printer.Default;
+#endif
+			var mode = DisplayMode.Name;
+			if (bindExpression.StartsWith("["))
+			{
+				var modeStr = bindExpression.Split(']')[0].Substring(1);
+				if(!Enum.TryParse(modeStr, out mode))
+				{
+					throw new ArgumentException($"El valor de fuxion:Display '{bindExpression}' no es válido. No se puede parsear '{modeStr}' como una propiedad de '{nameof(DisplayAttribute)}'.");
+				}
+			}
+			var pros = bindExpression.Split('.');
 			for (int i = pros.Length - 1; i >= 0; i--)
 			{
 				chain.Add(new NotifierChainLink
 				{
+					printer = Printer,
 					NextLink = i == (pros.Length - 1) ? null : chain.FirstOrDefault(l => l.PropertyName == pros[i + 1]),
 					PropertyName = pros[i]
 				});
@@ -48,12 +61,11 @@ namespace Fuxion.Windows.Markup
 		{
 			if (serviceProvider.GetService(typeof(IProvideValueTarget)) is IProvideValueTarget provider)
 			{
-				
 				if (provider.TargetObject == null || provider.TargetProperty == null) return null;
-				
+
 				var first = chain.First();
-				
-				if(provider.TargetObject is FrameworkElement element)
+
+				if (provider.TargetObject is FrameworkElement element)
 				{
 					first.TargetObject = element;
 					element.DataContextChanged += (s, e) =>
@@ -62,6 +74,7 @@ namespace Fuxion.Windows.Markup
 						first.DataContext = e.NewValue;
 						first.SetValue();
 					};
+					first.DataContext = element.DataContext;
 				}
 				else if (provider.TargetObject is FrameworkContentElement contentElement)
 				{
@@ -72,12 +85,21 @@ namespace Fuxion.Windows.Markup
 						first.DataContext = e.NewValue;
 						first.SetValue();
 					};
+					first.DataContext = contentElement.DataContext;
 				}
 				first.TargetDependencyProperty = provider.TargetProperty as DependencyProperty;
 				first.SetValue();
 			}
 			return null;
 		}
+	}
+	enum DisplayMode
+	{
+		Name,
+		Description,
+		GroupName,
+		Order,
+		Prompt
 	}
 	internal class NotifierChainLink
 	{

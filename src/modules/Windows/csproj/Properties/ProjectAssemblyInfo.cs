@@ -24,3 +24,6 @@ using System.Windows.Markup;
 )]
 
 [assembly: InternalsVisibleTo("Fuxion.Windows.Test")]
+#if DEBUG
+[assembly: InternalsVisibleTo("DemoWpf")]
+#endif

@@ -55,8 +55,6 @@ namespace Fuxion.Test.ComponentModel.DataAnnotations
             set => SetValue(value);
         }
         public bool MustBeValidate() => IsValid;
-
-
         public override string ToString() => $"ValidatableMock({Id})";
     }
     public class ValidatableMockMetadata
@@ -67,6 +65,12 @@ namespace Fuxion.Test.ComponentModel.DataAnnotations
     }
     public class RecursiveValidatableMock : Notifier<RecursiveValidatableMock>
     {
+		[Required]
+		public Guid Key
+		{
+			get => GetValue(() => Guid.NewGuid());
+			set => SetValue(value);
+		}
         [Required]
         [Range(1, int.MaxValue, ErrorMessage = "Id must be greater than 0")]
         public int Id
@@ -84,5 +88,22 @@ namespace Fuxion.Test.ComponentModel.DataAnnotations
         }
 
         public override string ToString() => $"RecursiveValidatableMock({Id.ToString()})";
-    }
+
+		public override bool Equals(object obj)
+		{
+			if (obj is RecursiveValidatableMock mock)
+				return Compare(mock, this);
+			return base.Equals(obj);
+		}
+		public override int GetHashCode() => Key.GetHashCode();
+		static bool Compare(RecursiveValidatableMock item1, RecursiveValidatableMock item2)
+		{
+			if (ReferenceEquals(item1, null) && ReferenceEquals(item2, null)) return true;
+			if (ReferenceEquals(item1, null) && !ReferenceEquals(item2, null)) return false;
+			if (!ReferenceEquals(item1, null) && ReferenceEquals(item2, null)) return false;
+			return item1.Key == item2.Key;
+		}
+		public static bool operator ==(RecursiveValidatableMock dep1, RecursiveValidatableMock dep2) => Compare(dep1, dep2);
+		public static bool operator !=(RecursiveValidatableMock dep1, RecursiveValidatableMock dep2) => !Compare(dep1, dep2);
+	}
 }

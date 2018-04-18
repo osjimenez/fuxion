@@ -333,5 +333,38 @@ namespace Fuxion.Test.ComponentModel.DataAnnotations
             val.ClearCustoms();
             Assert.Empty(val.Messages);
         }
-    }
+
+		[Fact(DisplayName = "Validator - Change GetHashCode")]
+		public void ChangeGethashCode()
+		{
+			var obj = new ValidatableMock();
+			var val = new NotifierValidator();
+			var counter = 0;
+			((INotifyCollectionChanged)val.Messages).CollectionChanged += (s, e) => counter++;
+			val.RegisterNotifier(obj);
+
+			obj.RecursiveValidatable.Key = Guid.NewGuid();
+			obj.Id = 0; // Make invalid because must be greater than 0
+			Assert.Equal(1, counter);
+			Assert.Single(val.Messages);
+			Assert.Equal(1, val.Messages.Count(r => string.IsNullOrEmpty(r.Path) && r.PropertyName == nameof(obj.Id)));
+
+			obj.RecursiveValidatable.Key = Guid.NewGuid();
+			obj.Name = "Fuxion789.12"; // Make doubly invalid because contains 'Fuxion' and has more than 10 character length
+			PrintValidatorResults(val.Messages);
+			Assert.Equal(3, counter);
+			Assert.Equal(3, val.Messages.Count);
+			Assert.Equal(2, val.Messages.Count(r => string.IsNullOrEmpty(r.Path) && r.PropertyName == nameof(obj.Name)));
+
+			obj.RecursiveValidatable.Key = Guid.NewGuid();
+			obj.Id = 1; // Make valid because is greater than 0
+			PrintValidatorResults(val.Messages);
+			Assert.DoesNotContain(val.Messages, r => string.IsNullOrEmpty(r.Path) && r.PropertyName == nameof(obj.Id));
+			Assert.Equal(4, counter);
+			Assert.Equal(2, val.Messages.Count);
+
+			val.UnregisterNotifier(obj);
+			Assert.Empty(val.Messages);
+		}
+	}
 }

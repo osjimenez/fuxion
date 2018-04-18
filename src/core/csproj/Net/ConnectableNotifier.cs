@@ -119,7 +119,7 @@ namespace Fuxion.Net
 							}
 							catch (Exception ex)
 							{
-								log.Error("Error '" + ex.GetType().Name + "' en el método 'OnConnect': " + ex.Message, ex);
+								log.Error($"Error '{ex.GetType().Name}' en el método '{nameof(OnConnect)}' de la clase '{GetType().GetSignature(false)}' (*)\r\n{ex.Message}", ex);
 								LastConnectionAttemptErrorMessage = ex.Message;
 								if (ConnectionMode == ConnectionMode.Manual)
 								{

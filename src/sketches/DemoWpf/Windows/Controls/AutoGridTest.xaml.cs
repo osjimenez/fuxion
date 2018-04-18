@@ -1,6 +1,10 @@
-﻿using Fuxion.ComponentModel;
+﻿using Fuxion;
+using Fuxion.ComponentModel;
+using Fuxion.Windows.Markup;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,18 +24,22 @@ namespace DemoWpf.Windows.Controls
 		public AutoGridTest()
 		{
 			InitializeComponent();
-
-			TextBlock tb = new TextBlock();
-			TextBox tbox = new TextBox();
-			Rectangle r = new Rectangle();
-			tb.Visibility = Visibility.Collapsed;
+			DisplayExtension.NonAttrributePrefix = "property:";
+			Printer.Default.WriteLineAction = m => Debug.WriteLine(m);
+			//DataContext = new ViewModel();
 		}
 	}
 	public class ViewModel : Notifier<ViewModel>
 	{
-		public string Name
+		[Display(Name = "Nombre",Description ="El nombre del sujeto",GroupName = "Nombres",Order =1,Prompt = "Escribe el nombre")]
+		public string FirstName
 		{
 			get => GetValue(() => "Tomb");
+			set => SetValue(value);
+		}
+		public string LastName
+		{
+			get => GetValue(() => "Raider");
 			set => SetValue(value);
 		}
 		public string Genre
