@@ -7,9 +7,9 @@
 		xmlns:fuxion="fuxion"
 		mc:Ignorable="d"
 		Title="AutoGridTest" Height="250" Width="500">
-	<Window.DataContext>
+	<!--<Window.DataContext>
 		<local:ViewModel/>
-	</Window.DataContext>
+	</Window.DataContext>-->
 	<Window.Resources>
 		<Style TargetType="Rectangle" >
 			<Setter Property="Fill" Value="SteelBlue" />
@@ -90,7 +90,7 @@
 			</ScrollViewer>
 		</TabItem>
 		<TabItem Header="Vertical alignment">
-			<fuxion:AutoGrid VerticalAlignment="Top">
+			<fuxion:AutoGrid VerticalAlignment="Top" ShowGridLines="True">
 				<fuxion:AutoGrid.Resources>
 					<Style x:Key="CollapsedStyle" TargetType="{x:Type FrameworkElement}">
 						<Setter Property="Visibility" Value="Visible" />
@@ -123,7 +123,7 @@
 					</Style>
 				</fuxion:AutoGrid.Resources>
 				<Grid.ColumnDefinitions>
-					<fuxion:AutoColumnDefinition Width="100"	ContentMargin="10,3,5,3"	HorizontalContentAlignment="Right" VerticalContentAlignment="Center"/>
+					<fuxion:AutoColumnDefinition Width="Auto"	ContentMargin="10,3,5,3"	HorizontalContentAlignment="Right" VerticalContentAlignment="Center"/>
 					<fuxion:AutoColumnDefinition Width="3"		ContentMargin="0,3"/>
 					<fuxion:AutoColumnDefinition				ContentMargin="5,3,10,3"										VerticalContentAlignment="Center"/>
 				</Grid.ColumnDefinitions>

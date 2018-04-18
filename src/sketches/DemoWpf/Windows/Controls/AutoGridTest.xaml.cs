@@ -26,7 +26,7 @@ namespace DemoWpf.Windows.Controls
 			InitializeComponent();
 			DisplayExtension.NonAttrributePrefix = "property:";
 			Printer.Default.WriteLineAction = m => Debug.WriteLine(m);
-			//DataContext = new ViewModel();
+			DataContext = new ViewModel();
 		}
 	}
 	public class ViewModel : Notifier<ViewModel>

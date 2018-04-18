@@ -43,8 +43,6 @@ namespace Fuxion.Windows.Test.Markup
 		{
 			await StartSTATask(() =>
 			{
-				Thread.CurrentThread.SetApartmentState(ApartmentState.STA);
-
 				var ext = new DisplayExtension("Dto.SubDto.Value")
 				{
 					Printer = Printer.Default
@@ -90,8 +88,49 @@ namespace Fuxion.Windows.Test.Markup
 			ext.ProvideValue(ser);
 			return element;
 		}
+		[Fact(DisplayName = "DisplayExtension - Different values")]
+		public async Task DifferentValues()
+		{
+			await StartSTATask(() =>
+			{
+				var textBlock = RegisterFrameworkElement<TextBlock>(TextBox.TextProperty, "[Name]Dto");
+				var expectedValue = ViewModelMock.DtoDisplayName;
+				textBlock.DataContext = new ViewModelMock();
+				Assert.Equal(expectedValue, textBlock.Text);
+
+				// ShortName
+				textBlock = RegisterFrameworkElement<TextBlock>(TextBox.TextProperty, "[ShortName]Dto");
+				expectedValue = ViewModelMock.DtoDisplayShortName;
+				textBlock.DataContext = new ViewModelMock();
+				Assert.Equal(expectedValue, textBlock.Text);
+
+				// GroupName
+				textBlock = RegisterFrameworkElement<TextBlock>(TextBox.TextProperty, "[GroupName]Dto");
+				expectedValue = ViewModelMock.DtoDisplayGroupName;
+				textBlock.DataContext = new ViewModelMock();
+				Assert.Equal(expectedValue, textBlock.Text);
+
+				// Description
+				textBlock = RegisterFrameworkElement<TextBlock>(TextBox.TextProperty, "[Description]Dto");
+				expectedValue = ViewModelMock.DtoDisplayDescription;
+				textBlock.DataContext = new ViewModelMock();
+				Assert.Equal(expectedValue, textBlock.Text);
+
+				// Order
+				textBlock = RegisterFrameworkElement<TextBlock>(TextBox.TextProperty, "[Order]Dto");
+				expectedValue = ViewModelMock.DtoDisplayOrder.ToString();
+				textBlock.DataContext = new ViewModelMock();
+				Assert.Equal(expectedValue, textBlock.Text);
+
+				// Prompt
+				textBlock = RegisterFrameworkElement<TextBlock>(TextBox.TextProperty, "[Prompt]Dto");
+				expectedValue = ViewModelMock.DtoDisplayPrompt;
+				textBlock.DataContext = new ViewModelMock();
+				Assert.Equal(expectedValue, textBlock.Text);
+			});
+		}
 		[Fact(DisplayName = "DisplayExtension - Direct property")]
-		public async Task DisplayExtension_DirectProperty()
+		public async Task DirectProperty()
 		{
 			await StartSTATask(() =>
 			{
@@ -105,7 +144,7 @@ namespace Fuxion.Windows.Test.Markup
 			});
 		}
 		[Fact(DisplayName = "DisplayExtension - Direct property FrameworkContentElement")]
-		public async Task DisplayExtension_DirectPropertyFrameworkContentElement()
+		public async Task DirectPropertyFrameworkContentElement()
 		{
 			await StartSTATask(() =>
 			{
@@ -119,7 +158,7 @@ namespace Fuxion.Windows.Test.Markup
 			});
 		}
 		[Fact(DisplayName = "DisplayExtension - Two level property")]
-		public async Task DisplayExtension_TwoLevelProperty()
+		public async Task TwoLevelProperty()
 		{
 			await StartSTATask(() =>
 			{
@@ -136,7 +175,7 @@ namespace Fuxion.Windows.Test.Markup
 			});
 		}
 		[Fact(DisplayName = "DisplayExtension - Three level property")]
-		public async Task DisplayExtension_ThreeLevelProperty()
+		public async Task ThreeLevelProperty()
 		{
 			await StartSTATask(() =>
 			{
@@ -159,7 +198,7 @@ namespace Fuxion.Windows.Test.Markup
 			});
 		}
 		[Fact(DisplayName = "DisplayExtension - Three level property without Display")]
-		public async Task DisplayExtension_ThreeLevelPropertyWithoutDisplay()
+		public async Task ThreeLevelPropertyWithoutDisplay()
 		{
 			await StartSTATask(() =>
 			{
@@ -183,7 +222,7 @@ namespace Fuxion.Windows.Test.Markup
 			});
 		}
 		[Fact(DisplayName = "DisplayExtension - Four level property")]
-		public async Task DisplayExtension_FourLevelProperty()
+		public async Task FourLevelProperty()
 		{
 			await StartSTATask(() =>
 			{
@@ -232,7 +271,18 @@ namespace Fuxion.Windows.Test.Markup
 	public class ViewModelMock : Notifier<ViewModelMock>
 	{
 		public const string DtoDisplayName= nameof(DtoMock) + " display name";
-		[Display(Name = DtoDisplayName)]
+		public const string DtoDisplayShortName = nameof(DtoMock) + " display short name";
+		public const string DtoDisplayGroupName = nameof(DtoMock) + " display group name";
+		public const string DtoDisplayDescription = nameof(DtoMock) + " display description";
+		public const int DtoDisplayOrder = 1;
+		public const string DtoDisplayPrompt = nameof(DtoMock) + " display prompt";
+		[Display(
+			Name = DtoDisplayName, 
+			GroupName = DtoDisplayGroupName, 
+			Description = DtoDisplayDescription, 
+			Order = DtoDisplayOrder, 
+			Prompt = DtoDisplayPrompt, 
+			ShortName = DtoDisplayShortName)]
 		public DtoMock Dto
 		{
 			get => GetValue<DtoMock>();

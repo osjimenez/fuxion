@@ -23,15 +23,46 @@ namespace Fuxion.Windows.Markup
 			if (bindExpression.StartsWith("["))
 			{
 				var modeStr = bindExpression.Split(']')[0].Substring(1);
-				if(!Enum.TryParse(modeStr, out mode))
-				{
+				if (!Enum.TryParse(modeStr, true, out mode))
 					throw new ArgumentException($"El valor de fuxion:Display '{bindExpression}' no es válido. No se puede parsear '{modeStr}' como una propiedad de '{nameof(DisplayAttribute)}'.");
-				}
+				bindExpression = bindExpression.Split(']')[1];
 			}
 			var pros = bindExpression.Split('.');
 			for (int i = pros.Length - 1; i >= 0; i--)
 			{
-				chain.Add(new NotifierChainLink
+				chain.Add(new NotifierChainLink(pro =>
+				{
+					var att = pro?.GetCustomAttribute<DisplayAttribute>(true, false);
+
+					var nonAttributeValue = pro?.Name;
+					if (nonAttributeValue != null)
+						nonAttributeValue = NonAttrributePrefix + nonAttributeValue + NonAttrributeSufix;
+
+					string attRes = null;
+					switch (mode)
+					{
+						case DisplayMode.Name:
+							attRes = att?.GetName();
+							break;
+						case DisplayMode.Description:
+							attRes = att?.GetDescription();
+							break;
+						case DisplayMode.GroupName:
+							attRes = att?.GetGroupName();
+							break;
+						case DisplayMode.ShortName:
+							attRes = att?.GetShortName();
+							break;
+						case DisplayMode.Order:
+							attRes = att?.GetOrder()?.ToString();
+							break;
+						case DisplayMode.Prompt:
+							attRes = att?.GetPrompt();
+							break;
+					}
+
+					return attRes ?? nonAttributeValue;
+				})
 				{
 					printer = Printer,
 					NextLink = i == (pros.Length - 1) ? null : chain.FirstOrDefault(l => l.PropertyName == pros[i + 1]),
@@ -98,16 +129,19 @@ namespace Fuxion.Windows.Markup
 		Name,
 		Description,
 		GroupName,
+		ShortName,
 		Order,
 		Prompt
 	}
 	internal class NotifierChainLink
 	{
-		public NotifierChainLink()
+		public NotifierChainLink(Func<PropertyInfo ,string> getValueFunction)
 		{
+			this.getValueFunction = getValueFunction;
 			EventHandler = PropertyChanged;
 		}
 		internal IPrinter printer;
+		Func<PropertyInfo, string> getValueFunction;
 		private void PropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
 			if(DataContext != null)
@@ -172,11 +206,8 @@ namespace Fuxion.Windows.Markup
 				printer?.WriteLine($"   ContextAttribute: {(ContextAttribute?.ToString() ?? "null")}");
 				printer?.WriteLine($"   TargetElement: {(TargetObject?.ToString() ?? "null")}");
 				printer?.WriteLine($"   TargetProperty: {(TargetProperty?.Name ?? "null")}");
-				var nonAttributeValue = ContextProperty?.Name;
-				if (nonAttributeValue != null)
-					nonAttributeValue = DisplayExtension.NonAttrributePrefix + nonAttributeValue + DisplayExtension.NonAttrributeSufix;
 				if (TargetObject != null)
-					TargetProperty?.SetValue(TargetObject, ContextAttribute?.GetName() ?? nonAttributeValue);
+					TargetProperty?.SetValue(TargetObject, getValueFunction(ContextProperty));
 			}
 			else NextLink.SetValue();
 		}
