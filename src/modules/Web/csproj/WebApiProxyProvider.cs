@@ -66,20 +66,20 @@ namespace Fuxion.Web
             }
             catch (FlurlHttpException ex)
             {
-                if (!string.IsNullOrEmpty(ex.Call.ErrorResponseBody))
-                {
-                    try
-                    {
-                        var response = JsonConvert.DeserializeObject<DebugErrorResponse>(ex.Call.ErrorResponseBody);
-                        if (response.ExceptionStackTrace == null)
-                            throw new ServiceException(JsonConvert.DeserializeObject<ErrorResponse>(ex.Call.ErrorResponseBody));
-                        throw new ServiceException(response);
-                    }
-                    catch (Exception ex2)
-                    {
-                        throw new ServiceException("Unexpected error", new List<string>() { ex2.Message });
-                    }
-                }
+                //if (!string.IsNullOrEmpty(ex.Call.ErrorResponseBody))
+                //{
+                //    try
+                //    {
+                //        var response = JsonConvert.DeserializeObject<DebugErrorResponse>(ex.Call.ErrorResponseBody);
+                //        if (response.ExceptionStackTrace == null)
+                //            throw new ServiceException(JsonConvert.DeserializeObject<ErrorResponse>(ex.Call.ErrorResponseBody));
+                //        throw new ServiceException(response);
+                //    }
+                //    catch (Exception ex2)
+                //    {
+                //        throw new ServiceException("Unexpected error", new List<string>() { ex2.Message });
+                //    }
+                //}
                 throw new ServiceException("Unexpected error", new[] { ex.Call.Exception.Message });
             }
             catch (Exception ex)
