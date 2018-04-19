@@ -8,6 +8,20 @@ namespace Fuxion.Windows.Controls
 	public class AutoGrid : Grid
 	{
 		bool mustRelayout = true;
+		[Category("Layout"), Description("Define height for all rows of the grid")]
+		public GridLength RowHeight
+		{
+			get { return (GridLength)GetValue(RowHeightProperty); }
+			set { SetValue(RowHeightProperty, value); }
+		}
+		public static readonly DependencyProperty RowHeightProperty =
+			DependencyProperty.Register(nameof(RowHeight), typeof(GridLength), typeof(AutoGrid),
+				new FrameworkPropertyMetadata(default(GridLength),
+					FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange,
+					new PropertyChangedCallback((d, e) =>
+					{
+						if (d is AutoGrid ag) ag.PerformLayout(true);
+					})));
 		private int GetChildColumnIndex(UIElement child) => Children.IndexOf(child) % ColumnDefinitions.Count;
 		private int GetChildRowIndex(UIElement child) => Children.IndexOf(child) / ColumnDefinitions.Count;
 		internal void PerformLayout(bool force = false)
@@ -19,7 +33,7 @@ namespace Fuxion.Windows.Controls
 				if (ColumnDefinitions.Count == 0) return;
 				for(int i = 0; i < System.Math.Ceiling((decimal)Children.Count / ColumnDefinitions.Count); i++)
 				{
-					RowDefinitions.Add(new RowDefinition());
+					RowDefinitions.Add(new RowDefinition { Height = RowHeight });
 				}
 				foreach(UIElement child in Children)
 				{

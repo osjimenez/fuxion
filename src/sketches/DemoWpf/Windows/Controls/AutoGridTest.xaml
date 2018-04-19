@@ -90,7 +90,7 @@
 			</ScrollViewer>
 		</TabItem>
 		<TabItem Header="Vertical alignment">
-			<fuxion:AutoGrid VerticalAlignment="Top" ShowGridLines="True">
+			<fuxion:AutoGrid>
 				<fuxion:AutoGrid.Resources>
 					<Style x:Key="CollapsedStyle" TargetType="{x:Type FrameworkElement}">
 						<Setter Property="Visibility" Value="Visible" />
