@@ -16,11 +16,11 @@
     <dependencies>
       <group targetFramework="net471">
         <dependency id="Fuxion" version="$version$" />
-        <dependency id="SimpleInjector" version="4.0.12" />
+        <dependency id="SimpleInjector" version="4.2.1" />
       </group>
       <group targetFramework="netstandard2.0">
         <dependency id="NETStandard.Library" version="2.0.1" />
-        <dependency id="SimpleInjector" version="4.0.12" />
+        <dependency id="SimpleInjector" version="4.2.1" />
         <dependency id="Fuxion" version="$version$" />
       </group>
     </dependencies>

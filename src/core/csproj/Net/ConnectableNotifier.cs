@@ -6,6 +6,7 @@ using Fuxion.ComponentModel;
 using System;
 using Fuxion.Threading.Tasks;
 using Fuxion.Windows.Threading;
+using System.Threading;
 
 namespace Fuxion.Net
 {
@@ -94,7 +95,7 @@ namespace Fuxion.Net
 		public bool IsConnected => State == ConnectionState.Opened;
 		Task connectionTask;
 		protected abstract Task OnConnect();
-		public async Task Connect()
+		Task Connect(out Func<Task<bool>> firstTryResultFunc, TimeSpan? firstTryTimeout = null)
 		{
 			switch (State)
 			{
@@ -104,9 +105,23 @@ namespace Fuxion.Net
 				case ConnectionState.Faulted:
 				case ConnectionState.Closed:
 					State = ConnectionState.Opening;
+					var cts = new CancellationTokenSource();
+					bool? firstTryResult = null;
+					firstTryResultFunc = new Func<Task<bool>>(async ()=> {
+						try
+						{
+							await Task.Delay(firstTryTimeout ?? TimeSpan.FromMinutes(1), cts.Token);
+							return false;
+						}
+						catch (TaskCanceledException)
+						{
+							return firstTryResult ?? false;
+						}
+					});
 					connectionTask = TaskManager.Create(async () =>
 					{
 						SetValue(IsConnectCancellationRequested, true, nameof(IsConnectCancellationRequested));
+						bool firstTry = true;
 						while (!IsConnectCancellationRequested)
 						{
 							try
@@ -115,10 +130,20 @@ namespace Fuxion.Net
 								LastConnectionAttemptErrorMessage = null;
 								StartKeepAlive();
 								State = ConnectionState.Opened;
+								if (firstTry)
+								{
+									firstTryResult = true;
+									cts.Cancel();
+								}
 								break;
 							}
 							catch (Exception ex)
 							{
+								if (firstTry)
+								{
+									firstTryResult = false;
+									cts.Cancel();
+								}
 								log.Error($"Error '{ex.GetType().Name}' en el método '{nameof(OnConnect)}' de la clase '{GetType().GetSignature(false)}' (*)\r\n{ex.Message}", ex);
 								LastConnectionAttemptErrorMessage = ex.Message;
 								if (ConnectionMode == ConnectionMode.Manual)
@@ -128,21 +153,78 @@ namespace Fuxion.Net
 								}
 								connectionTask.Sleep(AutomaticConnectionModeRetryInterval);
 							}
+							finally
+							{
+								firstTry = false;
+							}
 						}
 					});
 					connectionTask.OnCancelRequested(() => SetValue(IsConnectCancellationRequested, true, nameof(IsConnectCancellationRequested)));
 					connectionTask.Start();
-					await connectionTask;
+					return connectionTask;
 					break;
 				case ConnectionState.Opening:
-					await connectionTask;
+					firstTryResultFunc = new Func<Task<bool>>(() => Task.FromResult(false));
+					return connectionTask;
 					break;
 				case ConnectionState.Closing:
-					await disconnectionTask.ContinueWith((task) => Connect());
+					firstTryResultFunc = new Func<Task<bool>>(() => Task.FromResult(false));
+					return disconnectionTask.ContinueWith((task) => Connect());
 					break;
 				default:
 					throw new NotImplementedException($"El estado '{State}' no ha sido implementado en la operación de conexión.");
 			}
+		}
+		public Task Connect()
+		{
+			return Connect(out var _);
+			//switch (State)
+			//{
+			//	case ConnectionState.Opened: //Si esta conectado lanzo una excepción
+			//		throw new InvalidOperationException("No se puede conectar porque la conexión ya esta activa.");
+			//	case ConnectionState.Created: //Si esta creado o en error creo una nueva tarea de conexión
+			//	case ConnectionState.Faulted:
+			//	case ConnectionState.Closed:
+			//		State = ConnectionState.Opening;
+			//		connectionTask = TaskManager.Create(async () =>
+			//		{
+			//			SetValue(IsConnectCancellationRequested, true, nameof(IsConnectCancellationRequested));
+			//			while (!IsConnectCancellationRequested)
+			//			{
+			//				try
+			//				{
+			//					await OnConnect();
+			//					LastConnectionAttemptErrorMessage = null;
+			//					StartKeepAlive();
+			//					State = ConnectionState.Opened;
+			//					break;
+			//				}
+			//				catch (Exception ex)
+			//				{
+			//					log.Error($"Error '{ex.GetType().Name}' en el método '{nameof(OnConnect)}' de la clase '{GetType().GetSignature(false)}' (*)\r\n{ex.Message}", ex);
+			//					LastConnectionAttemptErrorMessage = ex.Message;
+			//					if (ConnectionMode == ConnectionMode.Manual)
+			//					{
+			//						State = ConnectionState.Faulted;
+			//						break;
+			//					}
+			//					connectionTask.Sleep(AutomaticConnectionModeRetryInterval);
+			//				}
+			//			}
+			//		});
+			//		connectionTask.OnCancelRequested(() => SetValue(IsConnectCancellationRequested, true, nameof(IsConnectCancellationRequested)));
+			//		connectionTask.Start();
+			//		await connectionTask;
+			//		break;
+			//	case ConnectionState.Opening:
+			//		await connectionTask;
+			//		break;
+			//	case ConnectionState.Closing:
+			//		await disconnectionTask.ContinueWith((task) => Connect());
+			//		break;
+			//	default:
+			//		throw new NotImplementedException($"El estado '{State}' no ha sido implementado en la operación de conexión.");
+			//}
 		}
 		#endregion
 		#region Disconnect
@@ -191,14 +273,16 @@ namespace Fuxion.Net
 			}
 		}
 		public Task Disconnect() => Disconnect(true);
-		protected async Task<bool> ReconnectOnFailure()
+		protected async Task<bool> ReconnectOnFailure(TimeSpan? timeout = null)
 		{
 			State = ConnectionState.Faulted;
 			if (ConnectionMode == ConnectionMode.Automatic)
 			{
 				await Disconnect(false);
-				await Connect();
-				return true;
+				//var f = new Func<Task<bool>>(() => Task.FromResult(true));
+				Connect(out var f, timeout);
+				return await f();
+				//return true;
 			}
 			return false;
 		}
