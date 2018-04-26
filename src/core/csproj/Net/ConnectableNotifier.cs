@@ -195,9 +195,9 @@ namespace Fuxion.Net
 						SetValue(IsDisconnectCancellationRequested, true, nameof(IsDisconnectCancellationRequested));
 						if (mustClose)
 							State = ConnectionState.Closing;
-						new[] { connectionTask, keepAliveTask }.CancelAndWait(throwExceptionIfNotRunning: false);
 						try
 						{
+							new[] { connectionTask, keepAliveTask }.CancelAndWait(throwExceptionIfNotRunning: false);
 							await OnDisconnect();
 						}
 						catch (Exception ex)
