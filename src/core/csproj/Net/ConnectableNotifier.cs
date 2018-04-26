@@ -149,7 +149,7 @@ namespace Fuxion.Net
 								if (ConnectionMode == ConnectionMode.Manual)
 								{
 									State = ConnectionState.Faulted;
-									break;
+									throw;
 								}
 								connectionTask.Sleep(AutomaticConnectionModeRetryInterval);
 							}
@@ -202,7 +202,7 @@ namespace Fuxion.Net
 						}
 						catch (Exception ex)
 						{
-							log.Error("Error '" + ex.GetType().Name + "' en el método 'OnDisconnect': " + ex.Message, ex);
+							log.Error($"Error '{ex.GetType().Name}' en el método '{nameof(OnDisconnect)}' de la clase '{GetType().GetSignature(false)}' (*)\r\n{ex.Message}", ex);
 						}
 						if (mustClose)
 						{
@@ -263,7 +263,7 @@ namespace Fuxion.Net
 					try { await OnKeepAlive(); }
 					catch (Exception ex)
 					{
-						log.Error("Error '" + ex.GetType().Name + "' en el método 'OnKeepAlive': " + ex.Message, ex);
+						log.Error($"Error '{ex.GetType().Name}' en el método '{nameof(OnKeepAlive)}' de la clase '{GetType().GetSignature(false)}' (*)\r\n{ex.Message}", ex);
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 						ReconnectOnFailure();
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
