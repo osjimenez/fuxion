@@ -65,10 +65,10 @@ namespace Fuxion.Test.Threading.Tasks
 		public static IEnumerable<object[]> GenerateTheoryParameters(int maxParNum)
 		{
 			var res = new List<object[]>();
-			for (int i = 0; i < System.Math.Pow(2, 6); i++)
+			for (int i = 0; i < System.Math.Pow(2, 7); i++)
 			{
 				BitArray b = new BitArray(new int[] { i });
-				var bits = b.Cast<bool>().Take(6).ToList();
+				var bits = b.Cast<bool>().Take(7).ToList();
 				//if (!bits[3] || bits[4] || !bits[5]) continue; // Disable cases generation
 				var strings = new[] {
 					bits[0] ? "VOID  " : "RESULT", // 0
@@ -77,19 +77,23 @@ namespace Fuxion.Test.Threading.Tasks
 					bits[3] ? "SEQUEN" : "PARALL", // 3
 					bits[4] ? "LAST  " : "ALL   ", // 4
 					bits[5] ? "CANCEL" : "NO_CAN", // 5
+					bits[6] ? "NAMED " : "NO_NAM", // 6
 					};
 				for (int j = 0; j < maxParNum + 1; j++)
-					res.Add(strings.Cast<object>().ToList().Transform(ss => ss.Add(j)).ToArray());
+				{
+					res.Add(strings.Cast<object>().ToList().Transform(ss => { ss.Add(j); }).ToArray());
+					//res.Add(strings.Cast<object>().ToList().Transform(ss => { ss.Add("oka"); ss.Add(j); }).ToArray());
+				}
 			}
 			return res;
 		}
 		[Theory(DisplayName = "TaskManager")]
 		[MemberData(nameof(GenerateTheoryParameters), 9)]
 		public async void TaskManager_Theory2(params object[] _)
-			=> await TaskManager_Theory((string)_[0], (string)_[1], (string)_[2], (string)_[3], (string)_[4], (string)_[5], (int)_[6]);
+			=> await TaskManager_Theory((string)_[0], (string)_[1], (string)_[2], (string)_[3], (string)_[4], (string)_[5], (string)_[6], (int)_[7]);
 		[Theory(DisplayName = "TaskManager")]
 		[MemberData(nameof(GenerateTheoryParameters), 9)]
-		public async Task TaskManager_Theory(string r, string c, string m, string p, string o, string n, int parNum)
+		public async Task TaskManager_Theory(string r, string c, string m, string p, string o, string n, string na, int parNum)
 		{
 			#region Variables
 			// Convert parameters to bool
@@ -99,6 +103,7 @@ namespace Fuxion.Test.Threading.Tasks
 			bool sequentially = p == "SEQUEN";
 			bool onlyLast = o == "LAST  ";
 			bool cancel = n == "CANCEL";
+			bool named = na == "NAMED ";
 
 			int runDelay = 5;
 			string cancelledResult = "Canceled";
@@ -118,16 +123,11 @@ namespace Fuxion.Test.Threading.Tasks
 				Printer.WriteLine($"{nameof(sequentially)}: {sequentially}");
 				Printer.WriteLine($"{nameof(onlyLast)}: {onlyLast}");
 				Printer.WriteLine($"{nameof(cancel)}: {cancel}");
+				Printer.WriteLine($"{nameof(named)}: {named}");
 				Printer.WriteLine($"{nameof(parNum)}: {parNum}");
 			}
-			Printer.WriteLine("==============");
+			
 
-			var concurrencyProfile = new ConcurrencyProfile
-			{
-				Sequentially = sequentially,
-				ExecuteOnlyLast = onlyLast,
-				CancelPrevious = cancel,
-			};
 			AutoResetEvent are = new AutoResetEvent(true);
 			object seqLocker = new object();
 			string seq = null;
@@ -188,7 +188,7 @@ namespace Fuxion.Test.Threading.Tasks
 			{
 				void Void_Sync()
 				{
-					Printer.WriteLine($"Do {order}");
+					Printer.WriteLine($"Do {order} - {TaskManager.CurrentEntry.ConcurrencyProfile.Name}");
 					try
 					{
 						AddToSeq($"S{order}-");
@@ -206,7 +206,7 @@ namespace Fuxion.Test.Threading.Tasks
 				}
 				async Task Void_Async()
 				{
-					Printer.WriteLine($"Do {order}");
+					Printer.WriteLine($"Do {order} - {TaskManager.CurrentEntry.ConcurrencyProfile.Name}");
 					try
 					{
 						AddToSeq($"S{order}-");
@@ -224,7 +224,7 @@ namespace Fuxion.Test.Threading.Tasks
 				}
 				string Result_Sync()
 				{
-					Printer.WriteLine($"Do {order}");
+					Printer.WriteLine($"Do {order} - {TaskManager.CurrentEntry.ConcurrencyProfile.Name}");
 					try
 					{
 						AddToSeq($"S{order}-");
@@ -243,7 +243,7 @@ namespace Fuxion.Test.Threading.Tasks
 				}
 				async Task<string> Result_Async()
 				{
-					Printer.WriteLine($"Do {order}");
+					Printer.WriteLine($"Do {order} - {TaskManager.CurrentEntry.ConcurrencyProfile.Name}");
 					try
 					{
 						AddToSeq($"S{order}-");
@@ -261,9 +261,7 @@ namespace Fuxion.Test.Threading.Tasks
 					}
 				}
 				if (@void)
-				{
 					if (sync)
-					{
 						switch (parNum)
 						{
 							case 0:
@@ -289,9 +287,7 @@ namespace Fuxion.Test.Threading.Tasks
 							default:
 								return null;
 						}
-					}
 					else
-					{
 						switch (parNum)
 						{
 							case 0:
@@ -317,12 +313,8 @@ namespace Fuxion.Test.Threading.Tasks
 							default:
 								return null;
 						}
-					}
-				}
 				else
-				{
 					if (sync)
-					{
 						switch (parNum)
 						{
 							case 0:
@@ -348,9 +340,7 @@ namespace Fuxion.Test.Threading.Tasks
 							default:
 								return null;
 						}
-					}
 					else
-					{
 						switch (parNum)
 						{
 							case 0:
@@ -376,20 +366,29 @@ namespace Fuxion.Test.Threading.Tasks
 							default:
 								return null;
 						}
-					}
-				}
 			}
+			ConcurrencyProfile GetConcurrencyProfile(int order) => new ConcurrencyProfile
+			{
+				Name = named 
+					? order % 2 == 0
+						? "even"
+						: "odd"
+					: null,
+				Sequentially = sequentially,
+				ExecuteOnlyLast = onlyLast,
+				CancelPrevious = cancel,
+			};
 			Task Action_Sync(int order)
 			{
 				try
 				{
 					if (create)
 					{
-						var task = (Task)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), concurrencyProfile));
+						var task = (Task)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order)));
 						task.Start();
 						return task;
 					}
-					else return (Task)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), concurrencyProfile));
+					else return (Task)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order)));
 				}
 				catch (Exception ex)
 				{
@@ -404,11 +403,11 @@ namespace Fuxion.Test.Threading.Tasks
 				{
 					if (create)
 					{
-						var task = (Task)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), concurrencyProfile));
+						var task = (Task)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order)));
 						task.Start();
 						return task;
 					}
-					else return (Task)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), concurrencyProfile));
+					else return (Task)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order)));
 				}
 				catch (Exception ex)
 				{
@@ -423,11 +422,11 @@ namespace Fuxion.Test.Threading.Tasks
 				{
 					if (create)
 					{
-						var task = (Task<string>)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), concurrencyProfile));
+						var task = (Task<string>)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order)));
 						task.Start();
 						return task;
 					}
-					else return (Task<string>)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), concurrencyProfile));
+					else return (Task<string>)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order)));
 				}
 				catch (Exception ex)
 				{
@@ -442,11 +441,11 @@ namespace Fuxion.Test.Threading.Tasks
 				{
 					if (create)
 					{
-						var task = (Task<string>)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), concurrencyProfile));
+						var task = (Task<string>)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order)));
 						task.Start();
 						return task;
 					}
-					else return (Task<string>)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), concurrencyProfile));
+					else return (Task<string>)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order)));
 				}
 				catch (Exception ex)
 				{
@@ -459,6 +458,7 @@ namespace Fuxion.Test.Threading.Tasks
 			#endregion
 
 			#region Run
+			Printer.WriteLine("==============");
 			using (Printer.Indent2("Run"))
 			{
 				Task<(bool WasCancelled, string Result)>[] res = new Task<(bool WasCancelled, string Result)>[3];
@@ -524,73 +524,248 @@ namespace Fuxion.Test.Threading.Tasks
 			#endregion
 
 			#region Assert sequence
-			if (sequentially)
+			Printer.WriteLine("==============");
+			var seqs = seq.Split('-').ToList();
+			#region Methods
+			bool WasTaskFinishBeforeOtherStart(int taskThatHadToFinished, int taskThatHadToStartAfter)
+				=> new[] { seqs.IndexOf($"E{taskThatHadToFinished}"), seqs.IndexOf($"E{taskThatHadToFinished}X") }.Max() < seqs.IndexOf($"S{taskThatHadToStartAfter}");
+			bool WasTaskExecuted(int task)
+				=> seqs.Contains($"S{task}") && (seqs.Contains($"E{task}") || seqs.Contains($"E{task}X"));
+			bool WasTaskExecutedSuccessfully(int task)
+				=> seqs.Contains($"S{task}") && seqs.Contains($"E{task}");
+
+			void AssertIfTaskWasFinishBeforeOtherStart(int taskThatHadToFinished, int taskThatHadToStartAfter)
 			{
-				if (cancel)
-				{
-					if (onlyLast)
-					{
-						// Only last call executed sequentially canceling previous
-						Assert.True(seq == "S1-E1-S2-E2-S3-E3" || seq == "S1-E1-S2-E2X-S3-E3" || seq == "S1-E1X-S2-E2X-S3-E3" || seq == "S1-E1X-S2-E2-S3-E3"
-							|| seq == "S1-E1-S3-E3" || seq == "S1-E1X-S3-E3"
-							|| seq == "S2-E2-S3-E3" || seq == "S2-E2X-S3-E3"
-							|| seq == "S3-E3");
-					}
-					else
-					{
-						// All executed sequentially canceling previous
-						Assert.True(seq == "S1-E1-S2-E2-S3-E3" || seq == "S1-E1-S2-E2X-S3-E3" || seq == "S1-E1X-S2-E2-S3-E3" || seq == "S1-E1X-S2-E2X-S3-E3");
-					}
-				}
-				else
-				{
-					if (onlyLast)
-					{
-						// Only last call executed sequentially without cancelations
-						Assert.True(seq == "S1-E1-S2-E2-S3-E3" || seq == "S1-E1-S3-E3" || seq == "S2-E2-S3-E3" || seq == "S3-E3");
-					}
-					else
-					{
-						// All executed sequentially without cancelations
-						Assert.Equal("S1-E1-S2-E2-S3-E3", seq);
-					}
-				}
+				Printer.WriteLine($"Asserting if task {taskThatHadToFinished} finished before task {taskThatHadToStartAfter} was started");
+				Assert.True(WasTaskFinishBeforeOtherStart(taskThatHadToFinished, taskThatHadToStartAfter), $"Task {taskThatHadToFinished} had to be finished before task {taskThatHadToStartAfter} can start");
 			}
-			else
+			void AssertIfTaskWasExecuted(int task)
 			{
-				if (cancel)
+				Printer.WriteLine($"Asserting if task {task} was executed, successful or canceled");
+				Assert.True(WasTaskExecuted(task), $"Task {task} had to be executed, successful or canceled");
+			}
+			void AssertIfTaskWasExecutedSuccessfully(int task)
+			{
+				Printer.WriteLine($"Asserting if task {task} was executed successfully");
+				Assert.True(WasTaskExecutedSuccessfully(task), $"Task {task} had to be executed successfully");
+			}
+
+			#endregion
+			using (Printer.Indent2("Assert"))
+			{
+				if (sequentially)
 				{
-					if (onlyLast)
+					if (cancel)
 					{
-						// Only last call executed in any order canceling previous
-						Assert.True(seq.Contains("S3") && seq.Contains("E3"));
+						if (onlyLast)
+						{
+							if (named)
+							{
+								Printer.WriteLine("Only last call executed sequentially canceling previous with naming even/odd");
+								if (WasTaskExecuted(1)) // Task 1 was executed?
+									AssertIfTaskWasFinishBeforeOtherStart(1, 3);
+								AssertIfTaskWasExecutedSuccessfully(2);
+								AssertIfTaskWasExecutedSuccessfully(3);
+							}
+							else
+							{
+								Printer.WriteLine("Only last call executed sequentially canceling previous");
+								if (WasTaskExecuted(1) && WasTaskExecuted(2))
+								{
+									AssertIfTaskWasExecuted(1);
+									AssertIfTaskWasFinishBeforeOtherStart(1, 2);
+									AssertIfTaskWasExecuted(2);
+									AssertIfTaskWasFinishBeforeOtherStart(2, 3);
+								}
+								else if (!WasTaskExecuted(1) && WasTaskExecuted(2))
+								{
+									AssertIfTaskWasExecuted(2);
+									AssertIfTaskWasFinishBeforeOtherStart(2, 3);
+								}
+								else if (WasTaskExecuted(1) && !WasTaskExecuted(2))
+								{
+									AssertIfTaskWasExecuted(1);
+									AssertIfTaskWasFinishBeforeOtherStart(1, 3);
+								}
+								AssertIfTaskWasExecutedSuccessfully(3);
+								//Assert.True(seq == "S1-E1-S2-E2-S3-E3" || seq == "S1-E1-S2-E2X-S3-E3" || seq == "S1-E1X-S2-E2X-S3-E3" || seq == "S1-E1X-S2-E2-S3-E3"
+								//|| seq == "S1-E1-S3-E3" || seq == "S1-E1X-S3-E3"
+								//|| seq == "S2-E2-S3-E3" || seq == "S2-E2X-S3-E3"
+								//|| seq == "S3-E3");
+							}
+						}
+						else
+						{
+							if (named)
+							{
+								Printer.WriteLine("All executed sequentially canceling previous with naming even/odd");
+								if (WasTaskExecuted(1))
+									AssertIfTaskWasFinishBeforeOtherStart(1, 3);
+								AssertIfTaskWasExecutedSuccessfully(2);
+								AssertIfTaskWasExecutedSuccessfully(3);
+							}
+							else
+							{
+								Printer.WriteLine("All executed sequentially canceling previous");
+								AssertIfTaskWasExecuted(1);
+								AssertIfTaskWasFinishBeforeOtherStart(1, 2);
+								AssertIfTaskWasExecuted(2);
+								AssertIfTaskWasFinishBeforeOtherStart(2, 3);
+								AssertIfTaskWasExecutedSuccessfully(3);
+								//Assert.True(seq == "S1-E1-S2-E2-S3-E3" || seq == "S1-E1-S2-E2X-S3-E3" || seq == "S1-E1X-S2-E2-S3-E3" || seq == "S1-E1X-S2-E2X-S3-E3");
+							}
+						}
 					}
 					else
 					{
-						// All executed in any order canceling previous
-						Assert.True(
-							(seq.Contains("S1") && seq.Contains("E1X") || seq.Contains("S1") && seq.Contains("E1"))
-							&&
-							(seq.Contains("S2") && seq.Contains("E2X") || seq.Contains("S2") && seq.Contains("E2"))
-							&& seq.Contains("S3") && seq.Contains("E3"));
+						if (onlyLast)
+						{
+							if (named)
+							{
+								Printer.WriteLine("Only last call executed sequentially without cancelations with naming even/odd");
+								if (WasTaskExecuted(1))
+								{
+									AssertIfTaskWasExecutedSuccessfully(1);
+									AssertIfTaskWasFinishBeforeOtherStart(1, 3);
+								}
+								AssertIfTaskWasExecutedSuccessfully(2);
+								AssertIfTaskWasExecutedSuccessfully(3);
+							}
+							else
+							{
+								Printer.WriteLine("Only last call executed sequentially without cancelations");
+								if (WasTaskExecuted(1) && WasTaskExecuted(2))
+								{
+									AssertIfTaskWasExecutedSuccessfully(1);
+									AssertIfTaskWasFinishBeforeOtherStart(1, 2);
+									AssertIfTaskWasExecutedSuccessfully(2);
+									AssertIfTaskWasFinishBeforeOtherStart(2, 3);
+								}
+								else if (!WasTaskExecuted(1) && WasTaskExecuted(2))
+								{
+									AssertIfTaskWasExecutedSuccessfully(2);
+									AssertIfTaskWasFinishBeforeOtherStart(2, 3);
+								}
+								else if (WasTaskExecuted(1) && !WasTaskExecuted(2))
+								{
+									AssertIfTaskWasExecutedSuccessfully(1);
+									AssertIfTaskWasFinishBeforeOtherStart(1, 3);
+								}
+								AssertIfTaskWasExecutedSuccessfully(3);
+								// Assert.True(seq == "S1-E1-S2-E2-S3-E3" || seq == "S1-E1-S3-E3" || seq == "S2-E2-S3-E3" || seq == "S3-E3");
+							}
+						}
+						else
+						{
+							if (named)
+							{
+								Printer.WriteLine("All executed sequentially without cancelations with naming even/odd");
+								AssertIfTaskWasExecutedSuccessfully(1);
+								AssertIfTaskWasExecutedSuccessfully(2);
+								AssertIfTaskWasFinishBeforeOtherStart(1, 3);
+								AssertIfTaskWasExecutedSuccessfully(3);
+							}
+							else
+							{
+								Printer.WriteLine("All executed sequentially without cancelations");
+								AssertIfTaskWasExecutedSuccessfully(1);
+								AssertIfTaskWasFinishBeforeOtherStart(1, 2);
+								AssertIfTaskWasExecutedSuccessfully(2);
+								AssertIfTaskWasFinishBeforeOtherStart(2, 3);
+								AssertIfTaskWasExecutedSuccessfully(3);
+								//Assert.Equal("S1-E1-S2-E2-S3-E3", seq);
+							}
+						}
 					}
 				}
 				else
 				{
-					if (onlyLast)
+					if (cancel)
 					{
-						// Only last call executed in any order without cancelations
-						Assert.True(seq.Contains("S3") && seq.Contains("E3"));
+						if (onlyLast)
+						{
+							if (named)
+							{
+								Printer.WriteLine("Only last call executed in any order canceling previous with naming even/odd");
+								AssertIfTaskWasExecutedSuccessfully(2);
+								AssertIfTaskWasExecutedSuccessfully(3);
+							}
+							else
+							{
+								Printer.WriteLine("Only last call executed in any order canceling previous");
+								AssertIfTaskWasExecutedSuccessfully(3);
+								//Assert.True(seq.Contains("S3") && seq.Contains("E3"));
+							}
+						}
+						else
+						{
+							if (named)
+							{
+								Printer.WriteLine("All executed in any order canceling previous with naming even/odd");
+								AssertIfTaskWasExecuted(1);
+								AssertIfTaskWasExecutedSuccessfully(2);
+								AssertIfTaskWasExecutedSuccessfully(3);
+							}
+							else
+							{
+								Printer.WriteLine("All executed in any order canceling previous");
+								AssertIfTaskWasExecuted(1);
+								AssertIfTaskWasExecuted(2);
+								AssertIfTaskWasExecutedSuccessfully(3);
+								//Assert.True(
+								//  (seq.Contains("S1") && seq.Contains("E1X") || seq.Contains("S1") && seq.Contains("E1"))
+								//  &&
+								//  (seq.Contains("S2") && seq.Contains("E2X") || seq.Contains("S2") && seq.Contains("E2"))
+								//  && seq.Contains("S3") && seq.Contains("E3"));
+							}
+						}
 					}
 					else
 					{
-						// All executed in any order without cancelations
-						Assert.Contains("S1", seq);
-						Assert.Contains("E1", seq);
-						Assert.Contains("S2", seq);
-						Assert.Contains("E2", seq);
-						Assert.Contains("S2", seq);
-						Assert.Contains("E2", seq);
+						if (onlyLast)
+						{
+							if (named)
+							{
+								Printer.WriteLine("Only last call executed in any order without cancelations with naming even/odd");
+								if (WasTaskExecuted(1))
+									AssertIfTaskWasExecutedSuccessfully(1);
+								AssertIfTaskWasExecutedSuccessfully(2);
+								AssertIfTaskWasExecutedSuccessfully(3);
+							}
+							else
+							{
+								Printer.WriteLine("Only last call executed in any order without cancelations");
+								if (WasTaskExecuted(1))
+									AssertIfTaskWasExecutedSuccessfully(1);
+								if (WasTaskExecuted(2))
+									AssertIfTaskWasExecutedSuccessfully(2);
+								AssertIfTaskWasExecutedSuccessfully(3);
+								//Assert.True(seq.Contains("S3") && seq.Contains("E3"));
+							}
+						}
+						else
+						{
+							if (named)
+							{
+								Printer.WriteLine("All executed in any order without cancelations with naming even/odd");
+								AssertIfTaskWasExecutedSuccessfully(1);
+								AssertIfTaskWasExecutedSuccessfully(2);
+								AssertIfTaskWasExecutedSuccessfully(3);
+							}
+							else
+							{
+								Printer.WriteLine("All executed in any order without cancelations");
+								AssertIfTaskWasExecutedSuccessfully(1);
+								AssertIfTaskWasExecutedSuccessfully(2);
+								AssertIfTaskWasExecutedSuccessfully(3);
+								//Assert.Contains("S1", seq);
+								//Assert.Contains("E1", seq);
+								//Assert.Contains("S2", seq);
+								//Assert.Contains("E2", seq);
+								//Assert.Contains("S2", seq);
+								//Assert.Contains("E2", seq);
+							}
+						}
 					}
 				}
 			}

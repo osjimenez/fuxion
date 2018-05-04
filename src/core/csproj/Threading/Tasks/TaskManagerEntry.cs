@@ -78,7 +78,13 @@ namespace Fuxion.Threading.Tasks
 		}
 		public void DoConcurrency()
 		{
-			var allPrevious = TaskManager.Tasks.Read(l => l.Take(l.IndexOf(this)).Where(e => e.Delegate.Method == Delegate.Method && e.Delegate.Target.GetType() == Delegate.Target.GetType()).ToList());
+			var allPrevious = TaskManager.Tasks.Read(l => l.Take(l.IndexOf(this)).Where(e => 
+				string.IsNullOrWhiteSpace(ConcurrencyProfile.Name)
+					//? e.Delegate.Method == Delegate.Method && e.Delegate.Target.GetType() == Delegate.Target.GetType()
+					? ConcurrencyProfile.ByInstance
+						? e.Delegate.Method == Delegate.Method && e.Delegate.Target == Delegate.Target
+						: e.Delegate.Method == Delegate.Method && e.Delegate.Target.GetType() == Delegate.Target.GetType()
+					: e.ConcurrencyProfile.Name == ConcurrencyProfile.Name).ToList());
 			Previous = allPrevious.LastOrDefault();
 			if (ConcurrencyProfile.CancelPrevious)
 				foreach (var entry in allPrevious)

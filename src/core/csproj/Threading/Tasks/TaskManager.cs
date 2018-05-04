@@ -31,6 +31,7 @@ namespace Fuxion.Threading.Tasks
 			return res;
 		}
 		public static Task Current => Tasks.Read(l => l.FirstOrDefault(e => Task.CurrentId.HasValue && e.Task.Id == Task.CurrentId.Value)).Task;
+		internal static ITaskManagerEntry CurrentEntry => Tasks.Read(l => l.FirstOrDefault(e => Task.CurrentId.HasValue && e.Task.Id == Task.CurrentId.Value));
 
 		#region Void
 		private static ITaskManagerEntry CreateEntry(Action action, TaskScheduler scheduler = null, TaskCreationOptions options = default(TaskCreationOptions), ConcurrencyProfile concurrencyProfile = default(ConcurrencyProfile), Delegate @delegate = null)
