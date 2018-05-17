@@ -17,6 +17,6 @@ namespace Fuxion.Net
         Task Connect();
         Task Disconnect();
         TimeSpan KeepAliveInterval { get; set; }
-        bool IsKeepAliveEnable { get; set; }
+        bool IsKeepAliveEnabled { get; set; }
     }
 }

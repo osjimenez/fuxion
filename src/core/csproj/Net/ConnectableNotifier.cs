@@ -22,7 +22,7 @@ namespace Fuxion.Net
 					//Si KeepAliveInterval es menor que 1 lanzo una ArgumentException
 					if (p.ActualValue.TotalMilliseconds < 1)
 						throw new ArgumentException(
-							"El valor de '" + s.GetMemberName(() => s.KeepAliveInterval) + "' no puede ser cero o negativo, para deshabilitar el KeepAlive establezca la propiedad '" + s.GetMemberName(() => s.IsKeepAliveEnable) + "' en False.",
+							"El valor de '" + s.GetMemberName(() => s.KeepAliveInterval) + "' no puede ser cero o negativo, para deshabilitar el KeepAlive establezca la propiedad '" + s.GetMemberName(() => s.IsKeepAliveEnabled) + "' en False.",
 							s.GetMemberName(() => s.KeepAliveInterval));
 				});
 				e.Case(() => ConnectionMode, p =>
@@ -69,12 +69,12 @@ namespace Fuxion.Net
 					break;
 			}
 		}
-		public TimeSpan AutomaticConnectionModeRetryInterval
+		public virtual TimeSpan AutomaticConnectionModeRetryInterval
 		{
-			get => GetValue<TimeSpan>(() => TimeSpan.FromSeconds(5));
+			get => GetValue(() => TimeSpan.FromSeconds(5));
 			set => SetValue(value);
 		}
-		public ConnectionMode ConnectionMode
+		public virtual ConnectionMode ConnectionMode
 		{
 			get => GetLockedValue(() => ConnectionMode.Manual);
 			set => SetLockedValue(value);
@@ -85,7 +85,7 @@ namespace Fuxion.Net
 			private set => SetLockedValue(value);
 		}
 		#region Connect
-		public string LastConnectionAttemptErrorMessage
+		public virtual string LastConnectionAttemptErrorMessage
 		{
 			get => GetValue<string>();
 			set => SetValue(value);
@@ -234,12 +234,12 @@ namespace Fuxion.Net
 		#endregion
 		#region KeepAlive
 		protected bool IsKeepAliveCancellationRequested => keepAliveTask.IsCancellationRequested();
-		public bool IsKeepAliveEnable
+		public virtual bool IsKeepAliveEnabled
 		{
 			get => GetValue<bool>();
 			set => SetValue(value);
 		}
-		public TimeSpan KeepAliveInterval
+		public virtual TimeSpan KeepAliveInterval
 		{
 			get => GetValue(() => TimeSpan.FromSeconds(60));
 			set => SetValue(value);
@@ -249,7 +249,7 @@ namespace Fuxion.Net
 		private void StartKeepAlive()
 		{
 			//Comprobar si el keep alive esta habilitado
-			if (!IsKeepAliveEnable) return;
+			if (!IsKeepAliveEnabled) return;
 			//Comprobar si la tarea esta ya en ejecución
 			if (keepAliveTask != null && keepAliveTask.Status == TaskStatus.Running) return;
 

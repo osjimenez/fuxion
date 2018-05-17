@@ -416,7 +416,7 @@ namespace Fuxion.ComponentModel
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		[XmlIgnore]
 		[JsonIgnore]
-		public bool IsPropertyChangedEnabled { get => GetValue(() => true); set => SetValue(value); }
+		public virtual bool IsPropertyChangedEnabled { get => GetValue(() => true); set => SetValue(value); }
 		protected void RaisePropertyChanged<T>(Expression<Func<object>> expression, T previousValue, T actualValue) => RaisePropertyChanged(expression.GetMemberName(), previousValue, actualValue);
 		protected void RaisePropertyChanged<T>(string propertyName, T previousValue, T actualValue) => OnRaisePropertyChanged(propertyName, previousValue, actualValue);
 		protected virtual void OnRaisePropertyChanged<T>(string propertyName, T previousValue, T actualValue)

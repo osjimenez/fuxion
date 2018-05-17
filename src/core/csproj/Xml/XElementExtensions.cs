@@ -10,7 +10,7 @@ namespace System.Xml
 {
 	public static class XElementExtensions
 	{
-		public static XElement ToXElement<T>(this object obj)
+		public static XElement ToXElement<T>(this T obj)
 		{
 			using (var memoryStream = new MemoryStream())
 			{

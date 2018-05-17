@@ -21,6 +21,10 @@ namespace Fuxion.Test.Net
         {
             var con = new ConnectableNotifierMock(output);
             con.ConnectionMode = ConnectionMode.Automatic;
+
+			con.IsKeepAliveEnabled = false;
+			con.KeepAliveInterval = TimeSpan.FromSeconds(30);
+
             while (!con.IsConnected) { }
             Assert.Equal(1, con.Counter);
         }
@@ -30,6 +34,7 @@ namespace Fuxion.Test.Net
         public ConnectableNotifierMock(ITestOutputHelper output)
         {
             this.output = output;
+			base.KeepAliveInterval = TimeSpan.FromMilliseconds(1);
         }
         ITestOutputHelper output;
         public int Counter { get; set; }
@@ -49,5 +54,11 @@ namespace Fuxion.Test.Net
         {
             return Task.CompletedTask;
         }
-    }
+
+		public int MyProperty { get; set; }
+
+		public override bool IsKeepAliveEnabled { get => true; set { throw new InvalidOperationException("KeepAlive cannot be disabled"); } }
+		public override TimeSpan KeepAliveInterval { get => TimeSpan.FromMilliseconds(1); set { throw new InvalidOperationException("KeepAlive cannot be disabled"); } }
+
+	}
 }
