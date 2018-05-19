@@ -32,7 +32,7 @@ namespace System
 		/// <remarks>Extraido desde 
 		/// http://es.debugmodeon.com/articulo/clonar-objetos-de-estructura-compleja
 		/// </remarks>
-		public static T Clone<T>(this T source)
+		public static T CloneWithBinary<T>(this T source)
         {
             // Verificamos que sea serializable antes de hacer la copia            
             if (!typeof(T).IsSerializable)
