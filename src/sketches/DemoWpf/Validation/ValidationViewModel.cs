@@ -58,9 +58,6 @@ namespace DemoWpf.Validation
 		{
 			ValidationRecursiveCollection.Remove(ent);
 		});
-		public GenericCommand BaseAsNullCommand => GetValue(() => new GenericCommand(() => Base = null));
-		public GenericCommand BaseAsDerived1Command => GetValue(() => new GenericCommand(() => Base = new Derived1ValidationViewModel(Validator)));
-		public GenericCommand BaseAsDerived2Command => GetValue(() => new GenericCommand(() => Base = new Derived2ValidationViewModel(Validator)));
 
 		public bool IsValid { get => GetValue(() => true); set => SetValue(value); }
 		public bool MustBeValidate() => IsValid;
@@ -91,6 +88,7 @@ namespace DemoWpf.Validation
 		}
 
 		[Required(ErrorMessage = "ValidationRecursive debe setearse")]
+		[Display(Name = "Recursivo")]
 		[RecursiveValidation]
 		public ValidationRecursiveViewModel ValidationRecursive
 		{
@@ -123,6 +121,9 @@ namespace DemoWpf.Validation
 		[IpAddress(ErrorMessageResourceType = typeof(TextLocalized), ErrorMessageResourceName = nameof(TextLocalized.InvalidIPAddress))]
 		public string IPAddress { get => GetValue<string>(); set => SetValue(value); }
 
+		public GenericCommand BaseAsNullCommand => GetValue(() => new GenericCommand(() => Base = null));
+		public GenericCommand BaseAsDerived1Command => GetValue(() => new GenericCommand(() => Base = new Derived1ValidationViewModel(Validator)));
+		public GenericCommand BaseAsDerived2Command => GetValue(() => new GenericCommand(() => Base = new Derived2ValidationViewModel(Validator)));
 		[RecursiveValidation]
 		public BaseValidationViewModel Base { get => GetValue<BaseValidationViewModel>(); set => SetValue(value); }
 
@@ -172,6 +173,13 @@ namespace DemoWpf.Validation
 			get => GetValue<NotifierValidator>();
 			set => SetValue(value);
 		}
+
+		public GenericCommand BaseAsNullCommand => GetValue(() => new GenericCommand(() => Base2 = null));
+		public GenericCommand BaseAsDerived1Command => GetValue(() => new GenericCommand(() => Base2 = new Derived1ValidationViewModel(Validator)));
+		public GenericCommand BaseAsDerived2Command => GetValue(() => new GenericCommand(() => Base2 = new Derived2ValidationViewModel(Validator)));
+		[RecursiveValidation]
+		public BaseValidationViewModel Base2 { get => GetValue<BaseValidationViewModel>(); set => SetValue(value); }
+
 		#region IDataErrorInfo
 		public string Error => null;
 		public string this[string columnName]

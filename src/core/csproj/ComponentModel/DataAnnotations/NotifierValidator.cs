@@ -109,7 +109,14 @@ namespace Fuxion.ComponentModel.DataAnnotations
 		}
         private void Notifier_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            var notifier = TypeDescriptor.GetProperties(sender)
+			//var val = TypeDescriptor.GetProperties(sender)
+			//	.Cast<PropertyDescriptor>()
+			//	.Where(pro => pro.Name == e.PropertyName)
+			//	.Select(pro => pro.GetValue(sender))
+			//	.First();
+			//if (val == null) _messages.RemoveIf(m => m.PropertyName == e.PropertyName);
+
+			var notifier = TypeDescriptor.GetProperties(sender)
                 .Cast<PropertyDescriptor>()
                 .Where(pro => pro.Name == e.PropertyName)
                 .Where(pro => pro.Attributes.OfType<RecursiveValidationAttribute>().Any())
@@ -135,7 +142,7 @@ namespace Fuxion.ComponentModel.DataAnnotations
 		}
         private void RefreshEntries(object instance, string propertyName, Func<string> pathFunc)
         {
-			if (propertyName == null) _messages.Clear();
+			//if (propertyName == null) _messages.Clear();
             var newEntries = Validate(instance, propertyName, pathFunc);
             _messages.RemoveIf(e => !newEntries.Contains(e) && e.Object == instance && (string.IsNullOrWhiteSpace(propertyName) || e.PropertyName == propertyName));
             foreach (var ent in newEntries)

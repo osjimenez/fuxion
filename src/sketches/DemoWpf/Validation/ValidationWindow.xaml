@@ -118,6 +118,13 @@
                          Style="{StaticResource textBoxInError}"/>
 				<TextBlock Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=NameTextBox2}" Foreground="Red"
                    Visibility="{Binding (Validation.HasError), ElementName=NameTextBox2, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+				<TextBlock Text="Base:" />
+				<WrapPanel>
+					<Button Content="As NULL" Command="{Binding BaseAsNullCommand}"/>
+					<Button Content="As Derived1" Command="{Binding BaseAsDerived1Command}"/>
+					<Button Content="As Derived2" Command="{Binding BaseAsDerived2Command}"/>
+				</WrapPanel>
 			</StackPanel>
 		</Border>
 
