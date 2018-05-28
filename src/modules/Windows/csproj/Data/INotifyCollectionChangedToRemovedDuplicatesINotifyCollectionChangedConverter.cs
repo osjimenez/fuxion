@@ -27,6 +27,8 @@ namespace Fuxion.Windows.Data
                     foreach (var item in e.OldItems)
                         if (!((IEnumerable<object>)source).Contains(item))
                             res.Remove(item);
+				if (e.Action == NotifyCollectionChangedAction.Reset)
+					res.Clear();
             };
             return res;
         }

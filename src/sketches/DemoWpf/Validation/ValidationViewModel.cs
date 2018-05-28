@@ -58,6 +58,9 @@ namespace DemoWpf.Validation
 		{
 			ValidationRecursiveCollection.Remove(ent);
 		});
+		public GenericCommand BaseAsNullCommand => GetValue(() => new GenericCommand(() => Base = null));
+		public GenericCommand BaseAsDerived1Command => GetValue(() => new GenericCommand(() => Base = new Derived1ValidationViewModel(Validator)));
+		public GenericCommand BaseAsDerived2Command => GetValue(() => new GenericCommand(() => Base = new Derived2ValidationViewModel(Validator)));
 
 		public bool IsValid { get => GetValue(() => true); set => SetValue(value); }
 		public bool MustBeValidate() => IsValid;
@@ -120,6 +123,8 @@ namespace DemoWpf.Validation
 		[IpAddress(ErrorMessageResourceType = typeof(TextLocalized), ErrorMessageResourceName = nameof(TextLocalized.InvalidIPAddress))]
 		public string IPAddress { get => GetValue<string>(); set => SetValue(value); }
 
+		[RecursiveValidation]
+		public BaseValidationViewModel Base { get => GetValue<BaseValidationViewModel>(); set => SetValue(value); }
 
 		public NotifierValidator Validator
 		{
@@ -136,7 +141,7 @@ namespace DemoWpf.Validation
 		{
 			get
 			{
-				var res = Validator.Validate(this, columnName);
+				var res = NotifierValidator.Validate(this, columnName);
 				if (res.Any())
 					return res.First().Message;
 				return null;
@@ -173,7 +178,7 @@ namespace DemoWpf.Validation
 		{
 			get
 			{
-				var res = Validator.Validate(this, columnName);
+				var res = NotifierValidator.Validate(this, columnName);
 				if (res.Any())
 					return res.First().Message;
 				return null;
@@ -181,5 +186,43 @@ namespace DemoWpf.Validation
 		}
 		#endregion
 		public override string ToString() => Name;
+	}
+	public class BaseValidationViewModel : Notifier<ValidationRecursiveViewModel>, IDataErrorInfo
+	{
+		public BaseValidationViewModel(NotifierValidator validator) { Validator = validator; }
+		public NotifierValidator Validator
+		{
+			get => GetValue<NotifierValidator>();
+			set => SetValue(value);
+		}
+		#region IDataErrorInfo
+		public string Error => null;
+		public string this[string columnName]
+		{
+			get
+			{
+				var res = NotifierValidator.Validate(this, columnName);
+				if (res.Any())
+					return res.First().Message;
+				return null;
+			}
+		}
+		#endregion
+	}
+	public class Derived1ValidationViewModel : BaseValidationViewModel
+	{
+		public Derived1ValidationViewModel(NotifierValidator validator) : base(validator) { }
+		[Display(Name = "Derived1")]
+		[Required(AllowEmptyStrings = false, ErrorMessage = "Ponme un Derived1")]
+		[StringLength(10, ErrorMessage = "Derived1 no puede exceder de 10 caracteres de longitud")]
+		public string Derived1 { get => GetValue<string>(); set => SetValue(value); }
+	}
+	public class Derived2ValidationViewModel : BaseValidationViewModel
+	{
+		public Derived2ValidationViewModel(NotifierValidator validator) : base(validator) { }
+		[Display(Name = "Derived2")]
+		[Required(AllowEmptyStrings = false, ErrorMessage = "Ponme un Derived2")]
+		[StringLength(10, ErrorMessage = "Derived2 no puede exceder de 10 caracteres de longitud")]
+		public string Derived2 { get => GetValue<string>(); set => SetValue(value); }
 	}
 }

@@ -26,8 +26,7 @@ namespace Fuxion.Test.ComponentModel.DataAnnotations
         public void DefaultIsValid()
         {
             var obj = new ValidatableMock();
-            var val = new NotifierValidator();
-            var res = val.Validate(obj);
+            var res = NotifierValidator.Validate(obj);
             PrintValidatorResults(res);
             Assert.Empty(res);
         }
@@ -35,29 +34,27 @@ namespace Fuxion.Test.ComponentModel.DataAnnotations
         public void ManualValidation()
         {
             var obj = new ValidatableMock();
-            var val = new NotifierValidator();
             obj.Id = 0; // Make invalid because must be greater than 0
             obj.Name = "Fuxion678901"; // Make doubly invalid because contains 'Oscar' and has more than 10 character length
             obj.RecursiveValidatable = null; // Make invalid because is required
 
-            var res = val.Validate(obj);
+            var res = NotifierValidator.Validate(obj);
             PrintValidatorResults(res);
             Assert.Equal(4, res.Count());
             Assert.Equal(1, res.Count(r => string.IsNullOrEmpty(r.Path) && r.PropertyName == nameof(obj.Id)));
             Assert.Equal(2, res.Count(r => string.IsNullOrEmpty(r.Path) && r.PropertyName == nameof(obj.Name)));
             Assert.Equal(1, res.Count(r => string.IsNullOrEmpty(r.Path) && r.PropertyName == nameof(obj.RecursiveValidatable)));
 
-            res = val.Validate(obj, nameof(obj.Name));
+            res = NotifierValidator.Validate(obj, nameof(obj.Name));
             Assert.Equal(2, res.Count());
         }
         [Fact(DisplayName = "Validator - Manual recursive validatable")]
         public void ManualRecursiveValidatable()
         {
             var obj = new ValidatableMock();
-            var val = new NotifierValidator();
             obj.RecursiveValidatable.Id = 0; // Make invalid because must be greater than 0
 
-            var res = val.Validate(obj);
+            var res = NotifierValidator.Validate(obj);
             PrintValidatorResults(res);
             Assert.Equal(1, res.Count(r => r.Path == $"{nameof(obj.RecursiveValidatable)}" && r.PropertyName == nameof(obj.Id)));
         }
@@ -65,11 +62,10 @@ namespace Fuxion.Test.ComponentModel.DataAnnotations
         public void ManualRecursiveValidatableCollection()
         {
             var obj = new ValidatableMock();
-            var val = new NotifierValidator();
             var first = obj.RecursiveValidatableCollection.First();
             first.Id = 0; // Make invalid because must be greater than 0
 
-            var res = val.Validate(obj);
+            var res = NotifierValidator.Validate(obj);
             PrintValidatorResults(res);
             Assert.Single(res);
             Assert.Equal(1, res.Count(r => r.Path == $"{nameof(obj.RecursiveValidatableCollection)}[{first}]" && r.PropertyName == nameof(obj.Id)));

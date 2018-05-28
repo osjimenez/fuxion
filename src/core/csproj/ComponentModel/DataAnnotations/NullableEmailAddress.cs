@@ -9,14 +9,6 @@ namespace System.ComponentModel.DataAnnotations
     {
 		public NullableEmailAddress() : base(DataType.EmailAddress) { }
 		public override bool IsValid(object value)
-		{
-			if (value == null)
-			{
-				return true;
-			}
-			var input = value as string;
-			var emailAddressAttribute = new EmailAddressAttribute();
-			return (input != null) && (string.IsNullOrEmpty(input) || emailAddressAttribute.IsValid(input));
-		}
+			=> value == null || value is string input && (string.IsNullOrEmpty(input) || new EmailAddressAttribute().IsValid(input));
 	}
 }

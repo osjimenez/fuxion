@@ -26,8 +26,11 @@ namespace Fuxion.ComponentModel.DataAnnotations
                 if (e.OldItems != null)
                     foreach (var item in e.OldItems.Cast<NotifierValidatorMessage>())
                         _stringMessages.Remove(item.Message);
-            };
-            ((INotifyCollectionChanged)Messages).CollectionChanged += (s, e) => ValidationChanged?.Invoke(this, EventArgs.Empty);
+				if (e.Action == NotifyCollectionChangedAction.Reset)
+					_stringMessages.Clear();
+				ValidationChanged?.Invoke(this, EventArgs.Empty);
+			};
+            //((INotifyCollectionChanged)Messages).CollectionChanged += (s, e) => ValidationChanged?.Invoke(this, EventArgs.Empty);
         }
 
         ObservableCollection<NotifierValidatorMessage> _messages = new ObservableCollection<NotifierValidatorMessage>();
@@ -59,8 +62,8 @@ namespace Fuxion.ComponentModel.DataAnnotations
                 .Where(pro => typeof(INotifyPropertyChanged).IsAssignableFrom(pro.PropertyType)))
             {
                 var val = (INotifyPropertyChanged)pro.GetValue(notifier);
-                if(val != null)
-                    RegisterNotifier(val, true, () => $"{pro.Name}");
+				if (val != null)
+					RegisterNotifier(val, true, () => $"{pro.Name}");
             }
             foreach (var pro in TypeDescriptor.GetProperties(notifier.GetType())
                 .Cast<PropertyDescriptor>()
@@ -132,14 +135,15 @@ namespace Fuxion.ComponentModel.DataAnnotations
 		}
         private void RefreshEntries(object instance, string propertyName, Func<string> pathFunc)
         {
+			if (propertyName == null) _messages.Clear();
             var newEntries = Validate(instance, propertyName, pathFunc);
             _messages.RemoveIf(e => !newEntries.Contains(e) && e.Object == instance && (string.IsNullOrWhiteSpace(propertyName) || e.PropertyName == propertyName));
             foreach (var ent in newEntries)
                 if (!_messages.Contains(ent))
                     _messages.Add(ent);
         }
-        public ICollection<NotifierValidatorMessage> Validate(object instance, string propertyName = null) => Validate(instance, propertyName, () => "");
-        private ICollection<NotifierValidatorMessage> Validate(object instance, string propertyName, Func<string> pathFunc)
+        public static ICollection<NotifierValidatorMessage> Validate(object instance, string propertyName = null) => Validate(instance, propertyName, () => "");
+        private static ICollection<NotifierValidatorMessage> Validate(object instance, string propertyName, Func<string> pathFunc)
         {
             if (instance == null) return new NotifierValidatorMessage[0];
             var conditionalAtt = instance.GetType().GetCustomAttribute<ConditionalValidationAttribute>(true, false, true);
