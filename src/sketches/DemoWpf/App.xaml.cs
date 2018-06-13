@@ -23,6 +23,7 @@ using DemoWpf.Repositories;
 using DemoWpf.Windows.Controls;
 using DemoWpf.Windows.Threading;
 using Fuxion.Windows.Threading;
+using DemoWpf.ServiceModel;
 
 namespace DemoWpf
 {
@@ -45,11 +46,14 @@ namespace DemoWpf
 			//new Licensing().Show();
 			//new TimeProvider().Show();
 			//new ConvertersWindow().Show();
-			new ValidationWindow().Show();
+			//new ValidationWindow().Show();
 			//new UnhandledExceptionWindowTest().Show();
 			//new RepositoriesWindow().Show();
 			//new AutoGridTest().Show();
 			//new IDispatchableTest().Show();
+
+			new ServiceWindow().Show();
+			new ClientWindow().Show();
 		}
     }
 	public class HardwareIdHelper : IHardwareIdProvider
