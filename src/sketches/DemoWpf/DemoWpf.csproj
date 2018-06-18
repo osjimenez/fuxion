@@ -164,6 +164,15 @@
     <Compile Include="Repositories\RepositoriesWindow.xaml.cs">
       <DependentUpon>RepositoriesWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ServiceModel\ClientWindow.xaml.cs">
+      <DependentUpon>ClientWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ServiceModel\IContract.cs" />
+    <Compile Include="ServiceModel\Proxy.cs" />
+    <Compile Include="ServiceModel\Service.cs" />
+    <Compile Include="ServiceModel\ServiceWindow.xaml.cs">
+      <DependentUpon>ServiceWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="TimeProvider.xaml.cs">
       <DependentUpon>TimeProvider.xaml</DependentUpon>
     </Compile>
@@ -227,6 +236,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ResDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ServiceModel\ClientWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ServiceModel\ServiceWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

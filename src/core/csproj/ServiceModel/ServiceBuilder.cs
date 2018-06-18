@@ -13,6 +13,7 @@ using System.ServiceModel.Channels;
 using System.ServiceModel.Description;
 using System.ServiceModel.Discovery;
 using System.ServiceModel.Security;
+using System.ServiceModel.Security.Tokens;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -318,9 +319,6 @@ namespace Fuxion.ServiceModel
         {
             var fac = (me as _Proxy<TContract>).ChannelFactory;
             var chan = fac.CreateChannel();
-            Debug.WriteLine($"chan type is '{chan.GetType().Name}' and is assignable = '{typeof(ICommunicationObject).IsAssignableFrom(chan.GetType())}'");
-            Debug.WriteLine($"chan type is '{chan.GetType().Name}' and is assignable = '{chan.GetType().IsAssignableFrom(typeof(ICommunicationObject))}'");
-            Debug.WriteLine($"chan type is '{chan.GetType().Name}' and is assignable = '{chan is ICommunicationObject}'");
             beforeOpenAction?.Invoke(chan);
             if (timeout != null && timeout.HasValue)
                 ((ICommunicationObject)chan).Open(timeout.Value);
@@ -540,13 +538,33 @@ namespace Fuxion.ServiceModel
                 if (LocalClientMaxClockSkew != TimeSpan.FromMinutes(5) || LocalServiceMaxClockSkew != TimeSpan.FromMinutes(5))
                 {
                     CustomBinding cusBin = new CustomBinding(tcpBin);
-                    SecurityBindingElement security = cusBin.Elements.Find<SecurityBindingElement>();
-                    if (security != null)
+					SymmetricSecurityBindingElement symetricSecurity = cusBin.Elements.Find<SymmetricSecurityBindingElement>();
+                    if (symetricSecurity != null)
                     {
-                        security.LocalServiceSettings.MaxClockSkew = LocalServiceMaxClockSkew;
-                        security.LocalClientSettings.MaxClockSkew = LocalClientMaxClockSkew;
-                    }
-                    bin = cusBin;
+						//symetricSecurity.LocalServiceSettings.DetectReplays = false;
+						//symetricSecurity.LocalClientSettings.DetectReplays = false;
+						symetricSecurity.LocalServiceSettings.MaxClockSkew = LocalServiceMaxClockSkew;
+						symetricSecurity.LocalClientSettings.MaxClockSkew = LocalClientMaxClockSkew;
+						if (symetricSecurity.ProtectionTokenParameters is SecureConversationSecurityTokenParameters tokens)
+						{
+							//tokens.BootstrapSecurityBindingElement.LocalClientSettings.DetectReplays = false;
+							//tokens.BootstrapSecurityBindingElement.LocalServiceSettings.DetectReplays = false;
+							tokens.BootstrapSecurityBindingElement.LocalClientSettings.MaxClockSkew = LocalClientMaxClockSkew;
+							tokens.BootstrapSecurityBindingElement.LocalServiceSettings.MaxClockSkew = LocalServiceMaxClockSkew;
+						}
+					}
+					AsymmetricSecurityBindingElement asymetricSecurity = cusBin.Elements.Find<AsymmetricSecurityBindingElement>();
+					if (asymetricSecurity != null)
+					{
+						asymetricSecurity.LocalServiceSettings.MaxClockSkew = LocalServiceMaxClockSkew;
+						asymetricSecurity.LocalClientSettings.MaxClockSkew = LocalClientMaxClockSkew;
+						if (asymetricSecurity.InitiatorTokenParameters is SecureConversationSecurityTokenParameters tokens)
+						{
+							tokens.BootstrapSecurityBindingElement.LocalClientSettings.MaxClockSkew = LocalClientMaxClockSkew;
+							tokens.BootstrapSecurityBindingElement.LocalServiceSettings.MaxClockSkew = LocalServiceMaxClockSkew;
+						}
+					}
+					bin = cusBin;
                 }
                 bin.CloseTimeout = CloseTimeout;
                 bin.OpenTimeout = OpenTimeout;
