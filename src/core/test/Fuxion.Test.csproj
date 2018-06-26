@@ -57,6 +57,7 @@
     <Compile Include="AverageTimeProvider.test.cs" />
     <Compile Include="BaseTest.cs" />
     <Compile Include="CachedTimeProvider.test.cs" />
+    <Compile Include="Collections\Generic\IListExtensions.Test.cs" />
     <Compile Include="Collections\Generic\IEnumerableExtensions.Test.cs" />
     <Compile Include="Collections\TreeSynchronizer.test.cs" />
     <Compile Include="ComponentModel\DataAnnotations\NotifierValidator.test.cs" />
