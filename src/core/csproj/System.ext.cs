@@ -271,14 +271,11 @@ namespace System
 				.Select(s => s[ran.Next(s.Length)]).ToArray());
 		}
 		public static string ToTitleCase(this string me, CultureInfo culture = null)
-		{
-			var cul = culture ?? CultureInfo.CurrentCulture;
-			return cul.TextInfo.ToTitleCase(me.ToLower());
-		}
+			=> (culture ?? CultureInfo.CurrentCulture).TextInfo.ToTitleCase(me.ToLower());
 		public static string ToCamelCase(this string me, CultureInfo culture = null)
-			=> me.ToTitleCase().Replace(" ", "").Transform(s => s.Substring(0, 1).ToLower() + s.Substring(1, s.Length - 1));
+			=> me.ToTitleCase(culture).Replace(" ", "").Transform(s => s.Substring(0, 1).ToLower() + s.Substring(1, s.Length - 1));
 		public static string ToPascalCase(this string me, CultureInfo culture = null)
-			=> me.ToTitleCase().Replace(" ", "");
+			=> me.ToTitleCase(culture).Replace(" ", "");
 		#endregion
 		#region IsBetween
 		public static bool IsBetween(this short me, short minimum, short maximum) => minimum <= me && me <= maximum;
