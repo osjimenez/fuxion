@@ -23,14 +23,20 @@ namespace Fuxion.Test.Json
                 Age = 23
             };
             var con = JsonContainer<string>.Create(use, "key");
+			var con2 = JsonContainer<Type>.Create(use, use.GetType());
             var json = con.ToJson();
+			var json2 = con2.ToJson();
 
             output.WriteLine(json);
+			output.WriteLine(json2);
 
-            con = json.FromJson<JsonContainer<string>>();
-            use = con.As<UserMock>();
+			con = json.FromJson<JsonContainer<string>>();
+			con2 = json.FromJson<JsonContainer<Type>>();
+			Assert.Equal("key", con.Key);
+			Assert.Equal(typeof(UserMock), con2.Key);
+			use = con.As<UserMock>();
 
-            Assert.Equal("oka", use.Name);
+			Assert.Equal("oka", use.Name);
             Assert.Equal(23, use.Age);
         }
     }
