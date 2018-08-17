@@ -1,4 +1,5 @@
 ﻿#if (NET471)
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
@@ -27,24 +28,31 @@ namespace Fuxion.Security
             {
                 if (_cpu == Guid.Empty)
                 {
-                    //Uses first CPU identifier available in order of preference
-                    //Don't get all identifiers, as it is very time consuming
-                    _cpu = GetHash("Win32_Processor", "UniqueId");
-                    if (_cpu == Guid.Empty) //If no UniqueID, use ProcessorID
-                    {
-                        _cpu = GetHash("Win32_Processor", "ProcessorId");
-                        if (_cpu == Guid.Empty) //If no ProcessorId, use Name
-                        {
-                            _cpu = GetHash("Win32_Processor", "Name");
-                            if (_cpu == Guid.Empty) //If no Name, use Manufacturer
-                            {
-                                _cpu = GetHash("Win32_Processor", "Manufacturer");
-                            }
-                            //Add clock speed for extra security
-                            _cpu = CombineHash(_cpu, GetHash("Win32_Processor", "MaxClockSpeed"));
-                        }
-                    }
-                }
+					// https://www.codeproject.com/Articles/28678/Generating-Unique-Key-Finger-Print-for-a-Computer
+					//_cpu = CombineHash(_cpu, GetHash("Win32_Processor", "UniqueId"));
+					//_cpu = CombineHash(_cpu, GetHash("Win32_Processor", "ProcessorId"));
+					//_cpu = CombineHash(_cpu, GetHash("Win32_Processor", "Name"));
+					//_cpu = CombineHash(_cpu, GetHash("Win32_Processor", "Manufacturer"));
+					//_cpu = CombineHash(_cpu, GetHash("Win32_Processor", "MaxClockSpeed"));
+
+					//Uses first CPU identifier available in order of preference
+					//Don't get all identifiers, as it is very time consuming
+					_cpu = GetHash("Win32_Processor", "UniqueId");
+					if (_cpu == Guid.Empty) //If no UniqueID, use ProcessorID
+					{
+						_cpu = GetHash("Win32_Processor", "ProcessorId");
+						//if (_cpu == Guid.Empty) //If no ProcessorId, use Name
+						//{
+						//	_cpu = GetHash("Win32_Processor", "Name");
+						//	if (_cpu == Guid.Empty) //If no Name, use Manufacturer
+						//	{
+						//		_cpu = GetHash("Win32_Processor", "Manufacturer");
+						//	}
+						//	//Add clock speed for extra security
+						//	_cpu = CombineHash(_cpu, GetHash("Win32_Processor", "MaxClockSpeed"));
+						//}
+					}
+				}
                 return _cpu;
             }
         }
@@ -125,12 +133,12 @@ namespace Fuxion.Security
             }
             set { _mac = value; }
         }
-        static Guid _operatingSystemSid = Guid.Empty;
-        public static Guid OperatingSystemSid
+        static Guid _domainSid = Guid.Empty;
+        public static Guid DomainSid
         {
             get
             {
-                if (_operatingSystemSid == Guid.Empty)
+                if (_domainSid == Guid.Empty)
                 {
                     //NTAccount account = new NTAccount(Environment.MachineName, "SYSTEM");
                     //SecurityIdentifier sid =
@@ -139,13 +147,49 @@ namespace Fuxion.Security
                     //// we're done, show the results:
                     //Console.WriteLine(account.Value);
                     //Console.WriteLine(sid.Value);
-                    _operatingSystemSid = new Guid(WindowsIdentity.GetCurrent().User.AccountDomainSid.ToString().ComputeHash());
+                    _domainSid = new Guid(WindowsIdentity.GetCurrent().User.AccountDomainSid.ToString().ComputeHash());
                 }
-                return _operatingSystemSid;
+                return _domainSid;
             }
-            set { _operatingSystemSid = value; }
+            set { _domainSid = value; }
         }
-        public static Guid Get(HardwareIdField fields)
+		static Guid _operatingSystemProductId = Guid.Empty;
+		public static Guid OperatingSystemProductId
+		{
+			get
+			{
+				if (_operatingSystemProductId == Guid.Empty)
+				{
+					//NTAccount account = new NTAccount(Environment.MachineName, "SYSTEM");
+					//SecurityIdentifier sid =
+					//(SecurityIdentifier)account.Translate(typeof(SecurityIdentifier));
+
+					//// we're done, show the results:
+					//Console.WriteLine(account.Value);
+					//Console.WriteLine(sid.Value);
+
+					string value64 = string.Empty;
+					
+					RegistryKey localKey =
+						RegistryKey.OpenBaseKey(RegistryHive.LocalMachine,
+							Environment.Is64BitOperatingSystem ? RegistryView.Registry64 : RegistryView.Registry32);
+					localKey = localKey.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
+					if (localKey != null)
+					{
+						value64 = localKey.GetValue("ProductId").ToString();
+					}
+					Console.WriteLine(String.Format("RegisteredOrganization [value64]: {0}", value64));
+
+
+					//var key = Registry.LocalMachine.OpenSubKey(@"Software\Microsoft\Windows NT\CurrentVersion");
+					//var val = key.GetValue("ProductId");
+					_operatingSystemProductId = new Guid(ComputeHash(value64?.ToString()));
+				}
+				return _operatingSystemProductId;
+			}
+			set { _operatingSystemProductId = value; }
+		}
+		public static Guid Get(HardwareIdField fields)
         {
             Guid res = Guid.Empty;
             if (fields.HasFlag(HardwareIdField.Bios))
@@ -161,7 +205,7 @@ namespace Fuxion.Security
             if (fields.HasFlag(HardwareIdField.Video))
                 res = CombineHash(res, Video);
             if (fields.HasFlag(HardwareIdField.OperatingSystemSid))
-                res = CombineHash(res, OperatingSystemSid);
+                res = CombineHash(res, DomainSid);
             return res;
         }
         private static Guid CombineHash(Guid guid1, Guid guid2)

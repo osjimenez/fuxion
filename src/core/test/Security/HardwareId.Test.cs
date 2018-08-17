@@ -19,25 +19,31 @@ namespace Fuxion.Test.Security
         [Fact(DisplayName = "HardwareId - Printable version of ids")]
         public void PrintableVersion()
         {
-            var id = HardwareId.Cpu;
-            output.WriteLine("id = " + id);
-            output.WriteLine("id.GetHashCode() = " + id.GetHashCode());
-            output.WriteLine("(uint)id.GetHashCode() = " + (uint)id.GetHashCode());
+            
+			var bios = HardwareId.Bios;
+			var cpu = HardwareId.Cpu;
+			var disk = HardwareId.Disk;
+			var mac = HardwareId.Mac;
+			var motherboard = HardwareId.Motherboard;
+			var domain = HardwareId.DomainSid;
+			var so = HardwareId.OperatingSystemProductId;
+			var video = HardwareId.Video;
 
-            id = Guid.NewGuid();
-            output.WriteLine("id = " + id);
-            output.WriteLine("id.GetHashCode() = " + id.GetHashCode());
-            output.WriteLine("(uint)id.GetHashCode() = " + (uint)id.GetHashCode());
-
-            id = Guid.NewGuid();
-            output.WriteLine("id = " + id);
-            output.WriteLine("id.GetHashCode() = " + id.GetHashCode());
-            output.WriteLine("(uint)id.GetHashCode() = " + (uint)id.GetHashCode());
-
-            id = Guid.NewGuid();
-            output.WriteLine("id = " + id);
-            output.WriteLine("id.GetHashCode() = " + id.GetHashCode());
-            output.WriteLine("(uint)id.GetHashCode() = " + (uint)id.GetHashCode());
+			void Print(Guid value, string name)
+			{
+				output.WriteLine($"{name} = {value}");
+				output.WriteLine($"{name}.GetHashCode() = {value.GetHashCode()}");
+				output.WriteLine($"(uint){name}.GetHashCode() = {(uint)value.GetHashCode()}");
+				output.WriteLine($"===============================");
+			}
+			Print(bios, "BIOS");
+			Print(cpu, "CPU");
+			Print(disk, "DISK");
+			Print(mac, "MAC");
+			Print(motherboard, "MOTHERBOARD");
+			Print(domain, "DOMAIN");
+			Print(so, "SO");
+			Print(video, "VIDEO");
         }
     }
 }
