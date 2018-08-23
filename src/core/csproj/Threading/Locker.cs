@@ -181,10 +181,10 @@ namespace Fuxion.Threading
 		public Task ReadAsync<T1, T2, T3>(Action<TObjectLocked, T1, T2, T3> action, T1 param1, T2 param2, T3 param3) => DelegateReadAsync(action, param1, param2, param3);
 
 		// Read function
-		public Task<TResult> ReadSync<TResult>(Func<TObjectLocked, TResult> func) => DelegateReadAsync<TResult>(func);
-		public Task<TResult> ReadSync<T, TResult>(Func<TObjectLocked, T, TResult> func, T param) => DelegateReadAsync<TResult>(func, param);
-		public Task<TResult> ReadSync<T1, T2, TResult>(Func<TObjectLocked, T1, T2, TResult> func, T1 param1, T2 param2) => DelegateReadAsync<TResult>(func, param1, param2);
-		public Task<TResult> ReadSync<T1, T2, T3, TResult>(Func<TObjectLocked, T1, T2, T3, TResult> func, T1 param1, T2 param2, T3 param3) => DelegateReadAsync<TResult>(func, param1, param2, param3);
+		public Task<TResult> ReadAsync<TResult>(Func<TObjectLocked, TResult> func) => DelegateReadAsync<TResult>(func);
+		public Task<TResult> ReadAsync<T, TResult>(Func<TObjectLocked, T, TResult> func, T param) => DelegateReadAsync<TResult>(func, param);
+		public Task<TResult> ReadAsync<T1, T2, TResult>(Func<TObjectLocked, T1, T2, TResult> func, T1 param1, T2 param2) => DelegateReadAsync<TResult>(func, param1, param2);
+		public Task<TResult> ReadAsync<T1, T2, T3, TResult>(Func<TObjectLocked, T1, T2, T3, TResult> func, T1 param1, T2 param2, T3 param3) => DelegateReadAsync<TResult>(func, param1, param2, param3);
 
 		// Write action
 		public Task WriteAsync(Action<TObjectLocked> action) => DelegateWriteAsync(action);
