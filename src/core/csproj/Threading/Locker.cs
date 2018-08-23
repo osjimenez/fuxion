@@ -1,6 +1,7 @@
 ﻿using Fuxion.Logging;
 using Fuxion.Threading.Tasks;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 namespace Fuxion.Threading
@@ -99,7 +100,9 @@ namespace Fuxion.Threading
 				_ReaderWriterLockSlim.EnterReadLock();
 				try
 				{
-					d.DynamicInvoke(objectLocked, ps);
+					var p = new object[] { objectLocked }.ToList();
+					p.AddRange(ps);
+					d.DynamicInvoke(p.ToArray());
 				}
 				catch (Exception ex)
 				{
@@ -119,7 +122,9 @@ namespace Fuxion.Threading
 				_ReaderWriterLockSlim.EnterReadLock();
 				try
 				{
-					return (TResult)d.DynamicInvoke(objectLocked, ps);
+					var p = new object[] { objectLocked }.ToList();
+					p.AddRange(ps);
+					return (TResult)d.DynamicInvoke(p.ToArray());
 				}
 				catch (Exception ex)
 				{
@@ -139,7 +144,9 @@ namespace Fuxion.Threading
 				_ReaderWriterLockSlim.EnterWriteLock();
 				try
 				{
-					d.DynamicInvoke(ps);
+					var p = new object[] { objectLocked }.ToList();
+					p.AddRange(ps);
+					d.DynamicInvoke(p.ToArray());
 				}
 				catch (Exception ex)
 				{
@@ -159,7 +166,9 @@ namespace Fuxion.Threading
 				_ReaderWriterLockSlim.EnterWriteLock();
 				try
 				{
-					return (TResult)d.DynamicInvoke(pars);
+					var p = new object[] { objectLocked }.ToList();
+					p.AddRange(ps);
+					return (TResult)d.DynamicInvoke(p.ToArray());
 				}
 				catch (Exception ex)
 				{
