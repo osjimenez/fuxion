@@ -26,7 +26,6 @@
         <dependency id="Flurl" version="2.7.1" />
         <dependency id="Flurl.Http" version="2.3.1" />
         <dependency id="System.Net.Http" version="4.3.3" />
-        <dependency id="Microsoft.AspNetCore.All" version="2.0.7" />
       </group>
       <group targetFramework="netcoreapp2.0">
         <dependency id="NETStandard.Library" version="2.0.1" />
@@ -34,6 +33,7 @@
         <dependency id="Flurl" version="2.7.1" />
         <dependency id="Flurl.Http" version="2.3.1" />
         <dependency id="System.Net.Http" version="4.3.3" />
+        <dependency id="Microsoft.AspNetCore.All" version="2.0.7" />
       </group>
     </dependencies>
     <references/>
