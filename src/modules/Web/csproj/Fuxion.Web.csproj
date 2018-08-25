@@ -1,7 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;netcoreapp2.0;net471</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;netcoreapp2.1;net471</TargetFrameworks>
 	<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 	<RootNamespace>Fuxion.Web</RootNamespace>
   </PropertyGroup>
@@ -19,13 +19,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Flurl" Version="2.7.1" />
-    <PackageReference Include="Flurl.Http" Version="2.3.1" />
+    <PackageReference Include="Flurl" Version="2.8.0" />
+    <PackageReference Include="Flurl.Http" Version="2.3.2" />
     <PackageReference Include="System.Net.Http" Version="4.3.3" />
   </ItemGroup>
   
   <ItemGroup Condition="'$(TargetFramework)'=='net471'">
-    <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.4" />
+    <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.6" />
   </ItemGroup>
   
   <ItemGroup Condition="'$(TargetFramework)'=='netcoreapp2.0'">

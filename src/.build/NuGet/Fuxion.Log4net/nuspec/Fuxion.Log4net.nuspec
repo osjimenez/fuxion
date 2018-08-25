@@ -15,8 +15,8 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <dependencies>
       <group targetFramework="net471">
-        <dependency id="log4net" version="2.0.8" />
         <dependency id="Fuxion" version="$version$" />
+        <dependency id="log4net" version="2.0.8" />
       </group>
     </dependencies>
     <references/>

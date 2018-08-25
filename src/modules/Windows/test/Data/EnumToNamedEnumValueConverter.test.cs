@@ -25,12 +25,12 @@ namespace Fuxion.Windows.Test.Data
 		[Fact(DisplayName = "EnumToNamedEnumValueConverter - Null value")]
 		public void EnumToNamedEnumValueConverter_NullValue()
 		{
-			Assert.Throws(typeof(NotSupportedException), () =>
+			Assert.Throws<NotSupportedException>(() =>
 			{
 				((IValueConverter)new EnumToNamedEnumValueConverter()).Convert(null, typeof(EnumTest), null, CultureInfo.CurrentCulture);
 			});
 			var res = ((IValueConverter)new NullableEnumToNamedEnumValueConverter()).Convert(null, typeof(EnumTest), null, CultureInfo.CurrentCulture);
-			Assert.Equal(null, res?.ToString());
+			Assert.Null(res?.ToString());
 		}
 	}
 	public enum EnumTest
