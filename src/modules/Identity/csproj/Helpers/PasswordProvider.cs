@@ -5,7 +5,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Fuxion.Helpers
+namespace Fuxion.Identity.Helpers
 {
     public class PasswordProvider : IPasswordProvider
 	{

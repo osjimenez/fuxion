@@ -1,5 +1,5 @@
 ﻿using Fuxion.Factories;
-using Fuxion.Helpers;
+using Fuxion.Identity.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
