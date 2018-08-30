@@ -197,15 +197,23 @@ namespace Fuxion.Threading
 
 		// Write action
 		public Task WriteAsync(Action<TObjectLocked> action) => DelegateWriteAsync(action);
+		public Task WriteAsync(Func<TObjectLocked, Task> action) => DelegateWriteAsync(action);
 		public Task WriteAsync<T>(Action<TObjectLocked, T> action, T param) => DelegateWriteAsync(action, param);
+		public Task WriteAsync<T>(Func<TObjectLocked, T, Task> action, T param) => DelegateWriteAsync(action, param);
 		public Task WriteAsync<T1, T2>(Action<TObjectLocked, T1, T2> action, T1 param1, T2 param2) => DelegateWriteAsync(action, param1, param2);
+		public Task WriteAsync<T1, T2>(Func<TObjectLocked, T1, T2, Task> action, T1 param1, T2 param2) => DelegateWriteAsync(action, param1, param2);
 		public Task WriteAsync<T1, T2, T3>(Action<TObjectLocked, T1, T2, T3> action, T1 param1, T2 param2, T3 param3) => DelegateWriteAsync(action, param1, param2, param3);
+		public Task WriteAsync<T1, T2, T3>(Func<TObjectLocked, T1, T2, T3, Task> action, T1 param1, T2 param2, T3 param3) => DelegateWriteAsync(action, param1, param2, param3);
 
 		// Write function
 		public Task<TResult> WriteAsync<TResult>(Func<TObjectLocked, TResult> func) => DelegateWriteAsync<TResult>(func);
+		public Task<TResult> WriteAsync<TResult>(Func<TObjectLocked, Task<TResult>> func) => DelegateWriteAsync<TResult>(func);
 		public Task<TResult> WriteAsync<T, TResult>(Action<TObjectLocked, T, TResult> func, T param) => DelegateWriteAsync<TResult>(func, param);
+		public Task<TResult> WriteAsync<T, TResult>(Action<TObjectLocked, T, Task<TResult>> func, T param) => DelegateWriteAsync<TResult>(func, param);
 		public Task<TResult> WriteAsync<T1, T2, TResult>(Action<TObjectLocked, T1, T2, TResult> func, T1 param1, T2 param2) => DelegateWriteAsync<TResult>(func, param1, param2);
+		public Task<TResult> WriteAsync<T1, T2, TResult>(Action<TObjectLocked, T1, T2, Task<TResult>> func, T1 param1, T2 param2) => DelegateWriteAsync<TResult>(func, param1, param2);
 		public Task<TResult> WriteAsync<T1, T2, T3, TResult>(Action<TObjectLocked, T1, T2, T3, TResult> func, T1 param1, T2 param2, T3 param3) => DelegateWriteAsync<TResult>(func, param1, param2, param3);
+		public Task<TResult> WriteAsync<T1, T2, T3, TResult>(Action<TObjectLocked, T1, T2, T3, Task<TResult>> func, T1 param1, T2 param2, T3 param3) => DelegateWriteAsync<TResult>(func, param1, param2, param3);
 		#endregion
 	}
 }
