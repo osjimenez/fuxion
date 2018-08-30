@@ -16,6 +16,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization;
 using Fuxion.Resources;
 using System.Globalization;
+using Fuxion.Json;
 
 namespace System
 {
@@ -69,6 +70,17 @@ namespace System
 			if (settings != null)
 				return JsonConvert.SerializeObject(me, formatting, settings);
 			return JsonConvert.SerializeObject(me, formatting);
+		}
+		public static string ToJson(this Exception me, Formatting formatting = Formatting.Indented)
+		{
+			return me.ToJson(
+				formatting,
+				new JsonSerializerSettings().Transform<JsonSerializerSettings>(s =>
+					s.ContractResolver = new ExceptionContractResolver
+					{
+						IgnoreSerializableInterface = true,
+						IgnoreSerializableAttribute = true
+					}));
 		}
 		public static T FromJson<T>(this string me, JsonSerializerSettings settings = null) => (T)JsonConvert.DeserializeObject(me, typeof(T), settings);
 		public static object FromJson(this string me, Type type) => JsonConvert.DeserializeObject(me, type);
@@ -210,6 +222,8 @@ namespace System
 		}
 		#endregion
 		#region String
+		public static string[] SplitInLines(this string me, bool removeEmptyLines = false, bool trimEachLine = false)
+			=> me.Split(new[] { "\r\n", "\r", "\n" }, removeEmptyLines ? StringSplitOptions.RemoveEmptyEntries : StringSplitOptions.None);		
 		/// <summary>
 		/// Returns true if <paramref name="path"/> starts with the path <paramref name="baseDirPath"/>.
 		/// The comparison is case-insensitive, handles / and \ slashes as folder separators and

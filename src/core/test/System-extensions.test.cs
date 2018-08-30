@@ -10,13 +10,9 @@ using Xunit.Abstractions;
 using Fuxion.Resources;
 namespace Fuxion.Test
 {
-    public class SystemExtensionsTest
+    public class SystemExtensionsTest : BaseTest
     {
-        public SystemExtensionsTest(ITestOutputHelper output)
-        {
-            this.output = output;
-        }
-        ITestOutputHelper output;
+		public SystemExtensionsTest(ITestOutputHelper output) : base(output) { }
 		[Fact(DisplayName = "IsBetween - First")]
 		public void IsBetween()
 		{
@@ -88,13 +84,56 @@ namespace Fuxion.Test
 			Assert.False(typeof(MockEnum).IsNullableEnum());
 			Assert.True(typeof(MockEnum?).IsNullableEnum());
 		}
+		[Fact(DisplayName = "Exception - ToJson")]
+		public void ExceptionToJson()
+		{
+			try
+			{
+				Output.WriteLine(nameof(GenerateException));
+				GenerateException();
+			}catch(Exception ex)
+			{
+				var json = ex.ToJson();
+				Output.WriteLine(json);
+			}
+			finally
+			{
+				Output.WriteLine("");
+			}
+			try
+			{
+				Output.WriteLine(nameof(GenerateExceptionWithInner));
+				GenerateExceptionWithInner();
+			}
+			catch (Exception ex)
+			{
+				var json = ex.ToJson();
+				Output.WriteLine(json);
+			}
+			finally
+			{
+				Output.WriteLine("");
+			}
+		}
+		void GenerateException() => throw new NotImplementedException("Test method for testing");
+		void GenerateExceptionWithInner()
+		{
+			try
+			{
+				GenerateException();
+			}
+			catch (Exception ex)
+			{
+				throw new NotImplementedException("Test method for testing", ex);
+			}
+		}
 		#region CloneWithJson
 		[Fact(DisplayName = "System - CloneWithJson")]
         public void CloneWithJsonTest()
         {
             Base b = new Derived();
             var res = b.CloneWithJson();
-            output.WriteLine("res.GetType() = " + res.GetType().Name);
+            Output.WriteLine("res.GetType() = " + res.GetType().Name);
             Assert.Equal(nameof(Derived), res.GetType().Name);
         }
         class Base { }
@@ -144,7 +183,7 @@ namespace Fuxion.Test
             Assert.DoesNotContain($"123 {Strings.milliseconds}", res);
 
             res = TimeSpan.Parse("1.18:53:58.1234567").ToTimeString(6);
-            output.WriteLine("ToTimeString: "+res);
+            Output.WriteLine("ToTimeString: "+res);
 
             // Only letters
 
@@ -170,7 +209,7 @@ namespace Fuxion.Test
             Assert.DoesNotContain($"123 ms", res);
 
             res = TimeSpan.Parse("1.18:53:58.1234567").ToTimeString(6, true);
-            output.WriteLine("ToTimeString (onlyLetters): " + res);
+            Output.WriteLine("ToTimeString (onlyLetters): " + res);
         }
         #endregion
     }
