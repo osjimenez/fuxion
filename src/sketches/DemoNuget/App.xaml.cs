@@ -30,7 +30,7 @@ namespace DemoNuget
 			log.Verbose("Verbose");
 			log.Trace("Trace");
 			log.Debug("Debug");
-			log.Info("Info");			
+			log.Info("Info");
 			log.Notice("Notice");
 			log.Warn("Warn");
 			log.Error("Error");
