@@ -60,6 +60,19 @@ namespace Fuxion.Test.Threading
 				m.Name = "test";
 			});
 		}
+		[Fact(DisplayName = "Locker - Nested Write()")]
+		public async Task NestedWrite()
+		{
+			var obj = new Locker<MockForLock>(new MockForLock());
+			string name = null;
+			await obj.WriteAsync(m =>
+			{
+				obj.Write(m2 =>
+				{
+					m2.Name = "test";
+				});
+			});
+		}
 	}
 	public class MockForLock
 	{
