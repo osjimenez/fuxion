@@ -30,14 +30,14 @@ namespace System.Collections.Generic
 		public static IQueryable<T> RemoveNulls<T>(this IQueryable<T> me) => me.Where(i => i != null);
 		public static ICollection<T> RemoveNulls<T>(this ICollection<T> me) => me.Where(i => i != null).ToList();
 		public static T[] RemoveNulls<T>(this T[] me) => me.Where(i => i != null).ToArray();
-		public static void RemoveIf<T>(this ICollection<T> me, Func<T, bool> predicate)
+		public static void RemoveIf<T>(this IList<T> me, Func<T, bool> predicate)
 		{
 			for (int i = 0; i < me.Count; i++)
 			{
 				var item = me.ElementAt(i);
 				if (predicate(item))
 				{
-					me.Remove(item);
+					me.RemoveAt(i);
 					i--;
 				}
 			}

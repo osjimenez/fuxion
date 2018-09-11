@@ -9,21 +9,17 @@ using Xunit.Abstractions;
 
 namespace Fuxion.Test.Net
 {
-    public class ConnectableNotifierTest
+    public class ConnectableNotifierTest : BaseTest
     {
-        public ConnectableNotifierTest(ITestOutputHelper output)
-        {
-            this.output = output;
-        }
-        ITestOutputHelper output;
-        [Fact]
+        public ConnectableNotifierTest(ITestOutputHelper output) : base(output) { }
+        [Fact(DisplayName = "ConnectableNotifier - Disable keep alive")]
         public void Connectable_NestedTask()
         {
-            var con = new ConnectableNotifierMock(output);
+            var con = new ConnectableNotifierMock(Output);
             con.ConnectionMode = ConnectionMode.Automatic;
 
-			con.IsKeepAliveEnabled = false;
-			con.KeepAliveInterval = TimeSpan.FromSeconds(30);
+			Assert.Throws<InvalidOperationException>(() => con.IsKeepAliveEnabled = false);
+			Assert.Throws<InvalidOperationException>(() => con.KeepAliveInterval = TimeSpan.FromSeconds(30));
 
             while (!con.IsConnected) { }
             Assert.Equal(1, con.Counter);

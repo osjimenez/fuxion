@@ -31,7 +31,7 @@ namespace Fuxion.Test.Json
 			output.WriteLine(json2);
 
 			con = json.FromJson<JsonContainer<string>>();
-			con2 = json.FromJson<JsonContainer<Type>>();
+			con2 = json2.FromJson<JsonContainer<Type>>();
 			Assert.Equal("key", con.Key);
 			Assert.Equal(typeof(UserMock), con2.Key);
 			use = con.As<UserMock>();
