@@ -82,7 +82,7 @@ namespace System
 						IgnoreSerializableAttribute = true
 					}));
 		}
-		public static T FromJson<T>(this string me, JsonSerializerSettings settings = null) => (T)JsonConvert.DeserializeObject(me, typeof(T), settings);
+		public static T FromJson<T>(this string me, JsonSerializerSettings settings = null) => JsonConvert.DeserializeObject<T>(me, settings);
 		public static object FromJson(this string me, Type type) => JsonConvert.DeserializeObject(me, type);
 		public static T CloneWithJson<T>(this T me) => (T)FromJson(me.ToJson(), me.GetType());
 		#endregion
