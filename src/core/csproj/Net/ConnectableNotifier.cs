@@ -245,7 +245,12 @@ namespace Fuxion.Net
 			set => SetValue(value);
 		}
 		Task keepAliveTask;
-		protected virtual Task OnKeepAlive() => Task.CompletedTask;
+		protected virtual Task OnKeepAlive() =>
+#if NET45
+			Task.FromResult(0);
+#else
+			Task.CompletedTask;
+#endif
 		private void StartKeepAlive()
 		{
 			//Comprobar si el keep alive esta habilitado
@@ -274,6 +279,6 @@ namespace Fuxion.Net
 			keepAliveTask.OnCancelRequested(() => SetValue(IsKeepAliveCancellationRequested, true, nameof(IsKeepAliveCancellationRequested)));
 			keepAliveTask.Start();
 		}
-		#endregion
+#endregion
 	}
 }

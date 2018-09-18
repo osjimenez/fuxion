@@ -1,43 +1,50 @@
 ﻿<?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
-  <metadata>
-    <id>Fuxion.Web</id>
-    <version>$version$</version>
-    <title>Fuxion Web</title>
-    <authors>Oscar Jimenez, Waf Estructuras Digitales</authors>
-    <description>Fuxion library for web.</description>
-    <releaseNotes />
-    <summary/>
-    <language/>
-    <iconUrl>https://raw.githubusercontent.com/osjimenez/Fuxion/develop/res/logo/fuxion.png</iconUrl>
-    <projectUrl>https://github.com/osjimenez/Fuxion</projectUrl>
-    <licenseUrl>https://raw.githubusercontent.com/osjimenez/Fuxion/develop/LICENSE</licenseUrl>
-    <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <dependencies>
-      <group targetFramework="net471">
-        <dependency id="Fuxion" version="$version$" />
-        <dependency id="Flurl" version="2.8.0" />
-        <dependency id="Flurl.Http" version="2.3.2" />
-        <dependency id="System.Net.Http" version="4.3.3" />
-        <dependency id="Microsoft.AspNet.WebApi.Core" version="5.2.6" />
-      </group>
-      <group targetFramework="netstandard2.0">
-        <dependency id="Fuxion" version="$version$" />
-        <dependency id="Flurl" version="2.8.0" />
-        <dependency id="Flurl.Http" version="2.3.2" />
-        <dependency id="System.Net.Http" version="4.3.3" />
-        <dependency id="NETStandard.Library" version="2.0.3" />
-      </group>
-      <group targetFramework="netcoreapp2.0">
-        <dependency id="Fuxion" version="$version$" />
-        <dependency id="Flurl" version="2.8.0" />
-        <dependency id="Flurl.Http" version="2.3.2" />
-        <dependency id="System.Net.Http" version="4.3.3" />
-        <dependency id="Microsoft.NETCore.App" version="2.1.0" />
-      </group>
-    </dependencies>
-    <references/>
-    <frameworkAssemblies/>
-    <tags/>
-  </metadata>
+	<metadata>
+		<id>Fuxion.Web</id>
+		<version>$version$</version>
+		<title>Fuxion Web</title>
+		<authors>Oscar Jimenez, Waf Estructuras Digitales</authors>
+		<description>Fuxion library for web.</description>
+		<releaseNotes />
+		<summary/>
+		<language/>
+		<iconUrl>https://raw.githubusercontent.com/osjimenez/Fuxion/develop/res/logo/fuxion.png</iconUrl>
+		<projectUrl>https://github.com/osjimenez/Fuxion</projectUrl>
+		<licenseUrl>https://raw.githubusercontent.com/osjimenez/Fuxion/develop/LICENSE</licenseUrl>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<dependencies>
+			<group targetFramework="net45">
+				<dependency id="Fuxion" version="$version$" />
+				<dependency id="Flurl" version="2.8.0" />
+				<dependency id="Flurl.Http" version="2.3.2" />
+				<dependency id="System.Net.Http" version="4.3.3" />
+				<dependency id="Microsoft.AspNet.WebApi.Core" version="5.2.6" />
+			</group>
+			<group targetFramework="net471">
+				<dependency id="Fuxion" version="$version$" />
+				<dependency id="Flurl" version="2.8.0" />
+				<dependency id="Flurl.Http" version="2.3.2" />
+				<dependency id="System.Net.Http" version="4.3.3" />
+				<dependency id="Microsoft.AspNet.WebApi.Core" version="5.2.6" />
+			</group>
+			<group targetFramework="netstandard2.0">
+				<dependency id="Fuxion" version="$version$" />
+				<dependency id="Flurl" version="2.8.0" />
+				<dependency id="Flurl.Http" version="2.3.2" />
+				<dependency id="System.Net.Http" version="4.3.3" />
+				<dependency id="NETStandard.Library" version="2.0.3" />
+			</group>
+			<group targetFramework="netcoreapp2.0">
+				<dependency id="Fuxion" version="$version$" />
+				<dependency id="Flurl" version="2.8.0" />
+				<dependency id="Flurl.Http" version="2.3.2" />
+				<dependency id="System.Net.Http" version="4.3.3" />
+				<dependency id="Microsoft.NETCore.App" version="2.1.0" />
+			</group>
+		</dependencies>
+		<references/>
+		<frameworkAssemblies/>
+		<tags/>
+	</metadata>
 </package>

@@ -1,5 +1,4 @@
-﻿#if (NET471)
-using log4net.Config;
+﻿using log4net.Config;
 using log4net.Core;
 using System;
 using System.IO;
@@ -43,4 +42,3 @@ namespace Fuxion.Logging
 		public void Initialize() => builder.Configure();
 	}
 }
-#endif

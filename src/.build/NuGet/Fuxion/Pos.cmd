@@ -1,3 +1,10 @@
+rem NET 4.5
+mkdir src\.build\NuGet\Fuxion\nuspec\lib\net45
+mkdir src\.build\NuGet\Fuxion\nuspec\lib\net45\es
+copy src\.build\NuGet\Fuxion\out~\net45\Fuxion.dll src\.build\NuGet\Fuxion\nuspec\lib\net45\Fuxion.dll
+copy src\.build\NuGet\Fuxion\out~\net45\Fuxion.pdb src\.build\NuGet\Fuxion\nuspec\lib\net45\Fuxion.pdb
+copy src\.build\NuGet\Fuxion\out~\net45\es\Fuxion.resources.dll src\.build\NuGet\Fuxion\nuspec\lib\net45\es\Fuxion.resources.dll
+
 rem NET 4.7.1
 mkdir src\.build\NuGet\Fuxion\nuspec\lib\net471
 mkdir src\.build\NuGet\Fuxion\nuspec\lib\net471\es

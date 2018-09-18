@@ -1,26 +1,30 @@
 ﻿<?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
-  <metadata>
-    <id>Fuxion.Log4net</id>
-    <version>$version$</version>
-    <title>Fuxion Log4net</title>
-    <authors>Oscar Jimenez, Waf Estructuras Digitales</authors>
-    <description>Fuxion library for Log4net logging.</description>
-    <releaseNotes />
-    <summary/>
-    <language/>
-    <iconUrl>https://raw.githubusercontent.com/osjimenez/Fuxion/develop/res/logo/fuxion.png</iconUrl>
-    <projectUrl>https://github.com/osjimenez/Fuxion</projectUrl>
-    <licenseUrl>https://raw.githubusercontent.com/osjimenez/Fuxion/develop/LICENSE</licenseUrl>
-    <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <dependencies>
-      <group targetFramework="net471">
-        <dependency id="Fuxion" version="$version$" />
-        <dependency id="log4net" version="2.0.8" />
-      </group>
-    </dependencies>
-    <references/>
-    <frameworkAssemblies/>
-    <tags/>
-  </metadata>
+	<metadata>
+		<id>Fuxion.Log4net</id>
+		<version>$version$</version>
+		<title>Fuxion Log4net</title>
+		<authors>Oscar Jimenez, Waf Estructuras Digitales</authors>
+		<description>Fuxion library for Log4net logging.</description>
+		<releaseNotes />
+		<summary/>
+		<language/>
+		<iconUrl>https://raw.githubusercontent.com/osjimenez/Fuxion/develop/res/logo/fuxion.png</iconUrl>
+		<projectUrl>https://github.com/osjimenez/Fuxion</projectUrl>
+		<licenseUrl>https://raw.githubusercontent.com/osjimenez/Fuxion/develop/LICENSE</licenseUrl>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<dependencies>
+			<group targetFramework="net45">
+				<dependency id="Fuxion" version="$version$" />
+				<dependency id="log4net" version="2.0.8" />
+			</group>
+			<group targetFramework="net471">
+				<dependency id="Fuxion" version="$version$" />
+				<dependency id="log4net" version="2.0.8" />
+			</group>
+		</dependencies>
+		<references/>
+		<frameworkAssemblies/>
+		<tags/>
+	</metadata>
 </package>

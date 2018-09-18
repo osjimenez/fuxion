@@ -1,5 +1,4 @@
-﻿#if (NET471)
-using System;
+﻿using System;
 using System.Collections.Generic;
 using log4net;
 using log4net.Core;
@@ -153,4 +152,3 @@ namespace Fuxion.Logging
 		}
 	}
 }
-#endif

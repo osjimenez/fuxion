@@ -1,72 +1,76 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net471</TargetFrameworks>
-	<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-	<RootNamespace>Fuxion</RootNamespace>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0;net45;net471</TargetFrameworks>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<RootNamespace>Fuxion</RootNamespace>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <OutputPath>..\..\.build\NuGet\Fuxion\out~</OutputPath>
-	<Optimize>false</Optimize>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<OutputPath>..\..\.build\NuGet\Fuxion\out~</OutputPath>
+		<Optimize>false</Optimize>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Update="Properties\ProjectAssemblyInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Resources\Strings.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Strings.resx</DependentUpon>
-    </Compile>
-    <Compile Update="Resources\Strings.es.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Strings.es.resx</DependentUpon>
-    </Compile>
-    <Compile Include="..\..\.build\AssemblyInfo.cs" Link="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Update="Properties\ProjectAssemblyInfo.cs">
+			<SubType>Code</SubType>
+		</Compile>
+		<Compile Update="Resources\Strings.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Strings.resx</DependentUpon>
+		</Compile>
+		<Compile Update="Resources\Strings.es.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Strings.es.resx</DependentUpon>
+		</Compile>
+		<Compile Include="..\..\.build\AssemblyInfo.cs" Link="Properties\AssemblyInfo.cs" />
+	</ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)'!='netstandard2.0'">
-    <Reference Include="Microsoft.CSharp" />
-	<Reference Include="System.Management" />
-	<Reference Include="System.IdentityModel" />
-	<Reference Include="System.ServiceModel" />
-	<Reference Include="System.ServiceModel.Discovery" />
-	<Reference Include="System.Transactions" />
-	<Reference Include="System.Security" />
-	<Reference Include="System.Runtime.Serialization" />
-	<Reference Include="PresentationCore" />
-	<Reference Include="PresentationFramework" />
-	<Reference Include="WindowsBase" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <Reference Include="Microsoft.CSharp">
-      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7\Microsoft.CSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="System.ComponentModel.DataAnnotations">
-      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7\System.ComponentModel.DataAnnotations.dll</HintPath>
-    </Reference>
-    <Reference Include="WindowsBase">
-      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7\WindowsBase.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  
-  <ItemGroup>
-    <EmbeddedResource Update="Resources\Strings.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Resources\Strings.es.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Strings.es.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)'=='net45'">
+		<PackageReference Include="System.ValueTuple" Version="4.5.0" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)'!='netstandard2.0'">
+		<Reference Include="Microsoft.CSharp" />
+		<Reference Include="System.Management" />
+		<Reference Include="System.IdentityModel" />
+		<Reference Include="System.ServiceModel" />
+		<Reference Include="System.ServiceModel.Discovery" />
+		<Reference Include="System.Transactions" />
+		<Reference Include="System.Security" />
+		<Reference Include="System.Runtime.Serialization" />
+		<Reference Include="PresentationCore" />
+		<Reference Include="PresentationFramework" />
+		<Reference Include="WindowsBase" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Reference Include="Microsoft.CSharp">
+			<HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7\Microsoft.CSharp.dll</HintPath>
+		</Reference>
+		<Reference Include="System.ComponentModel.DataAnnotations">
+			<HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7\System.ComponentModel.DataAnnotations.dll</HintPath>
+		</Reference>
+		<Reference Include="WindowsBase">
+			<HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7\WindowsBase.dll</HintPath>
+		</Reference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Update="Resources\Strings.resx">
+			<Generator>PublicResXFileCodeGenerator</Generator>
+			<LastGenOutput>Strings.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+		<EmbeddedResource Update="Resources\Strings.es.resx">
+			<Generator>PublicResXFileCodeGenerator</Generator>
+			<LastGenOutput>Strings.es.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+	</ItemGroup>
 
 </Project>
