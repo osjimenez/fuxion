@@ -75,6 +75,7 @@
     <Compile Include="Data\GenericMultiConverter.test.cs" />
     <Compile Include="Data\StringToCapitalizedStringConverter.cs.test.cs" />
     <Compile Include="Data\NullToVisibilityConverter.test.cs" />
+    <Compile Include="Data\TimeSpanToLongConverter.test.cs" />
     <Compile Include="Markup\DisplayExtension.test.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Data\TimeSpanToStringConverter.test.cs" />

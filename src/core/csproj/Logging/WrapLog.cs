@@ -14,8 +14,9 @@ namespace Fuxion.Logging
 		{
 			this.loggerName = loggerName;
 		}
-		Type declaringType;
-		string loggerName;
+
+		readonly Type declaringType;
+		readonly string loggerName;
 		ILog log;
 		readonly ILog nullLog = new NullLog();
 		private ILog ActualLog
