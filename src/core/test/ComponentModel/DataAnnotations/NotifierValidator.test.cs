@@ -309,8 +309,48 @@ namespace Fuxion.Test.ComponentModel.DataAnnotations
             Assert.Single(val.Messages);
             Assert.Equal(1, val.Messages.Count(r => r.Path == $"{nameof(obj.RecursiveValidatableCollection)}[{added}]" && r.PropertyName == nameof(obj.Id)));
         }
+		[Fact(DisplayName = "Validator - Automatic recursive validatable collection cleared")]
+		public void AutomaticRecusiveValidatableCollectionCleared()
+		{
+			var obj = new ValidatableMock();
+			var val = new NotifierValidator();
+			val.RegisterNotifier(obj);
+			var counter = 0;
+			((INotifyCollectionChanged)val.Messages).CollectionChanged += (s, e) => counter++;
 
-        [Fact(DisplayName = "Validator - Custom validation")]
+			var firstElement = obj.RecursiveValidatableCollection.First();
+			firstElement.Name = null;
+
+			PrintValidatorResults(val.Messages);
+			Assert.Equal(1, counter);
+			Assert.Single(val.Messages);
+			Assert.Equal(1, val.Messages.Count(r => r.Path == $"{nameof(obj.RecursiveValidatableCollection)}[{firstElement}]" && r.PropertyName == nameof(obj.Name)));
+
+			obj.RecursiveValidatableCollection.Clear();
+
+			Assert.Equal(3, counter);
+			Assert.Equal(1, val.Messages.Count(r => r.Path == "" && r.PropertyName == nameof(obj.RecursiveValidatableCollection)));
+			Assert.Single(val.Messages);
+
+			//obj.RecursiveValidatableCollection = new ObservableCollection<RecursiveValidatableMock>();
+			//PrintValidatorResults(val.Messages);
+			//var added = new RecursiveValidatableMock();
+			//obj.RecursiveValidatableCollection.Add(added);
+
+			//PrintValidatorResults(val.Messages);
+			//Assert.Equal(2, counter);
+			//Assert.Empty(val.Messages);
+			//Assert.Equal(0, val.Messages.Count(r => r.Path == $"" && r.PropertyName == nameof(obj.RecursiveValidatableCollection)));
+
+			//added.Id = -1;
+
+			//PrintValidatorResults(val.Messages);
+			//Assert.Equal(3, counter);
+			//Assert.Single(val.Messages);
+			//Assert.Equal(1, val.Messages.Count(r => r.Path == $"{nameof(obj.RecursiveValidatableCollection)}[{added}]" && r.PropertyName == nameof(obj.Id)));
+		}
+
+		[Fact(DisplayName = "Validator - Custom validation")]
         public void CustomValidation()
         {
             //var obj = new ValidatableMock();

@@ -35,7 +35,7 @@ namespace Fuxion.Windows.Data
 			if (value == null && typeof(TResult).IsNullable(valueTypesAreNotNullables))
 				return null;
             // In any other case, value is not supported exception
-            throw new NotSupportedException($"The value '{value}' is not supported for '{GetType().Name}.{nameof(Convert)}' method, must be of type '{typeof(TSource).Name}'");
+            throw new NotSupportedException($"The value '{value}' is not supported for '{GetType().Name}.{nameof(Convert)}' method, must be of type '{typeof(TSource).GetSignature(false)}'");
         }
         object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -49,7 +49,7 @@ namespace Fuxion.Windows.Data
             if (value == null && typeof(TSource).IsNullable(valueTypesAreNotNullables))
                 return null;
             // In any other case, value is not supported exception
-            throw new NotSupportedException($"The value '{value}' is not supported for '{GetType().Name}.{nameof(ConvertBack)}' method, must be of type '{typeof(TResult).Name}'");
+            throw new NotSupportedException($"The value '{value}' is not supported for '{GetType().Name}.{nameof(ConvertBack)}' method, must be of type '{typeof(TResult).GetSignature(false)}'");
         }
         public abstract TResult Convert(TSource source, CultureInfo culture);
         public virtual TSource ConvertBack(TResult result, CultureInfo culture)
@@ -67,7 +67,7 @@ namespace Fuxion.Windows.Data
         public TResult UnsetValue { get; set; }
         object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (typeof(TParameter) != typeof(object) && !(parameter is TParameter)) throw new NotSupportedException($"The parameter must be of type '{typeof(TParameter).Name}'");
+            if (typeof(TParameter) != typeof(object) && !(parameter is TParameter)) throw new NotSupportedException($"The parameter must be of type '{typeof(TParameter).GetSignature(false)}'");
             // if allow unset value
             if (AllowUnsetValue && value == DependencyProperty.UnsetValue) return UnsetValue;
             if (value == DependencyProperty.UnsetValue) throw new NotSupportedException($"The value is DependencyProperty.UnsetValue. To support unset values use '{nameof(AllowUnsetValue)}' property of the '{GetType().Name}' class");
@@ -81,11 +81,11 @@ namespace Fuxion.Windows.Data
             if (value == null && typeof(TResult).IsNullable(valueTypesAreNotNullables))
                 return null;
             // In any other case, value is not supported exception
-            throw new NotSupportedException($"The value '{value}' is not supported for '{GetType().Name}.{nameof(Convert)}' method, must be of type '{typeof(TSource).Name}'");
+            throw new NotSupportedException($"The value '{value}' is not supported for '{GetType().Name}.{nameof(Convert)}' method, must be of type '{typeof(TSource).GetSignature(false)}'");
         }
         object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (typeof(TParameter) != typeof(object) && !(parameter is TParameter)) throw new NotSupportedException($"The parameter must be of type '{typeof(TParameter).Name}'");
+            if (typeof(TParameter) != typeof(object) && !(parameter is TParameter)) throw new NotSupportedException($"The parameter must be of type '{typeof(TParameter).GetSignature(false)}'");
             // value must be TSource, call ConvertBack
             // value is null and TResult is nullable, call ConvertBack
             if (value is TResult
@@ -96,7 +96,7 @@ namespace Fuxion.Windows.Data
             if (value == null && typeof(TSource).IsNullable(valueTypesAreNotNullables))
                 return null;
             // In any other case, value is not supported exception
-            throw new NotSupportedException($"The value '{value}' is not supported for '{GetType().Name}.{nameof(ConvertBack)}' method, must be of type '{typeof(TResult).Name}'");
+            throw new NotSupportedException($"The value '{value}' is not supported for '{GetType().Name}.{nameof(ConvertBack)}' method, must be of type '{typeof(TResult).GetSignature(false)}'");
         }
         public abstract TResult Convert(TSource source, TParameter parameter, CultureInfo culture);
         public virtual TSource ConvertBack(TResult result, TParameter parameter, CultureInfo culture)

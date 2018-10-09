@@ -221,7 +221,56 @@ namespace System
 			return res.Trim(',', ' ');
 		}
 		#endregion
+		#region Math
+		public static double Pow(this double me, double power) => Math.Pow(me, power);
+		public static long Pow(this long me, long power) => (long)Math.Pow(me, power);
+		public static int Pow(this int me, int power) => (int)Math.Pow(me, power);
+		public static (long Quotient, long Remainder) Division(this long me, long dividend) => (me / dividend, me % dividend);
+		public static (long Quotient, long Remainder) DivisionByPowerOfTwo(this long me, ushort numberOfBits) => me.Division(2.Pow(numberOfBits));
+		public static (long Quotient, long Remainder) DivisionByPowerOfTwo(this byte[] me, ushort numberOfBits)
+			=> BitConverter.ToInt64(me.Concat(Enumerable.Repeat((byte)0, 8 - me.Length)).ToArray(), 0)
+				.DivisionByPowerOfTwo(numberOfBits);
+		#endregion
+		#region byte[]
+		public static string ToHexadecimal(this byte[] me, char? separatorChar = null, bool asBigEndian = false)
+		{
+			string hex;
+			if (asBigEndian)
+				hex = BitConverter.ToString(me.Reverse().ToArray());
+			else
+				hex = BitConverter.ToString(me);
+			if (separatorChar != null)
+				return hex.Replace('-', separatorChar.Value);
+			return hex.Replace("-", string.Empty);
+		}
+
+		#endregion
 		#region String
+		public static byte[] ToByteArrayFromHexadecimal(this string me, char? separatorChar = null, bool isBigEndian = false)
+		{
+			if (separatorChar != null)
+				me = me.RemoveChar(separatorChar.Value);
+			int NumberChars = me.Length;
+			byte[] bytes = new byte[NumberChars / 2];
+
+			if (isBigEndian)
+				for (int i = NumberChars; i > 1; i -= 2)
+					bytes[(i - 2) / 2] = Convert.ToByte(me.Substring(i - 2, 2), 16);
+			else
+				for (int i = 0; i < NumberChars; i += 2)
+					bytes[i / 2] = Convert.ToByte(me.Substring(i, 2), 16);
+			if (isBigEndian)
+				bytes = bytes.Reverse().ToArray();
+			return bytes;
+		}
+		public static string RemoveChar(this string me, char c)
+		{
+			string res = "";
+			for (int i = 0; i < me.Length; i++)
+				if (me[i] != c)
+					res += me[i];
+			return res;
+		}
 		public static string[] SplitInLines(this string me, bool removeEmptyLines = false, bool trimEachLine = false)
 			=> me.Split(new[] { "\r\n", "\r", "\n" }, removeEmptyLines ? StringSplitOptions.RemoveEmptyEntries : StringSplitOptions.None);		
 		/// <summary>

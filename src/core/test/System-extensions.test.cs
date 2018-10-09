@@ -211,8 +211,46 @@ namespace Fuxion.Test
             res = TimeSpan.Parse("1.18:53:58.1234567").ToTimeString(6, true);
             Output.WriteLine("ToTimeString (onlyLetters): " + res);
         }
-        #endregion
-    }
+		#endregion
+		#region Math
+		[Fact(DisplayName = "Math - Pow")]
+		public void Pow()
+		{
+			Assert.Equal(8, 2.Pow(3));
+			Assert.Equal(8, 2L.Pow(3));
+			Assert.Equal(8, 2D.Pow(3));
+		}
+		[Fact(DisplayName = "Math - DivisionByPowerOfTwo")]
+		public void FromLong()
+		{
+			// Long
+			Assert.Equal(26_326_605, 496_088_653L.DivisionByPowerOfTwo(25).Remainder);
+			Assert.Equal(14, 496_088_653L.DivisionByPowerOfTwo(25).Quotient);
+			// Bytes
+			var value = new byte[] { 0x4D, 0xB6, 0x91, 0x1D, 0x00, 0x00, 0x00 };
+			Assert.Equal(26_326_605, value.DivisionByPowerOfTwo(25).Remainder);
+			Assert.Equal(14, value.DivisionByPowerOfTwo(25).Quotient);
+		}
+		[Fact(DisplayName = "String - ToByteArrayFromHexadecimal")]
+		public void StringToByteArrayFromHexadecimal()
+		{
+			byte[] value = "FD2EAC14000000".ToByteArrayFromHexadecimal();
+			Assert.Equal("FD2EAC14000000", value.ToHexadecimal());
+			Assert.Equal("FD:2E:AC:14:00:00:00", value.ToHexadecimal(separatorChar: ':'));
+			Assert.Equal("00000014AC2EFD", value.ToHexadecimal(asBigEndian: true));
+		}
+		[Fact(DisplayName = "Bytes - FromHexadecimal")]
+		public void BytesFromHexadecimal()
+		{
+			byte[] value = new byte[] { 0xFD, 0x2E, 0xAC, 0x14, 0x00, 0x00, 0x00 };
+			Assert.Equal("FD2EAC14000000", value.ToHexadecimal());
+			value = "FD-2E-AC-14-00-00-00".ToByteArrayFromHexadecimal(separatorChar: '-');
+			Assert.Equal("FD2EAC14000000", value.ToHexadecimal());
+			value = "00000014AC2EFD".ToByteArrayFromHexadecimal(isBigEndian: true);
+			Assert.Equal("FD2EAC14000000", value.ToHexadecimal());
+		}
+		#endregion
+	}
 	public struct MockStruct { }
 	public class MockClass { }
 	public enum MockEnum { One, Two }

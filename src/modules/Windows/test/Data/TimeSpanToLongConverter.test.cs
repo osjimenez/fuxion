@@ -6,12 +6,18 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Data;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace Fuxion.Windows.Test.Data
 {
-	public class TimeSpanToLongConverterTest:BaseTest
+	public class ConverterTest : BaseTest
+	{
+		public ConverterTest(ITestOutputHelper output) : base(output) { }
+		protected void Convert() { }
+	}
+	public class TimeSpanToLongConverterTest : BaseTest
 	{
 		public TimeSpanToLongConverterTest(ITestOutputHelper output) : base(output) { }
 		[Fact(DisplayName = "TimeSpanToLongConverter - ConvertToSeconds")]
@@ -22,7 +28,8 @@ namespace Fuxion.Windows.Test.Data
 				Value = TimeSpanToLongValue.Seconds
 			};
 
-			var res = conv.Convert(TimeSpan.FromTicks(700000000), CultureInfo.CurrentCulture);
+			int res = (int)((IValueConverter)conv).Convert(TimeSpan.FromTicks(700000000), typeof(TimeSpan?), null, CultureInfo.CurrentCulture);
+			//var res = conv.Convert(TimeSpan.FromTicks(700000000), CultureInfo.CurrentCulture);
 			Assert.Equal(10, res);
 
 			res = conv.Convert(TimeSpan.FromMilliseconds(70000), CultureInfo.CurrentCulture);
