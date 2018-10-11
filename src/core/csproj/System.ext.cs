@@ -183,44 +183,7 @@ namespace System
 			return null;
 		}
 		#endregion
-		#region TimeSpan
-		public static string ToTimeString(this TimeSpan ts, int numberOfElements = 5, bool onlyLetters = false)
-		{
-			string res = "";
-			int count = 0;
-			if (count >= numberOfElements) return res.Trim(',', ' ');
-			if (ts.Days > 0)
-			{
-				res += $"{ts.Days} {(onlyLetters ? "d" : (ts.Days > 1 ? Strings.days : Strings.day))}{(onlyLetters ? "" : ",")} ";
-				count++;
-			}
-			if (count >= numberOfElements) return res.Trim(',', ' ');
-			if (ts.Hours > 0)
-			{
-				res += $"{ts.Hours} {(onlyLetters ? "h" : (ts.Hours > 1 ? Strings.hours : Strings.hour))}{(onlyLetters ? "" : ",")} ";
-				count++;
-			}
-			if (count >= numberOfElements) return res.Trim(',', ' ');
-			if (ts.Minutes > 0)
-			{
-				res += $"{ts.Minutes} {(onlyLetters ? "m" : (ts.Minutes > 1 ? Strings.minutes : Strings.minute))}{(onlyLetters ? "" : ",")} ";
-				count++;
-			}
-			if (count >= numberOfElements) return res.Trim(',', ' ');
-			if (ts.Seconds > 0)
-			{
-				res += $"{ts.Seconds} {(onlyLetters ? "s" : (ts.Seconds > 1 ? Strings.seconds : Strings.minute))}{(onlyLetters ? "" : ",")} ";
-				count++;
-			}
-			if (count >= numberOfElements) return res.Trim(',', ' ');
-			if (ts.Milliseconds > 0)
-			{
-				res += $"{ts.Milliseconds} {(onlyLetters ? "ms" : (ts.Milliseconds > 1 ? Strings.milliseconds : Strings.millisecond))}{(onlyLetters ? "" : ",")} ";
-				count++;
-			}
-			return res.Trim(',', ' ');
-		}
-		#endregion
+
 		#region Math
 		public static double Pow(this double me, double power) => Math.Pow(me, power);
 		public static long Pow(this long me, long power) => (long)Math.Pow(me, power);
@@ -231,7 +194,7 @@ namespace System
 			=> BitConverter.ToInt64(me.Concat(Enumerable.Repeat((byte)0, 8 - me.Length)).ToArray(), 0)
 				.DivisionByPowerOfTwo(numberOfBits);
 		#endregion
-		#region byte[]
+		#region Bytes
 		public static string ToHexadecimal(this byte[] me, char? separatorChar = null, bool asBigEndian = false)
 		{
 			string hex;
@@ -243,9 +206,6 @@ namespace System
 				return hex.Replace('-', separatorChar.Value);
 			return hex.Replace("-", string.Empty);
 		}
-
-		#endregion
-		#region String
 		public static byte[] ToByteArrayFromHexadecimal(this string me, char? separatorChar = null, bool isBigEndian = false)
 		{
 			if (separatorChar != null)
@@ -263,6 +223,8 @@ namespace System
 				bytes = bytes.Reverse().ToArray();
 			return bytes;
 		}
+		#endregion
+		#region String
 		public static string RemoveChar(this string me, char c)
 		{
 			string res = "";
@@ -339,6 +301,58 @@ namespace System
 			=> me.ToTitleCase(culture).Replace(" ", "").Transform(s => s.Substring(0, 1).ToLower() + s.Substring(1, s.Length - 1));
 		public static string ToPascalCase(this string me, CultureInfo culture = null)
 			=> me.ToTitleCase(culture).Replace(" ", "");
+		public static bool Contains(this string source, string value, StringComparison comparisonType)
+			=> source != null && value != null && source?.IndexOf(value, comparisonType) >= 0;
+		public static IEnumerable<int> AllIndexesOf(this string me, string value, StringComparison comparisonType)
+		{
+			if (string.IsNullOrEmpty(value))
+				throw new ArgumentException("The string to find may not be empty", "value");
+			for (int index = 0; ; index += value.Length)
+			{
+				index = me.IndexOf(value, index, comparisonType);
+				if (index == -1)
+					break;
+				yield return index;
+			}
+		}
+		public static List<((int ItemIndex, int PositionIndex) Start, (int ItemIndex, int PositionIndex) End)> SearchTextInElements(this string[] me, string text, StringComparison comparisonType)
+		{
+			// Concateno el texto de todos los elementos
+			var allText = me.Aggregate("", (a, c) => a + c);
+			// Busco todas las apariciones del texto buscado
+			var indexes = allText.AllIndexesOf(text, comparisonType);
+			var res = new List<((int ItemIndex, int PositionIndex) Start, (int ItemIndex, int PositionIndex) End)>();
+			foreach (var index in indexes)
+			{
+				var counter = 0;
+				int startItemIndex = 0;
+				int startIndexInItem = 0;
+				for(;startItemIndex < me.Length; startItemIndex++)
+				{
+					counter += me[startItemIndex].Length;
+					if (counter > index)
+					{
+						startIndexInItem = me[startItemIndex].Length - (counter - index);
+						break;
+					}
+				}
+				int endItemIndex = startItemIndex;
+				int endIndexInItem = 0;
+				for (; endItemIndex < me.Length; endItemIndex++)
+				{
+					if (endItemIndex != startItemIndex)
+						counter += me[endItemIndex].Length;
+					if (counter >= index + text.Length)
+					{
+						endIndexInItem = (me[endItemIndex].Length - 1) - (counter - (index + text.Length));
+						break;
+					}
+				}
+				res.Add(((startItemIndex, startIndexInItem), (endItemIndex, endIndexInItem)));
+				Debug.WriteLine("");
+			}
+			return res;
+		}
 		#endregion
 		#region IsBetween
 		public static bool IsBetween(this short me, short minimum, short maximum) => minimum <= me && me <= maximum;
@@ -356,7 +370,43 @@ namespace System
 		#region IsNullOrDefault
 		public static bool IsNullOrDefault<T>(this T me) => EqualityComparer<T>.Default.Equals(me, default(T));
 		#endregion
-		#region DateTime
+		#region Time
+		public static string ToTimeString(this TimeSpan ts, int numberOfElements = 5, bool onlyLetters = false)
+		{
+			string res = "";
+			int count = 0;
+			if (count >= numberOfElements) return res.Trim(',', ' ');
+			if (ts.Days > 0)
+			{
+				res += $"{ts.Days} {(onlyLetters ? "d" : (ts.Days > 1 ? Strings.days : Strings.day))}{(onlyLetters ? "" : ",")} ";
+				count++;
+			}
+			if (count >= numberOfElements) return res.Trim(',', ' ');
+			if (ts.Hours > 0)
+			{
+				res += $"{ts.Hours} {(onlyLetters ? "h" : (ts.Hours > 1 ? Strings.hours : Strings.hour))}{(onlyLetters ? "" : ",")} ";
+				count++;
+			}
+			if (count >= numberOfElements) return res.Trim(',', ' ');
+			if (ts.Minutes > 0)
+			{
+				res += $"{ts.Minutes} {(onlyLetters ? "m" : (ts.Minutes > 1 ? Strings.minutes : Strings.minute))}{(onlyLetters ? "" : ",")} ";
+				count++;
+			}
+			if (count >= numberOfElements) return res.Trim(',', ' ');
+			if (ts.Seconds > 0)
+			{
+				res += $"{ts.Seconds} {(onlyLetters ? "s" : (ts.Seconds > 1 ? Strings.seconds : Strings.minute))}{(onlyLetters ? "" : ",")} ";
+				count++;
+			}
+			if (count >= numberOfElements) return res.Trim(',', ' ');
+			if (ts.Milliseconds > 0)
+			{
+				res += $"{ts.Milliseconds} {(onlyLetters ? "ms" : (ts.Milliseconds > 1 ? Strings.milliseconds : Strings.millisecond))}{(onlyLetters ? "" : ",")} ";
+				count++;
+			}
+			return res.Trim(',', ' ');
+		}
 		public static DateTime AverageDateTime(this IEnumerable<DateTime> me)
 		{
 			var list = me.ToList();

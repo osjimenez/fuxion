@@ -250,6 +250,56 @@ namespace Fuxion.Test
 			Assert.Equal("FD2EAC14000000", value.ToHexadecimal());
 		}
 		#endregion
+		#region String
+		[Fact(DisplayName = "String - ContainsWithComparison")]
+		public void StringContainsWithComparison()
+		{
+			Assert.True("abc".Contains("ABC", StringComparison.InvariantCultureIgnoreCase));
+			Assert.False("abc".Contains("ABC", StringComparison.InvariantCulture));
+		}
+		[Fact(DisplayName = "String - SearchTextInElements")]
+		public void StringSearchTextInElements()
+		{
+			var res = new string[] { "this is ", "my t", "ex", "t for you" }.SearchTextInElements("tExt", StringComparison.InvariantCultureIgnoreCase);
+			Assert.Single(res);
+			Assert.Equal(1, res[0].Start.ItemIndex);
+			Assert.Equal(3, res[0].Start.PositionIndex);
+			Assert.Equal(3, res[0].End.ItemIndex);
+			Assert.Equal(0, res[0].End.PositionIndex);
+
+			res = new string[] { "this is ", "my t", "ex", "t for you and more te", "xt" }.SearchTextInElements("tExt", StringComparison.InvariantCultureIgnoreCase);
+			Assert.Equal(2, res.Count);
+			Assert.Equal(1, res[0].Start.ItemIndex);
+			Assert.Equal(3, res[0].Start.PositionIndex);
+			Assert.Equal(3, res[0].End.ItemIndex);
+			Assert.Equal(0, res[0].End.PositionIndex);
+			Assert.Equal(3, res[1].Start.ItemIndex);
+			Assert.Equal(19, res[1].Start.PositionIndex);
+			Assert.Equal(4, res[1].End.ItemIndex);
+			Assert.Equal(1, res[1].End.PositionIndex);
+
+			res = new string[] { "text" }.SearchTextInElements("tExt", StringComparison.InvariantCultureIgnoreCase);
+			Assert.Single(res);
+			Assert.Equal(0, res[0].Start.ItemIndex);
+			Assert.Equal(0, res[0].Start.PositionIndex);
+			Assert.Equal(0, res[0].End.ItemIndex);
+			Assert.Equal(3, res[0].End.PositionIndex);
+
+			res = new string[] { "more text" }.SearchTextInElements("tExt", StringComparison.InvariantCultureIgnoreCase);
+			Assert.Single(res);
+			Assert.Equal(0, res[0].Start.ItemIndex);
+			Assert.Equal(5, res[0].Start.PositionIndex);
+			Assert.Equal(0, res[0].End.ItemIndex);
+			Assert.Equal(8, res[0].End.PositionIndex);
+
+			res = new string[] { "more text more" }.SearchTextInElements("tExt", StringComparison.InvariantCultureIgnoreCase);
+			Assert.Single(res);
+			Assert.Equal(0, res[0].Start.ItemIndex);
+			Assert.Equal(5, res[0].Start.PositionIndex);
+			Assert.Equal(0, res[0].End.ItemIndex);
+			Assert.Equal(8, res[0].End.PositionIndex);
+		}
+		#endregion
 	}
 	public struct MockStruct { }
 	public class MockClass { }
