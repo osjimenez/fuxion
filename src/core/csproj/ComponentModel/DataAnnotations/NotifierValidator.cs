@@ -86,6 +86,7 @@ namespace Fuxion.ComponentModel.DataAnnotations
 
 			foreach (PropertyDescriptor pro in TypeDescriptor.GetProperties(notifier.GetType())
 				.Cast<PropertyDescriptor>()
+				.Where(pro => !pro.Attributes.OfType<IgnoreValidationAttribute>().Any())
 				.Where(pro => pro.Attributes.OfType<RecursiveValidationAttribute>().Any())
 				.Where(pro => typeof(INotifyPropertyChanged).IsAssignableFrom(pro.PropertyType)))
 			{
@@ -97,6 +98,7 @@ namespace Fuxion.ComponentModel.DataAnnotations
 			}
 			foreach (PropertyDescriptor pro in TypeDescriptor.GetProperties(notifier.GetType())
 				.Cast<PropertyDescriptor>()
+				.Where(pro => !pro.Attributes.OfType<IgnoreValidationAttribute>().Any())
 				.Where(pro => typeof(INotifyCollectionChanged).IsAssignableFrom(pro.PropertyType))
 				.Where(pro => pro.PropertyType.IsSubclassOfRawGeneric(typeof(IEnumerable<>)))
 				.Where(pro => pro.GetValue(notifier) != null))
@@ -177,6 +179,7 @@ namespace Fuxion.ComponentModel.DataAnnotations
 			INotifyPropertyChanged notifier = TypeDescriptor.GetProperties(sender)
 				.Cast<PropertyDescriptor>()
 				.Where(pro => pro.Name == e.PropertyName)
+				.Where(pro => !pro.Attributes.OfType<IgnoreValidationAttribute>().Any())
 				.Where(pro => pro.Attributes.OfType<RecursiveValidationAttribute>().Any())
 				.Where(pro => typeof(INotifyPropertyChanged).IsAssignableFrom(pro.PropertyType))
 				.Select(pro => (INotifyPropertyChanged)pro.GetValue(sender))
@@ -190,6 +193,7 @@ namespace Fuxion.ComponentModel.DataAnnotations
 			PropertyDescriptor collectionProperty = TypeDescriptor.GetProperties(sender)
 				.Cast<PropertyDescriptor>()
 				.Where(pro => pro.Name == e.PropertyName)
+				.Where(pro => !pro.Attributes.OfType<IgnoreValidationAttribute>().Any())
 				.Where(pro => typeof(INotifyCollectionChanged).IsAssignableFrom(pro.PropertyType))
 				.Where(pro => pro.PropertyType.IsSubclassOfRawGeneric(typeof(IEnumerable<>)))
 				.Where(pro => (INotifyCollectionChanged)pro.GetValue(sender) != null)
@@ -236,6 +240,7 @@ namespace Fuxion.ComponentModel.DataAnnotations
 			List<NotifierValidatorMessage> insRes = TypeDescriptor.GetProperties(instance.GetType())
 				.Cast<PropertyDescriptor>()
 				.Where(pro => propertyName == null || pro.Name == propertyName)
+				.Where(pro => !pro.Attributes.OfType<IgnoreValidationAttribute>().Any())
 				.Where(pro => pro.Attributes.OfType<ValidationAttribute>().Any())
 				.SelectMany(pro => pro.Attributes.OfType<ValidationAttribute>()
 					.Select(att =>
@@ -271,6 +276,7 @@ namespace Fuxion.ComponentModel.DataAnnotations
 			{
 				List<NotifierValidatorMessage> metaRes = TypeDescriptor.GetProperties(metaAtt.MetadataClassType)
 				.Cast<PropertyDescriptor>()
+				.Where(pro => !pro.Attributes.OfType<IgnoreValidationAttribute>().Any())
 				.Where(pro => propertyName == null || pro.Name == propertyName)
 				.Where(pro => pro.Attributes.OfType<ValidationAttribute>().Any())
 				.SelectMany(pro => pro.Attributes.OfType<ValidationAttribute>()
@@ -302,6 +308,7 @@ namespace Fuxion.ComponentModel.DataAnnotations
 			// Validate all sub validatables
 			List<NotifierValidatorMessage> subIns = TypeDescriptor.GetProperties(instance.GetType())
 				.Cast<PropertyDescriptor>()
+				.Where(pro => !pro.Attributes.OfType<IgnoreValidationAttribute>().Any())
 				.Where(pro => propertyName == null || pro.Name == propertyName)
 				.Where(pro => pro.Attributes.OfType<RecursiveValidationAttribute>().Any())
 				.Where(pro => !pro.PropertyType.IsSubclassOfRawGeneric(typeof(IEnumerable<>)))
@@ -309,6 +316,7 @@ namespace Fuxion.ComponentModel.DataAnnotations
 			// Validate all sub collection validatables
 			List<NotifierValidatorMessage> subColIns = TypeDescriptor.GetProperties(instance.GetType())
 				.Cast<PropertyDescriptor>()
+				.Where(pro => !pro.Attributes.OfType<IgnoreValidationAttribute>().Any())
 				.Where(pro => propertyName == null || pro.Name == propertyName)
 				.Where(pro => pro.Attributes.OfType<RecursiveValidationAttribute>().Any())
 				.Where(pro => pro.PropertyType.IsSubclassOfRawGeneric(typeof(IEnumerable<>)))

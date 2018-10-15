@@ -20,36 +20,62 @@ namespace Fuxion.Test.ComponentModel.DataAnnotations
             get => GetValue(() => 1);
             set => SetValue(value);
         }
-        [Display(Name = "Nombre")]
+        [Display(Name = "Name")]
         [Required(ErrorMessage = "Name is required")]
         [StringLength(10, ErrorMessage = "Name length must be at maximum 10")]
-        [CustomValidation(typeof(ValidatableMock), nameof(ValidatableMock.ValidateIfNameContainsOscar))]
-        public string Name
+        [CustomValidation(typeof(ValidatableMock), nameof(ValidatableMock.ValidateIfNameContainsFuxion))]
+		public string Name
         {
             get => GetValue(() => "Valid");
             set => SetValue(value);
         }
-        public static ValidationResult ValidateIfNameContainsOscar(string value)
-        {
-            if (value.ToLower().Contains("fuxion"))
-                return new ValidationResult("Name cannot contains 'fuxion'");
-            return ValidationResult.Success;
-        }
-        [Required(ErrorMessage = "RecursiveValidatable is mandatory")]
+		[Display(Name = "IgnoredName")]
+		[Required(ErrorMessage = "IgnoredName is required")]
+		[StringLength(10, ErrorMessage = "IgnoredName length must be at maximum 10")]
+		[CustomValidation(typeof(ValidatableMock), nameof(ValidatableMock.ValidateIfNameContainsFuxion))]
+		[IgnoreValidation]
+		public string IgnoredName
+		{
+			get => GetValue(() => "Valid");
+			set => SetValue(value);
+		}
+		public static ValidationResult ValidateIfNameContainsFuxion(string value)
+		{
+			if (value.ToLower().Contains("fuxion"))
+				return new ValidationResult("Name cannot contains 'fuxion'");
+			return ValidationResult.Success;
+		}
+		[Required(ErrorMessage = "RecursiveValidatable is mandatory")]
         [RecursiveValidation]
         public RecursiveValidatableMock RecursiveValidatable
         {
             get => GetValue(() => new RecursiveValidatableMock());
             set => SetValue(value);
         }
-        [RecursiveValidation]
+		[Required(ErrorMessage = "IgnoredRecursiveValidatable is mandatory")]
+		[RecursiveValidation]
+		[IgnoreValidation]
+		public RecursiveValidatableMock IgnoredRecursiveValidatable
+		{
+			get => GetValue(() => new RecursiveValidatableMock());
+			set => SetValue(value);
+		}
+		[RecursiveValidation]
         [EnsureMinimumElements(1, ErrorMessage = "At least one element in collection")]
         public ObservableCollection<RecursiveValidatableMock> RecursiveValidatableCollection
         {
             get => GetValue(() => new ObservableCollection<RecursiveValidatableMock>(new[] { new RecursiveValidatableMock() }));
             set => SetValue(value);
         }
-        public bool IsValid
+		[RecursiveValidation]
+		[EnsureMinimumElements(1, ErrorMessage = "At least one element in collection")]
+		[IgnoreValidation]
+		public ObservableCollection<RecursiveValidatableMock> IgnoredRecursiveValidatableCollection
+		{
+			get => GetValue(() => new ObservableCollection<RecursiveValidatableMock>(new[] { new RecursiveValidatableMock() }));
+			set => SetValue(value);
+		}
+		public bool IsValid
         {
             get => GetValue(() => true);
             set => SetValue(value);
