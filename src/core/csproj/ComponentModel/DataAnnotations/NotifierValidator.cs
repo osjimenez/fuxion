@@ -113,6 +113,7 @@ namespace Fuxion.ComponentModel.DataAnnotations
 		{
 			bool recursive = collectionProperty.Attributes.OfType<RecursiveValidationAttribute>().Any();
 			INotifyCollectionChanged collection = (INotifyCollectionChanged)collectionProperty.GetValue(notifier);
+			if (collectionContents.ContainsKey(collection)) return;
 			collectionContents.Add(collection, ((ICollection)collection).Cast<object>().ToList());
 			if (recursive)
 			{
