@@ -17,7 +17,6 @@
 			<group targetFramework="net45">
 				<dependency id="Fuxion" version="$version$" />
 				<dependency id="Microsoft.CSharp" version="4.5.0" />
-				<dependency id="System.ValueTuple" version="4.5.0" />
 			</group>
 			<group targetFramework="net471">
 				<dependency id="Fuxion" version="$version$" />

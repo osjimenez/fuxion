@@ -38,7 +38,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Fuxion, Version=0.1.10.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Fuxion.0.1.10-beta.13\lib\net471\Fuxion.dll</HintPath>
+      <HintPath>..\..\packages\Fuxion.0.1.10-beta.20\lib\net471\Fuxion.dll</HintPath>
+    </Reference>
+    <Reference Include="Fuxion.Log4net, Version=0.1.10.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Fuxion.Log4net.0.1.10-beta.20\lib\net471\Fuxion.Log4net.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
@@ -109,12 +112,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\modules\Log4net\csproj\Fuxion.Log4net.csproj">
-      <Project>{a056fb31-cf60-4265-9f3b-e9202f98eebc}</Project>
-      <Name>Fuxion.Log4net</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="Fuxion-Log4net-Rename-Config-File" BeforeTargets="AfterBuild">
