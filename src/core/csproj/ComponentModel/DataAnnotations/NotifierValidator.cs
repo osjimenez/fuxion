@@ -41,7 +41,6 @@ namespace Fuxion.ComponentModel.DataAnnotations
 
 				ValidationChanged?.Invoke(this, EventArgs.Empty);
 			};
-			//((INotifyCollectionChanged)Messages).CollectionChanged += (s, e) => ValidationChanged?.Invoke(this, EventArgs.Empty);
 		}
 
 		private ObservableCollection<NotifierValidatorMessage> _messages = new ObservableCollection<NotifierValidatorMessage>();
@@ -122,7 +121,7 @@ namespace Fuxion.ComponentModel.DataAnnotations
 					if (item is INotifyPropertyChanged npc)
 					{
 						npc.PropertyChanged += (_, __) => RefreshEntries(notifier, collectionProperty.Name, pathFunc);
-						RegisterNotifier(npc, true, () => $"{(pathFunc() + collectionProperty.Name).Trim('.')}[{item.ToString()}]");
+						RegisterNotifier(npc, true, () => $"{(pathFunc() + "." + collectionProperty.Name).Trim('.')}[{item.ToString()}]");
 					}
 				}
 			}
@@ -135,7 +134,7 @@ namespace Fuxion.ComponentModel.DataAnnotations
 						if (item is INotifyPropertyChanged npc)
 						{
 							npc.PropertyChanged += (_, __) => RefreshEntries(notifier, collectionProperty.Name, pathFunc);
-							RegisterNotifier(npc, true, () => $"{(pathFunc() + collectionProperty.Name).Trim('.')}[{item.ToString()}]");
+							RegisterNotifier(npc, true, () => $"{(pathFunc() + "." + collectionProperty.Name).Trim('.')}[{item.ToString()}]");
 						}
 						collectionContents[s].Add(item);
 					}
@@ -209,7 +208,6 @@ namespace Fuxion.ComponentModel.DataAnnotations
 		}
 		private void RefreshEntries(object instance, string propertyName, Func<string> pathFunc)
 		{
-			//if (propertyName == null) _messages.Clear();
 			ICollection<NotifierValidatorMessage> newEntries = Validate(instance, propertyName, pathFunc);
 			_messages.RemoveIf(e => !newEntries.Contains(e) && e.Object == instance && (string.IsNullOrWhiteSpace(propertyName) || e.PropertyName == propertyName));
 			foreach (NotifierValidatorMessage ent in newEntries)
