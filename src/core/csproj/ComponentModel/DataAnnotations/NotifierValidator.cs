@@ -122,7 +122,7 @@ namespace Fuxion.ComponentModel.DataAnnotations
 					if (item is INotifyPropertyChanged npc)
 					{
 						npc.PropertyChanged += (_, __) => RefreshEntries(notifier, collectionProperty.Name, pathFunc);
-						RegisterNotifier(npc, true, () => $"{(pathFunc() + collectionProperty.GetDisplayName()).Trim('.')}[{item.ToString()}]");
+						RegisterNotifier(npc, true, () => $"{(pathFunc() + collectionProperty.Name).Trim('.')}[{item.ToString()}]");
 					}
 				}
 			}
@@ -135,7 +135,7 @@ namespace Fuxion.ComponentModel.DataAnnotations
 						if (item is INotifyPropertyChanged npc)
 						{
 							npc.PropertyChanged += (_, __) => RefreshEntries(notifier, collectionProperty.Name, pathFunc);
-							RegisterNotifier(npc, true, () => $"{(pathFunc() + collectionProperty.GetDisplayName()).Trim('.')}[{item.ToString()}]");
+							RegisterNotifier(npc, true, () => $"{(pathFunc() + collectionProperty.Name).Trim('.')}[{item.ToString()}]");
 						}
 						collectionContents[s].Add(item);
 					}
@@ -313,7 +313,7 @@ namespace Fuxion.ComponentModel.DataAnnotations
 				.Where(pro => propertyName == null || pro.Name == propertyName)
 				.Where(pro => pro.Attributes.OfType<RecursiveValidationAttribute>().Any())
 				.Where(pro => !pro.PropertyType.IsSubclassOfRawGeneric(typeof(IEnumerable<>)))
-				.SelectMany(pro => Validate(pro.GetValue(instance), null, () => $"{pro.GetDisplayName()}")).ToList();
+				.SelectMany(pro => Validate(pro.GetValue(instance), null, () => $"{pro.Name}")).ToList();
 			// Validate all sub collection validatables
 			List<NotifierValidatorMessage> subColIns = TypeDescriptor.GetProperties(instance.GetType())
 				.Cast<PropertyDescriptor>()
@@ -329,7 +329,7 @@ namespace Fuxion.ComponentModel.DataAnnotations
 					{
 						foreach (object t in ienu)
 						{
-							res.AddRange(Validate(t, null, () => $"{pro.GetDisplayName()}[{t.ToString()}]"));
+							res.AddRange(Validate(t, null, () => $"{pro.Name}[{t.ToString()}]"));
 						}
 					}
 
