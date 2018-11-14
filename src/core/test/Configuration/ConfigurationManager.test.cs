@@ -32,7 +32,7 @@ namespace Fuxion.Test.Configuration
 			};
 			ModuleConfigurationMock mod = man.Get<ModuleConfigurationMock>();
 			mod.LicenseId = Guid.NewGuid();
-			mod.LicenseFor = "Waf Estructuras Digitales SL";
+			mod.LicenseFor = "Acme Corp";
 			// Save
 			man.Saved += (s, e) => saved = true;
 			man.Save();
@@ -49,6 +49,14 @@ namespace Fuxion.Test.Configuration
 			Assert.Equal(cfg.Login.Password, cfg2.Login.Password);
 			Assert.Equal(mod.LicenseId, mod2.LicenseId);
 			Assert.Equal(mod.LicenseFor, mod2.LicenseFor);
+
+			// Print file
+			if (man.GetType().GetProperty("Path") != null)
+			{
+				var path = man.GetType().GetProperty("Path").GetValue(man).ToString();
+				Output.WriteLine(File.ReadAllText(path));
+			}
+
 			// Reset a config
 			man.Reset<ConfigurationMock>();
 			ConfigurationMock cfg3 = man.Get<ConfigurationMock>();
