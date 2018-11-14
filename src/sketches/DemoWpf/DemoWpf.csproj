@@ -164,7 +164,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="ConvertersWindow.xaml.cs">
+    <Compile Include="Converters\ConvertersWindow.xaml.cs">
       <DependentUpon>ConvertersWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Licensing.xaml.cs">
@@ -213,7 +213,7 @@
     <Compile Include="Windows\UnhandledExceptionWindowTest.xaml.cs">
       <DependentUpon>UnhandledExceptionWindowTest.xaml</DependentUpon>
     </Compile>
-    <Page Include="ConvertersWindow.xaml">
+    <Page Include="Converters\ConvertersWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

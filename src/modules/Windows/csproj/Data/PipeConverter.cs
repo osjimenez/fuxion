@@ -15,7 +15,7 @@ using System.Windows.Markup;
 
 namespace Fuxion.Windows.Data
 {
-	[ContentProperty("Converters")]
+	[ContentProperty(nameof(Converters))]
 	public class PipeConverter : IValueConverter
 	{
 		public PipeConverterParameterMode ParameterMode { get; set; }
@@ -83,7 +83,7 @@ namespace Fuxion.Windows.Data
 	/// value converter's type is not decorated with the ValueConversionAttribute, an InvalidOperationException will be
 	/// thrown when the converter is added to the Converters collection.
 	/// </summary>
-	[System.Windows.Markup.ContentProperty("Converters")]
+	[ContentProperty("Converters")]
 	public class ValueConverterGroup : IValueConverter
 	{
 		public ValueConverterGroup()

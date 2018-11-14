@@ -19,7 +19,7 @@ namespace Fuxion.Windows.Test.Markup
 	public class DisplayExtensionTest : BaseTest
 	{
 		public DisplayExtensionTest(ITestOutputHelper output) : base(output) { }
-		public static Task StartSTATask(Action action)
+		static Task StartSTATask(Action action)
 		{
 			var tcs = new TaskCompletionSource<object>();
 			var thread = new Thread(() =>

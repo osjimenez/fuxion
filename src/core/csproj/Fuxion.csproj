@@ -73,4 +73,16 @@
 		</EmbeddedResource>
 	</ItemGroup>
 
+	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+	  <PackageReference Include="System.Drawing.Common">
+	    <Version>4.5.1</Version>
+	  </PackageReference>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net471'">
+	  <PackageReference Include="System.Drawing.Common">
+	    <Version>4.5.1</Version>
+	  </PackageReference>
+	</ItemGroup>
+
 </Project>

@@ -74,6 +74,7 @@
     <Compile Include="Data\GenericConverter.test.cs" />
     <Compile Include="Data\GenericMultiConverter.test.cs" />
     <Compile Include="Data\IntegerToVisibilityConverter.test.cs" />
+    <Compile Include="Data\PipeConverter.test.cs" />
     <Compile Include="Data\StringToCapitalizedStringConverter.cs.test.cs" />
     <Compile Include="Data\NullToVisibilityConverter.test.cs" />
     <Compile Include="Data\TimeSpanToLongConverter.test.cs" />

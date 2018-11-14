@@ -24,6 +24,7 @@ using DemoWpf.Windows.Controls;
 using DemoWpf.Windows.Threading;
 using Fuxion.Windows.Threading;
 using DemoWpf.ServiceModel;
+using DemoWpf.Converters;
 
 namespace DemoWpf
 {
@@ -33,7 +34,7 @@ namespace DemoWpf
         {
 			Container c = new Container();
 
-			c.Register<ILogFactory, Log4netFactory>();
+			c.Register<ILogFactory>(() => new Log4netFactory());
 
 			c.RegisterSingleton<ILicenseStore>(new JsonFileLicenseStore(new[] { typeof(LicenseMock) }));
             c.RegisterSingleton<ILicenseProvider>(new LicenseProviderMock());
@@ -45,15 +46,15 @@ namespace DemoWpf
 			//new MainWindow().Show();
 			//new Licensing().Show();
 			//new TimeProvider().Show();
-			//new ConvertersWindow().Show();
+			new ConvertersWindow().Show();
 			//new ValidationWindow().Show();
 			//new UnhandledExceptionWindowTest().Show();
 			//new RepositoriesWindow().Show();
 			//new AutoGridTest().Show();
 			//new IDispatchableTest().Show();
 
-			new ServiceWindow().Show();
-			new ClientWindow().Show();
+			//new ServiceWindow().Show();
+			//new ClientWindow().Show();
 		}
     }
 	public class HardwareIdHelper : IHardwareIdProvider
