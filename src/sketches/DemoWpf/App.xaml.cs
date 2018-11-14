@@ -25,6 +25,7 @@ using DemoWpf.Windows.Threading;
 using Fuxion.Windows.Threading;
 using DemoWpf.ServiceModel;
 using DemoWpf.Converters;
+using DemoWpf.ScreenCapture;
 
 namespace DemoWpf
 {
@@ -46,12 +47,13 @@ namespace DemoWpf
 			//new MainWindow().Show();
 			//new Licensing().Show();
 			//new TimeProvider().Show();
-			new ConvertersWindow().Show();
+			//new ConvertersWindow().Show();
 			//new ValidationWindow().Show();
 			//new UnhandledExceptionWindowTest().Show();
 			//new RepositoriesWindow().Show();
 			//new AutoGridTest().Show();
 			//new IDispatchableTest().Show();
+			new ScreenCaptureWindow().Show();
 
 			//new ServiceWindow().Show();
 			//new ClientWindow().Show();
