@@ -45,8 +45,8 @@ namespace Fuxion.Configuration
         private void Load()
         {
             if (File.Exists(Path))
-                foreach (var con in File.ReadAllText(Path).FromJson<JsonContainer<Guid>[]>())
-                    items.Add(JsonFileConfigurationItem.FromContainer(con));
+                foreach (var con in File.ReadAllText(Path).FromJson<JsonPod<object, Guid>[]>())
+                    items.Add(JsonFileConfigurationItem.FromPod(con));
         }
 
         public void Clear()
@@ -62,8 +62,8 @@ namespace Fuxion.Configuration
                 var item = items[id];
                 if (item.Instance != null)
                     return (TConfigurationItem)item.Instance;
-                if (item.Container.Is<TConfigurationItem>())
-                    return item.Container.As<TConfigurationItem>();
+                if (item.Pod.Is<TConfigurationItem>())
+                    return item.Pod.As<TConfigurationItem>();
                 throw new InvalidCastException($"Configuration item with id '{id}' is not of type '{typeof(TConfigurationItem).Name}'");
             }
             else
@@ -81,7 +81,7 @@ namespace Fuxion.Configuration
             var item = new TConfigurationItem();
             if (items.Contains(item.ConfigurationItemId))
             {
-                items[item.ConfigurationItemId].Container = JsonContainer<Guid>.Create(item, item.ConfigurationItemId);
+                items[item.ConfigurationItemId].Pod = new JsonPod<object, Guid>(item, item.ConfigurationItemId);
                 items[item.ConfigurationItemId].Instance = null;
             }
             return item;
@@ -89,8 +89,8 @@ namespace Fuxion.Configuration
         public bool Save()
         {
             foreach (var item in items)
-                item.Container = JsonContainer<Guid>.Create(item.Instance, item.Container.Key);
-            File.WriteAllText(path, items.Select(v => v.Container).ToArray().ToJson());
+                item.Pod = new JsonPod<object, Guid>(item.Instance, item.Pod.Key);
+            File.WriteAllText(path, items.Select(v => v.Pod).ToArray().ToJson());
             Saved?.Invoke(this, EventArgs.Empty);
             return true;
         }
@@ -106,22 +106,22 @@ namespace Fuxion.Configuration
     }
     internal class JsonFileConfigurationItemCollection : KeyedCollection<Guid, JsonFileConfigurationItem>
     {
-        protected override Guid GetKeyForItem(JsonFileConfigurationItem item) => item.Container.Key;
+        protected override Guid GetKeyForItem(JsonFileConfigurationItem item) => item.Pod.Key;
     }
     internal class JsonFileConfigurationItem
     {
         private JsonFileConfigurationItem() { }
 
-        public static JsonFileConfigurationItem FromContainer(JsonContainer<Guid> container) => new JsonFileConfigurationItem
+        public static JsonFileConfigurationItem FromPod(JsonPod<object, Guid> pod) => new JsonFileConfigurationItem
         {
-            Container = container,
+            Pod = pod,
         };
         public static JsonFileConfigurationItem FromInstance(object instance, Guid id) => new JsonFileConfigurationItem
         {
-            Container = JsonContainer<Guid>.Create(instance, id),
+            Pod = new JsonPod<object, Guid>(instance, id),
             Instance = instance
         };
-        public JsonContainer<Guid> Container { get; set; }
+        public JsonPod<object, Guid> Pod { get; set; }
         public object Instance { get; set; }
     }
 }

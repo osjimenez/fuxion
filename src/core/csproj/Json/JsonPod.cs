@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Fuxion.Json
@@ -58,7 +59,22 @@ namespace Fuxion.Json
 
 		public JsonPod<T, TKey> CastWithPayload<T>() => new JsonPod<T, TKey>(PayloadJRaw.Value.ToString().FromJson<T>(), Key);
 
-		public virtual T As<T>() => PayloadJRaw.Value.ToString().FromJson<T>();
-		public virtual object As(Type type) => PayloadJRaw.Value.ToString().FromJson(type);
+		public T As<T>() => PayloadJRaw.Value.ToString().FromJson<T>();
+		public object As(Type type) => PayloadJRaw.Value.ToString().FromJson(type);
+
+		public bool Is<T>() => Is(typeof(T));
+		public bool Is(Type type)
+		{
+			try
+			{
+				As(type);
+				return true;
+			}
+			catch (Exception ex)
+			{
+				Debug.WriteLine("" + ex.Message);
+				return false;
+			}
+		}
 	}
 }

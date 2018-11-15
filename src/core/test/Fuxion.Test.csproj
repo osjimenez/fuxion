@@ -76,7 +76,6 @@
     <Compile Include="Helpers\xUnitLog.cs" />
     <Compile Include="InternetTimeProvider.test.cs" />
     <Compile Include="System-extensions.test.cs" />
-    <Compile Include="Json\JsonContainer.test.cs" />
     <Compile Include="LocalMachineTimeProvider.test.cs" />
     <Compile Include="ComponentModel\Notifier.test.cs" />
     <Compile Include="Threading\Locker.test.cs" />
