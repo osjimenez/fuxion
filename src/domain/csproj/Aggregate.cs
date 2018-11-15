@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Fuxion.Domain.Events;
 using System.Diagnostics;
+using Fuxion.Json;
 
 namespace Fuxion.Domain
 {

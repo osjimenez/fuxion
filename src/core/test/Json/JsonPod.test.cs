@@ -1,5 +1,9 @@
 ﻿using Fuxion.Json;
+using Fuxion.Reflection;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -18,14 +22,13 @@ namespace Fuxion.Test.Json
 				Age = 23,
 				Nick = "payloadNick"
 			};
-			var pod = payload.ToJsonPod("podKey", "podName");
+			var pod = payload.ToJsonPod("podKey");
 			string json = pod.ToJson();
 
-			Output.WriteLine("Serialized json:");
+			Output.WriteLine("Serialized json: ");
 			Output.WriteLine(json);
 
 			Assert.Contains(@"""Key"": ""podKey""", json);
-			Assert.Contains(@"""Name"": ""podName""", json);
 			Assert.Contains(@"""Name"": ""payloadName""", json);
 			Assert.Contains(@"""Age"": 23", json);
 			Assert.Contains(@"""Nick"": ""payloadNick""", json);
@@ -35,7 +38,6 @@ namespace Fuxion.Test.Json
 		{
 			var json = @"
 			{
-				""Name"": ""podName"",
 				""Key"": ""podKey"",
 				""Payload"": {
 					""Name"": ""payloadName"",
@@ -44,10 +46,13 @@ namespace Fuxion.Test.Json
 				}
 			}";
 
-			Output.WriteLine("json to deserialize:");
+			Output.WriteLine("Initial json: ");
 			Output.WriteLine(json);
 
 			var pod = json.FromJsonPod<PayloadBase, string>();
+
+			Output.WriteLine("pod.PayloadJRaw.Value: ");
+			Output.WriteLine(pod.PayloadJRaw.Value.ToString());
 
 			void AssertBase(PayloadBase payload)
 			{
@@ -61,26 +66,22 @@ namespace Fuxion.Test.Json
 			}
 
 			Assert.Equal("podKey", pod.Key);
-			Assert.Equal("podName", pod.Name);
 			AssertBase(pod);
 			Assert.Throws<InvalidCastException>(() => AssertDerived((PayloadDerived)pod));
-			AssertDerived(pod.CastToPayload<PayloadDerived>());
+			AssertDerived(pod.CastWithPayload<PayloadDerived>());
 		}
-		[Fact(DisplayName = "JsonPod - Event")]
-		public void Event()
+		[Fact(DisplayName = "JsonPod - CastWithPayload")]
+		public void CastWithPayload()
 		{
-			var evt = new MockEvent { Name = "MockEvent" };
-			var pod = evt.ToJsonPod("MockEvent");
-			var eventPod = evt.ToJsonPod<IEvent, string>("MockEvent");
-
-			void ProcessMockEvent(MockEvent e) { }
-			void ProcessEvent(IEvent e) { }
-			ProcessMockEvent(pod);
-			var ee = (IEvent)eventPod;
-
-			//ProcessEvent(eventPod);
-
-			Assert.True(true);
+			var payload = new PayloadDerived
+			{
+				Name = "payloadName",
+				Age = 23,
+				Nick = "payloadNick"
+			};
+			var basePod = new JsonPod<PayloadBase, string>(payload, "podKey");
+			var derivedPod = basePod.CastWithPayload<PayloadDerived>();
+			Assert.Equal("payloadName", derivedPod.Payload.Name);
 		}
 	}
 	public class PayloadBase
@@ -92,18 +93,4 @@ namespace Fuxion.Test.Json
 	{
 		public string Nick { get; set; }
 	}
-	public interface IEvent
-	{
-		Guid AggId { get; }
-	}
-	public class MockEvent : IEvent
-	{
-		public Guid AggId { get; set; } = Guid.NewGuid();
-		public string Name { get; set; }
-	}
-	//public class EventDecorator : JsonPod<IEvent, string>, IEvent
-	//{
-	//	public Guid AggId => Payload.AggId;
-	//	public string Deco { get; set; }
-	//}
 }

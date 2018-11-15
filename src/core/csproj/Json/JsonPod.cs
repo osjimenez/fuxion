@@ -7,44 +7,58 @@ namespace Fuxion.Json
 {
 	public static class JsonPodExtensions
 	{
-		public static JsonPod<TPayload, TKey> ToJsonPod<TPayload, TKey>(this TPayload me, TKey key, string name = null) where TPayload : class => JsonPod<TPayload, TKey>.Create(me, key, name);
+		public static JsonPod<TPayload, TKey> ToJsonPod<TPayload, TKey>(this TPayload me, TKey key) where TPayload : class => new JsonPod<TPayload, TKey>(me, key);
 		public static JsonPod<TPayload, TKey> FromJsonPod<TPayload, TKey>(this string me) where TPayload : class => me.FromJson<JsonPod<TPayload, TKey>>();
 	}
-	public class JsonPod<TPayload, TKey> //where TPayload : class
+	public class JsonPod<TPayload, TKey>
 	{
+		[JsonConstructor]
 		protected JsonPod() { }
-		internal static JsonPod<TPayload, TKey> Create(TPayload payload, TKey key, string name = null)
-			=> new JsonPod<TPayload, TKey>
-			{
-				Key = key,
-				Name = name ?? key.ToString(),
-				Payload = payload, // ?? throw new ArgumentException("Payload cannot be null", nameof(payload)),
-				PayloadJRaw = new JRaw(payload.ToJson())
-			};
-
-		public string Name { get; private set; }
+		public JsonPod(TPayload payload, TKey key)
+		{
+			Key = key;
+			Payload = payload;
+			PayloadJRaw = new JRaw(payload.ToJson());
+		}
+		[JsonProperty]
 		public TKey Key { get; private set; }
-
 		JRaw _PayloadJRaw;
 		[JsonProperty(PropertyName = nameof(Payload))]
-		protected JRaw PayloadJRaw
+		internal JRaw PayloadJRaw
 		{
 			get => _PayloadJRaw;
 			set
 			{
 				_PayloadJRaw = value;
-				if (Payload == null) Payload = PayloadJRaw.Value.ToString().FromJson<TPayload>();
+				if (Payload == null)
+					try
+					{
+						Payload = PayloadJRaw.Value.ToString().FromJson<TPayload>();
+					}
+					catch { }
 			}
 		}
 		[JsonIgnore]
-		protected TPayload Payload { get; set; }
+		public bool PayloadHasValue { get; private set; }
+		TPayload _Payload;
+		[JsonIgnore]
+		public TPayload Payload {
+			get => _Payload;
+			private set
+			{
+				_Payload = value;
+				PayloadHasValue = true;
+			}
+		}
 
 		public static implicit operator TPayload(JsonPod<TPayload, TKey> payload)
 		{
 			return payload.Payload;
 		}
-		public JsonPod<T, TKey> CastToPayload<T>() => JsonPod<T, TKey>.Create(PayloadJRaw.Value.ToString().FromJson<T>(), Key, Name);
-		public T As<T>() => PayloadJRaw.Value.ToString().FromJson<T>();
-		public object As(Type type) => PayloadJRaw.Value.ToString().FromJson(type);
+
+		public JsonPod<T, TKey> CastWithPayload<T>() => new JsonPod<T, TKey>(PayloadJRaw.Value.ToString().FromJson<T>(), Key);
+
+		public virtual T As<T>() => PayloadJRaw.Value.ToString().FromJson<T>();
+		public virtual object As(Type type) => PayloadJRaw.Value.ToString().FromJson(type);
 	}
 }

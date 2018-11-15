@@ -63,6 +63,7 @@
     <Compile Include="ComponentModel\DataAnnotations\NotifierValidator.test.cs" />
     <Compile Include="ComponentModel\DataAnnotations\ValidatableMock.cs" />
     <Compile Include="Configuration\ConfigurationManager.test.cs" />
+    <Compile Include="Json\EventSourcingPod.test.cs" />
     <Compile Include="Json\JsonPod.test.cs" />
     <Compile Include="NamedEnumValue.Test.cs" />
     <Compile Include="Net\ConnectableNotifier.test.cs" />
