@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -32,11 +33,19 @@ namespace Fuxion.Json
 			{
 				_PayloadJRaw = value;
 				if (Payload == null)
-					try
+				{
+					bool wasFailed = false;
+					var res  = PayloadJRaw.Value.ToString().FromJson<TPayload>(new JsonSerializerSettings
 					{
-						Payload = PayloadJRaw.Value.ToString().FromJson<TPayload>();
-					}
-					catch { }
+						Error = delegate (object sender, ErrorEventArgs args)
+						{
+							wasFailed = true;
+							args.ErrorContext.Handled = true;
+						}
+					});
+					if (!wasFailed)
+						Payload = res;
+				}
 			}
 		}
 		[JsonIgnore]
