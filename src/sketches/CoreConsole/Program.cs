@@ -68,13 +68,30 @@ namespace CoreConsole
     {
         static void Main(string[] args)
         {
-            //var fac = new LoggerFactory();
-            //fac.AddSerilog(new LoggerConfiguration()
-            //    .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}{Properties}{NewLine}")
-            //    .CreateLogger());
-            //Factory.AddInjector(new InstanceInjector<ILoggerFactory>(fac));
-            MainMEL();
+			//var fac = new LoggerFactory();
+			//fac.AddSerilog(new LoggerConfiguration()
+			//    .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}{Properties}{NewLine}")
+			//    .CreateLogger());
+			//Factory.AddInjector(new InstanceInjector<ILoggerFactory>(fac));
+
+			MainLog4Net();
+			//MainMEL();
         }
+		static void MainLog4Net()
+		{
+			//Console.ForegroundColor = ConsoleColor.DarkGray;
+
+			Factory.AddInjector(new InstanceInjector<ILogFactory>(new Log4netFactory()));
+			ILog log = LogManager.Create<Program>();
+			for (int i = 0; i < 1000; i++)
+				log.Info("Funciona");
+
+
+			Console.WriteLine("Pulse ENTER to exit ...");
+			Console.ReadLine();
+
+			log4net.LogManager.Shutdown();
+		}
         static void MainMEL()
         {
             var fac = new LoggerFactory();

@@ -321,6 +321,9 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>TextLocalized.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="log4net.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
@@ -368,6 +371,7 @@
       <Name>Fuxion.Windows.Controls</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="Fuxion-Log4net-Rename-Config-File" BeforeTargets="AfterBuild">
     <Move SourceFiles="$(OutputPath)log4net.config" DestinationFiles="$(OutputPath)$(AssemblyName).exe.log4net" ContinueOnError="true" />

@@ -53,10 +53,12 @@ namespace DemoWpf
 			//new RepositoriesWindow().Show();
 			//new AutoGridTest().Show();
 			//new IDispatchableTest().Show();
-			new ScreenCaptureWindow().Show();
+			//new ScreenCaptureWindow().Show();
 
 			//new ServiceWindow().Show();
 			//new ClientWindow().Show();
+
+			new LogWindow().Show();
 		}
     }
 	public class HardwareIdHelper : IHardwareIdProvider

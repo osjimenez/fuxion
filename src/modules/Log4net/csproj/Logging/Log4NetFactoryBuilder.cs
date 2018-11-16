@@ -52,9 +52,9 @@ namespace Fuxion.Logging
 			Hierarchy repository = null;
 			if (avoidConfigurationFile)
 			{
-				BasicConfigurator.Configure();
-				repository = (Hierarchy)log4net.LogManager.GetRepository();
+				repository = (Hierarchy)log4net.LogManager.GetRepository(Assembly.GetEntryAssembly());
 				repository.Root.RemoveAllAppenders();
+				BasicConfigurator.Configure(repository);
 			}
 			else
 			{
@@ -70,8 +70,8 @@ namespace Fuxion.Logging
 					else
 						configPath = Path.Combine(Path.GetDirectoryName(ass.Location), "log4net.config");
 				}
-				XmlConfigurator.ConfigureAndWatch(new FileInfo(configPath));
-				repository = (Hierarchy)log4net.LogManager.GetRepository();
+				repository = (Hierarchy)log4net.LogManager.GetRepository(Assembly.GetEntryAssembly());
+				XmlConfigurator.ConfigureAndWatch(repository, new FileInfo(configPath));
 			}
 			if (rootLevel != null)
 				repository.Root.Level = rootLevel;

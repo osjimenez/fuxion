@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net45;net472</TargetFrameworks>
+		<TargetFrameworks>netstandard2.0;net45;net472</TargetFrameworks>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<RootNamespace>Fuxion</RootNamespace>
 	</PropertyGroup>
@@ -23,7 +23,7 @@
 		</Compile>
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'!='netstandard2.0'">
+	<ItemGroup>
 		<PackageReference Include="log4net" Version="2.0.8" />
 	</ItemGroup>
 
