@@ -12,6 +12,6 @@ mkdir src\.build\NuGet\Fuxion.Log4net\nuspec\lib\net472
 copy  src\.build\NuGet\Fuxion.Log4net\out~\net472\Fuxion.Log4net.dll src\.build\NuGet\Fuxion.Log4net\nuspec\lib\net472\Fuxion.Log4net.dll
 rem copy  src\.build\NuGet\Fuxion.Log4net\out~\net472\Fuxion.Log4net.pdb src\.build\NuGet\Fuxion.Log4net\nuspec\lib\net472\Fuxion.Log4net.pdb
 mkdir src\.build\NuGet\Fuxion.Log4net\nuspec\tools
-copy  src\.build\NuGet\Fuxion.Log4net\out~\net471\install.ps1 src\.build\NuGet\Fuxion.Log4net\nuspec\tools\install.ps1
+copy  src\.build\NuGet\Fuxion.Log4net\out~\net472\install.ps1 src\.build\NuGet\Fuxion.Log4net\nuspec\tools\install.ps1
 mkdir src\.build\NuGet\Fuxion.Log4net\nuspec\content
-copy  src\.build\NuGet\Fuxion.Log4net\out~\net471\log4net.config src\.build\NuGet\Fuxion.Log4net\nuspec\content\log4net.config
+copy  src\.build\NuGet\Fuxion.Log4net\out~\net472\log4net.config src\.build\NuGet\Fuxion.Log4net\nuspec\content\log4net.config
