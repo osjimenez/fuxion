@@ -18,7 +18,7 @@
 				<dependency id="Fuxion" version="$version$" />
 				<dependency id="Microsoft.CSharp" version="4.5.0" />
 			</group>
-			<group targetFramework="net471">
+			<group targetFramework="net472">
 				<dependency id="Fuxion" version="$version$" />
 				<dependency id="Microsoft.CSharp" version="4.5.0" />
 			</group>

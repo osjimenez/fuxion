@@ -3,10 +3,10 @@ mkdir src\.build\NuGet\Fuxion.Domain\nuspec\lib\net45
 copy  src\.build\NuGet\Fuxion.Domain\out~\net45\Fuxion.Domain.dll src\.build\NuGet\Fuxion.Domain\nuspec\lib\net45\Fuxion.Domain.dll
 rem copy  src\.build\NuGet\Fuxion.Domain\out~\net45\Fuxion.Domain.pdb src\.build\NuGet\Fuxion.Domain\nuspec\lib\net45\Fuxion.Domain.pdb
 
-rem NET 4.7.1
-mkdir src\.build\NuGet\Fuxion.Domain\nuspec\lib\net471
-copy  src\.build\NuGet\Fuxion.Domain\out~\net471\Fuxion.Domain.dll src\.build\NuGet\Fuxion.Domain\nuspec\lib\net471\Fuxion.Domain.dll
-rem copy  src\.build\NuGet\Fuxion.Domain\out~\net471\Fuxion.Domain.pdb src\.build\NuGet\Fuxion.Domain\nuspec\lib\net471\Fuxion.Domain.pdb
+rem NET 4.7.2
+mkdir src\.build\NuGet\Fuxion.Domain\nuspec\lib\net472
+copy  src\.build\NuGet\Fuxion.Domain\out~\net472\Fuxion.Domain.dll src\.build\NuGet\Fuxion.Domain\nuspec\lib\net472\Fuxion.Domain.dll
+rem copy  src\.build\NuGet\Fuxion.Domain\out~\net472\Fuxion.Domain.pdb src\.build\NuGet\Fuxion.Domain\nuspec\lib\net472\Fuxion.Domain.pdb
 
 rem NET Standard 2.0
 mkdir src\.build\NuGet\Fuxion.Domain\nuspec\lib\netstandard2.0

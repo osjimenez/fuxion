@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0;net45;net471</TargetFrameworks>
+		<TargetFrameworks>netstandard2.0;net45;net472</TargetFrameworks>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<RootNamespace>Fuxion</RootNamespace>
 		<DebugType>embedded</DebugType>
@@ -81,7 +81,7 @@
 	  </PackageReference>
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net471'">
+	<ItemGroup Condition="'$(TargetFramework)' == 'net472'">
 	  <PackageReference Include="System.Drawing.Common">
 	    <Version>4.5.1</Version>
 	  </PackageReference>

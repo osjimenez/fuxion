@@ -18,7 +18,7 @@
 				<dependency id="System.ValueTuple" version="4.5.0" />
 				<dependency id="Newtonsoft.Json" version="11.0.2" />
 			</group>
-			<group targetFramework="net471">
+			<group targetFramework="net472">
 				<dependency id="Newtonsoft.Json" version="11.0.2" />
 				<dependency id="System.Drawing.Common" version="4.5.1" />
 			</group>

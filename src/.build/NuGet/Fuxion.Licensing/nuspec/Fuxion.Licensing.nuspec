@@ -17,7 +17,7 @@
 			<group targetFramework="net45">
 				<dependency id="Fuxion" version="$version$" />
 			</group>
-			<group targetFramework="net471">
+			<group targetFramework="net472">
 				<dependency id="Fuxion" version="$version$" />
 			</group>
 			<group targetFramework="netstandard2.0">
