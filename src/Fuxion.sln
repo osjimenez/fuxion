@@ -167,6 +167,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Net472", "sketches\Nuget Te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Net471", "sketches\Nuget Test\Net471\Net471.csproj", "{0CD6CC5B-DA0C-497A-B52E-8CB2E9BAEFCD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core21", "sketches\Nuget Test\Core21\Core21.csproj", "{F6EC05E1-F6AC-4CCA-8E71-9B6FB2073A64}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -627,6 +629,22 @@ Global
 		{0CD6CC5B-DA0C-497A-B52E-8CB2E9BAEFCD}.Release|x64.Build.0 = Release|Any CPU
 		{0CD6CC5B-DA0C-497A-B52E-8CB2E9BAEFCD}.Release|x86.ActiveCfg = Release|Any CPU
 		{0CD6CC5B-DA0C-497A-B52E-8CB2E9BAEFCD}.Release|x86.Build.0 = Release|Any CPU
+		{F6EC05E1-F6AC-4CCA-8E71-9B6FB2073A64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6EC05E1-F6AC-4CCA-8E71-9B6FB2073A64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6EC05E1-F6AC-4CCA-8E71-9B6FB2073A64}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{F6EC05E1-F6AC-4CCA-8E71-9B6FB2073A64}.Debug|ARM.Build.0 = Debug|Any CPU
+		{F6EC05E1-F6AC-4CCA-8E71-9B6FB2073A64}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F6EC05E1-F6AC-4CCA-8E71-9B6FB2073A64}.Debug|x64.Build.0 = Debug|Any CPU
+		{F6EC05E1-F6AC-4CCA-8E71-9B6FB2073A64}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F6EC05E1-F6AC-4CCA-8E71-9B6FB2073A64}.Debug|x86.Build.0 = Debug|Any CPU
+		{F6EC05E1-F6AC-4CCA-8E71-9B6FB2073A64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6EC05E1-F6AC-4CCA-8E71-9B6FB2073A64}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6EC05E1-F6AC-4CCA-8E71-9B6FB2073A64}.Release|ARM.ActiveCfg = Release|Any CPU
+		{F6EC05E1-F6AC-4CCA-8E71-9B6FB2073A64}.Release|ARM.Build.0 = Release|Any CPU
+		{F6EC05E1-F6AC-4CCA-8E71-9B6FB2073A64}.Release|x64.ActiveCfg = Release|Any CPU
+		{F6EC05E1-F6AC-4CCA-8E71-9B6FB2073A64}.Release|x64.Build.0 = Release|Any CPU
+		{F6EC05E1-F6AC-4CCA-8E71-9B6FB2073A64}.Release|x86.ActiveCfg = Release|Any CPU
+		{F6EC05E1-F6AC-4CCA-8E71-9B6FB2073A64}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -685,9 +703,10 @@ Global
 		{947EED5C-4B4D-407A-A044-D691D18EBDAF} = {A8AE0158-9808-4C42-B617-77E1C68C4151}
 		{28E2D50D-7B27-4CE0-8867-3A03DC13159F} = {A8AE0158-9808-4C42-B617-77E1C68C4151}
 		{0CD6CC5B-DA0C-497A-B52E-8CB2E9BAEFCD} = {A8AE0158-9808-4C42-B617-77E1C68C4151}
+		{F6EC05E1-F6AC-4CCA-8E71-9B6FB2073A64} = {A8AE0158-9808-4C42-B617-77E1C68C4151}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {935D1C59-A88C-491F-B27D-3B0CF8AF2605}
 		EnterpriseLibraryConfigurationToolBinariesPathV6 = packages\EnterpriseLibrary.TransientFaultHandling.6.0.1304.0\lib\portable-net45+win+wp8;packages\EnterpriseLibrary.TransientFaultHandling.Data.6.0.1304.1\lib\NET45
+		SolutionGuid = {935D1C59-A88C-491F-B27D-3B0CF8AF2605}
 	EndGlobalSection
 EndGlobal
