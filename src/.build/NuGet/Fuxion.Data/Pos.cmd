@@ -1,7 +1,7 @@
 rem NET 4.5
 mkdir src\.build\NuGet\Fuxion.Data\nuspec\lib\net45
 copy  src\.build\NuGet\Fuxion.Data\out~\net45\Fuxion.Data.dll src\.build\NuGet\Fuxion.Data\nuspec\lib\net45\Fuxion.Data.dll
-rem copy  src\.build\NuGet\Fuxion.Data\out~\net45\Fuxion.Data.pdb src\.build\NuGet\Fuxion.Data\nuspec\lib\net45\Fuxion.Data.pdb
+copy  src\.build\NuGet\Fuxion.Data\out~\net45\Fuxion.Data.pdb src\.build\NuGet\Fuxion.Data\nuspec\lib\net45\Fuxion.Data.pdb
 
 rem NET 4.7.2
 mkdir src\.build\NuGet\Fuxion.Data\nuspec\lib\net472

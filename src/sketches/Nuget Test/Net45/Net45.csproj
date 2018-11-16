@@ -35,13 +35,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Fuxion, Version=0.1.10.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Fuxion.0.1.10-beta.20\lib\net45\Fuxion.dll</HintPath>
+      <HintPath>..\..\..\packages\Fuxion.0.1.10-beta.43\lib\net45\Fuxion.dll</HintPath>
     </Reference>
     <Reference Include="Fuxion.Log4net, Version=0.1.10.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Fuxion.Log4net.0.1.10-beta.20\lib\net45\Fuxion.Log4net.dll</HintPath>
+      <HintPath>..\..\..\packages\Fuxion.Log4net.0.1.10-beta.43\lib\net45\Fuxion.Log4net.dll</HintPath>
     </Reference>
     <Reference Include="Fuxion.Windows, Version=0.1.10.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Fuxion.Windows.0.1.10-beta.20\lib\net45\Fuxion.Windows.dll</HintPath>
+      <HintPath>..\..\..\packages\Fuxion.Windows.0.1.10-beta.43\lib\net45\Fuxion.Windows.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>

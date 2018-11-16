@@ -4,6 +4,9 @@
 		<TargetFrameworks>netstandard2.0;net45;net472</TargetFrameworks>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<RootNamespace>Fuxion</RootNamespace>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(TargetFramework)'!='net45'">
 		<DebugType>embedded</DebugType>
 		<DebugSymbols>true</DebugSymbols>
 	</PropertyGroup>

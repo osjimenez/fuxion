@@ -1,4 +1,4 @@
-﻿#if (NET471)
+﻿#if (NET45 || NET472)
 using Fuxion.ServiceModel.Dispatcher;
 using System;
 using System.Collections.Generic;

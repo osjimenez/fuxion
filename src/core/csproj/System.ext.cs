@@ -22,7 +22,7 @@ namespace System
 {
 	public static partial class Extensions
 	{
-#if (NET471)
+#if (NET45 || NET472)
 		/// <summary>
 		/// Permite una clonación en profundidad de origen. 
 		/// </summary>
