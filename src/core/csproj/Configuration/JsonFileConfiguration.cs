@@ -89,7 +89,7 @@ namespace Fuxion.Configuration
         public bool Save()
         {
             foreach (var item in items)
-                item.Pod = new JsonPod<object, Guid>(item.Instance, item.Pod.Key);
+                item.Pod = new JsonPod<object, Guid>(item.Instance, item.Pod.PayloadKey);
             File.WriteAllText(path, items.Select(v => v.Pod).ToArray().ToJson());
             Saved?.Invoke(this, EventArgs.Empty);
             return true;
@@ -106,7 +106,7 @@ namespace Fuxion.Configuration
     }
     internal class JsonFileConfigurationItemCollection : KeyedCollection<Guid, JsonFileConfigurationItem>
     {
-        protected override Guid GetKeyForItem(JsonFileConfigurationItem item) => item.Pod.Key;
+        protected override Guid GetKeyForItem(JsonFileConfigurationItem item) => item.Pod.PayloadKey;
     }
     internal class JsonFileConfigurationItem
     {

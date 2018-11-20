@@ -28,7 +28,7 @@ namespace Fuxion.Test.Json
 			Output.WriteLine("Serialized json: ");
 			Output.WriteLine(json);
 
-			Assert.Contains(@"""Key"": ""podKey""", json);
+			Assert.Contains(@"""PayloadKey"": ""podKey""", json);
 			Assert.Contains(@"""Name"": ""payloadName""", json);
 			Assert.Contains(@"""Age"": 23", json);
 			Assert.Contains(@"""Nick"": ""payloadNick""", json);
@@ -38,7 +38,7 @@ namespace Fuxion.Test.Json
 		{
 			var json = @"
 			{
-				""Key"": ""podKey"",
+				""PayloadKey"": ""podKey"",
 				""Payload"": {
 					""Name"": ""payloadName"",
 					""Age"": 23,
@@ -65,7 +65,7 @@ namespace Fuxion.Test.Json
 				Assert.Equal("payloadNick", payload.Nick);
 			}
 
-			Assert.Equal("podKey", pod.Key);
+			Assert.Equal("podKey", pod.PayloadKey);
 			AssertBase(pod);
 			Assert.Throws<InvalidCastException>(() => AssertDerived((PayloadDerived)pod));
 			AssertDerived(pod.CastWithPayload<PayloadDerived>());

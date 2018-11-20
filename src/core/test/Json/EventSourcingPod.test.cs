@@ -29,7 +29,7 @@ namespace Fuxion.Test.Json
 			var json = pod.ToJson();
 			Output.WriteLine("Serialized json:");
 			Output.WriteLine(json);
-			Assert.Contains(@"""Key"": ""MockEvent""", json);
+			Assert.Contains(@"""PayloadKey"": ""MockEvent""", json);
 			Assert.Contains(@"""TargetVersion"": 10", json);
 			Assert.Contains($@"""AggregateId"": ""{id.ToString()}""", json);
 			Assert.Contains(@"""Name"": ""mockName""", json);
@@ -43,7 +43,7 @@ namespace Fuxion.Test.Json
 			var id = Guid.Parse("52d307a2-39ba-47e2-b73f-2faf0727d44e");
 			var json = @"
 			{
-				""Key"": ""MockEvent"",
+				""PayloadKey"": ""MockEvent"",
 				""TargetVersion"": 10,
 				""Payload"": {
 					""AggregateId"": ""52d307a2-39ba-47e2-b73f-2faf0727d44e"",
@@ -52,7 +52,7 @@ namespace Fuxion.Test.Json
 			}";
 
 			var pod = json.FromJson<EventSourcingPod>();
-			Assert.Equal("MockEvent", pod.Key);
+			Assert.Equal("MockEvent", pod.PayloadKey);
 			Assert.Equal(10, pod.TargetVersion);
 			Assert.False(pod.PayloadHasValue);
 			Assert.Null(pod.Payload);
@@ -115,7 +115,7 @@ namespace Fuxion.Test.Json
 
 		public T AsEvent<T>() where T : Event => base.As<T>().Transform(evt => evt.AddEventSourcingFeature(TargetVersion));
 		public Event AsEvent(Type type) => ((Event)base.As(type)).Transform(evt => evt.AddEventSourcingFeature(TargetVersion));
-		public Event WithTypeKeyDirectory(TypeKeyDirectory typeKeyDirectory) => AsEvent(typeKeyDirectory[Key]);
+		public Event WithTypeKeyDirectory(TypeKeyDirectory typeKeyDirectory) => AsEvent(typeKeyDirectory[PayloadKey]);
 	}
 	public class EventSourcingEventFeature : EventFeature
 	{

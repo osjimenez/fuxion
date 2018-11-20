@@ -18,12 +18,12 @@ namespace Fuxion.Json
 		protected JsonPod() { }
 		public JsonPod(TPayload payload, TKey key)
 		{
-			Key = key;
+			PayloadKey = key;
 			Payload = payload;
 			PayloadJRaw = new JRaw(payload.ToJson());
 		}
 		[JsonProperty]
-		public TKey Key { get; private set; }
+		public TKey PayloadKey { get; private set; }
 		JRaw _PayloadJRaw;
 		[JsonProperty(PropertyName = nameof(Payload))]
 		internal JRaw PayloadJRaw
@@ -66,7 +66,7 @@ namespace Fuxion.Json
 			return payload.Payload;
 		}
 
-		public JsonPod<T, TKey> CastWithPayload<T>() => new JsonPod<T, TKey>(PayloadJRaw.Value.ToString().FromJson<T>(), Key);
+		public JsonPod<T, TKey> CastWithPayload<T>() => new JsonPod<T, TKey>(PayloadJRaw.Value.ToString().FromJson<T>(), PayloadKey);
 
 		public T As<T>() => PayloadJRaw.Value.ToString().FromJson<T>();
 		public object As(Type type) => PayloadJRaw.Value.ToString().FromJson(type);
