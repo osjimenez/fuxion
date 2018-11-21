@@ -6,14 +6,8 @@
 		<RootNamespace>Fuxion</RootNamespace>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(TargetFramework)'!='net45'">
-		<DebugType>embedded</DebugType>
-		<DebugSymbols>true</DebugSymbols>
-	</PropertyGroup>
-
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
 		<OutputPath>..\..\.build\NuGet\Fuxion\out~</OutputPath>
-		<Optimize>false</Optimize>
 	</PropertyGroup>
 
 	<ItemGroup>
