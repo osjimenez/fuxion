@@ -8,6 +8,14 @@ namespace Fuxion
 	{
 		public void LaunchException()
 		{
+			var test = new InternalExceptionTest();
+			test.LaunchException();
+		}
+	}
+	class InternalExceptionTest
+	{
+		public void LaunchException()
+		{
 			PrivateLaunchException();
 		}
 		private void PrivateLaunchException()
