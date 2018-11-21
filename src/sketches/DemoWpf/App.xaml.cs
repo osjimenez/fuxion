@@ -33,6 +33,9 @@ namespace DemoWpf
     {
         protected override void OnStartup(StartupEventArgs e)
         {
+			var test = new ExceptionTest();
+			test.LaunchException();
+
 			Container c = new Container();
 
 			c.Register<ILogFactory>(() => new Log4netFactory());
