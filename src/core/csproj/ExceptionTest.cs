@@ -8,6 +8,10 @@ namespace Fuxion
 	{
 		public void LaunchException()
 		{
+			PrivateLaunchException();
+		}
+		private void PrivateLaunchException()
+		{
 			throw new Exception("Exception for testing purpose");
 		}
 	}
