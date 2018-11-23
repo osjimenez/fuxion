@@ -1,21 +1,19 @@
-﻿using Fuxion.Identity;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
 namespace Fuxion.Identity.Helpers
 {
-    public class PasswordProvider : IPasswordProvider
+	public class PasswordProvider : IPasswordProvider
 	{
-		static RNGCryptoServiceProvider saltGenerator = new RNGCryptoServiceProvider();
+		private static RNGCryptoServiceProvider saltGenerator = new RNGCryptoServiceProvider();
 
 		public int SaltBytesLenght { get; set; } = 8;
 		public int HashIterations { get; set; } = 10137;
 		public PasswordHashAlgorithm Algorithm { get; set; } = PasswordHashAlgorithm.SHA256;
 
-		HashAlgorithm GetAlgorithm()
+		private HashAlgorithm GetAlgorithm()
 		{
 			switch (Algorithm)
 			{
@@ -34,9 +32,9 @@ namespace Fuxion.Identity.Helpers
 		internal void Generate(string password, byte[] salt, out byte[] hash)
 		{
 			var saltAndPass = Encoding.UTF8.GetBytes(password).Concat(salt).ToArray();
-			HashAlgorithm hashProvider = GetAlgorithm();
+			var hashProvider = GetAlgorithm();
 			hash = hashProvider.ComputeHash(saltAndPass);
-			for (int i = 0; i < HashIterations; i++)
+			for (var i = 0; i < HashIterations; i++)
 				hash = hashProvider.ComputeHash(hash);
 		}
 		public void Generate(string password, out byte[] salt, out byte[] hash)
@@ -48,9 +46,9 @@ namespace Fuxion.Identity.Helpers
 		public bool Verify(string password, byte[] hash, byte[] salt)
 		{
 			var saltAndPass = Encoding.UTF8.GetBytes(password).Concat(salt).ToArray();
-			HashAlgorithm hashProvider = GetAlgorithm();
+			var hashProvider = GetAlgorithm();
 			var computeHash = hashProvider.ComputeHash(saltAndPass);
-			for (int i = 0; i < HashIterations; i++)
+			for (var i = 0; i < HashIterations; i++)
 				computeHash = hashProvider.ComputeHash(computeHash);
 			return computeHash.SequenceEqual(hash);
 		}

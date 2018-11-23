@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
-namespace Fuxion.Identity
+﻿namespace Fuxion.Identity
 {
-    public interface IGroup : IRol
-    {
-    }
+	public interface IGroup : IRol
+	{
+	}
 }
