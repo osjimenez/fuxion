@@ -23,7 +23,6 @@
 				<dependency id="System.Drawing.Common" version="4.5.1" />
 			</group>
 			<group targetFramework="netstandard2.0">
-				<dependency id="NETStandard.Library" version="2.0.3" />
 				<dependency id="Newtonsoft.Json" version="11.0.2" />
 				<dependency id="System.Drawing.Common" version="4.5.1" />
 			</group>

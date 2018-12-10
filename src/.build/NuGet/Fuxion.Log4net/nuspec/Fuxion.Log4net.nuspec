@@ -25,7 +25,6 @@
 			<group targetFramework="netstandard2.0">
 				<dependency id="Fuxion" version="$version$" />
 				<dependency id="log4net" version="2.0.8" />
-				<dependency id="NETStandard.Library" version="2.0.3" />
 			</group>
 		</dependencies>
 		<references/>
