@@ -1,5 +1,4 @@
-﻿#if (NET45 || NET472)
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data.Entity.Core.Common.CommandTrees;
@@ -31,8 +30,4 @@ namespace Fuxion.Data
     public class TrackModifiedDateAttribute : ColumnAnnotationAttribute { }
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
     public class TrackModifiedIdentityAttribute : ColumnAnnotationAttribute { }
-    
-    
-    
 }
-#endif

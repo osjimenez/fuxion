@@ -1,5 +1,4 @@
-﻿#if (NET45 || NET472)
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Linq;
@@ -13,4 +12,3 @@ namespace Fuxion.Data
         public DateTime2Convention() { Properties<DateTime>().Configure(c => c.HasColumnType("datetime2")); }
     }
 }
-#endif

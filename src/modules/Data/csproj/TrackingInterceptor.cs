@@ -1,5 +1,4 @@
-﻿#if (NET45 || NET472)
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity.Core.Common.CommandTrees;
 using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
@@ -157,4 +156,3 @@ namespace Fuxion.Data
         }
     }
 }
-#endif

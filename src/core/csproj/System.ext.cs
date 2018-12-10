@@ -22,7 +22,6 @@ namespace System
 {
 	public static partial class Extensions
 	{
-#if (NET45 || NET472)
 		/// <summary>
 		/// Permite una clonación en profundidad de origen. 
 		/// </summary>
@@ -60,7 +59,6 @@ namespace System
                 catch { throw; }
             }
         }
-#endif
 		#region Disposable
 		public static DisposableEnvelope<T> AsDisposable<T>(this T me, Action<T> actionOnDispose = null) { return new DisposableEnvelope<T>(me, actionOnDispose); }
 		#endregion
@@ -183,7 +181,6 @@ namespace System
 			return null;
 		}
 		#endregion
-
 		#region Math
 		public static double Pow(this double me, double power) => Math.Pow(me, power);
 		public static long Pow(this long me, long power) => (long)Math.Pow(me, power);

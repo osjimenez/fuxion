@@ -22,9 +22,6 @@
 				<dependency id="Fuxion" version="$version$" />
 				<dependency id="EntityFramework" version="6.2.0" />
 			</group>
-			<group targetFramework="netstandard2.0">
-				<dependency id="Fuxion" version="$version$" />
-			</group>
 		</dependencies>
 		<references/>
 		<frameworkAssemblies/>

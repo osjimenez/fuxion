@@ -1,5 +1,4 @@
-﻿#if (NET45 || NET472)
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
@@ -111,4 +110,3 @@ namespace Fuxion.Data
 		#endregion
 	}
 }
-#endif

@@ -1,5 +1,4 @@
-﻿#if (NET45 || NET472)
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity.Core.Metadata.Edm;
 using System.Data.Entity.Infrastructure;
@@ -92,4 +91,3 @@ namespace Fuxion.Data
         }
     }
 }
-#endif
