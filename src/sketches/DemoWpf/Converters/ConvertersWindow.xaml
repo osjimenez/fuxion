@@ -1,0 +1,41 @@
+﻿<Window x:Class="DemoWpf.Converters.ConvertersWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:local="clr-namespace:DemoWpf"
+        xmlns:fuxion="fuxion"
+        mc:Ignorable="d"
+        Title="ConvertersWindow" Height="300" Width="300">
+	<Window.Resources>
+		<fuxion:ICollectionCountToVisibilityConverter x:Key="ICollectionCountToVisibilityConverter" 
+                                                      NullValue="Visible"/>
+		<fuxion:ICollectionCountToBooleanConverter x:Key="ICollectionCountToBooleanConverter" />
+		<fuxion:BooleanToVisibilityMultiConverter x:Key="BooleanToVisibilityMultiConverter" Mode="AnyTrue" />
+		<fuxion:PipeConverter x:Key="PipeConverter">
+			<fuxion:EnumToNamedEnumValueConverter />
+			<fuxion:NamedEnumValueToStringConverter />
+		</fuxion:PipeConverter>
+	</Window.Resources>
+	<StackPanel>
+		<!--<StackPanel.Visibility>
+            <MultiBinding Converter="{StaticResource BooleanToVisibilityMultiConverter}">
+                <Binding Path="IsEnabled1" />
+                <Binding Path="IsEnabled22" />
+            </MultiBinding>
+        </StackPanel.Visibility>-->
+		<TextBlock Text="{fuxion:Display List}" Visibility="{Binding List, Converter={StaticResource ICollectionCountToVisibilityConverter}}"/>
+		<CheckBox IsChecked="{Binding List, Converter={StaticResource ICollectionCountToBooleanConverter}}"/>
+		<TextBlock Text="{Binding MyEnum, Converter={StaticResource PipeConverter}}"/>
+		<!--<TextBlock>
+			<TextBlock.Text>
+				<Binding Path="MyEnum" Converter="{StaticResource PipeConverter}">
+					<Binding.ConverterParameter>
+						<sys:Int32>0</sys:Int32>
+					</Binding.ConverterParameter>
+				</Binding>
+			</TextBlock.Text>
+		</TextBlock>-->
+	</StackPanel>
+</Window>

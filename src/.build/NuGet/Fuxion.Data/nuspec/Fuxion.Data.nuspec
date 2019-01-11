@@ -1,0 +1,30 @@
+﻿<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+	<metadata>
+		<id>Fuxion.Data</id>
+		<version>$version$</version>
+		<title>Fuxion Data</title>
+		<authors>Oscar Jimenez</authors>
+		<description>Fuxion library for data access.</description>
+		<releaseNotes />
+		<summary/>
+		<language/>
+		<iconUrl>https://github.com/osjimenez/Fuxion/raw/master/res/logo/fuxion.png</iconUrl>
+		<projectUrl>https://github.com/osjimenez/Fuxion</projectUrl>
+		<licenseUrl>https://github.com/osjimenez/Fuxion/raw/master/LICENSE</licenseUrl>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<dependencies>
+			<group targetFramework="net45">
+				<dependency id="Fuxion" version="$version$" />
+				<dependency id="EntityFramework" version="6.2.0" />
+			</group>
+			<group targetFramework="net472">
+				<dependency id="Fuxion" version="$version$" />
+				<dependency id="EntityFramework" version="6.2.0" />
+			</group>
+		</dependencies>
+		<references/>
+		<frameworkAssemblies/>
+		<tags/>
+	</metadata>
+</package>

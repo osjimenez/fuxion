@@ -1,0 +1,34 @@
+﻿<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+	<metadata>
+		<id>Fuxion.Log4net</id>
+		<version>$version$</version>
+		<title>Fuxion Log4net</title>
+		<authors>Oscar Jimenez</authors>
+		<description>Fuxion library for Log4net logging.</description>
+		<releaseNotes />
+		<summary/>
+		<language/>
+		<iconUrl>https://github.com/osjimenez/Fuxion/raw/master/res/logo/fuxion.png</iconUrl>
+		<projectUrl>https://github.com/osjimenez/Fuxion</projectUrl>
+		<licenseUrl>https://github.com/osjimenez/Fuxion/raw/master/LICENSE</licenseUrl>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<dependencies>
+			<group targetFramework="net45">
+				<dependency id="Fuxion" version="$version$" />
+				<dependency id="log4net" version="2.0.8" />
+			</group>
+			<group targetFramework="net472">
+				<dependency id="Fuxion" version="$version$" />
+				<dependency id="log4net" version="2.0.8" />
+			</group>
+			<group targetFramework="netstandard2.0">
+				<dependency id="Fuxion" version="$version$" />
+				<dependency id="log4net" version="2.0.8" />
+			</group>
+		</dependencies>
+		<references/>
+		<frameworkAssemblies/>
+		<tags/>
+	</metadata>
+</package>

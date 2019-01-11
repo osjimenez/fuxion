@@ -1,0 +1,25 @@
+﻿<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+	<metadata>
+		<id>Fuxion.Licensing</id>
+		<version>$version$</version>
+		<title>Fuxion Licensing</title>
+		<authors>Oscar Jimenez</authors>
+		<description>Fuxion Licensing</description>
+		<releaseNotes />
+		<summary/>
+		<language/>
+		<iconUrl>https://github.com/osjimenez/Fuxion/raw/master/res/logo/fuxion.png</iconUrl>
+		<projectUrl>https://github.com/osjimenez/Fuxion</projectUrl>
+		<licenseUrl>https://github.com/osjimenez/Fuxion/raw/master/LICENSE</licenseUrl>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<dependencies>
+			<group targetFramework="netstandard2.0">
+				<dependency id="Fuxion" version="$version$" />
+			</group>
+		</dependencies>
+		<references/>
+		<frameworkAssemblies/>
+		<tags/>
+	</metadata>
+</package>
