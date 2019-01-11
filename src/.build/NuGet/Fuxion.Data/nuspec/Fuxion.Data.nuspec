@@ -4,7 +4,7 @@
 		<id>Fuxion.Data</id>
 		<version>$version$</version>
 		<title>Fuxion Data</title>
-		<authors>Oscar Jimenez, Waf Estructuras Digitales</authors>
+		<authors>Oscar Jimenez</authors>
 		<description>Fuxion library for data access.</description>
 		<releaseNotes />
 		<summary/>

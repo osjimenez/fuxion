@@ -167,7 +167,6 @@ namespace DemoWpf
                     cusBin,
                     new EndpointAddress(
                         new Uri("net.tcp://localhost:6666/FactoryService")
-                        //,new DnsEndpointIdentity("Waf Services Self-Signed")
                         ));
                 host.AddServiceEndpoint(se);
                 var edb = new EndpointDiscoveryBehavior();

@@ -4,7 +4,7 @@
 		<id>Fuxion.Domain</id>
 		<version>$version$</version>
 		<title>Fuxion Domain</title>
-		<authors>Oscar Jimenez, Waf Estructuras Digitales</authors>
+		<authors>Oscar Jimenez</authors>
 		<description>Fuxion library for DDD</description>
 		<releaseNotes />
 		<summary/>
