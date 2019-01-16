@@ -30,17 +30,20 @@ namespace System.Collections.Generic
 		public static IQueryable<T> RemoveNulls<T>(this IQueryable<T> me) => me.Where(i => i != null);
 		public static ICollection<T> RemoveNulls<T>(this ICollection<T> me) => me.Where(i => i != null).ToList();
 		public static T[] RemoveNulls<T>(this T[] me) => me.Where(i => i != null).ToArray();
-		public static void RemoveIf<T>(this IList<T> me, Func<T, bool> predicate)
+		public static IList<T> RemoveIf<T>(this IList<T> me, Func<T, bool> predicate)
 		{
+			var res = new List<T>();
 			for (int i = 0; i < me.Count; i++)
 			{
 				var item = me.ElementAt(i);
 				if (predicate(item))
 				{
 					me.RemoveAt(i);
+					res.Add(item);
 					i--;
 				}
 			}
+			return res;
 		}
 
 		// TODO - Remove outliers: http://www.ehow.com/how_5201412_calculate-outliers.html
