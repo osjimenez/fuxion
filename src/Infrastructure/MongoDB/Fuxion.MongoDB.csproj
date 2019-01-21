@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<OutputPath>..\..\.build\out~\Fuxion.MongoDB</OutputPath>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Compile Update="Properties\ProjectAssemblyInfo.cs">
+			<SubType>Code</SubType>
+		</Compile>
+		<Compile Include="..\..\.build\AssemblyInfo.cs" Link="Properties\AssemblyInfo.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="Properties\ProjectAssemblyInfo.cs">
+			<SubType>Code</SubType>
+		</Compile>
+	</ItemGroup>
+
+</Project>

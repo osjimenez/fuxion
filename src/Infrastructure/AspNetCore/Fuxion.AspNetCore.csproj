@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netcoreapp3.0</TargetFramework>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<OutputPath>..\..\.build\out~\Fuxion.AspNetCore</OutputPath>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Compile Include="..\..\.build\AssemblyInfo.cs" Link="Properties\AssemblyInfo.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.App" Version="3.0.0-preview-18579-0056" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Core\Application\Fuxion.Application.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="Properties\ProjectAssemblyInfo.cs">
+			<SubType>Code</SubType>
+		</Compile>
+	</ItemGroup>
+
+</Project>

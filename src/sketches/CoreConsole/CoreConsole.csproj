@@ -19,8 +19,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\core\csproj\Fuxion.csproj" />
-		<ProjectReference Include="..\..\modules\Log4net\csproj\Fuxion.Log4net.csproj" />
+		<ProjectReference Include="..\..\core\Fuxion\Fuxion.csproj" />
+		<ProjectReference Include="..\..\Infrastructure\Log4net\Fuxion.Log4net.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

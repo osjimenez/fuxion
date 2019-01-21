@@ -40,8 +40,8 @@ namespace DemoWpf
 
 			c.Register<ILogFactory>(() => new Log4netFactory());
 
-			c.RegisterSingleton<ILicenseStore>(new JsonFileLicenseStore(new[] { typeof(LicenseMock) }));
-            c.RegisterSingleton<ILicenseProvider>(new LicenseProviderMock());
+			c.RegisterInstance<ILicenseStore>(new JsonFileLicenseStore(new[] { typeof(LicenseMock) }));
+            c.RegisterInstance<ILicenseProvider>(new LicenseProviderMock());
             c.Register<IHardwareIdProvider, HardwareIdHelper>();
             c.RegisterSingleton<LicensingManager>();
 			c.Verify();
