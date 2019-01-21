@@ -1,0 +1,15 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Fuxion.Application.Events
+{
+	public class EventSubscription
+	{
+		public EventSubscription(Type eventType)
+		{
+			EventType = eventType;
+		}
+		public Type EventType { get; }
+	}
+}

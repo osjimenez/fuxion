@@ -341,37 +341,37 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\core\csproj\Fuxion.csproj">
+    <ProjectReference Include="..\..\core\Fuxion\Fuxion.csproj">
       <Project>{0f5cb7bf-7ff8-447d-9dec-8cd0d946d208}</Project>
       <Name>Fuxion</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\core\test\Fuxion.Test.csproj">
-      <Project>{bf0816da-9bf0-4a47-b4bd-1148e48439a1}</Project>
-      <Name>Fuxion.Test</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\modules\Licensing\csproj\Fuxion.Licensing.csproj">
-      <Project>{17db6efe-ccde-4589-9410-90a88f67bca7}</Project>
+    <ProjectReference Include="..\..\Core\Licensing\Fuxion.Licensing.csproj">
+      <Project>{850ebece-102d-4ba4-bf20-08309bf426b8}</Project>
       <Name>Fuxion.Licensing</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\modules\Licensing\test\Fuxion.Licensing.Test.csproj">
+    <ProjectReference Include="..\..\Core\Test\Fuxion.Licensing.Test\Fuxion.Licensing.Test.csproj">
       <Project>{3c4db006-a025-4a7d-92b4-1dc638d7a71f}</Project>
       <Name>Fuxion.Licensing.Test</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\modules\Log4net\csproj\Fuxion.Log4net.csproj">
-      <Project>{a056fb31-cf60-4265-9f3b-e9202f98eebc}</Project>
+    <ProjectReference Include="..\..\Core\Test\Fuxion.Test\Fuxion.Test.csproj">
+      <Project>{bf0816da-9bf0-4a47-b4bd-1148e48439a1}</Project>
+      <Name>Fuxion.Test</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Infrastructure\Log4net\Fuxion.Log4net.csproj">
+      <Project>{b58a0a0c-d6d9-42f2-833f-c7d8ad9204be}</Project>
       <Name>Fuxion.Log4net</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\modules\SimpleInjector\csproj\Fuxion.SimpleInjector.csproj">
-      <Project>{220fabfc-2076-42ca-b739-81c34913bca4}</Project>
+    <ProjectReference Include="..\..\Infrastructure\SimpleInjector\Fuxion.SimpleInjector.csproj">
+      <Project>{7e328e42-4948-436b-b292-18d0e6d72daf}</Project>
       <Name>Fuxion.SimpleInjector</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\modules\Windows\csproj\Fuxion.Windows.csproj">
-      <Project>{c52d20f2-cdc5-472f-b2d0-31a14a0722c7}</Project>
-      <Name>Fuxion.Windows</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\modules\Windows\Fuxion.Windows.Controls\Fuxion.Windows.Controls.csproj">
+    <ProjectReference Include="..\..\Infrastructure\Windows.Controls\Fuxion.Windows.Controls.csproj">
       <Project>{e51b208c-a63a-4ea2-93b6-8ae3c263bfa9}</Project>
       <Name>Fuxion.Windows.Controls</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Infrastructure\Windows\Fuxion.Windows.csproj">
+      <Project>{a0f9c378-2058-48ea-8b18-75284cd6cf8c}</Project>
+      <Name>Fuxion.Windows</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
