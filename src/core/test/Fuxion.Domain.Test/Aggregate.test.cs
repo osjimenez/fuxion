@@ -14,6 +14,9 @@ namespace Fuxion.Domain.Test
 			var agg = new Mock<MockAggregate>();
 			var evt = new TestedEvent(agg.Object.Id);
 
+			Assert.Throws<AggregateFeatureNotFoundException>(() => agg.Object.ApplyEvent(evt));
+			
+			agg.Object.AttachEvents();
 			agg.Object.ApplyEvent(evt);
 
 			Assert.Throws<AggregateStateMismatchException>(() => agg.Object.ApplyEvent(new TestedEvent(Guid.NewGuid())));

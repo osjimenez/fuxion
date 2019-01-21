@@ -5,10 +5,6 @@
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-		<OutputPath>..\..\.build\out~\Fuxion.EventStore</OutputPath>
-	</PropertyGroup>
-
 	<ItemGroup>
 		<Compile Update="Properties\ProjectAssemblyInfo.cs">
 			<SubType>Code</SubType>
@@ -17,7 +13,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="EventStore.Client" Version="5.0.0-rc1" />
+		<PackageReference Include="EventStore.Client" Version="5.0.0-rc2" />
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-18618-05" PrivateAssets="All" />
 	</ItemGroup>
 
 	<ItemGroup>

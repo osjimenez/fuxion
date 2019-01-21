@@ -1,0 +1,26 @@
+﻿<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+	<metadata>
+		<id>Fuxion.EventStore</id>
+		<version>$version$</version>
+		<title>Fuxion EventStore</title>
+		<authors>Oscar Jimenez</authors>
+		<description>Fuxion infrastructure for EventStore</description>
+		<releaseNotes />
+		<summary/>
+		<language/>
+		<iconUrl>https://github.com/osjimenez/Fuxion/raw/master/res/logo/fuxion.png</iconUrl>
+		<projectUrl>https://github.com/osjimenez/Fuxion</projectUrl>
+		<licenseUrl>https://github.com/osjimenez/Fuxion/raw/master/LICENSE</licenseUrl>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<dependencies>
+			<group targetFramework="netstandard2.0">
+				<dependency id="Fuxion.Application" version="$version$" />
+				<dependency id="EventStore.Client" version="5.0.0-rc1" />
+			</group>
+		</dependencies>
+		<references/>
+		<frameworkAssemblies/>
+		<tags/>
+	</metadata>
+</package>

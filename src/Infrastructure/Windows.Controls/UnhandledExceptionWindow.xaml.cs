@@ -11,12 +11,14 @@ namespace Fuxion.Windows.Controls
 {
 	public partial class UnhandledExceptionWindow : Window, INotifyPropertyChanged
 	{
-		public UnhandledExceptionWindow(Exception ex, Func<Task> sendReportFunc = null)
+		public UnhandledExceptionWindow(Exception ex, bool showDetails, Func<Task> sendReportFunc = null)
 		{
+			_CanShowDetails = showDetails;
 			this.ex = ex;
 			this.sendReportFunc = sendReportFunc;
 			// Create commands
-			CloseCommand = new GenericCommand(() => Close(), () => Buttons.HasFlag(UnhandledExceptionWindowButtons.CloseWindow));
+			IgnoreCommand = new GenericCommand(() => Close(), () => Buttons.HasFlag(UnhandledExceptionWindowButtons.CloseWindow));
+			CloseConsoleCommand = new GenericCommand(() => Application.Current.Shutdown(), () => Buttons.HasFlag(UnhandledExceptionWindowButtons.CloseWindow));
 			RestartApplicationCommand = new GenericCommand(() =>
 			{
 				Process.Start(Application.ResourceAssembly.Location);
@@ -29,15 +31,16 @@ namespace Fuxion.Windows.Controls
 				{
 					SendingReport = true;
 					await sendReportFunc.Invoke();
+					sendReportFunc = null;
+					SendReportCommand.RaiseCanExecuteChanged();
 				}
-				catch (Exception)
+				catch (Exception ex2)
 				{
+					MessageBox.Show(this, ex2.Message, "Error al enviar el mensaje", MessageBoxButton.OK, MessageBoxImage.Error);
 					Debug.WriteLine("");
 				}
 				finally
 				{
-					sendReportFunc = null;
-					SendReportCommand.RaiseCanExecuteChanged();
 					SendingReport = false;
 				}
 			}, () => sendReportFunc != null);
@@ -46,10 +49,13 @@ namespace Fuxion.Windows.Controls
 			// Populate Document
 			Document.Blocks.AddRange(ex.ToBlocks());
 		}
-		public event PropertyChangedEventHandler PropertyChanged;
-		Func<Task> sendReportFunc;
-		Exception ex;
+		bool _CanShowDetails;
+		UnhandledExceptionWindowButtons _Commands;
 		string _Message;
+		bool _SendingReport;
+		Exception ex;
+		Func<Task> sendReportFunc;
+		public string ExceptionType => ex.GetType().FullName;
 		public string Message
 		{
 			get => _Message;
@@ -59,7 +65,6 @@ namespace Fuxion.Windows.Controls
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Message)));
 			}
 		}
-		bool _SendingReport;
 		public bool SendingReport
 		{
 			get => _SendingReport;
@@ -69,18 +74,17 @@ namespace Fuxion.Windows.Controls
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SendingReport)));
 			}
 		}
-		UnhandledExceptionWindowButtons _Commands;
 		public UnhandledExceptionWindowButtons Buttons
 		{
 			get => _Commands;
 			set
 			{
 				_Commands = value;
-				CloseCommand.RaiseCanExecuteChanged();
+				IgnoreCommand.RaiseCanExecuteChanged();
 				RestartApplicationCommand.RaiseCanExecuteChanged();
+				CloseConsoleCommand.RaiseCanExecuteChanged();
 			}
 		}
-		bool _CanShowDetails;
 		public bool CanShowDetails
 		{
 			get => _CanShowDetails;
@@ -104,16 +108,23 @@ namespace Fuxion.Windows.Controls
 		}
 		public GenericCommand SendReportCommand { get; private set; }
 		public GenericCommand ShowDetailsCommand { get; private set; }
-		public GenericCommand CloseCommand { get; private set; }
+		public GenericCommand IgnoreCommand { get; private set; }
+		public GenericCommand CloseConsoleCommand { get; private set; }
 		public GenericCommand RestartApplicationCommand { get; private set; }
-
 		public FlowDocument Document { get; set; } = new FlowDocument
 		{
 			TextAlignment = TextAlignment.Left,
 			PagePadding = new Thickness(10),
 			FontFamily = new FontFamily("Segoe UI")
 		};
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		private void ButtonClose_Click(object sender, RoutedEventArgs e)
+		{
+			CloseButtonsPopUp.IsOpen = true;
+		}
 	}
+
 	[Flags]
 	public enum UnhandledExceptionWindowButtons
 	{

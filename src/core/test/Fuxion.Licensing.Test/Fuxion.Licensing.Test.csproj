@@ -25,4 +25,10 @@
 	  <Reference Include="System.ComponentModel.DataAnnotations" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Update="licenses.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
 </Project>

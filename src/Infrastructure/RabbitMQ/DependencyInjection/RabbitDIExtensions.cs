@@ -11,7 +11,7 @@ namespace Microsoft.Extensions.DependencyInjection
 {
 	public static class RabbitDIExtensions
 	{
-		public static ISingularityBuilder RabbitMQ(this ISingularityBuilder me, out Func<IServiceProvider, RabbitMQEventBus> builder, string queueName, string connectionHost = "localhost", int connectionRetryCount = 5, int queueRetryCount = 5)
+		public static IFuxionBuilder RabbitMQ(this IFuxionBuilder me, out Func<IServiceProvider, RabbitMQEventBus> builder, string exchangeName, string queueName, string connectionHost = "localhost", int connectionRetryCount = 5, int queueRetryCount = 5)
 		{
 			me.Services.AddSingleton<IRabbitMQPersistentConnection>(new DefaultRabbitMQPersistentConnection(new ConnectionFactory()
 			{
@@ -23,6 +23,7 @@ namespace Microsoft.Extensions.DependencyInjection
 					sp,
 					sp.GetRequiredService<IRabbitMQPersistentConnection>(),
 					sp.GetRequiredService<TypeKeyDirectory>(),
+					exchangeName,
 					queueName,
 					queueRetryCount);
 				// Esto se ejecutará al activar la instancia de RabbitMQEventBus

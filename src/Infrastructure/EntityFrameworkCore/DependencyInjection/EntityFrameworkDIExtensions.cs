@@ -10,7 +10,7 @@ namespace Microsoft.Extensions.DependencyInjection
 {
 	public static class EntityFrameworkDIExtensions
 	{
-		public static ISingularityBuilder EntityFrameworkSqlServer<TContext>(this ISingularityBuilder me, out Func<IServiceProvider, TContext> builder, string dataSource, string initialCatalog, string userID = null, string password = null)
+		public static IFuxionBuilder EntityFrameworkSqlServer<TContext>(this IFuxionBuilder me, out Func<IServiceProvider, TContext> builder, string dataSource, string initialCatalog, string userID = null, string password = null)
 			where TContext : DbContext
 		{
 			me.Services.AddDbContext<TContext>(options =>
@@ -39,7 +39,7 @@ namespace Microsoft.Extensions.DependencyInjection
 			builder = new Func<IServiceProvider, TContext>(sp => sp.GetRequiredService<TContext>());
 			return me;
 		}
-		public static ISingularityBuilder EntityFrameworkInMemory<TContext>(this ISingularityBuilder me, out Func<IServiceProvider, TContext> builder, string databaseName)
+		public static IFuxionBuilder EntityFrameworkInMemory<TContext>(this IFuxionBuilder me, out Func<IServiceProvider, TContext> builder, string databaseName)
 			where TContext : DbContext
 		{
 			me.Services.AddDbContext<TContext>(options =>

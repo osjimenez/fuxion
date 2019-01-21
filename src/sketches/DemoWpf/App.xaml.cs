@@ -33,8 +33,8 @@ namespace DemoWpf
     {
         protected override void OnStartup(StartupEventArgs e)
         {
-			var test = new ExceptionTest();
-			test.LaunchException();
+			//var test = new ExceptionTest();
+			//test.LaunchException();
 
 			Container c = new Container();
 
@@ -52,7 +52,7 @@ namespace DemoWpf
 			//new TimeProvider().Show();
 			//new ConvertersWindow().Show();
 			//new ValidationWindow().Show();
-			//new UnhandledExceptionWindowTest().Show();
+			new UnhandledExceptionWindowTest().Show();
 			//new RepositoriesWindow().Show();
 			//new AutoGridTest().Show();
 			//new IDispatchableTest().Show();
@@ -61,7 +61,7 @@ namespace DemoWpf
 			//new ServiceWindow().Show();
 			//new ClientWindow().Show();
 
-			new LogWindow().Show();
+			//new LogWindow().Show();
 		}
     }
 	public class HardwareIdHelper : IHardwareIdProvider

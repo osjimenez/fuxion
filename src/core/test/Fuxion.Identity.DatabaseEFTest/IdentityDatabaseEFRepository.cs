@@ -39,7 +39,7 @@ namespace Fuxion.Identity.DatabaseEFTest
     }
     public class IdentityDatabaseEFTestRepository : DbContext, IIdentityTestRepository, IKeyValueRepository<string, IIdentity>
     {
-        public IdentityDatabaseEFTestRepository() : base($"Server=.;Initial Catalog={nameof(IdentityDatabaseEFTestRepository)};Integrated Security=True")
+        public IdentityDatabaseEFTestRepository() : base($"Server=.\\sqlexpress;Initial Catalog={nameof(IdentityDatabaseEFTestRepository)};Integrated Security=True")
         {
 
         }

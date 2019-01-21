@@ -8,6 +8,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{ABD253A3-63FE-4FF0-8877-E872691E8D41}"
 	ProjectSection(SolutionItems) = preProject
 		.build\AssemblyInfo.cs = .build\AssemblyInfo.cs
+		..\azure-pipelines.yml = ..\azure-pipelines.yml
+		Pending v0.2.0.txt = Pending v0.2.0.txt
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sketches", "Sketches", "{D73E328B-68C4-499C-9532-A7D9ACC4F186}"
@@ -51,11 +53,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Fuxion.EntityFramework", "F
 		.build\NuGet\Fuxion.EntityFramework\Pre.cmd = .build\NuGet\Fuxion.EntityFramework\Pre.cmd
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Fuxion.Web", "Fuxion.Web", "{A0C41722-6616-4065-9838-D201A805F3C7}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Fuxion.AspNet", "Fuxion.AspNet", "{A0C41722-6616-4065-9838-D201A805F3C7}"
 	ProjectSection(SolutionItems) = preProject
-		.build\NuGet\Fuxion.Web\nuspec\Fuxion.Web.nuspec = .build\NuGet\Fuxion.Web\nuspec\Fuxion.Web.nuspec
-		.build\NuGet\Fuxion.Web\Pos.cmd = .build\NuGet\Fuxion.Web\Pos.cmd
-		.build\NuGet\Fuxion.Web\Pre.cmd = .build\NuGet\Fuxion.Web\Pre.cmd
+		.build\NuGet\Fuxion.AspNet\nuspec\Fuxion.AspNet.nuspec = .build\NuGet\Fuxion.AspNet\nuspec\Fuxion.AspNet.nuspec
+		.build\NuGet\Fuxion.AspNet\Pos.cmd = .build\NuGet\Fuxion.AspNet\Pos.cmd
+		.build\NuGet\Fuxion.AspNet\Pre.cmd = .build\NuGet\Fuxion.AspNet\Pre.cmd
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Fuxion.Windows", "Fuxion.Windows", "{75501A88-8D30-4E84-9ECB-0A503F201816}"
@@ -131,9 +133,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fuxion.Test", "Core\Test\Fu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fuxion.Identity.Test", "Core\Test\Fuxion.Identity.Test\Fuxion.Identity.Test.csproj", "{3C19CF94-F9FE-4FC8-BFB4-BBC3918AB537}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion.Identity.DatabaseTest", "Core\Test\Fuxion.Identity.DatabaseTest\Fuxion.Identity.DatabaseTest.csproj", "{50BA43CD-5980-49C5-B2F6-24E5A8CEB24C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fuxion.Identity.DatabaseTest", "Core\Test\Fuxion.Identity.DatabaseTest\Fuxion.Identity.DatabaseTest.csproj", "{50BA43CD-5980-49C5-B2F6-24E5A8CEB24C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion.Identity.DatabaseEFTest", "Core\Test\Fuxion.Identity.DatabaseEFTest\Fuxion.Identity.DatabaseEFTest.csproj", "{012583C8-4037-4AF1-A544-AD103F4B004D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fuxion.Identity.DatabaseEFTest", "Core\Test\Fuxion.Identity.DatabaseEFTest\Fuxion.Identity.DatabaseEFTest.csproj", "{012583C8-4037-4AF1-A544-AD103F4B004D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fuxion.SimpleInjector", "Infrastructure\SimpleInjector\Fuxion.SimpleInjector.csproj", "{7E328E42-4948-436B-B292-18D0E6D72DAF}"
 EndProject
@@ -143,17 +145,81 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fuxion.Windows", "Infrastru
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fuxion.Licensing", "Core\Licensing\Fuxion.Licensing.csproj", "{850EBECE-102D-4BA4-BF20-08309BF426B8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion.Licensing.Test", "Core\Test\Fuxion.Licensing.Test\Fuxion.Licensing.Test.csproj", "{3C4DB006-A025-4A7D-92B4-1DC638D7A71F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fuxion.Licensing.Test", "Core\Test\Fuxion.Licensing.Test\Fuxion.Licensing.Test.csproj", "{3C4DB006-A025-4A7D-92B4-1DC638D7A71F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion.Windows.Controls", "Infrastructure\Windows.Controls\Fuxion.Windows.Controls.csproj", "{E51B208C-A63A-4EA2-93B6-8AE3C263BFA9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion.Windows.Test", "Infrastructure\Test\Fuxion.Windows.Test\Fuxion.Windows.Test.csproj", "{1B8FD620-89F8-40CF-A818-248D583D08CE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fuxion.Windows.Test", "Infrastructure\Test\Fuxion.Windows.Test\Fuxion.Windows.Test.csproj", "{1B8FD620-89F8-40CF-A818-248D583D08CE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion.EntityFramework.Test", "Infrastructure\Test\Fuxion.EntityFramework.Test\Fuxion.EntityFramework.Test.csproj", "{A727597B-02FA-47A6-B036-DC4ABE56AEF0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fuxion.EntityFramework.Test", "Infrastructure\Test\Fuxion.EntityFramework.Test\Fuxion.EntityFramework.Test.csproj", "{A727597B-02FA-47A6-B036-DC4ABE56AEF0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fuxion.Domain.Test", "Core\Test\Fuxion.Domain.Test\Fuxion.Domain.Test.csproj", "{B5365DB4-CF53-45DF-97E7-75706888AE64}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fuxion.AspNetCore", "Infrastructure\AspNetCore\Fuxion.AspNetCore.csproj", "{3B2108EE-754E-473A-B5FC-4C957A0C38C2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Fuxion.Application", "Fuxion.Application", "{666DA744-629C-443A-A5A8-162F5E43D833}"
+	ProjectSection(SolutionItems) = preProject
+		.build\NuGet\Fuxion.Application\nuspec\Fuxion.Application.nuspec = .build\NuGet\Fuxion.Application\nuspec\Fuxion.Application.nuspec
+		.build\NuGet\Fuxion.Application\Pos.cmd = .build\NuGet\Fuxion.Application\Pos.cmd
+		.build\NuGet\Fuxion.Application\Pre.cmd = .build\NuGet\Fuxion.Application\Pre.cmd
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Fuxion.AspNetCore", "Fuxion.AspNetCore", "{3A437331-008B-4C27-8B29-18EA8C54E736}"
+	ProjectSection(SolutionItems) = preProject
+		.build\NuGet\Fuxion.AspNetCore\nuspec\Fuxion.AspNetCore.nuspec = .build\NuGet\Fuxion.AspNetCore\nuspec\Fuxion.AspNetCore.nuspec
+		.build\NuGet\Fuxion.AspNetCore\Pos.cmd = .build\NuGet\Fuxion.AspNetCore\Pos.cmd
+		.build\NuGet\Fuxion.AspNetCore\Pre.cmd = .build\NuGet\Fuxion.AspNetCore\Pre.cmd
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Fuxion.AutoMapper", "Fuxion.AutoMapper", "{CC3369BE-4230-4073-9D8B-7E6BABE0892E}"
+	ProjectSection(SolutionItems) = preProject
+		.build\NuGet\Fuxion.AutoMapper\nuspec\Fuxion.AutoMapper.nuspec = .build\NuGet\Fuxion.AutoMapper\nuspec\Fuxion.AutoMapper.nuspec
+		.build\NuGet\Fuxion.AutoMapper\Pos.cmd = .build\NuGet\Fuxion.AutoMapper\Pos.cmd
+		.build\NuGet\Fuxion.AutoMapper\Pre.cmd = .build\NuGet\Fuxion.AutoMapper\Pre.cmd
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Fuxion.EntityFrameworkCore", "Fuxion.EntityFrameworkCore", "{6D8FD612-7FBC-46B6-8333-EFB2E6950E65}"
+	ProjectSection(SolutionItems) = preProject
+		.build\NuGet\Fuxion.EntityFrameworkCore\nuspec\Fuxion.EntityFrameworkCore.nuspec = .build\NuGet\Fuxion.EntityFrameworkCore\nuspec\Fuxion.EntityFrameworkCore.nuspec
+		.build\NuGet\Fuxion.EntityFrameworkCore\Pos.cmd = .build\NuGet\Fuxion.EntityFrameworkCore\Pos.cmd
+		.build\NuGet\Fuxion.EntityFrameworkCore\Pre.cmd = .build\NuGet\Fuxion.EntityFrameworkCore\Pre.cmd
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Fuxion.EventStore", "Fuxion.EventStore", "{30D8440A-1F3D-4D96-9E34-2A4313DCF6B6}"
+	ProjectSection(SolutionItems) = preProject
+		.build\NuGet\Fuxion.EventStore\nuspec\Fuxion.EventStore.nuspec = .build\NuGet\Fuxion.EventStore\nuspec\Fuxion.EventStore.nuspec
+		.build\NuGet\Fuxion.EventStore\Pos.cmd = .build\NuGet\Fuxion.EventStore\Pos.cmd
+		.build\NuGet\Fuxion.EventStore\Pre.cmd = .build\NuGet\Fuxion.EventStore\Pre.cmd
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Fuxion.MongoDB", "Fuxion.MongoDB", "{DFA1D254-EC07-4483-BBDC-4F67455B56A7}"
+	ProjectSection(SolutionItems) = preProject
+		.build\NuGet\Fuxion.MongoDB\nuspec\Fuxion.MongoDB.nuspec = .build\NuGet\Fuxion.MongoDB\nuspec\Fuxion.MongoDB.nuspec
+		.build\NuGet\Fuxion.MongoDB\Pos.cmd = .build\NuGet\Fuxion.MongoDB\Pos.cmd
+		.build\NuGet\Fuxion.MongoDB\Pre.cmd = .build\NuGet\Fuxion.MongoDB\Pre.cmd
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Fuxion.RabbitMQ", "Fuxion.RabbitMQ", "{E4001227-78F1-444F-8AD9-6FE28083F122}"
+	ProjectSection(SolutionItems) = preProject
+		.build\NuGet\Fuxion.RabbitMQ\nuspec\Fuxion.RabbitMQ.nuspec = .build\NuGet\Fuxion.RabbitMQ\nuspec\Fuxion.RabbitMQ.nuspec
+		.build\NuGet\Fuxion.RabbitMQ\Pos.cmd = .build\NuGet\Fuxion.RabbitMQ\Pos.cmd
+		.build\NuGet\Fuxion.RabbitMQ\Pre.cmd = .build\NuGet\Fuxion.RabbitMQ\Pre.cmd
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fuxion.Shell", "core\Shell\Fuxion.Shell.csproj", "{F876E12B-C7D6-416A-9F0C-36FA8564DED6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Fuxion.Shell", "Fuxion.Shell", "{ABEC5DD2-6964-48E7-87ED-122368FF26F8}"
+	ProjectSection(SolutionItems) = preProject
+		.build\NuGet\Fuxion.Shell\nuspec\Fuxion.Shell.nuspec = .build\NuGet\Fuxion.Shell\nuspec\Fuxion.Shell.nuspec
+		.build\NuGet\Fuxion.Shell\Pos.cmd = .build\NuGet\Fuxion.Shell\Pos.cmd
+		.build\NuGet\Fuxion.Shell\Pre.cmd = .build\NuGet\Fuxion.Shell\Pre.cmd
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shell", "Shell", "{A8CA8D65-0B52-49D2-B26B-76DD7342E686}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shell.Launcher", "Sketches\Shell\Shell.Launcher\Shell.Launcher.csproj", "{FFA2CFC6-33AA-497D-A51D-B3D77865CB71}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shell.ModuleA", "sketches\Shell\Shell.ModuleA\Shell.ModuleA.csproj", "{924CA66B-1F35-4787-88F1-4D867E178230}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -727,6 +793,54 @@ Global
 		{3B2108EE-754E-473A-B5FC-4C957A0C38C2}.Release|x64.Build.0 = Release|Any CPU
 		{3B2108EE-754E-473A-B5FC-4C957A0C38C2}.Release|x86.ActiveCfg = Release|Any CPU
 		{3B2108EE-754E-473A-B5FC-4C957A0C38C2}.Release|x86.Build.0 = Release|Any CPU
+		{F876E12B-C7D6-416A-9F0C-36FA8564DED6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F876E12B-C7D6-416A-9F0C-36FA8564DED6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F876E12B-C7D6-416A-9F0C-36FA8564DED6}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{F876E12B-C7D6-416A-9F0C-36FA8564DED6}.Debug|ARM.Build.0 = Debug|Any CPU
+		{F876E12B-C7D6-416A-9F0C-36FA8564DED6}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F876E12B-C7D6-416A-9F0C-36FA8564DED6}.Debug|x64.Build.0 = Debug|Any CPU
+		{F876E12B-C7D6-416A-9F0C-36FA8564DED6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F876E12B-C7D6-416A-9F0C-36FA8564DED6}.Debug|x86.Build.0 = Debug|Any CPU
+		{F876E12B-C7D6-416A-9F0C-36FA8564DED6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F876E12B-C7D6-416A-9F0C-36FA8564DED6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F876E12B-C7D6-416A-9F0C-36FA8564DED6}.Release|ARM.ActiveCfg = Release|Any CPU
+		{F876E12B-C7D6-416A-9F0C-36FA8564DED6}.Release|ARM.Build.0 = Release|Any CPU
+		{F876E12B-C7D6-416A-9F0C-36FA8564DED6}.Release|x64.ActiveCfg = Release|Any CPU
+		{F876E12B-C7D6-416A-9F0C-36FA8564DED6}.Release|x64.Build.0 = Release|Any CPU
+		{F876E12B-C7D6-416A-9F0C-36FA8564DED6}.Release|x86.ActiveCfg = Release|Any CPU
+		{F876E12B-C7D6-416A-9F0C-36FA8564DED6}.Release|x86.Build.0 = Release|Any CPU
+		{FFA2CFC6-33AA-497D-A51D-B3D77865CB71}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFA2CFC6-33AA-497D-A51D-B3D77865CB71}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFA2CFC6-33AA-497D-A51D-B3D77865CB71}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{FFA2CFC6-33AA-497D-A51D-B3D77865CB71}.Debug|ARM.Build.0 = Debug|Any CPU
+		{FFA2CFC6-33AA-497D-A51D-B3D77865CB71}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{FFA2CFC6-33AA-497D-A51D-B3D77865CB71}.Debug|x64.Build.0 = Debug|Any CPU
+		{FFA2CFC6-33AA-497D-A51D-B3D77865CB71}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FFA2CFC6-33AA-497D-A51D-B3D77865CB71}.Debug|x86.Build.0 = Debug|Any CPU
+		{FFA2CFC6-33AA-497D-A51D-B3D77865CB71}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFA2CFC6-33AA-497D-A51D-B3D77865CB71}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FFA2CFC6-33AA-497D-A51D-B3D77865CB71}.Release|ARM.ActiveCfg = Release|Any CPU
+		{FFA2CFC6-33AA-497D-A51D-B3D77865CB71}.Release|ARM.Build.0 = Release|Any CPU
+		{FFA2CFC6-33AA-497D-A51D-B3D77865CB71}.Release|x64.ActiveCfg = Release|Any CPU
+		{FFA2CFC6-33AA-497D-A51D-B3D77865CB71}.Release|x64.Build.0 = Release|Any CPU
+		{FFA2CFC6-33AA-497D-A51D-B3D77865CB71}.Release|x86.ActiveCfg = Release|Any CPU
+		{FFA2CFC6-33AA-497D-A51D-B3D77865CB71}.Release|x86.Build.0 = Release|Any CPU
+		{924CA66B-1F35-4787-88F1-4D867E178230}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{924CA66B-1F35-4787-88F1-4D867E178230}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{924CA66B-1F35-4787-88F1-4D867E178230}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{924CA66B-1F35-4787-88F1-4D867E178230}.Debug|ARM.Build.0 = Debug|Any CPU
+		{924CA66B-1F35-4787-88F1-4D867E178230}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{924CA66B-1F35-4787-88F1-4D867E178230}.Debug|x64.Build.0 = Debug|Any CPU
+		{924CA66B-1F35-4787-88F1-4D867E178230}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{924CA66B-1F35-4787-88F1-4D867E178230}.Debug|x86.Build.0 = Debug|Any CPU
+		{924CA66B-1F35-4787-88F1-4D867E178230}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{924CA66B-1F35-4787-88F1-4D867E178230}.Release|Any CPU.Build.0 = Release|Any CPU
+		{924CA66B-1F35-4787-88F1-4D867E178230}.Release|ARM.ActiveCfg = Release|Any CPU
+		{924CA66B-1F35-4787-88F1-4D867E178230}.Release|ARM.Build.0 = Release|Any CPU
+		{924CA66B-1F35-4787-88F1-4D867E178230}.Release|x64.ActiveCfg = Release|Any CPU
+		{924CA66B-1F35-4787-88F1-4D867E178230}.Release|x64.Build.0 = Release|Any CPU
+		{924CA66B-1F35-4787-88F1-4D867E178230}.Release|x86.ActiveCfg = Release|Any CPU
+		{924CA66B-1F35-4787-88F1-4D867E178230}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -780,9 +894,21 @@ Global
 		{A727597B-02FA-47A6-B036-DC4ABE56AEF0} = {EA6BDD38-352C-4A52-98DE-EFA66226A78D}
 		{B5365DB4-CF53-45DF-97E7-75706888AE64} = {7F571708-841B-4184-AF62-D2127502FD7E}
 		{3B2108EE-754E-473A-B5FC-4C957A0C38C2} = {96FC6DCB-2238-4610-BF05-8F031669948C}
+		{666DA744-629C-443A-A5A8-162F5E43D833} = {911EB75D-78F1-4547-B281-CD51DFCEA6CC}
+		{3A437331-008B-4C27-8B29-18EA8C54E736} = {911EB75D-78F1-4547-B281-CD51DFCEA6CC}
+		{CC3369BE-4230-4073-9D8B-7E6BABE0892E} = {911EB75D-78F1-4547-B281-CD51DFCEA6CC}
+		{6D8FD612-7FBC-46B6-8333-EFB2E6950E65} = {911EB75D-78F1-4547-B281-CD51DFCEA6CC}
+		{30D8440A-1F3D-4D96-9E34-2A4313DCF6B6} = {911EB75D-78F1-4547-B281-CD51DFCEA6CC}
+		{DFA1D254-EC07-4483-BBDC-4F67455B56A7} = {911EB75D-78F1-4547-B281-CD51DFCEA6CC}
+		{E4001227-78F1-444F-8AD9-6FE28083F122} = {911EB75D-78F1-4547-B281-CD51DFCEA6CC}
+		{F876E12B-C7D6-416A-9F0C-36FA8564DED6} = {291B05EE-78EA-412F-9449-5EC4D5E0FC9C}
+		{ABEC5DD2-6964-48E7-87ED-122368FF26F8} = {911EB75D-78F1-4547-B281-CD51DFCEA6CC}
+		{A8CA8D65-0B52-49D2-B26B-76DD7342E686} = {D73E328B-68C4-499C-9532-A7D9ACC4F186}
+		{FFA2CFC6-33AA-497D-A51D-B3D77865CB71} = {A8CA8D65-0B52-49D2-B26B-76DD7342E686}
+		{924CA66B-1F35-4787-88F1-4D867E178230} = {A8CA8D65-0B52-49D2-B26B-76DD7342E686}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {935D1C59-A88C-491F-B27D-3B0CF8AF2605}
 		EnterpriseLibraryConfigurationToolBinariesPathV6 = packages\EnterpriseLibrary.TransientFaultHandling.6.0.1304.0\lib\portable-net45+win+wp8;packages\EnterpriseLibrary.TransientFaultHandling.Data.6.0.1304.1\lib\NET45
+		SolutionGuid = {935D1C59-A88C-491F-B27D-3B0CF8AF2605}
 	EndGlobalSection
 EndGlobal

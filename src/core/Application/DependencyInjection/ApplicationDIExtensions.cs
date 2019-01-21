@@ -14,32 +14,32 @@ namespace Microsoft.Extensions.DependencyInjection
 {
 	public static class ApplicationDIExtensions
 	{
-		public static IServiceCollection AddSingularity(this IServiceCollection me, Action<ISingularityBuilder> builderAction)
+		public static IServiceCollection AddFuxion(this IServiceCollection me, Action<IFuxionBuilder> builderAction)
 		{
 			var typeKeyDirectory = new TypeKeyDirectory();
 			me.AddSingleton(typeKeyDirectory);
-			var builder = new SingularityBuilder(me, typeKeyDirectory);
+			var builder = new FuxionBuilder(me, typeKeyDirectory);
 			builderAction(builder);
 			foreach (var type in builder.AutoActivateList)
 				me.BuildServiceProvider().GetRequiredService(type);
 			return me;
 		}
 
-		public static ISingularityBuilder InMemoryEventStorage(this ISingularityBuilder me, out Func<IServiceProvider, InMemoryEventStorage> builder, string dumpFilePath = null)
+		public static IFuxionBuilder InMemoryEventStorage(this IFuxionBuilder me, out Func<IServiceProvider, InMemoryEventStorage> builder, string dumpFilePath = null)
 		{
 			builder = new Func<IServiceProvider, InMemoryEventStorage>(sp => new InMemoryEventStorage(sp.GetRequiredService<TypeKeyDirectory>(), dumpFilePath));
 			me.Services.AddSingleton(builder);
 			return me;
 		}
-		public static ISingularityBuilder InMemorySnapshotStorage(this ISingularityBuilder me, out Func<IServiceProvider, InMemorySnapshotStorage> builder, string dumpFilePath = null)
+		public static IFuxionBuilder InMemorySnapshotStorage(this IFuxionBuilder me, out Func<IServiceProvider, InMemorySnapshotStorage> builder, string dumpFilePath = null)
 		{
 			builder = new Func<IServiceProvider, InMemorySnapshotStorage>(sp => new InMemorySnapshotStorage(sp.GetRequiredService<TypeKeyDirectory>(), dumpFilePath));
 			me.Services.AddSingleton(builder);
 			return me;
 		}
 
-		public static ISingularityBuilder Aggregate<TAggregate, TAggregateFactory>(
-			this ISingularityBuilder me,
+		public static IFuxionBuilder Aggregate<TAggregate, TAggregateFactory>(
+			this IFuxionBuilder me,
 			Func<IServiceProvider, IEventPublisher> eventPublisher = null)
 			where TAggregate : Aggregate, new()
 			where TAggregateFactory : Factory<TAggregate>
@@ -56,8 +56,8 @@ namespace Microsoft.Extensions.DependencyInjection
 			}
 			return me;
 		}
-		public static ISingularityBuilder Aggregate<TAggregate, TAggregateFactory>(
-			this ISingularityBuilder me,
+		public static IFuxionBuilder Aggregate<TAggregate, TAggregateFactory>(
+			this IFuxionBuilder me,
 			Func<IServiceProvider, IEventStorage> eventStorage,
 			Func<IServiceProvider, IEventPublisher> eventPublisher = null)
 			where TAggregate : Aggregate, new()
@@ -70,8 +70,8 @@ namespace Microsoft.Extensions.DependencyInjection
 			me.Services.AddSingleton<IEventStorage<TAggregate>>(sp => new EventStorageDecorator<TAggregate>(eventStorage(sp)));
 			return me;
 		}
-		public static ISingularityBuilder Aggregate<TAggregate, TAggregateFactory, TSnapshot>(
-			this ISingularityBuilder me,
+		public static IFuxionBuilder Aggregate<TAggregate, TAggregateFactory, TSnapshot>(
+			this IFuxionBuilder me,
 			Func<IServiceProvider, IEventStorage> eventStorage,
 			Func<IServiceProvider, ISnapshotStorage> snapshotStorage,
 			int snapshotFrecuency = 3,
@@ -87,8 +87,8 @@ namespace Microsoft.Extensions.DependencyInjection
 			me.Services.AddSingleton<ISnapshotStorage<TAggregate>>(sp => new SnapshotStorageDecorator<TAggregate>(snapshotStorage(sp)));
 			return me;
 		}
-		public static ISingularityBuilder Aggregate<TAggregate, TAggregateFactory, TAggregateRepository>(
-			this ISingularityBuilder me,
+		public static IFuxionBuilder Aggregate<TAggregate, TAggregateFactory, TAggregateRepository>(
+			this IFuxionBuilder me,
 			Func<IServiceProvider, IEventPublisher> eventPublisher = null)
 			where TAggregate : Aggregate, new()
 			where TAggregateFactory : Factory<TAggregate>
@@ -101,7 +101,7 @@ namespace Microsoft.Extensions.DependencyInjection
 			return me;
 		}
 
-		public static ISingularityBuilder Events(this ISingularityBuilder me, Action<IEventsBuilder> builderAction)
+		public static IFuxionBuilder Events(this IFuxionBuilder me, Action<IEventsBuilder> builderAction)
 		{
 			me.Services.AddScoped<IEventDispatcher, EventDispatcher>();
 			builderAction(new EventsBuilder(me));
@@ -113,25 +113,25 @@ namespace Microsoft.Extensions.DependencyInjection
 			{
 				foreach (var inter in handler.GetInterfaces().Where(t => t.IsSubclassOfRawGeneric(typeof(IEventHandler<>))))
 				{
-					me.SingularityBuilder.Services.AddScoped(inter, handler);
-					if (me.SingularityBuilder.TypeKeyDirectory.ContainsKey(inter.GetGenericArguments()[0].GetTypeKey()))
+					me.FuxionBuilder.Services.AddScoped(inter, handler);
+					if (me.FuxionBuilder.TypeKeyDirectory.ContainsKey(inter.GetGenericArguments()[0].GetTypeKey()))
 					{
-						if (me.SingularityBuilder.TypeKeyDirectory[inter.GetGenericArguments()[0].GetTypeKey()] != inter.GetGenericArguments()[0])
+						if (me.FuxionBuilder.TypeKeyDirectory[inter.GetGenericArguments()[0].GetTypeKey()] != inter.GetGenericArguments()[0])
 							throw new InvalidProgramException("");
 					}
 					else
-						me.SingularityBuilder.TypeKeyDirectory.Register(inter.GetGenericArguments()[0]);
+						me.FuxionBuilder.TypeKeyDirectory.Register(inter.GetGenericArguments()[0]);
 				}
 			}
 			return me;
 		}
 		public static IEventsBuilder Subscribe<TEvent>(this IEventsBuilder me, Func<IServiceProvider, IEventSubscriber> eventSubscriber) where TEvent : Event
 		{
-			me.SingularityBuilder.Services.AddTransient(sp => new EventSubscription(typeof(TEvent)));
+			me.FuxionBuilder.Services.AddTransient(sp => new EventSubscription(typeof(TEvent)));
 			return me;
 		}
 
-		public static ISingularityBuilder Commands(this ISingularityBuilder me, Action<ICommandsBuilder> builderAction)
+		public static IFuxionBuilder Commands(this IFuxionBuilder me, Action<ICommandsBuilder> builderAction)
 		{
 			me.Services.AddScoped<ICommandDispatcher, CommandDispatcher>();
 			builderAction(new CommandsBuilder(me));
@@ -143,23 +143,23 @@ namespace Microsoft.Extensions.DependencyInjection
 			{
 				foreach (var inter in handler.GetInterfaces().Where(t => t.IsSubclassOfRawGeneric(typeof(ICommandHandler<>))))
 				{
-					me.SingularityBuilder.Services.AddScoped(typeof(ICommandHandler<>).MakeGenericType(inter.GetGenericArguments()[0]), handler);
-					me.SingularityBuilder.TypeKeyDirectory.Register(inter.GetGenericArguments()[0]);
+					me.FuxionBuilder.Services.AddScoped(typeof(ICommandHandler<>).MakeGenericType(inter.GetGenericArguments()[0]), handler);
+					me.FuxionBuilder.TypeKeyDirectory.Register(inter.GetGenericArguments()[0]);
 				}
 			}
 			return me;
 		}
 	}
-	public interface ISingularityBuilder
+	public interface IFuxionBuilder
 	{
 		IServiceCollection Services { get; }
 		TypeKeyDirectory TypeKeyDirectory { get; }
 		void AddToAutoActivateList<T>();
 	}
 
-	internal class SingularityBuilder : ISingularityBuilder
+	internal class FuxionBuilder : IFuxionBuilder
 	{
-		public SingularityBuilder(IServiceCollection services, TypeKeyDirectory typeKeyDirectory)
+		public FuxionBuilder(IServiceCollection services, TypeKeyDirectory typeKeyDirectory)
 		{
 			Services = services;
 			TypeKeyDirectory = typeKeyDirectory;
@@ -172,22 +172,22 @@ namespace Microsoft.Extensions.DependencyInjection
 	}
 	public interface IEventsBuilder
 	{
-		ISingularityBuilder SingularityBuilder { get; }
+		IFuxionBuilder FuxionBuilder { get; }
 	}
 
 	internal class EventsBuilder : IEventsBuilder
 	{
-		public EventsBuilder(ISingularityBuilder singularityBuilder) => SingularityBuilder = singularityBuilder;
-		public ISingularityBuilder SingularityBuilder { get; }
+		public EventsBuilder(IFuxionBuilder fuxionBuilder) => FuxionBuilder = fuxionBuilder;
+		public IFuxionBuilder FuxionBuilder { get; }
 	}
 	public interface ICommandsBuilder
 	{
-		ISingularityBuilder SingularityBuilder { get; }
+		IFuxionBuilder FuxionBuilder { get; }
 	}
 
 	internal class CommandsBuilder : ICommandsBuilder
 	{
-		public CommandsBuilder(ISingularityBuilder singularityBuilder) => SingularityBuilder = singularityBuilder;
-		public ISingularityBuilder SingularityBuilder { get; }
+		public CommandsBuilder(IFuxionBuilder fuxionBuilder) => FuxionBuilder = fuxionBuilder;
+		public IFuxionBuilder FuxionBuilder { get; }
 	}
 }

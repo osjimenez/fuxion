@@ -24,20 +24,21 @@ namespace Fuxion.RabbitMQ
 			IServiceProvider serviceProvider,
 			IRabbitMQPersistentConnection persistentConnection,
 			TypeKeyDirectory typeKeyDirectory,
+			string exchangeName,
 			string queueName,
 			int retryCount)
 		{
 			this.serviceProvider = serviceProvider;
 			this.persistentConnection = persistentConnection ?? throw new ArgumentNullException(nameof(persistentConnection));
 			this.typeKeyDirectory = typeKeyDirectory;
-			//this.integrationEventSerializer = integrationEventSerializer;
+			this.exchangeName = exchangeName;
 			this.queueName = queueName;
 			this.retryCount = retryCount;
 			_consumerChannel = CreateConsumerChannel();
 		}
-		internal const string BROKER_NAME = "Waf.ViDA.Bus";
 		private readonly IRabbitMQPersistentConnection persistentConnection;
 		private readonly TypeKeyDirectory typeKeyDirectory;
+		private readonly string exchangeName;
 		private readonly string queueName;
 		private readonly int retryCount;
 		private IModel _consumerChannel;
@@ -54,7 +55,7 @@ namespace Fuxion.RabbitMQ
 
 			var channel = persistentConnection.CreateModel();
 
-			channel.ExchangeDeclare(exchange: BROKER_NAME,
+			channel.ExchangeDeclare(exchange: exchangeName,
 								 type: "direct");
 
 			channel.QueueDeclare(queue: queueName,
@@ -122,7 +123,7 @@ namespace Fuxion.RabbitMQ
 			using (var channel = persistentConnection.CreateModel())
 			{
 				//var eventTypeId = @event.IntegrationEventTypeKey;
-				channel.ExchangeDeclare(exchange: BROKER_NAME,
+				channel.ExchangeDeclare(exchange: exchangeName,
 									type: "direct");
 				var eventPod = @event.ToPublicationPod();
 				var message = JsonConvert.SerializeObject(eventPod);
@@ -132,7 +133,7 @@ namespace Fuxion.RabbitMQ
 					var properties = channel.CreateBasicProperties();
 					properties.DeliveryMode = 2; // persistent
 
-					channel.BasicPublish(exchange: BROKER_NAME,
+					channel.BasicPublish(exchange: exchangeName,
 									 routingKey: eventPod.PayloadKey,
 									 mandatory: true,
 									 basicProperties: properties,
@@ -157,7 +158,7 @@ namespace Fuxion.RabbitMQ
 			using (var channel = persistentConnection.CreateModel())
 			{
 				channel.QueueBind(queue: queueName,
-								  exchange: BROKER_NAME,
+								  exchange: exchangeName,
 								  routingKey: integrationEventTypeId);
 			}
 		}

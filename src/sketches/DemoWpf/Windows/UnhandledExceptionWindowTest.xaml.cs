@@ -45,7 +45,10 @@ namespace DemoWpf.Windows
 			catch (AggregateException ex)
 			{
 				UnhandledExceptionWindow win = null;
-				win = new UnhandledExceptionWindow(ex)
+				win = new UnhandledExceptionWindow(ex, true, async () =>
+				{
+					MessageBox.Show("Report sent with content:\r\n");
+				})
 				{
 					Message = "Se ha producido un error grave",
 					Buttons = UnhandledExceptionWindowButtons.CloseWindow,

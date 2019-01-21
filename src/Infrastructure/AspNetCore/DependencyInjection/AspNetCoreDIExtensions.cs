@@ -10,6 +10,6 @@ namespace Microsoft.Extensions.DependencyInjection
 {
 	public static class AspNetCoreDIExtensions
 	{
-		public static IMvcBuilder AddSingularityControllers(this IMvcBuilder me) => me.AddApplicationPart(typeof(CommandController).Assembly);
+		public static IMvcBuilder AddFuxionControllers(this IMvcBuilder me) => me.AddApplicationPart(typeof(CommandController).Assembly);
 	}	
 }

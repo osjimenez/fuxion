@@ -3,7 +3,7 @@
 	<metadata>
 		<id>Fuxion.EntityFramework</id>
 		<version>$version$</version>
-		<title>Fuxion Data</title>
+		<title>Fuxion Entity Framework</title>
 		<authors>Oscar Jimenez</authors>
 		<description>Fuxion library with extensions for EntityFramework.</description>
 		<releaseNotes />
