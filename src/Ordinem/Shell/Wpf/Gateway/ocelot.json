@@ -1,0 +1,47 @@
+{
+	"ReRoutes": [
+		// TASKS - Command
+		{
+			"DownstreamPathTemplate": "/api/command",
+			"DownstreamScheme": "https",
+			"DownstreamHostAndPorts": [
+				{
+					"Host": "localhost",
+					"Port": 5110
+				}
+			],
+			"UpstreamPathTemplate": "/api/tasks/command",
+			"UpstreamHttpMethod": [ "Post" ]
+		},
+		// TASKS - ToDoTask
+		{
+			"DownstreamPathTemplate": "/api/ToDoTask",
+			"DownstreamScheme": "https",
+			"DownstreamHostAndPorts": [
+				{
+					"Host": "localhost",
+					"Port": 5110
+				}
+			],
+			"UpstreamPathTemplate": "/api/Tasks/ToDoTask",
+			"UpstreamHttpMethod": [ "Get" ]
+		},
+		// TASKS - ToDoTask/{id}
+		{
+			"DownstreamPathTemplate": "/api/ToDoTask/{id}",
+			"DownstreamScheme": "https",
+			"DownstreamHostAndPorts": [
+				{
+					"Host": "localhost",
+					"Port": 5110
+				}
+			],
+			"UpstreamPathTemplate": "/api/Tasks/ToDoTask/{id}",
+			"UpstreamHttpMethod": [ "Get" ]
+		}
+	],
+	"GlobalConfiguration": {
+		"RequestIdKey": "OcRequestId",
+		"AdministrationPath": "/administration"
+	}
+}

@@ -20,8 +20,18 @@ namespace Microsoft.Extensions.DependencyInjection
 			me.AddSingleton(typeKeyDirectory);
 			var builder = new FuxionBuilder(me, typeKeyDirectory);
 			builderAction(builder);
-			foreach (var type in builder.AutoActivateList)
-				me.BuildServiceProvider().GetRequiredService(type);
+			foreach (var action in builder.PostRegistrationsList)
+			{
+				var sp = me.BuildServiceProvider();
+				action(sp);
+			}
+			foreach (var (type, preAction, postAction) in builder.AutoActivateList)
+			{
+				IServiceProvider sp = me.BuildServiceProvider();
+				preAction?.Invoke(sp);
+				var obj = sp.GetRequiredService(type);
+				postAction?.Invoke(sp, obj);
+			}
 			return me;
 		}
 
@@ -107,24 +117,29 @@ namespace Microsoft.Extensions.DependencyInjection
 			builderAction(new EventsBuilder(me));
 			return me;
 		}
-		public static IEventsBuilder HandlersFromAssemblyOf<T>(this IEventsBuilder me)
+		public static IEventsBuilder HandlersFromType(this IEventsBuilder me, Type typeOfEventHandlers)
 		{
-			foreach (var handler in typeof(T).Assembly.GetTypes().Where(t => t.IsSubclassOfRawGeneric(typeof(IEventHandler<>))))
+			foreach (var inter in typeOfEventHandlers.GetInterfaces().Where(t => t.IsSubclassOfRawGeneric(typeof(IEventHandler<>))))
 			{
-				foreach (var inter in handler.GetInterfaces().Where(t => t.IsSubclassOfRawGeneric(typeof(IEventHandler<>))))
+				me.FuxionBuilder.Services.AddScoped(inter, typeOfEventHandlers);
+				if (me.FuxionBuilder.TypeKeyDirectory.ContainsKey(inter.GetGenericArguments()[0].GetTypeKey()))
 				{
-					me.FuxionBuilder.Services.AddScoped(inter, handler);
-					if (me.FuxionBuilder.TypeKeyDirectory.ContainsKey(inter.GetGenericArguments()[0].GetTypeKey()))
-					{
-						if (me.FuxionBuilder.TypeKeyDirectory[inter.GetGenericArguments()[0].GetTypeKey()] != inter.GetGenericArguments()[0])
-							throw new InvalidProgramException("");
-					}
-					else
-						me.FuxionBuilder.TypeKeyDirectory.Register(inter.GetGenericArguments()[0]);
+					if (me.FuxionBuilder.TypeKeyDirectory[inter.GetGenericArguments()[0].GetTypeKey()] != inter.GetGenericArguments()[0])
+						throw new InvalidProgramException("");
 				}
+				else
+					me.FuxionBuilder.TypeKeyDirectory.Register(inter.GetGenericArguments()[0]);
 			}
 			return me;
 		}
+		public static IEventsBuilder HandlersFromType<T>(this IEventsBuilder me) => HandlersFromType(me, typeof(T));
+		public static IEventsBuilder HandlersFromAssemblyOf(this IEventsBuilder me, Type typeOfAssembly)
+		{
+			foreach (var handler in typeOfAssembly.Assembly.GetTypes().Where(t => t.IsSubclassOfRawGeneric(typeof(IEventHandler<>))))
+				HandlersFromType(me, handler);
+			return me;
+		}
+		public static IEventsBuilder HandlersFromAssemblyOf<T>(this IEventsBuilder me) => HandlersFromAssemblyOf(me, typeof(T));
 		public static IEventsBuilder Subscribe<TEvent>(this IEventsBuilder me, Func<IServiceProvider, IEventSubscriber> eventSubscriber) where TEvent : Event
 		{
 			me.FuxionBuilder.Services.AddTransient(sp => new EventSubscription(typeof(TEvent)));
@@ -154,7 +169,8 @@ namespace Microsoft.Extensions.DependencyInjection
 	{
 		IServiceCollection Services { get; }
 		TypeKeyDirectory TypeKeyDirectory { get; }
-		void AddToAutoActivateList<T>();
+		void AddToPostRegistrationList(Action<IServiceProvider> action);
+		void AddToAutoActivateList<T>(Action<IServiceProvider> preAction = null, Action<IServiceProvider, T> postAction = null);
 	}
 
 	internal class FuxionBuilder : IFuxionBuilder
@@ -167,8 +183,11 @@ namespace Microsoft.Extensions.DependencyInjection
 		public IServiceCollection Services { get; }
 		public TypeKeyDirectory TypeKeyDirectory { get; }
 
-		public List<Type> AutoActivateList { get; } = new List<Type>();
-		public void AddToAutoActivateList<T>() => AutoActivateList.Add(typeof(T));
+		public List<Action<IServiceProvider>> PostRegistrationsList = new List<Action<IServiceProvider>>();
+		public void AddToPostRegistrationList(Action<IServiceProvider> action) => PostRegistrationsList.Add(action);
+
+		public List<(Type type, Action<IServiceProvider> PreAction, Action<IServiceProvider, object> PostAction)> AutoActivateList { get; } = new List<(Type type, Action<IServiceProvider> PreAction, Action<IServiceProvider, object> PostAction)>();
+		public void AddToAutoActivateList<T>(Action<IServiceProvider> preAction = null, Action<IServiceProvider, T> postAction = null) => AutoActivateList.Add((typeof(T), preAction, postAction != null ? new Action<IServiceProvider, object>((sp, o) => postAction(sp, (T)o)) : null));
 	}
 	public interface IEventsBuilder
 	{

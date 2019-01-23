@@ -2,19 +2,15 @@
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
-		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+
+		<Title>Fuxion AutoMapper</Title>
+		<PackageId>Fuxion.AutoMapper</PackageId>
+		<Description>Fuxion library with extensions for AutoMapper</Description>
 	</PropertyGroup>
-	
-	<ItemGroup>
-		<Compile Update="Properties\ProjectAssemblyInfo.cs">
-			<SubType>Code</SubType>
-		</Compile>
-		<Compile Include="..\..\.build\AssemblyInfo.cs" Link="Properties\AssemblyInfo.cs" />
-	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="AutoMapper" Version="8.0.0" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.0.0-preview.18572.1" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.2.0" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-18618-05" PrivateAssets="All" />
 	</ItemGroup>
 

@@ -12,10 +12,9 @@ using System.Threading.Tasks;
 
 namespace Fuxion.EventStore
 {
-	// TODO - Quitar la palabra Manager del nombre
-	public class EventStoreManager : IEventStorage, ISnapshotStorage
+	public class EventStoreStorage : IEventStorage, ISnapshotStorage
 	{
-		public EventStoreManager(IEventStoreConnection connection, TypeKeyDirectory typeKeyDirectory)
+		public EventStoreStorage(IEventStoreConnection connection, TypeKeyDirectory typeKeyDirectory)
 		{
 			this.connection = connection;
 			this.typeKeyDirectory = typeKeyDirectory;

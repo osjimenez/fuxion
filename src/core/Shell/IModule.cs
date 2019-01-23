@@ -10,6 +10,6 @@ namespace Fuxion.Shell
 	public interface IModule
 	{
 		void Register(IServiceCollection services);
-		void Initialize();
+		void Initialize(IServiceProvider serviceProvider);
 	}
 }

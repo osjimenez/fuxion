@@ -52,7 +52,6 @@ namespace Fuxion.Factories
         {
             object res = null;
             List<Exception> exceptions = new List<Exception>();
-            // TODO - Oscar - Collect all factory exceptions and if no factory can create the instance, can return a good documented aggregateexception or similar
             foreach (var fac in pipe)
             {
                 try

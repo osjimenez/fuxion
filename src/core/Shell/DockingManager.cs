@@ -1,5 +1,5 @@
 ﻿using Fuxion.Logging;
-using Fuxion.Shell.UIMessages;
+using Fuxion.Shell.Messages;
 using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI;
 using System;
@@ -18,77 +18,91 @@ namespace Fuxion.Shell
 {
 	public class DockingManager
 	{
-		public DockingManager(IServiceProvider serviceProvider)
+		public DockingManager(IServiceProvider serviceProvider)//, ILogger<DockingManager> logger)
 		{
 			this.serviceProvider = serviceProvider;
+			//this.logger = logger;
 			panelDescritors = serviceProvider.GetServices<IPanelDescriptor>().ToList();
 
-			MessageBus.Current.Listen<OpenPanelUIMessage>()
+			MessageBus.Current.Listen<OpenPanelMessage>()
 				.Subscribe(message => OpenPanel(message.Name, message.Arguments));
-
-			MessageBus.Current.Listen<ReadModeUIMEssage>()
+			MessageBus.Current.Listen<ClosePanelMessage>()
 				.Subscribe(message =>
 				{
+					if (message.Pane != null)
+						CloseRadPane(message.Pane);
+					else
+						ClosePanel(message.Name);
+				});
+			MessageBus.Current.Listen<CloseAllPanelsWithKeyMessage>()
+				.Subscribe(message => CloseAllPanelsWithKey(message.Key));
+
+			MessageBus.Current.Listen<LockMessage>()
+				.Subscribe(message =>
+				{
+					locked = true;
 					foreach (var panelInstance in panelInstances)
-					{
-						// Quita la cabecera de los paneles pineados
-						panelInstance.RadPane.PaneHeaderVisibility = Visibility.Collapsed;
-						// Quita la cabecera de los panales del DocumentHost. No se podrá cambiar de pestañas
-						//panelInstance.RadPane.Visibility = Visibility.Collapsed;
-
-						//panelInstance.RadPane.CanUserClose = false;
-						panelInstance.RadPane.CanUserPin = false;
-						panelInstance.RadPane.CanFloat = false;
-					}
+						LockRadPane(panelInstance.RadPane);
 				});
-
-			MessageBus.Current.Listen<LoadLayoutUIMessage>()
+			MessageBus.Current.Listen<UnlockMessage>()
 				.Subscribe(message =>
 				{
-					if (File.Exists(layoutFilePath))
-						using (var str = File.OpenRead(layoutFilePath))
-						{
-							docking.LoadLayout(str);
-						}
+					locked = false;
+					foreach (var panelInstance in panelInstances)
+						UnlockRadPane(panelInstance.RadPane);
 				});
 
-			MessageBus.Current.Listen<SaveLayoutUIMessage>()
-				.Subscribe(message =>
-				{
-					if (File.Exists(layoutFilePath)) File.Delete(layoutFilePath);
-					using (var mem = new MemoryStream())
-					{
-						docking.SaveLayout(mem);
-						mem.Position = 0;
-						File.AppendAllText(layoutFilePath, XDocument.Load(mem).ToString());
-					}
-				});
+			MessageBus.Current.Listen<LoadLayoutMessage>()
+				.Subscribe(message => docking.LoadLayout(message.LayoutFileStream));
+			MessageBus.Current.Listen<SaveLayoutMessage>()
+				.Subscribe(message => docking.SaveLayout(message.LayoutFileStream));
 		}
 
-		private readonly string layoutFilePath = "layout.xml";
 		private readonly ILog log = LogManager.Create<DockingManager>();
+		//private readonly ILogger logger;
+		private bool locked;
 		private readonly IServiceProvider serviceProvider;
 		private readonly List<IPanelDescriptor> panelDescritors;
 		private RadDocking docking;
 		private ObservableCollection<PanelInstance> panelInstances = new ObservableCollection<PanelInstance>();
 
+		private void GenerateException()
+		{
+			throw new InvalidOperationException("Operación inválida de prueba");
+		}
+
 		public void AttachDocking(RadDocking docking)
 		{
-			log.Verbose("AttachDocking");
-			if (this.docking != null) throw new InvalidOperationException($"Only one RadDocking are supported");
+			//using var scope = logger.BeginScope(nameof(AttachDocking));
+			log.Trace(nameof(AttachDocking));
+			//logger.LogDebug("AttachDocking");
+			//using (logger.BeginScope("OtroScope"))
+			//{
+			try
+			{
+				GenerateException();
+			}
+			catch (Exception ex)
+			{
+				//logger.LogError(new EventId(123, "Evento de prueba"), ex, "Mensaje de prueba", "Argumento de prueba", PanelName.Parse("Nombre@Key"));
+				log.Error("Mensaje de prueba", ex);
+			}
+			//}
+			if (this.docking != null) throw new InvalidOperationException($"Only one RadDocking can be attached");
 			this.docking = docking;
-			void AdaptPane(PanelPosition state)
+			void AttachPane(PanelPosition state)
 			{
 				var split = new RadSplitContainer { InitialPosition = (DockState)(int)state };
-				var pane = new RadPaneGroup { Tag = state, TabStripPlacement = Dock.Top };
+				//var pane = new RadPaneGroup { Tag = state, TabStripPlacement = Dock.Top };
+				var pane = new RadPaneGroup { Tag = state };
 				RadDocking.SetSerializationTag(pane, state.ToString());
 				split.Items.Add(pane);
 				docking.Items.Add(split);
 			}
-			AdaptPane(PanelPosition.DockedTop);
-			AdaptPane(PanelPosition.DockedBottom);
-			AdaptPane(PanelPosition.DockedLeft);
-			AdaptPane(PanelPosition.DockedRight);
+			AttachPane(PanelPosition.DockedTop);
+			AttachPane(PanelPosition.DockedBottom);
+			AttachPane(PanelPosition.DockedLeft);
+			AttachPane(PanelPosition.DockedRight);
 			var sp = new RadSplitContainer();
 			var gr = new RadPaneGroup
 			{
@@ -100,7 +114,8 @@ namespace Fuxion.Shell
 			docking.DocumentHost = sp;
 			docking.DockingPanesFactory = new ShellDockingPanesFactory((dock, radPane) =>
 			{
-				log.Verbose("AddPane");
+				//logger.LogDebug("AddPane");
+				log.Trace($"{nameof(docking)}.{nameof(docking.DockingPanesFactory)}.AddPane");
 				IPanelDescriptor descriptor;
 				if (radPane.Content is IPanel panel)
 					descriptor = panelInstances.Single(i => i.Panel == panel).Descriptor;
@@ -111,28 +126,31 @@ namespace Fuxion.Shell
 			}, (dock, item) => item is RadPane radPane ? radPane : null);
 			docking.ElementLoading += (_, e) =>
 			{
-				log.Verbose($"Dock_ElementLoading - AffectedElementSerializationTag: '{e.AffectedElementSerializationTag}'");
+				//logger.LogDebug($"Dock_ElementLoading - AffectedElementSerializationTag: '{e.AffectedElementSerializationTag}'");
+				log.Trace($"{nameof(docking)}.{nameof(docking.ElementLoading)} - {nameof(e.AffectedElementSerializationTag)}: {e.AffectedElementSerializationTag}");
 				try
 				{
 					var name = PanelName.Parse(e.AffectedElementSerializationTag);
 					if (panelDescritors.Any(p => p.Name.Name == name.Name))
-						// Element is a known panel
-						e.SetAffectedElement(CreatePanelInstance(name, e.ElementProperties.ToDictionary(p => p.Key, p => (object)p.Value)).RadPane);
+							// Element is a known panel
+							e.SetAffectedElement(CreatePanelInstance(name, e.ElementProperties.ToDictionary(p => p.Key, p => (object)p.Value)).RadPane);
 					else if (Enum.GetNames(typeof(PanelPosition)).Contains(e.AffectedElementSerializationTag) && e.AffectedElement is RadPaneGroup pane)
-						// Element is a main structural group panel
-						pane.Tag = Enum.Parse(typeof(PanelPosition), e.AffectedElementSerializationTag);
+							// Element is a main structural group panel
+							pane.Tag = Enum.Parse(typeof(PanelPosition), e.AffectedElementSerializationTag);
 					else
-						// Element is unknown
-						e.Cancel = true;
+							// Element is unknown
+							e.Cancel = true;
 				}
 				catch (Exception ex)
 				{
+					//logger.LogError($"ERROR loading '{e.AffectedElementSerializationTag}'", ex);
 					log.Error($"ERROR loading '{e.AffectedElementSerializationTag}'", ex);
 				}
 			};
 			docking.ElementLoaded += (_, e) =>
 			{
-				log.Verbose($"Dock_ElementLoaded - AffectedElementSerializationTag: '{e.AffectedElementSerializationTag}'");
+				//logger.LogDebug($"Dock_ElementLoaded - AffectedElementSerializationTag: '{e.AffectedElementSerializationTag}'");
+				log.Trace($"{nameof(docking)}.{nameof(docking.ElementLoaded)} - {nameof(e.AffectedElementSerializationTag)}: {e.AffectedElementSerializationTag}");
 				if (e.AffectedElement is RadPane radPane)
 				{
 					IPanel panel;
@@ -145,12 +163,14 @@ namespace Fuxion.Shell
 			};
 			docking.ElementLayoutSaving += (_, e) =>
 			{
-				log.Verbose($"Dock_ElementLayoutSaving '{e.AffectedElementSerializationTag}'");
+				//logger.LogDebug($"Dock_ElementLayoutSaving '{e.AffectedElementSerializationTag}'");
+				log.Trace($"{nameof(docking)}.{nameof(docking.ElementLayoutSaving)} - {nameof(e.AffectedElementSerializationTag)}: {e.AffectedElementSerializationTag}");
 				if (e.ElementProperties.ContainsKey("IsHidden") && e.ElementProperties["IsHidden"] == "True")
 					e.Cancel = true;
 			};
 			docking.Close += (s, e) =>
 			{
+				log.Trace($"{nameof(docking)}.{nameof(docking.Close)}");
 				foreach (var radPane in e.Panes)
 				{
 					var panelInstance = panelInstances.Single(i => i.View == radPane.Content);
@@ -164,22 +184,75 @@ namespace Fuxion.Shell
 		}
 		private void OpenPanel(PanelName name, Dictionary<string, object> args)
 		{
-			log.Verbose($"OpenPanel - name: {name}");
+			//logger.LogDebug($"OpenPanel - name: {name}");
+			log.Trace($"{nameof(OpenPanel)}({nameof(name)}: {name}, {nameof(args)}: {args})");
 			var panelInstance = panelInstances.FirstOrDefault(i => i.Descriptor.Name == name);
 			if (panelInstance != null)
-			{
 				panelInstance.RadPane.IsHidden = false;
-				panelInstance.RadPane.IsActive = true;
-			}
 			else
 			{
-				var panelinstance = CreatePanelInstance(name, args);
-				PositionPanel(panelinstance.RadPane, panelinstance.Descriptor.DefaultPosition);
+				panelInstance = CreatePanelInstance(name, args);
+				PositionPanel(panelInstance.RadPane, panelInstance.Descriptor.DefaultPosition);
 			}
+			panelInstance.RadPane.IsActive = true;
 		}
+
+		internal void CloseRadPane(RadPane pane)
+		{
+			pane.IsHidden = true;
+			pane.IsActive = false;
+		}
+		private void ClosePanel(PanelName name)
+		{
+			//logger.LogDebug($"ClosePanel - name: {name}");
+			log.Trace($"{nameof(ClosePanel)}({nameof(name)}: {name})");
+			var panelInstance = panelInstances.FirstOrDefault(i => i.Descriptor.Name == name);
+			if (panelInstance != null)
+				CloseRadPane(panelInstance.RadPane);
+		}
+		private void CloseAllPanelsWithKey(string key)
+		{
+			//logger.LogDebug($"CloseAllPanelsWithKey - key: {key}");
+			log.Trace($"{nameof(CloseAllPanelsWithKey)}({nameof(key)}: {key})");
+			foreach (var panelInstance in panelInstances.Where(i => i.Descriptor.Name.Key == key).ToList())
+				CloseRadPane(panelInstance.RadPane);
+		}
+
+		private void LockRadPane(RadPane pane)
+		{
+			// Quita la cabecera de los paneles pineados
+			pane.PaneHeaderVisibility = Visibility.Collapsed;
+			// Quita la cabecera de los panales del DocumentHost. No se podrá cambiar de pestañas
+			//pane.Visibility = Visibility.Collapsed;
+
+			//pane.CanUserClose = false;
+			pane.CanUserPin = false;
+			pane.CanFloat = false;
+			pane.IsDockable = false;
+
+		}
+		private void UnlockRadPane(RadPane pane)
+		{
+			// Quita la cabecera de los paneles pineados
+			pane.PaneHeaderVisibility = Visibility.Visible;
+			// Quita la cabecera de los panales del DocumentHost. No se podrá cambiar de pestañas
+			//pane.Visibility = Visibility.Collapsed;
+
+			//pane.CanUserClose = false;
+			pane.CanUserPin = true;
+			pane.CanFloat = true;
+			pane.IsDockable = true;
+			
+		}
+
 		private void PositionPanel(RadPane radPane, PanelPosition position)
 		{
-			log.Verbose($"PositionPanel - position {position}");
+			//logger.LogDebug($"PositionPanel - position {position}");
+			log.Trace($"{nameof(PositionPanel)}({nameof(position)}: {position})");
+			if (locked)
+				LockRadPane(radPane);
+			else
+				UnlockRadPane(radPane);
 			switch (position)
 			{
 				case PanelPosition.DockedBottom:
@@ -210,17 +283,18 @@ namespace Fuxion.Shell
 		}
 		private PanelInstance CreatePanelInstance(PanelName name, Dictionary<string,object> args)
 		{
-			log.Verbose($"CreatePanelInstance - name: {name}");
+			//logger.LogDebug($"CreatePanelInstance - name: {name}");
+			log.Trace($"{nameof(CreatePanelInstance)}({nameof(name)}: {name}, {nameof(args)}: {args})");
 			var descriptor = panelDescritors.Single(p => p.Name.Name == name.Name);
 			var view = serviceProvider.GetService(descriptor.ViewType);
 			if (!(view is FrameworkElement)) throw new ArgumentException($"The '{nameof(descriptor.ViewType)}' must be '{nameof(FrameworkElement)}'");
-			var radPane = new RadPane { Content = view };
+			var radPane = new RadPane { Content = view, IsPinned = descriptor.IsPinned };
 			IPanel panel;
 			if (view is IPanel pa) panel = pa;
 			else if (view is IPanelView vi) panel = vi.Panel;
 			else throw new NotSupportedException($"The '{nameof(descriptor.ViewType)}' must be '{nameof(IPanel)}' or '{nameof(IPanelView)}'");
 			var panelInstance = new PanelInstance(string.IsNullOrWhiteSpace(descriptor.Name.Key)
-				? new GenericPanelDescriptor(name.ToString(), descriptor.ViewType, descriptor.DefaultPosition, descriptor.RemoveOnHide)
+				? new GenericPanelDescriptor(name.ToString(), descriptor.ViewType, descriptor.DefaultPosition, descriptor.RemoveOnHide, descriptor.IsPinned)
 				: descriptor, panel, (FrameworkElement)view, radPane);
 			panelInstances.Add(panelInstance);
 			radPane.SetBinding(RadPane.TitleProperty, new Binding(nameof(panel.Title)) { Source = panel });
@@ -231,7 +305,7 @@ namespace Fuxion.Shell
 			return panelInstance;
 		}
 	}
-	public class ShellDockingPanesFactory : DockingPanesFactory
+	internal class ShellDockingPanesFactory : DockingPanesFactory
 	{
 		public ShellDockingPanesFactory(Action<RadDocking, RadPane> addPane, Func<RadDocking, object, RadPane> getPaneFromItem)
 		{

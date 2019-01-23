@@ -1,0 +1,19 @@
+<Project>
+	<PropertyGroup>
+		
+		<Title>Fuxion</Title>
+		<Authors>Oscar Jimenez</Authors>
+
+		<Product>Fuxion</Product>
+		<ProductName>Fuxion</ProductName>
+
+		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+		<PackageLicenseUrl>https://github.com/osjimenez/Fuxion/raw/master/LICENSE</PackageLicenseUrl>
+		<PackageProjectUrl>https://github.com/osjimenez/Fuxion</PackageProjectUrl>
+		<PackageIconUrl>https://github.com/osjimenez/Fuxion/raw/master/res/logo/fuxion.png</PackageIconUrl>
+
+		<IncludeSymbols>true</IncludeSymbols>
+
+		<PackageOutputPath>..\..\..\..\NugetOut</PackageOutputPath>
+	</PropertyGroup>
+</Project>

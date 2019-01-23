@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>netcoreapp3.0</TargetFramework>
+		<AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Content Remove="*~.*" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.0.0-preview-19075-0444" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.0.0-preview.19074.3" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\Infrastructure\AspNetCore\Fuxion.AspNetCore.csproj" />
+		<ProjectReference Include="..\..\..\Infrastructure\AutoMapper\Fuxion.AutoMapper.csproj" />
+		<ProjectReference Include="..\..\..\Infrastructure\EntityFrameworkCore\Fuxion.EntityFrameworkCore.csproj" />
+		<ProjectReference Include="..\..\..\Infrastructure\EventStore\Fuxion.EventStore.csproj" />
+		<ProjectReference Include="..\..\..\Infrastructure\RabbitMQ\Fuxion.RabbitMQ.csproj" />
+		<ProjectReference Include="..\Application\Ordinem.Tasks.Application.csproj" />
+		<ProjectReference Include="..\Projection\Ordinem.Tasks.Projection.csproj" />
+	</ItemGroup>
+
+</Project>

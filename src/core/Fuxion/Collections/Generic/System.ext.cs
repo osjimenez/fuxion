@@ -46,7 +46,7 @@ namespace System.Collections.Generic
 			return res;
 		}
 
-		// TODO - Remove outliers: http://www.ehow.com/how_5201412_calculate-outliers.html
+		// Remove outliers: http://www.ehow.com/how_5201412_calculate-outliers.html
 		public static IEnumerable<int> RemoveOutliers(this IEnumerable<int> list, Action<string> outputConsole = null)
 		{
 			return list.Select(i => (long)i).RemoveOutliers(outputConsole: outputConsole).Select(i => (int)i);

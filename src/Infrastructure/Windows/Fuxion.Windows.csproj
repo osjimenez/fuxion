@@ -2,19 +2,15 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>net45;net472;netcoreapp3.0</TargetFrameworks>
-		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-		<RootNamespace>Fuxion.Windows</RootNamespace>
+
+		<Title>Fuxion Windows</Title>
+		<PackageId>Fuxion.Windows</PackageId>
+		<Description>Fuxion Windows</Description>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Compile Include="..\..\.build\AssemblyInfo.cs" Link="Properties\AssemblyInfo.cs" />
-		<Compile Update="Properties\ProjectAssemblyInfo.cs">
+		<Compile Update="Properties\AssemblyInfo.cs">
 			<SubType>Code</SubType>
-		</Compile>
-		<Compile Update="Resources\Strings.es.Designer.cs">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>Strings.es.resx</DependentUpon>
 		</Compile>
 		<Compile Update="Resources\Strings.Designer.cs">
 			<DesignTime>True</DesignTime>

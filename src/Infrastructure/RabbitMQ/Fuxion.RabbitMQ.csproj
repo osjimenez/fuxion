@@ -2,15 +2,11 @@
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
-		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-	</PropertyGroup>
 
-	<ItemGroup>
-		<Compile Update="Properties\ProjectAssemblyInfo.cs">
-			<SubType>Code</SubType>
-		</Compile>
-		<Compile Include="..\..\.build\AssemblyInfo.cs" Link="Properties\AssemblyInfo.cs" />
-	</ItemGroup>
+		<Title>FuxionRabbitMQ</Title>
+		<PackageId>Fuxion.RabbitMQ</PackageId>
+		<Description>Fuxion infrastructure for RabbitMQ</Description>
+	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Polly" Version="6.1.2" />
@@ -20,12 +16,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\core\Application\Fuxion.Application.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Compile Update="Properties\ProjectAssemblyInfo.cs">
-			<SubType>Code</SubType>
-		</Compile>
 	</ItemGroup>
 
 </Project>

@@ -2,16 +2,11 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>netstandard2.0</TargetFrameworks>
-		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-		<RootNamespace>Fuxion</RootNamespace>
-	</PropertyGroup>
 
-	<ItemGroup>
-		<Compile Include="..\..\.build\AssemblyInfo.cs" Link="Properties\AssemblyInfo.cs" />
-		<Compile Update="Properties\ProjectAssemblyInfo.cs">
-			<SubType>Code</SubType>
-		</Compile>
-	</ItemGroup>
+		<Title>Fuxion Licensing</Title>
+		<PackageId>Fuxion.Licensing</PackageId>
+		<Description>Fuxion Licensing</Description>
+	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-18618-05" PrivateAssets="All" />

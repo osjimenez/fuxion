@@ -2,29 +2,19 @@
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
-		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+
+		<Title>Fuxion EventStore</Title>
+		<PackageId>Fuxion.EventStore</PackageId>
+		<Description>Fuxion infrastructure for EventStore</Description>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Compile Update="Properties\ProjectAssemblyInfo.cs">
-			<SubType>Code</SubType>
-		</Compile>
-		<Compile Include="..\..\.build\AssemblyInfo.cs" Link="Properties\AssemblyInfo.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="EventStore.Client" Version="5.0.0-rc2" />
+		<PackageReference Include="EventStore.Client" Version="5.0.0-rc3" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-18618-05" PrivateAssets="All" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\core\Application\Fuxion.Application.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Compile Update="Properties\ProjectAssemblyInfo.cs">
-			<SubType>Code</SubType>
-		</Compile>
 	</ItemGroup>
 
 </Project>

@@ -22,7 +22,7 @@ namespace DemoNuget
 				//.RootLevel(Level.All)
 				//.WithConfigurationFile("ja.log4net")
 				//.WithoutDefaultConfigurationFile()
-				.AddAppender(new TestAppender(), new XmlLayout())
+				.AddAppender(new TestAppender(), new Fuxion.Logging.XmlLayout())
 				)));
 
 			ILog log = LogManager.Create("HOLA");

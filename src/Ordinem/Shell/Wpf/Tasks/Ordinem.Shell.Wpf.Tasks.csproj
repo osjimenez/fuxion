@@ -1,0 +1,43 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+	<PropertyGroup>
+		<TargetFramework>netcoreapp3.0</TargetFramework>
+		<UseWPF>true</UseWPF>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Remove="Views\ToDoTaskDetailView.xaml" />
+		<None Remove="Views\ToDoTaskListView.xaml" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="DynamicData.ReactiveUI" Version="6.7.1.2534" />
+		<PackageReference Include="Polly" Version="6.1.2" />
+		<PackageReference Include="Telerik.Windows.Controls.Data.for.Wpf" Version="2019.1.116" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\..\core\Shell\Fuxion.Shell.csproj" />
+		<ProjectReference Include="..\..\..\..\Infrastructure\AutoMapper\Fuxion.AutoMapper.csproj" />
+		<ProjectReference Include="..\..\..\Tasks\Application\Ordinem.Tasks.Application.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="Views\ToDoTaskDetailView.xaml.cs">
+			<SubType>Code</SubType>
+		</Compile>
+		<Compile Update="Views\ToDoTaskListView.xaml.cs">
+			<SubType>Code</SubType>
+		</Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Page Update="Views\ToDoTaskDetailView.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+		<Page Update="Views\ToDoTaskListView.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
+
+</Project>

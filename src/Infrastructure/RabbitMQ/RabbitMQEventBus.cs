@@ -104,7 +104,7 @@ namespace Fuxion.RabbitMQ
 		}
 		public async Task PublishAsync(Event @event)
 		{
-			// TODO - Es aqui donde se debe poner la feature de publicacion ??
+			// TODO - Es aqui donde se debe poner la feature de publicacion ?? no lo sé
 			@event.AddPublication(DateTime.UtcNow);
 			if (!persistentConnection.IsConnected)
 			{
@@ -143,15 +143,10 @@ namespace Fuxion.RabbitMQ
 			}
 		}
 
-		public void RegisterTypes(IEnumerable<string> integrationEventTypeIds)
-		{
-			foreach (var eventTypeId in integrationEventTypeIds)
-				Subscribe(eventTypeId);
-		}
 		public void Subscribe<TEvent>() where TEvent : Event => Subscribe(typeof(TEvent).GetTypeKey());
 		public void Subscribe(Type type) => Subscribe(type.GetTypeKey());
 
-		private void Subscribe(string integrationEventTypeId)
+		private void Subscribe(string eventTypeKey)
 		{
 			if (!persistentConnection.IsConnected && !persistentConnection.TryConnect())
 				throw new RabbitMQConnectionException("Cannot connect to Rabbit MQ");
@@ -159,7 +154,7 @@ namespace Fuxion.RabbitMQ
 			{
 				channel.QueueBind(queue: queueName,
 								  exchange: exchangeName,
-								  routingKey: integrationEventTypeId);
+								  routingKey: eventTypeKey);
 			}
 		}
 	}

@@ -29,7 +29,12 @@ namespace Microsoft.Extensions.DependencyInjection
 		}
 		public static IAutoMapperBuilder AddProfile<T>(this IAutoMapperBuilder me) where T : Profile
 		{
-			me.Services.AddSingleton<Profile, T>();
+			me.Services.AddTransient<Profile, T>();
+			return me;
+		}
+		public static IServiceCollection AddAutoMapperProfile<T>(this IServiceCollection me) where T : Profile
+		{
+			me.AddTransient<Profile, T>();
 			return me;
 		}
 	}
