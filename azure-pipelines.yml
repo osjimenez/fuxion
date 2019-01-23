@@ -1,0 +1,426 @@
+# ASP.NET Core
+# Build and test ASP.NET Core projects targeting .NET Core.
+# Add steps that run tests, create a NuGet package, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
+trigger:
+  branches:
+    include: 
+    - master
+    - develop
+    - feature/*
+
+variables:
+  buildConfiguration: 'Release'
+
+steps:
+- task: gittools.gitversion.gitversion-task.GitVersion@4
+  displayName: GitVersion
+  inputs:
+    updateAssemblyInfo: true
+    updateAssemblyInfoFilename: 'src\.build\AssemblyInfo.cs'
+    preferBundledVersion: false
+
+- task: DotNetCoreCLI@2
+  displayName: 'Restore NuGet packages'
+  inputs:
+    command: restore
+    projects: '**/*.csproj'
+    feedsToUse: config
+    externalFeedCredentials: 'MyGet - Fuxion, NuGet.org, Telerik'
+
+# Fuxion
+- task: BatchScript@1
+  displayName: 'Fuxion - PRE'
+  inputs:
+    filename: src/.build/NuGet/Fuxion/Pre.cmd
+    modifyEnvironment: false
+
+- task: DotNetCoreCLI@2
+  displayName: 'Fuxion - BUILD net45'
+  inputs:
+    projects: '**/Fuxion.csproj'
+    arguments: '--configuration $(BuildConfiguration) --framework net45 --output src/.build/out~/Fuxion/net45'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Fuxion - BUILD net472'
+  inputs:
+    projects: '**/Fuxion.csproj'
+    arguments: '--configuration $(BuildConfiguration) --framework net472 --output src/.build/out~/Fuxion/net472'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Fuxion - BUILD netstandard2.0'
+  inputs:
+    projects: '**/Fuxion.csproj'
+    arguments: '--configuration $(BuildConfiguration) --framework netstandard2.0 --output src/.build/out~/Fuxion/netstandard2.0'
+
+- task: BatchScript@1
+  displayName: 'Fuxion - POS'
+  inputs:
+    filename: src/.build/NuGet/Fuxion/Pos.cmd
+
+# Fuxion.Domain
+- task: BatchScript@1
+  displayName: 'Fuxion.Domain - PRE'
+  inputs:
+    filename: src/.build/NuGet/Fuxion.Domain/Pre.cmd
+    modifyEnvironment: false
+
+- task: DotNetCoreCLI@2
+  displayName: 'Fuxion.Domain - BUILD netstandard2.0'
+  inputs:
+    projects: '**/Fuxion.Domain.csproj'
+    arguments: '--configuration $(BuildConfiguration) --framework netstandard2.0 --output src/.build/out~/Fuxion.Domain/netstandard2.0'
+
+- task: BatchScript@1
+  displayName: 'Fuxion.Domain - POS'
+  inputs:
+    filename: src/.build/NuGet/Fuxion.Domain/Pos.cmd
+
+# Fuxion.Application
+- task: BatchScript@1
+  displayName: 'Fuxion.Application - PRE'
+  inputs:
+    filename: src/.build/NuGet/Fuxion.Application/Pre.cmd
+    modifyEnvironment: false
+
+- task: DotNetCoreCLI@2
+  displayName: 'Fuxion.Application - BUILD netstandard2.0'
+  inputs:
+    projects: '**/Fuxion.Application.csproj'
+    arguments: '--configuration $(BuildConfiguration) --framework netstandard2.0 --output src/.build/out~/Fuxion.Application/netstandard2.0'
+
+- task: BatchScript@1
+  displayName: 'Fuxion.Application - POS'
+  inputs:
+    filename: src/.build/NuGet/Fuxion.Application/Pos.cmd
+
+# Fuxion.Identity
+- task: BatchScript@1
+  displayName: 'Fuxion.Identity - PRE'
+  inputs:
+    filename: src/.build/NuGet/Fuxion.Identity/Pre.cmd
+    modifyEnvironment: false
+
+- task: DotNetCoreCLI@2
+  displayName: 'Fuxion.Identity - BUILD netstandard2.0'
+  inputs:
+    projects: '**/Fuxion.Identity.csproj'
+    arguments: '--configuration $(BuildConfiguration) --framework netstandard2.0 --output src/.build/out~/Fuxion.Identity/netstandard2.0'
+
+- task: BatchScript@1
+  displayName: 'Fuxion.Identity - POS'
+  inputs:
+    filename: src/.build/NuGet/Fuxion.Identity/Pos.cmd
+
+# Fuxion.Licensing
+- task: BatchScript@1
+  displayName: 'Fuxion.Licensing - PRE'
+  inputs:
+    filename: src/.build/NuGet/Fuxion.Licensing/Pre.cmd
+    modifyEnvironment: false
+
+- task: DotNetCoreCLI@2
+  displayName: 'Fuxion.Licensing - BUILD netstandard2.0'
+  inputs:
+    projects: '**/Fuxion.Licensing.csproj'
+    arguments: '--configuration $(BuildConfiguration) --framework netstandard2.0 --output src/.build/out~/Fuxion.Licensing/netstandard2.0'
+
+- task: BatchScript@1
+  displayName: 'Fuxion.Licensing - POS'
+  inputs:
+    filename: src/.build/NuGet/Fuxion.Licensing/Pos.cmd
+
+# Fuxion.AspNet
+- task: BatchScript@1
+  displayName: 'Fuxion.AspNet - PRE'
+  inputs:
+    filename: src/.build/NuGet/Fuxion.AspNet/Pre.cmd
+    modifyEnvironment: false
+
+- task: DotNetCoreCLI@2
+  displayName: 'Fuxion.AspNet - BUILD net45'
+  inputs:
+    projects: '**/Fuxion.AspNet.csproj'
+    arguments: '--configuration $(BuildConfiguration) --framework net45 --output src/.build/out~/Fuxion.AspNet/net45'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Fuxion.AspNet - BUILD net472'
+  inputs:
+    projects: '**/Fuxion.AspNet.csproj'
+    arguments: '--configuration $(BuildConfiguration) --framework net472 --output src/.build/out~/Fuxion.AspNet/net472'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Fuxion.AspNet - BUILD netstandard2.0'
+  inputs:
+    projects: '**/Fuxion.AspNet.csproj'
+    arguments: '--configuration $(BuildConfiguration) --framework netstandard2.0 --output src/.build/out~/Fuxion.AspNet/netstandard2.0'
+
+- task: BatchScript@1
+  displayName: 'Fuxion.AspNet - POS'
+  inputs:
+    filename: src/.build/NuGet/Fuxion.AspNet/Pos.cmd
+
+# Fuxion.AspNetCore
+- task: BatchScript@1
+  displayName: 'Fuxion.AspNetCore - PRE'
+  inputs:
+    filename: src/.build/NuGet/Fuxion.AspNetCore/Pre.cmd
+    modifyEnvironment: false
+
+- task: DotNetCoreCLI@2
+  displayName: 'Fuxion.AspNetCore - BUILD netcoreapp3.0'
+  inputs:
+    projects: '**/Fuxion.AspNetCore.csproj'
+    arguments: '--configuration $(BuildConfiguration) --framework netcoreapp3.0 --output src/.build/out~/Fuxion.AspNetCore/netcoreapp3.0'
+
+- task: BatchScript@1
+  displayName: 'Fuxion.AspNetCore - POS'
+  inputs:
+    filename: src/.build/NuGet/Fuxion.AspNetCore/Pos.cmd
+
+# Fuxion.AutoMapper
+- task: BatchScript@1
+  displayName: 'Fuxion.AutoMapper - PRE'
+  inputs:
+    filename: src/.build/NuGet/Fuxion.AutoMapper/Pre.cmd
+    modifyEnvironment: false
+
+- task: DotNetCoreCLI@2
+  displayName: 'Fuxion.AutoMapper - BUILD netstandard2.0'
+  inputs:
+    projects: '**/Fuxion.AutoMapper.csproj'
+    arguments: '--configuration $(BuildConfiguration) --framework netstandard2.0 --output src/.build/out~/Fuxion.AutoMapper/netstandard2.0'
+
+- task: BatchScript@1
+  displayName: 'Fuxion.AutoMapper - POS'
+  inputs:
+    filename: src/.build/NuGet/Fuxion.AutoMapper/Pos.cmd
+
+# Fuxion.EntityFramework
+- task: BatchScript@1
+  displayName: 'Fuxion.EntityFramework - PRE'
+  inputs:
+    filename: src/.build/NuGet/Fuxion.EntityFramework/Pre.cmd
+    modifyEnvironment: false
+
+- task: DotNetCoreCLI@2
+  displayName: 'Fuxion.EntityFramework - BUILD net45'
+  inputs:
+    projects: '**/Fuxion.EntityFramework.csproj'
+    arguments: '--configuration $(BuildConfiguration) --framework net45 --output src/.build/out~/Fuxion.EntityFramework/net45'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Fuxion.EntityFramework - BUILD net472'
+  inputs:
+    projects: '**/Fuxion.EntityFramework.csproj'
+    arguments: '--configuration $(BuildConfiguration) --framework net472 --output src/.build/out~/Fuxion.EntityFramework/net472'
+
+- task: BatchScript@1
+  displayName: 'Fuxion.EntityFramework - POS'
+  inputs:
+    filename: src/.build/NuGet/Fuxion.EntityFramework/Pos.cmd
+
+# Fuxion.EntityFrameworkCore
+- task: BatchScript@1
+  displayName: 'Fuxion.EntityFrameworkCore - PRE'
+  inputs:
+    filename: src/.build/NuGet/Fuxion.EntityFrameworkCore/Pre.cmd
+    modifyEnvironment: false
+
+- task: DotNetCoreCLI@2
+  displayName: 'Fuxion.EntityFrameworkCore - BUILD netstandard2.0'
+  inputs:
+    projects: '**/Fuxion.EntityFrameworkCore.csproj'
+    arguments: '--configuration $(BuildConfiguration) --framework netstandard2.0 --output src/.build/out~/Fuxion.EntityFrameworkCore/netstandard2.0'
+
+- task: BatchScript@1
+  displayName: 'Fuxion.EntityFrameworkCore - POS'
+  inputs:
+    filename: src/.build/NuGet/Fuxion.EntityFrameworkCore/Pos.cmd
+
+# Fuxion.EventStore
+- task: BatchScript@1
+  displayName: 'Fuxion.EventStore - PRE'
+  inputs:
+    filename: src/.build/NuGet/Fuxion.EventStore/Pre.cmd
+    modifyEnvironment: false
+
+- task: DotNetCoreCLI@2
+  displayName: 'Fuxion.EventStore - BUILD netstandard2.0'
+  inputs:
+    projects: '**/Fuxion.EventStore.csproj'
+    arguments: '--configuration $(BuildConfiguration) --framework netstandard2.0 --output src/.build/out~/Fuxion.EventStore/netstandard2.0'
+
+- task: BatchScript@1
+  displayName: 'Fuxion.EventStore - POS'
+  inputs:
+    filename: src/.build/NuGet/Fuxion.EventStore/Pos.cmd
+
+# Fuxion.Log4net
+- task: BatchScript@1
+  displayName: 'Fuxion.Log4net - PRE'
+  inputs:
+    filename: src/.build/NuGet/Fuxion.Log4net/Pre.cmd
+    modifyEnvironment: false
+
+- task: DotNetCoreCLI@2
+  displayName: 'Fuxion.Log4net - BUILD net45'
+  inputs:
+    projects: '**/Fuxion.Log4net.csproj'
+    arguments: '--configuration $(BuildConfiguration) --framework net45 --output src/.build/out~/Fuxion.Log4net/net45'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Fuxion.Log4net - BUILD net472'
+  inputs:
+    projects: '**/Fuxion.Log4net.csproj'
+    arguments: '--configuration $(BuildConfiguration) --framework net472 --output src/.build/out~/Fuxion.Log4net/net472'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Fuxion.Log4net - BUILD netstandard2.0'
+  inputs:
+    projects: '**/Fuxion.Log4net.csproj'
+    arguments: '--configuration $(BuildConfiguration) --framework netstandard2.0 --output src/.build/out~/Fuxion.Log4net/netstandard2.0'
+
+- task: BatchScript@1
+  displayName: 'Fuxion.Log4net - POS'
+  inputs:
+    filename: src/.build/NuGet/Fuxion.Log4net/Pos.cmd
+
+# Fuxion.MongoDB
+- task: BatchScript@1
+  displayName: 'Fuxion.MongoDB - PRE'
+  inputs:
+    filename: src/.build/NuGet/Fuxion.MongoDB/Pre.cmd
+    modifyEnvironment: false
+
+- task: DotNetCoreCLI@2
+  displayName: 'Fuxion.MongoDB - BUILD netstandard2.0'
+  inputs:
+    projects: '**/Fuxion.MongoDB.csproj'
+    arguments: '--configuration $(BuildConfiguration) --framework netstandard2.0 --output src/.build/out~/Fuxion.MongoDB/netstandard2.0'
+
+- task: BatchScript@1
+  displayName: 'Fuxion.MongoDB - POS'
+  inputs:
+    filename: src/.build/NuGet/Fuxion.MongoDB/Pos.cmd
+
+# Fuxion.RabbitMQ
+- task: BatchScript@1
+  displayName: 'Fuxion.RabbitMQ - PRE'
+  inputs:
+    filename: src/.build/NuGet/Fuxion.RabbitMQ/Pre.cmd
+    modifyEnvironment: false
+
+- task: DotNetCoreCLI@2
+  displayName: 'Fuxion.RabbitMQ - BUILD netstandard2.0'
+  inputs:
+    projects: '**/Fuxion.RabbitMQ.csproj'
+    arguments: '--configuration $(BuildConfiguration) --framework netstandard2.0 --output src/.build/out~/Fuxion.RabbitMQ/netstandard2.0'
+
+- task: BatchScript@1
+  displayName: 'Fuxion.RabbitMQ - POS'
+  inputs:
+    filename: src/.build/NuGet/Fuxion.RabbitMQ/Pos.cmd
+
+# Fuxion.SimpleInjector
+- task: BatchScript@1
+  displayName: 'Fuxion.SimpleInjector - PRE'
+  inputs:
+    filename: src/.build/NuGet/Fuxion.SimpleInjector/Pre.cmd
+    modifyEnvironment: false
+
+- task: DotNetCoreCLI@2
+  displayName: 'Fuxion.SimpleInjector - BUILD netstandard2.0'
+  inputs:
+    projects: '**/Fuxion.SimpleInjector.csproj'
+    arguments: '--configuration $(BuildConfiguration) --framework netstandard2.0 --output src/.build/out~/Fuxion.SimpleInjector/netstandard2.0'
+
+- task: BatchScript@1
+  displayName: 'Fuxion.SimpleInjector - POS'
+  inputs:
+    filename: src/.build/NuGet/Fuxion.SimpleInjector/Pos.cmd
+
+# Fuxion.Windows
+- task: BatchScript@1
+  displayName: 'Fuxion.Windows - PRE'
+  inputs:
+    filename: src/.build/NuGet/Fuxion.Windows/Pre.cmd
+    modifyEnvironment: false
+
+- task: DotNetCoreCLI@2
+  displayName: 'Fuxion.Windows - BUILD net45'
+  inputs:
+    projects: '**/Fuxion.Windows.csproj'
+    arguments: '--configuration $(BuildConfiguration) --framework net45 --output src/.build/out~/Fuxion.Windows/net45'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Fuxion.Windows - BUILD net472'
+  inputs:
+    projects: '**/Fuxion.Windows.csproj'
+    arguments: '--configuration $(BuildConfiguration) --framework net472 --output src/.build/out~/Fuxion.Windows/net472'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Fuxion.Windows - BUILD netcoreapp3.0'
+  inputs:
+    projects: '**/Fuxion.Windows.csproj'
+    arguments: '--configuration $(BuildConfiguration) --framework netcoreapp3.0 --output src/.build/out~/Fuxion.Windows/netcoreapp3.0'
+
+- task: BatchScript@1
+  displayName: 'Fuxion.Windows - POS'
+  inputs:
+    filename: src/.build/NuGet/Fuxion.Windows/Pos.cmd
+
+# Fuxion.Shell
+- task: BatchScript@1
+  displayName: 'Fuxion.Shell - PRE'
+  inputs:
+    filename: src/.build/NuGet/Fuxion.Shell/Pre.cmd
+    modifyEnvironment: false
+
+- task: DotNetCoreCLI@2
+  displayName: 'Fuxion.Shell - BUILD netcoreapp3.0'
+  inputs:
+    projects: '**/Fuxion.Shell.csproj'
+    arguments: '--configuration $(BuildConfiguration) --framework netcoreapp3.0 --output src/.build/out~/Fuxion.Shell/netcoreapp3.0'
+
+- task: BatchScript@1
+  displayName: 'Fuxion.Shell - POS'
+  inputs:
+    filename: src/.build/NuGet/Fuxion.Shell/Pos.cmd
+
+# NuGet
+- task: NuGetCommand@2
+  displayName: 'NuGet pack'
+  inputs:
+    command: pack
+    packagesToPack: '**/.build/NuGet/**/*.nuspec'
+    versioningScheme: byEnvVar
+    versionEnvVar: 'GITVERSION_FULLSEMVER'
+
+- task: NuGetCommand@2
+  displayName: 'Push to MyGet'
+  inputs:
+    command: push
+    feedsToUse: config
+    externalFeedCredentials: 'MyGet - Fuxion'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
+    nuGetFeedType: external
+    publishFeedCredentials: 'MyGet - Fuxion'
+
+- task: NuGetCommand@2
+  displayName: 'Push to NuGet.org'
+  inputs:
+    command: push
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
+    nuGetFeedType: external
+    publishFeedCredentials: NuGet.org
+  condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop')))
+
+
+
+
+
+
+#- script: dotnet build --configuration $(buildConfiguration)
+#  displayName: 'dotnet build $(buildConfiguration)'

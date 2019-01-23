@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<AssemblyName>Fuxion.Domain</AssemblyName>
+		<LangVersion>7.3</LangVersion>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Compile Update="Properties\ProjectAssemblyInfo.cs">
+			<SubType>Code</SubType>
+		</Compile>
+		<Compile Include="..\..\.build\AssemblyInfo.cs" Link="Properties\AssemblyInfo.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-18618-05" PrivateAssets="All" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Fuxion\Fuxion.csproj" />
+	</ItemGroup>
+
+</Project>

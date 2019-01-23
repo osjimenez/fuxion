@@ -33,15 +33,15 @@ namespace DemoWpf
     {
         protected override void OnStartup(StartupEventArgs e)
         {
-			var test = new ExceptionTest();
-			test.LaunchException();
+			//var test = new ExceptionTest();
+			//test.LaunchException();
 
 			Container c = new Container();
 
 			c.Register<ILogFactory>(() => new Log4netFactory());
 
-			c.RegisterSingleton<ILicenseStore>(new JsonFileLicenseStore(new[] { typeof(LicenseMock) }));
-            c.RegisterSingleton<ILicenseProvider>(new LicenseProviderMock());
+			c.RegisterInstance<ILicenseStore>(new JsonFileLicenseStore(new[] { typeof(LicenseMock) }));
+            c.RegisterInstance<ILicenseProvider>(new LicenseProviderMock());
             c.Register<IHardwareIdProvider, HardwareIdHelper>();
             c.RegisterSingleton<LicensingManager>();
 			c.Verify();
@@ -52,7 +52,7 @@ namespace DemoWpf
 			//new TimeProvider().Show();
 			//new ConvertersWindow().Show();
 			//new ValidationWindow().Show();
-			//new UnhandledExceptionWindowTest().Show();
+			new UnhandledExceptionWindowTest().Show();
 			//new RepositoriesWindow().Show();
 			//new AutoGridTest().Show();
 			//new IDispatchableTest().Show();
@@ -61,7 +61,7 @@ namespace DemoWpf
 			//new ServiceWindow().Show();
 			//new ClientWindow().Show();
 
-			new LogWindow().Show();
+			//new LogWindow().Show();
 		}
     }
 	public class HardwareIdHelper : IHardwareIdProvider

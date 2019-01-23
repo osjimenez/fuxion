@@ -18,6 +18,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using MongoDB.Driver;
 using LiteDB;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DemoWpf
 {
@@ -46,24 +47,28 @@ namespace DemoWpf
                 log.Info("Hola");
             });
 
+			//IServiceCollection sc;
+			//sc.AddLogging(_ => _
+			//	.AddConsole()
+			//	.AddDebug());
 
-            ILoggerFactory loggerFactory = new LoggerFactory()
-                .AddConsole(true)
-                .AddDebug();
-            ILogger logger = loggerFactory.CreateLogger<LogWindow>();
-            using (logger.BeginScope("SCOPE", 1, DateTime.Now))
-            {
-                logger.LogInformation(
-                  "This is a test of the emergency broadcast system.");
-            }
-            using (logger.BeginScope<string>("SCOPE2"))
-            {
-                logger.LogInformation(
-                  "This is a test of the emergency broadcast system.");
-            }
-            logger.LogInformation("Otro");
-            ConsoleLoggerSettings cls = new ConsoleLoggerSettings();
-            cls.Switches.Add("o", LogLevel.Information);
+   //         ILoggerFactory loggerFactory = new LoggerFactory()
+   //             .AddConsole(true)
+   //             .AddDebug();
+   //         ILogger logger = loggerFactory.CreateLogger<LogWindow>();
+   //         using (logger.BeginScope("SCOPE", 1, DateTime.Now))
+   //         {
+   //             logger.LogInformation(
+   //               "This is a test of the emergency broadcast system.");
+   //         }
+   //         using (logger.BeginScope<string>("SCOPE2"))
+   //         {
+   //             logger.LogInformation(
+   //               "This is a test of the emergency broadcast system.");
+   //         }
+   //         logger.LogInformation("Otro");
+   //         ConsoleLoggerSettings cls = new ConsoleLoggerSettings();
+   //         cls.Switches.Add("o", LogLevel.Information);
         }
 
         string mongodPath = @"G:\Dev\Fuxion\MongoDB\bin\mongod.exe";

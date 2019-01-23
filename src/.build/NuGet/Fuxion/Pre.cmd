@@ -1,4 +1,7 @@
-mkdir src\.build\NuGet\Fuxion\out~
-rmdir src\.build\NuGet\Fuxion\out~ /s /q
-mkdir src\.build\NuGet\Fuxion\nuspec\lib
-rmdir src\.build\NuGet\Fuxion\nuspec\lib /s /q
+rem Clean output folder
+mkdir src\.build\out~\Fuxion
+rmdir src\.build\out~\Fuxion /s /q
+
+rem Clean NuGet folder
+mkdir src\.build\Nuget\Fuxion\nuspec\lib
+rmdir src\.build\Nuget\Fuxion\nuspec\lib /s /q

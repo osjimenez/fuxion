@@ -1,0 +1,53 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+	<PropertyGroup>
+		<TargetFramework>netcoreapp3.0</TargetFramework>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<UseWPF>true</UseWPF>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <None Remove="Views\ShellWindow.xaml" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Include="..\..\.build\AssemblyInfo.cs" Link="Properties\AssemblyInfo.cs" />
+		<Compile Update="Properties\ProjectAssemblyInfo.cs">
+			<SubType>Code</SubType>
+		</Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.0.0-preview.18572.1" />
+		<PackageReference Include="ReactiveUI.WPF" Version="10.0.0-preview.3" />
+		<PackageReference Include="Telerik.Windows.Controls.Docking.for.Wpf" Version="2019.1.116" />
+		<PackageReference Include="Telerik.Windows.Controls.GridView.for.Wpf" Version="2019.1.116" />
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-18618-05" PrivateAssets="All" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Fuxion\Fuxion.csproj" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<EmbeddedResource Update="Resources\Strings.resx">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>Strings.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+		<Compile Update="Resources\Strings.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Strings.resx</DependentUpon>
+		</Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Page Update="Views\ShellWindow.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+		<Compile Update="Views\ShellWindow.xaml.cs">
+			<DependentUpon>ShellWindow.xaml</DependentUpon>
+		</Compile>
+	</ItemGroup>
+
+</Project>

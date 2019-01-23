@@ -1,0 +1,26 @@
+﻿<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+	<metadata>
+		<id>Fuxion.Application</id>
+		<version>$version$</version>
+		<title>Fuxion Application</title>
+		<authors>Oscar Jimenez</authors>
+		<description>Fuxion library for DDD</description>
+		<releaseNotes />
+		<summary/>
+		<language/>
+		<iconUrl>https://github.com/osjimenez/Fuxion/raw/master/res/logo/fuxion.png</iconUrl>
+		<projectUrl>https://github.com/osjimenez/Fuxion</projectUrl>
+		<licenseUrl>https://github.com/osjimenez/Fuxion/raw/master/LICENSE</licenseUrl>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<dependencies>
+			<group targetFramework="netstandard2.0">
+				<dependency id="Fuxion.Domain" version="$version$" />
+				<dependency id="Microsoft.Extensions.DependencyInjection" version="3.0.0-preview.18572.1" />
+			</group>
+		</dependencies>
+		<references/>
+		<frameworkAssemblies/>
+		<tags/>
+	</metadata>
+</package>

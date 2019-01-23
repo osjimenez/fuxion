@@ -20,6 +20,9 @@
 			<group targetFramework="net472">
 				<dependency id="Fuxion" version="$version$" />
 			</group>
+			<group targetFramework="netcoreapp3.0">
+				<dependency id="Fuxion" version="$version$" />
+			</group>
 		</dependencies>
 		<references/>
 		<frameworkAssemblies/>

@@ -1,0 +1,43 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+	<PropertyGroup>
+		<TargetFrameworks>net45;net472;netcoreapp3.0</TargetFrameworks>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<UseWpf>True</UseWpf>
+		<RootNamespace>Fuxion.Windows.Controls</RootNamespace>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Compile Include="..\..\.build\AssemblyInfo.cs" Link="Properties\AssemblyInfo.cs" />
+		<Compile Update="Properties\ProjectAssemblyInfo.cs">
+			<SubType>Code</SubType>
+		</Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-18618-05" PrivateAssets="All" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Core\Fuxion\Fuxion.csproj" />
+		<ProjectReference Include="..\Windows\Fuxion.Windows.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Reference Include="PresentationCore" />
+		<Reference Include="PresentationFramework" />
+		<Reference Include="System.ComponentModel.DataAnnotations" />
+		<Reference Include="WindowsBase" />
+		<Reference Include="System.Xaml" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="UnhandledExceptionWindow.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</None>
+		<Compile Update="UnhandledExceptionWindow.xaml.cs">
+			<DependentUpon>UnhandledExceptionWindow.xaml</DependentUpon>
+		</Compile>
+	</ItemGroup>
+
+</Project>
