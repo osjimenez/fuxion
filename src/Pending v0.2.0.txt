@@ -2,6 +2,7 @@
 - Comprobar que funciona en Xamarin
 
 SHELL
+- Traducir los recursos por defecto a ingles y poner otros para castellano
 - Hacer un panel de cada tipo en el proyecto CoreShell
 	- Panel solo UserControl
 	- Panel UserControl + ViewModel

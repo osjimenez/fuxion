@@ -32,9 +32,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Update="UnhandledExceptionWindow.xaml">
+		<Page Update="UnhandledExceptionWindow.xaml">
 			<Generator>MSBuild:Compile</Generator>
-		</None>
+		</Page>
 		<Compile Update="UnhandledExceptionWindow.xaml.cs">
 			<DependentUpon>UnhandledExceptionWindow.xaml</DependentUpon>
 		</Compile>

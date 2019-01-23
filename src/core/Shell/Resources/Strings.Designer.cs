@@ -19,10 +19,10 @@ namespace Fuxion.Shell.Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class Strings {
+    internal class Strings {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace Fuxion.Shell.Resources {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
+        internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Fuxion.Shell.Resources.Strings", typeof(Strings).Assembly);
@@ -51,7 +51,7 @@ namespace Fuxion.Shell.Resources {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Globalization.CultureInfo Culture {
+        internal static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace Fuxion.Shell.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Identificador.
         /// </summary>
-        public static string Id {
+        internal static string Id {
             get {
                 return ResourceManager.GetString("Id", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace Fuxion.Shell.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Identificadores.
         /// </summary>
-        public static string Ids {
+        internal static string Ids {
             get {
                 return ResourceManager.GetString("Ids", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace Fuxion.Shell.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Nombre.
         /// </summary>
-        public static string Name {
+        internal static string Name {
             get {
                 return ResourceManager.GetString("Name", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace Fuxion.Shell.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Nombres.
         /// </summary>
-        public static string Names {
+        internal static string Names {
             get {
                 return ResourceManager.GetString("Names", resourceCulture);
             }
@@ -99,7 +99,7 @@ namespace Fuxion.Shell.Resources {
         /// <summary>
         ///   Looks up a localized string similar to El campo &apos;{0}&apos; es obligatorio.
         /// </summary>
-        public static string Required {
+        internal static string Required {
             get {
                 return ResourceManager.GetString("Required", resourceCulture);
             }
@@ -108,7 +108,7 @@ namespace Fuxion.Shell.Resources {
         /// <summary>
         ///   Looks up a localized string similar to &apos;{0}&apos; no puede tener más de &apos;{1}&apos; caracteres.
         /// </summary>
-        public static string StringLength {
+        internal static string StringLength {
             get {
                 return ResourceManager.GetString("StringLength", resourceCulture);
             }
