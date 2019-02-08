@@ -18,9 +18,7 @@ steps:
 - task: gittools.gitversion.gitversion-task.GitVersion@4 # GitVersion
   displayName: GitVersion
   inputs:
-    updateAssemblyInfo: true
-    updateAssemblyInfoFilename: 'src\.build\AssemblyInfo.cs'
-    preferBundledVersion: false
+    preferBundledVersion: true
 
 - task: DotNetCoreCLI@2 # Build and pack
   displayName: 'Build and pack'

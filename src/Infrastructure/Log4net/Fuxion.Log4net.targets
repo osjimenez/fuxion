@@ -1,6 +1,6 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<Target Name="Fuxion-Log4net-Rename-Config-File" BeforeTargets="BeforeBuild">
-		<Copy SourceFiles="$(MSBuildThisFileDirectory)\..\content\Log4net.config" 
+		<Copy SourceFiles="$(MSBuildThisFileDirectory)\..\content\log4net.config" 
 			  DestinationFiles="$(MSBuildProjectDirectory)\$(AssemblyName).log4net" 
 			  Condition="!Exists('$(MSBuildProjectDirectory)\$(AssemblyName).log4net')"
 			  ContinueOnError="true" />

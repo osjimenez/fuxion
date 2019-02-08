@@ -10,6 +10,7 @@ LOGING
 - Que funcione con netstandard2.0/core3.0/net48
 - Basado en Microsoft.Extensions.Loggin
 - Que funcione con log4net
+- Que funcione con DI
 
 CORE
 - Ver si necesito todas las dependencias

@@ -14,6 +14,6 @@
 
 		<IncludeSymbols>true</IncludeSymbols>
 
-		<PackageOutputPath>..\..\..\..\NugetOut</PackageOutputPath>
+		<PackageOutputPath>..\..\..\..\PackOutput</PackageOutputPath>
 	</PropertyGroup>
 </Project>

@@ -458,7 +458,7 @@ namespace Fuxion.Logging
 
 #endregion // Override implementation of AppenderSkeleton
 
-#region Public Static Fields
+		#region Public Static Fields
 
 		/// <summary>
 		/// The <see cref="ColoredConsoleAppender.Target"/> to use when writing to the Console 
@@ -484,9 +484,9 @@ namespace Fuxion.Logging
 		/// </remarks>
 		public const string ConsoleError = "Console.Error";
 
-#endregion // Public Static Fields
+		#endregion // Public Static Fields
 
-#region Private Instances Fields
+		#region Private Instances Fields
 
 		/// <summary>
 		/// Flag to write output to the error stream rather than the standard output stream
@@ -508,9 +508,9 @@ namespace Fuxion.Logging
 		/// </remarks>
 		private System.IO.StreamWriter m_consoleOutputWriter = null;
 
-#endregion // Private Instances Fields
+		#endregion // Private Instances Fields
 
-#region Win32 Methods
+		#region Win32 Methods
 
 		[DllImport("Kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
 		private static extern int GetConsoleOutputCP();
@@ -567,9 +567,9 @@ namespace Fuxion.Logging
 			public COORD dwMaximumWindowSize;
 		}
 
-#endregion // Win32 Methods
+		#endregion // Win32 Methods
 
-#region LevelColors LevelMapping Entry
+		#region LevelColors LevelMapping Entry
 
 		/// <summary>
 		/// A class to act as a mapping between the level that a logging call is made at and
@@ -640,6 +640,6 @@ namespace Fuxion.Logging
 			}
 		}
 
-#endregion // LevelColors LevelMapping Entry
+		#endregion // LevelColors LevelMapping Entry
 	}
 }
