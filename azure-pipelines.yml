@@ -37,6 +37,7 @@ steps:
     packagesToPush: '$(Build.ArtifactStagingDirectory)/*.symbols.nupkg'
     nuGetFeedType: external
     publishFeedCredentials: 'MyGet - Fuxion'
+    condition: false
 
 - task: NuGetCommand@2 # Push to NuGet.org
   displayName: 'Push to NuGet.org'
@@ -45,4 +46,4 @@ steps:
     packagesToPush: '$(Build.ArtifactStagingDirectory)/*.symbols.nupkg'
     nuGetFeedType: external
     publishFeedCredentials: NuGet.org
-  condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop')))
+    condition: and(false, succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop')))
