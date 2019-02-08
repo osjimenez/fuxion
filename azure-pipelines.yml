@@ -40,9 +40,10 @@ steps:
 
 - task: NuGetCommand@2 # Push to NuGet.org
   displayName: 'Push to NuGet.org'
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
   inputs:
     command: push
     packagesToPush: '$(Build.ArtifactStagingDirectory)/*.symbols.nupkg'
     nuGetFeedType: external
     publishFeedCredentials: NuGet.org
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  
