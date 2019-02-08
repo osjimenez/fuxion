@@ -17,20 +17,16 @@ namespace Fuxion.AspNetCore.Controllers
 			this.commandDispatcher = commandDispatcher;
 			this.typeKeyDirectory = typeKeyDirectory;
 		}
-		ICommandDispatcher commandDispatcher;
-		TypeKeyDirectory typeKeyDirectory;
+
+		readonly ICommandDispatcher commandDispatcher;
+		readonly TypeKeyDirectory typeKeyDirectory;
 		[HttpPost]
-		public async Task<IActionResult> Post([FromBody] dynamic body)
+		public async Task<IActionResult> Post([FromBody] CommandPod pod)
 		{
-			if (body is JObject jo)
-			{
-				var pod = jo.ToObject<CommandPod>();
-				if (!typeKeyDirectory.ContainsKey(pod.PayloadKey)) return BadRequest($"Command '{pod.PayloadKey}' is not expected");
-				var com = pod.WithTypeKeyDirectory(typeKeyDirectory);
-				await commandDispatcher.DispatchAsync(com);
-				return Ok();
-			}
-			return BadRequest("Body couldn't be parsed as JSON");
+			if (!typeKeyDirectory.ContainsKey(pod.PayloadKey)) return BadRequest($"Command '{pod.PayloadKey}' is not expected");
+			var com = pod.WithTypeKeyDirectory(typeKeyDirectory);
+			await commandDispatcher.DispatchAsync(com);
+			return Ok();
 		}
 	}
 }

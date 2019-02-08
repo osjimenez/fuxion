@@ -1,0 +1,35 @@
+- Comprobar que funciona en Xamarin
+
+ENTITY FRAMEWORK CORE
+- Implementar los atributos de traking para los timestamp de creacion y modificacion. Soft-deletes ??
+
+- Idenpendizar la subscripcion de eventos de la implementacion de RabbitMQ. En algun lugar se debe coger IEventSubscriber por DI y suscribir los eventos ahí.
+- Crear InMemoryEventSubscriber y InMemoryEventPublisher que nos permita ejecutar todo en un mismo proceso, será util para testing.
+
+LOGING
+- Que funcione con netstandard2.0/core3.0/net48
+- Basado en Microsoft.Extensions.Loggin
+- Que funcione con log4net
+- Que funcione con DI
+
+CORE
+- Ver si necesito todas las dependencias
+
+SHELL
+- Crear recursos XAML en proyectos de módulos
+- Decidir que ViewModels se quedan
+- Crear un sistema de cache centralizado para las dvo
+- Hacer las consultas (fitlros, pagging, etc) server-side
+- Control de errores
+
+IDENTITY
+- Hacer un microservicio y un container de Identity Service
+
+ORDINEM
+- Definir arquitectura y casos de uso para la aplicación de ejemplo
+
+MONGODB
+- Hacer un IEventPublisher e IEventSubscriber
+	Escuchar eventos: http://mongodb.github.io/mongo-csharp-driver/2.7/reference/driver/change_streams/
+- Hacer un IEventStorage e ISnapshotStorage
+- Hacer un IRepository<TAggregate>

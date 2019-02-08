@@ -15,7 +15,8 @@ namespace Fuxion.Application.Events
 		{
 			this.serviceProvider = serviceProvider;
 		}
-		IServiceProvider serviceProvider;
+
+		readonly IServiceProvider serviceProvider;
 		public async Task DispatchAsync(Event @event)
 		{
 			var handlers = (IEnumerable)serviceProvider.GetServices(typeof(IEventHandler<>).MakeGenericType(@event.GetType()));

@@ -1,0 +1,49 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>netcoreapp3.0</TargetFramework>
+		<UseWPF>true</UseWPF>
+		<StartupObject>Ordinem.Shell.Wpf.Launcher.App</StartupObject>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <None Remove="Views\AboutPanel.xaml" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.0-preview.19074.2" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.0.0-preview.19074.2" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.0.0-preview.19074.2" />
+		<PackageReference Include="Serilog.Extensions.Logging" Version="2.0.2" />
+		<PackageReference Include="Serilog.Sinks.Seq" Version="4.0.1-dev-00159" />
+		<PackageReference Include="Telerik.Windows.Themes.Fluent.for.Wpf" Version="2019.1.116" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\..\..\Infrastructure\Log4net\Fuxion.Log4net.csproj" />
+	  <ProjectReference Include="..\Tasks\Ordinem.Shell.Wpf.Tasks.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="App.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</None>
+		<None Update="log4net.config">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<Compile Update="App.xaml.cs">
+			<DependentUpon>App.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Views\AboutPanel.xaml.cs">
+		  <DependentUpon>AboutPanel.xaml</DependentUpon>
+		</Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Page Update="Views\AboutPanel.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
+	</ItemGroup>
+
+</Project>

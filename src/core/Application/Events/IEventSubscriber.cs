@@ -6,7 +6,6 @@ namespace Fuxion.Application.Events
 {
 	public interface IEventSubscriber
 	{
-		void RegisterTypes(IEnumerable<string> integrationEventTypeIds);
 		void Subscribe<TEvent>() where TEvent : Event;
 	}
 }

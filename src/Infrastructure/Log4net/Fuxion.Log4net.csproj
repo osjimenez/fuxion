@@ -1,17 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+	<Import Project="Fuxion.Log4net.targets" />
+
 	<PropertyGroup>
 		<TargetFrameworks>netstandard2.0;net45;net472</TargetFrameworks>
-		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-		<RootNamespace>Fuxion</RootNamespace>
-	</PropertyGroup>
 
-	<ItemGroup>
-		<Compile Include="..\..\.build\AssemblyInfo.cs" Link="Properties\AssemblyInfo.cs" />
-		<Compile Update="Properties\ProjectAssemblyInfo.cs">
-			<SubType>Code</SubType>
-		</Compile>
-	</ItemGroup>
+		<Title>Fuxion Log4net</Title>
+		<PackageId>Fuxion.Log4net</PackageId>
+		<Description>Fuxion library for Log4net logging.</Description>
+	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="log4net" Version="2.0.8" />
@@ -23,12 +20,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Update="install.ps1">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="log4net.config">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
+		<None Include="log4net.config" Pack="true" />
+		<None Include="Fuxion.Log4net.targets" Pack="true" PackagePath="build" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+		<PackageReference Include="System.Text.Encoding.CodePages">
+			<Version>4.5.1</Version>
+		</PackageReference>
 	</ItemGroup>
 
 </Project>

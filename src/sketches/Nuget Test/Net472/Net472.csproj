@@ -37,14 +37,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Fuxion, Version=0.1.10.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Fuxion.0.1.10-beta.57\lib\net472\Fuxion.dll</HintPath>
+    <Reference Include="Fuxion, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Fuxion.0.2.0-alpha-test.47\lib\net472\Fuxion.dll</HintPath>
     </Reference>
-    <Reference Include="Fuxion.Log4net, Version=0.1.10.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Fuxion.Log4net.0.1.10-beta.57\lib\net472\Fuxion.Log4net.dll</HintPath>
-    </Reference>
-    <Reference Include="Fuxion.Windows, Version=0.1.10.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Fuxion.Windows.0.1.10-beta.57\lib\net472\Fuxion.Windows.dll</HintPath>
+    <Reference Include="Fuxion.Log4net, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Fuxion.Log4net.0.2.0-alpha-test.47\lib\net472\Fuxion.Log4net.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
@@ -54,14 +51,21 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Annotations, Version=4.2.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\System.ComponentModel.Annotations.4.6.0-preview.18571.3\lib\net461\System.ComponentModel.Annotations.dll</HintPath>
+      <HintPath>..\..\..\packages\System.ComponentModel.Annotations.4.6.0-preview.19073.11\lib\net461\System.ComponentModel.Annotations.dll</HintPath>
     </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Drawing.Common, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\System.Drawing.Common.4.6.0-preview.18571.3\lib\net461\System.Drawing.Common.dll</HintPath>
+    <Reference Include="System.Drawing.Common, Version=4.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\System.Drawing.Common.4.5.1\lib\net461\System.Drawing.Common.dll</HintPath>
     </Reference>
+    <Reference Include="System.IdentityModel" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.Discovery" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -111,9 +115,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="log4net.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Include="Log4net.config" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
@@ -126,7 +128,11 @@
     <None Include="App.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="Fuxion-Log4net-Rename-Config-File" BeforeTargets="AfterBuild">
-    <Move SourceFiles="$(OutputPath)log4net.config" DestinationFiles="$(OutputPath)$(AssemblyName).exe.log4net" ContinueOnError="true" />
+  <Import Project="..\..\..\packages\Fuxion.Log4net.0.2.0-alpha-test.47\build\Fuxion.Log4net.targets" Condition="Exists('..\..\..\packages\Fuxion.Log4net.0.2.0-alpha-test.47\build\Fuxion.Log4net.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\..\packages\Fuxion.Log4net.0.2.0-alpha-test.47\build\Fuxion.Log4net.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Fuxion.Log4net.0.2.0-alpha-test.47\build\Fuxion.Log4net.targets'))" />
   </Target>
 </Project>

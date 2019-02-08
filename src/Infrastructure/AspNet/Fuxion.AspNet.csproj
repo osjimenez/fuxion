@@ -2,16 +2,11 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>netstandard2.0;net45;net472</TargetFrameworks>
-		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-		<RootNamespace>Fuxion.AspNet</RootNamespace>
-	</PropertyGroup>
 
-	<ItemGroup>
-		<Compile Include="..\..\.build\AssemblyInfo.cs" Link="Properties\AssemblyInfo.cs" />
-		<Compile Update="Properties\ProjectAssemblyInfo.cs">
-			<SubType>Code</SubType>
-		</Compile>
-	</ItemGroup>
+		<Title>Fuxion Asp.Net</Title>
+		<PackageId>Fuxion.AspNet</PackageId>
+		<Description>Fuxion library for Asp.Net</Description>
+	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Flurl" Version="2.8.0" />

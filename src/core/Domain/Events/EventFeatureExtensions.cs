@@ -14,12 +14,6 @@ namespace Fuxion.Domain.Events
 		public static bool HasFeature<TFeature>(this Event me) where TFeature : IEventFeature, new()
 			=> me.Features.OfType<TFeature>().Any();
 		public static TFeature GetFeature<TFeature>(this Event me) where TFeature : IEventFeature, new()
-		{
-			// TODO Cambiar por ?? cuando este en VS 2019
-			var res = me.Features.OfType<TFeature>().SingleOrDefault();
-			if (res == null)
-				throw new EventFeatureNotFoundException($"'{typeof(TFeature).Name}' must be present in the event");
-			return res;
-		}
+			=> me.Features.OfType<TFeature>().SingleOrDefault() ?? throw new EventFeatureNotFoundException($"'{typeof(TFeature).Name}' must be present in the event");
 	}
 }

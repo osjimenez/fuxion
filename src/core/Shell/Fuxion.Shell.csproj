@@ -2,8 +2,12 @@
 
 	<PropertyGroup>
 		<TargetFramework>netcoreapp3.0</TargetFramework>
-		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<UseWPF>true</UseWPF>
+		<LangVersion>8.0</LangVersion>
+
+		<Title>Fuxion Shell</Title>
+		<PackageId>Fuxion.Shell</PackageId>
+		<Description>Fuxion Shell</Description>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -11,14 +15,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Compile Include="..\..\.build\AssemblyInfo.cs" Link="Properties\AssemblyInfo.cs" />
-		<Compile Update="Properties\ProjectAssemblyInfo.cs">
-			<SubType>Code</SubType>
-		</Compile>
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.0.0-preview.18572.1" />
 		<PackageReference Include="ReactiveUI.WPF" Version="10.0.0-preview.3" />
 		<PackageReference Include="Telerik.Windows.Controls.Docking.for.Wpf" Version="2019.1.116" />
 		<PackageReference Include="Telerik.Windows.Controls.GridView.for.Wpf" Version="2019.1.116" />
@@ -26,12 +22,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\Application\Fuxion.Application.csproj" />
 	  <ProjectReference Include="..\Fuxion\Fuxion.csproj" />
 	</ItemGroup>
 	
 	<ItemGroup>
 		<EmbeddedResource Update="Resources\Strings.resx">
-			<Generator>ResXFileCodeGenerator</Generator>
+			<Generator>PublicResXFileCodeGenerator</Generator>
 			<LastGenOutput>Strings.Designer.cs</LastGenOutput>
 		</EmbeddedResource>
 		<Compile Update="Resources\Strings.Designer.cs">

@@ -8,7 +8,7 @@ using Telerik.Windows.Controls;
 
 namespace Fuxion.Shell
 {
-	class PanelInstance
+	internal class PanelInstance
 	{
 		public PanelInstance(IPanelDescriptor descriptor, IPanel panel, FrameworkElement view, RadPane radPane)
 		{
@@ -35,11 +35,12 @@ namespace Fuxion.Shell
 	{
 		void Initialize(PanelName name, Dictionary<string, object> args);
 	}
-	public interface IPanelDescriptor
+	internal interface IPanelDescriptor
 	{
 		PanelName Name { get; }
 		Type ViewType { get; }
 		PanelPosition DefaultPosition { get; }
 		bool RemoveOnHide { get; }
+		bool IsPinned { get; }
 	}
 }

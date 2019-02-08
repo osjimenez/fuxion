@@ -2,16 +2,11 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>net45;net472</TargetFrameworks>
-		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-		<RootNamespace>Fuxion.EntityFramework</RootNamespace>
-	</PropertyGroup>
 
-	<ItemGroup>
-		<Compile Include="..\..\.build\AssemblyInfo.cs" Link="Properties\AssemblyInfo.cs" />
-		<Compile Update="Properties\ProjectAssemblyInfo.cs">
-			<SubType>Code</SubType>
-		</Compile>
-	</ItemGroup>
+		<Title>Fuxion Entity Framework</Title>
+		<PackageId>Fuxion.EntityFramework</PackageId>
+		<Description>Fuxion library with extensions for EntityFramework.</Description>
+	</PropertyGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'!='netstandard2.0'">
 		<PackageReference Include="EntityFramework" Version="6.2.0" />

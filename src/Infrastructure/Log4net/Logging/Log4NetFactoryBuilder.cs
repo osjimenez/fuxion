@@ -2,24 +2,19 @@
 using log4net.Config;
 using log4net.Core;
 using log4net.Layout;
-using log4net.Repository;
 using log4net.Repository.Hierarchy;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Fuxion.Logging
 {
 	public class Log4NetFactoryBuilder
 	{
-		List<(IAppender Appender, ILayout Layout, Level Level)> list = new List<(IAppender Appender, ILayout Layout, Level Level)>();
-		string configurationFilePath;
-		bool avoidConfigurationFile;
-		Level rootLevel;
+		private readonly List<(IAppender Appender, ILayout Layout, Level Level)> list = new List<(IAppender Appender, ILayout Layout, Level Level)>();
+		private string configurationFilePath;
+		private bool avoidConfigurationFile;
+		private Level rootLevel;
 		public Log4NetFactoryBuilder WithConfigurationFile(string configurationFilePath)
 		{
 			if (avoidConfigurationFile) throw new InvalidStateException("If uses 'WithoutDefaultConfigurationFile' cannot use 'WithConfigurationFile'");
@@ -63,8 +58,8 @@ namespace Fuxion.Logging
 					configPath = configurationFilePath;
 				else
 				{
-					Assembly ass = Assembly.GetEntryAssembly() ?? Assembly.GetAssembly(typeof(Log4netFactory));
-					string assemblyBasedPath = $"{ass.Location}.log4net";
+					var ass = Assembly.GetEntryAssembly() ?? Assembly.GetAssembly(typeof(Log4netFactory));
+					var assemblyBasedPath = $"{Path.Combine(Path.GetDirectoryName(ass.Location), Path.GetFileNameWithoutExtension(ass.Location))}.log4net";
 					if (File.Exists(assemblyBasedPath))
 						configPath = assemblyBasedPath;
 					else

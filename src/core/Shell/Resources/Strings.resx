@@ -118,21 +118,21 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Id" xml:space="preserve">
-    <value>Identificador</value>
+    <value>Identifier</value>
   </data>
   <data name="Ids" xml:space="preserve">
-    <value>Identificadores</value>
+    <value>Identifiers</value>
   </data>
   <data name="Name" xml:space="preserve">
-    <value>Nombre</value>
+    <value>Name</value>
   </data>
   <data name="Names" xml:space="preserve">
-    <value>Nombres</value>
+    <value>Names</value>
   </data>
   <data name="Required" xml:space="preserve">
-    <value>El campo '{0}' es obligatorio</value>
+    <value>Field '{0}' is mandatory</value>
   </data>
   <data name="StringLength" xml:space="preserve">
-    <value>'{0}' no puede tener más de '{1}' caracteres</value>
+    <value>'{0}' cannot not be more than '{1}' characters</value>
   </data>
 </root>

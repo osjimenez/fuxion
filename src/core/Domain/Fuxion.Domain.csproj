@@ -2,16 +2,17 @@
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
-		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-		<AssemblyName>Fuxion.Domain</AssemblyName>
-		<LangVersion>7.3</LangVersion>
+		<LangVersion>8.0</LangVersion>
+
+		<Title>Fuxion Domain</Title>
+		<PackageId>Fuxion.Domain</PackageId>
+		<Description>Fuxion library for DDD</Description>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Compile Update="Properties\ProjectAssemblyInfo.cs">
+		<Compile Update="Properties\AssemblyInfo.cs">
 			<SubType>Code</SubType>
 		</Compile>
-		<Compile Include="..\..\.build\AssemblyInfo.cs" Link="Properties\AssemblyInfo.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
