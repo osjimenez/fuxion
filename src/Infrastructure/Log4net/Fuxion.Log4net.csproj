@@ -20,7 +20,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Include="log4net.config" Pack="true" />
+		<None Include="log4net.config" Pack="true" PackagePath="fuxion"/>
 		<None Include="Fuxion.Log4net.targets" Pack="true" PackagePath="build" />
 	</ItemGroup>
 
