@@ -15,9 +15,9 @@ namespace Fuxion.Identity
 
 		public string Name { get; internal set; }
 
-		public string TypeId { get; internal set; }
+		public string TypeKey { get; internal set; }
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		object IDiscriminator.TypeId => TypeId;
+		object IDiscriminator.TypeKey => TypeKey;
 
 		public string TypeName { get; internal set; }
 
@@ -35,7 +35,7 @@ namespace Fuxion.Identity
 
 		public static TypeDiscriminator Empty => new TypeDiscriminator
 		{
-			TypeId = TypeDiscriminatorId,
+			TypeKey = TypeDiscriminatorId,
 			TypeName = TypeDiscriminatorId
 		};
 
@@ -46,9 +46,9 @@ namespace Fuxion.Identity
 			if (!(obj is TypeDiscriminator))
 				return false;
 			var c = obj as TypeDiscriminator;
-			return c.Id == Id && c.TypeId == TypeId;
+			return c.Id == Id && c.TypeKey == TypeKey;
 		}
-		public override int GetHashCode() => TypeId.GetHashCode() ^ Id.GetHashCode();
+		public override int GetHashCode() => TypeKey.GetHashCode() ^ Id.GetHashCode();
 		public static bool operator ==(TypeDiscriminator a, TypeDiscriminator b) => EqualityComparer<TypeDiscriminator>.Default.Equals(a, b);
 		public static bool operator !=(TypeDiscriminator a, TypeDiscriminator b) => !EqualityComparer<TypeDiscriminator>.Default.Equals(a, b);
 	}

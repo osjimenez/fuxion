@@ -14,7 +14,7 @@ namespace Fuxion.Identity.Test.Mocks
         {
             Id = id;
             Name = name;
-            TypeId = typeId;
+            TypeKey = typeId;
             TypeName = typeName;
         }
         public Guid Id { get; private set; }
@@ -22,8 +22,8 @@ namespace Fuxion.Identity.Test.Mocks
 
         public string Name { get; private set; }
 
-        public Guid TypeId { get; private set; }
-        object IDiscriminator.TypeId { get { return TypeId; } }
+        public Guid TypeKey { get; private set; }
+        object IDiscriminator.TypeKey { get { return TypeKey; } }
 
         public string TypeName { get; private set; }
 

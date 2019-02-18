@@ -147,7 +147,7 @@ namespace Fuxion.Identity
 					   DiscriminatorType: p.GetCustomAttribute<DiscriminatedByAttribute>(true).Type,
 					   DiscriminatorTypeId:
 						   p.GetCustomAttribute<DiscriminatedByAttribute>(true).Type.GetTypeInfo()
-							   .GetCustomAttribute<DiscriminatorAttribute>(true).TypeId));
+							   .GetCustomAttribute<DiscriminatorAttribute>(true).TypeKey));
 			}
 		}
 		internal static IEnumerable<IDiscriminator> GetDiscriminatorsOfDiscriminatedProperties(this Type me, object value = null)
@@ -343,7 +343,7 @@ namespace Fuxion.Identity
 							using (Printer.Indent2($"Scope: {sco.ToOneLineString()}"))
 							{
 								// Recorro las propiedades que son del tipo de este discriminador
-								foreach (var pro in props.Where(p => AreEquals(p.DiscriminatorTypeId, sco.Discriminator.TypeId)).ToList())
+								foreach (var pro in props.Where(p => AreEquals(p.DiscriminatorTypeId, sco.Discriminator.TypeKey)).ToList())
 								{
 									Printer.WriteLine($"Property: {pro.PropertyType.Name} {pro.PropertyInfo.Name}");
 									var exp = GetContainsExpression(per.Value, sco, pro.DiscriminatorType, pro.PropertyInfo);
@@ -380,7 +380,7 @@ namespace Fuxion.Identity
 							using (Printer.Indent2($"Scope: {sco.ToOneLineString()}"))
 							{
 								// Recorro las propiedades que son del tipo de este discriminador
-								foreach (var pro in props.Where(p => AreEquals(p.DiscriminatorTypeId, sco.Discriminator.TypeId)).ToList())
+								foreach (var pro in props.Where(p => AreEquals(p.DiscriminatorTypeId, sco.Discriminator.TypeKey)).ToList())
 								{
 									Printer.WriteLine($"Property: {pro.PropertyType.Name} {pro.PropertyInfo.Name}");
 									var exp = GetContainsExpression(per.Value, sco, pro.DiscriminatorType, pro.PropertyInfo);

@@ -169,7 +169,7 @@ namespace Fuxion.Identity.Test
 			TypeDiscriminator dis = fac.FromType<DocumentDao>();
 			Assert.Equal(Helpers.TypeDiscriminatorIds.Document, dis.Id);
 			Assert.Equal(Helpers.TypeDiscriminatorIds.Document, dis.Name);
-			Assert.Equal(TypeDiscriminator.TypeDiscriminatorId, dis.TypeId);
+			Assert.Equal(TypeDiscriminator.TypeDiscriminatorId, dis.TypeKey);
 			Assert.Equal(fac.DiscriminatorTypeName, dis.TypeName);
 			Assert.Equal(2, dis.Inclusions.Count());
 			Assert.Single(dis.Exclusions);

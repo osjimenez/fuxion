@@ -10,6 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -72,7 +74,8 @@ namespace CoreConsole
 			//    .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}{Properties}{NewLine}")
 			//    .CreateLogger());
 			//Factory.AddInjector(new InstanceInjector<ILoggerFactory>(fac));
-
+			var att = typeof(Person).GetCustomAttributes().OfType<AttTest>().FirstOrDefault();
+			var oo = att.TypeId;
 			MainLog4Net();
 			//MainMEL();
 		}
@@ -190,6 +193,8 @@ namespace CoreConsole
 			Printer.WriteLine($"Task '{Thread.CurrentThread.ManagedThreadId}' finished.");
 		}
 	}
+	public class AttTest : Attribute { }
+	[AttTest]
 	public class Person
 	{
 		public Person(string name, int age)

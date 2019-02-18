@@ -88,7 +88,7 @@ namespace Fuxion.Identity
 					{
 						Id = id,
 						Name = GetVirtualNameFunction(id),
-						TypeId = TypeDiscriminator.TypeDiscriminatorId,
+						TypeKey = TypeDiscriminator.TypeDiscriminatorId,
 						TypeName = DiscriminatorTypeName,
 					}
 				});
@@ -326,7 +326,7 @@ namespace Fuxion.Identity
 					{
 						Id = GetIdFunction(type, att),
 						Name = GetNameFunction(type, att),
-						TypeId = TypeDiscriminator.TypeDiscriminatorId,
+						TypeKey = TypeDiscriminator.TypeDiscriminatorId,
 						TypeName = DiscriminatorTypeName
 					}
 				};

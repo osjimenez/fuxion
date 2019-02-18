@@ -16,7 +16,7 @@ namespace Fuxion.Identity.Test.Dao
 
         object IDiscriminator.Id { get { return Id; } }
 
-        object IDiscriminator.TypeId { get { return GetTypeId(); } }
+        object IDiscriminator.TypeKey { get { return GetTypeId(); } }
         protected abstract string GetTypeId();
 
         string IDiscriminator.TypeName { get { return GetTypeName(); } }
@@ -28,7 +28,7 @@ namespace Fuxion.Identity.Test.Dao
         protected virtual IEnumerable<DiscriminatorDao> GetInclusions() => Enumerable.Empty<DiscriminatorDao>();
         IEnumerable<IDiscriminator> IInclusive<IDiscriminator>.Inclusions { get { return GetInclusions(); } }
 
-        string IDiscriminator<string, string>.TypeId { get { return GetTypeId(); } }
+        string IDiscriminator<string, string>.TypeKey { get { return GetTypeId(); } }
 
         IEnumerable<IDiscriminator<string, string>> IInclusive<IDiscriminator<string, string>>.Inclusions { get { return GetInclusions(); } }
 

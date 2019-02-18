@@ -201,13 +201,7 @@ namespace Fuxion.Logging
 		{
 			writer.WriteStartElementSpliting(m_elmEvent);
 			writer.WriteAttributeString(ATTR_LOGGER, loggingEvent.LoggerName);
-
-#if NET_2_0 || NETCF_2_0 || MONO_2_0 || NETSTANDARD2_0
 			writer.WriteAttributeString(ATTR_TIMESTAMP, XmlConvert.ToString(loggingEvent.TimeStamp, XmlDateTimeSerializationMode.Local));
-#else
-			writer.WriteAttributeString(ATTR_TIMESTAMP, XmlConvert.ToString(loggingEvent.TimeStamp));
-#endif
-
 			writer.WriteAttributeString(ATTR_LEVEL, loggingEvent.Level.DisplayName);
 			writer.WriteAttributeString(ATTR_THREAD, loggingEvent.ThreadName);
 

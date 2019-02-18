@@ -7,7 +7,7 @@ namespace Fuxion.Identity
 {
 	public static class PermissionExtensions
 	{
-		public static bool IsValid(this IPermission me) => me.Function != null && (me.Scopes?.All(s => s.Discriminator != null) ?? true) && me.Scopes?.Select(s => s.Discriminator.TypeId).Distinct().Count() == me.Scopes?.Count();
+		public static bool IsValid(this IPermission me) => me.Function != null && (me.Scopes?.All(s => s.Discriminator != null) ?? true) && me.Scopes?.Select(s => s.Discriminator.TypeKey).Distinct().Count() == me.Scopes?.Count();
 		internal static bool Match(this IPermission me, bool forFilter, IFunction function, TypeDiscriminator typeDiscriminator, params IDiscriminator[] discriminators)
 		{
 			using (var res = Printer.CallResult<bool>())
@@ -98,7 +98,7 @@ namespace Fuxion.Identity
 					Printer.WriteLine($"'{nameof(discriminators)}':");
 					discriminators.Print(PrintMode.Table);
 				}
-				if (discriminators.Any(d => Comparer.AreEquals(d.TypeId, TypeDiscriminator.TypeDiscriminatorId)))
+				if (discriminators.Any(d => Comparer.AreEquals(d.TypeKey, TypeDiscriminator.TypeDiscriminatorId)))
 					throw new ArgumentException($"'{nameof(discriminators)}' cannot contains a '{nameof(TypeDiscriminator)}'");
 				if (typeDiscriminator == null)
 					throw new ArgumentException($"'{nameof(typeDiscriminator)}' cannot be null");
@@ -120,13 +120,13 @@ namespace Fuxion.Identity
 					// Compruebo el discriminador de tipo
 					using (Printer.Indent2($"Checking type discriminator"))
 					{
-						var scopeOfTypeOfTypeDiscriminator = me.Scopes.FirstOrDefault(s => Comparer.AreEquals(s.Discriminator.TypeId, typeDiscriminator?.TypeId));
+						var scopeOfTypeOfTypeDiscriminator = me.Scopes.FirstOrDefault(s => Comparer.AreEquals(s.Discriminator.TypeKey, typeDiscriminator?.TypeKey));
 						if (scopeOfTypeOfTypeDiscriminator != null)
 						{
-							Printer.WriteLine($"The {nameof(typeDiscriminator)} '{typeDiscriminator}' and permission scope '{scopeOfTypeOfTypeDiscriminator}' have same type '{typeDiscriminator.TypeId}', continue");
+							Printer.WriteLine($"The {nameof(typeDiscriminator)} '{typeDiscriminator}' and permission scope '{scopeOfTypeOfTypeDiscriminator}' have same type '{typeDiscriminator.TypeKey}', continue");
 							var scopeDiscriminatorRelatedWithTargetDiscriminator = scopeOfTypeOfTypeDiscriminator?.Discriminator
 								.GetAllRelated(scopeOfTypeOfTypeDiscriminator.Propagation)
-								.FirstOrDefault(rel => Comparer.AreEquals(typeDiscriminator.TypeId, rel.TypeId) && Comparer.AreEquals(typeDiscriminator.Id, rel.Id));
+								.FirstOrDefault(rel => Comparer.AreEquals(typeDiscriminator.TypeKey, rel.TypeKey) && Comparer.AreEquals(typeDiscriminator.Id, rel.Id));
 							if (scopeDiscriminatorRelatedWithTargetDiscriminator != null)
 							{
 								Printer.WriteLine($"The {nameof(typeDiscriminator)} '{typeDiscriminator}' is related to permission scope '{scopeOfTypeOfTypeDiscriminator}' on discriminator '{scopeDiscriminatorRelatedWithTargetDiscriminator}', check discriminators");
@@ -155,14 +155,14 @@ namespace Fuxion.Identity
 						// Compruebo el resto de discriminadores
 						return discriminators.All(dis =>
 						{
-							var scopeOfTypeOfDiscriminator = me.Scopes.FirstOrDefault(s => Comparer.AreEquals(s.Discriminator.TypeId, dis.TypeId));
+							var scopeOfTypeOfDiscriminator = me.Scopes.FirstOrDefault(s => Comparer.AreEquals(s.Discriminator.TypeKey, dis.TypeKey));
 							var scopeDiscriminatorRelatedWithDiscriminator = scopeOfTypeOfDiscriminator?.Discriminator
 								.GetAllRelated(scopeOfTypeOfDiscriminator.Propagation)
-								.FirstOrDefault(rel => Comparer.AreEquals(dis.TypeId, rel.TypeId) && Comparer.AreEquals(dis.Id, rel.Id));
+								.FirstOrDefault(rel => Comparer.AreEquals(dis.TypeKey, rel.TypeKey) && Comparer.AreEquals(dis.Id, rel.Id));
 
 							if (scopeOfTypeOfDiscriminator != null)
 							{
-								Printer.WriteLine($"The discriminator '{dis}' and permission scope '{scopeOfTypeOfDiscriminator}' have same type '{dis.TypeId}'");
+								Printer.WriteLine($"The discriminator '{dis}' and permission scope '{scopeOfTypeOfDiscriminator}' have same type '{dis.TypeKey}'");
 								if (scopeDiscriminatorRelatedWithDiscriminator != null)
 								{
 									Printer.WriteLine($"The discriminator '{dis}' is related to permission scope '{scopeOfTypeOfDiscriminator}' on discriminator '{scopeDiscriminatorRelatedWithDiscriminator}'");
@@ -231,7 +231,7 @@ namespace Fuxion.Identity
 				case PrintMode.Table:
 					string GetValue(IPermission permission) => permission?.Value.ToString();
 					string GetFunction(IPermission permission) => permission?.Function?.ToString() ?? "null";
-					string GetDiscriminatorTypeId(IScope scope) => scope.Discriminator?.TypeId?.ToString() ?? "null";
+					string GetDiscriminatorTypeId(IScope scope) => scope.Discriminator?.TypeKey?.ToString() ?? "null";
 					string GetDiscriminatorTypeName(IScope scope) => scope.Discriminator?.TypeName?.ToString() ?? "null";
 					string GetDiscriminatorId(IScope scope) => scope.Discriminator?.Id?.ToString() ?? "null";
 					string GetDiscriminatorName(IScope scope) => scope.Discriminator?.Name?.ToString() ?? "null";

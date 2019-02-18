@@ -7,7 +7,7 @@ namespace Fuxion.Identity
 	[AttributeUsage(AttributeTargets.Class)]
 	public class DiscriminatorAttribute : Attribute
 	{
-		public DiscriminatorAttribute(object typeId) => TypeId = typeId;
-		public object TypeId { get; set; }
+		public DiscriminatorAttribute(object typeKey) => TypeKey = typeKey;
+		public object TypeKey { get; set; }
 	}
 }

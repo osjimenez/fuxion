@@ -27,7 +27,7 @@ namespace Fuxion.Identity
 			var dis1 = (IDiscriminator)obj1;
 			var dis2 = (IDiscriminator)obj2;
 			// Use 'Equals' to compare the ids
-			return Comparer.AreEquals(dis1.Id, dis2.Id) && Comparer.AreEquals(dis1.TypeId, dis2.TypeId);
+			return Comparer.AreEquals(dis1.Id, dis2.Id) && Comparer.AreEquals(dis1.TypeKey, dis2.TypeKey);
 		}
 	}
 }

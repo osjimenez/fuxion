@@ -15,7 +15,7 @@ namespace Fuxion.Identity.Test.Mocks
             Id = id;
             Inclusions = inclusions;
             Exclusions = exclusions;
-            TypeId = typeId;
+            TypeKey = typeId;
         }
 
         public string Id { get; private set; }
@@ -23,10 +23,10 @@ namespace Fuxion.Identity.Test.Mocks
 
         public string Name { get { return Id; } }
 
-        public string TypeId { get; private set; }
-        object IDiscriminator.TypeId { get { return TypeId; } }
+        public string TypeKey { get; private set; }
+        object IDiscriminator.TypeKey { get { return TypeKey; } }
 
-        public string TypeName { get { return TypeId; } }
+        public string TypeName { get { return TypeKey; } }
 
         public IEnumerable<StringDiscriminator> Inclusions { get; set; }
         IEnumerable<IDiscriminator> IInclusive<IDiscriminator>.Inclusions { get { return Inclusions; } }

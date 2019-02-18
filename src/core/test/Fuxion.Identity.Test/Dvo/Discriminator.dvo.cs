@@ -14,8 +14,8 @@ namespace Fuxion.Identity.Test.Dvo
 
         object IDiscriminator.Id { get { return Id; } }
 
-        object IDiscriminator.TypeId { get { return GetTypeId(); } }
-        string IDiscriminator<string, string>.TypeId { get { return GetTypeId(); } }
+        object IDiscriminator.TypeKey { get { return GetTypeId(); } }
+        string IDiscriminator<string, string>.TypeKey { get { return GetTypeId(); } }
         protected abstract string GetTypeId();
 
         string IDiscriminator.TypeName { get { return GetTypeName(); } }
