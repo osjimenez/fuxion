@@ -38,10 +38,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Fuxion, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Fuxion.0.2.0-beta.16\lib\net45\Fuxion.dll</HintPath>
+      <HintPath>..\..\..\packages\Fuxion.0.2.0\lib\net45\Fuxion.dll</HintPath>
     </Reference>
     <Reference Include="Fuxion.Log4net, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Fuxion.Log4net.0.2.0-beta.16\lib\net45\Fuxion.Log4net.dll</HintPath>
+      <HintPath>..\..\..\packages\Fuxion.Log4net.0.2.0\lib\net45\Fuxion.Log4net.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
@@ -111,7 +111,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="log4net.config" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -125,11 +124,11 @@
   <Target Name="Fuxion-Log4net-Rename-Config-File" BeforeTargets="AfterBuild">
     <Move SourceFiles="$(OutputPath)log4net.config" DestinationFiles="$(OutputPath)$(AssemblyName).exe.log4net" ContinueOnError="true" />
   </Target>
-  <Import Project="..\..\..\packages\Fuxion.Log4net.0.2.0-beta.16\build\Fuxion.Log4net.targets" Condition="Exists('..\..\..\packages\Fuxion.Log4net.0.2.0-beta.16\build\Fuxion.Log4net.targets')" />
+  <Import Project="..\..\..\packages\Fuxion.Log4net.0.2.0\build\Fuxion.Log4net.targets" Condition="Exists('..\..\..\packages\Fuxion.Log4net.0.2.0\build\Fuxion.Log4net.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\..\..\packages\Fuxion.Log4net.0.2.0-beta.16\build\Fuxion.Log4net.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Fuxion.Log4net.0.2.0-beta.16\build\Fuxion.Log4net.targets'))" />
+    <Error Condition="!Exists('..\..\..\packages\Fuxion.Log4net.0.2.0\build\Fuxion.Log4net.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Fuxion.Log4net.0.2.0\build\Fuxion.Log4net.targets'))" />
   </Target>
 </Project>
