@@ -67,9 +67,9 @@ namespace Ordinem.Tasks.Service
 					dataSource: new[] { "crono", "cronus" }.Contains(Environment.MachineName.ToLower()) ? "." : @".\sqlexpress",
 					initialCatalog: "Ordinem.Tasks.Service",
 					builder: out var entityFrameworkSqlServer)
-				.EntityFrameworkInMemory<TasksDbContext>(
-					databaseName: "Ordinem.Tasks",
-					builder: out var entityFrameworkInMemory)
+				//.EntityFrameworkInMemory<TasksDbContext>(
+				//	databaseName: "Ordinem.Tasks",
+				//	builder: out var entityFrameworkInMemory)
 				// Events
 				.Events(__ => __
 					.HandlersFromAssemblyOf<Ordinem_Tasks_Application>()
