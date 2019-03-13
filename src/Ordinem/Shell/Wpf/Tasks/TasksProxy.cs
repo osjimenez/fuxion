@@ -18,7 +18,7 @@ namespace Ordinem.Shell.Wpf.Tasks
 		private static readonly HttpClient client = new HttpClient();
 		const string host = "localhost";
 		const int port = 5100;
-		public RetryPolicy GetRetryPolicy([CallerMemberName] string callerMemberName = null)
+		public AsyncRetryPolicy GetRetryPolicy([CallerMemberName] string callerMemberName = null)
 			=> RetryPolicy.Handle<HttpRequestException>()
 			//.Or<BrokerUnreachableException>()
 			.WaitAndRetryAsync(5, retryAttempt => TimeSpan.FromSeconds(System.Math.Pow(2, retryAttempt)), (ex, time) =>

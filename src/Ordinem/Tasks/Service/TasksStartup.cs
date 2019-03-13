@@ -64,7 +64,8 @@ namespace Ordinem.Tasks.Service
 					dumpFilePath: "snapshots~.json",
 					builder: out var inMemorySnapshotStorage)
 				.EntityFrameworkSqlServer<TasksDbContext>(
-					dataSource: new[] { "crono", "cronus" }.Contains(Environment.MachineName.ToLower()) ? "." : @".\sqlexpress",
+					//dataSource: new[] { "crono", "cronus" }.Contains(Environment.MachineName.ToLower()) ? "." : @".\sqlexpress",
+					dataSource: ".",
 					initialCatalog: "Ordinem.Tasks.Service",
 					builder: out var entityFrameworkSqlServer)
 				//.EntityFrameworkInMemory<TasksDbContext>(
@@ -85,7 +86,7 @@ namespace Ordinem.Tasks.Service
 					snapshotStorage: inMemorySnapshotStorage,
 					snapshotFrecuency: 3));
 		}
-		public void Configure(IApplicationBuilder app, Microsoft.AspNetCore.Hosting.IHostingEnvironment env, ILoggerFactory loggerFactory)
+		public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
 		{
 			if (env.IsDevelopment())
 				app.UseDeveloperExceptionPage();

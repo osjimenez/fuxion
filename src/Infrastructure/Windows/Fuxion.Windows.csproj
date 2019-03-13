@@ -27,7 +27,7 @@
 		<ProjectReference Include="..\..\Core\Fuxion\Fuxion.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)'!='netcoreapp3.0'">
 		<Reference Include="PresentationCore" />
 		<Reference Include="PresentationFramework" />
 		<Reference Include="System.ComponentModel.DataAnnotations" />

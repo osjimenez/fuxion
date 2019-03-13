@@ -1,12 +1,20 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Ocelot" Version="13.2.0-alpha0010" />
+    <Compile Remove="GatewayStartup-Core3.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="GatewayStartup-Core3.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Ocelot" Version="13.2.0-alpha0024" />
   </ItemGroup>
 
 </Project>

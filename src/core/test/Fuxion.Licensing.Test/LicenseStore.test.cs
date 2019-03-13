@@ -32,17 +32,15 @@ namespace Fuxion.Licensing.Test
             con.Register<LicensingManager>();
             Factory.AddInjector(new SimpleInjectorFactoryInjector(con));
         }
-        
-        ITestOutputHelper output;
+
+		readonly ITestOutputHelper output;
         [Theory]
         [InlineData(new object[] { "Match", Const.HARDWARE_ID, Const.PRODUCT_ID, 10, true })]
         [InlineData(new object[] { "Deactivated", Const.HARDWARE_ID, Const.PRODUCT_ID, 50, false })]
         [InlineData(new object[] { "Expired", Const.HARDWARE_ID, Const.PRODUCT_ID, 400, false })]
         [InlineData(new object[] { "Product not match", Const.HARDWARE_ID, "{105B337E-EBCE-48EA-87A7-852E3A699A98}", 10, false })]
         [InlineData(new object[] { "Hardware not match", "{AE2C70B9-6622-4341-81A0-10EAA078E7DF}", Const.PRODUCT_ID, 10, false })]
-#pragma warning disable xUnit1026 // Theory methods should use all of their parameters
         public void OnlyValidLicenses(string _, string hardwareId, string productId, int offsetDays, bool expectedValidation)
-#pragma warning restore xUnit1026 // Theory methods should use all of their parameters
         {
             // Crete LicensingManager
             var man = Factory.Get<LicensingManager>();

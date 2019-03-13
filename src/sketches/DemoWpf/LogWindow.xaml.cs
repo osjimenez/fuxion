@@ -71,9 +71,9 @@ namespace DemoWpf
    //         cls.Switches.Add("o", LogLevel.Information);
         }
 
-        string mongodPath = @"G:\Dev\Fuxion\MongoDB\bin\mongod.exe";
-        string mongodumpPath = @"G:\Dev\Fuxion\MongoDB\bin\mongodump.exe";
-        string mongorestorePath = @"G:\Dev\Fuxion\MongoDB\bin\mongorestore.exe";
+        //string mongodPath = @"G:\Dev\Fuxion\MongoDB\bin\mongod.exe";
+        //string mongodumpPath = @"G:\Dev\Fuxion\MongoDB\bin\mongodump.exe";
+        //string mongorestorePath = @"G:\Dev\Fuxion\MongoDB\bin\mongorestore.exe";
 
         private void Log_Click(object sender, RoutedEventArgs e)
         {

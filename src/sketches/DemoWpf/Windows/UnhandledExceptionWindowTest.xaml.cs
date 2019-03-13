@@ -45,9 +45,10 @@ namespace DemoWpf.Windows
 			catch (AggregateException ex)
 			{
 				UnhandledExceptionWindow win = null;
-				win = new UnhandledExceptionWindow(ex, true, async () =>
+				win = new UnhandledExceptionWindow(ex, true, () =>
 				{
 					MessageBox.Show("Report sent with content:\r\n");
+					return Task.CompletedTask;
 				})
 				{
 					Message = "Se ha producido un error grave",

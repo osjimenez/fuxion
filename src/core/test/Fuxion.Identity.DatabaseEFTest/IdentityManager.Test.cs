@@ -41,8 +41,8 @@ namespace Fuxion.Identity.DatabaseEFTest
         [InlineData(new object[] { "Password wrong, must fail", scenarios, "root", "wrong", false })]
         [InlineData(new object[] { "Username wrong, must fail", scenarios, "wrong", "root", false })]
         [InlineData(new object[] { "Must be success", scenarios, "root", "root", true })]
-        public void Login(string _, string scenarios, string username, string password, bool expected)
-        {
+		public void Login(string _, string scenarios, string username, string password, bool expected)
+		{
             foreach (var scenario in scenarios.Split('·'))
             {
                 using (Printer.Indent2($"Scenario = { scenario}"))

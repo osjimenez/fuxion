@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0;netcoreapp3.0</TargetFrameworks>
+		<TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
 
 		<Title>Fuxion Entity Framework Core</Title>
 		<PackageId>Fuxion.EntityFrameworkCore</PackageId>
@@ -12,14 +12,14 @@
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-18618-05" PrivateAssets="All" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'!='netcoreapp3.0'">
+	<ItemGroup Condition="'$(TargetFramework)'!='netstandard2.1'">
 		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="2.2.2" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.2" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='netcoreapp3.0'">
-		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="3.0.0-preview.19074.3" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.0.0-preview.19074.3" />
+	<ItemGroup Condition="'$(TargetFramework)'=='netstandard2.1'">
+		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="3.0.0-preview3.19153.1" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.0.0-preview3.19153.1" />
 	</ItemGroup>
 
 	<ItemGroup>
