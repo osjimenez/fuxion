@@ -4,6 +4,7 @@ using Fuxion.Shell;
 using log4net.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Ordinem.Shell.Wpf.Calendar;
 using Ordinem.Shell.Wpf.Tasks;
 using ReactiveUI;
 using Serilog;
@@ -77,7 +78,8 @@ namespace Ordinem.Shell.Wpf.Launcher
 					.Module<LauncherModule>()
 					//.ModulesFromAssemblyOf<Ordinem_Shell_Wpf_Tasks>()
 					.Module<TasksModule>()
-					//.ShellFactory(out shellFactory)
+					.Module<CalendarModule>()
+				//.ShellFactory(out shellFactory)
 				));
 			//shellFactory().Show();
 

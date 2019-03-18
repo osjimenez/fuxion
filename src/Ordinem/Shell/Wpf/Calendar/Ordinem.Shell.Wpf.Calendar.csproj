@@ -14,23 +14,23 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\..\..\core\Shell\Fuxion.Shell.csproj" />
 		<ProjectReference Include="..\..\..\..\Infrastructure\AutoMapper\Fuxion.AutoMapper.csproj" />
-		<ProjectReference Include="..\..\..\Tasks\Application\Ordinem.Tasks.Application.csproj" />
+		<ProjectReference Include="..\..\..\Calendar\Application\Ordinem.Calendar.Application.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Remove="Views\ToDoTaskDetailView.xaml" />
-		<Compile Update="Views\ToDoTaskDetailView.xaml.cs">
+		<None Remove="Views\AppointmentDetailView.xaml" />
+		<Compile Update="Views\AppointmentDetailView.xaml.cs">
 			<SubType>Code</SubType>
 		</Compile>
-		<Page Update="Views\ToDoTaskDetailView.xaml">
+		<Page Update="Views\AppointmentDetailView.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</Page>
-
-		<None Remove="Views\ToDoTaskListView.xaml" />
-		<Compile Update="Views\ToDoTaskListView.xaml.cs">
+		
+		<None Remove="Views\AppointmentListView.xaml" />
+		<Compile Update="Views\AppointmentListView.xaml.cs">
 			<SubType>Code</SubType>
 		</Compile>
-		<Page Update="Views\ToDoTaskListView.xaml">
+		<Page Update="Views\AppointmentListView.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</Page>
 	</ItemGroup>

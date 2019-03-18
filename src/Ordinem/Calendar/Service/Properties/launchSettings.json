@@ -3,18 +3,18 @@
 		"windowsAuthentication": false,
 		"anonymousAuthentication": true,
 		"iisExpress": {
-			"applicationUrl": "https://localhost:5110/",
-			"sslPort": 5110
+			"applicationUrl": "https://localhost:5120/",
+			"sslPort": 5120
 		}
 	},
 	"profiles": {
 		"Console": {
 			"commandName": "Project",
 			"environmentVariables": {
-				"ASPNETCORE_HTTPS_PORT": "5110",
+				"ASPNETCORE_HTTPS_PORT": "5120",
 				"ASPNETCORE_ENVIRONMENT": "Development"
 			},
-			"applicationUrl": "https://localhost:5110/"
+			"applicationUrl": "https://localhost:5120/"
 		}
 	}
 }

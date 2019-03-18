@@ -20,7 +20,7 @@ namespace Ordinem.Tasks.Projection
 
 		public DbSet<ToDoTaskDpo> ToDoTasks { get; set; }
 	}
-	public class SaltoDbContextFactory : IDesignTimeDbContextFactory<TasksDbContext>
+	public class TasksDbContextFactory : IDesignTimeDbContextFactory<TasksDbContext>
 	{
 		public TasksDbContext CreateDbContext(string[] args)
 		{

@@ -1,33 +1,34 @@
-﻿using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Ordinem.Tasks.Application;
-using Ordinem.Tasks.Domain;
-using Ordinem.Tasks.Projection;
-using Ordinem.Tasks.Projection.EventHandlers;
-using Ordinem.Tasks.Service.AutoMapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Ordinem.Calendar.Application;
+using Ordinem.Calendar.Domain;
+using Ordinem.Calendar.Projection;
+using Ordinem.Tasks.Service.AutoMapper;
 
-namespace Ordinem.Tasks.Service
+namespace Ordinem.Calendar.Service
 {
-	public class TasksStartup
+	public class CalendarStartup
 	{
 		public static void Main(string[] args)
 		{
-			Console.Title = "Tasks";
+			Console.Title = "Calendar";
 			Host
 				.CreateDefaultBuilder(args)
 				.ConfigureWebHostDefaults(builder =>
 				{
-					builder.UseStartup<TasksStartup>();
+					builder.UseStartup<CalendarStartup>();
 				})
 				.Build()
 				.Run();
@@ -40,7 +41,7 @@ namespace Ordinem.Tasks.Service
 				.AddFuxionControllers();
 
 			services.AddAutoMapper()
-				.AddProfile<ToDoTaskProfile>();
+				.AddProfile<AppointmentProfile>();
 
 			services.AddFuxion(_ => _
 				// Infrastructure
@@ -48,7 +49,7 @@ namespace Ordinem.Tasks.Service
 					connectionHost: "localhost",
 					connectionRetryCount: 5,
 					exchangeName: "Ordinem.Bus",
-					queueName: "Ordinem.Tasks.Service",
+					queueName: "Ordinem.Calendar.Service",
 					queueRetryCount: 5,
 					builder: out var rabbitMQ)
 				.EventStore(
@@ -63,24 +64,24 @@ namespace Ordinem.Tasks.Service
 				.InMemorySnapshotStorage(
 					dumpFilePath: "snapshots~.json",
 					builder: out var inMemorySnapshotStorage)
-				.EntityFrameworkSqlServer<TasksDbContext>(
+				.EntityFrameworkSqlServer<CalendarDbContext>(
 					//dataSource: new[] { "crono", "cronus" }.Contains(Environment.MachineName.ToLower()) ? "." : @".\sqlexpress",
 					dataSource: ".",
-					initialCatalog: "Ordinem.Tasks.Service",
+					initialCatalog: "Ordinem.Calendar.Service",
 					builder: out var entityFrameworkSqlServer)
-				//.EntityFrameworkInMemory<TasksDbContext>(
-				//	databaseName: "Ordinem.Tasks",
+				//.EntityFrameworkInMemory<CalendarDbContext>(
+				//	databaseName: "Ordinem.Calendar",
 				//	builder: out var entityFrameworkInMemory)
 				// Events
 				.Events(__ => __
-					.HandlersFromAssemblyOf<Ordinem_Tasks_Application>()
-					.HandlersFromAssemblyOf<Ordinem_Tasks_Projection>())
-				//.Subscribe<ToDoTaskCreatedEvent>(eventSubscriber: rabbitMQ))
+					.HandlersFromAssemblyOf<Ordinem_Calendar_Application>()
+					.HandlersFromAssemblyOf<Ordinem_Calendar_Projection>())
+				//.Subscribe<AppointmentCreatedEvent>(eventSubscriber: rabbitMQ))
 				// Commands
 				.Commands(__ => __
-					.HandlersFromAssemblyOf<Ordinem_Tasks_Application>())
+					.HandlersFromAssemblyOf<Ordinem_Calendar_Application>())
 				// Aggregates
-				.Aggregate<ToDoTask, ToDoTaskFactory, ToDoTaskSnapshot>(
+				.Aggregate<Appointment, AppointmentFactory, AppointmentSnapshot>(
 					eventStorage: inMemoryEventStorage,
 					eventPublisher: rabbitMQ,
 					snapshotStorage: inMemorySnapshotStorage,
@@ -95,13 +96,13 @@ namespace Ordinem.Tasks.Service
 
 			app.UseHttpsRedirection();
 			//loggerFactory.AddLog4Net();
-			var logger = loggerFactory.CreateLogger(typeof(TasksStartup));
+			var logger = loggerFactory.CreateLogger(typeof(CalendarStartup));
 			logger.LogInformation("Testing logging ...");
 			app.UseMvc();
 
 			using (var serviceScope = app.ApplicationServices.CreateScope())
 			{
-				var database = serviceScope.ServiceProvider.GetRequiredService<TasksDbContext>().Database;
+				var database = serviceScope.ServiceProvider.GetRequiredService<CalendarDbContext>().Database;
 				if (!database.IsInMemory())
 					database.Migrate();
 			}

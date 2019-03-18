@@ -7,8 +7,6 @@ namespace Ordinem.Tasks.Domain
 {
 	public class ToDoTask : Aggregate
 	{
-		public ToDoTask() { }
-
 		public void Create(string taskName) => ApplyEvent(new ToDoTaskCreatedEvent(Id, taskName));
 		public void Rename(string newName) => ApplyEvent(new ToDoTaskRenamedEvent(Id, newName));
 		public void Delete() => ApplyEvent(new ToDoTaskDeletedEvent(Id));

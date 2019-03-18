@@ -38,6 +38,55 @@
 			],
 			"UpstreamPathTemplate": "/api/Tasks/ToDoTask/{id}",
 			"UpstreamHttpMethod": [ "Get" ]
+		},
+
+
+
+
+
+
+
+
+
+
+		// CALENDAR - Command
+		{
+			"DownstreamPathTemplate": "/api/command",
+			"DownstreamScheme": "https",
+			"DownstreamHostAndPorts": [
+				{
+					"Host": "localhost",
+					"Port": 5120
+				}
+			],
+			"UpstreamPathTemplate": "/api/calendar/command",
+			"UpstreamHttpMethod": [ "Post" ]
+		},
+		// CALENDAR - Appointment
+		{
+			"DownstreamPathTemplate": "/api/Appointment",
+			"DownstreamScheme": "https",
+			"DownstreamHostAndPorts": [
+				{
+					"Host": "localhost",
+					"Port": 5120
+				}
+			],
+			"UpstreamPathTemplate": "/api/Calendar/Appointment",
+			"UpstreamHttpMethod": [ "Get" ]
+		},
+		// CALENDAR - Appointment/{id}
+		{
+			"DownstreamPathTemplate": "/api/Appointment/{id}",
+			"DownstreamScheme": "https",
+			"DownstreamHostAndPorts": [
+				{
+					"Host": "localhost",
+					"Port": 5120
+				}
+			],
+			"UpstreamPathTemplate": "/api/Calendar/Appointment/{id}",
+			"UpstreamHttpMethod": [ "Get" ]
 		}
 	],
 	"GlobalConfiguration": {
