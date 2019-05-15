@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Ordinem.Shell.Wpf.Tasks.AutoMapper
+namespace Ordinem.Tasks.Shell.Wpf.AutoMapper
 {
 	public class ToDoTaskProfile : Profile
 	{

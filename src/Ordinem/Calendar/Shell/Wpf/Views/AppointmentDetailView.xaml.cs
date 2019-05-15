@@ -1,5 +1,5 @@
 ﻿using Fuxion.Shell;
-using Ordinem.Shell.Wpf.Tasks.ViewModels;
+using Ordinem.Calendar.Shell.Wpf.ViewModels;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -17,11 +17,11 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Telerik.Windows.Controls;
 
-namespace Ordinem.Shell.Wpf.Tasks.Views
+namespace Ordinem.Calendar.Shell.Wpf.Views
 {
-	public partial class ToDoTaskDetailView : ReactiveUserControl<ToDoTaskDetailViewModel>, IPanelView
+	public partial class AppointmentDetailView : ReactiveUserControl<AppointmentDetailViewModel>, IPanelView
 	{
-		public ToDoTaskDetailView(ToDoTaskDetailViewModel viewModel)
+		public AppointmentDetailView(AppointmentDetailViewModel viewModel)
 		{
 			InitializeComponent();
 
@@ -55,12 +55,12 @@ namespace Ordinem.Shell.Wpf.Tasks.Views
 									inter.SetOutput(null);
 							}),
 							DialogStartupLocation = WindowStartupLocation.CenterOwner,
-							Owner = Application.Current.MainWindow
+							Owner = System.Windows.Application.Current.MainWindow
 						});
 					});
 			});
 		}
-		~ToDoTaskDetailView() => Debug.WriteLine($"||||||||||||||||||||||||||||||||| => {this.GetType().Name} DESTROYED");
+		~AppointmentDetailView() => Debug.WriteLine($"||||||||||||||||||||||||||||||||| => {this.GetType().Name} DESTROYED");
 
 		public IPanel Panel => ViewModel as IPanel;
 	}

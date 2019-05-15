@@ -2,15 +2,15 @@
 using Fuxion.Collections.Generic;
 using Fuxion.Shell;
 using Microsoft.Extensions.DependencyInjection;
-using Ordinem.Shell.Wpf.Tasks.AutoMapper;
-using Ordinem.Shell.Wpf.Tasks.ViewModels;
-using Ordinem.Shell.Wpf.Tasks.Views;
+using Ordinem.Tasks.Shell.Wpf.AutoMapper;
+using Ordinem.Tasks.Shell.Wpf.ViewModels;
+using Ordinem.Tasks.Shell.Wpf.Views;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Ordinem.Shell.Wpf.Tasks
+namespace Ordinem.Tasks.Shell.Wpf
 {
 	public class TasksModule : IModule
 	{

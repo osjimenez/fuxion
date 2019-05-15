@@ -5,7 +5,7 @@ using Fuxion.Reflection;
 using Fuxion.Shell;
 using Fuxion.Shell.Messages;
 using Fuxion.Shell.ViewModels;
-using Ordinem.Tasks.Domain;
+using Ordinem.Calendar.Domain;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -17,43 +17,43 @@ using System.Reactive.Linq;
 using System.Text;
 using Telerik.Windows.Data;
 
-namespace Ordinem.Shell.Wpf.Tasks.ViewModels
+namespace Ordinem.Calendar.Shell.Wpf.ViewModels
 {
-	[TypeKey("Ordinem.Shell.Wpf.Tasks.ViewModels." + nameof(ToDoTaskListViewModel))]
-	public class ToDoTaskListViewModel : ListViewModel<ToDoTaskDvo>, IPanel
+	[TypeKey("Ordinem.Shell.Wpf.Calendar.ViewModels." + nameof(AppointmentListViewModel))]
+	public class AppointmentListViewModel : ListViewModel<AppointmentDvo>, IPanel
 	{
-		public ToDoTaskListViewModel(Cache cache, TasksProxy proxy, IMapper mapper)
+		public AppointmentListViewModel(Cache cache, CalendarProxy proxy, IMapper mapper)
 		{
-			CreateToDoTaskCommand = ReactiveCommand.CreateFromTask(async () =>
+			CreateCommand = ReactiveCommand.CreateFromTask(async () =>
 			{
 				var id = Guid.NewGuid();
 				var name = await CreateInteraction.Handle(Unit.Default);
 				if (name != null)
 				{
 					await proxy.AddToDoTask(id, name);
-					var dto = await proxy.GetToDoTask(id);
-					var dvo = mapper.Map<ToDoTaskDvo>(dto);
-					cache.Get<ToDoTaskDvo>().AddOrUpdate(dvo);
-					MessageBus.Current.OpenToDoTask(dvo.Id);
+					var dto = await proxy.GetAppointment(id);
+					var dvo = mapper.Map<AppointmentDvo>(dto);
+					cache.Get<AppointmentDvo>().AddOrUpdate(dvo);
+					MessageBus.Current.OpenAppointment(dvo.Id);
 				}
 			});
-			EditToDoTaskCommand = ReactiveCommand.Create<ToDoTaskDvo>(
-				toDoTask => MessageBus.Current.OpenToDoTask(toDoTask.Id),
+			EditCommand = ReactiveCommand.Create<AppointmentDvo>(
+				toDoTask => MessageBus.Current.OpenAppointment(toDoTask.Id),
 				this.WhenAnyValue(x => x.SelectedToDoTask).Select(d => d != null));
-			DeleteToDoTaskCommand = ReactiveCommand.Create<ToDoTaskDvo>(async toDoTask => 
+			DeleteCommand = ReactiveCommand.Create<AppointmentDvo>(async toDoTask => 
 			{
 				await proxy.DeleteToDoTask(toDoTask.Id);
-				cache.Get<ToDoTaskDvo>().Remove(toDoTask);
+				cache.Get<AppointmentDvo>().Remove(toDoTask);
 				MessageBus.Current.CloseAllPanelsWithKey(toDoTask.Id.ToString());
 			}, this.WhenAnyValue(x => x.SelectedToDoTask).Select(d => d != null));
 			RefreshCommand = ReactiveCommand.CreateFromTask(async cancellationToken =>
 			{
-				cache.Get<ToDoTaskDvo>().EditDiff(
-					mapper.Map<IEnumerable<ToDoTaskDto>, IList<ToDoTaskDvo>>(await proxy.GetToDoTasks()),
+				cache.Get<AppointmentDvo>().EditDiff(
+					mapper.Map<IEnumerable<AppointmentDto>, IList<AppointmentDvo>>(await proxy.GetAppointments()),
 					// TODO - Implementar un mecanismo para detectar los cambios basado en un timestamp o similar
 					(t1, t2) => t1.Name == t2.Name);
 			});
-			cache.Get<ToDoTaskDvo>()
+			cache.Get<AppointmentDvo>()
 				.Connect()
 				.OnItemRemoved(toDoTask => MessageBus.Current.CloseAllPanelsWithKey(toDoTask.Id.ToString()))
 				.OnItemUpdated((updatedToDoTask, _) => MessageBus.Current.SendMessage(new UpdatePanelMessage(updatedToDoTask)))
@@ -63,7 +63,7 @@ namespace Ordinem.Shell.Wpf.Tasks.ViewModels
 
 				//.Filter(_ => _.Name != null)
 
-				.Sort(new GenericComparer<ToDoTaskDvo>((t1, t2) => StringComparer.CurrentCulture.Compare(t1.Name, t2.Name)))
+				.Sort(new GenericComparer<AppointmentDvo>((t1, t2) => StringComparer.CurrentCulture.Compare(t1.Name, t2.Name)))
 				.Page(this.WhenAnyValue(_ => _.PageRequest))
 				
 				.ObserveOnDispatcher()
@@ -72,7 +72,7 @@ namespace Ordinem.Shell.Wpf.Tasks.ViewModels
 				.Subscribe();
 			ToDoTasks = list;
 
-			cache.Get<ToDoTaskDvo>()
+			cache.Get<AppointmentDvo>()
 				.Connect()
 				.ObserveOnDispatcher()
 				.Bind(out var allList)
@@ -84,15 +84,15 @@ namespace Ordinem.Shell.Wpf.Tasks.ViewModels
 			RefreshCommand.Execute().Subscribe();
 			//RefreshCommand.Execute().Subscribe();
 		}
-		~ToDoTaskListViewModel() => Debug.WriteLine($"||||||||||||||||||||||||||||||||| => {this.GetType().Name} DESTROYED");
+		~AppointmentListViewModel() => Debug.WriteLine($"||||||||||||||||||||||||||||||||| => {this.GetType().Name} DESTROYED");
 
-		public string Title => "Tareas";
-		public string Header => "Tareas";
+		public string Title => "Eventos";
+		public string Header => "Eventos";
 		
-		public ReadOnlyObservableCollection<ToDoTaskDvo> AllToDoTasks { get; }
-		public ReadOnlyObservableCollection<ToDoTaskDvo> ToDoTasks { get; }
-		ToDoTaskDvo _SelectedToDoTask;
-		public ToDoTaskDvo SelectedToDoTask
+		public ReadOnlyObservableCollection<AppointmentDvo> AllToDoTasks { get; }
+		public ReadOnlyObservableCollection<AppointmentDvo> ToDoTasks { get; }
+		AppointmentDvo _SelectedToDoTask;
+		public AppointmentDvo SelectedToDoTask
 		{
 			get => _SelectedToDoTask;
 			set => this.RaiseAndSetIfChanged(ref _SelectedToDoTask, value);
@@ -105,9 +105,9 @@ namespace Ordinem.Shell.Wpf.Tasks.ViewModels
 		}
 
 		public Interaction<Unit, string> CreateInteraction { get; } = new Interaction<Unit, string>();
-		public ReactiveCommand<Unit, Unit> CreateToDoTaskCommand { get; }
-		public ReactiveCommand<ToDoTaskDvo, Unit> EditToDoTaskCommand { get; }
-		public ReactiveCommand<ToDoTaskDvo, Unit> DeleteToDoTaskCommand { get; }
+		public ReactiveCommand<Unit, Unit> CreateCommand { get; }
+		public ReactiveCommand<AppointmentDvo, Unit> EditCommand { get; }
+		public ReactiveCommand<AppointmentDvo, Unit> DeleteCommand { get; }
 		public ReactiveCommand<Unit, Unit> RefreshCommand { get; }
 	}
 }

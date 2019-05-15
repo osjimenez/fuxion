@@ -1,12 +1,7 @@
-﻿using Fuxion.Shell;
-using Fuxion.Shell.Messages;
-using Ordinem.Shell.Wpf.Tasks.ViewModels;
-using ReactiveUI;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Fuxion.Reflection;
+﻿using Fuxion.Reflection;
+using Fuxion.Shell;
 using Ordinem.Shell.Wpf.Launcher.Views;
+using ReactiveUI;
 
 namespace Ordinem.Shell.Wpf.Launcher
 {

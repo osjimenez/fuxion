@@ -1,7 +1,7 @@
 ﻿using DynamicData;
 using Fuxion.Reflection;
 using Fuxion.Shell;
-using Ordinem.Shell.Wpf.Tasks.ViewModels;
+using Ordinem.Tasks.Shell.Wpf.ViewModels;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -20,7 +20,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Telerik.Windows.Controls;
 
-namespace Ordinem.Shell.Wpf.Tasks.Views
+namespace Ordinem.Tasks.Shell.Wpf.Views
 {
 	[TypeKey("Ordinem.Shell.Wpf.Tasks.Views." + nameof(ToDoTaskListView))]
 	public partial class ToDoTaskListView : ReactiveUserControl<ToDoTaskListViewModel>, IPanelView
@@ -79,7 +79,7 @@ namespace Ordinem.Shell.Wpf.Tasks.Views
 									inter.SetOutput(null);
 							}),
 							DialogStartupLocation = WindowStartupLocation.CenterOwner,
-							Owner = Application.Current.MainWindow
+							Owner = System.Windows.Application.Current.MainWindow
 						});
 					});
 

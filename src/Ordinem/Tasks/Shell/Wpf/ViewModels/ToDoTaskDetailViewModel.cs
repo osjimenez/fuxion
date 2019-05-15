@@ -14,9 +14,9 @@ using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ordinem.Shell.Wpf.Tasks.ViewModels
+namespace Ordinem.Tasks.Shell.Wpf.ViewModels
 {
-	[TypeKey("Ordinem.Shell.Wpf.Tasks.ViewModels." + nameof(ToDoTaskDetailViewModel))]
+	[TypeKey("Ordinem.Tasks.Shell.Wpf.ViewModels." + nameof(ToDoTaskDetailViewModel))]
 	public class ToDoTaskDetailViewModel : DetailViewModel, IInitializablePanel
 	{
 		public ToDoTaskDetailViewModel(Cache cache, TasksProxy proxy, IMapper mapper)

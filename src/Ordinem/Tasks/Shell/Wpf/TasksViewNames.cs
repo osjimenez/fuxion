@@ -1,11 +1,11 @@
 ﻿using Fuxion.Shell;
-using Ordinem.Shell.Wpf.Tasks.ViewModels;
+using Ordinem.Tasks.Shell.Wpf.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using Fuxion.Reflection;
 
-namespace Ordinem.Shell.Wpf.Tasks
+namespace Ordinem.Tasks.Shell.Wpf
 {
 	public static class TasksViewNames
 	{

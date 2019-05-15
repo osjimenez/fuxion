@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Ordinem.Shell.Wpf.Tasks
+namespace Ordinem.Calendar.Shell.Wpf
 {
-	public class ToDoTaskDto
+	public class AppointmentDto
 	{
 		public Guid Id { get; set; } = Guid.NewGuid();
 		public string Name { get; set; }

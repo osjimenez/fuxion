@@ -1,17 +1,12 @@
 ﻿using Fuxion.Factories;
 using Fuxion.Logging;
 using Fuxion.Shell;
-using log4net.Core;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Ordinem.Shell.Wpf.Calendar;
-using Ordinem.Shell.Wpf.Tasks;
+using Ordinem.Calendar.Shell.Wpf;
+using Ordinem.Tasks.Shell.Wpf;
 using ReactiveUI;
-using Serilog;
-using System.IO;
 using System.Reflection;
 using System.Windows;
-using System.Xml;
 
 namespace Ordinem.Shell.Wpf.Launcher
 {

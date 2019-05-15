@@ -1,19 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Fuxion.Shell;
+using Microsoft.Extensions.DependencyInjection;
+using Ordinem.Shell.Wpf.Launcher.Views;
+using ReactiveUI;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Shapes;
-using Fuxion.Shell.Messages;
-using Fuxion.Shell.Views;
-using Fuxion.Shell;
-using Microsoft.Extensions.DependencyInjection;
-using ReactiveUI;
 using Telerik.Windows.Controls;
-using Fuxion.Reflection;
-using Ordinem.Shell.Wpf.Launcher.Views;
 
 namespace Ordinem.Shell.Wpf.Launcher
 {

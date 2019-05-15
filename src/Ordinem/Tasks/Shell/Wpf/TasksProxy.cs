@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using Ordinem.Tasks.Domain;
 using Fuxion.Application.Commands;
 
-namespace Ordinem.Shell.Wpf.Tasks
+namespace Ordinem.Tasks.Shell.Wpf
 {
 	public class TasksProxy
 	{
