@@ -36,7 +36,7 @@ namespace Ordinem.Calendar.Service
 
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.AddMvcCore()
+			services.AddControllers()
 				.AddNewtonsoftJson()
 				.AddFuxionControllers();
 
@@ -98,7 +98,7 @@ namespace Ordinem.Calendar.Service
 			//loggerFactory.AddLog4Net();
 			var logger = loggerFactory.CreateLogger(typeof(CalendarStartup));
 			logger.LogInformation("Testing logging ...");
-			app.UseMvc();
+			//app.UseMvc();
 
 			using (var serviceScope = app.ApplicationServices.CreateScope())
 			{

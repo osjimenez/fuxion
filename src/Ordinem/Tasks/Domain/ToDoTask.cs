@@ -24,7 +24,7 @@ namespace Ordinem.Tasks.Domain
 			name = @event.NewName;
 		}
 		[AggregateEventHandler]
-		void WhenRenamed(ToDoTaskDeletedEvent @event)
+		void WhenDeleted(ToDoTaskDeletedEvent @event)
 		{
 		}
 	}

@@ -35,7 +35,7 @@ namespace Ordinem.Tasks.Service
 
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.AddMvcCore()
+			services.AddControllers()
 				.AddNewtonsoftJson()
 				.AddFuxionControllers();
 
@@ -97,7 +97,7 @@ namespace Ordinem.Tasks.Service
 			//loggerFactory.AddLog4Net();
 			var logger = loggerFactory.CreateLogger(typeof(TasksStartup));
 			logger.LogInformation("Testing logging ...");
-			app.UseMvc();
+			//app.UseMvc();
 
 			using (var serviceScope = app.ApplicationServices.CreateScope())
 			{
