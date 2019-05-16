@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Fuxion.Windows.Threading;
+using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using System.Windows.Threading;
-using Fuxion.Windows.Threading;
 
 namespace Fuxion.Windows.Input
 {
@@ -16,8 +13,8 @@ namespace Fuxion.Windows.Input
 			this.canExecute = canExecute;
 		}
 
-		Action action;
-		Func<bool> canExecute;
+		private readonly Action action;
+		private readonly Func<bool> canExecute;
 
 		bool IInvokable.UseInvoker { get; set; } = true;
 
@@ -40,8 +37,8 @@ namespace Fuxion.Windows.Input
 			this.canExecute = canExecute;
 		}
 
-		Action<TParameter> action;
-		Func<TParameter, bool> canExecute;
+		private readonly Action<TParameter> action;
+		private readonly Func<TParameter, bool> canExecute;
 
 		bool IInvokable.UseInvoker { get; set; } = true;
 
