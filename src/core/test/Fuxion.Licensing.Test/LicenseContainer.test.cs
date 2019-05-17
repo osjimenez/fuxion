@@ -1,8 +1,6 @@
-﻿using Fuxion.Factories;
-using Fuxion.Licensing.Test.Mocks;
+﻿using Fuxion.Licensing.Test.Mocks;
 using Fuxion.Test;
 using Newtonsoft.Json;
-using SimpleInjector;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,13 +17,13 @@ namespace Fuxion.Licensing.Test
         public LicenseContainerTest(ITestOutputHelper output)
         {
             this.output = output;
-            Container con = new Container();
-            con.RegisterInstance<ILicenseProvider>(new LicenseProviderMock());
-            con.RegisterInstance<ILicenseStore>(new LicenseStoreMock());
-            con.RegisterInstance<IHardwareIdProvider>(new HardwareIdProviderMock());
-            con.RegisterInstance<ITimeProvider>(new MockTimeProvider());
-            con.Register<LicensingManager>();
-            Factory.AddInjector(new SimpleInjectorFactoryInjector(con));
+            //Container con = new Container();
+            //con.RegisterInstance<ILicenseProvider>(new LicenseProviderMock());
+            //con.RegisterInstance<ILicenseStore>(new LicenseStoreMock());
+            //con.RegisterInstance<IHardwareIdProvider>(new HardwareIdProviderMock());
+            //con.RegisterInstance<ITimeProvider>(new MockTimeProvider());
+            //con.Register<LicensingManager>();
+            //Factory.AddInjector(new SimpleInjectorFactoryInjector(con));
         }
         ITestOutputHelper output;
         [Fact]

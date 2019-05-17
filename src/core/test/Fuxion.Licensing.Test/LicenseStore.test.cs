@@ -1,6 +1,5 @@
 ﻿using Fuxion.Security;
 using Newtonsoft.Json;
-using SimpleInjector;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,7 +11,6 @@ using Xunit.Abstractions;
 using static Fuxion.Licensing.LicensingManager;
 using static Fuxion.Licensing.LicenseContainer;
 using Fuxion.Licensing.Test.Mocks;
-using Fuxion.Factories;
 using Fuxion.Test;
 
 namespace Fuxion.Licensing.Test
@@ -23,14 +21,14 @@ namespace Fuxion.Licensing.Test
         public LicenseStoreTest(ITestOutputHelper output)
         {
             this.output = output;
-            Factory.RemoveAllInjectors();
-            var con = new Container();
-            con.RegisterInstance<ILicenseProvider>(new LicenseProviderMock());
-            con.RegisterInstance<ILicenseStore>(new LicenseStoreMock());
-            con.RegisterInstance<IHardwareIdProvider>(new HardwareIdProviderMock());
-            con.RegisterInstance<ITimeProvider>(new MockTimeProvider());
-            con.Register<LicensingManager>();
-            Factory.AddInjector(new SimpleInjectorFactoryInjector(con));
+            //Factory.RemoveAllInjectors();
+            //var con = new Container();
+            //con.RegisterInstance<ILicenseProvider>(new LicenseProviderMock());
+            //con.RegisterInstance<ILicenseStore>(new LicenseStoreMock());
+            //con.RegisterInstance<IHardwareIdProvider>(new HardwareIdProviderMock());
+            //con.RegisterInstance<ITimeProvider>(new MockTimeProvider());
+            //con.Register<LicensingManager>();
+            //Factory.AddInjector(new SimpleInjectorFactoryInjector(con));
         }
 
 		readonly ITestOutputHelper output;
@@ -42,25 +40,26 @@ namespace Fuxion.Licensing.Test
         [InlineData(new object[] { "Hardware not match", "{AE2C70B9-6622-4341-81A0-10EAA078E7DF}", Const.PRODUCT_ID, 10, false })]
         public void OnlyValidLicenses(string _, string hardwareId, string productId, int offsetDays, bool expectedValidation)
         {
-            // Crete LicensingManager
-            var man = Factory.Get<LicensingManager>();
-            // Remove all existing licenses
-            foreach (var l in man.Store.Query().ToList())
-                Assert.True(man.Store.Remove(l), "Failed on remove license");
-            // Create license with given parameters
-            var lic = man.GetProvider().Request(new LicenseRequestMock
-            {
-                HardwareId = hardwareId,
-                ProductId = productId
-            });
-            man.Store.Add(lic);
-            var tp = Factory.Get<ITimeProvider>() as MockTimeProvider;
-            output.WriteLine($"Current offset is '{tp.Offset}'");
-            tp.SetOffset(TimeSpan.FromDays(offsetDays));
-            output.WriteLine($"After set offset is '{tp.Offset}'");
-            Assert.True(man.Store.Query().OnlyValidOfType<LicenseMock>(Const.PUBLIC_KEY).Count() == (expectedValidation ? 1 : 0));
-            tp.SetOffset(TimeSpan.Zero);
-            output.WriteLine($"After reset offset is '{tp.Offset}'");
+			//// Crete LicensingManager
+			//var man = Factory.Get<LicensingManager>();
+			//// Remove all existing licenses
+			//foreach (var l in man.Store.Query().ToList())
+			//    Assert.True(man.Store.Remove(l), "Failed on remove license");
+			//// Create license with given parameters
+			//var lic = man.GetProvider().Request(new LicenseRequestMock
+			//{
+			//    HardwareId = hardwareId,
+			//    ProductId = productId
+			//});
+			//man.Store.Add(lic);
+			//var tp = Factory.Get<ITimeProvider>() as MockTimeProvider;
+			//output.WriteLine($"Current offset is '{tp.Offset}'");
+			//tp.SetOffset(TimeSpan.FromDays(offsetDays));
+			//output.WriteLine($"After set offset is '{tp.Offset}'");
+			//Assert.True(man.Store.Query().OnlyValidOfType<LicenseMock>(Const.PUBLIC_KEY).Count() == (expectedValidation ? 1 : 0));
+			//tp.SetOffset(TimeSpan.Zero);
+			//output.WriteLine($"After reset offset is '{tp.Offset}'");
+			throw new NotImplementedException();
         }
     }
 }

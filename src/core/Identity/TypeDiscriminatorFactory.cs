@@ -1,5 +1,4 @@
-﻿using Fuxion.Logging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -10,7 +9,6 @@ namespace Fuxion.Identity
 {
 	public class TypeDiscriminatorFactory
 	{
-		private readonly ILog log = LogManager.Create<TypeDiscriminatorFactory>();
 		public string DiscriminatorTypeName { get; set; } = TypeDiscriminator.TypeDiscriminatorId;
 		public bool AllowMoreThanOneTypeByDiscriminator { get; set; }
 		#region Classes
@@ -39,7 +37,7 @@ namespace Fuxion.Identity
 			protected override string GetKeyForItem(Entry item) => item.Id;
 		}
 		#endregion
-		private EntryList entries = new EntryList();
+		private readonly EntryList entries = new EntryList();
 		private bool initialized = false;
 		public Func<Type, TypeDiscriminatedAttribute, string> GetIdFunction { get; set; } = (type, att) =>
 		{

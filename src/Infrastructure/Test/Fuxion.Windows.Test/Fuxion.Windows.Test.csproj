@@ -1,31 +1,13 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
 	<PropertyGroup>
-		<TargetFrameworks>net472</TargetFrameworks>
+		<TargetFrameworks>netcoreapp3.0</TargetFrameworks>
 		<IsPackable>false</IsPackable>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Moq" Version="4.10.1" />
-		<PackageReference Include="xunit" Version="2.4.1" />
-		<PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
-		  <PrivateAssets>all</PrivateAssets>
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-		</PackageReference>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <ProjectReference Include="..\..\..\Core\Test\Fuxion.Test\Fuxion.Test.csproj" />
-	  <ProjectReference Include="..\..\Windows\Fuxion.Windows.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Reference Include="Microsoft.CSharp" />
-	  <Reference Include="PresentationCore" />
-	  <Reference Include="PresentationFramework" />
-	  <Reference Include="System.ComponentModel.DataAnnotations" />
-	  <Reference Include="System.Xaml" />
-	  <Reference Include="WindowsBase" />
+		<ProjectReference Include="..\..\..\Core\Test\Fuxion.Test\Fuxion.Test.csproj" />
+		<ProjectReference Include="..\..\Windows\Fuxion.Windows.csproj" />
 	</ItemGroup>
 
 </Project>

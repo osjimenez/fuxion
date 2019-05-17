@@ -1,13 +1,13 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Fuxion.Logging;
 
 namespace Fuxion.Threading.Tasks
 {
-	abstract class TaskManagerEntry : ITaskManagerEntry
+	internal abstract class TaskManagerEntry : ITaskManagerEntry
 	{
 		protected TaskManagerEntry(Delegate @delegate, TaskScheduler scheduler, TaskCreationOptions options, ConcurrencyProfile concurrencyProfile)
 		{
@@ -17,10 +17,11 @@ namespace Fuxion.Threading.Tasks
 			TaskCreationOptions = options;
 			ConcurrencyProfile = concurrencyProfile;
 		}
-		readonly ILog log = LogManager.Create(typeof(TaskManagerEntry));
-		ITaskManagerEntry _Next;
-		ITaskManagerEntry _Previous;
-		Task _Task;
+		public ILogger Logger { get; set; }
+
+		private ITaskManagerEntry _Next;
+		private ITaskManagerEntry _Previous;
+		private Task _Task;
 		public ITaskManagerEntry Previous
 		{
 			get => _Previous;
@@ -28,7 +29,7 @@ namespace Fuxion.Threading.Tasks
 			{
 				_Previous = value;
 				if (value != null)
-					((TaskManagerEntry) value)._Next = this;
+					((TaskManagerEntry)value)._Next = this;
 			}
 		}
 		public ITaskManagerEntry Next
@@ -38,7 +39,7 @@ namespace Fuxion.Threading.Tasks
 			{
 				_Next = value;
 				if (value != null)
-					((TaskManagerEntry) value)._Previous = this;
+					((TaskManagerEntry)value)._Previous = this;
 			}
 		}
 		public ConcurrencyProfile ConcurrencyProfile { get; set; }
@@ -58,9 +59,9 @@ namespace Fuxion.Threading.Tasks
 						toLog += " Error '" + ex.GetType().Name + "': " + ex.Message;
 					}
 					if (ex is TaskCanceledByConcurrencyException tccex)
-						log.Debug(toLog, tccex);
+						Logger?.LogDebug(tccex, toLog);
 					else
-						log.Error(toLog, ex);
+						Logger?.LogError(ex, toLog);
 				}, TaskContinuationOptions.OnlyOnFaulted);
 			}
 		}
@@ -78,7 +79,7 @@ namespace Fuxion.Threading.Tasks
 		}
 		public void DoConcurrency()
 		{
-			var allPrevious = TaskManager.Tasks.Read(l => l.Take(l.IndexOf(this)).Where(e => 
+			var allPrevious = TaskManager.Tasks.Read(l => l.Take(l.IndexOf(this)).Where(e =>
 				string.IsNullOrWhiteSpace(ConcurrencyProfile.Name)
 					//? e.Delegate.Method == Delegate.Method && e.Delegate.Target.GetType() == Delegate.Target.GetType()
 					? ConcurrencyProfile.ByInstance
@@ -106,7 +107,7 @@ namespace Fuxion.Threading.Tasks
 		}
 	}
 
-	class ActionTaskManagerEntry : TaskManagerEntry
+	internal class ActionTaskManagerEntry : TaskManagerEntry
 	{
 		public ActionTaskManagerEntry(Action action, TaskScheduler scheduler, TaskCreationOptions options, ConcurrencyProfile concurrencyProfile = default(ConcurrencyProfile), Delegate @delegate = null) : base(@delegate ?? action, scheduler, options, concurrencyProfile) => Task = new Task(() =>
 		{
@@ -120,7 +121,7 @@ namespace Fuxion.Threading.Tasks
 		}, state, CancellationTokenSource.Token, TaskCreationOptions);
 	}
 
-	class FuncTaskManagerEntry<TResult> : TaskManagerEntry
+	internal class FuncTaskManagerEntry<TResult> : TaskManagerEntry
 	{
 		public FuncTaskManagerEntry(Func<TResult> func, TaskScheduler scheduler, TaskCreationOptions options, ConcurrencyProfile concurrencyProfile = default(ConcurrencyProfile), Delegate @delegate = null) : base(@delegate ?? func, scheduler, options, concurrencyProfile) => Task = new Task<TResult>(() =>
 		{

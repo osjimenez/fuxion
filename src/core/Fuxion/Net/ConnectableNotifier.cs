@@ -1,12 +1,12 @@
 ﻿using System.Threading.Tasks;
 using System.Linq.Expressions;
 using System.ComponentModel;
-using Fuxion.Logging;
 using Fuxion.ComponentModel;
 using System;
 using Fuxion.Threading.Tasks;
 using Fuxion.Windows.Threading;
 using System.Threading;
+using Microsoft.Extensions.Logging;
 
 namespace Fuxion.Net
 {
@@ -44,7 +44,7 @@ namespace Fuxion.Net
 				});
 			};
 		}
-		private ILog log = LogManager.Create<ConnectableNotifier<TConnectableNotifier>>();
+		public ILogger Logger { get; set; }
 		protected void ConnectionPropertyChanged()
 		{
 			switch (State)
@@ -144,7 +144,7 @@ namespace Fuxion.Net
 									firstTryResult = false;
 									cts.Cancel();
 								}
-								log.Error($"Error '{ex.GetType().Name}' en el método '{nameof(OnConnect)}' de la clase '{GetType().GetSignature(false)}' (*)\r\n{ex.Message}", ex);
+								Logger?.LogError(ex, $"Error '{ex.GetType().Name}' en el método '{nameof(OnConnect)}' de la clase '{GetType().GetSignature(false)}' (*)\r\n{ex.Message}");
 								LastConnectionAttemptErrorMessage = ex.Message;
 								if (ConnectionMode == ConnectionMode.Manual)
 								{
@@ -202,7 +202,7 @@ namespace Fuxion.Net
 						}
 						catch (Exception ex)
 						{
-							log.Error($"Error '{ex.GetType().Name}' en el método '{nameof(OnDisconnect)}' de la clase '{GetType().GetSignature(false)}' (*)\r\n{ex.Message}", ex);
+							Logger?.LogError(ex, $"Error '{ex.GetType().Name}' en el método '{nameof(OnDisconnect)}' de la clase '{GetType().GetSignature(false)}' (*)\r\n{ex.Message}");
 						}
 						if (mustClose)
 						{
@@ -268,7 +268,7 @@ namespace Fuxion.Net
 					try { await OnKeepAlive(); }
 					catch (Exception ex)
 					{
-						log.Error($"Error '{ex.GetType().Name}' en el método '{nameof(OnKeepAlive)}' de la clase '{GetType().GetSignature(false)}' (*)\r\n{ex.Message}", ex);
+						Logger?.LogError(ex, $"Error '{ex.GetType().Name}' en el método '{nameof(OnKeepAlive)}' de la clase '{GetType().GetSignature(false)}' (*)\r\n{ex.Message}");
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 						ReconnectOnFailure();
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed

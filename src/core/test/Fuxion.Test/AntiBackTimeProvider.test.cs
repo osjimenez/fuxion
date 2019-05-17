@@ -1,12 +1,11 @@
-﻿using Fuxion.Test.Helpers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
-
+using Fuxion.Test.Helpers;
 namespace Fuxion.Test
 {
     public class AntiBackTimeProviderTest : BaseTest
@@ -46,7 +45,7 @@ namespace Fuxion.Test
                         return s;
                     }));
             abtp.TimeProvider = mock;
-            abtp.Log = new XunitLog(output);
+            abtp.Logger = new XunitLogger(output);
             mock.SetOffset(TimeSpan.FromDays(-1));
             Assert.Throws<BackTimeException>(() => abtp.UtcNow());
         }

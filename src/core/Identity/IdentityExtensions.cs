@@ -1,5 +1,4 @@
-﻿using Fuxion.Factories;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -316,7 +315,7 @@ namespace Fuxion.Identity
 					PrintExpression(r?.Body);
 					Printer.WriteLine("");
 				};
-				var typeDiscriminator = Factory.Get<TypeDiscriminatorFactory>().FromType<TEntity>();
+				var typeDiscriminator = Singleton.Get<TypeDiscriminatorFactory>().FromType<TEntity>();
 				if (typeDiscriminator == null)
 				{
 					Printer.WriteLine($"Type '{typeof(TEntity).Name}' hasn't TypeDiscriminator associated to it, no filter applies");
@@ -328,7 +327,7 @@ namespace Fuxion.Identity
 				var pers = functions.SelectMany(fun => me.SearchPermissions(
 					true,
 					fun,
-					Factory.Get<TypeDiscriminatorFactory>().FromType<TEntity>(),
+					Singleton.Get<TypeDiscriminatorFactory>().FromType<TEntity>(),
 					typeof(TEntity).GetDiscriminatorsOfDiscriminatedProperties().ToArray()
 					))
 				.Distinct().ToList();

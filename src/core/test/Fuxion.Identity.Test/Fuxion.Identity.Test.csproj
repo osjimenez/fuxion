@@ -6,7 +6,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\..\Infrastructure\SimpleInjector\Fuxion.SimpleInjector.csproj" />
 	  <ProjectReference Include="..\..\Identity\Fuxion.Identity.csproj" />
 	  <ProjectReference Include="..\Fuxion.Test\Fuxion.Test.csproj" />
 	</ItemGroup>

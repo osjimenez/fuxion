@@ -11,7 +11,6 @@ namespace System.ComponentModel.DataAnnotations
 	{
 		public CustomValidationWithContextAttribute(Type type, string methodName)
 		{
-			this.type = type;
 			method = type.GetMethod(methodName, BindingFlags.Static | BindingFlags.Public);
 
 			if (method != null)
@@ -27,7 +26,6 @@ namespace System.ComponentModel.DataAnnotations
 			else throw new ArgumentException($"Method '{methodName}' in type '{type.Name}' specified for this '{nameof(CustomValidationWithContextAttribute)}' was not found. This method must be public and static.");
 		}
 
-		Type type;
 		MethodInfo method;
 
 		public override bool RequiresValidationContext => true;

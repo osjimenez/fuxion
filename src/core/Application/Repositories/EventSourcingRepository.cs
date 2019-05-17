@@ -1,12 +1,12 @@
-﻿using Fuxion.Logging;
-using Fuxion.Reflection;
-using Fuxion.Application.Aggregates;
+﻿using Fuxion.Application.Aggregates;
 using Fuxion.Application.Events;
 using Fuxion.Application.Factories;
 using Fuxion.Application.Snapshots;
 using Fuxion.Domain;
 using Fuxion.Domain.Aggregates;
 using Fuxion.Domain.Events;
+using Fuxion.Reflection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,7 +31,7 @@ namespace Fuxion.Application.Repositories
 		private readonly TypeKeyDirectory typeKeyDirectory;
 		private readonly Factory<TAggregate> aggregateFactory;
 		private readonly Dictionary<Guid, Aggregate> trackedAggregates = new Dictionary<Guid, Aggregate>();
-		private readonly ILog log = LogManager.Create<EventSourcingRepository<TAggregate>>();
+		public ILogger Logger { get; set; }
 		public virtual async Task<TAggregate> GetAsync(Guid aggregateId)
 		{
 			TAggregate aggregate = null;
@@ -118,7 +118,7 @@ namespace Fuxion.Application.Repositories
 			}
 			catch (Exception ex)
 			{
-				log.Error($"Error '{ex.GetType().Name}' in '{nameof(EventSourcingRepository<TAggregate>)}.{nameof(CommitAsync)}': {ex.Message}", ex);
+				Logger?.LogError(ex, $"Error '{ex.GetType().Name}' in '{nameof(EventSourcingRepository<TAggregate>)}.{nameof(CommitAsync)}': {ex.Message}");
 				throw;
 			}
 		}

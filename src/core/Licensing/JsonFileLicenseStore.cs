@@ -1,5 +1,4 @@
-﻿using Fuxion.Factories;
-using Fuxion.Threading;
+﻿using Fuxion.Threading;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

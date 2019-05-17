@@ -1,12 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net472</TargetFrameworks>
+		<TargetFrameworks>netcoreapp3.0</TargetFrameworks>
 		<IsPackable>false</IsPackable>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Moq" Version="4.10.1" />
 		<PackageReference Include="xunit" Version="2.4.1" />
 		<PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
 		  <PrivateAssets>all</PrivateAssets>
@@ -15,14 +14,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\..\Infrastructure\SimpleInjector\Fuxion.SimpleInjector.csproj" />
 	  <ProjectReference Include="..\..\Licensing\Fuxion.Licensing.csproj" />
 	  <ProjectReference Include="..\Fuxion.Test\Fuxion.Test.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Reference Include="Microsoft.CSharp" />
-	  <Reference Include="System.ComponentModel.DataAnnotations" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -1,5 +1,5 @@
-﻿using Fuxion.Logging;
-using Fuxion.Threading.Tasks;
+﻿using Fuxion.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Threading;
@@ -8,11 +8,11 @@ namespace Fuxion.Threading
 {
 	public class Locker<TObjectLocked> : IDisposable
 	{
-		public Locker(TObjectLocked objectLocked, LockRecursionPolicy recursionPolicy = LockRecursionPolicy.NoRecursion) { this.objectLocked = objectLocked; }
+		public Locker(TObjectLocked objectLocked, LockRecursionPolicy recursionPolicy = LockRecursionPolicy.NoRecursion) => this.objectLocked = objectLocked;
 
-		ReaderWriterLockSlim _ReaderWriterLockSlim = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
-		TObjectLocked objectLocked;
-		ILog log = LogManager.Create<Locker<TObjectLocked>>();
+		private readonly ReaderWriterLockSlim _ReaderWriterLockSlim = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+		private TObjectLocked objectLocked;
+		public ILogger Logger { get; set; }
 
 		public void Dispose() => _ReaderWriterLockSlim.Dispose();
 
@@ -25,7 +25,7 @@ namespace Fuxion.Threading
 			}
 			catch (Exception ex)
 			{
-				log.Error($"Error '{ex.GetType().Name}' in Locker.Read: {ex.Message}", ex);
+				Logger?.LogError(ex, $"Error '{ex.GetType().Name}' in Locker.Read: {ex.Message}");
 				throw;
 			}
 			finally
@@ -38,12 +38,12 @@ namespace Fuxion.Threading
 			_ReaderWriterLockSlim.EnterReadLock();
 			try
 			{
-				TResult res = func.Invoke(objectLocked);
+				var res = func.Invoke(objectLocked);
 				return res;
 			}
 			catch (Exception ex)
 			{
-				log.Error($"Error '{ex.GetType().Name}' in Locker.Read: {ex.Message}", ex);
+				Logger?.LogError(ex, $"Error '{ex.GetType().Name}' in Locker.Read: {ex.Message}");
 				throw;
 			}
 			finally
@@ -60,7 +60,7 @@ namespace Fuxion.Threading
 			}
 			catch (Exception ex)
 			{
-				log.Error($"Error '{ex.GetType().Name}' in Locker.Write: {ex.Message}", ex);
+				Logger?.LogError(ex, $"Error '{ex.GetType().Name}' in Locker.Write: {ex.Message}");
 				throw;
 			}
 			finally
@@ -73,12 +73,12 @@ namespace Fuxion.Threading
 			_ReaderWriterLockSlim.EnterWriteLock();
 			try
 			{
-				TResult res = func.Invoke(objectLocked);
+				var res = func.Invoke(objectLocked);
 				return res;
 			}
 			catch (Exception ex)
 			{
-				log.Error($"Error '{ex.GetType().Name}' in Locker.Write: {ex.Message}", ex);
+				Logger?.LogError(ex, $"Error '{ex.GetType().Name}' in Locker.Write: {ex.Message}");
 				throw;
 			}
 			finally
@@ -106,7 +106,7 @@ namespace Fuxion.Threading
 				}
 				catch (Exception ex)
 				{
-					log.Error($"Error '{ex.GetType().Name}' in Locker.Read: {ex.Message}", ex);
+					Logger?.LogError(ex, $"Error '{ex.GetType().Name}' in Locker.Read: {ex.Message}");
 					throw;
 				}
 				finally
@@ -128,7 +128,7 @@ namespace Fuxion.Threading
 				}
 				catch (Exception ex)
 				{
-					log.Error($"Error '{ex.GetType().Name}' in Locker.Read: {ex.Message}", ex);
+					Logger?.LogError(ex, $"Error '{ex.GetType().Name}' in Locker.Read: {ex.Message}");
 					throw;
 				}
 				finally
@@ -150,7 +150,7 @@ namespace Fuxion.Threading
 				}
 				catch (Exception ex)
 				{
-					log.Error($"Error '{ex.GetType().Name}' in Locker.Write: {ex.Message}", ex);
+					Logger?.LogError(ex, $"Error '{ex.GetType().Name}' in Locker.Write: {ex.Message}");
 					throw;
 				}
 				finally
@@ -172,7 +172,7 @@ namespace Fuxion.Threading
 				}
 				catch (Exception ex)
 				{
-					log.Error($"Error '{ex.GetType().Name}' in Locker.Write: {ex.Message}", ex);
+					Logger?.LogError(ex, $"Error '{ex.GetType().Name}' in Locker.Write: {ex.Message}");
 					throw;
 				}
 				finally

@@ -1,5 +1,4 @@
-﻿using Fuxion.Factories;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -90,7 +89,7 @@ namespace Fuxion.Identity
 		{
 			using (var res = Printer.CallResult<bool>())
 				return res.Value = ((IInternalRolCan)me).CheckDiscriminators(true,
-					Factory.Get<TypeDiscriminatorFactory>().FromType(type));
+					Singleton.Get<TypeDiscriminatorFactory>().FromType(type));
 		}
 		public static bool Type<T>(this IRolCan me) => me.Type(typeof(T));
 		#endregion
@@ -120,7 +119,7 @@ namespace Fuxion.Identity
 				if (me.Rol == null)
 					return res.Value = false;
 				bool CheckInstance(T value)
-				   => ByAll(me, Factory.Get<TypeDiscriminatorFactory>().FromType<T>(), typeof(T).GetDiscriminatorsOfDiscriminatedProperties(value).ToArray());
+				   => ByAll(me, Singleton.Get<TypeDiscriminatorFactory>().FromType<T>(), typeof(T).GetDiscriminatorsOfDiscriminatedProperties(value).ToArray());
 				var r = forAll
 					? values.Where(value => CheckInstance(value)).Count() == values.Count()
 					: values.Where(value => CheckInstance(value)).Any();

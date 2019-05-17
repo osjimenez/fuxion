@@ -1,6 +1,4 @@
-﻿using Fuxion.Factories;
-using Fuxion.Licensing.Test.Mocks;
-using SimpleInjector;
+﻿using Fuxion.Licensing.Test.Mocks;
 using System;
 using System.Linq;
 using Xunit;
@@ -16,14 +14,14 @@ namespace Fuxion.Licensing.Test
 		public LicensingManagerTest(ITestOutputHelper output)
 		{
 			this.output = output;
-			Factory.RemoveAllInjectors();
-			var con = new Container();
-			con.RegisterInstance<ILicenseProvider>(new LicenseProviderMock());
-			con.RegisterInstance<ILicenseStore>(new LicenseStoreMock());
-			con.RegisterInstance<IHardwareIdProvider>(new HardwareIdProviderMock());
-			con.RegisterInstance<ITimeProvider>(new MockTimeProvider());
-			con.Register<LicensingManager>();
-			Factory.AddInjector(new SimpleInjectorFactoryInjector(con));
+			//Factory.RemoveAllInjectors();
+			//var con = new Container();
+			//con.RegisterInstance<ILicenseProvider>(new LicenseProviderMock());
+			//con.RegisterInstance<ILicenseStore>(new LicenseStoreMock());
+			//con.RegisterInstance<IHardwareIdProvider>(new HardwareIdProviderMock());
+			//con.RegisterInstance<ITimeProvider>(new MockTimeProvider());
+			//con.Register<LicensingManager>();
+			//Factory.AddInjector(new SimpleInjectorFactoryInjector(con));
 		}
 
 		private readonly ITestOutputHelper output;
@@ -38,14 +36,15 @@ namespace Fuxion.Licensing.Test
 		[Fact]
 		public void License_Request()
 		{
-			var lic = Factory.Get<LicensingManager>()
-				.GetProvider().Request(new LicenseRequestMock
-				{
-					HardwareId = Const.HARDWARE_ID,
-					ProductId = Const.PRODUCT_ID
-				});
-			output.WriteLine($"Created license:");
-			output.WriteLine(new[] { lic }.ToJson());
+			//var lic = Factory.Get<LicensingManager>()
+			//	.GetProvider().Request(new LicenseRequestMock
+			//	{
+			//		HardwareId = Const.HARDWARE_ID,
+			//		ProductId = Const.PRODUCT_ID
+			//	});
+			//output.WriteLine($"Created license:");
+			//output.WriteLine(new[] { lic }.ToJson());
+			throw new NotImplementedException();
 		}
 		[Theory]
 		[InlineData(new object[] { "Match", Const.HARDWARE_ID, Const.PRODUCT_ID, 10, true })]
@@ -55,36 +54,37 @@ namespace Fuxion.Licensing.Test
 		[InlineData(new object[] { "Hardware not match", "{AE2C70B9-6622-4341-81A0-10EAA078E7DF}", Const.PRODUCT_ID, 10, false })]
 		public void Validate(string _, string hardwareId, string productId, int offsetDays, bool expectedValidation)
 		{
-			// Crete LicensingManager
-			var man = Factory.Get<LicensingManager>();
-			// Remove all existing licenses
-			foreach (var l in man.Store.Query().ToList())
-				Assert.True(man.Store.Remove(l), "Failed on remove license");
-			// Create license with given parameters
-			var lic = man.GetProvider().Request(new LicenseRequestMock
-			{
-				HardwareId = hardwareId,
-				ProductId = productId
-			});
-			man.Store.Add(lic);
-			var tp = Factory.Get<ITimeProvider>(false) as MockTimeProvider;
-			tp.SetOffset(TimeSpan.FromDays(offsetDays));
-			// Validate content
-			if (expectedValidation)
-				man.Validate<LicenseMock>(Const.PUBLIC_KEY, true);
-			else
-			{
-				try
-				{
-					man.Validate<LicenseMock>(Const.PUBLIC_KEY, true);
-				}
-				catch (LicenseValidationException lvex)
-				{
-					if (expectedValidation)
-						Assert.False(true, lvex.Message);
-				}
-			}
-			tp.SetOffset(TimeSpan.Zero);
+			//// Crete LicensingManager
+			//var man = Factory.Get<LicensingManager>();
+			//// Remove all existing licenses
+			//foreach (var l in man.Store.Query().ToList())
+			//	Assert.True(man.Store.Remove(l), "Failed on remove license");
+			//// Create license with given parameters
+			//var lic = man.GetProvider().Request(new LicenseRequestMock
+			//{
+			//	HardwareId = hardwareId,
+			//	ProductId = productId
+			//});
+			//man.Store.Add(lic);
+			//var tp = Factory.Get<ITimeProvider>(false) as MockTimeProvider;
+			//tp.SetOffset(TimeSpan.FromDays(offsetDays));
+			//// Validate content
+			//if (expectedValidation)
+			//	man.Validate<LicenseMock>(Const.PUBLIC_KEY, true);
+			//else
+			//{
+			//	try
+			//	{
+			//		man.Validate<LicenseMock>(Const.PUBLIC_KEY, true);
+			//	}
+			//	catch (LicenseValidationException lvex)
+			//	{
+			//		if (expectedValidation)
+			//			Assert.False(true, lvex.Message);
+			//	}
+			//}
+			//tp.SetOffset(TimeSpan.Zero);
+			throw new NotImplementedException();
 		}
 	}
 

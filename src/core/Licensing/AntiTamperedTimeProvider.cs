@@ -1,6 +1,6 @@
 ﻿using Fuxion;
-using Fuxion.Logging;
 using Fuxion.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -40,7 +40,7 @@ namespace Fuxion.Licensing
             ReliableTimeProvider = reliableTimeProvider;
             AntiBackTimeProvider = antiBackTimeProvider;
         }
-        public ILog Log { get; set; }
+        public ILogger Logger { get; set; }
         public ITimeProvider ReliableTimeProvider { get; set; }
         public AntiBackTimeProvider AntiBackTimeProvider { get; set; }
         // TODO - Define a margin to move time and review possible tamper scenarios
@@ -52,25 +52,25 @@ namespace Fuxion.Licensing
             try
             {
                 reliable = ReliableTimeProvider.UtcNow();
-                Log?.Info("Reliable provider get time successfully");
+				Logger?.LogInformation("Reliable provider get time successfully");
                 AntiBackTimeProvider.SetValue(reliable.Value);
             }
             catch (Exception ex)
             {
                 exception = ex;
-                Log?.Error($"Error '{ex.GetType().Name}' in ReliableTimeProvider: {ex.Message}", ex);
+				Logger?.LogError(ex, $"Error '{ex.GetType().Name}' in ReliableTimeProvider: {ex.Message}");
             }
             try
             {
                 antiBack = AntiBackTimeProvider.UtcNow();
-                Log?.Info("Anti-back provider get time successfully");
+				Logger?.LogInformation("Anti-back provider get time successfully");
             }
             //catch (NoStoredTimeValueException nstvex) { exception = nstvex; }
             //catch (BackTimeException btex) { exception = btex; }
             catch (Exception ex)
             {
                 exception = ex;
-                Log?.Error($"Error '{ex.GetType().Name}' in AntiBackProvider: {ex.Message}", ex);
+				Logger?.LogError(ex, $"Error '{ex.GetType().Name}' in AntiBackProvider: {ex.Message}");
             }
             if (reliable != null || antiBack != null)
                 return (reliable ?? antiBack).Value;

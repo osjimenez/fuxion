@@ -1,4 +1,4 @@
-﻿using Fuxion.Factories;
+﻿using Fuxion;
 using Fuxion.Identity;
 using System.Linq;
 using static Fuxion.Identity.IdentityExtensions;
@@ -11,7 +11,7 @@ namespace System.Collections.Generic
 		public static IEnumerable<TSource> AuthorizedTo<TSource>(this IEnumerable<TSource> source, IRol rol, params IFunction[] functions)
 		{
 			if (rol == null)
-				rol = Factory.Get<IdentityManager>().GetCurrent();
+				rol = Singleton.Get<IdentityManager>().GetCurrent();
 			var pre = rol.FilterExpression<TSource>(functions);
 			return source is IQueryable<TSource>
 				? ((IQueryable<TSource>)source).Where(pre)
@@ -22,7 +22,7 @@ namespace System.Collections.Generic
 		public static IQueryable<TSource> AuthorizedTo<TSource>(this IQueryable<TSource> source, IRol rol, params IFunction[] functions)
 		{
 			if (rol == null)
-				rol = Factory.Get<IdentityManager>().GetCurrent();
+				rol = Singleton.Get<IdentityManager>().GetCurrent();
 			var pre = rol.FilterExpression<TSource>(functions);
 			return source.Where(pre);
 		}

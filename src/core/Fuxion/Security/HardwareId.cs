@@ -1,33 +1,31 @@
-﻿#if (NET45 || NET472)
-using Microsoft.Win32;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
-using System.Security.Principal;
 using System.Text;
+using Microsoft.Win32;
 
 namespace Fuxion.Security
 {
-    [Flags]
-    public enum HardwareIdField
-    {
-        Cpu = 1,
-        Bios = 2,
-        Motherboard = 4,
-        Disk = 8,
-        Video = 16,
-        Mac = 32,
-        OperatingSystemSid = 64
-    }
-    public static class HardwareId
-    {
-        static Guid _cpu = Guid.Empty;
-        public static Guid Cpu
-        {
-            get
-            {
-                if (_cpu == Guid.Empty)
-                {
+	[Flags]
+	public enum HardwareIdField
+	{
+		Cpu = 1,
+		Bios = 2,
+		Motherboard = 4,
+		Disk = 8,
+		Video = 16,
+		Mac = 32,
+		OperatingSystemSid = 64
+	}
+	public static class HardwareId
+	{
+		private static Guid _cpu = Guid.Empty;
+		public static Guid Cpu
+		{
+			get
+			{
+				if (_cpu == Guid.Empty)
+				{
 					// https://www.codeproject.com/Articles/28678/Generating-Unique-Key-Finger-Print-for-a-Computer
 					//_cpu = CombineHash(_cpu, GetHash("Win32_Processor", "UniqueId"));
 					//_cpu = CombineHash(_cpu, GetHash("Win32_Processor", "ProcessorId"));
@@ -53,107 +51,114 @@ namespace Fuxion.Security
 						//}
 					}
 				}
-                return _cpu;
-            }
-        }
-        static Guid _bios = Guid.Empty;
-        public static Guid Bios
-        {
-            get
-            {
-                if (_bios == Guid.Empty)
-                {
-                    _bios = CombineHash(_bios, GetHash("Win32_BIOS", "Manufacturer"));
-                    _bios = CombineHash(_bios, GetHash("Win32_BIOS", "SMBIOSBIOSVersion"));
-                    _bios = CombineHash(_bios, GetHash("Win32_BIOS", "IdentificationCode"));
-                    _bios = CombineHash(_bios, GetHash("Win32_BIOS", "SerialNumber"));
-                    _bios = CombineHash(_bios, GetHash("Win32_BIOS", "ReleaseDate"));
-                    _bios = CombineHash(_bios, GetHash("Win32_BIOS", "Version"));
-                }
-                return _bios;
-            }
-            set { _bios = value; }
-        }
-        static Guid _disk = Guid.Empty;
-        public static Guid Disk
-        {
-            get
-            {
-                if (_disk == Guid.Empty)
-                {
-                    _disk = CombineHash(_disk, GetHash("Win32_DiskDrive", "Model"));
-                    _disk = CombineHash(_disk, GetHash("Win32_DiskDrive", "Manufacturer"));
-                    _disk = CombineHash(_disk, GetHash("Win32_DiskDrive", "Signature"));
-                    _disk = CombineHash(_disk, GetHash("Win32_DiskDrive", "TotalHeads"));
-                }
-                return _disk;
-            }
-            set { _disk = value; }
-        }
-        static Guid _motherboard = Guid.Empty;
-        public static Guid Motherboard
-        {
-            get
-            {
-                if (_motherboard == Guid.Empty)
-                {
-                    _motherboard = CombineHash(_motherboard, GetHash("Win32_BaseBoard", "Model"));
-                    _motherboard = CombineHash(_motherboard, GetHash("Win32_BaseBoard", "Manufacturer"));
-                    _motherboard = CombineHash(_motherboard, GetHash("Win32_BaseBoard", "Name"));
-                    _motherboard = CombineHash(_motherboard, GetHash("Win32_BaseBoard", "SerialNumber"));
-                }
-                return _motherboard;
-            }
-            set { _motherboard = value; }
-        }
-        static Guid _video = Guid.Empty;
-        public static Guid Video
-        {
-            get
-            {
-                if (_video == Guid.Empty)
-                {
-                    _video = CombineHash(_video, GetHash("Win32_VideoController", "DriverVersion"));
-                    _video = CombineHash(_video, GetHash("Win32_VideoController", "Name"));
-                }
-                return _video;
-            }
-            set { _video = value; }
-        }
-        static Guid _mac = Guid.Empty;
-        public static Guid Mac
-        {
-            get
-            {
-                if (_mac == Guid.Empty)
-                {
-                    _mac = CombineHash(_mac, GetHash("Win32_NetworkAdapterConfiguration", "MACAddress", "IPEnabled"));
-                }
-                return _mac;
-            }
-            set { _mac = value; }
-        }
-        static Guid _domainSid = Guid.Empty;
-        public static Guid DomainSid
-        {
-            get
-            {
-                if (_domainSid == Guid.Empty)
-                {
-                    //NTAccount account = new NTAccount(Environment.MachineName, "SYSTEM");
-                    //SecurityIdentifier sid =
-                    //(SecurityIdentifier)account.Translate(typeof(SecurityIdentifier));
+				return _cpu;
+			}
+		}
 
-                    //// we're done, show the results:
-                    //Console.WriteLine(account.Value);
-                    //Console.WriteLine(sid.Value);
-                    _domainSid = new Guid(WindowsIdentity.GetCurrent().User.AccountDomainSid.ToString().ComputeHash());
-                }
-                return _domainSid;
-            }
-            set { _domainSid = value; }
-        }
-		static Guid _operatingSystemProductId = Guid.Empty;
+		private static Guid _bios = Guid.Empty;
+		public static Guid Bios
+		{
+			get
+			{
+				if (_bios == Guid.Empty)
+				{
+					_bios = CombineHash(_bios, GetHash("Win32_BIOS", "Manufacturer"));
+					_bios = CombineHash(_bios, GetHash("Win32_BIOS", "SMBIOSBIOSVersion"));
+					_bios = CombineHash(_bios, GetHash("Win32_BIOS", "IdentificationCode"));
+					_bios = CombineHash(_bios, GetHash("Win32_BIOS", "SerialNumber"));
+					_bios = CombineHash(_bios, GetHash("Win32_BIOS", "ReleaseDate"));
+					_bios = CombineHash(_bios, GetHash("Win32_BIOS", "Version"));
+				}
+				return _bios;
+			}
+			set => _bios = value;
+		}
+
+		private static Guid _disk = Guid.Empty;
+		public static Guid Disk
+		{
+			get
+			{
+				if (_disk == Guid.Empty)
+				{
+					_disk = CombineHash(_disk, GetHash("Win32_DiskDrive", "Model"));
+					_disk = CombineHash(_disk, GetHash("Win32_DiskDrive", "Manufacturer"));
+					_disk = CombineHash(_disk, GetHash("Win32_DiskDrive", "Signature"));
+					_disk = CombineHash(_disk, GetHash("Win32_DiskDrive", "TotalHeads"));
+				}
+				return _disk;
+			}
+			set => _disk = value;
+		}
+
+		private static Guid _motherboard = Guid.Empty;
+		public static Guid Motherboard
+		{
+			get
+			{
+				if (_motherboard == Guid.Empty)
+				{
+					_motherboard = CombineHash(_motherboard, GetHash("Win32_BaseBoard", "Model"));
+					_motherboard = CombineHash(_motherboard, GetHash("Win32_BaseBoard", "Manufacturer"));
+					_motherboard = CombineHash(_motherboard, GetHash("Win32_BaseBoard", "Name"));
+					_motherboard = CombineHash(_motherboard, GetHash("Win32_BaseBoard", "SerialNumber"));
+				}
+				return _motherboard;
+			}
+			set => _motherboard = value;
+		}
+
+		private static Guid _video = Guid.Empty;
+		public static Guid Video
+		{
+			get
+			{
+				if (_video == Guid.Empty)
+				{
+					_video = CombineHash(_video, GetHash("Win32_VideoController", "DriverVersion"));
+					_video = CombineHash(_video, GetHash("Win32_VideoController", "Name"));
+				}
+				return _video;
+			}
+			set => _video = value;
+		}
+
+		private static Guid _mac = Guid.Empty;
+		public static Guid Mac
+		{
+			get
+			{
+				if (_mac == Guid.Empty)
+				{
+					_mac = CombineHash(_mac, GetHash("Win32_NetworkAdapterConfiguration", "MACAddress", "IPEnabled"));
+				}
+				return _mac;
+			}
+			set => _mac = value;
+		}
+
+		private static Guid _domainSid = Guid.Empty;
+		public static Guid DomainSid
+		{
+			get
+			{
+				if (_domainSid == Guid.Empty)
+				{
+					//NTAccount account = new NTAccount(Environment.MachineName, "SYSTEM");
+					//SecurityIdentifier sid =
+					//(SecurityIdentifier)account.Translate(typeof(SecurityIdentifier));
+
+					//// we're done, show the results:
+					//Console.WriteLine(account.Value);
+					//Console.WriteLine(sid.Value);
+					_domainSid = new Guid(System.Security.Principal.WindowsIdentity.GetCurrent().User.AccountDomainSid.ToString().ComputeHash());
+				}
+				return _domainSid;
+			}
+			set => _domainSid = value;
+		}
+
+		private static Guid _operatingSystemProductId = Guid.Empty;
 		public static Guid OperatingSystemProductId
 		{
 			get
@@ -168,8 +173,8 @@ namespace Fuxion.Security
 					//Console.WriteLine(account.Value);
 					//Console.WriteLine(sid.Value);
 
-					string value64 = string.Empty;
-					
+					var value64 = string.Empty;
+
 					RegistryKey localKey =
 						RegistryKey.OpenBaseKey(RegistryHive.LocalMachine,
 							Environment.Is64BitOperatingSystem ? RegistryView.Registry64 : RegistryView.Registry32);
@@ -178,7 +183,7 @@ namespace Fuxion.Security
 					{
 						value64 = localKey.GetValue("ProductId").ToString();
 					}
-					Console.WriteLine(String.Format("RegisteredOrganization [value64]: {0}", value64));
+					Console.WriteLine(string.Format("RegisteredOrganization [value64]: {0}", value64));
 
 
 					//var key = Registry.LocalMachine.OpenSubKey(@"Software\Microsoft\Windows NT\CurrentVersion");
@@ -187,63 +192,62 @@ namespace Fuxion.Security
 				}
 				return _operatingSystemProductId;
 			}
-			set { _operatingSystemProductId = value; }
+			set => _operatingSystemProductId = value;
 		}
 		public static Guid Get(HardwareIdField fields)
-        {
-            Guid res = Guid.Empty;
-            if (fields.HasFlag(HardwareIdField.Bios))
-                res = CombineHash(res, Bios);
-            if (fields.HasFlag(HardwareIdField.Cpu))
-                res = CombineHash(res, Cpu);
-            if (fields.HasFlag(HardwareIdField.Disk))
-                res = CombineHash(res, Disk);
-            if (fields.HasFlag(HardwareIdField.Mac))
-                res = CombineHash(res, Mac);
-            if (fields.HasFlag(HardwareIdField.Motherboard))
-                res = CombineHash(res, Motherboard);
-            if (fields.HasFlag(HardwareIdField.Video))
-                res = CombineHash(res, Video);
-            if (fields.HasFlag(HardwareIdField.OperatingSystemSid))
-                res = CombineHash(res, DomainSid);
-            return res;
-        }
-        private static Guid CombineHash(Guid guid1, Guid guid2)
-        {
-            var res = guid1.ToByteArray();
-            res.CombineHash(guid2.ToByteArray());
-            return new Guid(res);
-        }
-        private static void CombineHash(this byte[] me, byte[] byteArray)
-        {
-            if (me.Length != byteArray.Length) throw new ArgumentException("Los arrays a combinar deben tener el mismo tamaño");
-            byte[] res = new byte[me.Length];
-            for (int i = 0; i < me.Length; i++)
-                me[i] = (byte)(me[i] ^ byteArray[i]);
-        }
-        private static byte[] ComputeHash(this string me)
-        {
-            return new MD5CryptoServiceProvider().ComputeHash(
-                        new ASCIIEncoding().GetBytes(me));
-        }
-        private static Guid GetHash(string wmiClass, string wmiProperty, string wmiMustBeTrue = null)
-        {
-            var list = new List<byte[]>();
-            byte[] res = new byte[16];
-            System.Management.ManagementClass mc = new System.Management.ManagementClass(wmiClass);
-            System.Management.ManagementObjectCollection moc = mc.GetInstances();
-            foreach (System.Management.ManagementObject mo in moc)
-            {
-                if ((wmiMustBeTrue == null || mo[wmiMustBeTrue].ToString() == "True") && mo[wmiProperty] != null)
-                {
-                    list.Add(mo[wmiProperty].ToString().ComputeHash());
-                }
-            }
-            if (list.Count == 0) return Guid.Empty;
-            foreach (var g in list)
-                res.CombineHash(g);
-            return new Guid(res); ;
-        }
-    }
+		{
+			var res = Guid.Empty;
+			if (fields.HasFlag(HardwareIdField.Bios))
+				res = CombineHash(res, Bios);
+			if (fields.HasFlag(HardwareIdField.Cpu))
+				res = CombineHash(res, Cpu);
+			if (fields.HasFlag(HardwareIdField.Disk))
+				res = CombineHash(res, Disk);
+			if (fields.HasFlag(HardwareIdField.Mac))
+				res = CombineHash(res, Mac);
+			if (fields.HasFlag(HardwareIdField.Motherboard))
+				res = CombineHash(res, Motherboard);
+			if (fields.HasFlag(HardwareIdField.Video))
+				res = CombineHash(res, Video);
+			if (fields.HasFlag(HardwareIdField.OperatingSystemSid))
+				res = CombineHash(res, DomainSid);
+			return res;
+		}
+		private static Guid CombineHash(Guid guid1, Guid guid2)
+		{
+			var res = guid1.ToByteArray();
+			res.CombineHash(guid2.ToByteArray());
+			return new Guid(res);
+		}
+		private static void CombineHash(this byte[] me, byte[] byteArray)
+		{
+			if (me.Length != byteArray.Length) throw new ArgumentException("Los arrays a combinar deben tener el mismo tamaño");
+			var res = new byte[me.Length];
+			for (var i = 0; i < me.Length; i++)
+				me[i] = (byte)(me[i] ^ byteArray[i]);
+		}
+		private static byte[] ComputeHash(this string me)
+		{
+			return new MD5CryptoServiceProvider().ComputeHash(
+						new ASCIIEncoding().GetBytes(me));
+		}
+		private static Guid GetHash(string wmiClass, string wmiProperty, string wmiMustBeTrue = null)
+		{
+			var list = new List<byte[]>();
+			var res = new byte[16];
+			var mc = new System.Management.ManagementClass(wmiClass);
+			System.Management.ManagementObjectCollection moc = mc.GetInstances();
+			foreach (System.Management.ManagementObject mo in moc)
+			{
+				if ((wmiMustBeTrue == null || mo[wmiMustBeTrue].ToString() == "True") && mo[wmiProperty] != null)
+				{
+					list.Add(mo[wmiProperty].ToString().ComputeHash());
+				}
+			}
+			if (list.Count == 0) return Guid.Empty;
+			foreach (var g in list)
+				res.CombineHash(g);
+			return new Guid(res); ;
+		}
+	}
 }
-#endif

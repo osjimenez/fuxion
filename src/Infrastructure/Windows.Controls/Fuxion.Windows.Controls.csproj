@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
 	<PropertyGroup>
-		<TargetFrameworks>net45;net472;netcoreapp3.0</TargetFrameworks>
+		<TargetFrameworks>netcoreapp3.0</TargetFrameworks>
 		<UseWpf>True</UseWpf>
 		
 		<IsPackable>false</IsPackable>
@@ -17,14 +17,6 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\Core\Fuxion\Fuxion.csproj" />
 		<ProjectReference Include="..\Windows\Fuxion.Windows.csproj" />
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)'!='netcoreapp3.0'">
-		<Reference Include="PresentationCore" />
-		<Reference Include="PresentationFramework" />
-		<Reference Include="System.ComponentModel.DataAnnotations" />
-		<Reference Include="WindowsBase" />
-		<Reference Include="System.Xaml" />
 	</ItemGroup>
 
 	<ItemGroup>
