@@ -12,7 +12,7 @@ namespace Ordinem.Tasks.Application
 	public class ToDoTaskSnapshot : Snapshot<ToDoTask>
 	{
 		[JsonProperty]
-		public string Name { get; private set; }
+		public string? Name { get; private set; }
 
 		protected override void Hydrate(ToDoTask toDoTask) => toDoTask.name = Name;
 		protected override void Load(ToDoTask toDoTask) => Name = toDoTask.name;

@@ -9,7 +9,7 @@ namespace Fuxion.Threading.Tasks
 {
 	internal abstract class TaskManagerEntry : ITaskManagerEntry
 	{
-		protected TaskManagerEntry(Delegate @delegate, TaskScheduler scheduler, TaskCreationOptions options, ConcurrencyProfile concurrencyProfile)
+		protected TaskManagerEntry(Delegate? @delegate, TaskScheduler? scheduler, TaskCreationOptions options, ConcurrencyProfile concurrencyProfile)
 		{
 			CancellationTokenSource = new CancellationTokenSource();
 			Delegate = @delegate;
@@ -17,12 +17,12 @@ namespace Fuxion.Threading.Tasks
 			TaskCreationOptions = options;
 			ConcurrencyProfile = concurrencyProfile;
 		}
-		public ILogger Logger { get; set; }
+		public ILogger? Logger { get; set; }
 
-		private ITaskManagerEntry _Next;
-		private ITaskManagerEntry _Previous;
-		private Task _Task;
-		public ITaskManagerEntry Previous
+		private ITaskManagerEntry? _Next;
+		private ITaskManagerEntry? _Previous;
+		private Task? _Task;
+		public ITaskManagerEntry? Previous
 		{
 			get => _Previous;
 			set
@@ -32,7 +32,7 @@ namespace Fuxion.Threading.Tasks
 					((TaskManagerEntry)value)._Next = this;
 			}
 		}
-		public ITaskManagerEntry Next
+		public ITaskManagerEntry? Next
 		{
 			get => _Next;
 			set
@@ -45,7 +45,7 @@ namespace Fuxion.Threading.Tasks
 		public ConcurrencyProfile ConcurrencyProfile { get; set; }
 		public Task Task
 		{
-			get => _Task;
+			get => _Task ?? throw new InvalidProgramException();
 			set
 			{
 				_Task = value;
@@ -71,7 +71,7 @@ namespace Fuxion.Threading.Tasks
 		public event EventHandler CancelRequested;
 		public bool IsCancellationRequested => CancellationTokenSource.IsCancellationRequested;
 		public CancellationTokenSource CancellationTokenSource { get; set; }
-		public Delegate Delegate { get; set; }
+		public Delegate? Delegate { get; set; }
 		public void Cancel()
 		{
 			CancellationTokenSource.Cancel();
@@ -83,8 +83,8 @@ namespace Fuxion.Threading.Tasks
 				string.IsNullOrWhiteSpace(ConcurrencyProfile.Name)
 					//? e.Delegate.Method == Delegate.Method && e.Delegate.Target.GetType() == Delegate.Target.GetType()
 					? ConcurrencyProfile.ByInstance
-						? e.Delegate.Method == Delegate.Method && e.Delegate.Target == Delegate.Target
-						: e.Delegate.Method == Delegate.Method && e.Delegate.Target.GetType() == Delegate.Target.GetType()
+						? e.Delegate?.Method == Delegate?.Method && e.Delegate?.Target == Delegate?.Target
+						: e.Delegate?.Method == Delegate?.Method && e.Delegate?.Target.GetType() == Delegate?.Target.GetType()
 					: e.ConcurrencyProfile.Name == ConcurrencyProfile.Name).ToList());
 			Previous = allPrevious.LastOrDefault();
 			if (ConcurrencyProfile.CancelPrevious)
@@ -109,12 +109,12 @@ namespace Fuxion.Threading.Tasks
 
 	internal class ActionTaskManagerEntry : TaskManagerEntry
 	{
-		public ActionTaskManagerEntry(Action action, TaskScheduler scheduler, TaskCreationOptions options, ConcurrencyProfile concurrencyProfile = default(ConcurrencyProfile), Delegate @delegate = null) : base(@delegate ?? action, scheduler, options, concurrencyProfile) => Task = new Task(() =>
+		public ActionTaskManagerEntry(Action action, TaskScheduler? scheduler, TaskCreationOptions options, ConcurrencyProfile concurrencyProfile = default, Delegate? @delegate = null) : base(@delegate ?? action, scheduler, options, concurrencyProfile) => Task = new Task(() =>
 		{
 			DoConcurrency();
 			action();
 		}, CancellationTokenSource.Token, TaskCreationOptions);
-		public ActionTaskManagerEntry(Action<object> action, object state, TaskScheduler scheduler, TaskCreationOptions options, ConcurrencyProfile concurrencyProfile = default(ConcurrencyProfile), Delegate @delegate = null) : base(@delegate ?? action, scheduler, default(TaskCreationOptions), concurrencyProfile) => Task = new Task(st =>
+		public ActionTaskManagerEntry(Action<object> action, object? state, TaskScheduler? scheduler, TaskCreationOptions options, ConcurrencyProfile concurrencyProfile = default, Delegate? @delegate = null) : base(@delegate ?? action, scheduler, default(TaskCreationOptions), concurrencyProfile) => Task = new Task(st =>
 		{
 			DoConcurrency();
 			action(st);
@@ -123,13 +123,13 @@ namespace Fuxion.Threading.Tasks
 
 	internal class FuncTaskManagerEntry<TResult> : TaskManagerEntry
 	{
-		public FuncTaskManagerEntry(Func<TResult> func, TaskScheduler scheduler, TaskCreationOptions options, ConcurrencyProfile concurrencyProfile = default(ConcurrencyProfile), Delegate @delegate = null) : base(@delegate ?? func, scheduler, options, concurrencyProfile) => Task = new Task<TResult>(() =>
+		public FuncTaskManagerEntry(Func<TResult> func, TaskScheduler? scheduler, TaskCreationOptions options, ConcurrencyProfile concurrencyProfile = default, Delegate? @delegate = null) : base(@delegate ?? func, scheduler, options, concurrencyProfile) => Task = new Task<TResult>(() =>
 		{
 			DoConcurrency();
 			var res = func();
 			return res;
 		}, CancellationTokenSource.Token, TaskCreationOptions);
-		public FuncTaskManagerEntry(Func<object, TResult> func, object state, TaskScheduler scheduler, TaskCreationOptions options, ConcurrencyProfile concurrencyProfile = default(ConcurrencyProfile), Delegate @delegate = null) : base(@delegate ?? func, scheduler, default(TaskCreationOptions), concurrencyProfile) => Task = new Task<TResult>(st =>
+		public FuncTaskManagerEntry(Func<object, TResult> func, object? state, TaskScheduler? scheduler, TaskCreationOptions options, ConcurrencyProfile concurrencyProfile = default, Delegate? @delegate = null) : base(@delegate ?? func, scheduler, default(TaskCreationOptions), concurrencyProfile) => Task = new Task<TResult>(st =>
 		{
 			DoConcurrency();
 			var res = func(st);

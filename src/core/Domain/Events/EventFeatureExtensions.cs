@@ -4,7 +4,7 @@ namespace Fuxion.Domain.Events
 {
 	public static class EventFeatureExtensions
 	{
-		public static void AddFeature<TFeature>(this Event me, Action<TFeature> initializeAction = null) where TFeature : IEventFeature, new()
+		public static void AddFeature<TFeature>(this Event me, Action<TFeature>? initializeAction = null) where TFeature : IEventFeature, new()
 		{
 			if (me.HasFeature<TFeature>()) throw new EventFeatureAlreadyExistException($"Event already has '{typeof(TFeature).Name}' feature");
 			var fea = Activator.CreateInstance<TFeature>();

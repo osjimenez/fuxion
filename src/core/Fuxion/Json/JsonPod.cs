@@ -15,12 +15,16 @@ namespace Fuxion.Json
 	public class JsonPod<TPayload, TKey>
 	{
 		[JsonConstructor]
-		protected JsonPod() { }
-		public JsonPod(TPayload payload, TKey key)
+		protected JsonPod() {
+			PayloadKey = default!;
+			_Payload = default!;
+			_PayloadJRaw = null!;
+		}
+		public JsonPod(TPayload payload, TKey key) : this()
 		{
 			PayloadKey = key;
 			Payload = payload;
-			PayloadJRaw = new JRaw(payload.ToJson());
+			PayloadJRaw = new JRaw(payload?.ToJson());
 		}
 		[JsonProperty]
 		public TKey PayloadKey { get; private set; }

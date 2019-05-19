@@ -10,8 +10,8 @@ namespace Fuxion.Identity
 	{
 		object TypeKey { get; }
 		string TypeName { get; }
-		object Id { get; }
-		string Name { get; }
+		object? Id { get; }
+		string? Name { get; }
 	}
 	public interface IDiscriminator<TId, TTypeId> : IDiscriminator, IInclusive<IDiscriminator<TId, TTypeId>>, IExclusive<IDiscriminator<TId, TTypeId>>
 	{
@@ -20,14 +20,18 @@ namespace Fuxion.Identity
 	}
 	public class Discriminator : IDiscriminator
 	{
-		private Discriminator() { }
+		private Discriminator(object typeKey, string typeName)
+		{
+			TypeKey = typeKey;
+			TypeName = typeName;
+		}
 		public object TypeKey { get; private set; }
 
 		public string TypeName { get; private set; }
 
-		public object Id { get; private set; }
+		public object? Id { get; private set; }
 
-		public string Name { get; private set; }
+		public string? Name { get; private set; }
 
 		public override string ToString() => this.ToOneLineString();
 
@@ -40,11 +44,7 @@ namespace Fuxion.Identity
 		{
 			var att = type.GetTypeInfo().GetCustomAttribute<DiscriminatorAttribute>();
 			if (att != null)
-				return new Discriminator
-				{
-					TypeKey = att.TypeKey,
-					TypeName = type.Name,
-				};
+				return new Discriminator(att.TypeKey, type.Name);
 			throw new ArgumentException($"The type '{type.Name}' isn't adorned with Discriminator attribute");
 		}
 		internal static IDiscriminator ForId(Type type, object id) => ((Discriminator)Empty(type)).Transform(d =>

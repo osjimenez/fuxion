@@ -23,7 +23,9 @@ using Telerik.Windows.Controls;
 namespace Ordinem.Calendar.Shell.Wpf.Views
 {
 	[TypeKey("Ordinem.Shell.Wpf.Calendar.Views." + nameof(AppointmentListView))]
+#nullable disable
 	public partial class AppointmentListView : ReactiveUserControl<AppointmentListViewModel>, IPanelView
+#nullable enable
 	{
 		public AppointmentListView(AppointmentListViewModel viewModel)
 		{

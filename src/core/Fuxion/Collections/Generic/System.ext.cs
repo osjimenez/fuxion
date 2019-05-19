@@ -9,7 +9,7 @@ namespace System.Collections.Generic
 {
 	public static class Extensions
 	{
-		public static IEnumerable<T> TakeRandomly<T>(this IEnumerable<T> me, int count, Random ran = null, bool canRepeat = false)
+		public static IEnumerable<T> TakeRandomly<T>(this IEnumerable<T> me, int count, Random? ran = null, bool canRepeat = false)
 		{
 			if (ran == null) ran = new Random((int)DateTime.Now.Ticks);
 			var list = me.ToList();
@@ -26,10 +26,13 @@ namespace System.Collections.Generic
 			}
 		}
 		public static bool IsNullOrEmpty<T>(this IEnumerable<T> me) => me == null || !me.Any();
-		public static IEnumerable<T> RemoveNulls<T>(this IEnumerable<T> me) => me.Where(i => i != null);
-		public static IQueryable<T> RemoveNulls<T>(this IQueryable<T> me) => me.Where(i => i != null);
-		public static ICollection<T> RemoveNulls<T>(this ICollection<T> me) => me.Where(i => i != null).ToList();
-		public static T[] RemoveNulls<T>(this T[] me) => me.Where(i => i != null).ToArray();
+		public static IEnumerable<T> RemoveNulls<T>(this IEnumerable<T?> me) where T : class => me.Where(i => i != null).Cast<T>();
+		public static IEnumerable<T> RemoveNulls<T>(this IEnumerable<T?> me) where T : struct => me.Where(i => i != null).Cast<T>();
+		public static IQueryable<T> RemoveNulls<T>(this IQueryable<T?> me) where T : class => me.Where(i => i != null).Cast<T>();
+		public static IQueryable<T> RemoveNulls<T>(this IQueryable<T?> me) where T : struct => me.Where(i => i != null).Cast<T>();
+		public static ICollection<T> RemoveNulls<T>(this ICollection<T?> me) where T : class => me.Where(i => i != null).Cast<T>().ToList();
+		public static ICollection<T> RemoveNulls<T>(this ICollection<T?> me) where T : struct => me.Where(i => i != null).Cast<T>().ToList();
+		public static T[] RemoveNulls<T>(this T?[] me) where T : class => me.Where(i => i != null).Cast<T>().ToArray();
 		public static IList<T> RemoveIf<T>(this IList<T> me, Func<T, bool> predicate)
 		{
 			var res = new List<T>();
@@ -47,15 +50,15 @@ namespace System.Collections.Generic
 		}
 
 		// Remove outliers: http://www.ehow.com/how_5201412_calculate-outliers.html
-		public static IEnumerable<int> RemoveOutliers(this IEnumerable<int> list, Action<string> outputConsole = null)
+		public static IEnumerable<int> RemoveOutliers(this IEnumerable<int> list, Action<string>? outputConsole = null)
 		{
 			return list.Select(i => (long)i).RemoveOutliers(outputConsole: outputConsole).Select(i => (int)i);
 		}
-		public static IEnumerable<DateTime> RemoveOutliers(this IEnumerable<DateTime> list, Action<string> outputConsole = null)
+		public static IEnumerable<DateTime> RemoveOutliers(this IEnumerable<DateTime> list, Action<string>? outputConsole = null)
 		{
 			return list.Select(i => i.Ticks).RemoveOutliers(outputConsole: outputConsole).Select(t => new DateTime(t));
 		}
-		public static IEnumerable<long> RemoveOutliers(this IEnumerable<long> me, double interquartileOutlierValueRangeFactor = 1.5, Action<string> outputConsole = null)
+		public static IEnumerable<long> RemoveOutliers(this IEnumerable<long> me, double interquartileOutlierValueRangeFactor = 1.5, Action<string>? outputConsole = null)
 		{
 			if (!me.Any()) return me;
 			// Sort data in ascending

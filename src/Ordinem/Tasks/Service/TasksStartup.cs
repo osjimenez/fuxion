@@ -36,8 +36,11 @@ namespace Ordinem.Tasks.Service
 		public void ConfigureServices(IServiceCollection services)
 		{
 			services.AddControllers()
+				.SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
 				.AddNewtonsoftJson()
 				.AddFuxionControllers();
+
+			services.AddLogging(_ => _.AddConsole());
 
 			services.AddAutoMapper()
 				.AddProfile<ToDoTaskProfile>();
@@ -86,18 +89,30 @@ namespace Ordinem.Tasks.Service
 					snapshotStorage: inMemorySnapshotStorage,
 					snapshotFrecuency: 3));
 		}
-		public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
+		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)//, ILoggerFactory loggerFactory)
 		{
 			if (env.IsDevelopment())
+			{
 				app.UseDeveloperExceptionPage();
+			}
 			else
+			{
+				// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
 				app.UseHsts();
+			}
 
 			app.UseHttpsRedirection();
-			//loggerFactory.AddLog4Net();
-			var logger = loggerFactory.CreateLogger(typeof(TasksStartup));
-			logger.LogInformation("Testing logging ...");
-			//app.UseMvc();
+
+			app.UseRouting();
+
+			app.UseAuthentication();
+
+			app.UseAuthorization();
+
+			app.UseEndpoints(endpoints =>
+			{
+				endpoints.MapControllers();
+			});
 
 			using (var serviceScope = app.ApplicationServices.CreateScope())
 			{

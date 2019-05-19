@@ -38,7 +38,7 @@ namespace Fuxion.Windows.Markup
 					if (nonAttributeValue != null)
 						nonAttributeValue = NonAttrributePrefix + nonAttributeValue + NonAttrributeSufix;
 
-					string attRes = null;
+					string? attRes = null;
 					switch (mode)
 					{
 						case DisplayMode.Name:
@@ -77,8 +77,8 @@ namespace Fuxion.Windows.Markup
 		public static string NonAttrributePrefix { get; set; }
 		public static string NonAttrributeSufix { get; set; }
 
-		IPrinter _Printer;
-		internal IPrinter Printer {
+		IPrinter? _Printer;
+		internal IPrinter? Printer {
 			get => _Printer;
 			set
 			{
@@ -88,7 +88,7 @@ namespace Fuxion.Windows.Markup
 			}
 		}
 		internal List<NotifierChainLink> chain = new List<NotifierChainLink>();
-		public override object ProvideValue(IServiceProvider serviceProvider)
+		public override object? ProvideValue(IServiceProvider serviceProvider)
 		{
 			if (serviceProvider.GetService(typeof(IProvideValueTarget)) is IProvideValueTarget provider)
 			{
@@ -135,13 +135,13 @@ namespace Fuxion.Windows.Markup
 	}
 	internal class NotifierChainLink
 	{
-		public NotifierChainLink(Func<PropertyInfo ,string> getValueFunction)
+		public NotifierChainLink(Func<PropertyInfo? ,string?> getValueFunction)
 		{
 			this.getValueFunction = getValueFunction;
 			EventHandler = PropertyChanged;
 		}
-		internal IPrinter printer;
-		Func<PropertyInfo, string> getValueFunction;
+		internal IPrinter? printer;
+		Func<PropertyInfo?, string?> getValueFunction;
 		private void PropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
 			if(DataContext != null)
@@ -150,19 +150,19 @@ namespace Fuxion.Windows.Markup
 			SetValue();
 		}
 
-		public NotifierChainLink NextLink { get; set; }
-		public NotifierChainLink PreviousLink { get; set; }
+		public NotifierChainLink? NextLink { get; set; }
+		public NotifierChainLink? PreviousLink { get; set; }
 
-		public string PropertyName { get; set; }
+		public string? PropertyName { get; set; }
 		public PropertyChangedEventHandler EventHandler { get; set; }
 
-		public INotifyPropertyChanged ContextNotifier => DataContext != null
+		public INotifyPropertyChanged? ContextNotifier => DataContext != null
 			? typeof(INotifyPropertyChanged).IsAssignableFrom(DataContext.GetType()) 
-				? (INotifyPropertyChanged)Context 
+				? (INotifyPropertyChanged?)Context 
 				: null
 			: null;
-		object _DataContext;
-		public object DataContext
+		object? _DataContext;
+		public object? DataContext
 		{
 			get => _DataContext;
 			set
@@ -172,26 +172,26 @@ namespace Fuxion.Windows.Markup
 					ContextNotifier.PropertyChanged += EventHandler;
 			}
 		}
-		object Context => DataContext ?? (PreviousLink?.Context != null
+		object? Context => DataContext ?? (PreviousLink?.Context != null
 				? PreviousLink?.ContextProperty?.GetValue(PreviousLink.Context)
 				: null);
-		Type ContextType => Context?.GetType();
-		PropertyInfo ContextProperty => ContextType?.GetProperty(PropertyName);
-		DisplayAttribute ContextAttribute => ContextProperty?.GetCustomAttribute<DisplayAttribute>(true, false);
+		Type? ContextType => Context?.GetType();
+		PropertyInfo? ContextProperty => ContextType?.GetProperty(PropertyName);
+		DisplayAttribute? ContextAttribute => ContextProperty?.GetCustomAttribute<DisplayAttribute>(true, false);
 
-		DependencyProperty _TargetDependencyProperty;
-		public DependencyProperty TargetDependencyProperty
+		DependencyProperty? _TargetDependencyProperty;
+		public DependencyProperty? TargetDependencyProperty
 		{
 			get => _TargetDependencyProperty ?? PreviousLink?.TargetDependencyProperty;
 			set => _TargetDependencyProperty = value;
 		}
-		object _TargetElement;
-		public object TargetObject
+		object? _TargetElement;
+		public object? TargetObject
 		{
 			get => _TargetElement ?? PreviousLink?.TargetObject;
 			set => _TargetElement = value;
 		}
-		public PropertyInfo TargetProperty => TargetObject?.GetType().GetProperty(TargetDependencyProperty?.Name);
+		public PropertyInfo? TargetProperty => TargetObject?.GetType().GetProperty(TargetDependencyProperty?.Name);
 
 		public void SetValue()
 		{
@@ -212,6 +212,6 @@ namespace Fuxion.Windows.Markup
 			else NextLink.SetValue();
 		}
 
-		public override string ToString() => PropertyName;
+		public override string? ToString() => PropertyName;
 	}
 }

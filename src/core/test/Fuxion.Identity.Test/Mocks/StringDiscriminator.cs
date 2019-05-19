@@ -1,39 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Fuxion.Identity.Test.Mocks
 {
-    [DebuggerDisplay("{" + nameof(Name) + "}")]
-    class StringDiscriminator : IDiscriminator<string, string>
-    {
-        public StringDiscriminator(string id, IEnumerable<StringDiscriminator> inclusions, IEnumerable<StringDiscriminator> exclusions, string typeId)
-        {
-            Id = id;
-            Inclusions = inclusions;
-            Exclusions = exclusions;
-            TypeKey = typeId;
-        }
+	[DebuggerDisplay("{" + nameof(Name) + "}")]
+	internal class StringDiscriminator : IDiscriminator<string, string>
+	{
+		public StringDiscriminator(string id, string typeId, IEnumerable<StringDiscriminator>? inclusions, IEnumerable<StringDiscriminator>? exclusions)
+		{
+			Id = id;
+			Inclusions = inclusions ?? new List<StringDiscriminator>();
+			Exclusions = exclusions ?? new List<StringDiscriminator>();
+			TypeKey = typeId;
+		}
 
-        public string Id { get; private set; }
-        object IDiscriminator.Id { get { return Id; } }
+		public string Id { get; private set; }
+		object? IDiscriminator.Id => Id;
 
-        public string Name { get { return Id; } }
+		public string? Name => Id;
 
-        public string TypeKey { get; private set; }
-        object IDiscriminator.TypeKey { get { return TypeKey; } }
+		public string TypeKey { get; private set; }
+		object IDiscriminator.TypeKey => TypeKey;
 
-        public string TypeName { get { return TypeKey; } }
+		public string TypeName => TypeKey;
 
-        public IEnumerable<StringDiscriminator> Inclusions { get; set; }
-        IEnumerable<IDiscriminator> IInclusive<IDiscriminator>.Inclusions { get { return Inclusions; } }
-        IEnumerable<IDiscriminator<string, string>> IInclusive<IDiscriminator<string, string>>.Inclusions { get { return Inclusions; } }
+		public IEnumerable<StringDiscriminator> Inclusions { get; set; } = new List<StringDiscriminator>();
+		IEnumerable<IDiscriminator> IInclusive<IDiscriminator>.Inclusions => Inclusions;
+		IEnumerable<IDiscriminator<string, string>> IInclusive<IDiscriminator<string, string>>.Inclusions => Inclusions;
 
-        public IEnumerable<StringDiscriminator> Exclusions { get; set; }
-        IEnumerable<IDiscriminator> IExclusive<IDiscriminator>.Exclusions { get { return Exclusions; } }
-        IEnumerable<IDiscriminator<string, string>> IExclusive<IDiscriminator<string, string>>.Exclusions { get { return Exclusions; } }
-    }
+		public IEnumerable<StringDiscriminator> Exclusions { get; set; } = new List<StringDiscriminator>();
+		IEnumerable<IDiscriminator> IExclusive<IDiscriminator>.Exclusions => Exclusions;
+		IEnumerable<IDiscriminator<string, string>> IExclusive<IDiscriminator<string, string>>.Exclusions => Exclusions;
+	}
 }

@@ -72,7 +72,7 @@ namespace Fuxion.Windows.Test.Markup
 			};
 			var element = new T();
 			var ser = new ServiceProviderMock(element, property);
-			var provider = ser.GetService(null) as ProvideValueTargetMock;
+			var provider = ser.GetService(null!) as ProvideValueTargetMock;
 			ext.ProvideValue(ser);
 			return element;
 		}
@@ -84,7 +84,7 @@ namespace Fuxion.Windows.Test.Markup
 			};
 			var element = new T();
 			var ser = new ServiceProviderMock(element, property);
-			var provider = ser.GetService(null) as ProvideValueTargetMock;
+			var provider = ser.GetService(null!) as ProvideValueTargetMock;
 			ext.ProvideValue(ser);
 			return element;
 		}
@@ -193,7 +193,7 @@ namespace Fuxion.Windows.Test.Markup
 				dto.Dto2 = new Dto2Mock();
 				Assert.Equal(expectedValue, textBlock.Text);
 
-				dto.Dto2 = null;
+				dto.Dto2 = null!;
 				Assert.NotEqual(expectedValue, textBlock.Text);
 			});
 		}
@@ -243,7 +243,7 @@ namespace Fuxion.Windows.Test.Markup
 				dto2.Dto3 = new Dto3Mock();
 				Assert.Equal(expectedValue, textBlock.Text);
 
-				dto2.Dto3 = null;
+				dto2.Dto3 = null!;
 				Assert.NotEqual(expectedValue, textBlock.Text);
 			});
 		}

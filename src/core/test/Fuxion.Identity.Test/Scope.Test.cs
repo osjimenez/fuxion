@@ -17,7 +17,7 @@ namespace Fuxion.Identity.Test
         [Fact(DisplayName = "Scope - Null discriminator validation")]
         public void Validate_WrongName()
         {
-            Assert.False(new ScopeDao { Propagation = ScopePropagation.ToMe }.IsValid());
+			Assert.False(new ScopeDao("", "", null!, ScopePropagation.ToMe).IsValid());
             //Assert.IsTrue(new Scope(null, ScopePropagation.ToMe).IsValid());
         }
     }

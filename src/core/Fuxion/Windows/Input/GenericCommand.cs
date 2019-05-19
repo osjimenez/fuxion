@@ -7,14 +7,14 @@ namespace Fuxion.Windows.Input
 {
 	public class GenericCommand : ICommand, IInvokable
 	{
-		public GenericCommand(Action action, Func<bool> canExecute = null)
+		public GenericCommand(Action action, Func<bool>? canExecute = null)
 		{
 			this.action = action;
 			this.canExecute = canExecute;
 		}
 
 		private readonly Action action;
-		private readonly Func<bool> canExecute;
+		private readonly Func<bool>? canExecute;
 
 		bool IInvokable.UseInvoker { get; set; } = true;
 
@@ -31,14 +31,14 @@ namespace Fuxion.Windows.Input
 	}
 	public class GenericCommand<TParameter> : ICommand, IInvokable
 	{
-		public GenericCommand(Action<TParameter> action, Func<TParameter, bool> canExecute = null)
+		public GenericCommand(Action<TParameter> action, Func<TParameter, bool>? canExecute = null)
 		{
 			this.action = action;
 			this.canExecute = canExecute;
 		}
 
 		private readonly Action<TParameter> action;
-		private readonly Func<TParameter, bool> canExecute;
+		private readonly Func<TParameter, bool>? canExecute;
 
 		bool IInvokable.UseInvoker { get; set; } = true;
 
@@ -47,8 +47,8 @@ namespace Fuxion.Windows.Input
 		{
 			if (parameter is TParameter par)
 				return CanExecute(par);
-			if (parameter == null && typeof(TParameter).IsNullable())
-				return CanExecute(default(TParameter));
+			if (typeof(TParameter).IsNullable())
+				return CanExecute(default!);
 			throw new InvalidCastException($"The parameter of type '{parameter.GetType().Name}' couldn't casted to '{typeof(TParameter).Name}' as was declared for command parameter.");
 		}
 		public Task<bool> CanExecuteAsync(TParameter parameter) => canExecute != null ? this.Invoke(canExecute, parameter) : Task.FromResult(true);
@@ -61,7 +61,7 @@ namespace Fuxion.Windows.Input
 			if (parameter is TParameter par)
 				Execute(par);
 			else if (typeof(TParameter).IsNullable() && parameter == null)
-				Execute(default(TParameter));
+				Execute(default!);
 			else
 				throw new InvalidCastException($"The parameter of type '{parameter.GetType().Name}' couldn't casted to '{typeof(TParameter).Name}' as was declared for command parameter.");
 		}

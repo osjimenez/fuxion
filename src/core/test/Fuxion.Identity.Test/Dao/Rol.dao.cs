@@ -1,43 +1,48 @@
-﻿using Fuxion.Identity.Test.Helpers;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Fuxion.Identity.Test.Dao
 {
-    [Table(nameof(RolDao))]
-    [TypeDiscriminated(Helpers.TypeDiscriminatorIds.Rol)]
-    public abstract class RolDao : BaseDao, IRol
-    {
-        public IList<GroupDao> Groups { get; set; } = new List<GroupDao>();
-        public IList<PermissionDao> Permissions { get; set; } = new List<PermissionDao>();
-        IEnumerable<IGroup> IRol.Groups { get { return Groups; } }
-        IEnumerable<IPermission> IRol.Permissions { get { return Permissions; } }
+	[Table(nameof(RolDao))]
+	[TypeDiscriminated(Helpers.TypeDiscriminatorIds.Rol)]
+	public abstract class RolDao : BaseDao, IRol
+	{
+		public RolDao(string id, string name) : base(id, name) { }
+		public IList<GroupDao> Groups { get; set; } = new List<GroupDao>();
+		public IList<PermissionDao> Permissions { get; set; } = new List<PermissionDao>();
+		IEnumerable<IGroup> IRol.Groups => Groups;
+		IEnumerable<IPermission> IRol.Permissions => Permissions;
 
-        [DiscriminatedBy(typeof(CategoryDao))]
-        public string CategoryId { get; set; }
-        public CategoryDao Category { get; set; }
-    }
-    [Table(nameof(GroupDao))]
-    [TypeDiscriminated(Helpers.TypeDiscriminatorIds.Group)]
-    public class GroupDao : RolDao, IGroup
-    {
-        public List<RolDao> Rols { get; set; } = new List<RolDao>();
-        IEnumerable<IGroup> IRol.Groups { get { return Groups; } }
-        IEnumerable<IPermission> IRol.Permissions { get { return Permissions; } }
+		[DiscriminatedBy(typeof(CategoryDao))]
+		public string? CategoryId { get; set; }
+		public CategoryDao? Category { get; set; }
+	}
+	[Table(nameof(GroupDao))]
+	[TypeDiscriminated(Helpers.TypeDiscriminatorIds.Group)]
+	public class GroupDao : RolDao, IGroup
+	{
+		public GroupDao(string id, string name) : base(id, name) { }
+		public List<RolDao> Rols { get; set; } = new List<RolDao>();
+		IEnumerable<IGroup> IRol.Groups => Groups;
+		IEnumerable<IPermission> IRol.Permissions => Permissions;
 
-    }
-    [Table(nameof(IdentityDao))]
-    [TypeDiscriminated(Helpers.TypeDiscriminatorIds.Identity)]
-    public class IdentityDao : RolDao, IIdentity<string>
-    {
-        public string UserName { get; set; }
-        public byte[] PasswordHash { get; set; }
-        public byte[] PasswordSalt { get; set; }
-        object IIdentity.Id { get { return UserName; } }
-    }
+	}
+	[Table(nameof(IdentityDao))]
+	[TypeDiscriminated(Helpers.TypeDiscriminatorIds.Identity)]
+	public class IdentityDao : RolDao, IIdentity<string>
+	{
+#nullable disable
+		public IdentityDao(string id, string name) : base(id, name) { }
+#nullable enable
+		public IdentityDao(string id, string name, string userName, byte[] passwordHash, byte[] passwordSalt) : this(id, name)
+		{
+			UserName = userName;
+			PasswordHash = passwordHash;
+			PasswordSalt = passwordSalt;
+		}
+		public string UserName { get; set; }
+		public byte[] PasswordHash { get; set; }
+		public byte[] PasswordSalt { get; set; }
+		object IIdentity.Id => UserName;
+	}
 }

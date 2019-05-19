@@ -11,8 +11,8 @@ namespace Fuxion.Licensing
 {
 	public class LicensePod : JsonPod<License, Type>
 	{
-		public string Comment { get; set; }
-		public string Signature { get; set; }
+		public string? Comment { get; set; }
+		public string? Signature { get; set; }
 		//[JsonProperty(PropertyName = "License")]
 		//public JRaw RawLicense { get; set; }
 		//public LicensePod Set(License license) { RawLicense = new JRaw(license.ToJson(Formatting.None)); return this; }

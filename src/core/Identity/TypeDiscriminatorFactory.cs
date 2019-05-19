@@ -15,21 +15,33 @@ namespace Fuxion.Identity
 		[DebuggerDisplay("{" + nameof(Discriminator) + "}")]
 		private class Entry
 		{
+			public Entry(TypeDiscriminator discriminaator)
+			{
+				Discriminator = discriminaator;
+			}
+
 			public string Id => Discriminator.Id;
 
-			public List<EntryType> Types { get; set; }
+			public List<EntryType> Types { get; set; } = new List<EntryType>();
 			public TypeDiscriminator Discriminator { get; set; }
 			public bool IsVirtual => Types.IsNullOrEmpty();
 		}
 		[DebuggerDisplay("{" + nameof(Type) + "}")]
 		private class EntryType
 		{
+			public EntryType(Entry entry, Type type, TypeDiscriminatedAttribute? attribute)
+			{
+				Entry = entry;
+				Type = type;
+				Attribute = attribute;
+			}
 			public Entry Entry { get; set; }
 			public Type Type { get; set; }
-			public EntryType BaseType { get; set; }
-			public EntryType DeepBaseType { get; set; }
-			public List<EntryType> DerivedTypes { get; set; }
-			public TypeDiscriminatedAttribute Attribute { get; set; }
+			public TypeDiscriminatedAttribute? Attribute { get; set; }
+
+			public EntryType? BaseType { get; set; }
+			public EntryType? DeepBaseType { get; set; }
+			public List<EntryType> DerivedTypes { get; set; } = new List<EntryType>();
 		}
 		[DebuggerDisplay("{" + nameof(Count) + "} entries")]
 		private class EntryList : KeyedCollection<string, Entry>
@@ -39,13 +51,13 @@ namespace Fuxion.Identity
 		#endregion
 		private readonly EntryList entries = new EntryList();
 		private bool initialized = false;
-		public Func<Type, TypeDiscriminatedAttribute, string> GetIdFunction { get; set; } = (type, att) =>
+		public Func<Type, TypeDiscriminatedAttribute?, string> GetIdFunction { get; set; } = (type, att) =>
 		{
 			if (att != null && !string.IsNullOrWhiteSpace(att.Id))
 				return att.Id;
 			return type.GetSignature(true);
 		};
-		public Func<Type, TypeDiscriminatedAttribute, string> GetNameFunction { get; set; } = (type, att) =>
+		public Func<Type, TypeDiscriminatedAttribute?, string> GetNameFunction { get; set; } = (type, att) =>
 		{
 			if (att != null && !string.IsNullOrWhiteSpace(att.Name))
 				return att.Name;
@@ -80,16 +92,11 @@ namespace Fuxion.Identity
 						.Where(id => !entries.Contains(id))
 						.ToList())
 			{
-				entries.Add(new Entry
+				entries.Add(new Entry(new TypeDiscriminator(TypeDiscriminator.TypeDiscriminatorId, DiscriminatorTypeName)
 				{
-					Discriminator = new TypeDiscriminator
-					{
-						Id = id,
-						Name = GetVirtualNameFunction(id),
-						TypeKey = TypeDiscriminator.TypeDiscriminatorId,
-						TypeName = DiscriminatorTypeName,
-					}
-				});
+					Id = id,
+					Name = GetVirtualNameFunction(id)
+				}));
 			}
 			// Coloco los tipos base y derivados de cada tipo
 			{
@@ -144,7 +151,7 @@ namespace Fuxion.Identity
 					foreach (var ent in entries.Where(e => !e.IsVirtual).ToList())
 					{
 						var type = ent.Types.FirstOrDefault(t => t.Attribute != null);
-						if (type != null && type.Attribute.DisableMode != null)
+						if (type?.Attribute?.DisableMode != null)
 						{
 							switch (type.Attribute.DisableMode)
 							{
@@ -163,7 +170,7 @@ namespace Fuxion.Identity
 				// Agrego a tipos cuya base es null y tienen deepbase a los derivados de este deep padre
 				foreach (var type in allTypes.Where(t => t.BaseType == null && t.DeepBaseType != null && !t.DeepBaseType.DerivedTypes.Contains(t)))
 				{
-					type.DeepBaseType.DerivedTypes.Add(type);
+					type.DeepBaseType?.DerivedTypes.Add(type);
 				}
 			}
 			// Asigno las inclusiones y exclusiones
@@ -177,12 +184,12 @@ namespace Fuxion.Identity
 					// EXPLICITS
 					{
 						// Inclusions
-						ent.Discriminator.Inclusions = Search(ent.Types?.SelectMany(t => t.Attribute?.ExplicitInclusions ?? new string[] { }))
+						ent.Discriminator.Inclusions = Search(ent.Types.SelectMany(t => t.Attribute?.ExplicitInclusions ?? new string[] { }))
 							.Transform(res => res.Count > 0
 								? res
 								: ent.Types?.SelectMany(t => t.DerivedTypes.Select(t2 => t2.Entry.Discriminator)).Distinct().ToList() ?? Enumerable.Empty<TypeDiscriminator>().ToList());
 						// Exclusions
-						ent.Discriminator.Exclusions = Search(ent.Types?.SelectMany(t => t.Attribute?.ExplicitExclusions ?? new string[] { }))
+						ent.Discriminator.Exclusions = Search(ent.Types.SelectMany(t => t.Attribute?.ExplicitExclusions ?? new string[] { }))
 							.Transform(res => res.Count > 0
 								? res
 								: ent.Discriminator.Exclusions = ent.Types?.Select(t => t.DeepBaseType?.Entry.Discriminator).RemoveNulls().ToList() ?? Enumerable.Empty<TypeDiscriminator>().ToList());
@@ -190,20 +197,20 @@ namespace Fuxion.Identity
 					// ADDED
 					{
 						// Inclusions
-						ent.Discriminator.Inclusions.AddRange(Search(ent.Types?.SelectMany(t => t.Attribute?.AdditionalInclusions ?? new string[] { })));
+						ent.Discriminator.Inclusions.AddRange(Search(ent.Types.SelectMany(t => t.Attribute?.AdditionalInclusions ?? new string[] { })));
 						// Exclusions
-						ent.Discriminator.Exclusions.AddRange(Search(ent.Types?.SelectMany(t => t.Attribute?.AdditionalExclusions ?? new string[] { })));
+						ent.Discriminator.Exclusions.AddRange(Search(ent.Types.SelectMany(t => t.Attribute?.AdditionalExclusions ?? new string[] { })));
 					}
 					// AVOIDED
 					{
 						// Inclusions
-						foreach (var avo in Search(ent.Types?.SelectMany(t => t.Attribute?.AvoidedInclusions ?? new string[] { })))
+						foreach (var avo in Search(ent.Types.SelectMany(t => t.Attribute?.AvoidedInclusions ?? new string[] { })))
 						{
 							Debug.WriteLine($"Inclusion {avo.Id} avoided from {ent.Id}");
 							ent.Discriminator.Inclusions.RemoveAll(d => d.Id == avo.Id);
 						}
 						// Exclusions
-						foreach (var avo in Search(ent.Types?.SelectMany(t => t.Attribute?.AvoidedExclusions ?? new string[] { })))
+						foreach (var avo in Search(ent.Types.SelectMany(t => t.Attribute?.AvoidedExclusions ?? new string[] { })))
 						{
 							Debug.WriteLine($"Exclusion {avo.Id} avoided from {ent.Id}");
 							ent.Discriminator.Exclusions.RemoveAll(d => d.Id == avo.Id);
@@ -234,7 +241,7 @@ namespace Fuxion.Identity
 					// ................
 				}
 				// Comprobar que al deshabilitar todo el arbol de herencia no se han especificado ningún otro parámetro
-				foreach (var att in ent.Types?.Select(t => t.Attribute)
+				foreach (var att in ent.Types.Select(t => t.Attribute)
 					.RemoveNulls()
 					.Where(a => a.DisableMode != null))
 				{
@@ -318,22 +325,12 @@ namespace Fuxion.Identity
 			foreach (var type in types)
 			{
 				var att = type.GetTypeInfo().GetCustomAttribute<TypeDiscriminatedAttribute>(false, false, true);
-				var ent = new Entry
+				var ent = new Entry(new TypeDiscriminator(TypeDiscriminator.TypeDiscriminatorId, DiscriminatorTypeName)
 				{
-					Discriminator = new TypeDiscriminator
-					{
-						Id = GetIdFunction(type, att),
-						Name = GetNameFunction(type, att),
-						TypeKey = TypeDiscriminator.TypeDiscriminatorId,
-						TypeName = DiscriminatorTypeName
-					}
-				};
-				var typ = new EntryType
-				{
-					Entry = ent,
-					Type = type,
-					Attribute = att
-				};
+					Id = GetIdFunction(type, att),
+					Name = GetNameFunction(type, att)
+				});
+				var typ = new EntryType(ent, type, att);
 				ent.Types = new[] { typ }.ToList();
 				var existent = entries.FirstOrDefault(e => e.Discriminator.Id == ent.Discriminator.Id);
 				if (existent != null)

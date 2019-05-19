@@ -40,14 +40,14 @@ namespace Fuxion.EventStore
 			var slice = await connection.ReadStreamEventsForwardAsync(aggregateId.ToString(), start, count == int.MaxValue ? 4096 : count, false);
 			return slice.Events.Select(e => Encoding.Default.GetString(e.Event.Data).FromJson<EventSourcingPod>().WithTypeKeyDirectory(typeKeyDirectory)).AsQueryable();
 		}
-		public async Task<Event> GetLastEventAsync(Guid aggregateId)
+		public async Task<Event?> GetLastEventAsync(Guid aggregateId)
 		{
 			var slice = await connection.ReadStreamEventsBackwardAsync(aggregateId.ToString(), StreamPosition.End, 1, false);
 			return slice.Events.Select(e => Encoding.Default.GetString(e.Event.Data).FromJson<EventSourcingPod>().WithTypeKeyDirectory(typeKeyDirectory)).LastOrDefault();
 		}
 		#endregion
 		#region ISnapshotStorage
-		public async Task<Snapshot> GetSnapshotAsync(Type snapshotType, Guid aggregateId)
+		public async Task<Snapshot?> GetSnapshotAsync(Type snapshotType, Guid aggregateId)
 		{
 			var slice = await connection.ReadStreamEventsBackwardAsync($"{snapshotType.GetTypeKey()}@{aggregateId.ToString()}", StreamPosition.End, 1, false);
 			return slice.Events.Select(e =>

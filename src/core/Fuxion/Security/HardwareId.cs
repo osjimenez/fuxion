@@ -188,7 +188,7 @@ namespace Fuxion.Security
 
 					//var key = Registry.LocalMachine.OpenSubKey(@"Software\Microsoft\Windows NT\CurrentVersion");
 					//var val = key.GetValue("ProductId");
-					_operatingSystemProductId = new Guid(ComputeHash(value64?.ToString()));
+					_operatingSystemProductId = new Guid(ComputeHash(value64.ToString()));
 				}
 				return _operatingSystemProductId;
 			}
@@ -231,7 +231,7 @@ namespace Fuxion.Security
 			return new MD5CryptoServiceProvider().ComputeHash(
 						new ASCIIEncoding().GetBytes(me));
 		}
-		private static Guid GetHash(string wmiClass, string wmiProperty, string wmiMustBeTrue = null)
+		private static Guid GetHash(string wmiClass, string wmiProperty, string? wmiMustBeTrue = null)
 		{
 			var list = new List<byte[]>();
 			var res = new byte[16];

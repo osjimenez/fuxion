@@ -9,6 +9,11 @@ namespace Ordinem.Calendar.Domain
 	[TypeKey("Ordinem.Calendar.Application." + nameof(RenameAppointmentCommand))]
 	public class RenameAppointmentCommand : Command
 	{
+		public RenameAppointmentCommand(Guid id, string newName)
+		{
+			Id = id;
+			NewName = newName;
+		}
 		public Guid Id { get; set; } = Guid.NewGuid();
 		public string NewName { get; set; }
 	}

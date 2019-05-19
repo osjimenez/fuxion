@@ -27,7 +27,7 @@ namespace Fuxion
 			//key.SetValue(Value, time.ToString());
 			key.SetValue(Value, Serialize(time));
 		}
-		static byte[] entropy = { 9, 8, 7, 6, 5 };
+		static readonly byte[] entropy = { 9, 8, 7, 6, 5 };
 		protected override string Serialize(DateTime time)
 		{
 			return EncryptValue

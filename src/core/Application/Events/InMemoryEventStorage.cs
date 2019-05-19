@@ -12,7 +12,7 @@ namespace Fuxion.Application.Events
 {
 	public class InMemoryEventStorage : IEventStorage
 	{
-		public InMemoryEventStorage(TypeKeyDirectory typeKeyDirectory, string dumpFilePath = null)
+		public InMemoryEventStorage(TypeKeyDirectory typeKeyDirectory, string? dumpFilePath = null)
 		{
 			if (dumpFilePath != null)
 			{
@@ -22,17 +22,17 @@ namespace Fuxion.Application.Events
 					if (File.Exists(path))
 					{
 						var dic = File.ReadAllText(path).FromJson<Dictionary<Guid, List<EventSourcingPod>>>();
-						events.WriteObject(dic.Select((KeyValuePair<Guid, List<EventSourcingPod>> k) => new
-						{
+						events.WriteObject(dic.Select((KeyValuePair<Guid, List<EventSourcingPod>> k) => 
+						(
 							k.Key,
-							Value = k.Value.Select<EventSourcingPod, Event>((EventSourcingPod v) => v.WithTypeKeyDirectory(typeKeyDirectory)).ToList<Event>()
-						}).ToDictionary(a => a.Key, a => a.Value));
+							Value: k.Value.Select<EventSourcingPod, Event>((EventSourcingPod v) => v.WithTypeKeyDirectory(typeKeyDirectory)).ToList<Event>()
+						)).ToDictionary(a => a.Key, a => a.Value));
 					}
 				});
 			}
 		}
 
-		private readonly Locker<string> dumpFilePath = null;
+		private readonly Locker<string>? dumpFilePath;
 		private readonly Locker<Dictionary<Guid, List<Event>>> events = new Locker<Dictionary<Guid, List<Event>>>(new Dictionary<Guid, List<Event>>());
 
 		public Task<IQueryable<Event>> GetEventsAsync(Guid aggregateId, int start, int count)
@@ -51,7 +51,7 @@ namespace Fuxion.Application.Events
 							(str[aggregateId].IndexOf(o) < (start + count)))
 						.AsQueryable();
 			});
-		public Task<Event> GetLastEventAsync(Guid aggregateId)
+		public Task<Event?> GetLastEventAsync(Guid aggregateId)
 			=> events.ReadAsync(str => str.ContainsKey(aggregateId)
 				? str[aggregateId].Last()
 				: null);

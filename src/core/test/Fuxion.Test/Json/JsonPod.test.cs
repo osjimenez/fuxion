@@ -86,11 +86,11 @@ namespace Fuxion.Test.Json
 	}
 	public class PayloadBase
 	{
-		public string Name { get; set; }
+		public string? Name { get; set; }
 		public int Age { get; set; }
 	}
 	public class PayloadDerived : PayloadBase
 	{
-		public string Nick { get; set; }
+		public string? Nick { get; set; }
 	}
 }

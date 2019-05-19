@@ -11,7 +11,7 @@ namespace Fuxion.Windows.Controls
 {
 	public partial class UnhandledExceptionWindow : Window, INotifyPropertyChanged
 	{
-		public UnhandledExceptionWindow(Exception ex, bool showDetails, Func<Task> sendReportFunc = null)
+		public UnhandledExceptionWindow(Exception ex, bool showDetails, Func<Task>? sendReportFunc = null)
 		{
 			_CanShowDetails = showDetails;
 			this.ex = ex;
@@ -30,7 +30,8 @@ namespace Fuxion.Windows.Controls
 				try
 				{
 					SendingReport = true;
-					await sendReportFunc.Invoke();
+					if (sendReportFunc != null)
+						await sendReportFunc();
 					sendReportFunc = null;
 					SendReportCommand.RaiseCanExecuteChanged();
 				}
@@ -51,12 +52,12 @@ namespace Fuxion.Windows.Controls
 		}
 		bool _CanShowDetails;
 		UnhandledExceptionWindowButtons _Commands;
-		string _Message;
+		string? _Message;
 		bool _SendingReport;
 		Exception ex;
-		Func<Task> sendReportFunc;
+		Func<Task>? sendReportFunc;
 		public string ExceptionType => ex.GetType().FullName;
-		public string Message
+		public string? Message
 		{
 			get => _Message;
 			set

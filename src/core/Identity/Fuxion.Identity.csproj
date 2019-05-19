@@ -9,9 +9,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Compile Update="Properties\AssemblyInfo.cs">
-			<SubType>Code</SubType>
-		</Compile>
+		<Compile Update="Properties\AssemblyInfo.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

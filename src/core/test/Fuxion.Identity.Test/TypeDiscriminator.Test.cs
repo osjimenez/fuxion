@@ -96,18 +96,17 @@ namespace Fuxion.Identity.Test
 		[Fact(DisplayName = "TypeDiscriminator - Register - File tree")]
 		public void RegisterFileTree()
 		{
-			TypeDiscriminatorFactory fac = new TypeDiscriminatorFactory();
+			var fac = new TypeDiscriminatorFactory();
 			// Register from File
 			fac.RegisterTree<FileDao>();
-			TypeDiscriminator dis = null;
 			Assert.Throws<TypeDiscriminatorRegistrationValidationException>(() =>
 			{
-				dis = fac.FromType<DocumentDao>();
+				fac.FromType<DocumentDao>();
 			});
 			fac.Reset();
 			fac.RegisterTree<FileDao>();
 			fac.Register<BaseDao>();
-			dis = fac.FromType<DocumentDao>();
+			var dis = fac.FromType<DocumentDao>();
 			Assert.Equal(2, dis.Inclusions.Count());
 			Assert.Single(dis.Exclusions);
 		}

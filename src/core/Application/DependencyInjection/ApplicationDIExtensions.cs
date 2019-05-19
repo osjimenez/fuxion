@@ -25,23 +25,23 @@ namespace Microsoft.Extensions.DependencyInjection
 				var sp = me.BuildServiceProvider();
 				action(sp);
 			}
-			foreach (var (type, preAction, postAction) in builder.AutoActivateList)
+			foreach (var tup in builder.AutoActivateList)
 			{
 				IServiceProvider sp = me.BuildServiceProvider();
-				preAction?.Invoke(sp);
-				var obj = sp.GetRequiredService(type);
-				postAction?.Invoke(sp, obj);
+				tup.PreAction?.Invoke(sp);
+				var obj = sp.GetRequiredService(tup.Type);
+				tup.PostAction?.Invoke(sp, obj);
 			}
 			return me;
 		}
 
-		public static IFuxionBuilder InMemoryEventStorage(this IFuxionBuilder me, out Func<IServiceProvider, InMemoryEventStorage> builder, string dumpFilePath = null)
+		public static IFuxionBuilder InMemoryEventStorage(this IFuxionBuilder me, out Func<IServiceProvider, InMemoryEventStorage> builder, string? dumpFilePath = null)
 		{
 			builder = new Func<IServiceProvider, InMemoryEventStorage>(sp => new InMemoryEventStorage(sp.GetRequiredService<TypeKeyDirectory>(), dumpFilePath));
 			me.Services.AddSingleton(builder);
 			return me;
 		}
-		public static IFuxionBuilder InMemorySnapshotStorage(this IFuxionBuilder me, out Func<IServiceProvider, InMemorySnapshotStorage> builder, string dumpFilePath = null)
+		public static IFuxionBuilder InMemorySnapshotStorage(this IFuxionBuilder me, out Func<IServiceProvider, InMemorySnapshotStorage> builder, string? dumpFilePath = null)
 		{
 			builder = new Func<IServiceProvider, InMemorySnapshotStorage>(sp => new InMemorySnapshotStorage(sp.GetRequiredService<TypeKeyDirectory>(), dumpFilePath));
 			me.Services.AddSingleton(builder);
@@ -50,7 +50,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
 		public static IFuxionBuilder Aggregate<TAggregate, TAggregateFactory>(
 			this IFuxionBuilder me,
-			Func<IServiceProvider, IEventPublisher> eventPublisher = null)
+			Func<IServiceProvider, IEventPublisher>? eventPublisher = null)
 			where TAggregate : Aggregate, new()
 			where TAggregateFactory : Factory<TAggregate>
 		{
@@ -62,14 +62,14 @@ namespace Microsoft.Extensions.DependencyInjection
 				me.Services.AddTransient<IFactoryFeature<TAggregate>, EventsFactoryFeature<TAggregate>>();
 				//AggregateFactory<TAggregate>.Initializer.OnInitialize(a => a.AttachEvents());
 				// I don't have to register IEventPublisher, i must register IEventPublisher<TAggregate>. Because of this, i use the decorator.
-				me.Services.AddSingleton<IEventPublisher<TAggregate>>(sp => new EventPublisherDecorator<TAggregate>(eventPublisher(sp)));
+				me.Services.AddSingleton<IEventPublisher<TAggregate>>(sp => new EventPublisherDecorator<TAggregate>(eventPublisher!(sp)));
 			}
 			return me;
 		}
 		public static IFuxionBuilder Aggregate<TAggregate, TAggregateFactory>(
 			this IFuxionBuilder me,
 			Func<IServiceProvider, IEventStorage> eventStorage,
-			Func<IServiceProvider, IEventPublisher> eventPublisher = null)
+			Func<IServiceProvider, IEventPublisher>? eventPublisher = null)
 			where TAggregate : Aggregate, new()
 			where TAggregateFactory : Factory<TAggregate>
 		{
@@ -85,7 +85,7 @@ namespace Microsoft.Extensions.DependencyInjection
 			Func<IServiceProvider, IEventStorage> eventStorage,
 			Func<IServiceProvider, ISnapshotStorage> snapshotStorage,
 			int snapshotFrecuency = 3,
-			Func<IServiceProvider, IEventPublisher> eventPublisher = null)
+			Func<IServiceProvider, IEventPublisher>? eventPublisher = null)
 			where TAggregate : Aggregate, new()
 			where TAggregateFactory : Factory<TAggregate>
 			where TSnapshot : Snapshot<TAggregate>
@@ -99,7 +99,7 @@ namespace Microsoft.Extensions.DependencyInjection
 		}
 		public static IFuxionBuilder Aggregate<TAggregate, TAggregateFactory, TAggregateRepository>(
 			this IFuxionBuilder me,
-			Func<IServiceProvider, IEventPublisher> eventPublisher = null)
+			Func<IServiceProvider, IEventPublisher>? eventPublisher = null)
 			where TAggregate : Aggregate, new()
 			where TAggregateFactory : Factory<TAggregate>
 			where TAggregateRepository : class, IRepository<TAggregate>
@@ -170,7 +170,7 @@ namespace Microsoft.Extensions.DependencyInjection
 		IServiceCollection Services { get; }
 		TypeKeyDirectory TypeKeyDirectory { get; }
 		void AddToPostRegistrationList(Action<IServiceProvider> action);
-		void AddToAutoActivateList<T>(Action<IServiceProvider> preAction = null, Action<IServiceProvider, T> postAction = null);
+		void AddToAutoActivateList<T>(Action<IServiceProvider>? preAction = null, Action<IServiceProvider, T>? postAction = null);
 	}
 
 	internal class FuxionBuilder : IFuxionBuilder
@@ -186,8 +186,8 @@ namespace Microsoft.Extensions.DependencyInjection
 		public List<Action<IServiceProvider>> PostRegistrationsList = new List<Action<IServiceProvider>>();
 		public void AddToPostRegistrationList(Action<IServiceProvider> action) => PostRegistrationsList.Add(action);
 
-		public List<(Type type, Action<IServiceProvider> PreAction, Action<IServiceProvider, object> PostAction)> AutoActivateList { get; } = new List<(Type type, Action<IServiceProvider> PreAction, Action<IServiceProvider, object> PostAction)>();
-		public void AddToAutoActivateList<T>(Action<IServiceProvider> preAction = null, Action<IServiceProvider, T> postAction = null) => AutoActivateList.Add((typeof(T), preAction, postAction != null ? new Action<IServiceProvider, object>((sp, o) => postAction(sp, (T)o)) : null));
+		public List<(Type Type, Action<IServiceProvider>? PreAction, Action<IServiceProvider, object>? PostAction)> AutoActivateList { get; } = new List<(Type Type, Action<IServiceProvider>? PreAction, Action<IServiceProvider, object>? PostAction)>();
+		public void AddToAutoActivateList<T>(Action<IServiceProvider>? preAction = null, Action<IServiceProvider, T>? postAction = null) => AutoActivateList.Add((typeof(T), preAction, postAction != null ? new Action<IServiceProvider, object>((sp, o) => postAction(sp, (T)o)) : null));
 	}
 	public interface IEventsBuilder
 	{

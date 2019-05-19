@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Fuxion.Synchronization
@@ -18,7 +19,7 @@ namespace Fuxion.Synchronization
 				await Task.Delay(TimeSpan.FromSeconds(5));
 				while (!cleanEntriesTask.IsCancellationRequested())
 				{
-					await Task.Delay(CheckOutdatedSessionsInterval, cleanEntriesTask.GetCancellationToken(true).Value);
+					await Task.Delay(CheckOutdatedSessionsInterval, cleanEntriesTask.GetCancellationToken(true));
 					runners.Write(l =>
 					{
 						foreach (var entry in l.Where(e => e.CreationTime.Add(SessionOutdateLimit) < DateTime.Now).ToList())
@@ -30,9 +31,9 @@ namespace Fuxion.Synchronization
 				}
 			});
 		}
-		public ILogger Logger { get; set; }
+		public ILogger? Logger { get; set; }
 
-		private readonly Task cleanEntriesTask = null;
+		private readonly Task cleanEntriesTask;
 		private readonly Locker<ICollection<SessionEntry>> runners = new Locker<ICollection<SessionEntry>>(new List<SessionEntry>());
 		public IPrinter Printer { get; set; } = Fuxion.Printer.Default;
 		public TimeSpan CheckOutdatedSessionsInterval { get; set; } = TimeSpan.FromMinutes(1);

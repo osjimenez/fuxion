@@ -1,40 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Fuxion.Identity.Test.Mocks
 {
-    [DebuggerDisplay("{" + nameof(Name) + "}")]
-    class GuidStringDiscriminator : IDiscriminator<Guid, string>
-    {
-        public GuidStringDiscriminator(Guid id, string name, IEnumerable<GuidStringDiscriminator> inclusions, IEnumerable<GuidStringDiscriminator> exclusions, string typeId)
-        {
-            Id = id;
-            Name = name;
-            Inclusions = inclusions;
-            Exclusions = exclusions;
-            TypeKey = typeId;
-        }
+	[DebuggerDisplay("{" + nameof(Name) + "}")]
+	internal class GuidStringDiscriminator : IDiscriminator<Guid, string>
+	{
+		public GuidStringDiscriminator(Guid id, string name, string typeId, IEnumerable<GuidStringDiscriminator>? inclusions, IEnumerable<GuidStringDiscriminator>? exclusions)
+		{
+			Id = id;
+			Name = name;
+			Inclusions = inclusions ?? new List<GuidStringDiscriminator>();
+			Exclusions = exclusions ?? new List<GuidStringDiscriminator>();
+			TypeKey = typeId;
+		}
 
-        public Guid Id { get; private set; }
-        object IDiscriminator.Id { get { return Id; } }
+		public Guid Id { get; private set; }
+		object? IDiscriminator.Id => Id;
 
-        public string Name { get; private set; }
+		public string? Name { get; private set; }
 
-        public string TypeKey { get; private set; }
-        object IDiscriminator.TypeKey { get { return TypeKey; } }
+		public string TypeKey { get; private set; }
+		object IDiscriminator.TypeKey => TypeKey;
 
-        public string TypeName { get { return TypeKey; } }
+		public string TypeName => TypeKey;
 
-        public IEnumerable<GuidStringDiscriminator> Inclusions { get; set; }
-        IEnumerable<IDiscriminator> IInclusive<IDiscriminator>.Inclusions { get { return Inclusions; } }
-        IEnumerable<IDiscriminator<Guid, string>> IInclusive<IDiscriminator<Guid, string>>.Inclusions { get { return Inclusions; } }
+		public IEnumerable<GuidStringDiscriminator> Inclusions { get; set; } = new List<GuidStringDiscriminator>();
+		IEnumerable<IDiscriminator> IInclusive<IDiscriminator>.Inclusions => Inclusions;
+		IEnumerable<IDiscriminator<Guid, string>> IInclusive<IDiscriminator<Guid, string>>.Inclusions => Inclusions;
 
-        public IEnumerable<GuidStringDiscriminator> Exclusions { get; set; }
-        IEnumerable<IDiscriminator> IExclusive<IDiscriminator>.Exclusions { get { return Exclusions; } }
-        IEnumerable<IDiscriminator<Guid, string>> IExclusive<IDiscriminator<Guid, string>>.Exclusions { get { return Exclusions; } }
-    }
+		public IEnumerable<GuidStringDiscriminator> Exclusions { get; set; } = new List<GuidStringDiscriminator>();
+		IEnumerable<IDiscriminator> IExclusive<IDiscriminator>.Exclusions => Exclusions;
+		IEnumerable<IDiscriminator<Guid, string>> IExclusive<IDiscriminator<Guid, string>>.Exclusions => Exclusions;
+	}
 }

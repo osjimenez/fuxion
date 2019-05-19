@@ -11,7 +11,7 @@ namespace Fuxion
 		private DateTime cachedValue;
 		private readonly Stopwatch stopwatch = new Stopwatch();
 
-		public ILogger Logger { get; set; }
+		public ILogger? Logger { get; set; }
 		public ITimeProvider TimeProvider { get; set; }
 		public TimeSpan ExpirationInterval { get; set; } = TimeSpan.FromSeconds(5);
 

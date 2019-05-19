@@ -7,9 +7,9 @@ using System.Linq;
 
 namespace Fuxion.Windows.Data
 {
-	public class INotifyCollectionChangedToRemovedDuplicatesINotifyCollectionChangedConverter : GenericConverter<INotifyCollectionChanged, INotifyCollectionChanged>
+	public class INotifyCollectionChangedToRemovedDuplicatesINotifyCollectionChangedConverter : GenericConverter<INotifyCollectionChanged, INotifyCollectionChanged?>
 	{
-		public override INotifyCollectionChanged Convert(INotifyCollectionChanged source, CultureInfo culture)
+		public override INotifyCollectionChanged? Convert(INotifyCollectionChanged source, CultureInfo culture)
 		{
 			if (source == null) return null;
 			if (!(source is IEnumerable<object>)) throw new NotSupportedException($"The source must be '{nameof(IEnumerable<object>)}'.");

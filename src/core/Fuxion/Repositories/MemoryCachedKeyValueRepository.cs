@@ -1,8 +1,5 @@
 ﻿using Fuxion.Threading;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Fuxion.Repositories
@@ -13,23 +10,22 @@ namespace Fuxion.Repositories
 		{
 			_origin = originRepository;
 		}
-		IKeyValueRepository<TKey, TValue> _origin;
-		Locker<Dictionary<TKey, MemoryKeyValueRepositoryValue<TValue>>> dic = new Locker<Dictionary<TKey, MemoryKeyValueRepositoryValue<TValue>>>(new Dictionary<TKey, MemoryKeyValueRepositoryValue<TValue>>());
+
+		readonly IKeyValueRepository<TKey, TValue> _origin;
+		readonly Locker<Dictionary<TKey, MemoryKeyValueRepositoryValue<TValue>>> dic = new Locker<Dictionary<TKey, MemoryKeyValueRepositoryValue<TValue>>>(new Dictionary<TKey, MemoryKeyValueRepositoryValue<TValue>>());
 
 		public bool Exist(TKey key)
 			=> dic.Write(d =>
 			{
 				if (d.ContainsKey(key)) return d[key].HasOrigin;
-				var res = new MemoryKeyValueRepositoryValue<TValue>();
+				MemoryKeyValueRepositoryValue<TValue> res = default!;
 				try
 				{
-					res.Value = _origin.Get(key);
-					res.HasOrigin = true;
+					res = new MemoryKeyValueRepositoryValue<TValue>(true, _origin.Get(key));
 				}
 				catch
 				{
-					res.Value = default(TValue);
-					res.HasOrigin = false;
+					res = new MemoryKeyValueRepositoryValue<TValue>(false, default!);
 				}
 				d.Add(key, res);
 				return res.HasOrigin;
@@ -37,18 +33,16 @@ namespace Fuxion.Repositories
 		public TValue Find(TKey key)
 			=> dic.Write(d =>
 			{
-				if (key == null) return default(TValue);
+				if (key == null) return default!;
 				if (d.ContainsKey(key)) return d[key].Value;
-				var res = new MemoryKeyValueRepositoryValue<TValue>();
+				MemoryKeyValueRepositoryValue<TValue> res = default!;
 				try
 				{
-					res.Value = _origin.Get(key);
-					res.HasOrigin = true;
+					res = new MemoryKeyValueRepositoryValue<TValue>(true, _origin.Get(key));
 				}
 				catch
 				{
-					res.Value = default(TValue);
-					res.HasOrigin = false;
+					res = new MemoryKeyValueRepositoryValue<TValue>(false, default!);
 				}
 				d.Add(key, res);
 				return res.Value;
@@ -57,17 +51,15 @@ namespace Fuxion.Repositories
 			=> dic.Write(d =>
 			{
 				if (d.ContainsKey(key)) return d[key].Value;
-				var res = new MemoryKeyValueRepositoryValue<TValue>();
+				MemoryKeyValueRepositoryValue<TValue> res = default!;
 				try
 				{
-					res.Value = _origin.Get(key);
-					res.HasOrigin = true;
+					res = new MemoryKeyValueRepositoryValue<TValue>(true, _origin.Get(key));
 					return res.Value;
 				}
 				catch
 				{
-					res.Value = default(TValue);
-					res.HasOrigin = false;
+					res = new MemoryKeyValueRepositoryValue<TValue>(false, default!);
 					throw;
 				}
 				finally
@@ -85,11 +77,7 @@ namespace Fuxion.Repositories
 			=> dic.Write(d =>
 			{
 				if (d.ContainsKey(key)) d[key].Value = value;
-				else d[key] = new MemoryKeyValueRepositoryValue<TValue>
-				{
-					HasOrigin = true,
-					Value = value
-				};
+				else d[key] = new MemoryKeyValueRepositoryValue<TValue>(true, value);
 				_origin.Set(key, value);
 			});
 	}
@@ -106,16 +94,14 @@ namespace Fuxion.Repositories
 			=> dic.WriteAsync(async d =>
 			{
 				if (d.ContainsKey(key)) return d[key].HasOrigin;
-				var res = new MemoryKeyValueRepositoryValue<TValue>();
+				MemoryKeyValueRepositoryValue<TValue> res = default!;
 				try
 				{
-					res.Value = await _origin.GetAsync(key);
-					res.HasOrigin = true;
+					res = new MemoryKeyValueRepositoryValue<TValue>(true, await _origin.GetAsync(key));
 				}
 				catch
 				{
-					res.Value = default(TValue);
-					res.HasOrigin = false;
+					res = new MemoryKeyValueRepositoryValue<TValue>(false, default!);
 				}
 				d.Add(key, res);
 				return res.HasOrigin;
@@ -123,17 +109,16 @@ namespace Fuxion.Repositories
 		public Task<TValue> FindAsync(TKey key)
 			=> dic.WriteAsync(async d =>
 			{
+				if (key == null) return default!;
 				if (d.ContainsKey(key)) return d[key].Value;
-				var res = new MemoryKeyValueRepositoryValue<TValue>();
+				MemoryKeyValueRepositoryValue<TValue> res = default!;
 				try
 				{
-					res.Value = await _origin.GetAsync(key);
-					res.HasOrigin = true;
+					res = new MemoryKeyValueRepositoryValue<TValue>(true, await _origin.GetAsync(key));
 				}
 				catch
 				{
-					res.Value = default(TValue);
-					res.HasOrigin = false;
+					res = new MemoryKeyValueRepositoryValue<TValue>(false, default!);
 				}
 				d.Add(key, res);
 				return res.Value;
@@ -142,17 +127,15 @@ namespace Fuxion.Repositories
 			=> dic.WriteAsync(async d =>
 			{
 				if (d.ContainsKey(key)) return d[key].Value;
-				var res = new MemoryKeyValueRepositoryValue<TValue>();
+				MemoryKeyValueRepositoryValue<TValue> res = default!;
 				try
 				{
-					res.Value = await _origin.GetAsync(key);
-					res.HasOrigin = true;
+					res = new MemoryKeyValueRepositoryValue<TValue>(true, await _origin.GetAsync(key));
 					return res.Value;
 				}
 				catch
 				{
-					res.Value = default(TValue);
-					res.HasOrigin = false;
+					res = new MemoryKeyValueRepositoryValue<TValue>(false, default!);
 					throw;
 				}
 				finally
@@ -170,17 +153,18 @@ namespace Fuxion.Repositories
 			=> dic.WriteAsync(d =>
 			{
 				if (d.ContainsKey(key)) d[key].Value = value;
-				else d[key] = new MemoryKeyValueRepositoryValue<TValue>
-				{
-					HasOrigin = true,
-					Value = value
-				};
+				else d[key] = new MemoryKeyValueRepositoryValue<TValue>(true, value);
 				return _origin.SetAsync(key, value);
 			});
 	}
 	class MemoryKeyValueRepositoryValue<TValue>
-    {
-        public bool HasOrigin { get; set; }
-        public TValue Value { get; set; }
-    }
+	{
+		public MemoryKeyValueRepositoryValue(bool hasOrigin, TValue value)
+		{
+			HasOrigin = hasOrigin;
+			Value = value;
+		}
+		public bool HasOrigin { get; set; }
+		public TValue Value { get; set; }
+	}
 }

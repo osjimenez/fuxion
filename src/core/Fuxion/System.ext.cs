@@ -40,7 +40,7 @@ namespace System
 
             // En caso de ser nulo el objeto, se devuelve tal cual
             if (Object.ReferenceEquals(source, null))
-                return default(T);
+                return default!;
 
             //Creamos un stream en memoria
             IFormatter formatter = new BinaryFormatter();
@@ -60,10 +60,10 @@ namespace System
             }
         }
 		#region Disposable
-		public static DisposableEnvelope<T> AsDisposable<T>(this T me, Action<T> actionOnDispose = null) { return new DisposableEnvelope<T>(me, actionOnDispose); }
+		public static DisposableEnvelope<T> AsDisposable<T>(this T me, Action<T>? actionOnDispose = null) { return new DisposableEnvelope<T>(me, actionOnDispose); }
 		#endregion
 		#region Json
-		public static string ToJson(this object me, Formatting formatting = Formatting.Indented, JsonSerializerSettings settings = null)
+		public static string ToJson(this object me, Formatting formatting = Formatting.Indented, JsonSerializerSettings? settings = null)
 		{
 			if (settings != null)
 				return JsonConvert.SerializeObject(me, formatting, settings);
@@ -80,9 +80,9 @@ namespace System
 						IgnoreSerializableAttribute = true
 					}));
 		}
-		public static T FromJson<T>(this string me, JsonSerializerSettings settings = null) => JsonConvert.DeserializeObject<T>(me, settings);
+		public static T FromJson<T>(this string me, JsonSerializerSettings? settings = null) => JsonConvert.DeserializeObject<T>(me, settings);
 		public static object FromJson(this string me, Type type) => JsonConvert.DeserializeObject(me, type);
-		public static T CloneWithJson<T>(this T me) => (T)FromJson(me.ToJson(), me.GetType());
+		public static T CloneWithJson<T>(this T me) => (T)FromJson(me?.ToJson() ?? throw new InvalidDataException(), me?.GetType() ?? throw new InvalidDataException());
 		#endregion
 		#region Transform
 		public static TResult Transform<TSource, TResult>(this TSource me, Func<TSource, TResult> transformFunction)
@@ -122,7 +122,7 @@ namespace System
 			=> me.IsGenericType && me.GetGenericTypeDefinition() == typeof(Nullable<>) && me.GetGenericArguments()[0] == typeof(T);
 		public static bool IsNullableEnum(this Type me, bool valueTypesAreNotNullables = true)
 			=> me.IsGenericType && me.GetGenericTypeDefinition() == typeof(Nullable<>) && me.GetGenericArguments()[0].IsEnum;
-		public static object GetDefaultValue(this Type me)
+		public static object? GetDefaultValue(this Type me)
 			=> me.GetTypeInfo().IsValueType && Nullable.GetUnderlyingType(me) == null
 				? Activator.CreateInstance(me)
 				: null;
@@ -162,9 +162,9 @@ namespace System
 			return sb.ToString();
 		}
 		public static bool IsSubclassOfRawGeneric(this Type me, Type generic) => GetSubclassOfRawGeneric(me, generic) != null;
-		public static Type GetSubclassOfRawGeneric(this Type me, Type generic)
+		public static Type? GetSubclassOfRawGeneric(this Type me, Type generic)
 		{
-			Queue<Type> toProcess = new Queue<Type>(new[] { me });
+			var toProcess = new Queue<Type>(new[] { me });
 			while (toProcess.Count > 0)
 			{
 				var actual = toProcess.Dequeue();
@@ -284,19 +284,19 @@ namespace System
 
 			return (length < value.Length) ? value.Substring(value.Length - length) : value;
 		}
-		public static string RandomString(this string me, int length, Random ran = null)
+		public static string RandomString(this string me, int length, Random? ran = null)
 		{
 			const string defaultStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 			if (ran == null) ran = new Random((int)DateTime.Now.Ticks);
 			var str = string.IsNullOrWhiteSpace(me) ? defaultStr : me;
 			return new string(Enumerable.Repeat(str, length)
-				.Select(s => s[ran.Next(s.Length)]).ToArray());
+				.Select(s => s[ran!.Next(s.Length)]).ToArray());
 		}
-		public static string ToTitleCase(this string me, CultureInfo culture = null)
+		public static string ToTitleCase(this string me, CultureInfo? culture = null)
 			=> (culture ?? CultureInfo.CurrentCulture).TextInfo.ToTitleCase(me.ToLower());
-		public static string ToCamelCase(this string me, CultureInfo culture = null)
+		public static string ToCamelCase(this string me, CultureInfo? culture = null)
 			=> me.ToTitleCase(culture).Replace(" ", "").Transform(s => s.Substring(0, 1).ToLower() + s.Substring(1, s.Length - 1));
-		public static string ToPascalCase(this string me, CultureInfo culture = null)
+		public static string ToPascalCase(this string me, CultureInfo? culture = null)
 			=> me.ToTitleCase(culture).Replace(" ", "");
 		public static bool Contains(this string source, string value, StringComparison comparisonType)
 			=> source != null && value != null && source?.IndexOf(value, comparisonType) >= 0;
@@ -365,7 +365,7 @@ namespace System
 		public static bool IsBetween(this TimeSpan me, TimeSpan minimum, TimeSpan maximum) => minimum <= me && me <= maximum;
 		#endregion
 		#region IsNullOrDefault
-		public static bool IsNullOrDefault<T>(this T me) => EqualityComparer<T>.Default.Equals(me, default(T));
+		public static bool IsNullOrDefault<T>(this T me) => EqualityComparer<T>.Default.Equals(me, default!);
 		#endregion
 		#region Time
 		public static string ToTimeString(this TimeSpan ts, int numberOfElements = 5, bool onlyLetters = false)

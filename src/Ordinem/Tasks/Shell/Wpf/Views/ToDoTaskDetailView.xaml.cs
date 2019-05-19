@@ -19,7 +19,9 @@ using Telerik.Windows.Controls;
 
 namespace Ordinem.Tasks.Shell.Wpf.Views
 {
+#nullable disable
 	public partial class ToDoTaskDetailView : ReactiveUserControl<ToDoTaskDetailViewModel>, IPanelView
+#nullable enable
 	{
 		public ToDoTaskDetailView(ToDoTaskDetailViewModel viewModel)
 		{
@@ -30,7 +32,7 @@ namespace Ordinem.Tasks.Shell.Wpf.Views
 			this.WhenActivated(d =>
 			{
 				this.OneWayBind(ViewModel,
-					x => x.Dvo.Name,
+					x => x.Dvo!.Name,
 					x => x.NameTextBlock.Text)
 				.DisposeWith(d);
 

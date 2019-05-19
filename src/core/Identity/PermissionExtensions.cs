@@ -104,12 +104,6 @@ namespace Fuxion.Identity
 					throw new ArgumentException($"'{nameof(typeDiscriminator)}' cannot be null");
 				bool Compute()
 				{
-					// Si no hay discriminador de tipo, TRUE
-					if (typeDiscriminator == null)
-					{
-						Printer.WriteLine($"'{nameof(typeDiscriminator)}' is null");
-						//return true;
-					}
 					// Si el permiso no define scopes, TRUE
 					if (!me.Scopes.Any())
 					{
@@ -120,7 +114,7 @@ namespace Fuxion.Identity
 					// Compruebo el discriminador de tipo
 					using (Printer.Indent2($"Checking type discriminator"))
 					{
-						var scopeOfTypeOfTypeDiscriminator = me.Scopes.FirstOrDefault(s => Comparer.AreEquals(s.Discriminator.TypeKey, typeDiscriminator?.TypeKey));
+						var scopeOfTypeOfTypeDiscriminator = me.Scopes.FirstOrDefault(s => Comparer.AreEquals(s.Discriminator.TypeKey, typeDiscriminator.TypeKey));
 						if (scopeOfTypeOfTypeDiscriminator != null)
 						{
 							Printer.WriteLine($"The {nameof(typeDiscriminator)} '{typeDiscriminator}' and permission scope '{scopeOfTypeOfTypeDiscriminator}' have same type '{typeDiscriminator.TypeKey}', continue");
@@ -229,7 +223,7 @@ namespace Fuxion.Identity
 				case PrintMode.PropertyList:
 					break;
 				case PrintMode.Table:
-					string GetValue(IPermission permission) => permission?.Value.ToString();
+					string GetValue(IPermission permission) => permission.Value.ToString();
 					string GetFunction(IPermission permission) => permission?.Function?.ToString() ?? "null";
 					string GetDiscriminatorTypeId(IScope scope) => scope.Discriminator?.TypeKey?.ToString() ?? "null";
 					string GetDiscriminatorTypeName(IScope scope) => scope.Discriminator?.TypeName?.ToString() ?? "null";

@@ -1,5 +1,4 @@
 ﻿using Fuxion.Application;
-using Fuxion.Factories;
 using Ordinem.Calendar.Domain;
 using System;
 using System.Collections.Generic;

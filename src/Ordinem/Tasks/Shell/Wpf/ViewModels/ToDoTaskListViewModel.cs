@@ -91,8 +91,8 @@ namespace Ordinem.Tasks.Shell.Wpf.ViewModels
 		
 		public ReadOnlyObservableCollection<ToDoTaskDvo> AllToDoTasks { get; }
 		public ReadOnlyObservableCollection<ToDoTaskDvo> ToDoTasks { get; }
-		ToDoTaskDvo _SelectedToDoTask;
-		public ToDoTaskDvo SelectedToDoTask
+		ToDoTaskDvo? _SelectedToDoTask;
+		public ToDoTaskDvo? SelectedToDoTask
 		{
 			get => _SelectedToDoTask;
 			set => this.RaiseAndSetIfChanged(ref _SelectedToDoTask, value);

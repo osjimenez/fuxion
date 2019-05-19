@@ -49,7 +49,7 @@ namespace Fuxion.Windows.Documents
 		internal static Block ProcessProperty(this object obj, string name, Type type)
 		{
 			var res = new List<Block>();
-			var objType = obj?.GetType() ?? type;
+			var objType = obj.GetType() ?? type;
 			return IsBasicType(objType)
 				? (Block)new Paragraph().Transform(p =>
 				{
@@ -67,11 +67,11 @@ namespace Fuxion.Windows.Documents
 	{
 		public CollapsibleSection(object obj, string name, Type type, bool expandEnumerable)
 		{
-			var objType = obj?.GetType() ?? type;
+			var objType = obj.GetType() ?? type;
 			var isEnumerable = obj is IEnumerable || typeof(IEnumerable).IsAssignableFrom(objType);
 			int enumerableCount = 0;
 			if (isEnumerable)
-				foreach (var item in obj as IEnumerable)
+				foreach (var item in (obj as IEnumerable)!)
 					enumerableCount++;
 
 			var button = new ToggleButton();
@@ -80,14 +80,14 @@ namespace Fuxion.Windows.Documents
 			{
 				try
 				{
-					var but = s as ToggleButton;
+					var but = (s as ToggleButton)!;
 					if (but.IsChecked ?? false)
 					{
 						button.Content = "▲";
 						if (expandEnumerable)
 						{
 							int counter = 0;
-							foreach (var item in obj as IEnumerable)
+							foreach (var item in (obj as IEnumerable)!)
 							{
 								var list = new List();
 								list.MarkerStyle = TextMarkerStyle.None;

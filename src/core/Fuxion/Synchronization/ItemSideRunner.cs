@@ -19,9 +19,9 @@ namespace Fuxion.Synchronization
         }
         public string Name { get; }
         public TKey Key { get; }
-        object IItemSideRunner.Key { get { return Key; } }
+        object IItemSideRunner.Key { get { return Key!; } }
         public TSideItem SideItem { get; }
-        object IItemSideRunner.SideItem { get { return SideItem; } }
+        object IItemSideRunner.SideItem { get { return SideItem!; } }
         public string SideItemName { get; }
         public string SideItemTag { get; }
         public ISideRunner Side { get; set; }

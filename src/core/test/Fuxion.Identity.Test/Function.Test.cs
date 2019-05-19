@@ -17,13 +17,13 @@ namespace Fuxion.Identity.Test
         [Fact(DisplayName = "Function - IsValid")]
         public void Validate()
         {
-            Assert.False(new GuidFunction(Guid.NewGuid(), null).IsValid());
+            Assert.False(new GuidFunction(Guid.NewGuid(), null!).IsValid());
             Assert.False(new GuidFunction(Guid.NewGuid(), "").IsValid());
             Assert.False(new GuidFunction(Guid.NewGuid(), " ").IsValid());
             Assert.False(new GuidFunction(default(Guid), "valid").IsValid());
             Assert.True(new GuidFunction(Guid.NewGuid(), "valid").IsValid());
 
-            Assert.False(new StringFunction(null).IsValid());
+            Assert.False(new StringFunction(null!).IsValid());
             Assert.False(new StringFunction("").IsValid());
             Assert.False(new StringFunction(" ").IsValid());
             Assert.True(new StringFunction("valid").IsValid());

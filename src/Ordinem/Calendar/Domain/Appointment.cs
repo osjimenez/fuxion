@@ -9,7 +9,7 @@ namespace Ordinem.Calendar.Domain
 		public void Rename(string newName) => ApplyEvent(new AppointmentRenamedEvent(Id, newName));
 		public void Delete() => ApplyEvent(new AppointmentDeletedEvent(Id));
 
-		internal string name;
+		internal string? name;
 
 		[AggregateEventHandler]
 		void WhenCreated(AppointmentCreatedEvent @event)

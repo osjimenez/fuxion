@@ -18,7 +18,7 @@ namespace Ordinem.Tasks.Shell.Wpf
 		private static readonly HttpClient client = new HttpClient();
 		const string host = "localhost";
 		const int port = 5100;
-		public AsyncRetryPolicy GetRetryPolicy([CallerMemberName] string callerMemberName = null)
+		public AsyncRetryPolicy GetRetryPolicy([CallerMemberName] string? callerMemberName = null)
 			=> RetryPolicy.Handle<HttpRequestException>()
 			//.Or<BrokerUnreachableException>()
 			.WaitAndRetryAsync(5, retryAttempt => TimeSpan.FromSeconds(System.Math.Pow(2, retryAttempt)), (ex, time) =>
@@ -27,17 +27,9 @@ namespace Ordinem.Tasks.Shell.Wpf
 			}
 		);
 		public Task AddToDoTask(Guid id, string name)
-			=> SendToDoTaskCommand(new CreateToDoTaskCommand
-			{
-				Id = id,
-				ToDoTaskName = name
-			});
+			=> SendToDoTaskCommand(new CreateToDoTaskCommand(id, name));
 		public Task RenameToDoTask(Guid id, string name)
-			=> SendToDoTaskCommand(new RenameToDoTaskCommand
-			{
-				Id = id,
-				NewName = name
-			});
+			=> SendToDoTaskCommand(new RenameToDoTaskCommand(id, name));
 		public Task DeleteToDoTask(Guid id)
 			=> SendToDoTaskCommand(new DeleteToDoTaskCommand
 			{

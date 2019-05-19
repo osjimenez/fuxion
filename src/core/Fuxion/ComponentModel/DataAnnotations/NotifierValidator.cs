@@ -14,7 +14,7 @@ namespace Fuxion.ComponentModel.DataAnnotations
 		public NotifierValidator()
 		{
 			Messages = new ReadOnlyObservableCollection<NotifierValidatorMessage>(_messages);
-			StringMessages = new ReadOnlyObservableCollection<string>(_stringMessages);
+			StringMessages = new ReadOnlyObservableCollection<string?>(_stringMessages);
 			((INotifyCollectionChanged)Messages).CollectionChanged += (s, e) =>
 			{
 				HasMessages = Messages.Count > 0;
@@ -46,8 +46,8 @@ namespace Fuxion.ComponentModel.DataAnnotations
 		private ObservableCollection<NotifierValidatorMessage> _messages = new ObservableCollection<NotifierValidatorMessage>();
 		public ReadOnlyObservableCollection<NotifierValidatorMessage> Messages { get; private set; }
 
-		private ObservableCollection<string> _stringMessages = new ObservableCollection<string>();
-		public ReadOnlyObservableCollection<string> StringMessages { get; private set; }
+		private readonly ObservableCollection<string?> _stringMessages = new ObservableCollection<string?>();
+		public ReadOnlyObservableCollection<string?> StringMessages { get; private set; }
 
 		public bool HasMessages
 		{
@@ -203,10 +203,10 @@ namespace Fuxion.ComponentModel.DataAnnotations
 				RegisterNotifierCollection((INotifyPropertyChanged)sender, collectionProperty, paths.First(p => p.Notifier.GetHashCode() == sender.GetHashCode()).GetMessageFunction);
 			}
 
-			ConditionalValidationAttribute conditionalAtt = sender.GetType().GetCustomAttribute<ConditionalValidationAttribute>(true, false, true);
+			var conditionalAtt = sender.GetType().GetCustomAttribute<ConditionalValidationAttribute>(true, false, true);
 			RefreshEntries(sender, conditionalAtt != null ? null : e.PropertyName, paths.First(p => p.Notifier.GetHashCode() == sender.GetHashCode()).GetMessageFunction);
 		}
-		private void RefreshEntries(object instance, string propertyName, Func<string> pathFunc)
+		private void RefreshEntries(object instance, string? propertyName, Func<string> pathFunc)
 		{
 			ICollection<NotifierValidatorMessage> newEntries = Validate(instance, propertyName, pathFunc);
 			_messages.RemoveIf(e => !newEntries.Contains(e) && e.Object == instance && (string.IsNullOrWhiteSpace(propertyName) || e.PropertyName == propertyName));
@@ -218,19 +218,19 @@ namespace Fuxion.ComponentModel.DataAnnotations
 				}
 			}
 		}
-		public static ICollection<NotifierValidatorMessage> Validate(object instance, string propertyName = null)
+		public static ICollection<NotifierValidatorMessage> Validate(object instance, string? propertyName = null)
 		{
 			return Validate(instance, propertyName, () => "");
 		}
 
-		private static ICollection<NotifierValidatorMessage> Validate(object instance, string propertyName, Func<string> pathFunc)
+		private static ICollection<NotifierValidatorMessage> Validate(object instance, string? propertyName, Func<string?> pathFunc)
 		{
 			if (instance == null)
 			{
 				return new NotifierValidatorMessage[0];
 			}
 
-			ConditionalValidationAttribute conditionalAtt = instance.GetType().GetCustomAttribute<ConditionalValidationAttribute>(true, false, true);
+			var conditionalAtt = instance.GetType().GetCustomAttribute<ConditionalValidationAttribute>(true, false, true);
 			if (conditionalAtt != null && !conditionalAtt.Check(instance))
 			{
 				return new NotifierValidatorMessage[0];
@@ -249,28 +249,27 @@ namespace Fuxion.ComponentModel.DataAnnotations
 						{
 							MemberName = pro.Name
 						};
-						return new
-						{
-							Attribute = att,
+						return (
+							Attribute: att,
 							att.RequiresValidationContext,
-							Value = val,
-							Context = context,
-							IsValid = att.RequiresValidationContext ? null : (bool?)att.IsValid(val),
-							Result = att.GetValidationResult(val, context)
-						};
+							Value: val,
+							Context: context,
+							IsValid: att.RequiresValidationContext ? null : (bool?)att.IsValid(val),
+							Result: att.GetValidationResult(val, context));
 					})
-					.Where(tup => (tup.RequiresValidationContext && tup.Result != ValidationResult.Success) || (!tup.RequiresValidationContext && !tup.IsValid.Value))
-					.Select(tup => new NotifierValidatorMessage(instance)
-					{
-						Message = tup.RequiresValidationContext
+					.Where(tup => (tup.RequiresValidationContext && tup.Result != ValidationResult.Success) || (!tup.RequiresValidationContext && !(tup.IsValid ?? false)))
+					.Select(tup => new NotifierValidatorMessage(
+						instance, 
+						tup.RequiresValidationContext
 							? tup.Result.ErrorMessage
 							: tup.Attribute.FormatErrorMessage(pro.GetDisplayName()),
-						PathFunc = pathFunc,
+						pathFunc)
+					{
 						PropertyDisplayName = pro.GetDisplayName(),
 						PropertyName = pro.Name,
 					})).ToList();
 			// Validate all properties of the metadata type
-			MetadataTypeAttribute metaAtt = instance.GetType().GetCustomAttribute<MetadataTypeAttribute>(true, false, true);
+			var metaAtt = instance.GetType().GetCustomAttribute<MetadataTypeAttribute>(true, false, true);
 			if (metaAtt != null)
 			{
 				List<NotifierValidatorMessage> metaRes = TypeDescriptor.GetProperties(metaAtt.MetadataClassType)
@@ -282,23 +281,22 @@ namespace Fuxion.ComponentModel.DataAnnotations
 					.Select(att =>
 					{
 						object val = TypeDescriptor.GetProperties(instance).Cast<PropertyDescriptor>().First(p => p.Name == pro.Name).GetValue(instance);
-						return new
-						{
-							Attribute = att,
+						return (
+							Attribute: att,
 							att.RequiresValidationContext,
-							Value = val,
-							Context = new ValidationContext(instance),
-							IsValid = att.RequiresValidationContext ? null : (bool?)att.IsValid(val),
-							Result = att.GetValidationResult(val, new ValidationContext(instance))
-						};
+							Value: val,
+							Context: new ValidationContext(instance),
+							IsValid : att.RequiresValidationContext ? null : (bool?)att.IsValid(val),
+							Result: att.GetValidationResult(val, new ValidationContext(instance)));
 					})
-					.Where(tup => (tup.RequiresValidationContext && tup.Result != ValidationResult.Success) || (!tup.RequiresValidationContext && !tup.IsValid.Value))
-					.Select(tup => new NotifierValidatorMessage(instance)
-					{
-						Message = tup.RequiresValidationContext
+					.Where(tup => (tup.RequiresValidationContext && tup.Result != ValidationResult.Success) || (!tup.RequiresValidationContext && !(tup.IsValid ?? false)))
+					.Select(tup => new NotifierValidatorMessage(
+						instance, 
+						tup.RequiresValidationContext
 							? tup.Result.ErrorMessage
-							: tup.Attribute.FormatErrorMessage(pro.GetDisplayName()),
-						PathFunc = pathFunc,
+							: tup.Attribute.FormatErrorMessage(pro.GetDisplayName()), 
+						pathFunc)
+					{
 						PropertyDisplayName = pro.GetDisplayName(),
 						PropertyName = pro.Name,
 					})).ToList();
@@ -342,15 +340,13 @@ namespace Fuxion.ComponentModel.DataAnnotations
 			_messages.RemoveIf(m => m.Object is CustomValidatorEntryObject);
 		}
 
-		public IDisposable AddCustom(string message, string path = null, string propertyName = null, string propertyDisplayName = null)
+		public IDisposable AddCustom(string message, string? path = null, string? propertyName = null, string? propertyDisplayName = null)
 		{
 			DisposableEnvelope<CustomValidatorEntryObject> res = new CustomValidatorEntryObject().AsDisposable(o => _messages.RemoveIf(m => m.Object == o));
-			_messages.Add(new NotifierValidatorMessage(res.Value)
+			_messages.Add(new NotifierValidatorMessage(res.Value, message, () => path)
 			{
-				PathFunc = () => path,
 				PropertyName = propertyName,
-				PropertyDisplayName = propertyDisplayName,
-				Message = message
+				PropertyDisplayName = propertyDisplayName
 			});
 			return res;
 		}

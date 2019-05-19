@@ -1,17 +1,11 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+﻿using Fuxion.Resources;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
-using Fuxion.Resources;
 namespace Fuxion.Test
 {
-    public class SystemExtensionsTest : BaseTest
-    {
+	public class SystemExtensionsTest : BaseTest
+	{
 		public SystemExtensionsTest(ITestOutputHelper output) : base(output) { }
 		[Fact(DisplayName = "IsBetween - First")]
 		public void IsBetween()
@@ -23,27 +17,27 @@ namespace Fuxion.Test
 			Assert.False(3.IsBetween(4, 5)); // High out of range
 		}
 		[Fact(DisplayName = "Object - IsNullOrDefault")]
-        public void IsNullOrDefaultTest()
-        {
-            string s = null;
-            Assert.True(s.IsNullOrDefault());
-            s = "";
-            Assert.False(s.IsNullOrDefault());
-            int i = 0;
-            Assert.True(i.IsNullOrDefault());
-            i = 1;
-            Assert.False(i.IsNullOrDefault());
-            Guid g = Guid.Empty;
-            Assert.True(g.IsNullOrDefault());
-            g = Guid.NewGuid();
-            Assert.False(g.IsNullOrDefault());
-            int? i2 = null;
-            Assert.True(i2.IsNullOrDefault());
-            i2 = null;
-            Assert.True(i2.IsNullOrDefault());
-            i2 = 1;
-            Assert.False(i2.IsNullOrDefault());
-        }
+		public void IsNullOrDefaultTest()
+		{
+			string? s = null;
+			Assert.True(s.IsNullOrDefault());
+			s = "";
+			Assert.False(s.IsNullOrDefault());
+			var i = 0;
+			Assert.True(i.IsNullOrDefault());
+			i = 1;
+			Assert.False(i.IsNullOrDefault());
+			var g = Guid.Empty;
+			Assert.True(g.IsNullOrDefault());
+			g = Guid.NewGuid();
+			Assert.False(g.IsNullOrDefault());
+			int? i2 = null;
+			Assert.True(i2.IsNullOrDefault());
+			i2 = null;
+			Assert.True(i2.IsNullOrDefault());
+			i2 = 1;
+			Assert.False(i2.IsNullOrDefault());
+		}
 		[Fact(DisplayName = "Type - IsNullable")]
 		public void TypeIsNullable()
 		{
@@ -91,7 +85,8 @@ namespace Fuxion.Test
 			{
 				Output.WriteLine(nameof(GenerateException));
 				GenerateException();
-			}catch(Exception ex)
+			}
+			catch (Exception ex)
 			{
 				var json = ex.ToJson();
 				Output.WriteLine(json);
@@ -115,8 +110,10 @@ namespace Fuxion.Test
 				Output.WriteLine("");
 			}
 		}
-		void GenerateException() => throw new NotImplementedException("Test method for testing");
-		void GenerateExceptionWithInner()
+
+		private void GenerateException() => throw new NotImplementedException("Test method for testing");
+
+		private void GenerateExceptionWithInner()
 		{
 			try
 			{
@@ -129,88 +126,91 @@ namespace Fuxion.Test
 		}
 		#region CloneWithJson
 		[Fact(DisplayName = "System - CloneWithJson")]
-        public void CloneWithJsonTest()
-        {
-            Base b = new Derived();
-            var res = b.CloneWithJson();
-            Output.WriteLine("res.GetType() = " + res.GetType().Name);
-            Assert.Equal(nameof(Derived), res.GetType().Name);
-        }
-        class Base { }
-        class Derived : Base { }
-        #endregion
-        #region Transform
-        [Fact(DisplayName = "Object - Transform")]
-        public void TransfromTest()
-        {
-            var res = new TransformationSource
-            {
-                Integer = 123,
-                String = "test"
-            }.Transform(source => source.Integer);
+		public void CloneWithJsonTest()
+		{
+			Base b = new Derived();
+			var res = b.CloneWithJson();
+			Output.WriteLine("res.GetType() = " + res.GetType().Name);
+			Assert.Equal(nameof(Derived), res.GetType().Name);
+		}
 
-            Assert.Equal(123, res);
-        }
-        class TransformationSource
-        {
-            public int Integer { get; set; }
-            public string String { get; set; }
-        }
-        #endregion
-        #region TimeSpan
-        [Fact(DisplayName = "TimeSpan - ToTimeString")]
-        public void TimeSpan_ToTimeString()
-        {
-            var res = TimeSpan.Parse("1.18:53:58.1234567").ToTimeString();
-            Assert.Contains($"1 {Strings.day}", res);
-            Assert.Contains($"18 {Strings.hours}", res);
-            Assert.Contains($"53 {Strings.minutes}", res);
-            Assert.Contains($"58 {Strings.seconds}", res);
-            Assert.Contains($"123 {Strings.milliseconds}", res);
+		private class Base { }
 
-            res = TimeSpan.Parse("1.18:53:58.1234567").ToTimeString(3);
-            Assert.Contains($"1 {Strings.day}", res);
-            Assert.Contains($"18 {Strings.hours}", res);
-            Assert.Contains($"53 {Strings.minutes}", res);
-            Assert.DoesNotContain($"58 {Strings.seconds}", res);
-            Assert.DoesNotContain($"123 {Strings.milliseconds}", res);
+		private class Derived : Base { }
+		#endregion
+		#region Transform
+		[Fact(DisplayName = "Object - Transform")]
+		public void TransfromTest()
+		{
+			var res = new TransformationSource(123, "test").Transform(source => source.Integer);
+			Assert.Equal(123, res);
+		}
 
-            res = TimeSpan.Parse("0.18:53:58.1234567").ToTimeString(3);
-            Assert.DoesNotContain($"0 {Strings.day}", res);
-            Assert.Contains($"18 {Strings.hours}", res);
-            Assert.Contains($"53 {Strings.minutes}", res);
-            Assert.Contains($"58 {Strings.seconds}", res);
-            Assert.DoesNotContain($"123 {Strings.milliseconds}", res);
+		private class TransformationSource
+		{
+			public TransformationSource(int integer, string @string)
+			{
+				Integer = integer;
+				String = @string;
+			}
+			public int Integer { get; set; }
+			public string String { get; set; }
+		}
+		#endregion
+		#region TimeSpan
+		[Fact(DisplayName = "TimeSpan - ToTimeString")]
+		public void TimeSpan_ToTimeString()
+		{
+			var res = TimeSpan.Parse("1.18:53:58.1234567").ToTimeString();
+			Assert.Contains($"1 {Strings.day}", res);
+			Assert.Contains($"18 {Strings.hours}", res);
+			Assert.Contains($"53 {Strings.minutes}", res);
+			Assert.Contains($"58 {Strings.seconds}", res);
+			Assert.Contains($"123 {Strings.milliseconds}", res);
 
-            res = TimeSpan.Parse("1.18:53:58.1234567").ToTimeString(6);
-            Output.WriteLine("ToTimeString: "+res);
+			res = TimeSpan.Parse("1.18:53:58.1234567").ToTimeString(3);
+			Assert.Contains($"1 {Strings.day}", res);
+			Assert.Contains($"18 {Strings.hours}", res);
+			Assert.Contains($"53 {Strings.minutes}", res);
+			Assert.DoesNotContain($"58 {Strings.seconds}", res);
+			Assert.DoesNotContain($"123 {Strings.milliseconds}", res);
 
-            // Only letters
+			res = TimeSpan.Parse("0.18:53:58.1234567").ToTimeString(3);
+			Assert.DoesNotContain($"0 {Strings.day}", res);
+			Assert.Contains($"18 {Strings.hours}", res);
+			Assert.Contains($"53 {Strings.minutes}", res);
+			Assert.Contains($"58 {Strings.seconds}", res);
+			Assert.DoesNotContain($"123 {Strings.milliseconds}", res);
 
-            res = TimeSpan.Parse("1.18:53:58.1234567").ToTimeString(onlyLetters: true);
-            Assert.Contains($"1 d", res);
-            Assert.Contains($"18 h", res);
-            Assert.Contains($"53 m", res);
-            Assert.Contains($"58 s", res);
-            Assert.Contains($"123 ms", res);
+			res = TimeSpan.Parse("1.18:53:58.1234567").ToTimeString(6);
+			Output.WriteLine("ToTimeString: " + res);
 
-            res = TimeSpan.Parse("1.18:53:58.1234567").ToTimeString(3, true);
-            Assert.Contains($"1 d", res);
-            Assert.Contains($"18 h", res);
-            Assert.Contains($"53 m", res);
-            Assert.DoesNotContain($"58 s", res);
-            Assert.DoesNotContain($"123 ms", res);
+			// Only letters
 
-            res = TimeSpan.Parse("0.18:53:58.1234567").ToTimeString(3, true);
-            Assert.DoesNotContain($"0 d", res);
-            Assert.Contains($"18 h", res);
-            Assert.Contains($"53 m", res);
-            Assert.Contains($"58 s", res);
-            Assert.DoesNotContain($"123 ms", res);
+			res = TimeSpan.Parse("1.18:53:58.1234567").ToTimeString(onlyLetters: true);
+			Assert.Contains($"1 d", res);
+			Assert.Contains($"18 h", res);
+			Assert.Contains($"53 m", res);
+			Assert.Contains($"58 s", res);
+			Assert.Contains($"123 ms", res);
 
-            res = TimeSpan.Parse("1.18:53:58.1234567").ToTimeString(6, true);
-            Output.WriteLine("ToTimeString (onlyLetters): " + res);
-        }
+			res = TimeSpan.Parse("1.18:53:58.1234567").ToTimeString(3, true);
+			Assert.Contains($"1 d", res);
+			Assert.Contains($"18 h", res);
+			Assert.Contains($"53 m", res);
+			Assert.DoesNotContain($"58 s", res);
+			Assert.DoesNotContain($"123 ms", res);
+
+			res = TimeSpan.Parse("0.18:53:58.1234567").ToTimeString(3, true);
+			Assert.DoesNotContain($"0 d", res);
+			Assert.Contains($"18 h", res);
+			Assert.Contains($"53 m", res);
+			Assert.Contains($"58 s", res);
+			Assert.DoesNotContain($"123 ms", res);
+
+			res = TimeSpan.Parse("1.18:53:58.1234567").ToTimeString(6, true);
+			Output.WriteLine("ToTimeString (onlyLetters): " + res);
+		}
 		#endregion
 		#region Math
 		[Fact(DisplayName = "Math - Pow")]
@@ -234,7 +234,7 @@ namespace Fuxion.Test
 		[Fact(DisplayName = "String - ToByteArrayFromHexadecimal")]
 		public void StringToByteArrayFromHexadecimal()
 		{
-			byte[] value = "FD2EAC14000000".ToByteArrayFromHexadecimal();
+			var value = "FD2EAC14000000".ToByteArrayFromHexadecimal();
 			Assert.Equal("FD2EAC14000000", value.ToHexadecimal());
 			Assert.Equal("FD:2E:AC:14:00:00:00", value.ToHexadecimal(separatorChar: ':'));
 			Assert.Equal("00000014AC2EFD", value.ToHexadecimal(asBigEndian: true));
@@ -242,7 +242,7 @@ namespace Fuxion.Test
 		[Fact(DisplayName = "Bytes - FromHexadecimal")]
 		public void BytesFromHexadecimal()
 		{
-			byte[] value = new byte[] { 0xFD, 0x2E, 0xAC, 0x14, 0x00, 0x00, 0x00 };
+			var value = new byte[] { 0xFD, 0x2E, 0xAC, 0x14, 0x00, 0x00, 0x00 };
 			Assert.Equal("FD2EAC14000000", value.ToHexadecimal());
 			value = "FD-2E-AC-14-00-00-00".ToByteArrayFromHexadecimal(separatorChar: '-');
 			Assert.Equal("FD2EAC14000000", value.ToHexadecimal());

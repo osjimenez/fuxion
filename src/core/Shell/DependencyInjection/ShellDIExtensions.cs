@@ -96,8 +96,8 @@ namespace Microsoft.Extensions.DependencyInjection
 		public IFuxionBuilder FuxionBuilder { get; }
 
 		public bool ShowWindow { get; set; } = true;
-		public ShellWindow ShellWindow { get; set; }
-		public ShellWindow GetShellWindow() => ShellWindow;
+		public ShellWindow? ShellWindow { get; set; }
+		public ShellWindow? GetShellWindow() => ShellWindow;
 	}
 	internal class GenericPanelDescriptor : IPanelDescriptor
 	{

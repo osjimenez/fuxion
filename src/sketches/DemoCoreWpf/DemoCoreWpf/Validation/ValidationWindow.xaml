@@ -1,0 +1,182 @@
+﻿<Window x:Class="DemoCoreWpf.Validation.ValidationWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DemoCoreWpf.Validation"
+        xmlns:fuxion="fuxion"
+        mc:Ignorable="d"
+        Title="ValidationWindow" Height="700" Width="450">
+	<Window.Resources>
+		<Style x:Key="textBoxInError" TargetType="TextBox">
+			<Style.Triggers>
+				<Trigger Property="Validation.HasError" Value="true">
+					<Setter Property="ToolTip" Value="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
+				</Trigger>
+			</Style.Triggers>
+		</Style>
+		<fuxion:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+		<fuxion:BooleanToNegateBooleanConverter x:Key="BooleanToNegateBooleanConverter" />
+		<fuxion:NullToBooleanConverter x:Key="NullToBooleanConverter" />
+		<fuxion:ICollectionCountToVisibilityConverter x:Key="ICollectionCountToVisibilityConverter" />
+		<fuxion:StringNullOrWhiteSpaceToVisibilityConverter x:Key="StringNullOrWhiteSpaceToVisibilityConverter" />
+		<fuxion:INotifyCollectionChangedToRemovedDuplicatesINotifyCollectionChangedConverter x:Key="INotifyCollectionChangedToRemovedDuplicatesINotifyCollectionChangedConverter" />
+	</Window.Resources>
+	<StackPanel Margin="10">
+		<Border BorderThickness="3" BorderBrush="Red" Margin="0,0,0,5" 
+                Visibility="{Binding Validator.HasMessages, Converter={StaticResource BooleanToVisibilityConverter}}">
+			<StackPanel>
+				<Border Background="Red">
+					<TextBlock Text="Validación de datos (Bindeo desglosado)" Foreground="White" Margin="10,3"/>
+				</Border>
+				<ItemsControl Margin="10,5" ItemsSource="{Binding Validator.Messages}">
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<WrapPanel>
+								<TextBlock Text="● " />
+								<TextBlock Grid.Column="1" Text="{Binding Path}" />
+								<TextBlock Text=" ● " Visibility="{Binding Path, Converter={StaticResource StringNullOrWhiteSpaceToVisibilityConverter}}"/>
+								<TextBlock Grid.Column="1" Text="{Binding PropertyDisplayName}" />
+								<TextBlock Text=" = " />
+								<TextBlock Grid.Column="1" Text="{Binding Message}" />
+							</WrapPanel>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+			</StackPanel>
+		</Border>
+		<Border BorderThickness="3" BorderBrush="Red" Margin="0,0,0,5" 
+                Visibility="{Binding Validator.HasMessages, Converter={StaticResource BooleanToVisibilityConverter}}">
+			<StackPanel>
+				<Border Background="Red">
+					<TextBlock Text="Validación de datos (Bindeo StringMessages)" Foreground="White" Margin="10,3"/>
+				</Border>
+				<ItemsControl Margin="10,5" ItemsSource="{Binding Validator.StringMessages}"/>
+			</StackPanel>
+		</Border>
+		<Border BorderThickness="3" BorderBrush="Red" Margin="0,0,0,5" 
+                Visibility="{Binding Validator.HasMessages, Converter={StaticResource BooleanToVisibilityConverter}}">
+			<StackPanel>
+				<Border Background="Red">
+					<TextBlock Text="Validación de datos (Bindeo StringMessages sin duplicados)" Foreground="White" Margin="10,3"/>
+				</Border>
+				<ItemsControl Margin="10,5" ItemsSource="{Binding Validator.StringMessages, Converter={StaticResource INotifyCollectionChangedToRemovedDuplicatesINotifyCollectionChangedConverter}}"/>
+			</StackPanel>
+		</Border>
+		<CheckBox Content="Es válido" IsChecked="{Binding IsValid}" />
+		<TextBlock Text="Identificador:" />
+		<TextBox Name="IdTextBox" 
+                 Text="{Binding Id, Mode=TwoWay,
+                    NotifyOnValidationError=True,
+                    ValidatesOnDataErrors=True,
+                    UpdateSourceTrigger=PropertyChanged}"/>
+		<TextBlock Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=IdTextBox}" Foreground="Red"
+                   Visibility="{Binding (Validation.HasError), ElementName=IdTextBox, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+		<CheckBox Content="El nombre debe estar en minúsculas" IsChecked="{Binding NameMustBeLower}" />
+		<TextBlock Text="Nombre:" />
+		<TextBox Name="NameTextBox" 
+                 Text="{Binding Name, Mode=TwoWay,
+                    NotifyOnValidationError=True,
+                    ValidatesOnDataErrors=True,
+                    UpdateSourceTrigger=PropertyChanged}"
+                 Style="{StaticResource textBoxInError}"/>
+		<TextBlock Text="Email:" />
+		<TextBox Text="{Binding Email, Mode=TwoWay,
+                            NotifyOnValidationError=True,
+                            ValidatesOnDataErrors=True,
+                            UpdateSourceTrigger=PropertyChanged}"
+				 Style="{StaticResource textBoxInError}"/>
+		<TextBlock Text="Hostname:" />
+		<TextBox Text="{Binding Hostname, Mode=TwoWay,
+                            NotifyOnValidationError=True,
+                            ValidatesOnDataErrors=True,
+                            UpdateSourceTrigger=PropertyChanged}"
+				 Style="{StaticResource textBoxInError}"/>
+		<TextBlock Text="IP:" />
+		<TextBox Text="{Binding IPAddress, Mode=TwoWay,
+                            NotifyOnValidationError=True,
+                            ValidatesOnDataErrors=True,
+                            UpdateSourceTrigger=PropertyChanged}"
+				 Style="{StaticResource textBoxInError}"/>
+		<Border Padding="10" DataContext="{Binding ValidationRecursive}">
+			<StackPanel>
+				<TextBlock Text="Identificador:" />
+				<TextBox Name="IdTextBox2" 
+                         Text="{Binding Id, Mode=TwoWay,
+                            NotifyOnValidationError=True,
+                            ValidatesOnDataErrors=True,
+                            UpdateSourceTrigger=PropertyChanged}" 
+                        Style="{StaticResource textBoxInError}"/>
+				<TextBlock Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=IdTextBox2}" Foreground="Red"
+                   Visibility="{Binding (Validation.HasError), ElementName=IdTextBox2, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+				<TextBlock Text="Nombre:" />
+				<TextBox Name="NameTextBox2" 
+                         Text="{Binding Name, Mode=TwoWay,
+                            NotifyOnValidationError=True,
+                            ValidatesOnDataErrors=True,
+                            UpdateSourceTrigger=PropertyChanged}"
+                         Style="{StaticResource textBoxInError}"/>
+				<TextBlock Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=NameTextBox2}" Foreground="Red"
+                   Visibility="{Binding (Validation.HasError), ElementName=NameTextBox2, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+				<TextBlock Text="Base:" />
+				<WrapPanel>
+					<Button Content="As NULL" Command="{Binding BaseAsNullCommand}"/>
+					<Button Content="As Derived1" Command="{Binding BaseAsDerived1Command}"/>
+					<Button Content="As Derived2" Command="{Binding BaseAsDerived2Command}"/>
+				</WrapPanel>
+			</StackPanel>
+		</Border>
+
+		<Border Padding="10">
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition />
+				</Grid.ColumnDefinitions>
+				<StackPanel>
+					<Button Content="ADD" Command="{Binding AddCommand}"/>
+					<Button Content="REMOVE" Command="{Binding RemoveCommand}" CommandParameter="{Binding SelectedItem, ElementName=RecursiveCollectionListView}"
+                            IsEnabled="{Binding SelectedItem, Converter={StaticResource NullToBooleanConverter}, ElementName=RecursiveCollectionListView}"/>
+				</StackPanel>
+				<ListView Name="RecursiveCollectionListView" Grid.Column="1" ItemsSource="{Binding ValidationRecursiveCollection}">
+					<ListView.ItemTemplate>
+						<DataTemplate>
+							<StackPanel>
+								<TextBlock Text="Identificador:" />
+								<TextBox Name="IdTextBox3" Text="{Binding Id, Mode=TwoWay,
+                                            NotifyOnValidationError=True,
+                                            ValidatesOnDataErrors=True,
+                                            UpdateSourceTrigger=PropertyChanged}" 
+                                        Style="{StaticResource textBoxInError}"/>
+								<TextBlock Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=IdTextBox3}" Foreground="Red"
+                                                Visibility="{Binding (Validation.HasError), ElementName=IdTextBox3, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+								<TextBlock Text="Nombre:" />
+								<TextBox Name="NameTextBox3" Text="{Binding Name, Mode=TwoWay,
+                                            NotifyOnValidationError=True,
+                                            ValidatesOnDataErrors=True,
+                                            UpdateSourceTrigger=PropertyChanged}"
+                                         Style="{StaticResource textBoxInError}"/>
+								<TextBlock Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=NameTextBox3}" Foreground="Red"
+                                                Visibility="{Binding (Validation.HasError), ElementName=NameTextBox3, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+							</StackPanel>
+						</DataTemplate>
+					</ListView.ItemTemplate>
+				</ListView>
+				<TextBlock Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=RecursiveCollectionListView}" Foreground="Red"
+                                                Visibility="{Binding (Validation.HasError), ElementName=RecursiveCollectionListView, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+			</Grid>
+		</Border>
+
+		<TextBlock Text="Base:" />
+		<WrapPanel>
+			<Button Content="As NULL" Command="{Binding BaseAsNullCommand}"/>
+			<Button Content="As Derived1" Command="{Binding BaseAsDerived1Command}"/>
+			<Button Content="As Derived2" Command="{Binding BaseAsDerived2Command}"/>
+		</WrapPanel>
+
+		
+
+		<Button Content="Save" Command="{Binding SaveCommand}" />
+	</StackPanel>
+</Window>

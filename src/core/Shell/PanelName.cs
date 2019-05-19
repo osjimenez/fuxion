@@ -5,7 +5,7 @@ namespace Fuxion.Shell
 {
 	public struct PanelName
 	{
-		public PanelName(string name, string key)
+		public PanelName(string name, string? key)
 		{
 			if (name.Contains(KEY_SEPARATOR)) throw new ArgumentException($"{nameof(Name)} cannot contains key separator '{KEY_SEPARATOR}'.", nameof(name));
 			if (key?.Contains(KEY_SEPARATOR) ?? false) throw new ArgumentException($"{nameof(Key)} cannot contains key separator '{KEY_SEPARATOR}'.", nameof(name));
@@ -25,7 +25,7 @@ namespace Fuxion.Shell
 		const string ARGUMENT_SEPARATOR = "#";
 
 		public string Name { get; private set; }
-		public string Key { get; private set; }
+		public string? Key { get; private set; }
 
 		public override int GetHashCode() => Name.GetHashCode();
 		public override bool Equals(object obj) => obj is PanelName v && v.Name == Name && v.Key == Key;

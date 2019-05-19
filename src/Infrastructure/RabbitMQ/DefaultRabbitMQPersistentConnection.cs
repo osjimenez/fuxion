@@ -18,7 +18,7 @@ namespace Fuxion.RabbitMQ
 		private readonly IConnectionFactory _connectionFactory;
 		//private readonly ILogger<DefaultRabbitMQPersistentConnection> _logger;
 		private readonly int _retryCount;
-		IConnection _connection;
+		IConnection? _connection;
 		bool _disposed;
 
 		object sync_root = new object();
@@ -45,7 +45,7 @@ namespace Fuxion.RabbitMQ
 				throw new InvalidOperationException("No RabbitMQ connections are available to perform this action");
 			}
 
-			return _connection.CreateModel();
+			return _connection!.CreateModel();
 		}
 
 		public void Dispose()
@@ -56,7 +56,7 @@ namespace Fuxion.RabbitMQ
 
 			try
 			{
-				_connection.Dispose();
+				_connection?.Dispose();
 			}
 			catch (IOException ex)
 			{
@@ -89,9 +89,9 @@ namespace Fuxion.RabbitMQ
 
 				if (IsConnected)
 				{
-					_connection.ConnectionShutdown += OnConnectionShutdown;
-					_connection.CallbackException += OnCallbackException;
-					_connection.ConnectionBlocked += OnConnectionBlocked;
+					_connection!.ConnectionShutdown += OnConnectionShutdown;
+					_connection!.CallbackException += OnCallbackException;
+					_connection!.ConnectionBlocked += OnConnectionBlocked;
 
 					Debug.WriteLine($"RabbitMQ persistent connection acquired a connection {_connection.Endpoint.HostName} and is subscribed to failure events");
 					//_logger.LogInformation($"RabbitMQ persistent connection acquired a connection {_connection.Endpoint.HostName} and is subscribed to failure events");

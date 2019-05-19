@@ -1,26 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Fuxion.Identity.Test.Mocks
 {
-    [DebuggerDisplay("{" + nameof(Name) + "}")]
-    class StringFunction : IFunction<string>
-    {
-        public StringFunction(string id) { Id = id; Name = id; }
+	[DebuggerDisplay("{" + nameof(Name) + "}")]
+	internal class StringFunction : IFunction<string>
+	{
+		public StringFunction(string id) { Id = id; Name = id; }
 
-        public string Id { get; private set; }
-        object IFunction.Id { get { return Id; } }
+		public string Id { get; private set; }
+		object IFunction.Id => Id;
 
-        public string Name { get; set; }
+		public string Name { get; set; }
 
-        public IEnumerable<IFunction<string>> Inclusions { get; private set; }
-        IEnumerable<IFunction> IInclusive<IFunction>.Inclusions { get { return Inclusions; } }
+		public IEnumerable<IFunction<string>> Inclusions { get; private set; } = new List<IFunction<string>>();
+		IEnumerable<IFunction> IInclusive<IFunction>.Inclusions => Inclusions;
 
-        public IEnumerable<IFunction<string>> Exclusions { get; private set; }
-        IEnumerable<IFunction> IExclusive<IFunction>.Exclusions { get { return Inclusions; } }
-    }
+		public IEnumerable<IFunction<string>> Exclusions { get; private set; } = new List<IFunction<string>>();
+		IEnumerable<IFunction> IExclusive<IFunction>.Exclusions => Inclusions;
+	}
 }

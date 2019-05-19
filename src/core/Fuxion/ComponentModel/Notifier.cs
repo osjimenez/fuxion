@@ -142,7 +142,7 @@ namespace Fuxion.ComponentModel
 		/// </summary>
 		/// <param name="expressions">Expressiones que determinan las propiedades que se comprobarán.</param>
 		/// <returns>Devuelve true si alguna de las expressiones determina la propiedad que ha cambiado.</returns>
-		public bool IsAny(params Expression<Func<object>>[] expressions) => expressions.Any(e => e.GetMemberName() == PropertyName);
+		public bool IsAny(params Expression<Func<object?>>[] expressions) => expressions.Any(e => e.GetMemberName() == PropertyName);
 		#endregion
 	}
 	#endregion
@@ -214,7 +214,7 @@ namespace Fuxion.ComponentModel
 		{
 			// El constructor no será invocado al deserializar la clase porque se utiliza el método FormatterServices.GetUninitializedObject
 			// y este crea el objeto sin estado, no se llamará al constructor ni se crearán las instancias de los campos de la clase.
-			PropertiesDictionary = new Dictionary<string, object>();
+			PropertiesDictionary = new Dictionary<string, object?>();
 			OnInitialize();
 		}
 		[EditorBrowsable(EditorBrowsableState.Never)]
@@ -222,7 +222,7 @@ namespace Fuxion.ComponentModel
 		public void OnDeserializing(StreamingContext context)
 		{
 			//Este método será llamado al deserializar la clase en vez del contructor
-			PropertiesDictionary = new Dictionary<string, object>();
+			PropertiesDictionary = new Dictionary<string, object?>();
 			OnInitialize();
 		}
 		protected virtual void OnInitialize() { }
@@ -239,23 +239,23 @@ namespace Fuxion.ComponentModel
 		//private event PropertyChangingEventHandler PropertyChangingEvent;
 		#endregion
 		#region Set&Get Value
-		private volatile Dictionary<string, object> PropertiesDictionary;
+		private volatile Dictionary<string, object?> PropertiesDictionary;
 		private string GetPropertyKey(string propertyName) => propertyName;
 		//=> GetType().GetTypeInfo().GetAllProperties().Where(p => p.Name == propertyName).First().DeclaringType.GetSignature(true) + "." + propertyName;
 
-		protected T GetValue<T>(Func<T> defaultValueFunction = null, [CallerMemberName] string propertyName = null)
+		protected T GetValue<T>(Func<T>? defaultValueFunction = null, [CallerMemberName] string? propertyName = null)
 		{
 			if (propertyName == null) throw new ArgumentNullException(nameof(propertyName));
-			T value;
-			if (PropertiesDictionary.TryGetValue(GetPropertyKey(propertyName), out var objValue)) value = (T)objValue;
+			object? value;
+			if (PropertiesDictionary.TryGetValue(GetPropertyKey(propertyName), out var objValue)) value = objValue;
 			else
 			{
-				value = defaultValueFunction == null ? default(T) : defaultValueFunction();
+				value = defaultValueFunction == null ? default : defaultValueFunction();
 				PropertiesDictionary[GetPropertyKey(propertyName)] = value;
 			}
-			return value;
+			return (T)(value!);
 		}
-		protected bool SetValue<T>(T newValue, bool raiseOnlyIfNotEquals = true, [CallerMemberName] string propertyName = null)
+		protected bool SetValue<T>(T newValue, bool raiseOnlyIfNotEquals = true, [CallerMemberName] string? propertyName = null)
 		{
 			if (propertyName == null) throw new ArgumentNullException(nameof(propertyName));
 			T oldValue;
@@ -263,7 +263,7 @@ namespace Fuxion.ComponentModel
 				oldValue = GetValue<T>(propertyName: propertyName);
 			else
 			{
-				PropertyInfo pro = null;
+				PropertyInfo? pro = null;
 				var props = GetType().GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).Where(p => p.Name == propertyName).ToList();
 				if (props.Count == 0) throw new NotifierException($"Cannot find a property with name '{propertyName}' in type '{GetType().GetSignature(true)}'");
 				if (props.Count > 1)
@@ -292,19 +292,19 @@ namespace Fuxion.ComponentModel
 			OnRaisePropertyChanged(propertyName, oldValue, newValue);
 			return true;
 		}
-		private Locker<T> GetLockerProperty<T>(Func<T> defaultValueFunction = null, [CallerMemberName] string propertyName = null)
+		private Locker<T> GetLockerProperty<T>(Func<T>? defaultValueFunction = null, [CallerMemberName] string? propertyName = null)
 		{
 			if (propertyName == null) throw new ArgumentNullException("propertyName");
 			if (PropertiesDictionary.TryGetValue(GetPropertyKey(propertyName), out var objValue))
-				return (Locker<T>)objValue;
-			var defaultValue = defaultValueFunction == null ? default(T) : defaultValueFunction();
-			var defaultLocker = new Locker<T>(defaultValue);
+				return (Locker<T>)(objValue!);
+			var defaultValue = defaultValueFunction == null ? default : defaultValueFunction();
+			var defaultLocker = new Locker<T>(defaultValue!);
 			PropertiesDictionary[GetPropertyKey(propertyName)] = defaultLocker;
 			return defaultLocker;
 		}
-		protected T GetLockedValue<T>(Func<T> defaultValueFunction = null, [CallerMemberName] string propertyName = null) where T : struct => OnGetLockedValue(defaultValueFunction, propertyName);
-		protected string GetLockedValue(Func<string> defaultValueFunction = null, [CallerMemberName] string propertyName = null) => OnGetLockedValue(defaultValueFunction, propertyName);
-		private T OnGetLockedValue<T>(Func<T> defaultValueFunction = null, [CallerMemberName] string propertyName = null)
+		protected T GetLockedValue<T>(Func<T>? defaultValueFunction = null, [CallerMemberName] string? propertyName = null) where T : struct => OnGetLockedValue(defaultValueFunction, propertyName);
+		protected string GetLockedValue(Func<string>? defaultValueFunction = null, [CallerMemberName] string? propertyName = null) => OnGetLockedValue(defaultValueFunction, propertyName);
+		private T OnGetLockedValue<T>(Func<T>? defaultValueFunction = null, [CallerMemberName] string? propertyName = null)
 		{
 			if (propertyName == null) throw new ArgumentNullException("propertyName");
 			var locker = GetLockerProperty(defaultValueFunction, propertyName);
@@ -317,9 +317,9 @@ namespace Fuxion.ComponentModel
 			//return interceptedValue;
 			return value;
 		}
-		protected bool SetLockedValue<T>(T value, bool raiseOnlyIfNotEquals = true, [CallerMemberName] string propertyName = null) where T : struct => OnSetLockedValue(value, raiseOnlyIfNotEquals, propertyName);
-		protected bool SetLockedValue(string value, bool raiseOnlyIfNotEquals = true, [CallerMemberName] string propertyName = null) => OnSetLockedValue(value, raiseOnlyIfNotEquals, propertyName);
-		private bool OnSetLockedValue<T>(T value, bool raiseOnlyIfNotEquals = true, [CallerMemberName] string propertyName = null)
+		protected bool SetLockedValue<T>(T value, bool raiseOnlyIfNotEquals = true, [CallerMemberName] string? propertyName = null) where T : struct => OnSetLockedValue(value, raiseOnlyIfNotEquals, propertyName);
+		protected bool SetLockedValue(string value, bool raiseOnlyIfNotEquals = true, [CallerMemberName] string? propertyName = null) => OnSetLockedValue(value, raiseOnlyIfNotEquals, propertyName);
+		private bool OnSetLockedValue<T>(T value, bool raiseOnlyIfNotEquals = true, [CallerMemberName] string? propertyName = null)
 		{
 			if (propertyName == null) throw new ArgumentNullException(nameof(propertyName));
 			Locker<T> oldLockerValue;
@@ -334,19 +334,20 @@ namespace Fuxion.ComponentModel
 				oldLockerValue = new Locker<T>((T)GetType().GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).Single(p => p.Name == propertyName).GetValue(this, null));
 				PropertiesDictionary[GetPropertyKey(propertyName)] = oldLockerValue;
 			}
-			if (raiseOnlyIfNotEquals && ((oldLockerValue == null && value == null) || EqualityComparer<T>.Default.Equals(oldLockerValue.Read(_ => _), value)))
+			//if (raiseOnlyIfNotEquals && ((oldLockerValue == null && value == null) || EqualityComparer<T>.Default.Equals(oldLockerValue.Read(_ => _), value)))
+			if (raiseOnlyIfNotEquals && (value == null || EqualityComparer<T>.Default.Equals(oldLockerValue.Read(_ => _), value)))
 				return false;
 			var oldValue = oldLockerValue.Read(_ => _);
 			//if (!OnRaisePropertyChanging(propertyName, oldValue, value)) return false;
-			((Locker<T>)PropertiesDictionary[GetPropertyKey(propertyName)]).WriteObject(value);
+			((Locker<T>)PropertiesDictionary[GetPropertyKey(propertyName)]!).WriteObject(value);
 			OnRaisePropertyChanged(propertyName, oldValue, value);
 			return true;
 		}
 		#endregion
 		#region Set&Get Field
-		protected bool SetField<T>(ref T field, T value, bool raiseOnlyIfNotEquals = true, [CallerMemberName] string propertyName = null)
+		protected bool SetField<T>(ref T field, T value, bool raiseOnlyIfNotEquals = true, [CallerMemberName] string? propertyName = null)
 		{
-			if (propertyName == null) throw new ArgumentNullException("propertyName");
+			if (propertyName == null) throw new ArgumentNullException(nameof(propertyName));
 			var oldValue = GetField(ref field, propertyName);
 			if (raiseOnlyIfNotEquals && ((field == null && value == null) || (field != null && field.Equals(value))))
 				return false;
@@ -355,18 +356,18 @@ namespace Fuxion.ComponentModel
 			OnRaisePropertyChanged(propertyName, oldValue, value);
 			return true;
 		}
-		protected T GetField<T>(ref T field, [CallerMemberName] string propertyName = null)
+		protected T GetField<T>(ref T field, [CallerMemberName] string? propertyName = null)
 		{
-			if (propertyName == null) throw new ArgumentNullException("propertyName");
+			if (propertyName == null) throw new ArgumentNullException(nameof(propertyName));
 			//T interceptedValue = OnRaisePropertyRead(propertyName, field);
 			//if (!EqualityComparer<T>.Default.Equals(field, interceptedValue))
 			//    field = interceptedValue;
 			//return interceptedValue;
 			return field;
 		}
-		protected bool SetLockedField<T>(ref Locker<T> lockedField, T value, bool raiseOnlyIfNotEquals = true, [CallerMemberName] string propertyName = null) where T : struct => OnSetLockedField(propertyName, ref lockedField, value, raiseOnlyIfNotEquals);
-		protected bool SetLockedField(ref Locker<string> lockedField, string value, bool raiseOnlyIfNotEquals = true, [CallerMemberName] string propertyName = null) => OnSetLockedField(propertyName, ref lockedField, value, raiseOnlyIfNotEquals);
-		private bool OnSetLockedField<T>(string propertyName, ref Locker<T> lockedField, T value, bool raiseOnlyIfNotEquals)
+		protected bool SetLockedField<T>(ref Locker<T> lockedField, T value, bool raiseOnlyIfNotEquals = true, [CallerMemberName] string? propertyName = null) where T : struct => OnSetLockedField(propertyName, ref lockedField, value, raiseOnlyIfNotEquals);
+		protected bool SetLockedField(ref Locker<string> lockedField, string value, bool raiseOnlyIfNotEquals = true, [CallerMemberName] string? propertyName = null) => OnSetLockedField(propertyName, ref lockedField, value, raiseOnlyIfNotEquals);
+		private bool OnSetLockedField<T>(string? propertyName, ref Locker<T> lockedField, T value, bool raiseOnlyIfNotEquals)
 		{
 			if (propertyName == null) throw new ArgumentNullException("propertyName");
 			var oldValue = OnGetLockedField(ref lockedField, propertyName);
@@ -376,7 +377,7 @@ namespace Fuxion.ComponentModel
 				(
 					(lockedField == null && value == null) ||
 					(lockedField != null && lockedField.Read(_ => _) == null && value == null) ||
-					(lockedField != null && lockedField.Read(_ => _) != null && lockedField.Read(_ => _).Equals(value))
+					(lockedField != null && lockedField.Read(_ => _) != null && lockedField.Read(_ => _)!.Equals(value))
 					)
 				)
 				return false;
@@ -386,18 +387,18 @@ namespace Fuxion.ComponentModel
 			OnRaisePropertyChanged(propertyName, oldValue, value);
 			return true;
 		}
-		protected T GetLockedField<T>(ref Locker<T> lockedField, [CallerMemberName] string propertyName = null) where T : struct => OnGetLockedField(ref lockedField, propertyName);
-		protected string GetLockedField(ref Locker<string> lockedField, [CallerMemberName] string propertyName = null) => OnGetLockedField(ref lockedField, propertyName);
-		private T OnGetLockedField<T>(ref Locker<T> lockedField, [CallerMemberName] string propertyName = null)
+		protected T GetLockedField<T>(ref Locker<T> lockedField, [CallerMemberName] string? propertyName = null) where T : struct => OnGetLockedField(ref lockedField, propertyName);
+		protected string GetLockedField(ref Locker<string> lockedField, [CallerMemberName] string? propertyName = null) => OnGetLockedField(ref lockedField, propertyName);
+		private T OnGetLockedField<T>(ref Locker<T> lockedField, [CallerMemberName] string? propertyName = null)
 		{
 			if (propertyName == null) throw new ArgumentNullException("propertyName");
-			var value = lockedField == null ? default(T) : lockedField.Read(_ => _);
+			var value = lockedField == null ? default : lockedField.Read(_ => _);
 			//T interceptedValue = OnRaisePropertyRead(propertyName, value);
 			//if (EqualityComparer<T>.Default.Equals(value, interceptedValue)) return interceptedValue;
 			//if (lockedField == null) lockedField = new ValueLocker<T>(interceptedValue);
 			//else lockedField.WriteRef(interceptedValue);
 			//return interceptedValue;
-			return value;
+			return value!;
 		}
 		#endregion
 
@@ -422,11 +423,7 @@ namespace Fuxion.ComponentModel
 
 		#region Binding
 		public INotifierBinding<TNotifier, TProperty> Binding<TProperty>(Expression<Func<TProperty>> sourcePropertyExpression)
-			=> new NotifierBinding<TNotifier, TProperty>
-			{
-				Notifier = this,
-				SourcePropertyExpression = sourcePropertyExpression
-			};
+			=> new NotifierBinding<TNotifier, TProperty>(this, sourcePropertyExpression);
 		#endregion
 	}
 	public interface INotifierBinding<TNotifier, TProperty> where TNotifier : class, INotifier<TNotifier>
@@ -436,6 +433,11 @@ namespace Fuxion.ComponentModel
 
 	internal class NotifierBinding<TNotifier, TProperty> : INotifierBinding<TNotifier, TProperty> where TNotifier : class, INotifier<TNotifier>
 	{
+		public NotifierBinding(Notifier<TNotifier> notifier, Expression<Func<TProperty>> sourcePropertyExpression)
+		{
+			Notifier = notifier;
+			SourcePropertyExpression = sourcePropertyExpression;
+		}
 		public Notifier<TNotifier> Notifier { get; set; }
 		public Expression<Func<TProperty>> SourcePropertyExpression { get; set; }
 	}
@@ -443,7 +445,7 @@ namespace Fuxion.ComponentModel
 	{
 		public static void OneWayTo<TNotifier, TProperty>(this INotifierBinding<TNotifier, TProperty> me, object target, Expression<Func<TProperty>> targetPropertyExpression) where TNotifier : class, INotifier<TNotifier>
 		{
-			var not = me as NotifierBinding<TNotifier, TProperty>;
+			if (!(me is NotifierBinding<TNotifier, TProperty> not)) throw new InvalidCastException();
 			not.Notifier.PropertyChanged += (s, e) => e.Case(not.SourcePropertyExpression, a => targetPropertyExpression.GetPropertyInfo().SetValue(target, a.ActualValue));
 			targetPropertyExpression.GetPropertyInfo().SetValue(target, not.SourcePropertyExpression.GetPropertyInfo().GetValue(not.Notifier));
 		}
@@ -451,7 +453,7 @@ namespace Fuxion.ComponentModel
 			Expression<Func<TTargetProperty>> targetPropertyExpression,
 			Func<TProperty, TTargetProperty> transformFuction) where TNotifier : class, INotifier<TNotifier>
 		{
-			var not = me as NotifierBinding<TNotifier, TProperty>;
+			if (!(me is NotifierBinding<TNotifier, TProperty> not)) throw new InvalidCastException();
 			not.Notifier.PropertyChanged += (s, e) => e.Case(not.SourcePropertyExpression, a => targetPropertyExpression.GetPropertyInfo().SetValue(target, transformFuction(a.ActualValue)));
 			targetPropertyExpression.GetPropertyInfo().SetValue(target, transformFuction((TProperty)not.SourcePropertyExpression.GetPropertyInfo().GetValue(not.Notifier)));
 		}
@@ -459,7 +461,7 @@ namespace Fuxion.ComponentModel
 			where TNotifier : class, INotifier<TNotifier>
 			where TTargetNotifier : class, INotifier<TTargetNotifier>
 		{
-			var not = me as NotifierBinding<TNotifier, TProperty>;
+			if (!(me is NotifierBinding<TNotifier, TProperty> not)) throw new InvalidCastException();
 			not.Notifier.PropertyChanged += (s, e) => e.Case(not.SourcePropertyExpression, a => targetPropertyExpression.GetPropertyInfo().SetValue(target, a.ActualValue));
 			target.PropertyChanged += (s, e) => e.Case(targetPropertyExpression, a => not.SourcePropertyExpression.GetPropertyInfo().SetValue(not.Notifier, a.ActualValue));
 			targetPropertyExpression.GetPropertyInfo().SetValue(target, not.SourcePropertyExpression.GetPropertyInfo().GetValue(not.Notifier));

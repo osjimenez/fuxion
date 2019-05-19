@@ -40,17 +40,17 @@ namespace Fuxion.Drawing
 		public static extern bool GetCursorPos(out POINT lpPoint);
 
 
-		public static Image CaptureDesktop(bool drawMousePoint = false)
+		public static Image? CaptureDesktop(bool drawMousePoint = false)
 		{
 			return CaptureWindow(GetDesktopWindow(), drawMousePoint);
 		}
 
-		public static Bitmap CaptureActiveWindow(bool drawMousePoint = false)
+		public static Bitmap? CaptureActiveWindow(bool drawMousePoint = false)
 		{
 			return CaptureWindow(GetForegroundWindow(), drawMousePoint);
 		}
 
-		public static Bitmap CaptureWindow(IntPtr handle, bool drawMousePoint = false)
+		public static Bitmap? CaptureWindow(IntPtr handle, bool drawMousePoint = false)
 		{
 			if (handle == IntPtr.Zero) return null;
 			var rect = new Rect();

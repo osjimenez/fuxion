@@ -19,17 +19,13 @@
 
 	<ItemGroup>
 		<None Remove="Views\ToDoTaskDetailView.xaml" />
-		<Compile Update="Views\ToDoTaskDetailView.xaml.cs">
-			<SubType>Code</SubType>
-		</Compile>
+		<Compile Update="Views\ToDoTaskDetailView.xaml.cs" />
 		<Page Update="Views\ToDoTaskDetailView.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</Page>
 
 		<None Remove="Views\ToDoTaskListView.xaml" />
-		<Compile Update="Views\ToDoTaskListView.xaml.cs">
-			<SubType>Code</SubType>
-		</Compile>
+		<Compile Update="Views\ToDoTaskListView.xaml.cs" />
 		<Page Update="Views\ToDoTaskListView.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</Page>

@@ -169,7 +169,7 @@ namespace Fuxion.Identity
 		public static IFunction GetById(string id) => dic[id];
 		public static IEnumerable<IFunction> GetAll() => dic.Values;
 
-		public static IFunction CreateCustom<T>(T id, IEnumerable<IFunction> inclusions = null, IEnumerable<IFunction> exclusions = null)
+		public static IFunction CreateCustom<T>(T id, IEnumerable<IFunction>? inclusions = null, IEnumerable<IFunction>? exclusions = null)
 			=> new Function<T>(id, inclusions, exclusions);
 		public static IFunction AddCustom(IFunction function)
 		{
@@ -232,28 +232,32 @@ namespace Fuxion.Identity
 		[DebuggerDisplay("{" + nameof(Name) + "}")]
 		private abstract class Function : IFunction
 		{
+			public Function(string name)
+			{
+				Name = name;
+			}
 			public object Id => GetId();
 			protected abstract object GetId();
 			public string Name { get; set; }
 
-			public IEnumerable<IFunction> Inclusions { get; internal set; }
-			public IEnumerable<IFunction> Exclusions { get; internal set; }
+			public IEnumerable<IFunction> Inclusions { get; internal set; } = new List<IFunction>();
+			public IEnumerable<IFunction> Exclusions { get; internal set; } = new List<IFunction>();
 
 			public override string ToString() => Name;
 		}
 		[DebuggerDisplay("{" + nameof(Name) + "}")]
 		private class Function<T> : Function, IFunction<T>
 		{
-			public Function(T id, IEnumerable<IFunction> inclusions = null, IEnumerable<IFunction> exclusions = null)
+			public Function(T id, IEnumerable<IFunction>? inclusions = null, IEnumerable<IFunction>? exclusions = null) 
+				: base(id?.ToString() ?? throw new ArgumentException("'id' cannot be null", nameof(id)))
 			{
-				Id = id;
-				Name = id.ToString();
-				Inclusions = inclusions;
-				Exclusions = exclusions;
+				Id = id ?? throw new ArgumentException("'id' cannot be null", nameof(id));
+				Inclusions = inclusions ?? new List<IFunction>();
+				Exclusions = exclusions ?? new List<IFunction>();
 			}
 			public new T Id { get; }
-			protected override object GetId() => Id;
-			object IFunction.Id => Id;
+			protected override object GetId() => Id!;
+			object IFunction.Id => Id!;
 		}
 	}
 }

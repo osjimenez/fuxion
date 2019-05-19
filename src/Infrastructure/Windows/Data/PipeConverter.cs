@@ -21,9 +21,9 @@ namespace Fuxion.Windows.Data
 		public PipeConverterParameterMode ParameterMode { get; set; }
 		public string ParameterSeparator { get; set; } = "|";
 		public ObservableCollection<IValueConverter> Converters { get; } = new ObservableCollection<IValueConverter>();
-		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
 		{
-			object output = value;
+			object? output = value;
 			for (int i = 0; i < Converters.Count; ++i)
 			{
 				var target = i == Converters.Count - 1 ? targetType : GetConverterTypes(Converters[i + 1]).SourceType;
@@ -35,29 +35,29 @@ namespace Fuxion.Windows.Data
 			}
 			return output;
 		}
-		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
 		{
 			throw new NotImplementedException();
 		}
 
-		public (Type SourceType, Type TargetType, Type ParameterType) GetConverterTypes(IValueConverter converter)
+		public (Type? SourceType, Type? TargetType, Type? ParameterType) GetConverterTypes(IValueConverter converter)
 		{
 			var att = converter.GetType().GetCustomAttribute<ValueConversionAttribute>(true, false, false);
 			if (att != null)
 				return (att.SourceType, att.TargetType, att.ParameterType);
 			if (converter.GetType().IsSubclassOfRawGeneric(typeof(GenericConverter<,>)))
 			{
-				var args = converter.GetType().GetSubclassOfRawGeneric(typeof(GenericConverter<,>)).GetGenericArguments();
+				var args = converter.GetType().GetSubclassOfRawGeneric(typeof(GenericConverter<,>))!.GetGenericArguments();
 				return (args[0], args[1], null);
 			}
 			if (converter.GetType().IsSubclassOfRawGeneric(typeof(GenericConverter<,,>)))
 			{
-				var args = converter.GetType().GetSubclassOfRawGeneric(typeof(GenericConverter<,,>)).GetGenericArguments();
+				var args = converter.GetType().GetSubclassOfRawGeneric(typeof(GenericConverter<,,>))!.GetGenericArguments();
 				return (args[0], args[1], args[2]);
 			}
 			return (null, null, null);
 		}
-		public object GetConverterParameter(IValueConverter converter, object parameter)
+		public object? GetConverterParameter(IValueConverter converter, object? parameter)
 		{
 			if (ParameterMode == PipeConverterParameterMode.AllSame || parameter == null) return parameter;
 			var pars = parameter.ToString().Split(new[] { ParameterSeparator }, StringSplitOptions.None);
@@ -134,7 +134,7 @@ namespace Fuxion.Windows.Data
 		{
 			// If the current converter is not the last/first in the list, 
 			// get a reference to the next/previous converter.
-			IValueConverter nextConverter = null;
+			IValueConverter? nextConverter = null;
 			if (convert)
 			{
 				if (converterIndex < Converters.Count - 1)
@@ -171,7 +171,7 @@ namespace Fuxion.Windows.Data
 			// The 'Converters' collection has been modified, so validate that each value converter it now
 			// contains is decorated with ValueConversionAttribute and then cache the attribute value.
 
-			IList convertersToProcess = null;
+			IList? convertersToProcess = null;
 			if (e.Action == NotifyCollectionChangedAction.Add || e.Action == NotifyCollectionChangedAction.Replace)
 				convertersToProcess = e.NewItems;
 			else if (e.Action == NotifyCollectionChangedAction.Remove)
@@ -186,10 +186,10 @@ namespace Fuxion.Windows.Data
 			{
 				foreach (IValueConverter converter in convertersToProcess)
 				{
-					object[] attributes = converter.GetType().GetCustomAttributes(typeof(ValueConversionAttribute), false);
-					if (attributes.Length != 1)
+					var attributes = converter.GetType().GetCustomAttributes<ValueConversionAttribute>(false).ToList();
+					if (attributes.Count != 1)
 						throw new InvalidOperationException("All value converters added to a ValueConverterGroup must be decorated with the ValueConversionAttribute attribute exactly once.");
-					cachedAttributes.Add(converter, attributes[0] as ValueConversionAttribute);
+					cachedAttributes.Add(converter, attributes[0]);
 				}
 			}
 		}

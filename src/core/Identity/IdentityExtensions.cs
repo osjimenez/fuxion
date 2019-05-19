@@ -28,22 +28,22 @@ namespace Fuxion.Identity
 				discriminators = discriminators.RemoveNulls();
 				using (Printer.Indent2("Inpupt Prameters"))
 				{
-					Printer.WriteLine($"Rol: {me?.Name}");
+					Printer.WriteLine($"Rol: {me.Name}");
 					Printer.WriteLine($"For filter: " + forFilter);
-					Printer.WriteLine($"Function: {function?.ToString() ?? "<null>"}");
-					Printer.WriteLine($"Type discriminator: {typeDiscriminator?.ToString() ?? "<null>"}");
+					Printer.WriteLine($"Function: {function.ToString() ?? "<null>"}");
+					Printer.WriteLine($"Type discriminator: {typeDiscriminator.ToString() ?? "<null>"}");
 					Printer.Foreach($"Discriminators:", discriminators, dis => Printer.WriteLine($"{dis}"));
 				}
 				// Function validation
-				if (!(function?.IsValid() ?? true))
+				if (!function.IsValid())
 					throw new ArgumentException($"The '{nameof(function)}' pararameter with value '{function}' has an invalid state", nameof(function));
 
 				// TypeDiscriminator validation
-				if (!typeDiscriminator?.IsValid() ?? false)
+				if (!typeDiscriminator.IsValid())
 					throw new InvalidStateException($"The '{typeDiscriminator}' discriminator has an invalid state");
 
 				// Discriminators validation
-				var invalidDiscriminator = discriminators?.FirstOrDefault(d => !d.IsValid());
+				var invalidDiscriminator = discriminators.FirstOrDefault(d => !d.IsValid());
 
 				if (invalidDiscriminator != null)
 					throw new InvalidStateException($"The '{invalidDiscriminator}' discriminator has an invalid state");
@@ -64,7 +64,7 @@ namespace Fuxion.Identity
 			{
 				using (Printer.Indent2("Input parameters"))
 				{
-					Printer.WriteLine($"Rol: {me?.Rol?.Name}");
+					Printer.WriteLine($"Rol: {me.Rol?.Name}");
 					Printer.WriteLine($"Functions: {string.Join(",", me.Functions.Select(f => f.Name)) ?? "<null>"}");
 					Printer.WriteLine($"For all: {forAll}");
 					Printer.WriteLine($"Type discriminator: {typeDiscriminator?.ToString() ?? "null"}");
@@ -149,11 +149,11 @@ namespace Fuxion.Identity
 							   .GetCustomAttribute<DiscriminatorAttribute>(true).TypeKey));
 			}
 		}
-		internal static IEnumerable<IDiscriminator> GetDiscriminatorsOfDiscriminatedProperties(this Type me, object value = null)
+		internal static IEnumerable<IDiscriminator> GetDiscriminatorsOfDiscriminatedProperties(this Type me, object? value = null)
 		=>
 			me.GetDiscriminatedProperties().Select(p =>
 			 {
-				 object val = null;
+				 object? val = null;
 				 if (value != null)
 					 val = p.PropertyInfo.GetValue(value);
 				 if (val == null)
@@ -185,7 +185,7 @@ namespace Fuxion.Identity
 						.Where(m => m.Name == nameof(Enumerable.Contains))
 						.Single(m => m.GetParameters().Length == 2)
 						.MakeGenericMethod(type);
-				Expression<Func<TEntity, bool>> GetContainsExpression(bool value, IScope sco, Type disType, PropertyInfo proInfo)
+				Expression<Func<TEntity, bool>>? GetContainsExpression(bool value, IScope sco, Type disType, PropertyInfo proInfo)
 				{
 					var foreignDiscriminators = Enumerable.Empty<IDiscriminator>();
 					if (sco.Propagation.HasFlag(ScopePropagation.ToMe))
@@ -216,16 +216,16 @@ namespace Fuxion.Identity
 				{
 					if (exp == null)
 						Printer.WriteLine("NULL");
-					else if (exp is BinaryExpression)
-						PrintBinaryExpression(exp as BinaryExpression);
-					else if (exp is MethodCallExpression)
-						PrintMethodCallExpression(exp as MethodCallExpression);
-					else if (exp is ConstantExpression)
-						PrintConstantExpression(exp as ConstantExpression);
-					else if (exp is MemberExpression)
-						PrintMemberExpression(exp as MemberExpression);
-					else if (exp is UnaryExpression)
-						PrintUnaryExpression(exp as UnaryExpression);
+					else if (exp is BinaryExpression be)
+						PrintBinaryExpression(be);
+					else if (exp is MethodCallExpression mce)
+						PrintMethodCallExpression(mce);
+					else if (exp is ConstantExpression ce)
+						PrintConstantExpression(ce);
+					else if (exp is MemberExpression me)
+						PrintMemberExpression(me);
+					else if (exp is UnaryExpression ue)
+						PrintUnaryExpression(ue);
 					else
 						Printer.WriteLine($"'{exp.GetType().Name}'");
 				}
@@ -312,7 +312,7 @@ namespace Fuxion.Identity
 				res.OnPrintResult = r =>
 				{
 					Printer.WriteLine("Expression:");
-					PrintExpression(r?.Body);
+					PrintExpression(r.Body);
 					Printer.WriteLine("");
 				};
 				var typeDiscriminator = Singleton.Get<TypeDiscriminatorFactory>().FromType<TEntity>();
@@ -331,10 +331,10 @@ namespace Fuxion.Identity
 					typeof(TEntity).GetDiscriminatorsOfDiscriminatedProperties().ToArray()
 					))
 				.Distinct().ToList();
-				Expression<Func<TEntity, bool>> denyPersExp = null;
+				Expression<Func<TEntity, bool>>? denyPersExp = null;
 				Printer.Foreach("Deny permissions:", pers.Where(p => !p.Value), per =>
 				{
-					Expression<Func<TEntity, bool>> perExp = null;
+					Expression<Func<TEntity, bool>>? perExp = null;
 					using (Printer.Indent2($"Permission: {per.ToOneLineString()}"))
 					{
 						Printer.Foreach("Scopes:", per.Scopes, sco =>
@@ -368,12 +368,12 @@ namespace Fuxion.Identity
 							denyPersExp = perExp;
 					}
 				});
-				Expression<Func<TEntity, bool>> grantPersExp = null;
+				Expression<Func<TEntity, bool>>? grantPersExp = null;
 				Printer.Foreach("Grant permissions:", pers.Where(p => p.Value), per =>
 				{
 					using (Printer.Indent2($"Permission: {per.ToOneLineString()}"))
 					{
-						Expression<Func<TEntity, bool>> perExp = null;
+						Expression<Func<TEntity, bool>>? perExp = null;
 						Printer.Foreach("Scopes:", per.Scopes, sco =>
 						{
 							using (Printer.Indent2($"Scope: {sco.ToOneLineString()}"))

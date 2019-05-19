@@ -7,11 +7,9 @@ namespace Fuxion.Identity
 		public bool Equals(IDiscriminator x, IDiscriminator y) => AreEquals(x, y);
 
 		public int GetHashCode(IDiscriminator obj)
-		{
-			if (obj == null)
-				return 0;
-			return obj.Id.GetHashCode();
-		}
+			=> obj != null
+				? obj.Id?.GetHashCode() ?? 0
+				: 0;
 
 		private static bool AreEquals(object obj1, object obj2)
 		{

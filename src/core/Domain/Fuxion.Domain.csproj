@@ -2,7 +2,6 @@
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.1</TargetFramework>
-		<LangVersion>8.0</LangVersion>
 
 		<Title>Fuxion Domain</Title>
 		<PackageId>Fuxion.Domain</PackageId>
@@ -10,9 +9,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Compile Update="Properties\AssemblyInfo.cs">
-			<SubType>Code</SubType>
-		</Compile>
+		<Compile Update="Properties\AssemblyInfo.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

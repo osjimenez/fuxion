@@ -19,17 +19,13 @@
 
 	<ItemGroup>
 		<None Remove="Views\AppointmentDetailView.xaml" />
-		<Compile Update="Views\AppointmentDetailView.xaml.cs">
-			<SubType>Code</SubType>
-		</Compile>
+		<Compile Update="Views\AppointmentDetailView.xaml.cs" />
 		<Page Update="Views\AppointmentDetailView.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</Page>
 		
 		<None Remove="Views\AppointmentListView.xaml" />
-		<Compile Update="Views\AppointmentListView.xaml.cs">
-			<SubType>Code</SubType>
-		</Compile>
+		<Compile Update="Views\AppointmentListView.xaml.cs" />
 		<Page Update="Views\AppointmentListView.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</Page>

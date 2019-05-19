@@ -9,10 +9,10 @@ namespace Fuxion.Synchronization
     internal interface IPropertyRunner
     {
         string PropertyName { get; }
-        object MasterValue { get; }
-        object SideValue { get; }
-        Func<object, string> MasterNamingFunction { get; }
-        Func<object, string> SideNamingFunction { get; }
+        object? MasterValue { get; }
+        object? SideValue { get; }
+        Func<object, string?> MasterNamingFunction { get; }
+        Func<object, string?> SideNamingFunction { get; }
 
         IPropertyRunner Invert();
     }

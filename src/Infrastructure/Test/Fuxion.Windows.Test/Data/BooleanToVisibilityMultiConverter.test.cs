@@ -86,7 +86,7 @@ namespace Fuxion.Windows.Test.Data
         {
             var c = new BooleanToVisibilityMultiConverter();
             c.NullValue = Visibility.Hidden;
-            var res = c.Convert(null, CultureInfo.CurrentCulture);
+            var res = c.Convert(null!, CultureInfo.CurrentCulture);
             Assert.Equal(Visibility.Hidden, res);
         }
         [Fact(DisplayName = "BooleanToVisibilityMultiConverter - EmptyValue")]

@@ -9,7 +9,7 @@ namespace Fuxion.Reflection
 {
 	public class TypeKeyDirectory
 	{
-		Dictionary<string, Type> dic = new Dictionary<string, Type>();
+		Dictionary<string?, Type> dic = new Dictionary<string?, Type>();
 		public Type this[string key]
 		{
 			get
@@ -19,9 +19,9 @@ namespace Fuxion.Reflection
 			}
 		}
 		public bool ContainsKey(string key) => dic.ContainsKey(key);
-		public void RegisterAssemblyOf(Type type, Func<(Type Type, TypeKeyAttribute Attribute), bool> predicate = null) => RegisterAssembly(type.Assembly, predicate);
-		public void RegisterAssemblyOf<T>(Func<(Type Type, TypeKeyAttribute Attribute), bool> predicate = null) => RegisterAssembly(typeof(T).Assembly, predicate);
-		public void RegisterAssembly(Assembly assembly, Func<(Type Type, TypeKeyAttribute Attribute), bool> predicate = null)
+		public void RegisterAssemblyOf(Type type, Func<(Type Type, TypeKeyAttribute Attribute), bool>? predicate = null) => RegisterAssembly(type.Assembly, predicate);
+		public void RegisterAssemblyOf<T>(Func<(Type Type, TypeKeyAttribute Attribute), bool>? predicate = null) => RegisterAssembly(typeof(T).Assembly, predicate);
+		public void RegisterAssembly(Assembly assembly, Func<(Type Type, TypeKeyAttribute Attribute), bool>? predicate = null)
 		{
 			var query = assembly.GetTypes()
 				.Where(t => t.HasCustomAttribute<TypeKeyAttribute>(false))
@@ -46,9 +46,10 @@ namespace Fuxion.Reflection
 	}
 	public static class TypeKeyExtensions
 	{
-		public static string GetTypeKey(this Type me, bool exceptionIfNotFound = true) => me.GetCustomAttribute<TypeKeyAttribute>(false, exceptionIfNotFound, true)?.TypeKey;
+		public static string GetTypeKey(this Type me) => me.GetCustomAttribute<TypeKeyAttribute>(false).TypeKey;
+		public static string? GetTypeKey(this Type me, bool exceptionIfNotFound) => me.GetCustomAttribute<TypeKeyAttribute>(false, exceptionIfNotFound, true)?.TypeKey;
 	}
-	public class TypeKeyNotFoundInDirectoryException : Exception
+	public class TypeKeyNotFoundInDirectoryException : FuxionException
 	{
 		public TypeKeyNotFoundInDirectoryException(string message) : base(message) { }
 	}

@@ -35,12 +35,12 @@ namespace Fuxion.Test.ComponentModel.DataAnnotations
 			{
 				Id = 0, // Make invalid because must be greater than 0
 				Name = "Fuxion678901", // Make doubly invalid because contains 'Fuxion' and has more than 10 character length
-				RecursiveValidatable = null, // Make invalid because is required
+				RecursiveValidatable = null!, // Make invalid because is required
 			};
 
-			obj.IgnoredName = null; // Must be ignored
+			obj.IgnoredName = null!; // Must be ignored
 			obj.IgnoredRecursiveValidatable.Name = "Fuxion678901"; // Must be ignored
-			obj.IgnoredRecursiveValidatableCollection = null; // Must be ignored
+			obj.IgnoredRecursiveValidatableCollection = null!; // Must be ignored
 
 			ICollection<NotifierValidatorMessage> res = NotifierValidator.Validate(obj);
 			PrintValidatorResults(res);
@@ -58,7 +58,7 @@ namespace Fuxion.Test.ComponentModel.DataAnnotations
 			ValidatableMock obj = new ValidatableMock();
 			obj.RecursiveValidatable.Id = 0; // Make invalid because must be greater than 0
 
-			obj.IgnoredName = null; // Must be ignored
+			obj.IgnoredName = null!; // Must be ignored
 			obj.IgnoredRecursiveValidatable.Id = 0; // Must be ignored
 			obj.IgnoredRecursiveValidatableCollection.First().Id = 0; // Must be ignored
 
@@ -73,8 +73,8 @@ namespace Fuxion.Test.ComponentModel.DataAnnotations
 			RecursiveValidatableMock first = obj.RecursiveValidatableCollection.First();
 			first.Id = 0; // Make invalid because must be greater than 0
 
-			obj.IgnoredName = null; // Must be ignored
-			obj.IgnoredRecursiveValidatable = null; // Must be ignored
+			obj.IgnoredName = null!; // Must be ignored
+			obj.IgnoredRecursiveValidatable = null!; // Must be ignored
 			obj.IgnoredRecursiveValidatableCollection.First().Id = 0; // Must be ignored
 
 			ICollection<NotifierValidatorMessage> res = NotifierValidator.Validate(obj);
@@ -190,8 +190,8 @@ namespace Fuxion.Test.ComponentModel.DataAnnotations
 			int counter = 0;
 			((INotifyCollectionChanged)val.Messages).CollectionChanged += (s, e) => counter++;
 
-			obj.RecursiveValidatable = null; // Make invalid because is required
-			obj.IgnoredRecursiveValidatable = null; // Must be ignored
+			obj.RecursiveValidatable = null!; // Make invalid because is required
+			obj.IgnoredRecursiveValidatable = null!; // Must be ignored
 
 			val.RegisterNotifier(obj);
 			PrintValidatorResults(val.Messages);
@@ -322,8 +322,8 @@ namespace Fuxion.Test.ComponentModel.DataAnnotations
 			int counter = 0;
 			((INotifyCollectionChanged)val.Messages).CollectionChanged += (s, e) => counter++;
 
-			obj.RecursiveValidatableCollection = null;
-			obj.IgnoredRecursiveValidatableCollection = null;
+			obj.RecursiveValidatableCollection = null!;
+			obj.IgnoredRecursiveValidatableCollection = null!;
 
 			PrintValidatorResults(val.Messages);
 			Assert.Equal(1, counter);
@@ -362,8 +362,8 @@ namespace Fuxion.Test.ComponentModel.DataAnnotations
 
 			var first = obj.RecursiveValidatableCollection.First();
 			var ignoredFirst = obj.IgnoredRecursiveValidatableCollection.First();
-			first.Name = null;
-			ignoredFirst.Name = null; // Must be ignored
+			first.Name = null!;
+			ignoredFirst.Name = null!; // Must be ignored
 
 			PrintValidatorResults(val.Messages);
 			Assert.Equal(1, counter);

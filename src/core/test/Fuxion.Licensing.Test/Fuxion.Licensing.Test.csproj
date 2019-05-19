@@ -8,20 +8,23 @@
 	<ItemGroup>
 		<PackageReference Include="xunit" Version="2.4.1" />
 		<PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
-		  <PrivateAssets>all</PrivateAssets>
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
 		</PackageReference>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\Licensing\Fuxion.Licensing.csproj" />
-	  <ProjectReference Include="..\Fuxion.Test\Fuxion.Test.csproj" />
+		<ProjectReference Include="..\..\Licensing\Fuxion.Licensing.csproj" />
+		<ProjectReference Include="..\Fuxion.Test\Fuxion.Test.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Update="licenses.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
+		<None Update="licenses.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="xunit.runner.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
 	</ItemGroup>
 
 </Project>

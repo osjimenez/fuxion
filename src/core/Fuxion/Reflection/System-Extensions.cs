@@ -7,29 +7,54 @@ namespace System.Reflection
 {
 	public static class MemberInfoExtensions
 	{
+		//public static TAttribute? GetCustomAttribute<TAttribute>(this MemberInfo member, bool inherit = true, bool exceptionIfNotFound = true, bool exceptionIfMoreThanOne = true) where TAttribute : Attribute
+		//{
+		//	object[] objAtts = member.GetCustomAttributes(typeof(TAttribute), inherit);
+		//	IEnumerable<TAttribute> atts = objAtts?.Cast<TAttribute>();
+		//	if (exceptionIfMoreThanOne && atts != null && atts.Count() > 1)
+		//		throw new AttributeMoreThanOneException(member, typeof(TAttribute));
+		//	var att = atts?.FirstOrDefault();
+		//	if (exceptionIfNotFound && att == null)
+		//		throw new AttributeNotFoundException(member, typeof(TAttribute));
+		//	return att;
+		//}
 		/// <summary>
-		/// Recupera un atributo personalizado aplicado a un miembro de un tipo.
+		/// Retrieves a custom attribute of a specified type that is applied to a specified
+		/// member, and optionally inspects the ancestors of that member.
 		/// </summary>
-		/// <typeparam name="TAttribute">Tipo del atributo personalizado que se va a recuperar.</typeparam>
-		/// <param name="member">Miembro para el cual se recuperará el atributo personalizado.</param>
-		/// <param name="inherit">Si es true, especifica que se busquen también los atributos personalizados de los antecesores.</param>
-		/// <param name="exceptionIfNotFound">Si es true se lanzará una excepción <see cref="AttributeNotFoundException"/> en caso de no encontrarse el atributo personalizado.</param>
-		/// <param name="exceptionIfMoreThanOne">Si es true se lanzará una excepción <see cref="AttributeMoreThanOneException"/> en caso de encontrarse el atributo personalizado más de una vez.</param>
+		/// <typeparam name="TAttribute">The type of attribute to search for.</typeparam>
+		/// <param name="me">The member to inspect.</param>
+		/// <param name="inherit">true to inspect the ancestors of element; otherwise, false.</param>
+		/// <param name="exceptionIfNotFound">true to throw <see cref="AttributeNotFoundException"/> if custom attribute not found.</param>
 		/// <returns></returns>
-		public static TAttribute GetCustomAttribute<TAttribute>(this MemberInfo member, bool inherit = true, bool exceptionIfNotFound = true, bool exceptionIfMoreThanOne = true) where TAttribute : Attribute
+		public static TAttribute? GetCustomAttribute<TAttribute>(this MemberInfo me, bool inherit, bool exceptionIfNotFound) where TAttribute : Attribute
+			=> GetCustomAttribute<TAttribute>(me, inherit, exceptionIfNotFound, true);
+		/// <summary>
+		/// Retrieves a custom attribute of a specified type that is applied to a specified
+		/// member, and optionally inspects the ancestors of that member.
+		/// </summary>
+		/// <typeparam name="TAttribute">The type of attribute to search for.</typeparam>
+		/// <param name="me">The member to inspect.</param>
+		/// <param name="inherit">true to inspect the ancestors of element; otherwise, false.</param>
+		/// <param name="exceptionIfNotFound">true to throw <see cref="AttributeNotFoundException"/> if custom attribute not found.</param>
+		/// <param name="exceptionIfMoreThanOne">true to throw <see cref="AttributeMoreThanOneException"/> if custom attribute found more than once.</param>
+		/// <returns></returns>
+		public static TAttribute? GetCustomAttribute<TAttribute>(this MemberInfo me, bool inherit, bool exceptionIfNotFound, bool exceptionIfMoreThanOne) where TAttribute : Attribute
 		{
-			object[] objAtts = member.GetCustomAttributes(typeof(TAttribute), inherit);
-			IEnumerable<TAttribute> atts = objAtts != null ? objAtts.Cast<TAttribute>() : null;
+			var objAtts = me.GetCustomAttributes(typeof(TAttribute), inherit);
+			var atts = objAtts?.Cast<TAttribute>();
 			if (exceptionIfMoreThanOne && atts != null && atts.Count() > 1)
-				throw new AttributeMoreThanOneException(member, typeof(TAttribute));
-			TAttribute att = atts != null ? atts.FirstOrDefault() : null;
+				throw new AttributeMoreThanOneException(me, typeof(TAttribute));
+			var att = atts?.FirstOrDefault();
 			if (exceptionIfNotFound && att == null)
-				throw new AttributeNotFoundException(member, typeof(TAttribute));
+				throw new AttributeNotFoundException(me, typeof(TAttribute));
 			return att;
 		}
+
+
 		public static bool HasCustomAttribute<TAttribute>(this MemberInfo member, bool inherit = true, bool exceptionIfMoreThanOne = true) where TAttribute : Attribute
 		{
-			TAttribute att = member.GetCustomAttribute<TAttribute>(inherit, false, exceptionIfMoreThanOne);
+			var att = member.GetCustomAttribute<TAttribute>(inherit, false, exceptionIfMoreThanOne);
 			return att != null;
 		}
 		public static string GetSignature(this MethodBase method,
@@ -39,8 +64,8 @@ namespace System.Reflection
 			bool useFullNames = false,
 			bool includeParameters = true,
 			bool includeParametersNames = false,
-			Func<bool, bool, MethodBase, object, string> parametersFunction = null,
-			object parametersFunctionArguments = null
+			Func<bool, bool, MethodBase, object?, string>? parametersFunction = null,
+			object? parametersFunctionArguments = null
 			)
 		{
 			StringBuilder res = new StringBuilder();

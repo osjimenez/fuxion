@@ -28,6 +28,9 @@
 			<telerik:RadButton Name="RefreshButton" Margin="3">
 				<Viewbox Child="{StaticResource RefreshPath}" Width="24" Height="24"/>
 			</telerik:RadButton>
+			<telerik:RadButton Name="RefreshButton2" Margin="3" Click="RefreshButton_Click">
+				<Viewbox Child="{StaticResource RefreshPath}" Width="24" Height="24"/>
+			</telerik:RadButton>
 		</StackPanel>
 		<Grid Grid.Column="1">
 			<Grid.RowDefinitions>

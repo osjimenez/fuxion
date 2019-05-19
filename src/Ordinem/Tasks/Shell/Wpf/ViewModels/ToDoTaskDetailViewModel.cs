@@ -25,7 +25,7 @@ namespace Ordinem.Tasks.Shell.Wpf.ViewModels
 			this.proxy = proxy;
 			this.mapper = mapper;
 			
-			var titleObs = this.WhenAnyValue(x => x.Dvo.Name)
+			var titleObs = this.WhenAnyValue(x => x.Dvo!.Name)
 				.Select(x => $"Task '{x}'")
 				.ObserveOn(RxApp.MainThreadScheduler);
 			_Title = titleObs.ToProperty(this, x => x.Title, "Loading ...");
@@ -33,11 +33,14 @@ namespace Ordinem.Tasks.Shell.Wpf.ViewModels
 
 			RenameCommand = ReactiveCommand.CreateFromTask(async () =>
 			{
-				var newName = await RenameInteraction.Handle(Dvo.Name);
-				if (!string.IsNullOrWhiteSpace(newName))
+				if (Dvo != null)
 				{
-					await proxy.RenameToDoTask(Dvo.Id, newName);
-					Dvo.Name = newName;
+					var newName = await RenameInteraction.Handle(Dvo.Name);
+					if (!string.IsNullOrWhiteSpace(newName))
+					{
+						await proxy.RenameToDoTask(Dvo.Id, newName);
+						Dvo.Name = newName;
+					}
 				}
 			});
 		}
@@ -52,8 +55,8 @@ namespace Ordinem.Tasks.Shell.Wpf.ViewModels
 		private readonly ObservableAsPropertyHelper<string> _Header;
 		public string Header => _Header.Value;
 
-		ToDoTaskDvo _Dvo;
-		public ToDoTaskDvo Dvo {
+		ToDoTaskDvo? _Dvo;
+		public ToDoTaskDvo? Dvo {
 			get => _Dvo;
 			set => this.RaiseAndSetIfChanged(ref _Dvo, value);
 		}
@@ -77,7 +80,7 @@ namespace Ordinem.Tasks.Shell.Wpf.ViewModels
 					Dvo = dvo;
 			});
 		}
-		public Interaction<string, string> RenameInteraction { get; } = new Interaction<string, string>();
+		public Interaction<string?, string> RenameInteraction { get; } = new Interaction<string?, string>();
 		public ReactiveCommand<Unit, Unit> RenameCommand { get; }
 	}
 }

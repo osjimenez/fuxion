@@ -17,7 +17,7 @@ namespace Fuxion.Shell.Messages
 		{
 			Pane = pane;
 		}
-		public PanelName Name { get; }
-		public RadPane Pane { get; }
+		public PanelName? Name { get; }
+		public RadPane? Pane { get; }
 	}
 }

@@ -18,7 +18,7 @@ namespace Ordinem.Calendar.Shell.Wpf
 		private static readonly HttpClient client = new HttpClient();
 		const string host = "localhost";
 		const int port = 5100;
-		public AsyncRetryPolicy GetRetryPolicy([CallerMemberName] string callerMemberName = null)
+		public AsyncRetryPolicy GetRetryPolicy([CallerMemberName] string? callerMemberName = null)
 			=> RetryPolicy.Handle<HttpRequestException>()
 			//.Or<BrokerUnreachableException>()
 			.WaitAndRetryAsync(5, retryAttempt => TimeSpan.FromSeconds(System.Math.Pow(2, retryAttempt)), (ex, time) =>
@@ -27,17 +27,9 @@ namespace Ordinem.Calendar.Shell.Wpf
 			}
 		);
 		public Task AddToDoTask(Guid id, string name)
-			=> SendCalendarCommand(new CreateAppointmentCommand
-			{
-				Id = id,
-				AppointmentName = name
-			});
+			=> SendCalendarCommand(new CreateAppointmentCommand(id, name));
 		public Task RenameToDoTask(Guid id, string name)
-			=> SendCalendarCommand(new RenameAppointmentCommand
-			{
-				Id = id,
-				NewName = name
-			});
+			=> SendCalendarCommand(new RenameAppointmentCommand(id, name));
 		public Task DeleteToDoTask(Guid id)
 			=> SendCalendarCommand(new DeleteAppointmentCommand
 			{

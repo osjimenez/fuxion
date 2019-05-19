@@ -18,7 +18,7 @@ namespace Ordinem.Tasks.Projection
 			modelBuilder.ApplyConfiguration(new ToDoTaskTypeConfiguration());
 		}
 
-		public DbSet<ToDoTaskDpo> ToDoTasks { get; set; }
+		public DbSet<ToDoTaskDpo> ToDoTasks { get; set; } = default!;
 	}
 	public class TasksDbContextFactory : IDesignTimeDbContextFactory<TasksDbContext>
 	{

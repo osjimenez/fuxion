@@ -29,7 +29,7 @@ namespace Fuxion.Test.Web
 
 			var delta = dyn as Patchable<ToPatch>;
 
-			Assert.Equal(111, delta.Get<int>("Integer"));
+			Assert.Equal(111, delta?.Get<int>("Integer"));
 		}
 		[Fact(DisplayName = "Patchable - Indexer")]
 		public void Indexer()
@@ -39,9 +39,9 @@ namespace Fuxion.Test.Web
 
 			var delta = dyn as Patchable<ToPatch>;
 
-			Assert.True(delta.Has("Integer"));
-			Assert.False(delta.Has("Integer2"));
-			Assert.Equal(111, delta.Get<int>("Integer"));
+			Assert.True(delta?.Has("Integer"));
+			Assert.False(delta?.Has("Integer2"));
+			Assert.Equal(111, delta?.Get<int>("Integer"));
 		}
 		[Fact(DisplayName = "Patchable - Cast")]
 		public void Cast()
@@ -51,7 +51,7 @@ namespace Fuxion.Test.Web
 			dyn.Id = "{7F27735C-FDE1-4141-985A-214502599C63}";
 
 			var delta = dyn as Patchable<ToPatch>;
-			var id = delta.Get<Guid>("Id");
+			var id = delta?.Get<Guid>("Id");
 
 			Assert.Equal(Guid.Parse("{7F27735C-FDE1-4141-985A-214502599C63}"), id);
 		}
@@ -73,21 +73,21 @@ namespace Fuxion.Test.Web
 
 			// Path a derived class
 			var derived = new DerivedToPatch();
-			(dyn as Patchable<ToPatch>).ToPatchable<DerivedToPatch>().Patch(derived);
+			(dyn as Patchable<ToPatch>)?.ToPatchable<DerivedToPatch>().Patch(derived);
 			Assert.Equal(123, derived.Integer);
 			Assert.Equal(123, derived.DerivedInteger);
 
 			// Get non existing property
-			var delta = dyn as Patchable<ToPatch>;
-			int res, derivedRed;
+			var delta = (Patchable<ToPatch>)dyn;
+			int? res, derivedRed;
 			Assert.Throws<Microsoft.CSharp.RuntimeBinder.RuntimeBinderException>(() =>
 			{
 				res = delta.Get<int>("Integer");
 				derivedRed = delta.Get<int>("DerivedInteger");
 			});
 			Patchable<ToPatch>.NonExistingPropertiesMode = NonExistingPropertiesMode.GetAndSet;
-			res = delta.Get<int>("Integer");
-			derivedRed = delta.Get<int>("DerivedInteger");
+			res = delta?.Get<int>("Integer");
+			derivedRed = delta?.Get<int>("DerivedInteger");
 
 			Assert.Equal(123, res);
 			Assert.Equal(123, derivedRed);
@@ -96,7 +96,7 @@ namespace Fuxion.Test.Web
 	public class ToPatch
 	{
 		public int Integer { get; set; }
-		public string String { get; set; }
+		public string? String { get; set; }
 		public Guid Id { get; set; }
 	}
 	public class DerivedToPatch : ToPatch

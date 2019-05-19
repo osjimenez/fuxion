@@ -30,7 +30,7 @@ namespace System.Threading.Tasks
 			// If task was cancelled, nothing happens
 			catch (Exception ex) when (ex is TaskCanceledException || ex is AggregateException aex && aex.Flatten().InnerException is TaskCanceledException) { }
 		}
-		public static void OnCancelRequested(this Task task, Action action) => TaskManager.SearchEntry(task, true).CancelRequested += (s, e) => action();
+		public static void OnCancelRequested(this Task task, Action action) => TaskManager.SearchEntry(task).CancelRequested += (s, e) => action();
 		public static Task OnCancel(this Task task, Action action) => task.ContinueWith(t => action(), TaskContinuationOptions.OnlyOnCanceled);
 		public static Task OnSuccess(this Task task, Action action) => task.ContinueWith(t => action(), TaskContinuationOptions.OnlyOnRanToCompletion);
 		public static Task OnFaulted(this Task task, Action<AggregateException> action) => task.ContinueWith(t => action(t.Exception), TaskContinuationOptions.OnlyOnFaulted);
@@ -45,17 +45,17 @@ namespace System.Threading.Tasks
 				if (throwExceptionIfNotRunning) throw new ArgumentException("IsCancellationRequested: La tarea no esta administrada por el TaskManager." + task.CreationOptions.ToString());
 			else return false;
 		}
-		public static CancellationToken? GetCancellationToken(this Task task, bool throwExceptionIfNotRunning = false)
+		public static CancellationToken GetCancellationToken(this Task task, bool throwExceptionIfNotRunning = false)
 		{
 			var entry = TaskManager.SearchEntry(task, throwExceptionIfNotRunning);
-			return entry?.CancellationTokenSource.Token;
+			return entry?.CancellationTokenSource.Token ?? CancellationToken.None;
 		}
 		public static bool Sleep(this Task task, TimeSpan timeout, bool rethrowException = false)
 		{
 			try
 			{
 				// Share the token with Delay method to break the operation if task will canceled
-				Task.Delay(timeout, task.GetCancellationToken(true).Value).Wait();
+				Task.Delay(timeout, task.GetCancellationToken(true)).Wait();
 				return true;
 			}
 			// If task was cancelled, nothing happens

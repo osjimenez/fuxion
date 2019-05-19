@@ -44,7 +44,7 @@ namespace Fuxion.Net
 				});
 			};
 		}
-		public ILogger Logger { get; set; }
+		public ILogger? Logger { get; set; }
 		protected void ConnectionPropertyChanged()
 		{
 			switch (State)
@@ -84,16 +84,17 @@ namespace Fuxion.Net
 			get => GetLockedValue(() => ConnectionState.Created);
 			private set => SetLockedValue(value);
 		}
+
 		#region Connect
-		public virtual string LastConnectionAttemptErrorMessage
+		public virtual string? LastConnectionAttemptErrorMessage
 		{
-			get => GetValue<string>();
+			get => GetValue<string?>();
 			set => SetValue(value);
 		}
-		protected bool IsConnectCancellationRequested => connectionTask.IsCancellationRequested();
+		protected bool IsConnectCancellationRequested => connectionTask?.IsCancellationRequested() ?? false;
 		public event EventHandler<EventArgs<bool>> IsConnectedChanged;
 		public bool IsConnected => State == ConnectionState.Opened;
-		Task connectionTask;
+		Task? connectionTask = null;
 		protected abstract Task OnConnect();
 		Task Connect(out Func<Task<bool>> firstTryResultFunc, TimeSpan? firstTryTimeout = null)
 		{
@@ -151,7 +152,7 @@ namespace Fuxion.Net
 									State = ConnectionState.Faulted;
 									throw;
 								}
-								connectionTask.Sleep(AutomaticConnectionModeRetryInterval);
+								connectionTask?.Sleep(AutomaticConnectionModeRetryInterval);
 							}
 							finally
 							{
@@ -164,19 +165,22 @@ namespace Fuxion.Net
 					return connectionTask;
 				case ConnectionState.Opening:
 					firstTryResultFunc = new Func<Task<bool>>(() => Task.FromResult(false));
-					return connectionTask;
+					return connectionTask 
+						?? throw new InvalidStateException($"If '{nameof(ConnectionState)}' is '{nameof(ConnectionState.Opening)}' '{nameof(connectionTask)}' cannot be null");
 				case ConnectionState.Closing:
 					firstTryResultFunc = new Func<Task<bool>>(() => Task.FromResult(false));
-					return disconnectionTask.ContinueWith((task) => Connect());
+					return disconnectionTask?.ContinueWith((task) => Connect()) 
+						?? throw new InvalidStateException($"If '{nameof(ConnectionState)}' is '{nameof(ConnectionState.Opening)}' '{nameof(connectionTask)}' cannot be null");
 				default:
 					throw new NotImplementedException($"El estado '{State}' no ha sido implementado en la operación de conexión.");
 			}
 		}
 		public Task Connect() => Connect(out var _);
 		#endregion
+
 		#region Disconnect
-		protected bool IsDisconnectCancellationRequested => disconnectionTask.IsCancellationRequested();
-		Task disconnectionTask;
+		protected bool IsDisconnectCancellationRequested => disconnectionTask?.IsCancellationRequested() ?? false;
+		Task? disconnectionTask = null;
 		protected abstract Task OnDisconnect();
 		Task Disconnect(bool mustClose)
 		{
@@ -186,7 +190,7 @@ namespace Fuxion.Net
 				case ConnectionState.Closed:
 					throw new InvalidOperationException("No se puede desconectar porque la conexión no esta activa.");
 				case ConnectionState.Closing:
-					return disconnectionTask;
+					return disconnectionTask ?? throw new InvalidStateException($"If '{nameof(ConnectionState)}' is '{nameof(ConnectionState.Closing)}' '{nameof(disconnectionTask)}' cannot be null");
 				case ConnectionState.Faulted:
 				case ConnectionState.Opening:
 				case ConnectionState.Opened:
@@ -232,8 +236,9 @@ namespace Fuxion.Net
 			return false;
 		}
 		#endregion
+
 		#region KeepAlive
-		protected bool IsKeepAliveCancellationRequested => keepAliveTask.IsCancellationRequested();
+		protected bool IsKeepAliveCancellationRequested => keepAliveTask?.IsCancellationRequested() ?? false;
 		public virtual bool IsKeepAliveEnabled
 		{
 			get => GetValue<bool>();
@@ -244,7 +249,7 @@ namespace Fuxion.Net
 			get => GetValue(() => TimeSpan.FromSeconds(60));
 			set => SetValue(value);
 		}
-		Task keepAliveTask;
+		Task? keepAliveTask = null;
 		protected virtual Task OnKeepAlive() =>
 #if NET45
 			Task.FromResult(0);
@@ -263,7 +268,7 @@ namespace Fuxion.Net
 				SetValue(IsKeepAliveCancellationRequested, true, nameof(IsKeepAliveCancellationRequested));
 				while (!IsKeepAliveCancellationRequested)
 				{
-					keepAliveTask.Sleep(KeepAliveInterval);
+					keepAliveTask!.Sleep(KeepAliveInterval);
 					if (IsKeepAliveCancellationRequested) break;
 					try { await OnKeepAlive(); }
 					catch (Exception ex)

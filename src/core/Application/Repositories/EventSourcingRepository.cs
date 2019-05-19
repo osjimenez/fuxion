@@ -31,10 +31,10 @@ namespace Fuxion.Application.Repositories
 		private readonly TypeKeyDirectory typeKeyDirectory;
 		private readonly Factory<TAggregate> aggregateFactory;
 		private readonly Dictionary<Guid, Aggregate> trackedAggregates = new Dictionary<Guid, Aggregate>();
-		public ILogger Logger { get; set; }
+		public ILogger? Logger { get; set; }
 		public virtual async Task<TAggregate> GetAsync(Guid aggregateId)
 		{
-			TAggregate aggregate = null;
+			TAggregate? aggregate = null;
 			var startEvent = 0;
 			if (aggregateFactory.IsSnapshottable())
 			{
@@ -47,7 +47,7 @@ namespace Fuxion.Application.Repositories
 			}
 			var events = (await eventStorage.GetEventsAsync(aggregateId, startEvent, int.MaxValue)).ToList();
 			if (aggregate == null && !events.Any()) throw new AggregateNotFoundException($"Aggregate with id '{aggregateId}' not found in repository");
-			aggregate = aggregate ?? aggregateFactory.Create(aggregateId);
+			aggregate ??= aggregateFactory.Create(aggregateId);
 			aggregate.Hydrate(events);
 			AddToTracking(aggregate);
 			return aggregate;

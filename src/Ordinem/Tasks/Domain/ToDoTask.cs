@@ -11,7 +11,7 @@ namespace Ordinem.Tasks.Domain
 		public void Rename(string newName) => ApplyEvent(new ToDoTaskRenamedEvent(Id, newName));
 		public void Delete() => ApplyEvent(new ToDoTaskDeletedEvent(Id));
 
-		internal string name;
+		internal string? name;
 
 		[AggregateEventHandler]
 		void WhenCreated(ToDoTaskCreatedEvent @event)

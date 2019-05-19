@@ -11,11 +11,11 @@ namespace Fuxion.Windows.Data
         PerTotals,
         Ticks,
     }
-    public class TimeSpanToStringConverter : GenericConverter<TimeSpan?,string>
+    public class TimeSpanToStringConverter : GenericConverter<TimeSpan?,string?>
     {
         public TimeSpanToStringMode Mode { get; set; }
         public int NumberOfElements { get; set; } = 5;
-        public override string Convert(TimeSpan? source, CultureInfo culture)
+        public override string? Convert(TimeSpan? source, CultureInfo culture)
         {
             if (source == null || !source.HasValue) return null;
             var ts = source.Value;

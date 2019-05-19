@@ -91,8 +91,8 @@ namespace Ordinem.Calendar.Shell.Wpf.ViewModels
 		
 		public ReadOnlyObservableCollection<AppointmentDvo> AllToDoTasks { get; }
 		public ReadOnlyObservableCollection<AppointmentDvo> ToDoTasks { get; }
-		AppointmentDvo _SelectedToDoTask;
-		public AppointmentDvo SelectedToDoTask
+		AppointmentDvo? _SelectedToDoTask;
+		public AppointmentDvo? SelectedToDoTask
 		{
 			get => _SelectedToDoTask;
 			set => this.RaiseAndSetIfChanged(ref _SelectedToDoTask, value);

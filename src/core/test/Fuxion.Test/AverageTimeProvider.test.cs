@@ -71,7 +71,7 @@ namespace Fuxion.Test
 			"http://www.facebook.com",
 			"http://www.twitter.com",
 		};
-		[Fact]
+		[Fact(DisplayName = "AverageTimeProvider - CheckConsistency")]
 		public void AverageTimeProvider_CheckConsistency()
 		{
 			new AverageTimeProvider()

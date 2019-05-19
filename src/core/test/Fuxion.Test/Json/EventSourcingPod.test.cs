@@ -74,11 +74,11 @@ namespace Fuxion.Test.Json
 	}
 	public abstract class EventFeature
 	{
-		public Event Event { get; internal set; }
+		public Event? Event { get; internal set; }
 	}
 	public static class EventFeatureExtensions
 	{
-		public static void AddFeature<TFeature>(this Event me, Action<TFeature> initializeAction = null) where TFeature : EventFeature, new()
+		public static void AddFeature<TFeature>(this Event me, Action<TFeature>? initializeAction = null) where TFeature : EventFeature, new()
 		{
 			var fea = Activator.CreateInstance<TFeature>();
 			fea.Event = me;
@@ -90,7 +90,7 @@ namespace Fuxion.Test.Json
 		public static TFeature GetFeature<TFeature>(this Event me) where TFeature : EventFeature, new()
 			=> me.Features.OfType<TFeature>().SingleOrDefault();
 	}
-	public class EventFeatureNotFoundException : Exception
+	public class EventFeatureNotFoundException :FuxionException
 	{
 		public EventFeatureNotFoundException(string message) : base(message) { }
 	}
@@ -105,7 +105,7 @@ namespace Fuxion.Test.Json
 	{
 		[JsonConstructor]
 		protected EventSourcingPod() { }
-		internal EventSourcingPod(Event @event) : base(@event, @event.GetType().GetTypeKey())
+		internal EventSourcingPod(Event @event) : base(@event, @event.GetType().GetTypeKey() ?? @event.GetType().FullName)
 		{
 			if (!@event.HasEventSourcing()) throw new EventFeatureNotFoundException($"'{nameof(EventSourcingPod)}' require '{nameof(EventSourcingEventFeature)}'");
 			TargetVersion = @event.EventSourcing().TargetVersion;

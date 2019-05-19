@@ -8,10 +8,20 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="appsettings.json" />
 	  <None Remove="Views\AboutPanel.xaml" />
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Content Include="appsettings.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="3.0.0-preview5.19227.9" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.0.0-preview5.19227.9" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.0-preview5.19227.9" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.0.0-preview5.19227.9" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.0.0-preview5.19227.9" />
@@ -19,7 +29,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\..\..\Infrastructure\Log4net\Fuxion.Log4net.csproj" />
 	  <ProjectReference Include="..\..\..\Calendar\Shell\Wpf\Ordinem.Calendar.Shell.Wpf.csproj" />
 	  <ProjectReference Include="..\..\..\Tasks\Shell\Wpf\Ordinem.Tasks.Shell.Wpf.csproj" />
 	</ItemGroup>
@@ -27,9 +36,6 @@
 	<ItemGroup>
 		<None Update="App.xaml">
 			<Generator>MSBuild:Compile</Generator>
-		</None>
-		<None Update="log4net.config">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
 		<Compile Update="App.xaml.cs">
 			<DependentUpon>App.xaml</DependentUpon>

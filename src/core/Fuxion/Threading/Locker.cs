@@ -12,7 +12,7 @@ namespace Fuxion.Threading
 
 		private readonly ReaderWriterLockSlim _ReaderWriterLockSlim = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 		private TObjectLocked objectLocked;
-		public ILogger Logger { get; set; }
+		public ILogger? Logger { get; set; }
 
 		public void Dispose() => _ReaderWriterLockSlim.Dispose();
 
@@ -33,6 +33,23 @@ namespace Fuxion.Threading
 				_ReaderWriterLockSlim.ExitReadLock();
 			}
 		}
+		public void ReadUpgradeable(Action<TObjectLocked> action)
+		{
+			_ReaderWriterLockSlim.EnterUpgradeableReadLock();
+			try
+			{
+				action.Invoke(objectLocked);
+			}
+			catch (Exception ex)
+			{
+				Logger?.LogError(ex, $"Error '{ex.GetType().Name}' in Locker.Read: {ex.Message}");
+				throw;
+			}
+			finally
+			{
+				_ReaderWriterLockSlim.ExitUpgradeableReadLock();
+			}
+		}
 		public TResult Read<TResult>(Func<TObjectLocked, TResult> func)
 		{
 			_ReaderWriterLockSlim.EnterReadLock();
@@ -49,6 +66,24 @@ namespace Fuxion.Threading
 			finally
 			{
 				_ReaderWriterLockSlim.ExitReadLock();
+			}
+		}
+		public TResult ReadUpgradeable<TResult>(Func<TObjectLocked, TResult> func)
+		{
+			_ReaderWriterLockSlim.EnterUpgradeableReadLock();
+			try
+			{
+				var res = func.Invoke(objectLocked);
+				return res;
+			}
+			catch (Exception ex)
+			{
+				Logger?.LogError(ex, $"Error '{ex.GetType().Name}' in Locker.Read: {ex.Message}");
+				throw;
+			}
+			finally
+			{
+				_ReaderWriterLockSlim.ExitUpgradeableReadLock();
 			}
 		}
 		public void Write(Action<TObjectLocked> action)
@@ -93,14 +128,14 @@ namespace Fuxion.Threading
 			_ReaderWriterLockSlim.ExitWriteLock();
 		}
 		#region Async delegates
-		private Task DelegateReadAsync(Delegate del, params object[] pars)
+		private Task DelegateReadAsync(Delegate del, params object?[] pars)
 		{
 			return TaskManager.StartNew((d, ps) =>
 			{
 				_ReaderWriterLockSlim.EnterReadLock();
 				try
 				{
-					var p = new object[] { objectLocked }.ToList();
+					var p = new object?[] { objectLocked }.ToList();
 					p.AddRange(ps);
 					d.DynamicInvoke(p.ToArray());
 				}
@@ -115,14 +150,14 @@ namespace Fuxion.Threading
 				}
 			}, del, pars);
 		}
-		private Task<TResult> DelegateReadAsync<TResult>(Delegate del, params object[] pars)
+		private Task<TResult> DelegateReadAsync<TResult>(Delegate del, params object?[] pars)
 		{
 			return TaskManager.StartNew((d, ps) =>
 			{
 				_ReaderWriterLockSlim.EnterReadLock();
 				try
 				{
-					var p = new object[] { objectLocked }.ToList();
+					var p = new object?[] { objectLocked }.ToList();
 					p.AddRange(ps);
 					return (TResult)d.DynamicInvoke(p.ToArray());
 				}
@@ -137,14 +172,14 @@ namespace Fuxion.Threading
 				}
 			}, del, pars);
 		}
-		private Task DelegateWriteAsync(Delegate del, params object[] pars)
+		private Task DelegateWriteAsync(Delegate del, params object?[] pars)
 		{
 			return TaskManager.StartNew((d, ps) =>
 			{
 				_ReaderWriterLockSlim.EnterWriteLock();
 				try
 				{
-					var p = new object[] { objectLocked }.ToList();
+					var p = new object?[] { objectLocked }.ToList();
 					p.AddRange(ps);
 					d.DynamicInvoke(p.ToArray());
 				}
@@ -159,14 +194,14 @@ namespace Fuxion.Threading
 				}
 			}, del, pars);
 		}
-		private Task<TResult> DelegateWriteAsync<TResult>(Delegate del, params object[] pars)
+		private Task<TResult> DelegateWriteAsync<TResult>(Delegate del, params object?[] pars)
 		{
 			return TaskManager.StartNew((d, ps) =>
 			{
 				_ReaderWriterLockSlim.EnterWriteLock();
 				try
 				{
-					var p = new object[] { objectLocked }.ToList();
+					var p = new object?[] { objectLocked }.ToList();
 					p.AddRange(ps);
 					return (TResult)d.DynamicInvoke(p.ToArray());
 				}
@@ -186,6 +221,8 @@ namespace Fuxion.Threading
 		// Read action
 		public Task ReadAsync(Action<TObjectLocked> action) => DelegateReadAsync(action);
 		public Task ReadAsync<T>(Action<TObjectLocked, T> action, T param) => DelegateReadAsync(action, param);
+		//public Task ReadAsync<T>(Action<TObjectLocked, T> action, T param) where T : class => DelegateReadAsync(action, param);
+		//public Task ReadAsync<T>(Action<TObjectLocked, T> action, T param) where T : struct => DelegateReadAsync(action, param);
 		public Task ReadAsync<T1, T2>(Action<TObjectLocked, T1, T2> action, T1 param1, T2 param2) => DelegateReadAsync(action, param1, param2);
 		public Task ReadAsync<T1, T2, T3>(Action<TObjectLocked, T1, T2, T3> action, T1 param1, T2 param2, T3 param3) => DelegateReadAsync(action, param1, param2, param3);
 

@@ -18,11 +18,7 @@ namespace Ordinem.Tasks.Projection.EventHandlers
 		readonly TasksDbContext context;
 		public async Task HandleAsync(ToDoTaskCreatedEvent @event)
 		{
-			await context.ToDoTasks.AddAsync(new ToDoTaskDpo
-			{
-				Id = @event.AggregateId,
-				Name = @event.Name
-			});
+			await context.ToDoTasks.AddAsync(new ToDoTaskDpo(@event.AggregateId, @event.Name));
 			await context.SaveChangesAsync();
 		}
 	}

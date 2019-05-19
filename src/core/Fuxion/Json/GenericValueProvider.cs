@@ -14,10 +14,11 @@ namespace Fuxion.Json
 			this.property = property;
 			this.convertFunction = convertFunction;
 		}
-		IValueProvider valueProvider;
-		PropertyInfo property;
-		Func<TSource, TDestination> convertFunction;
-		public object GetValue(object target)
+
+		readonly IValueProvider valueProvider;
+		readonly PropertyInfo property;
+		readonly Func<TSource, TDestination> convertFunction;
+		public object? GetValue(object target)
 		{
 			var result = valueProvider == null
 				? property.GetValue(target)

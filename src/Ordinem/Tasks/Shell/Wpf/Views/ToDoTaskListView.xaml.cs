@@ -23,7 +23,9 @@ using Telerik.Windows.Controls;
 namespace Ordinem.Tasks.Shell.Wpf.Views
 {
 	[TypeKey("Ordinem.Shell.Wpf.Tasks.Views." + nameof(ToDoTaskListView))]
+#nullable disable
 	public partial class ToDoTaskListView : ReactiveUserControl<ToDoTaskListViewModel>, IPanelView
+#nullable enable
 	{
 		public ToDoTaskListView(ToDoTaskListViewModel viewModel)
 		{
@@ -116,5 +118,10 @@ namespace Ordinem.Tasks.Shell.Wpf.Views
 		~ToDoTaskListView() => Debug.WriteLine($"||||||||||||||||||||||||||||||||| => {this.GetType().Name} DESTROYED");
 
 		public IPanel Panel => ViewModel as IPanel;
+
+		private void RefreshButton_Click(object sender, RoutedEventArgs e)
+		{
+			MessageBus.Current.CloseAllPanels();
+		}
 	}
 }

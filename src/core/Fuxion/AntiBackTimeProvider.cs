@@ -12,7 +12,7 @@ namespace Fuxion
 
 		private readonly StoredTimeProvider[] providers;
 #if !NET45
-		public ILogger Logger { get; set; }
+		public ILogger? Logger { get; set; }
 		//public ILog Log { get; set; }
 #endif
 		public ITimeProvider TimeProvider { get; set; } = new LocalMachinneTimeProvider();
@@ -80,7 +80,7 @@ namespace Fuxion
 		public BackTimeException(DateTime storedTime, DateTime currentTime) : base($"Time stored '{storedTime}' is most recent that current time '{currentTime}'")
 		{
 			StoredTime = storedTime;
-			currentTime = CurrentTime;
+			CurrentTime = currentTime;
 		}
 		public DateTime StoredTime { get; set; }
 		public DateTime CurrentTime { get; set; }

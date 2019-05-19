@@ -18,7 +18,7 @@ namespace Ordinem.Calendar.Projection
 			modelBuilder.ApplyConfiguration(new AppointmentTypeConfiguration());
 		}
 
-		public DbSet<AppointmentDpo> Appointments { get; set; }
+		public DbSet<AppointmentDpo> Appointments { get; set; } = default!;
 	}
 	public class CalendarDbContextFactory : IDesignTimeDbContextFactory<CalendarDbContext>
 	{

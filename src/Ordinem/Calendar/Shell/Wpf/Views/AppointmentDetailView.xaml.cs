@@ -19,7 +19,9 @@ using Telerik.Windows.Controls;
 
 namespace Ordinem.Calendar.Shell.Wpf.Views
 {
+#nullable disable
 	public partial class AppointmentDetailView : ReactiveUserControl<AppointmentDetailViewModel>, IPanelView
+#nullable enable
 	{
 		public AppointmentDetailView(AppointmentDetailViewModel viewModel)
 		{
@@ -30,7 +32,7 @@ namespace Ordinem.Calendar.Shell.Wpf.Views
 			this.WhenActivated(d =>
 			{
 				this.OneWayBind(ViewModel,
-					x => x.Dvo.Name,
+					x => x.Dvo!.Name,
 					x => x.NameTextBlock.Text)
 				.DisposeWith(d);
 

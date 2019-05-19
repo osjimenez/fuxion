@@ -10,13 +10,13 @@ namespace Fuxion.EntityFramework
 {
     public abstract class ColumnAnnotationAttribute : Attribute
     {
-        public static string GetColumnName<TTrackAttribute>(EdmType type) where TTrackAttribute : ColumnAnnotationAttribute
+        public static string? GetColumnName<TTrackAttribute>(EdmType type) where TTrackAttribute : ColumnAnnotationAttribute
         {
             var mems = type.MetadataProperties.Single(mp => mp.Name == "Members").Value as ReadOnlyMetadataCollection<EdmMember>;
             var pro = mems.SingleOrDefault(m => m.MetadataProperties.SingleOrDefault(p => p.Name.EndsWith("customannotation:" + (typeof(TTrackAttribute).FullName.Replace('.', '_')))) != null);
             return pro == null ? null : pro.Name;
         }
-        public static void Annotate(Convention convention, IEnumerable<Type> trackAttributes = null)
+        public static void Annotate(Convention convention, IEnumerable<Type>? trackAttributes = null)
         {
             if (trackAttributes == null)
                 trackAttributes = convention.GetType().Assembly.GetTypes().Where(t => typeof(ColumnAnnotationAttribute).IsAssignableFrom(t));

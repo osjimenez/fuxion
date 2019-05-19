@@ -34,13 +34,12 @@ namespace Fuxion.Test.Threading.Tasks
 		[Fact(DisplayName = "TaskManager - SleepCancelation")]
 		public void TaskManager_SleepCancelation()
 		{
-			Task task = null;
 			var dt = DateTime.Now;
 			Printer.WriteLine("Inicio en " + dt.ToString("HH:mm:ss.fff"));
-			task = TaskManager.StartNew(() =>
+			var task = TaskManager.StartNew(() =>
 			{
 				//task.Sleep(TimeSpan.FromMilliseconds(2500), TimeSpan.FromMilliseconds(500));
-				task.Sleep(TimeSpan.FromMilliseconds(2500));
+				TaskManager.Current.Sleep(TimeSpan.FromMilliseconds(2500));
 			});
 			task.CancelAndWait();
 			Printer.WriteLine("Cancelado en " + DateTime.Now.ToString("HH:mm:ss.fff"));
@@ -50,18 +49,17 @@ namespace Fuxion.Test.Threading.Tasks
 		[Fact(DisplayName = "TaskManager - Sleep")]
 		public Task TaskManager_Sleep()
 		{
-			Task task = null;
 			var dt = DateTime.Now;
-			task = TaskManager.StartNew(() =>
+			var task = TaskManager.StartNew(() =>
 			{
-				task.Sleep(TimeSpan.FromMilliseconds(2500));
+				TaskManager.Current.Sleep(TimeSpan.FromMilliseconds(2500));
 			});
 			return task.ContinueWith(_ =>
 			{
 				Assert.True(dt.AddSeconds(2) < DateTime.Now);
 			});
 		}
-
+#nullable disable
 		public static IEnumerable<object[]> GenerateTheoryParameters(int maxParNum)
 		{
 			var res = new List<object[]>();
@@ -87,6 +85,7 @@ namespace Fuxion.Test.Threading.Tasks
 			}
 			return res;
 		}
+#nullable enable
 		[Theory(DisplayName = "TaskManager")]
 		[MemberData(nameof(GenerateTheoryParameters), 9)]
 		public async void TaskManager_Theory2(params object[] _)
@@ -130,7 +129,7 @@ namespace Fuxion.Test.Threading.Tasks
 
 			AutoResetEvent are = new AutoResetEvent(true);
 			object seqLocker = new object();
-			string seq = null;
+			string seq = "";
 			var results = new(bool WasCancelled, string Result)[3];
 
 			#region Methods
@@ -141,9 +140,9 @@ namespace Fuxion.Test.Threading.Tasks
 					seq += val;
 				}
 			}
-			object[] GenerateParameters(Delegate del, ConcurrencyProfile pro)
+			object?[] GenerateParameters(Delegate del, ConcurrencyProfile pro)
 			{
-				var res = new List<object>();
+				var res = new List<object?>();
 				res.Add(del);
 				for (var i = 0; i < parNum; i++)
 					res.Add(i);
@@ -193,7 +192,7 @@ namespace Fuxion.Test.Threading.Tasks
 					{
 						AddToSeq($"S{order}-");
 						Printer.WriteLine("Start " + order);
-						Task.Delay(runDelay, TaskManager.Current.GetCancellationToken().Value).Wait();
+						Task.Delay(runDelay, TaskManager.Current.GetCancellationToken()).Wait();
 						AddToSeq($"E{order}-");
 						Printer.WriteLine("End " + order);
 					}
@@ -211,7 +210,7 @@ namespace Fuxion.Test.Threading.Tasks
 					{
 						AddToSeq($"S{order}-");
 						Printer.WriteLine("Start " + order);
-						await Task.Delay(runDelay, TaskManager.Current.GetCancellationToken().Value);
+						await Task.Delay(runDelay, TaskManager.Current.GetCancellationToken());
 						AddToSeq($"E{order}-");
 						Printer.WriteLine("End " + order);
 					}
@@ -229,7 +228,7 @@ namespace Fuxion.Test.Threading.Tasks
 					{
 						AddToSeq($"S{order}-");
 						Printer.WriteLine("Start " + order);
-						Task.Delay(runDelay, TaskManager.Current.GetCancellationToken().Value).Wait();
+						Task.Delay(runDelay, TaskManager.Current.GetCancellationToken()).Wait();
 						AddToSeq($"E{order}-");
 						Printer.WriteLine("End " + order);
 						return $"{doneResult}_{parNum}";
@@ -248,7 +247,7 @@ namespace Fuxion.Test.Threading.Tasks
 					{
 						AddToSeq($"S{order}-");
 						Printer.WriteLine("Start " + order);
-						await Task.Delay(runDelay, TaskManager.Current.GetCancellationToken().Value);
+						await Task.Delay(runDelay, TaskManager.Current.GetCancellationToken());
 						AddToSeq($"E{order}-");
 						Printer.WriteLine("End " + order);
 						return $"{doneResult}_{parNum}";
@@ -285,7 +284,7 @@ namespace Fuxion.Test.Threading.Tasks
 							case 9:
 								return new Action<int, int, int, int, int, int, int, int, int>((s1, s2, s3, s4, s5, s6, s7, s8, s9) => Void_Sync());
 							default:
-								return null;
+								throw new InvalidProgramException();
 						}
 					else
 						switch (parNum)
@@ -311,7 +310,7 @@ namespace Fuxion.Test.Threading.Tasks
 							case 9:
 								return new Func<int, int, int, int, int, int, int, int, int, Task>((s1, s2, s3, s4, s5, s6, s7, s8, s9) => Void_Async());
 							default:
-								return null;
+								throw new InvalidProgramException();
 						}
 				else
 					if (sync)
@@ -338,8 +337,8 @@ namespace Fuxion.Test.Threading.Tasks
 							case 9:
 								return new Func<int, int, int, int, int, int, int, int, int, string>((s1, s2, s3, s4, s5, s6, s7, s8, s9) => Result_Sync());
 							default:
-								return null;
-						}
+								throw new InvalidProgramException();
+					}
 					else
 						switch (parNum)
 						{
@@ -364,8 +363,8 @@ namespace Fuxion.Test.Threading.Tasks
 							case 9:
 								return new Func<int, int, int, int, int, int, int, int, int, Task<string>>((s1, s2, s3, s4, s5, s6, s7, s8, s9) => Result_Async());
 							default:
-								return null;
-						}
+							throw new InvalidProgramException();
+					}
 			}
 			ConcurrencyProfile GetConcurrencyProfile(int order) => new ConcurrencyProfile
 			{
@@ -373,7 +372,7 @@ namespace Fuxion.Test.Threading.Tasks
 					? order % 2 == 0
 						? "even"
 						: "odd"
-					: null,
+					: "",
 				Sequentially = sequentially,
 				ExecuteOnlyLast = onlyLast,
 				CancelPrevious = cancel,

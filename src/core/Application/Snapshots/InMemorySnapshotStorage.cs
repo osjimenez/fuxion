@@ -12,7 +12,7 @@ namespace Fuxion.Application.Snapshots
 {
 	public class InMemorySnapshotStorage : ISnapshotStorage
 	{
-		public InMemorySnapshotStorage(TypeKeyDirectory typeKeyDirectory, string dumpFilePath = null)
+		public InMemorySnapshotStorage(TypeKeyDirectory typeKeyDirectory, string? dumpFilePath = null)
 		{
 			if (dumpFilePath != null)
 			{
@@ -22,20 +22,20 @@ namespace Fuxion.Application.Snapshots
 					if (File.Exists(path))
 					{
 						var dic = File.ReadAllText(path).FromJson<Dictionary<string, List<JsonPod<Snapshot, string>>>>();
-						snapshots.WriteObject(dic.Select((KeyValuePair<string, List<JsonPod<Snapshot, string>>> k) => new
-						{
-							Key = k.Key,
-							Value = k.Value.Select<JsonPod<Snapshot, string>,Snapshot>((JsonPod<Snapshot, string> v) => (Snapshot)v.As(typeKeyDirectory[k.Key])).ToDictionary<Snapshot,Guid>((Snapshot s) => s.AggregateId)
-						}).ToDictionary(a => a.Key, a => a.Value));
+						snapshots.WriteObject(dic.Select((KeyValuePair<string, List<JsonPod<Snapshot, string>>> k) =>
+						(
+							Key: k.Key,
+							Value: k.Value.Select<JsonPod<Snapshot, string>,Snapshot>((JsonPod<Snapshot, string> v) => (Snapshot)v.As(typeKeyDirectory[k.Key])).ToDictionary<Snapshot,Guid>((Snapshot s) => s.AggregateId)
+						)).ToDictionary(a => a.Key, a => a.Value));
 					}
 				});
 			}
 		}
 		
-		private readonly Locker<string> dumpFilePath = null;
+		private readonly Locker<string>? dumpFilePath = null;
 		private readonly Locker<Dictionary<string, Dictionary<Guid, Snapshot>>> snapshots = new Locker<Dictionary<string, Dictionary<Guid, Snapshot>>>(new Dictionary<string, Dictionary<Guid, Snapshot>>());
 
-		public Task<Snapshot> GetSnapshotAsync(Type snapshotType, Guid aggregateId) => snapshots.ReadAsync(dic =>
+		public Task<Snapshot?> GetSnapshotAsync(Type snapshotType, Guid aggregateId) => snapshots.ReadAsync(dic =>
 			dic.ContainsKey(snapshotType.GetTypeKey()) && dic[snapshotType.GetTypeKey()].ContainsKey(aggregateId)
 				? (Snapshot)dic[snapshotType.GetTypeKey()][aggregateId]
 				: null);

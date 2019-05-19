@@ -11,15 +11,16 @@ namespace Fuxion.Windows.Threading
 		bool UseInvoker { get; set; }
 		//IInvoker Invoker { get; }
 	}
+	[DefaultSingletonInstance(typeof(SynchronousInvoker))]
 	public interface IInvoker
 	{
-		Task InvokeActionDelegate(IInvokable invokable, Delegate method, params object[] args);
-		Task<TResult> InvokeFuncDelegate<TResult>(IInvokable invokable, Delegate method, params object[] args);
+		Task InvokeActionDelegate(IInvokable invokable, Delegate method, params object?[] args);
+		Task<TResult> InvokeFuncDelegate<TResult>(IInvokable invokable, Delegate method, params object?[] args);
 	}
 	public class SynchronousInvoker : IInvoker
 	{
-		public Task InvokeActionDelegate(IInvokable invokable, Delegate method, params object[] args) => Task.FromResult(method.DynamicInvoke(args));
-		public Task<TResult> InvokeFuncDelegate<TResult>(IInvokable invokable, Delegate method, params object[] args) => Task.FromResult((TResult) method.DynamicInvoke(args));
+		public Task InvokeActionDelegate(IInvokable invokable, Delegate method, params object?[] args) => Task.FromResult(method.DynamicInvoke(args));
+		public Task<TResult> InvokeFuncDelegate<TResult>(IInvokable invokable, Delegate method, params object?[] args) => Task.FromResult((TResult) method.DynamicInvoke(args));
 	}
 	public static class IInvokerExtensions
 	{

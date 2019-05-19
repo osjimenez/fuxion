@@ -10,7 +10,7 @@ namespace Microsoft.Extensions.DependencyInjection
 {
 	public static class EntityFrameworkDIExtensions
 	{
-		public static IFuxionBuilder EntityFrameworkSqlServer<TContext>(this IFuxionBuilder me, out Func<IServiceProvider, TContext> builder, string dataSource, string initialCatalog, string userID = null, string password = null)
+		public static IFuxionBuilder EntityFrameworkSqlServer<TContext>(this IFuxionBuilder me, out Func<IServiceProvider, TContext> builder, string dataSource, string initialCatalog, string? userID = null, string? password = null)
 			where TContext : DbContext
 		{
 			me.Services.AddDbContext<TContext>(options =>

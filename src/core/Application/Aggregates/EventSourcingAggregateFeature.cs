@@ -10,7 +10,7 @@ namespace Fuxion.Application.Aggregates
 {
 	public class EventSourcingAggregateFeature : IAggregateFeature
 	{
-		private Aggregate aggregate;
+		private Aggregate? aggregate;
 
 		public void OnAttach(Aggregate aggregate)
 		{
@@ -36,8 +36,8 @@ namespace Fuxion.Application.Aggregates
 		internal void Hydrate(IEnumerable<Event> events)
 		{
 			foreach (var @event in events)
-				aggregate.ApplyEvent(@event.Replay());
-			aggregate.ClearPendingEvents();
+				aggregate?.ApplyEvent(@event.Replay());
+			aggregate?.ClearPendingEvents();
 			LastCommittedVersion = CurrentVersion;
 		}
 		// Versioning
@@ -45,11 +45,14 @@ namespace Fuxion.Application.Aggregates
 		public int CurrentVersion { get; internal set; }
 		// Snapshoting
 		public bool IsSnapshottable => SnapshotType != null;
-		public Type SnapshotType { get; internal set; }
+		public Type? SnapshotType { get; internal set; }
 		public int SnapshotFrequency { get; internal set; }
 		public int SnapshotVersion { get; internal set; }
 		public Snapshot GetSnapshot()
 		{
+			if (!IsSnapshottable) throw new AggregateIsNotSnapshottableException();
+			if (aggregate == null) throw new InvalidStateException($"'{nameof(GetSnapshot)}' was called before this '{nameof(EventSourcingAggregateFeature)}' would be attached to an aggregate");
+
 			var snap = (Snapshot)Activator.CreateInstance(SnapshotType);
 			snap.AggregateId = aggregate.Id;
 			snap.Version = aggregate.GetCurrentVersion();

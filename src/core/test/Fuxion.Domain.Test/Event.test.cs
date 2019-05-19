@@ -22,6 +22,6 @@ namespace Fuxion.Domain.Test
 	public class MockEvent : Event
 	{
 		public MockEvent(Guid id) : base(id) { }
-		public string Name { get; set; }
+		public string? Name { get; set; }
 	}
 }

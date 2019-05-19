@@ -2,7 +2,7 @@
 
 namespace Fuxion.Application
 {
-	public class AggregateCreationException : Exception
+	public class AggregateCreationException : FuxionException
 	{
 		public AggregateCreationException(string msg) : base(msg) { }
 	}

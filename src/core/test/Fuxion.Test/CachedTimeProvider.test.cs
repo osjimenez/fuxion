@@ -10,13 +10,13 @@ namespace Fuxion.Test
 		public CachedTimeProviderTest(ITestOutputHelper output) => this.output = output;
 
 		private readonly ITestOutputHelper output;
-		[Fact]
+		[Fact(DisplayName = "CachedTimeProvider - CheckConsistency")]
 		public void CachedTimeProvider_CheckConsistency()
 		{
 			new CachedTimeProvider(new LocalMachinneTimeProvider())
 				.CheckConsistency(output);
 		}
-		[Fact]
+		[Fact(DisplayName = "CachedTimeProvider - CacheTest")]
 		public void CachedTimeProvider_CacheTest()
 		{
 			var ctp = new CachedTimeProvider(new LocalMachinneTimeProvider())

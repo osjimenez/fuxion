@@ -25,7 +25,7 @@ namespace System.ComponentModel.DataAnnotations
 		}
 		Type type;
 		MethodInfo method;
-		string lastDuplicateValue;
+		string? lastDuplicateValue;
 		public override string FormatErrorMessage(string name)
 		{
 			return string.Format(ErrorMessageString, name, lastDuplicateValue);

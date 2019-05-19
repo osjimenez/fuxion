@@ -9,7 +9,7 @@ namespace Fuxion.Domain.Aggregates
 {
 	public class EventsAggregateFeature : IAggregateFeature
 	{
-		Aggregate aggregate;
+		Aggregate? aggregate;
 
 		public event EventHandler<EventArgs<Event>> Applying;
 		public event EventHandler<EventArgs<Event>> Validated;
@@ -19,7 +19,17 @@ namespace Fuxion.Domain.Aggregates
 		public void OnAttach(Aggregate aggregate)
 		{
 			this.aggregate = aggregate;
-			SetupInternalEventHandlers();
+			// Setup internal event handlers
+			var aggregateType = aggregate.GetType();
+			aggregateEventHandlerCache.AddOrUpdate(aggregateType, type =>
+				type.GetRuntimeMethods().Where(m =>
+					m.ReturnType == typeof(void) &&
+					m.GetCustomAttribute<AggregateEventHandlerAttribute>(true) != null &&
+					m.GetParameters().Count() == 1 &&
+					typeof(Event).IsAssignableFrom(m.GetParameters().First().ParameterType))
+					.ToDictionary(m => m.GetParameters().First().ParameterType),
+				(_, __) => __);
+			eventHandlerCache = aggregateEventHandlerCache[aggregateType].ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 		}
 
 		// Events appling
@@ -35,8 +45,8 @@ namespace Fuxion.Domain.Aggregates
 		}
 		internal void Validate(Event @event)
 		{
-			if (aggregate.Id != @event.AggregateId)
-				throw new AggregateStateMismatchException($"Aggregate Id is '{aggregate.Id}' and event.AggregateId is '{@event.AggregateId}'");
+			if (aggregate?.Id != @event.AggregateId)
+				throw new AggregateStateMismatchException($"Aggregate Id is '{aggregate?.Id}' and event.AggregateId is '{@event.AggregateId}'");
 		}
 		internal void Handle(Event @event)
 		{
@@ -51,20 +61,7 @@ namespace Fuxion.Domain.Aggregates
 		internal IEnumerable<Event> GetPendingEvents() => pendingEvents.ToArray();
 		internal void ClearPendingEvents() => pendingEvents.Clear();
 		// Event handlers
-		private Dictionary<Type, MethodInfo> eventHandlerCache;
+		private Dictionary<Type, MethodInfo> eventHandlerCache = new Dictionary<Type, MethodInfo>();
 		private static readonly ConcurrentDictionary<Type, Dictionary<Type, MethodInfo>> aggregateEventHandlerCache = new ConcurrentDictionary<Type, Dictionary<Type, MethodInfo>>();
-		private void SetupInternalEventHandlers()
-		{
-			var aggregateType = aggregate.GetType();
-			aggregateEventHandlerCache.AddOrUpdate(aggregateType, type =>
-				type.GetRuntimeMethods().Where(m =>
-					m.ReturnType == typeof(void) &&
-					m.GetCustomAttribute<AggregateEventHandlerAttribute>(true) != null &&
-					m.GetParameters().Count() == 1 &&
-					typeof(Event).IsAssignableFrom(m.GetParameters().First().ParameterType))
-					.ToDictionary(m=> m.GetParameters().First().ParameterType),
-				(_, __) => __);
-			eventHandlerCache = aggregateEventHandlerCache[aggregateType].ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-		}
 	}
 }

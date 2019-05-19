@@ -18,11 +18,11 @@ namespace Fuxion.Shell.Models
 			get => _Id;
 			set => this.RaiseAndSetIfChanged(ref _Id, value);
 		}
-		string _Name;
+		string? _Name;
 		[Display(Name = nameof(Strings.Name), GroupName = nameof(Strings.Names), ResourceType = typeof(Strings))]
 		[Required(ErrorMessageResourceType = typeof(Strings), ErrorMessageResourceName = nameof(Strings.Required))]
 		[StringLength(200, ErrorMessageResourceType = typeof(Strings), ErrorMessageResourceName = nameof(Strings.StringLength))]
-		public string Name
+		public string? Name
 		{
 			get => _Name;
 			set => this.RaiseAndSetIfChanged(ref _Name, value);
