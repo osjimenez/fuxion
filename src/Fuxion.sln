@@ -66,7 +66,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fuxion.Identity.DatabaseTes
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fuxion.Identity.DatabaseEFTest", "Core\Test\Fuxion.Identity.DatabaseEFTest\Fuxion.Identity.DatabaseEFTest.csproj", "{012583C8-4037-4AF1-A544-AD103F4B004D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fuxion.Log4net", "Infrastructure\Log4net\Fuxion.Log4net.csproj", "{B58A0A0C-D6D9-42F2-833F-C7D8AD9204BE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fuxio_n.Log4net", "Infrastructure\Log4net\Fuxio_n.Log4net.csproj", "{B58A0A0C-D6D9-42F2-833F-C7D8AD9204BE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fuxion.Windows", "Infrastructure\Windows\Fuxion.Windows.csproj", "{A0F9C378-2058-48EA-8B18-75284CD6CF8C}"
 EndProject
@@ -134,7 +134,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ordinem.Shell.Xamarin.Forms
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ordinem.Shell.Xamarin.Forms.iOS", "Ordinem\Shell\Xamarin\Forms.iOS\Ordinem.Shell.Xamarin.Forms.iOS.csproj", "{121F0324-2E34-40FE-971A-D1FB983D87AA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoCoreWpf", "sketches\DemoCoreWpf\DemoCoreWpf\DemoCoreWpf.csproj", "{F1058E31-B3D1-47D5-A5E6-AECDA007CB71}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DemoCoreWpf", "sketches\DemoCoreWpf\DemoCoreWpf\DemoCoreWpf.csproj", "{F1058E31-B3D1-47D5-A5E6-AECDA007CB71}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -1422,7 +1422,7 @@ Global
 		{F1058E31-B3D1-47D5-A5E6-AECDA007CB71} = {D73E328B-68C4-499C-9532-A7D9ACC4F186}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {935D1C59-A88C-491F-B27D-3B0CF8AF2605}
 		EnterpriseLibraryConfigurationToolBinariesPathV6 = packages\EnterpriseLibrary.TransientFaultHandling.6.0.1304.0\lib\portable-net45+win+wp8;packages\EnterpriseLibrary.TransientFaultHandling.Data.6.0.1304.1\lib\NET45
+		SolutionGuid = {935D1C59-A88C-491F-B27D-3B0CF8AF2605}
 	EndGlobalSection
 EndGlobal
