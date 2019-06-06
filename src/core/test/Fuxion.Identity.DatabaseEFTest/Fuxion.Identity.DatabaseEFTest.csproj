@@ -1,12 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net48</TargetFrameworks>
+		<TargetFrameworks>netcoreapp3.0</TargetFrameworks>
 		<IsPackable>false</IsPackable>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="EntityFramework" Version="6.2.0" />
+		<PackageReference Include="EntityFramework" Version="6.3.0-preview5-19254-05" />
 		<PackageReference Include="Moq" Version="4.10.1" />
 		<PackageReference Include="xunit" Version="2.4.1" />
 		<PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
@@ -20,11 +20,6 @@
 		<ProjectReference Include="..\..\Identity\Fuxion.Identity.csproj" />
 		<ProjectReference Include="..\Fuxion.Identity.Test\Fuxion.Identity.Test.csproj" />
 		<ProjectReference Include="..\Fuxion.Test\Fuxion.Test.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Reference Include="Microsoft.CSharp" />
-		<Reference Include="System.ComponentModel.DataAnnotations" />
 	</ItemGroup>
 
 </Project>

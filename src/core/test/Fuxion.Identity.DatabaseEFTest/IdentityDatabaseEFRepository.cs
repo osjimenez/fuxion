@@ -24,19 +24,19 @@ namespace Fuxion.Identity.DatabaseEFTest
 		}
 		protected override void Seed(IdentityDatabaseEFTestRepository context)
 		{
-			context.Identity.AddRange(Rols.Identity.GetAll());
-			context.Album.AddRange(File.Package.Album.GetAll());
-			context.Song.AddRange(File.Media.Song.GetAll());
+			context.Identity.AddRange(Identities.All);
+			context.Album.AddRange(Albums.All);
+			context.Song.AddRange(Songs.All);
 			//context.Circle.AddRange(Circles);
-			context.Group.AddRange(Rols.Group.GetAll());
-			context.Document.AddRange(File.Document.GetAll());
+			context.Group.AddRange(Groups.All);
+			context.Document.AddRange(Documents.All);
 			context.SaveChanges();
 			base.Seed(context);
 		}
 	}
 	public class IdentityDatabaseEFTestRepository : DbContext, IIdentityTestRepository, IKeyValueRepository<string, IIdentity>
 	{
-		public IdentityDatabaseEFTestRepository() : base($"Server=.\\sqlexpress;Initial Catalog={nameof(IdentityDatabaseEFTestRepository)};Integrated Security=True")
+		public IdentityDatabaseEFTestRepository() : base($"Server=.;Initial Catalog={nameof(IdentityDatabaseEFTestRepository)};Integrated Security=True")
 		{
 
 		}
@@ -45,13 +45,14 @@ namespace Fuxion.Identity.DatabaseEFTest
 			Database.SetInitializer(new TestDatabaseInitializer());
 			Database.Initialize(true);
 		}
-
-		public DbSet<Test.Dao.IdentityDao> Identity { get; set; }
+#nullable disable
+		public DbSet<IdentityDao> Identity { get; set; }
 		public DbSet<AlbumDao> Album { get; set; }
 		public DbSet<SongDao> Song { get; set; }
 		//public DbSet<Circle> Circle { get; set; }
 		public DbSet<GroupDao> Group { get; set; }
 		public DbSet<DocumentDao> Document { get; set; }
+#nullable enable
 		public IEnumerable<T> GetByType<T>()
 		{
 			if (typeof(T) == typeof(AlbumDao)) return (IEnumerable<T>)Album;
@@ -71,7 +72,7 @@ namespace Fuxion.Identity.DatabaseEFTest
 		{
 
 			var ide = Identity.FirstOrDefault(i => i.UserName == key);
-			if (ide == null) return null;
+			if (ide == null) return null!;
 			var groupsRef = Entry(ide).Collection(i => i.Groups);
 			if (!groupsRef.IsLoaded) groupsRef.Load();
 			foreach (var gro in ide.Groups) LoadGroups(gro);
