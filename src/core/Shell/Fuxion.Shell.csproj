@@ -9,23 +9,29 @@
 		<Description>Fuxion Shell</Description>
 	</PropertyGroup>
 
+	<Target Name="WorkaroundNetStandard" AfterTargets="ResolvePackageAssets">
+		<ItemGroup>
+			<TransitiveFrameworkReference Remove="NETStandard.Library" />
+		</ItemGroup>
+	</Target>
+
 	<ItemGroup>
-	  <None Remove="Views\ShellWindow.xaml" />
+		<None Remove="Views\ShellWindow.xaml" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="ReactiveUI.WPF" Version="10.0.1-preview.3" />
+		<PackageReference Include="ReactiveUI.WPF" Version="10.0.1-preview.4" />
 		<PackageReference Include="Telerik.Windows.Controls.Data.for.Wpf" Version="2019.2.510" />
 		<PackageReference Include="Telerik.Windows.Controls.Docking.for.Wpf" Version="2019.2.510" />
 		<PackageReference Include="Telerik.Windows.Controls.GridView.for.Wpf" Version="2019.2.510" />
-		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-18618-05" PrivateAssets="All" />
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-19270-01" PrivateAssets="All" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Application\Fuxion.Application.csproj" />
-	  <ProjectReference Include="..\Fuxion\Fuxion.csproj" />
+		<ProjectReference Include="..\Application\Fuxion.Application.csproj" />
+		<ProjectReference Include="..\Fuxion\Fuxion.csproj" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<EmbeddedResource Update="Resources\Strings.resx">
 			<Generator>PublicResXFileCodeGenerator</Generator>

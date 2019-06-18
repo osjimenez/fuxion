@@ -5,8 +5,14 @@
 		<UseWPF>true</UseWPF>
 	</PropertyGroup>
 
+	<Target Name="WorkaroundNetStandard" AfterTargets="ResolvePackageAssets">
+		<ItemGroup>
+			<TransitiveFrameworkReference Remove="NETStandard.Library" />
+		</ItemGroup>
+	</Target>
+
 	<ItemGroup>
-		<PackageReference Include="DynamicData.ReactiveUI" Version="6.9.1.2588" />
+		<PackageReference Include="DynamicData.ReactiveUI" Version="6.10.0.2604" />
 		<PackageReference Include="Polly" Version="7.1.0" />
 		<PackageReference Include="Telerik.Windows.Controls.Data.for.Wpf" Version="2019.2.510" />
 	</ItemGroup>

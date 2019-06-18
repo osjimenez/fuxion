@@ -7,6 +7,12 @@
 		<StartupObject>Ordinem.Shell.Wpf.Launcher.App</StartupObject>
 	</PropertyGroup>
 
+	<Target Name="WorkaroundNetStandard" AfterTargets="ResolvePackageAssets">
+		<ItemGroup>
+			<TransitiveFrameworkReference Remove="NETStandard.Library" />
+		</ItemGroup>
+	</Target>
+
 	<ItemGroup>
 	  <None Remove="appsettings.json" />
 	  <None Remove="Views\AboutPanel.xaml" />
@@ -20,10 +26,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.0.0-preview5.19227.9" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.0-preview5.19227.9" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.0.0-preview5.19227.9" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.0.0-preview5.19227.9" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.0.0-preview6.19304.6" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.0-preview6.19304.6" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.0.0-preview6.19304.6" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.0.0-preview6.19304.6" />
 		<PackageReference Include="Telerik.Windows.Themes.Fluent.for.Wpf" Version="2019.2.510" />
 	</ItemGroup>
 

@@ -5,9 +5,15 @@
 		<IsPackable>false</IsPackable>
 	</PropertyGroup>
 
+	<Target Name="WorkaroundNetStandard" AfterTargets="ResolvePackageAssets">
+		<ItemGroup>
+			<TransitiveFrameworkReference Remove="NETStandard.Library" />
+		</ItemGroup>
+	</Target>
+
 	<ItemGroup>
-		<PackageReference Include="EntityFramework" Version="6.3.0-preview5-19254-05" />
-		<PackageReference Include="Moq" Version="4.10.1" />
+		<PackageReference Include="EntityFramework" Version="6.3.0-preview6-19304-03" />
+		<PackageReference Include="Moq" Version="4.11.0" />
 		<PackageReference Include="xunit" Version="2.4.1" />
 		<PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
 			<PrivateAssets>all</PrivateAssets>
