@@ -14,7 +14,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Ocelot" Version="13.8.0-alpha0002" />
+		<PackageReference Include="Ocelot" Version="13.8.0-alpha0006" />
 	</ItemGroup>
 
 </Project>

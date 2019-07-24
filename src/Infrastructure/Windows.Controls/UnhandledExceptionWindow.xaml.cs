@@ -56,7 +56,7 @@ namespace Fuxion.Windows.Controls
 		bool _SendingReport;
 		Exception ex;
 		Func<Task>? sendReportFunc;
-		public string ExceptionType => ex.GetType().FullName;
+		public string ExceptionType => ex.GetType().FullName ?? throw new InvalidProgramException($"Type '{ex.GetType().Name}' hasn't FullName");
 		public string? Message
 		{
 			get => _Message;

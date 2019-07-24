@@ -47,7 +47,7 @@ namespace Fuxion.Windows.Data
 		}
 		public abstract TResult Convert(TSource source, CultureInfo culture);
 		public virtual TSource ConvertBack(TResult result, CultureInfo culture)
-			=> throw new NotSupportedException($"'{GetType().GetMethod(nameof(ConvertBack)).GetSignature(includeReturn: true)}' method, is not supported");
+			=> throw new NotSupportedException($"'{GetType().GetMethod(nameof(ConvertBack))?.GetSignature(includeReturn: true)}' method, is not supported");
 	}
 	public abstract class GenericConverter<TSource, TResult, TParameter> : IValueConverter
 	{
@@ -92,6 +92,6 @@ namespace Fuxion.Windows.Data
 		}
 		public abstract TResult Convert(TSource source, TParameter parameter, CultureInfo culture);
 		public virtual TSource ConvertBack(TResult result, TParameter parameter, CultureInfo culture)
-			=> throw new NotSupportedException($"'{GetType().GetMethod(nameof(ConvertBack)).GetSignature(includeReturn: true)}' method, is not supported");
+			=> throw new NotSupportedException($"'{GetType().GetMethod(nameof(ConvertBack))?.GetSignature(includeReturn: true)}' method, is not supported");
 	}
 }

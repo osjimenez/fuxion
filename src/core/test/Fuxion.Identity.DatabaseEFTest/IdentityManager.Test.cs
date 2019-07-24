@@ -167,7 +167,7 @@ namespace Fuxion.Identity.DatabaseEFTest
 					//var rep = Factory.Get<IIdentityTestRepository>();
 					Assert.True(IM.CheckCredentials(username, password), $"Login fail unexpected: username<{username}> password<{password}>");
 					var strArgs = $"\r\nscenario<{scenarios}>\r\nusername<{username}>";
-					var dbSet = typeof(IIdentityTestRepository).GetMethod("GetByType").MakeGenericMethod(type).Invoke(IM.Repository, null);
+					var dbSet = typeof(IIdentityTestRepository).GetMethod("GetByType")?.MakeGenericMethod(type).Invoke(IM.Repository, null);
 					IEnumerable<object>? res = null;
 					if (dbSet is IQueryable)
 						res = (IQueryable<object>)typeof(System_Extensions).GetMethods()
@@ -176,7 +176,7 @@ namespace Fuxion.Identity.DatabaseEFTest
 					else
 						res = (IEnumerable<object>)typeof(System_Extensions).GetMethods()
 						.Where(m => m.Name == "AuthorizedTo" && m.GetParameters().First().ParameterType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
-						.First().MakeGenericMethod(type).Invoke(null, new object[] { dbSet, functions });
+						.First().MakeGenericMethod(type).Invoke(null, new object?[] { dbSet, functions });
 					var list = res.ToList().Cast<Test.Dao.BaseDao>();
 					if (allowOtherResults)
 						Assert.True(list.Any(e => expectedIds.Contains(e.Id)), $"Some expected ids '{expectedIds.Aggregate("", (a, c) => a + c + "·")}' not found");

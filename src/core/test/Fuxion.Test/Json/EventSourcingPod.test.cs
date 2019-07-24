@@ -105,7 +105,7 @@ namespace Fuxion.Test.Json
 	{
 		[JsonConstructor]
 		protected EventSourcingPod() { }
-		internal EventSourcingPod(Event @event) : base(@event, @event.GetType().GetTypeKey() ?? @event.GetType().FullName)
+		internal EventSourcingPod(Event @event) : base(@event, @event.GetType().GetTypeKey() ?? @event.GetType().FullName ?? throw new InvalidProgramException($"Event type '{@event.GetType().Name}' hasn't a FullName"))
 		{
 			if (!@event.HasEventSourcing()) throw new EventFeatureNotFoundException($"'{nameof(EventSourcingPod)}' require '{nameof(EventSourcingEventFeature)}'");
 			TargetVersion = @event.EventSourcing().TargetVersion;
