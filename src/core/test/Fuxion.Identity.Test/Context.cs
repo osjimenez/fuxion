@@ -85,7 +85,7 @@ namespace Fuxion.Identity.Test
 			Identities.Root.Groups = new[] { Groups.Admins };
 			Identities.Root.Permissions = new[]
 			{
-				new PermissionDao("", "", Identities.Root, Admin.Id.ToString())
+				new PermissionDao("", "", Identities.Root, Admin.Id.ToString() ?? "")
 				{
 					Value = true,
 				}

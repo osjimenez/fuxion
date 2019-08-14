@@ -1,3 +1,10 @@
+PASANDO A CORE 3
+He borrado las clases de Log
+He borrado las factorias usar DI o la clase Singleton
+
+
+
+
 - Comprobar que funciona en Xamarin
 
 ENTITY FRAMEWORK CORE

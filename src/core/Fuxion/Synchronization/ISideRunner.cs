@@ -10,7 +10,7 @@ namespace Fuxion.Synchronization
 		ISide Definition { get; set; }
 		object? Source { get; set; }
 		ICollection<LoadedItem> Entries { get; set; }
-		IComparatorRunner? Comparator { get; set; }
+		IComparatorRunner Comparator { get; set; }
 		IEnumerable<IComparatorResultInternal> Results { get; set; }
 		string? GetItemName(object? item);
 		string? GetItemTag(object? item);

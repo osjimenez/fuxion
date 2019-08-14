@@ -28,7 +28,7 @@ namespace Fuxion.Shell
 		public string? Key { get; private set; }
 
 		public override int GetHashCode() => Name.GetHashCode();
-		public override bool Equals(object obj) => obj is PanelName v && v.Name == Name && v.Key == Key;
+		public override bool Equals(object? obj) => obj is PanelName v && v.Name == Name && v.Key == Key;
 		public static bool operator ==(PanelName v1, PanelName v2) => v1.Name == v2.Name && v1.Key == v2.Key;
 		public static bool operator !=(PanelName v1, PanelName v2) => v1.Name != v2.Name && v1.Key == v2.Key;
 

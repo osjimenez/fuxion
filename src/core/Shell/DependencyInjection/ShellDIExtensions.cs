@@ -58,7 +58,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
 		public static IShellBuilder ShellFactory(this IShellBuilder me, out Func<ShellWindow> shellFactory)
 		{
-			shellFactory = ((ShellBuilder)me).GetShellWindow;
+			shellFactory = () => ((ShellBuilder)me).GetShellWindow() ?? throw new InvalidProgramException("ShellFactory error, Shell window is not ready jet");
 			((ShellBuilder)me).ShowWindow = false;
 			return me;
 		}

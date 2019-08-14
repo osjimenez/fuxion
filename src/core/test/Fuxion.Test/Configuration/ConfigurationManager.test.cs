@@ -53,7 +53,7 @@ namespace Fuxion.Test.Configuration
 			// Print file
 			if (man.GetType().GetProperty("Path") != null)
 			{
-				var path = man.GetType().GetProperty("Path")?.GetValue(man).ToString();
+				var path = man.GetType().GetProperty("Path")?.GetValue(man)?.ToString();
 				Output.WriteLine(File.ReadAllText(path));
 			}
 

@@ -35,16 +35,19 @@ namespace Fuxion.Windows.Controls
 				{
 					RowDefinitions.Add(new RowDefinition { Height = RowHeight });
 				}
-				foreach(UIElement child in Children)
+				foreach (UIElement? child in Children)
 				{
-					var colIndex = GetChildColumnIndex(child);
-					child.SetValue(Grid.ColumnProperty, colIndex);
-					child.SetValue(Grid.RowProperty, GetChildRowIndex(child));
-					if(ColumnDefinitions[colIndex] is AutoColumnDefinition acd)
+					if (child != null)
 					{
-						child.SetValue(FrameworkElement.HorizontalAlignmentProperty, acd.HorizontalContentAlignment);
-						child.SetValue(FrameworkElement.VerticalAlignmentProperty, acd.VerticalContentAlignment);
-						child.SetValue(FrameworkElement.MarginProperty, acd.ContentMargin);
+						var colIndex = GetChildColumnIndex(child);
+						child.SetValue(Grid.ColumnProperty, colIndex);
+						child.SetValue(Grid.RowProperty, GetChildRowIndex(child));
+						if (ColumnDefinitions[colIndex] is AutoColumnDefinition acd)
+						{
+							child.SetValue(FrameworkElement.HorizontalAlignmentProperty, acd.HorizontalContentAlignment);
+							child.SetValue(FrameworkElement.VerticalAlignmentProperty, acd.VerticalContentAlignment);
+							child.SetValue(FrameworkElement.MarginProperty, acd.ContentMargin);
+						}
 					}
 				}
 			}

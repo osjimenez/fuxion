@@ -54,7 +54,7 @@ namespace Ordinem.Tasks.Shell.Wpf.Views
 								if (e.DialogResult ?? false)
 									inter.SetOutput(e.PromptResult);
 								else
-									inter.SetOutput(null);
+									inter.SetOutput("");
 							}),
 							DialogStartupLocation = WindowStartupLocation.CenterOwner,
 							Owner = System.Windows.Application.Current.MainWindow

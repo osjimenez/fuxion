@@ -17,12 +17,12 @@ namespace Fuxion.Windows.Data
 			source.CollectionChanged += (s, e) =>
 			{
 				if (e.NewItems != null)
-					foreach (object item in e.NewItems)
-						if (!res.Contains(item))
+					foreach (object? item in e.NewItems)
+						if (item != null && !res.Contains(item))
 							res.Add(item);
 				if (e.OldItems != null)
-					foreach (object item in e.OldItems)
-						if (!((IEnumerable<object>)source).Contains(item))
+					foreach (object? item in e.OldItems)
+						if (item != null && !((IEnumerable<object>)source).Contains(item))
 							res.Remove(item);
 				if (e.Action == NotifyCollectionChangedAction.Reset)
 					res.Clear();

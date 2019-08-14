@@ -25,7 +25,6 @@ namespace Fuxion.Test
 				ExpirationInterval = TimeSpan.FromSeconds(1)
 			};
 
-
 			ctp.UtcNow(out var fromCache);
 			Assert.False(fromCache);
 			ctp.UtcNow(out fromCache);

@@ -18,7 +18,7 @@ namespace Fuxion.Test.ComponentModel
 #nullable enable
 		public int Entero { get; set; }
 		public string Cadena { get; set; }
-		public override bool Equals(object obj)
+		public override bool Equals(object? obj)
 			=> obj is ReferenceObjectMock rom
 				? rom.Entero == Entero && rom.Cadena == Cadena
 				: false;

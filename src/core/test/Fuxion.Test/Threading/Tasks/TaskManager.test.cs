@@ -130,7 +130,7 @@ namespace Fuxion.Test.Threading.Tasks
 			AutoResetEvent are = new AutoResetEvent(true);
 			object seqLocker = new object();
 			string seq = "";
-			var results = new(bool WasCancelled, string Result)[3];
+			var results = new(bool WasCancelled, string? Result)[3];
 
 			#region Methods
 			void AddToSeq(string val)
@@ -383,11 +383,11 @@ namespace Fuxion.Test.Threading.Tasks
 				{
 					if (create)
 					{
-						var task = (Task)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order)));
+						var task = (Task?)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order))) ?? Task.CompletedTask;
 						task.Start();
 						return task;
 					}
-					else return (Task)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order)));
+					else return (Task?)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order))) ?? Task.CompletedTask;
 				}
 				catch (Exception ex)
 				{
@@ -402,11 +402,11 @@ namespace Fuxion.Test.Threading.Tasks
 				{
 					if (create)
 					{
-						var task = (Task)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order)));
+						var task = (Task?)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order))) ?? Task.CompletedTask;
 						task.Start();
 						return task;
 					}
-					else return (Task)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order)));
+					else return (Task?)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order))) ?? Task.CompletedTask;
 				}
 				catch (Exception ex)
 				{
@@ -415,17 +415,17 @@ namespace Fuxion.Test.Threading.Tasks
 				}
 				finally { are.Set(); }
 			}
-			Task<string> Func_Sync(int order)
+			Task<string?> Func_Sync(int order)
 			{
 				try
 				{
 					if (create)
 					{
-						var task = (Task<string>)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order)));
+						var task = (Task<string?>?)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order))) ?? Task.FromResult<string?>(null);
 						task.Start();
 						return task;
 					}
-					else return (Task<string>)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order)));
+					else return (Task<string?>?)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order))) ?? Task.FromResult<string?>(null);
 				}
 				catch (Exception ex)
 				{
@@ -434,17 +434,17 @@ namespace Fuxion.Test.Threading.Tasks
 				}
 				finally { are.Set(); }
 			}
-			Task<string> Func_Async(int order)
+			Task<string?> Func_Async(int order)
 			{
 				try
 				{
 					if (create)
 					{
-						var task = (Task<string>)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order)));
+						var task = (Task<string?>?)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order))) ?? Task.FromResult<string?>(null);
 						task.Start();
 						return task;
 					}
-					else return (Task<string>)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order)));
+					else return (Task<string?>?)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order))) ?? Task.FromResult<string?>(null);
 				}
 				catch (Exception ex)
 				{
@@ -460,7 +460,7 @@ namespace Fuxion.Test.Threading.Tasks
 			Printer.WriteLine("==============");
 			using (Printer.Indent2("Run"))
 			{
-				Task<(bool WasCancelled, string Result)>[] res = new Task<(bool WasCancelled, string Result)>[3];
+				Task<(bool WasCancelled, string? Result)>[] res = new Task<(bool WasCancelled, string? Result)>[3];
 				int num = 1;
 				object numLocker = new object();
 				int GetNum()

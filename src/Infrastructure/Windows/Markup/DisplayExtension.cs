@@ -30,7 +30,7 @@ namespace Fuxion.Windows.Markup
 			var pros = bindExpression.Split('.');
 			for (int i = pros.Length - 1; i >= 0; i--)
 			{
-				chain.Add(new NotifierChainLink(pro =>
+				chain.Add(new NotifierChainLink(pros[i], pro =>
 				{
 					var att = pro?.GetCustomAttribute<DisplayAttribute>(true, false);
 
@@ -65,8 +65,7 @@ namespace Fuxion.Windows.Markup
 				})
 				{
 					printer = Printer,
-					NextLink = i == (pros.Length - 1) ? null : chain.FirstOrDefault(l => l.PropertyName == pros[i + 1]),
-					PropertyName = pros[i]
+					NextLink = i == (pros.Length - 1) ? null : chain.FirstOrDefault(l => l.PropertyName == pros[i + 1])
 				});
 			}
 			chain.Reverse();
@@ -135,9 +134,10 @@ namespace Fuxion.Windows.Markup
 	}
 	internal class NotifierChainLink
 	{
-		public NotifierChainLink(Func<PropertyInfo? ,string?> getValueFunction)
+		public NotifierChainLink(string propertyName, Func<PropertyInfo? ,string?> getValueFunction)
 		{
 			this.getValueFunction = getValueFunction;
+			PropertyName = propertyName;
 			EventHandler = PropertyChanged;
 		}
 		internal IPrinter? printer;
@@ -153,7 +153,7 @@ namespace Fuxion.Windows.Markup
 		public NotifierChainLink? NextLink { get; set; }
 		public NotifierChainLink? PreviousLink { get; set; }
 
-		public string? PropertyName { get; set; }
+		public string PropertyName { get; set; }
 		public PropertyChangedEventHandler EventHandler { get; set; }
 
 		public INotifyPropertyChanged? ContextNotifier => DataContext != null
@@ -191,7 +191,7 @@ namespace Fuxion.Windows.Markup
 			get => _TargetElement ?? PreviousLink?.TargetObject;
 			set => _TargetElement = value;
 		}
-		public PropertyInfo? TargetProperty => TargetObject?.GetType().GetProperty(TargetDependencyProperty?.Name);
+		public PropertyInfo? TargetProperty => TargetDependencyProperty?.Name != null ? TargetObject?.GetType().GetProperty(TargetDependencyProperty.Name) : null;
 
 		public void SetValue()
 		{

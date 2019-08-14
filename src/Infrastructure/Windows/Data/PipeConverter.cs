@@ -60,7 +60,7 @@ namespace Fuxion.Windows.Data
 		public object? GetConverterParameter(IValueConverter converter, object? parameter)
 		{
 			if (ParameterMode == PipeConverterParameterMode.AllSame || parameter == null) return parameter;
-			var pars = parameter.ToString().Split(new[] { ParameterSeparator }, StringSplitOptions.None);
+			var pars = parameter?.ToString()?.Split(new[] { ParameterSeparator }, StringSplitOptions.None) ?? new string[] { };
 			var index = Converters.IndexOf(converter);
 			if (pars.Length <= index) throw new ArgumentOutOfRangeException($"PipeConverter parameter was not define properly, has less parameters than converters");
 			var val = pars[index];
@@ -171,20 +171,23 @@ namespace Fuxion.Windows.Data
 			// The 'Converters' collection has been modified, so validate that each value converter it now
 			// contains is decorated with ValueConversionAttribute and then cache the attribute value.
 
-			IList? convertersToProcess = null;
+			IList convertersToProcess = new List<object>();
 			if (e.Action == NotifyCollectionChangedAction.Add || e.Action == NotifyCollectionChangedAction.Replace)
 				convertersToProcess = e.NewItems;
 			else if (e.Action == NotifyCollectionChangedAction.Remove)
-				foreach (IValueConverter converter in e.OldItems)
-					cachedAttributes.Remove(converter);
+				foreach (IValueConverter? converter in e.OldItems)
+				{
+					if (converter != null)
+						cachedAttributes.Remove(converter);
+				}
 			else if (e.Action == NotifyCollectionChangedAction.Reset)
 			{
 				cachedAttributes.Clear();
 				convertersToProcess = converters;
 			}
-			if (convertersToProcess != null && convertersToProcess.Count > 0)
+			foreach (IValueConverter? converter in convertersToProcess)
 			{
-				foreach (IValueConverter converter in convertersToProcess)
+				if (converter != null)
 				{
 					var attributes = converter.GetType().GetCustomAttributes<ValueConversionAttribute>(false).ToList();
 					if (attributes.Count != 1)

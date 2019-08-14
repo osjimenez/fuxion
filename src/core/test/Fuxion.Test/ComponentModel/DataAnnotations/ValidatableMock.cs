@@ -123,7 +123,7 @@ namespace Fuxion.Test.ComponentModel.DataAnnotations
 
         public override string ToString() => $"RecursiveValidatableMock({Id.ToString()})";
 
-		public override bool Equals(object obj)
+		public override bool Equals(object? obj)
 		{
 			if (obj is RecursiveValidatableMock mock)
 				return Compare(mock, this);

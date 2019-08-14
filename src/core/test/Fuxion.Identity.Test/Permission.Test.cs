@@ -14,12 +14,12 @@ namespace Fuxion.Identity.Test
 		public void WhenPermission_MatchByFunction()
 		{
 			// Un permiso de concesion para editar algo implicará que tambien puedo leerlo
-			Assert.True(new PermissionDao("", "", null!, Edit.Id.ToString())
+			Assert.True(new PermissionDao("", "", null!, Edit.Id.ToString() ?? "")
 			{
 				Value = true,
 			}.MatchByFunction(Read));
 			// Un permiso de denegación para leer algo implicará que tampoco puedo editarlo
-			Assert.True(new PermissionDao("", "", null!, Read.Id.ToString())
+			Assert.True(new PermissionDao("", "", null!, Read.Id.ToString() ?? "" ?? "")
 			{
 				Value = false,
 			}.MatchByFunction(Edit));
@@ -33,7 +33,7 @@ namespace Fuxion.Identity.Test
 		//        new PermissionDao
 		//        {
 		//            Value = true,
-		//            Function = Read.Id.ToString(),
+		//            Function = Read.Id.ToString() ?? "" ?? "",
 		//            Scopes = new[] {
 		//                new ScopeDao { Discriminator = States.California },
 		//                new ScopeDao { Discriminator = Discriminators.Category.Sales }
@@ -48,7 +48,7 @@ namespace Fuxion.Identity.Test
 		//        new PermissionDao
 		//        {
 		//            Value = true,
-		//            Function = Read.Id.ToString(),
+		//            Function = Read.Id.ToString() ?? "" ?? "",
 		//            Scopes = new[] {
 		//                new ScopeDao { Discriminator = States.California },
 		//                new ScopeDao { Discriminator = Discriminators.Category.Sales }
@@ -63,7 +63,7 @@ namespace Fuxion.Identity.Test
 		//        new PermissionDao
 		//        {
 		//            Value = true,
-		//            Function = Read.Id.ToString(),
+		//            Function = Read.Id.ToString() ?? "" ?? "",
 		//            Scopes = new[] {
 		//                new ScopeDao { Discriminator = States.California },
 		//                new ScopeDao { Discriminator = Discriminators.Category.Sales }
@@ -79,7 +79,7 @@ namespace Fuxion.Identity.Test
 		//        new PermissionDao
 		//        {
 		//            Value = true,
-		//            Function = Read.Id.ToString(),
+		//            Function = Read.Id.ToString() ?? "" ?? "",
 		//            Scopes = new ScopeDao[] {
 		//                // Yo no tengo nada
 		//            }
@@ -96,7 +96,7 @@ namespace Fuxion.Identity.Test
 			// CASE 1 - Propagation to parents
 			var propagation = ScopePropagation.ToExclusions;
 			Assert.False(
-				new PermissionDao("", "", null!, Read.Id.ToString())
+				new PermissionDao("", "", null!, Read.Id.ToString() ?? "" ?? "")
 				{
 					Value = true,
 					Scopes = new[] {
@@ -106,7 +106,7 @@ namespace Fuxion.Identity.Test
 					States.California
 				}), $"Permiso de {nameof(States.California)} hacia {propagation}, me pasan {nameof(States.California)}, no debería encajar");
 			Assert.True(
-				new PermissionDao("", "", null!, Read.Id.ToString())
+				new PermissionDao("", "", null!, Read.Id.ToString() ?? "")
 				{
 					Value = true,
 					Scopes = new[] {
@@ -116,7 +116,7 @@ namespace Fuxion.Identity.Test
 					Countries.Usa
 				}), $"Permiso de {nameof(States.California)} hacia {propagation}, me pasan {nameof(Countries.Usa)}, debería encajar");
 			Assert.False(
-				new PermissionDao("", "", null!, Read.Id.ToString())
+				new PermissionDao("", "", null!, Read.Id.ToString() ?? "")
 				{
 					Value = true,
 					Scopes = new[] {
@@ -129,7 +129,7 @@ namespace Fuxion.Identity.Test
 			// CASE 2 - Propagation to me
 			propagation = ScopePropagation.ToMe;
 			Assert.True(
-				new PermissionDao("", "", null!, Read.Id.ToString())
+				new PermissionDao("", "", null!, Read.Id.ToString() ?? "")
 				{
 					Value = true,
 					Scopes = new[] {
@@ -139,7 +139,7 @@ namespace Fuxion.Identity.Test
 					States.California
 				}), $"Permiso de {nameof(States.California)} hacia {propagation}, me pasan {nameof(States.California)}, debería encajar");
 			Assert.False(
-				new PermissionDao("", "", null!, Read.Id.ToString())
+				new PermissionDao("", "", null!, Read.Id.ToString() ?? "")
 				{
 					Value = true,
 					Scopes = new[] {
@@ -149,7 +149,7 @@ namespace Fuxion.Identity.Test
 					Countries.Usa
 				}), $"Permiso de {nameof(States.California)} hacia {propagation}, me pasan {nameof(Countries.Usa)}, no debería encajar");
 			Assert.False(
-				new PermissionDao("", "", null!, Read.Id.ToString())
+				new PermissionDao("", "", null!, Read.Id.ToString() ?? "")
 				{
 					Value = true,
 					Scopes = new[] {
@@ -162,7 +162,7 @@ namespace Fuxion.Identity.Test
 			// CASE 3 - Propagation to childs
 			propagation = ScopePropagation.ToInclusions;
 			Assert.False(
-				new PermissionDao("", "", null!, Read.Id.ToString())
+				new PermissionDao("", "", null!, Read.Id.ToString() ?? "")
 				{
 					Value = true,
 					Scopes = new[] {
@@ -172,7 +172,7 @@ namespace Fuxion.Identity.Test
 					States.California
 				}), $"Permiso de {nameof(States.California)} hacia {propagation}, me pasan {nameof(States.California)}, no debería encajar");
 			Assert.False(
-				new PermissionDao("", "", null!, Read.Id.ToString())
+				new PermissionDao("", "", null!, Read.Id.ToString() ?? "")
 				{
 					Value = true,
 					Scopes = new[] {
@@ -182,7 +182,7 @@ namespace Fuxion.Identity.Test
 					Countries.Usa
 				}), $"Permiso de {nameof(States.California)} hacia {propagation}, me pasan {nameof(Countries.Usa)}, no debería encajar");
 			Assert.True(
-				new PermissionDao("", "", null!, Read.Id.ToString())
+				new PermissionDao("", "", null!, Read.Id.ToString() ?? "")
 				{
 					Value = true,
 					Scopes = new[] {
@@ -196,7 +196,7 @@ namespace Fuxion.Identity.Test
 		public void WhenPermission_Match()
 		{
 			var propagation = ScopePropagation.ToMe | ScopePropagation.ToInclusions;
-			var per = new PermissionDao("", "", null!, Edit.Id.ToString())
+			var per = new PermissionDao("", "", null!, Edit.Id.ToString() ?? "")
 			{
 				Value = true,
 				Scopes = new ScopeDao[] {
@@ -211,7 +211,7 @@ namespace Fuxion.Identity.Test
 					});
 			Debug.WriteLine("");
 			Assert.True(
-				new PermissionDao("", "", null!, Edit.Id.ToString())
+				new PermissionDao("", "", null!, Edit.Id.ToString() ?? "")
 				{
 					Value = true,
 					Scopes = new ScopeDao[] {
@@ -225,7 +225,7 @@ namespace Fuxion.Identity.Test
 				$"¿Debería poder {nameof(Read)} en {nameof(Cities.SanFrancisco)}? => SI");
 
 			Assert.True(
-				new PermissionDao("", "", null!, Edit.Id.ToString())
+				new PermissionDao("", "", null!, Edit.Id.ToString() ?? "")
 				{
 					Value = true,
 					Scopes = new[] {

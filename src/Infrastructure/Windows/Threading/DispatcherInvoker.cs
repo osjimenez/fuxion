@@ -18,18 +18,26 @@ namespace Fuxion.Windows.Threading
 				return Task.FromResult(method.DynamicInvoke(args));
 			else if (!dispatcher.HasShutdownStarted)
 				return dispatcher.InvokeAsync(() => method.DynamicInvoke(args)).Task;
-#if NET45
-			return Task.FromResult(0);
-#else
 			return Task.CompletedTask;
-#endif
 		}
 		public Task<TResult> InvokeFuncDelegate<TResult>(IInvokable invokable, Delegate method, params object?[] args)
 		{
 			if (!invokable.UseInvoker || dispatcher == null || dispatcher.CheckAccess())
-				return Task.FromResult((TResult)method.DynamicInvoke(args));
+			{
+				var r = method.DynamicInvoke(args);
+				return r == null
+					? Task.FromResult(default(TResult)!)
+					: Task.FromResult((TResult)r);
+			}
 			else if (!dispatcher.HasShutdownStarted)
-				return dispatcher.InvokeAsync(() => (TResult)method.DynamicInvoke(args)).Task;
+				return dispatcher.InvokeAsync(() =>
+				{
+					var r = method.DynamicInvoke(args);
+					return r == null
+						? default
+						: (TResult)r;
+				}).Task;
+		
 			return Task.FromResult(default(TResult)!);
 		}
 	}

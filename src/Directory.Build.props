@@ -1,8 +1,37 @@
 <Project>
 	<PropertyGroup>
 		<LangVersion>8.0</LangVersion>
-		<NullableContextOptions>enable</NullableContextOptions>
-		<WarningsAsErrors>CS8612;CS8620;CS8600;CS8615;CS8619;CS8602;CS8603;CS8625;CS8618;CS8601;CS8604;CS8629;CS8614;CS8613;CS8609</WarningsAsErrors>
+		<Nullable>enable</Nullable>
+		<!--<NullableContextOptions>enable</NullableContextOptions>-->
+		<WarningsAsErrors>
+			CS8600;
+			CS8601;
+			CS8602;
+			CS8603;
+			CS8604;
+			
+			CS8606;
+
+			CS8609;
+			CS8610;
+
+			CS8612;
+			CS8613;
+			CS8614;
+			CS8615;
+
+			CS8618;
+			CS8619;
+			CS8620;
+			CS8621;
+
+			CS8625;
+
+			CS8629;
+
+			CS8653
+		</WarningsAsErrors>
+		<!--<WarningsAsErrors>CS8653;CS8600;CS8621;CS8601;CS8602;CS8603;CS8604;CS8609;CS8612;CS8613;CS8614;CS8615;CS8618;CS8619;CS8620;CS8625;CS8629</WarningsAsErrors>-->
 		
 		<Title>Fuxion</Title>
 		<Authors>Oscar Jimenez</Authors>

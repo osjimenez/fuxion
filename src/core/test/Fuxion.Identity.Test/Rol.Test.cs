@@ -49,7 +49,7 @@ namespace Fuxion.Identity.Test.Rol
 		{
 			var ide = new IdentityDao("test", "Test");
 			ide.Permissions = new[] {
-				new PermissionDao("","",ide,Edit.Id.ToString())
+				new PermissionDao("","",ide,Edit.Id.ToString() ?? "")
 				{
 					Value = true,
 					Scopes = new[]
@@ -57,7 +57,7 @@ namespace Fuxion.Identity.Test.Rol
 						new ScopeDao("","",Cities.SanFrancisco, ScopePropagation.ToMe)
 					}
 				},
-				new PermissionDao("","",ide,Edit.Id.ToString())
+				new PermissionDao("","",ide,Edit.Id.ToString() ?? "")
 				{
 					Value = false,
 					Scopes = new[]
@@ -89,13 +89,13 @@ namespace Fuxion.Identity.Test.Rol
 			var pro = services.BuildServiceProvider();
 			var ide = new IdentityDao("test", "Test");
 			ide.Permissions = new[] {
-				new PermissionDao("","",ide,Admin.Id.ToString()) {
+				new PermissionDao("","",ide,Admin.Id.ToString() ?? "") {
 					Value = true,
 					Scopes = new[] {
 						new ScopeDao("","",Countries.Spain,ScopePropagation.ToMe| ScopePropagation.ToInclusions)
 					}
 				},
-				new PermissionDao("","",ide,Read.Id.ToString()) {
+				new PermissionDao("","",ide,Read.Id.ToString() ?? "") {
 					Value = false,
 					Scopes = new[] {
 						new ScopeDao("","", Cities.Madrid,ScopePropagation.ToMe| ScopePropagation.ToInclusions),
@@ -184,7 +184,7 @@ namespace Fuxion.Identity.Test.Rol
 			var ide = new IdentityDao("test", "Test");
 			ide.Permissions = new[]
 			{
-				new PermissionDao("","",ide,Edit.Id.ToString()) {
+				new PermissionDao("","",ide,Edit.Id.ToString() ?? "") {
 					Value = true,
 					Scopes =new[] {
 						new ScopeDao("", "", States.California, ScopePropagation.ToMe | ScopePropagation.ToExclusions)
@@ -206,7 +206,7 @@ namespace Fuxion.Identity.Test.Rol
 			var ide = new IdentityDao("test", "Test");
 			ide.Permissions = new[]
 			{
-				new PermissionDao ("","",ide,Edit.Id.ToString()) {
+				new PermissionDao ("","",ide,Edit.Id.ToString() ?? "") {
 					Value = true,
 					Scopes =new[] {
 						new ScopeDao("", "", Categories.Purchases, ScopePropagation.ToMe | ScopePropagation.ToExclusions)
@@ -228,10 +228,10 @@ namespace Fuxion.Identity.Test.Rol
 		{
 			var ide = new IdentityDao("test", "Test");
 			ide.Permissions = new[] {
-				new PermissionDao("","",ide,Admin.Id.ToString()) {
+				new PermissionDao("","",ide,Admin.Id.ToString() ?? "") {
 					Value = true,
 				},
-				new PermissionDao ("","",ide,Admin.Id.ToString()){
+				new PermissionDao ("","",ide,Admin.Id.ToString() ?? ""){
 					Value =true,
 					Scopes =new[]{
 						new ScopeDao("", "", Categories.Purchases, ScopePropagation.ToMe)
@@ -261,7 +261,7 @@ namespace Fuxion.Identity.Test.Rol
 		{
 			var ide = new IdentityDao("test", "Test");
 			ide.Permissions = new[] {
-					new PermissionDao ("","",ide,Admin.Id.ToString()){
+					new PermissionDao ("","",ide,Admin.Id.ToString() ?? ""){
 						Value =true,
 						Scopes =new[]{
 							new ScopeDao("", "", Categories.Purchases, ScopePropagation.ToMe)
@@ -284,7 +284,7 @@ namespace Fuxion.Identity.Test.Rol
 			var pro = services.BuildServiceProvider();
 			var ide = new IdentityDao("test", "Test");
 			ide.Permissions = new[] {
-					new PermissionDao ("","",ide,Admin.Id.ToString()){
+					new PermissionDao ("","",ide,Admin.Id.ToString() ?? ""){
 						Value =true,
 						Scopes =new[]{
 							new ScopeDao("", "", Categories.Purchases, ScopePropagation.ToMe),
@@ -315,13 +315,13 @@ namespace Fuxion.Identity.Test.Rol
 			var ide = new IdentityDao("test", "Test");
 			ide.Permissions = new[]
 			{
-				new PermissionDao ("","",ide,Edit.Id.ToString()){
+				new PermissionDao ("","",ide,Edit.Id.ToString() ?? ""){
 					Value = true,
 					Scopes =new[] {
 						new ScopeDao("", "", pro.GetRequiredService<TypeDiscriminatorFactory>().FromType<CategoryDao>(), ScopePropagation.ToMe | ScopePropagation.ToInclusions)
 					}
 				},
-				new PermissionDao ("","",ide,Read.Id.ToString()){
+				new PermissionDao ("","",ide,Read.Id.ToString() ?? ""){
 					Value = false,
 				},
 			};
@@ -342,7 +342,7 @@ namespace Fuxion.Identity.Test.Rol
 			var ide = new IdentityDao("test", "Test");
 			ide.Permissions = new[]
 			{
-				new PermissionDao ("","",ide,Edit.Id.ToString()){
+				new PermissionDao ("","",ide,Edit.Id.ToString() ?? ""){
 					Value = true,
 					Scopes = new[] {
 						new ScopeDao("", "", Categories.Purchases, ScopePropagation.ToMe | ScopePropagation.ToExclusions)
@@ -383,7 +383,7 @@ namespace Fuxion.Identity.Test.Rol
 			var ide = new IdentityDao("test", "Test");
 			ide.Permissions = new[]
 			{
-				new PermissionDao ("","",ide,Edit.Id.ToString()){
+				new PermissionDao ("","",ide,Edit.Id.ToString() ?? ""){
 					Value = true,
 					Scopes =new[] {
 						new ScopeDao("", "", Categories.Purchases, ScopePropagation.ToMe)
@@ -407,7 +407,7 @@ namespace Fuxion.Identity.Test.Rol
 			var ide = new IdentityDao("test", "Test");
 			ide.Permissions = new[]
 			{
-				new PermissionDao ("","",ide,Edit.Id.ToString()){
+				new PermissionDao ("","",ide,Edit.Id.ToString() ?? ""){
 					Value = true,
 					Scopes =new[] {
 						new ScopeDao("", "", pro.GetRequiredService<TypeDiscriminatorFactory>().FromType<CategoryDao>(),ScopePropagation.ToMe | ScopePropagation.ToInclusions)
@@ -431,13 +431,13 @@ namespace Fuxion.Identity.Test.Rol
 			var ide = new IdentityDao("test", "Test");
 			ide.Permissions = new[]
 			{
-				new PermissionDao ("","",ide,Edit.Id.ToString()) {
+				new PermissionDao ("","",ide,Edit.Id.ToString() ?? "") {
 					Value = true,
 					Scopes =new[] {
 						new ScopeDao("", "", pro.GetRequiredService<TypeDiscriminatorFactory>().FromType<CategoryDao>(), ScopePropagation.ToMe | ScopePropagation.ToInclusions )
 					}
 				},
-				new PermissionDao ("","",ide,Read.Id.ToString()){
+				new PermissionDao ("","",ide,Read.Id.ToString() ?? ""){
 					Value = false,
 					Scopes =new[] {
 						new ScopeDao("", "", pro.GetRequiredService<TypeDiscriminatorFactory>().FromType<CategoryDao>(), ScopePropagation.ToMe | ScopePropagation.ToInclusions)
@@ -461,7 +461,7 @@ namespace Fuxion.Identity.Test.Rol
 			var pro = services.BuildServiceProvider();
 			var ide = new IdentityDao("test", "Test");
 			ide.Permissions = new[] {
-				new PermissionDao("","",ide,Admin.Id.ToString()) {
+				new PermissionDao("","",ide,Admin.Id.ToString() ?? "") {
 					Value = true,
 					Scopes = new[] {
 						new ScopeDao("", "", Categories.Purchases, ScopePropagation.ToMe| ScopePropagation.ToInclusions)
@@ -500,13 +500,13 @@ namespace Fuxion.Identity.Test.Rol
 			var pro = services.BuildServiceProvider();
 			var ide = new IdentityDao("Test", "Test");
 			ide.Permissions = new[] {
-				new PermissionDao("","",ide,Manage.Id.ToString()) {
+				new PermissionDao("","",ide,Manage.Id.ToString() ?? "") {
 					Value = true,
 					Scopes = new[] {
 						new ScopeDao("", "", pro.GetRequiredService<TypeDiscriminatorFactory>().FromType<FileDao>(), ScopePropagation.ToMe| ScopePropagation.ToInclusions)
 					}
 				},
-				new PermissionDao("","",ide,Read.Id.ToString()) {
+				new PermissionDao("","",ide,Read.Id.ToString() ?? "") {
 					Value = false,
 					Scopes = new[] {
 						new ScopeDao("", "", Countries.Spain, ScopePropagation.ToMe| ScopePropagation.ToInclusions)
@@ -564,7 +564,7 @@ namespace Fuxion.Identity.Test.Rol
 		{
 			var ide = new IdentityDao("test", "Test");
 			ide.Permissions = new[] {
-				new PermissionDao("","",ide,Admin.Id.ToString()) {
+				new PermissionDao("","",ide,Admin.Id.ToString() ?? "") {
 					Value = true,
 				}
 			}.ToList();
@@ -633,7 +633,7 @@ namespace Fuxion.Identity.Test.Rol
 		{
 			var ide = new IdentityDao("test", "Test");
 			ide.Permissions = new[] {
-				new PermissionDao("","",ide,Read.Id.ToString()) {
+				new PermissionDao("","",ide,Read.Id.ToString() ?? "") {
 					Value = true,
 				}
 			}.ToList();
@@ -658,7 +658,7 @@ namespace Fuxion.Identity.Test.Rol
 		{
 			var ide = new IdentityDao("test", "Test");
 			ide.Permissions = new[] {
-				new PermissionDao("","",ide,Read.Id.ToString()) {
+				new PermissionDao("","",ide,Read.Id.ToString() ?? "") {
 					Value = true,
 				}
 			}.ToList();
@@ -680,14 +680,14 @@ namespace Fuxion.Identity.Test.Rol
 			var pro = services.BuildServiceProvider();
 			var ide = new IdentityDao("test", "Test");
 			ide.Permissions = new[] {
-				new PermissionDao ("","",ide,Admin.Id.ToString()){
+				new PermissionDao ("","",ide,Admin.Id.ToString() ?? ""){
 					Value = true,
 					Scopes = new[]
 					{
 						new ScopeDao("","",pro.GetRequiredService<TypeDiscriminatorFactory>().FromType<RolDao>(),ScopePropagation.ToMe | ScopePropagation.ToInclusions)
 					}
 				},
-				new PermissionDao("","",ide,Admin.Id.ToString()) {
+				new PermissionDao("","",ide,Admin.Id.ToString() ?? "") {
 					Value = true,
 					Scopes = new[]
 					{

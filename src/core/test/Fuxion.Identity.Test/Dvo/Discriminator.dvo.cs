@@ -77,7 +77,7 @@ namespace Fuxion.Identity.Test.Dvo
 		protected sealed override string GetTypeId() => "CAT";
 		protected sealed override string GetTypeName() => nameof(CategoryDvo);
 
-		protected override IEnumerable<IDiscriminator<string, string>> GetExclusions() => new[] { Parent };
+		protected override IEnumerable<IDiscriminator<string, string>> GetExclusions() => new[] { Parent }.RemoveNulls();
 		protected override IEnumerable<IDiscriminator<string, string>> GetInclusions() => Children;
 	}
 	public class TagDvo : DiscriminatorDvo<TagDvo>

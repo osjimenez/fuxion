@@ -94,7 +94,7 @@ namespace Fuxion.Net
 		protected bool IsConnectCancellationRequested => connectionTask?.IsCancellationRequested() ?? false;
 		public event EventHandler<EventArgs<bool>> IsConnectedChanged;
 		public bool IsConnected => State == ConnectionState.Opened;
-		Task? connectionTask = null;
+		Task connectionTask = Task.CompletedTask;
 		protected abstract Task OnConnect();
 		Task Connect(out Func<Task<bool>> firstTryResultFunc, TimeSpan? firstTryTimeout = null)
 		{
@@ -180,7 +180,7 @@ namespace Fuxion.Net
 
 		#region Disconnect
 		protected bool IsDisconnectCancellationRequested => disconnectionTask?.IsCancellationRequested() ?? false;
-		Task? disconnectionTask = null;
+		Task disconnectionTask = Task.CompletedTask;
 		protected abstract Task OnDisconnect();
 		Task Disconnect(bool mustClose)
 		{
@@ -249,26 +249,21 @@ namespace Fuxion.Net
 			get => GetValue(() => TimeSpan.FromSeconds(60));
 			set => SetValue(value);
 		}
-		Task? keepAliveTask = null;
-		protected virtual Task OnKeepAlive() =>
-#if NET45
-			Task.FromResult(0);
-#else
-			Task.CompletedTask;
-#endif
+		Task keepAliveTask = Task.CompletedTask;
+		protected virtual Task OnKeepAlive() => Task.CompletedTask;
 		private void StartKeepAlive()
 		{
 			//Comprobar si el keep alive esta habilitado
 			if (!IsKeepAliveEnabled) return;
 			//Comprobar si la tarea esta ya en ejecución
-			if (keepAliveTask != null && keepAliveTask.Status == TaskStatus.Running) return;
+			if (keepAliveTask.Status == TaskStatus.Running) return;
 
 			keepAliveTask = TaskManager.Create(async () =>
 			{
 				SetValue(IsKeepAliveCancellationRequested, true, nameof(IsKeepAliveCancellationRequested));
 				while (!IsKeepAliveCancellationRequested)
 				{
-					keepAliveTask!.Sleep(KeepAliveInterval);
+					keepAliveTask.Sleep(KeepAliveInterval);
 					if (IsKeepAliveCancellationRequested) break;
 					try { await OnKeepAlive(); }
 					catch (Exception ex)

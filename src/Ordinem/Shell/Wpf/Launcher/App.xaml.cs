@@ -39,13 +39,15 @@ namespace Ordinem.Shell.Wpf.Launcher
 			services.AddAutoMapper();
 			var loggingConfiguration = new ConfigurationBuilder()
 				.SetBasePath(Directory.GetCurrentDirectory())
-				.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+				.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
 				.Build();
+
 			services.AddLogging(_ =>
 			{
 				_.AddConfiguration(loggingConfiguration.GetSection("Logging"));
 				_.AddConsole();
 			});
+
 			services.AddFuxion(_ => _
 				.Shell(__ => __
 					.Module<LauncherModule>()

@@ -170,14 +170,16 @@ namespace Fuxion.Identity.DatabaseEFTest
 					var dbSet = typeof(IIdentityTestRepository).GetMethod("GetByType")?.MakeGenericMethod(type).Invoke(IM.Repository, null);
 					IEnumerable<object>? res = null;
 					if (dbSet is IQueryable)
-						res = (IQueryable<object>)typeof(System_Extensions).GetMethods()
+						res = (IQueryable<object>)(typeof(System_Extensions).GetMethods()
 						.Where(m => m.Name == "AuthorizedTo" && m.GetParameters().First().ParameterType.GetGenericTypeDefinition() == typeof(IQueryable<>))
-						.First().MakeGenericMethod(type).Invoke(null, new object[] { dbSet, functions });
+						.First()
+						.MakeGenericMethod(type).Invoke(null, new object[] { dbSet, functions }) ?? new List<object>());
 					else
-						res = (IEnumerable<object>)typeof(System_Extensions).GetMethods()
+						res = (IEnumerable<object>)(typeof(System_Extensions).GetMethods()
 						.Where(m => m.Name == "AuthorizedTo" && m.GetParameters().First().ParameterType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
-						.First().MakeGenericMethod(type).Invoke(null, new object?[] { dbSet, functions });
-					var list = res.ToList().Cast<Test.Dao.BaseDao>();
+						.First()
+						.MakeGenericMethod(type).Invoke(null, new object?[] { dbSet, functions }) ?? new List<object>());
+			var list = res.ToList().Cast<Test.Dao.BaseDao>();
 					if (allowOtherResults)
 						Assert.True(list.Any(e => expectedIds.Contains(e.Id)), $"Some expected ids '{expectedIds.Aggregate("", (a, c) => a + c + "·")}' not found");
 					else

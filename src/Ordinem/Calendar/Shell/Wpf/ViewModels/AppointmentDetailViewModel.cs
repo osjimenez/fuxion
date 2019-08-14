@@ -65,7 +65,7 @@ namespace Ordinem.Calendar.Shell.Wpf.ViewModels
 		{
 			// TODO - Cambiar el string del argumento por una constante. Mejor aun, cambiar los argumentos por una clase especifica que se pueda extender an cada modulo: args.Id()
 			// if args don't contains 'Id' is because panel was created from a saved layout
-			var id = args.ContainsKey("Id") ? (Guid)args["Id"] : Guid.Parse(name.Key);
+			var id = args.ContainsKey("Id") ? (Guid)args["Id"] : name.Key != null ? Guid.Parse(name.Key) : throw new InvalidProgramException($"Error on initialize '{nameof(AppointmentDetailViewModel)}'");
 			var list = cache.Get<AppointmentDvo>();
 			Dvo = list.Items.FirstOrDefault(_ => _.Id == id);
 			if (Dvo == null)

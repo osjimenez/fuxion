@@ -17,9 +17,10 @@ namespace Fuxion.Synchronization
 		//	Results = results;
 		//	SubSides = subSides;
 		//}
-		public SideRunner(Side<TSource, TItem> definition, IPrinter printer)
+		public SideRunner(IComparatorRunner comparator, Side<TSource, TItem> definition, IPrinter printer)
 		{
 			this.printer = printer;
+			Comparator = comparator;
 			Definition = definition;
 		}
 		IPrinter printer;
@@ -27,7 +28,7 @@ namespace Fuxion.Synchronization
 		public ISide Definition { get; set; }
 		public object? Source { get { return ((Side<TSource, TItem>)Definition).Source; } set { ((Side<TSource, TItem>)Definition).Source = (TSource)value!; } }
 		public ICollection<LoadedItem> Entries { get; set; } = new List<LoadedItem>();
-		public IComparatorRunner? Comparator { get; set; }
+		public IComparatorRunner Comparator { get; set; }
 		public IEnumerable<IComparatorResultInternal> Results { get; set; } = new List<IComparatorResultInternal>();
 		public ICollection<ISideRunner> SubSides { get; set; } = new List<ISideRunner>();
 
@@ -82,9 +83,8 @@ namespace Fuxion.Synchronization
 			printer.WriteLine($"Side '{Definition.Name}' loaded");
 		});
 		public ISideRunner Clone() =>
-			new SideRunner<TSource, TItem>(((Side<TSource, TItem>)Definition).Clone(), printer)
+			new SideRunner<TSource, TItem>(Comparator, ((Side<TSource, TItem>)Definition).Clone(), printer)
 			{
-				Comparator = Comparator,
 				Entries = Entries,
 				Results = Results,
 				SubSides = SubSides

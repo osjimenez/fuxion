@@ -170,9 +170,9 @@ namespace Fuxion.Synchronization
 					// ----
 					processActions.Add(new Func<Task>(async () =>
 					{
-						var map = new Func<IItemRunner, IItemSideRunner, object>((i, s) =>
+						object? Map (IItemRunner i, IItemSideRunner s)
 						{
-							if (runSide.Comparator.GetItemTypes().typeA == runner.MasterSide.GetItemType())
+							if (runSide.Comparator.GetItemTypes().typeA == runner.MasterSide?.GetItemType())
 							{
 								// Master is A in this comparator
 								if (item.MasterItemExist)
@@ -185,21 +185,27 @@ namespace Fuxion.Synchronization
 									return runSide.Comparator.MapBToA(i.MasterItem, s.SideItem);
 							}
 							return null;
-						});
+						}
 
 						if (side.IsEnabled && side.Action == action && side.Action == SynchronizationAction.Insert)
 						{
-							var newItem = map(runItem, runItemSide);
-							await runSide.InsertAsync(newItem);
-							foreach (var subItem in runItemSide.SubItems)
-								subItem.SideRunners.First().Side.Source = newItem;
+							var newItem = Map(runItem, runItemSide);
+							if (newItem != null)
+							{
+								await runSide.InsertAsync(newItem);
+								foreach (var subItem in runItemSide.SubItems)
+									subItem.SideRunners.First().Side.Source = newItem;
+							}
 						}
 						else if (side.IsEnabled && side.Action == action && side.Action == SynchronizationAction.Update)
 						{
-							var newItem = map(runItem, runItemSide);
-							await runSide.UpdateAsync(newItem);
-							foreach (var subItem in runItemSide.SubItems)
-								subItem.SideRunners.First().Side.Source = newItem;
+							var newItem = Map(runItem, runItemSide);
+							if (newItem != null)
+							{
+								await runSide.UpdateAsync(newItem);
+								foreach (var subItem in runItemSide.SubItems)
+									subItem.SideRunners.First().Side.Source = newItem;
+							}
 						}
 						else if (side.IsEnabled && side.Action == action && side.Action == SynchronizationAction.Delete)
 						{
@@ -234,7 +240,7 @@ namespace Fuxion.Synchronization
 				processActions.Add(new Func<Task>(async () =>
 				{
 					var runSubSide = runSubItemSide.Side;
-					var subMap = new Func<IItemRunner, IItemSideRunner, object>((i, s) =>
+					var subMap = new Func<IItemRunner, IItemSideRunner, object?>((i, s) =>
 					{
 						if (runSubSide.Comparator.GetItemTypes().typeA.GetTypeInfo().IsAssignableFrom(runSubItem.MasterItem.GetType().GetTypeInfo()))
 						{
@@ -253,16 +259,22 @@ namespace Fuxion.Synchronization
 					if (rel.IsEnabled && rel.Action == action && rel.Action == SynchronizationAction.Insert)
 					{
 						var newItem = subMap(runSubItem, runSubItemSide);
-						await runSubSide.InsertAsync(newItem);
-						foreach (var subItem in runSubItemSide.SubItems)
-							subItem.SideRunners.First().Side.Source = newItem;
+						if (newItem != null)
+						{
+							await runSubSide.InsertAsync(newItem);
+							foreach (var subItem in runSubItemSide.SubItems)
+								subItem.SideRunners.First().Side.Source = newItem;
+						}
 					}
 					else if (rel.IsEnabled && rel.Action == action && rel.Action == SynchronizationAction.Update)
 					{
 						var newItem = subMap(runSubItem, runSubItemSide);
-						await runSubSide.UpdateAsync(newItem);
-						foreach (var subItem in runSubItemSide.SubItems)
-							subItem.SideRunners.First().Side.Source = newItem;
+						if (newItem != null)
+						{
+							await runSubSide.UpdateAsync(newItem);
+							foreach (var subItem in runSubItemSide.SubItems)
+								subItem.SideRunners.First().Side.Source = newItem;
+						}
 					}
 					else if (rel.IsEnabled && rel.Action == action && rel.Action == SynchronizationAction.Delete)
 					{

@@ -38,7 +38,7 @@ namespace Fuxion.Test.Collections.Generic
 		public int Id { get; set; }
 		public string Name { get; set; }
 
-		public override bool Equals(object obj)
+		public override bool Equals(object? obj)
 		{
 			if (obj is Mock mock) return Id == mock.Id;
 			return false;
