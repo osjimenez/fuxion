@@ -38,6 +38,7 @@ steps:
     nuGetFeedType: external
     publishFeedCredentials: 'MyGet - Fuxion'
 
+
 #- task: NuGetCommand@2 # Push to NuGet.org
 #  displayName: 'Push to NuGet.org'
 #  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
