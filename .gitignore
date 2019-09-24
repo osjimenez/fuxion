@@ -216,3 +216,6 @@ ModelManifest.xml
 
 # BUILD
 **/.build/NuGet/**/lib/**
+
+# GitVersion
+GitVersion/
