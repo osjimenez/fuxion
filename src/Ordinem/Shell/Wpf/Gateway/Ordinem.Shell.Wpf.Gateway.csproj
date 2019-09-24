@@ -6,15 +6,15 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Compile Remove="GatewayStartup-Core3.cs" />
+	  <Compile Remove="GatewayStartup-Core3.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Include="GatewayStartup-Core3.cs" />
+	  <None Include="GatewayStartup-Core3.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Ocelot" Version="13.8.0-alpha0006" />
+		<PackageReference Include="Ocelot" Version="13.8.0-alpha0019" />
 	</ItemGroup>
 
 </Project>

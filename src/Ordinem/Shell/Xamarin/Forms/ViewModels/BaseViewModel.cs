@@ -10,9 +10,10 @@ using Ordinem.Shell.Xamarin.Forms.Services;
 
 namespace Ordinem.Shell.Xamarin.Forms.ViewModels
 {
+#nullable disable
 	public class BaseViewModel : INotifyPropertyChanged
 	{
-		public IDataStore<Item> DataStore => DependencyService.Get<IDataStore<Item>>() ?? new MockDataStore();
+		public IDataStore<Item> DataStore => DependencyService.Get<IDataStore<Item>>();
 
 		bool isBusy = false;
 		public bool IsBusy

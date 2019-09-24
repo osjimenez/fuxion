@@ -9,7 +9,7 @@
 	</PropertyGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'!='netstandard2.0'">
-		<PackageReference Include="EntityFramework" Version="6.3.0-preview7-19363-02" />
+		<PackageReference Include="EntityFramework" Version="6.3.0" />
 	</ItemGroup>
 
 	<ItemGroup>

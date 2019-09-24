@@ -12,8 +12,8 @@
 	</Target>
 
 	<ItemGroup>
-		<PackageReference Include="EntityFramework" Version="6.3.0-preview7-19363-02" />
-		<PackageReference Include="Moq" Version="4.12.0" />
+		<PackageReference Include="EntityFramework" Version="6.3.0" />
+		<PackageReference Include="Moq" Version="4.13.0" />
 		<PackageReference Include="xunit" Version="2.4.1" />
 		<PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
 			<PrivateAssets>all</PrivateAssets>

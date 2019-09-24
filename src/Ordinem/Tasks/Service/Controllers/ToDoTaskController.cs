@@ -23,7 +23,8 @@ namespace Ordinem.Tasks.Service.Controllers
 		private readonly IMapper mapper;
 		private readonly TasksDbContext context;
 		[HttpGet]
-		public ActionResult<IEnumerable<ToDoTaskDto>> Get() => Ok(context.ToDoTasks.ProjectTo<ToDoTaskDto>(mapper.ConfigurationProvider));
+		// TODO - Automapper ProjectTo doesn't working with Core 3.0 rtm - Remove ToList().AsQueryable()
+		public ActionResult<IEnumerable<ToDoTaskDto>> Get() => Ok(context.ToDoTasks.ToList().AsQueryable().ProjectTo<ToDoTaskDto>(mapper.ConfigurationProvider));
 		[HttpGet("{id}")]
 		public ActionResult<ToDoTaskDto> Get(Guid id) => Ok(mapper.Map<ToDoTaskDto>(context.ToDoTasks.FirstOrDefault(d => d.Id == id)));
 	}

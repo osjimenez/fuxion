@@ -23,7 +23,8 @@ namespace Ordinem.Tasks.Service.Controllers
 		private readonly IMapper mapper;
 		private readonly CalendarDbContext context;
 		[HttpGet]
-		public ActionResult<IEnumerable<AppointmentDto>> Get() => Ok(context.Appointments.ProjectTo<AppointmentDto>(mapper.ConfigurationProvider));
+		// TODO - Automapper ProjectTo doesn't working with Core 3.0 rtm - Remove ToList().AsQueryable()
+		public ActionResult<IEnumerable<AppointmentDto>> Get() => Ok(context.Appointments.ToList().AsQueryable().ProjectTo<AppointmentDto>(mapper.ConfigurationProvider));
 		[HttpGet("{id}")]
 		public ActionResult<AppointmentDto> Get(Guid id) => Ok(mapper.Map<AppointmentDto>(context.Appointments.FirstOrDefault(d => d.Id == id)));
 	}
