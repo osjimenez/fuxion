@@ -121,6 +121,7 @@ namespace Fuxion.Identity.Test
 			Albums.Album1 = new AlbumDao(nameof(Albums.Album1), nameof(Albums.Album1));
 		}
 	}
+#nullable disable
 	#region Locations
 	public static class Countries
 	{

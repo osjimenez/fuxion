@@ -9,7 +9,7 @@ namespace Fuxion
 	public class Singleton
 	{
 		#region Singleton patern
-		private static Singleton _instance;
+		private static Singleton? _instance;
 		private static readonly object lockObject = new object();
 
 		private static Singleton Instance

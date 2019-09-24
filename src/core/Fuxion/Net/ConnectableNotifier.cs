@@ -92,7 +92,7 @@ namespace Fuxion.Net
 			set => SetValue(value);
 		}
 		protected bool IsConnectCancellationRequested => connectionTask?.IsCancellationRequested() ?? false;
-		public event EventHandler<EventArgs<bool>> IsConnectedChanged;
+		public event EventHandler<EventArgs<bool>>? IsConnectedChanged;
 		public bool IsConnected => State == ConnectionState.Opened;
 		Task connectionTask = Task.CompletedTask;
 		protected abstract Task OnConnect();

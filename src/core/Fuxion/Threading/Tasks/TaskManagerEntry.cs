@@ -68,7 +68,7 @@ namespace Fuxion.Threading.Tasks
 		public TaskScheduler TaskScheduler { get; set; }
 		public TaskCreationOptions TaskCreationOptions { get; set; }
 		public void Start() => Task.Start(TaskScheduler);
-		public event EventHandler CancelRequested;
+		public event EventHandler? CancelRequested;
 		public bool IsCancellationRequested => CancellationTokenSource.IsCancellationRequested;
 		public CancellationTokenSource CancellationTokenSource { get; set; }
 		public Delegate? Delegate { get; set; }

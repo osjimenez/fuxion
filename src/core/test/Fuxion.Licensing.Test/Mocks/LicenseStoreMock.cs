@@ -12,8 +12,8 @@ namespace Fuxion.Licensing.Test.Mocks
 
 		private readonly List<LicenseContainer> licenses;
 
-		public event EventHandler<EventArgs<LicenseContainer>> LicenseAdded;
-		public event EventHandler<EventArgs<LicenseContainer>> LicenseRemoved;
+		public event EventHandler<EventArgs<LicenseContainer>>? LicenseAdded;
+		public event EventHandler<EventArgs<LicenseContainer>>? LicenseRemoved;
 
 		public IQueryable<LicenseContainer> Query() => licenses.AsQueryable();
 		public void Add(LicenseContainer license) { licenses.Add(license); LicenseAdded?.Invoke(this, new EventArgs<LicenseContainer>(license)); }

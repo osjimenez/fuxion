@@ -31,8 +31,8 @@ namespace Fuxion.Licensing
 		private Locker<string> pathLocker;
 		private readonly Locker<List<LicenseContainer>> listLocker = new Locker<List<LicenseContainer>>(new List<LicenseContainer>());
 
-		public event EventHandler<EventArgs<LicenseContainer>> LicenseAdded;
-		public event EventHandler<EventArgs<LicenseContainer>> LicenseRemoved;
+		public event EventHandler<EventArgs<LicenseContainer>>? LicenseAdded;
+		public event EventHandler<EventArgs<LicenseContainer>>? LicenseRemoved;
 
 		private void LoadFile(string licensesFilePath)
 		{

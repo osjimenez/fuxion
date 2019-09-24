@@ -73,8 +73,8 @@ namespace Fuxion.Windows.Markup
 				chain[i].PreviousLink = i == 0 ? null : chain[i - 1];
 		}
 
-		public static string NonAttrributePrefix { get; set; }
-		public static string NonAttrributeSufix { get; set; }
+		public static string NonAttrributePrefix { get; set; } = "";
+		public static string NonAttrributeSufix { get; set; } = "";
 
 		IPrinter? _Printer;
 		internal IPrinter? Printer {

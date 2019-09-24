@@ -11,10 +11,10 @@ namespace Fuxion.Domain.Aggregates
 	{
 		Aggregate? aggregate;
 
-		public event EventHandler<EventArgs<Event>> Applying;
-		public event EventHandler<EventArgs<Event>> Validated;
-		public event EventHandler<EventArgs<Event>> Handled;
-		public event EventHandler<EventArgs<Event>> Pendent;
+		public event EventHandler<EventArgs<Event>>? Applying;
+		public event EventHandler<EventArgs<Event>>? Validated;
+		public event EventHandler<EventArgs<Event>>? Handled;
+		public event EventHandler<EventArgs<Event>>? Pendent;
 
 		public void OnAttach(Aggregate aggregate)
 		{

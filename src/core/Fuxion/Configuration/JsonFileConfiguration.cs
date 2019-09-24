@@ -14,8 +14,8 @@ namespace Fuxion.Configuration
 			Load();
 		}
 
-		public event EventHandler Saved;
-		public event EventHandler Cleared;
+		public event EventHandler? Saved;
+		public event EventHandler? Cleared;
 
 		string path = "";
 		public string Path

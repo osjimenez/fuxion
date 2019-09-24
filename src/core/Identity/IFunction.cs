@@ -138,7 +138,9 @@ namespace Fuxion.Identity
 	}
 	public static class Functions
 	{
+#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 		static Functions() => CreatePredefinedFunctions();
+#pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
 		private static Graph<IFunction> graph = new Graph<IFunction>();
 		private static Dictionary<object, IFunction> dic = new Dictionary<object, IFunction>();

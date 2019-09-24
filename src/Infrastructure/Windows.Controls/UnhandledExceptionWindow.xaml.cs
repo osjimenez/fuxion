@@ -118,7 +118,7 @@ namespace Fuxion.Windows.Controls
 			PagePadding = new Thickness(10),
 			FontFamily = new FontFamily("Segoe UI")
 		};
-		public event PropertyChangedEventHandler PropertyChanged;
+		public event PropertyChangedEventHandler? PropertyChanged;
 
 		private void ButtonClose_Click(object sender, RoutedEventArgs e)
 		{

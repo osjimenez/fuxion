@@ -55,7 +55,7 @@ namespace Fuxion.ComponentModel.DataAnnotations
 			private set => SetValue(value);
 		}
 
-		public event EventHandler ValidationChanged;
+		public event EventHandler? ValidationChanged;
 
 		private List<(object Notifier, Func<string> GetMessageFunction)> paths = new List<(object Notifier, Func<string> GetMessageFunction)>();
 

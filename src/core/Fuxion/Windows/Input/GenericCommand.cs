@@ -18,7 +18,7 @@ namespace Fuxion.Windows.Input
 
 		bool IInvokable.UseInvoker { get; set; } = true;
 
-		public event EventHandler CanExecuteChanged;
+		public event EventHandler? CanExecuteChanged;
 		bool ICommand.CanExecute(object parameter) => CanExecute();
 		public Task<bool> CanExecuteAsync() => canExecute != null ? this.Invoke(canExecute) : Task.FromResult(true);
 		public bool CanExecute() => CanExecuteAsync().Result;
@@ -42,7 +42,7 @@ namespace Fuxion.Windows.Input
 
 		bool IInvokable.UseInvoker { get; set; } = true;
 
-		public event EventHandler CanExecuteChanged;
+		public event EventHandler? CanExecuteChanged;
 		bool ICommand.CanExecute(object parameter)
 		{
 			if (parameter is TParameter par)

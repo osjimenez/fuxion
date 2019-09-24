@@ -242,8 +242,8 @@ namespace Fuxion.ComponentModel
 		#region Events
 		event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged { add { PropertyChangedEvent += value; } remove { PropertyChangedEvent -= value; } }
 		//event PropertyChangingEventHandler INotifyPropertyChanging.PropertyChanging { add { PropertyChangingEvent += value; } remove { PropertyChangingEvent -= value; } }
-		public event NotifierPropertyChangedEventHandler<TNotifier> PropertyChanged;
-		private event PropertyChangedEventHandler PropertyChangedEvent;
+		public event NotifierPropertyChangedEventHandler<TNotifier>? PropertyChanged;
+		private event PropertyChangedEventHandler? PropertyChangedEvent;
 		//private event PropertyChangingEventHandler PropertyChangingEvent;
 		#endregion
 		#region Set&Get Value
