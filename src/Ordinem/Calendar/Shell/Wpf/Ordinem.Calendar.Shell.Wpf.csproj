@@ -3,7 +3,6 @@
 	<PropertyGroup>
 		<TargetFramework>netcoreapp3.0</TargetFramework>
 		<UseWPF>true</UseWPF>
-		<UseWindowsForms>true</UseWindowsForms>
 	</PropertyGroup>
 
 	<Target Name="WorkaroundNetStandard" AfterTargets="ResolvePackageAssets">
