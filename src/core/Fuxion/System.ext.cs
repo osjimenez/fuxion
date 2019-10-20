@@ -393,7 +393,7 @@ namespace System
 			if (count >= numberOfElements) return res.Trim(',', ' ');
 			if (ts.Seconds > 0)
 			{
-				res += $"{ts.Seconds} {(onlyLetters ? "s" : (ts.Seconds > 1 ? Strings.seconds : Strings.minute))}{(onlyLetters ? "" : ",")} ";
+				res += $"{ts.Seconds} {(onlyLetters ? "s" : (ts.Seconds > 1 ? Strings.seconds : Strings.second))}{(onlyLetters ? "" : ",")} ";
 				count++;
 			}
 			if (count >= numberOfElements) return res.Trim(',', ' ');
