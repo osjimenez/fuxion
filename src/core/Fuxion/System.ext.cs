@@ -106,6 +106,18 @@ namespace System
 				await transformFunction(item);
 			return me;
 		}
+		public static ICollection<TSource> Transform<TSource>(this ICollection<TSource> me, Action<TSource> transformFunction)
+		{
+			foreach (var item in me)
+				transformFunction(item);
+			return me;
+		}
+		public static async Task<ICollection<TSource>> Transform<TSource>(this ICollection<TSource> me, Func<TSource, Task> transformFunction)
+		{
+			foreach (var item in me)
+				await transformFunction(item);
+			return me;
+		}
 		#endregion
 		#region Reflections
 		public static bool IsNullable(this Type me, bool valueTypesAreNotNullables = true)
