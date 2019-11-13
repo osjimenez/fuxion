@@ -52,7 +52,7 @@ namespace Fuxion.Test.Json
 			var pod = json.FromJsonPod<PayloadBase, string>();
 
 			Output.WriteLine("pod.PayloadJRaw.Value: ");
-			Output.WriteLine(pod.PayloadJRaw.Value.ToString());
+			Output.WriteLine(pod.PayloadJRaw.Value?.ToString());
 
 			void AssertBase(PayloadBase payload)
 			{

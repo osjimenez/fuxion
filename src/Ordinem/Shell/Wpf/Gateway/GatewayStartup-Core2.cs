@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -15,15 +16,12 @@ namespace Ordinem.Shell.Wpf.Gateway
 		public static void Main(string[] args)
 		{
 			Console.Title = "Gateway";
-			Host
+			WebHost
 				.CreateDefaultBuilder(args)
+				.UseStartup<GatewayStartup>()
 				.ConfigureAppConfiguration(builder =>
 				{
 					builder.AddJsonFile("ocelot.json", false, true);
-				})
-				.ConfigureWebHostDefaults(builder =>
-				{
-					builder.UseStartup<GatewayStartup>();
 				})
 				.Build()
 				.Run();
@@ -36,7 +34,7 @@ namespace Ordinem.Shell.Wpf.Gateway
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.AddMvcCore().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+			services.AddMvcCore().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 			services.AddOcelot(Configuration);
 			//.AddCacheManager(x => {
 			//	x.WithMicrosoftLogging(log =>
@@ -49,13 +47,13 @@ namespace Ordinem.Shell.Wpf.Gateway
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-		public async void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+		public async void Configure(IApplicationBuilder app, Microsoft.AspNetCore.Hosting.IHostingEnvironment env)
 		{
 			if (env.IsDevelopment())
 				app.UseDeveloperExceptionPage();
-			else
-				app.UseHsts();
-			app.UseHttpsRedirection();
+			//else
+			//	app.UseHsts();
+			//app.UseHttpsRedirection();
 			app.UseMvc();
 			await app.UseOcelot();
 		}

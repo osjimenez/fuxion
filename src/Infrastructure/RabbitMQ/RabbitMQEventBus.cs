@@ -72,6 +72,7 @@ namespace Fuxion.RabbitMQ
 				var message = Encoding.UTF8.GetString(ea.Body);
 				var pod = message.FromJson<PublicationPod>();
 				var @event = pod.WithTypeKeyDirectory(typeKeyDirectory);
+				if (@event == null) throw new InvalidCastException($"Event with key '{pod.PayloadKey}' is not registered in '{nameof(TypeKeyDirectory)}'");
 				await ProcessEvent(@event);
 				//await ProcessEvent(integrationEventTypeId, message);
 				//await ProcessEvent(message.FromJson<IEvent>());

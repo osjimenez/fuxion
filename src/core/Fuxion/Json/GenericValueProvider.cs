@@ -8,14 +8,14 @@ namespace Fuxion.Json
 {
 	public class GenericValueProvider<TSource, TDestination> : IValueProvider
 	{
-		public GenericValueProvider(IValueProvider valueProvider, PropertyInfo property, Func<TSource, TDestination> convertFunction)
+		public GenericValueProvider(IValueProvider? valueProvider, PropertyInfo property, Func<TSource, TDestination> convertFunction)
 		{
 			this.valueProvider = valueProvider;
 			this.property = property;
 			this.convertFunction = convertFunction;
 		}
 
-		readonly IValueProvider valueProvider;
+		readonly IValueProvider? valueProvider;
 		readonly PropertyInfo property;
 		readonly Func<TSource, TDestination> convertFunction;
 		public object? GetValue(object target)
@@ -28,7 +28,7 @@ namespace Fuxion.Json
 				: result;
 		}
 
-		public void SetValue(object target, object value)
+		public void SetValue(object target, object? value)
 		{
 			if (valueProvider == null)
 				property.SetValue(target, value);

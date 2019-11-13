@@ -8,7 +8,7 @@ namespace Fuxion.Test
 {
 	public class ZZZPose
 	{
-		[Fact]
+		[Fact(Skip = "Not work in Core 3.0")]
 		public void Pose()
 		{
 			// Shim static method

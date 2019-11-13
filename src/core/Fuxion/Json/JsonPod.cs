@@ -36,7 +36,7 @@ namespace Fuxion.Json
 			set
 			{
 				_PayloadJRaw = value;
-				if (Payload == null)
+				if (Payload == null && PayloadJRaw.Value != null)
 				{
 					bool wasFailed = false;
 					var res  = PayloadJRaw.Value.ToString().FromJson<TPayload>(new JsonSerializerSettings
@@ -70,10 +70,10 @@ namespace Fuxion.Json
 			return payload.Payload;
 		}
 
-		public JsonPod<T, TKey> CastWithPayload<T>() => new JsonPod<T, TKey>(PayloadJRaw.Value.ToString().FromJson<T>(), PayloadKey);
+		public JsonPod<T, TKey> CastWithPayload<T>() => new JsonPod<T, TKey>(PayloadJRaw.Value != null ? PayloadJRaw.Value.ToString().FromJson<T>() : default, PayloadKey);
 
-		public T As<T>() => PayloadJRaw.Value.ToString().FromJson<T>();
-		public object As(Type type) => PayloadJRaw.Value.ToString().FromJson(type);
+		public T As<T>() => PayloadJRaw.Value != null ? PayloadJRaw.Value.ToString().FromJson<T>() : default;
+		public object? As(Type type) => PayloadJRaw.Value?.ToString().FromJson(type);
 
 		public bool Is<T>() => Is(typeof(T));
 		public bool Is(Type type)

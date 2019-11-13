@@ -81,8 +81,10 @@ namespace System
 					}));
 		}
 		public static T FromJson<T>(this string me, JsonSerializerSettings? settings = null) => JsonConvert.DeserializeObject<T>(me, settings);
-		public static object FromJson(this string me, Type type) => JsonConvert.DeserializeObject(me, type);
-		public static T CloneWithJson<T>(this T me) => (T)FromJson(me?.ToJson() ?? throw new InvalidDataException(), me?.GetType() ?? throw new InvalidDataException());
+		public static object? FromJson(this string me, Type type) => JsonConvert.DeserializeObject(me, type);
+		public static T CloneWithJson<T>(this T me) => (T)(FromJson(
+			me?.ToJson() ?? throw new InvalidDataException(),
+			me?.GetType() ?? throw new InvalidDataException()) ?? default!);
 		#endregion
 		#region Transform
 		public static TResult Transform<TSource, TResult>(this TSource me, Func<TSource, TResult> transformFunction)

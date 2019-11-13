@@ -58,11 +58,11 @@ namespace Fuxion.Test.Json
 			Assert.Null(pod.Payload);
 
 			var evt = pod.WithTypeKeyDirectory(tkd);
-			Assert.Equal(id, evt.AggregateId);
+			Assert.Equal(id, evt?.AggregateId);
 			Assert.IsType<MockEvent>(evt);
-			var mevt = (MockEvent)evt;
-			Assert.Equal("mockName", mevt.Name);
-			Assert.Equal(10, mevt.EventSourcing().TargetVersion);
+			var mevt = (MockEvent?)evt;
+			Assert.Equal("mockName", mevt?.Name);
+			Assert.Equal(10, mevt?.EventSourcing().TargetVersion);
 		}
 	}
 	public abstract class Event
@@ -114,8 +114,8 @@ namespace Fuxion.Test.Json
 		public int TargetVersion { get; private set; }
 
 		public T AsEvent<T>() where T : Event => base.As<T>().Transform(evt => evt.AddEventSourcingFeature(TargetVersion));
-		public Event AsEvent(Type type) => ((Event)base.As(type)).Transform(evt => evt.AddEventSourcingFeature(TargetVersion));
-		public Event WithTypeKeyDirectory(TypeKeyDirectory typeKeyDirectory) => AsEvent(typeKeyDirectory[PayloadKey]);
+		public Event? AsEvent(Type type) => ((Event?)base.As(type)).Transform(evt => evt?.AddEventSourcingFeature(TargetVersion));
+		public Event? WithTypeKeyDirectory(TypeKeyDirectory typeKeyDirectory) => AsEvent(typeKeyDirectory[PayloadKey]);
 	}
 	public class EventSourcingEventFeature : EventFeature
 	{

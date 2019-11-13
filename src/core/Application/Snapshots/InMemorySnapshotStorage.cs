@@ -25,7 +25,7 @@ namespace Fuxion.Application.Snapshots
 						snapshots.WriteObject(dic.Select((KeyValuePair<string, List<JsonPod<Snapshot, string>>> k) =>
 						(
 							Key: k.Key,
-							Value: k.Value.Select<JsonPod<Snapshot, string>,Snapshot>((JsonPod<Snapshot, string> v) => (Snapshot)v.As(typeKeyDirectory[k.Key])).ToDictionary<Snapshot,Guid>((Snapshot s) => s.AggregateId)
+							Value: k.Value.Select((JsonPod<Snapshot, string> v) => (Snapshot?)v.As(typeKeyDirectory[k.Key])).RemoveNulls().ToDictionary((Snapshot s) => s.AggregateId)
 						)).ToDictionary(a => a.Key, a => a.Value));
 					}
 				});

@@ -37,7 +37,7 @@ namespace Fuxion.Identity.DatabaseEFTest
 			get
 			{
 				if (_IdentityManager == null)
-					_IdentityManager = new IdentityManager(new PasswordProviderMock(), null!, new IdentityMemoryTestRepository());
+					_IdentityManager = new IdentityManager(new PasswordProviderMock(), new CurrentUserNameProviderMock(() => "root"), new IdentityMemoryTestRepository());
 				return _IdentityManager;
 			}
 		}

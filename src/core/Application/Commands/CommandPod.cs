@@ -13,7 +13,7 @@ namespace Fuxion.Application.Commands
 		internal CommandPod(Command command) : base(command, command.GetType().GetTypeKey()) { }
 
 		public T AsCommand<T>() where T : Command => base.As<T>();
-		public Command AsCommand(Type type) => ((Command)base.As(type));
-		public Command WithTypeKeyDirectory(TypeKeyDirectory typeKeyDirectory) => AsCommand(typeKeyDirectory[PayloadKey]);
+		public Command? AsCommand(Type type) => ((Command?)base.As(type));
+		public Command? WithTypeKeyDirectory(TypeKeyDirectory typeKeyDirectory) => AsCommand(typeKeyDirectory[PayloadKey]);
 	}
 }

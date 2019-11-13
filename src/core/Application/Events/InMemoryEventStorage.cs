@@ -25,7 +25,8 @@ namespace Fuxion.Application.Events
 						events.WriteObject(dic.Select((KeyValuePair<Guid, List<EventSourcingPod>> k) => 
 						(
 							k.Key,
-							Value: k.Value.Select<EventSourcingPod, Event>((EventSourcingPod v) => v.WithTypeKeyDirectory(typeKeyDirectory)).ToList<Event>()
+							//Value: k.Value.Select<EventSourcingPod, Event>((EventSourcingPod v) => v.WithTypeKeyDirectory(typeKeyDirectory)).RemoveNulls().ToList<Event>()
+							Value: k.Value.Select((EventSourcingPod v) => v.WithTypeKeyDirectory(typeKeyDirectory)).RemoveNulls().ToList()
 						)).ToDictionary(a => a.Key, a => a.Value));
 					}
 				});

@@ -25,6 +25,7 @@ namespace Fuxion.AspNetCore.Controllers
 		{
 			if (!typeKeyDirectory.ContainsKey(pod.PayloadKey)) return BadRequest($"Command '{pod.PayloadKey}' is not expected");
 			var com = pod.WithTypeKeyDirectory(typeKeyDirectory);
+			if (com == null) throw new InvalidCastException($"Command with key '{pod.PayloadKey}' is not registered in '{nameof(TypeKeyDirectory)}'");
 			await commandDispatcher.DispatchAsync(com);
 			return Ok();
 		}

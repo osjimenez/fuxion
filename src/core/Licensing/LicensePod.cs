@@ -27,7 +27,7 @@ namespace Fuxion.Licensing
 		//	return (License)RawLicense.Value.ToString().FromJson(type);
 		//}
 
-		public License AsLicense(Type type) => (License)As(type);
+		public License? AsLicense(Type type) => (License?)As(type);
 
 		//public bool Is<T>() where T : License
 		//{
@@ -106,7 +106,7 @@ namespace Fuxion.Licensing
 		public static IQueryable<LicensePod> OnlyValidOfType(this IQueryable<LicensePod> me, string publicKey, Type type)
 		{
 			string _;
-			return me.WithValidSignature(publicKey).OfType(type).Where(l => l.AsLicense(type).Validate(out _));
+			return me.WithValidSignature(publicKey).OfType(type).Where(l => l.AsLicense(type)!.Validate(out _));
 		}
 	}
 }

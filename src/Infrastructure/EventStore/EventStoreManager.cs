@@ -38,7 +38,7 @@ namespace Fuxion.EventStore
 		{
 			// TODO - Implementar un mecanismo de paginación cuando tengo que trearme mas de 4096 eventos
 			var slice = await connection.ReadStreamEventsForwardAsync(aggregateId.ToString(), start, count == int.MaxValue ? 4096 : count, false);
-			return slice.Events.Select(e => Encoding.Default.GetString(e.Event.Data).FromJson<EventSourcingPod>().WithTypeKeyDirectory(typeKeyDirectory)).AsQueryable();
+			return slice.Events.Select(e => Encoding.Default.GetString(e.Event.Data).FromJson<EventSourcingPod>().WithTypeKeyDirectory(typeKeyDirectory)).RemoveNulls().AsQueryable();
 		}
 		public async Task<Event?> GetLastEventAsync(Guid aggregateId)
 		{
@@ -53,7 +53,7 @@ namespace Fuxion.EventStore
 			return slice.Events.Select(e =>
 			{
 				var pod = Encoding.Default.GetString(e.Event.Data).FromJson<JsonPod<Snapshot, string>>();
-				return (Snapshot)pod.As(typeKeyDirectory[pod.PayloadKey]);
+				return (Snapshot?)pod.As(typeKeyDirectory[pod.PayloadKey]);
 			}).LastOrDefault();
 		}
 		public async Task SaveSnapshotAsync(Snapshot snapshot)

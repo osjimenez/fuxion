@@ -160,9 +160,9 @@ namespace Fuxion.ComponentModel
 	}
 	public class NotifierJsonConverter : JsonConverter
 	{
-		public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+		public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
 		{
-			if (value.GetType().IsSubclassOfRawGeneric(typeof(Notifier<>)))
+			if (value != null && value.GetType().IsSubclassOfRawGeneric(typeof(Notifier<>)))
 			{
 				//var ti = typeof(Notifier<>).GetTypeInfo();
 				var ti = value.GetType().GetTypeInfo();
@@ -183,10 +183,10 @@ namespace Fuxion.ComponentModel
 			}
 			else
 			{
-				throw new InvalidCastException($"Type '{value.GetType().Name}' isn't a subclass of '{nameof(NotifierJsonConverter)}'");
+				throw new InvalidCastException($"Type '{value?.GetType().Name ?? "null"}' isn't a subclass of '{nameof(NotifierJsonConverter)}'");
 			}
 		}
-		public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+		public override object ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
 		{
 			if (existingValue == null) existingValue = Activator.CreateInstance(objectType);
 			//reader.Read();
