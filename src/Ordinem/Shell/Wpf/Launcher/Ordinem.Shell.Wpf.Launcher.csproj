@@ -30,7 +30,7 @@
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.1.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.0" />
-		<PackageReference Include="Telerik.Windows.Themes.Fluent.for.Wpf" Version="2019.3.917" />
+		<PackageReference Include="Telerik.Windows.Themes.Fluent.for.Wpf" Version="2019.3.1023" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -21,9 +21,9 @@
 
 	<ItemGroup>
 		<PackageReference Include="ReactiveUI.WPF" Version="10.5.31" />
-		<PackageReference Include="Telerik.Windows.Controls.Data.for.Wpf" Version="2019.3.917" />
-		<PackageReference Include="Telerik.Windows.Controls.Docking.for.Wpf" Version="2019.3.917" />
-		<PackageReference Include="Telerik.Windows.Controls.GridView.for.Wpf" Version="2019.3.917" />
+		<PackageReference Include="Telerik.Windows.Controls.Data.for.Wpf" Version="2019.3.1023" />
+		<PackageReference Include="Telerik.Windows.Controls.Docking.for.Wpf" Version="2019.3.1023" />
+		<PackageReference Include="Telerik.Windows.Controls.GridView.for.Wpf" Version="2019.3.1023" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
 	</ItemGroup>
 
