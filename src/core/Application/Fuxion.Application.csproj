@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>netstandard2.1</TargetFramework>
+		<TargetFramework>net5</TargetFramework>
 
 		<Title>Fuxion Application</Title>
 		<PackageId>Fuxion.Application</PackageId>
@@ -9,7 +9,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.8" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
 	</ItemGroup>
 

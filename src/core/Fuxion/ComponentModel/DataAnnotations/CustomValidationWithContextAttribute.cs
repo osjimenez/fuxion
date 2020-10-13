@@ -11,7 +11,7 @@ namespace System.ComponentModel.DataAnnotations
 	{
 		public CustomValidationWithContextAttribute(Type type, string methodName)
 		{
-			method = type.GetMethod(methodName, BindingFlags.Static | BindingFlags.Public);
+			method = type.GetMethod(methodName, BindingFlags.Static | BindingFlags.Public) ?? throw new InvalidOperationException($"A method with name '{methodName}' was not found in type '{type.FullName}'");
 
 			if (method != null)
 			{
@@ -26,14 +26,16 @@ namespace System.ComponentModel.DataAnnotations
 			else throw new ArgumentException($"Method '{methodName}' in type '{type.Name}' specified for this '{nameof(CustomValidationWithContextAttribute)}' was not found. This method must be public and static.");
 		}
 
-		MethodInfo method;
+		readonly MethodInfo method;
 
 		public override bool RequiresValidationContext => true;
 
-		protected override ValidationResult IsValid(object value, ValidationContext context)
+		protected override ValidationResult IsValid(object? value, ValidationContext context)
 		{
-			var res = (ValidationResult)method.Invoke(null, new object[] { value, context });
-			return res;
+			var res = method.Invoke(null, new object?[] { value, context });
+			if(res is ValidationResult resVal)
+				return resVal;
+			throw new InvalidOperationException($"The invocation of method '{method.GetSignature()}' was not return a '{nameof(ValidationResult)}' type");
 		}
 	}
 }

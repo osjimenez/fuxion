@@ -31,7 +31,7 @@ namespace Fuxion.ComponentModel.DataAnnotations
 			internal set => SetValue(value);
 		}
 
-		public override bool Equals(object obj)
+		public override bool Equals(object? obj)
 		{
 			if (obj is NotifierValidatorMessage ve)
 				return ve.Object == Object && ve.Path == Path && ve.PropertyName == PropertyName && ve.Message == Message;

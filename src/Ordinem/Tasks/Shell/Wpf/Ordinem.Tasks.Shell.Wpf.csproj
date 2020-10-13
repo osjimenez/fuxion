@@ -13,7 +13,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="DynamicData.ReactiveUI" Version="6.11.0.2613" />
-		<PackageReference Include="Polly" Version="7.2.0" />
+		<PackageReference Include="Polly" Version="7.2.1" />
 		<PackageReference Include="Telerik.Windows.Controls.Data.for.Wpf" Version="2019.3.1023" />
 	</ItemGroup>
 

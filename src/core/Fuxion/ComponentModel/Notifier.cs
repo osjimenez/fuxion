@@ -240,7 +240,7 @@ namespace Fuxion.ComponentModel
 		bool IInvokable.UseInvoker { get; set; } = true;
 
 		#region Events
-		event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged { add { PropertyChangedEvent += value; } remove { PropertyChangedEvent -= value; } }
+		event PropertyChangedEventHandler? INotifyPropertyChanged.PropertyChanged { add { PropertyChangedEvent += value; } remove { PropertyChangedEvent -= value; } }
 		//event PropertyChangingEventHandler INotifyPropertyChanging.PropertyChanging { add { PropertyChangingEvent += value; } remove { PropertyChangingEvent -= value; } }
 		public event NotifierPropertyChangedEventHandler<TNotifier>? PropertyChanged;
 		private event PropertyChangedEventHandler? PropertyChangedEvent;

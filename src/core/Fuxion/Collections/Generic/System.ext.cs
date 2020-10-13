@@ -26,7 +26,9 @@ namespace System.Collections.Generic
 			}
 		}
 		public static bool IsNullOrEmpty<T>(this IEnumerable<T> me) => me == null || !me.Any();
-		public static IEnumerable<T> RemoveNulls<T>(this IEnumerable<T?> me) where T : class => me.Where(i => i != null).Cast<T>();
+		// TODO - Eliminado
+		//public static IEnumerable<T> RemoveNulls<T>(this IEnumerable<T?> me) where T : class => me.Where(i => i != null).Cast<T>();
+		public static IEnumerable<T> RemoveNulls<T>(this IEnumerable<T?> me) where T : class => me.OfType<T>();
 		public static IEnumerable<T> RemoveNulls<T>(this IEnumerable<T?> me) where T : struct => me.Where(i => i != null).Cast<T>();
 		public static IQueryable<T> RemoveNulls<T>(this IQueryable<T?> me) where T : class => me.Where(i => i != null).Cast<T>();
 		public static IQueryable<T> RemoveNulls<T>(this IQueryable<T?> me) where T : struct => me.Where(i => i != null).Cast<T>();

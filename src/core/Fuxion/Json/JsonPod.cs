@@ -69,10 +69,8 @@ namespace Fuxion.Json
 		{
 			return payload.Payload;
 		}
-
-		public JsonPod<T, TKey> CastWithPayload<T>() => new JsonPod<T, TKey>(PayloadJRaw.Value != null ? PayloadJRaw.Value.ToString().FromJson<T>() : default, PayloadKey);
-
-		public T As<T>() => PayloadJRaw.Value != null ? PayloadJRaw.Value.ToString().FromJson<T>() : default;
+		public JsonPod<T, TKey> CastWithPayload<T>() => new JsonPod<T, TKey>(PayloadJRaw?.Value != null ? PayloadJRaw.Value.ToString().FromJson<T>() : default, PayloadKey);
+		public T? As<T>() => PayloadJRaw.Value != null ? PayloadJRaw.Value.ToString().FromJson<T>() : default;
 		public object? As(Type type) => PayloadJRaw.Value?.ToString().FromJson(type);
 
 		public bool Is<T>() => Is(typeof(T));

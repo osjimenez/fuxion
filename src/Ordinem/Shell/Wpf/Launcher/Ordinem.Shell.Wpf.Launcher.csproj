@@ -26,10 +26,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.0" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.0" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.1.0" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.8" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.8" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.1.8" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.8" />
 		<PackageReference Include="Telerik.Windows.Themes.Fluent.for.Wpf" Version="2019.3.1023" />
 	</ItemGroup>
 

@@ -19,13 +19,13 @@ namespace Fuxion.Windows.Input
 		bool IInvokable.UseInvoker { get; set; } = true;
 
 		public event EventHandler? CanExecuteChanged;
-		bool ICommand.CanExecute(object parameter) => CanExecute();
+		bool ICommand.CanExecute(object? parameter) => CanExecute();
 		public Task<bool> CanExecuteAsync() => canExecute != null ? this.Invoke(canExecute) : Task.FromResult(true);
 		public bool CanExecute() => CanExecuteAsync().Result;
 		public Task RaiseCanExecuteChangedAsync() => this.Invoke(() => CanExecuteChanged?.Invoke(this, EventArgs.Empty));
 		public void RaiseCanExecuteChanged() => RaiseCanExecuteChangedAsync().Wait();
 
-		void ICommand.Execute(object parameter) => Execute();
+		void ICommand.Execute(object? parameter) => Execute();
 		public Task ExecuteAsync() => this.Invoke(action);
 		public void Execute() => ExecuteAsync().Wait();
 	}
@@ -43,8 +43,9 @@ namespace Fuxion.Windows.Input
 		bool IInvokable.UseInvoker { get; set; } = true;
 
 		public event EventHandler? CanExecuteChanged;
-		bool ICommand.CanExecute(object parameter)
+		bool ICommand.CanExecute(object? parameter)
 		{
+			if (parameter is null) throw new InvalidOperationException($"The parameter '{nameof(parameter)}' cannot be null");
 			if (parameter is TParameter par)
 				return CanExecute(par);
 			if (typeof(TParameter).IsNullable())
@@ -56,8 +57,9 @@ namespace Fuxion.Windows.Input
 		public Task RaiseCanExecuteChangedAsync() => this.Invoke(() => CanExecuteChanged?.Invoke(this, EventArgs.Empty));
 		public void RaiseCanExecuteChanged() => RaiseCanExecuteChangedAsync().Wait();
 
-		void ICommand.Execute(object parameter)
+		void ICommand.Execute(object? parameter)
 		{
+			if (parameter is null) throw new InvalidOperationException($"The parameter '{nameof(parameter)}' cannot be null");
 			if (parameter is TParameter par)
 				Execute(par);
 			else if (typeof(TParameter).IsNullable() && parameter == null)

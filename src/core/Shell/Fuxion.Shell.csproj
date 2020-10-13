@@ -20,7 +20,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="ReactiveUI.WPF" Version="10.5.31" />
+		<PackageReference Include="ReactiveUI.WPF" Version="11.5.35" />
 		<PackageReference Include="Telerik.Windows.Controls.Data.for.Wpf" Version="2019.3.1023" />
 		<PackageReference Include="Telerik.Windows.Controls.Docking.for.Wpf" Version="2019.3.1023" />
 		<PackageReference Include="Telerik.Windows.Controls.GridView.for.Wpf" Version="2019.3.1023" />

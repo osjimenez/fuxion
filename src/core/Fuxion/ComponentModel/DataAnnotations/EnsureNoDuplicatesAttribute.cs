@@ -24,22 +24,22 @@ namespace System.ComponentModel.DataAnnotations
 			else throw new ArgumentException($"Method '{comparassionMethodName}' in type '{type.Name}' specified for this '{nameof(EnsureNoDuplicatesAttribute)}' was not found. This method must be public and static.");
 		}
 		Type type;
-		MethodInfo method;
+		MethodInfo? method;
 		string? lastDuplicateValue;
 		public override string FormatErrorMessage(string name)
 		{
 			return string.Format(ErrorMessageString, name, lastDuplicateValue);
 		}
-		public override bool IsValid(object value)
+		public override bool IsValid(object? value)
 		{
 			if (value is IList list)
 			{
 				if (list.Count < 2) return true;
 				for (int i = 1; i < list.Count; i++)
 				{
-					if ((bool)method.Invoke(null, new[] { list[i - 1], list[i] }))
+					if ((bool?)method?.Invoke(null, new[] { list[i - 1], list[i] }) ?? false)
 					{
-						lastDuplicateValue = list[i].ToString();
+						lastDuplicateValue = list[i]?.ToString();
 						return false;
 					}
 				}

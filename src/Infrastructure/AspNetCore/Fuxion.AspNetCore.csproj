@@ -22,9 +22,9 @@
 		<PackageReference Include="Microsoft.AspNetCore.App" Version="2.2.5" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='netcoreapp3.0'">
+	<!--<ItemGroup Condition="'$(TargetFramework)'=='netcoreapp3.0'">
 		<FrameworkReference Include="Microsoft.AspNetCore.App" version="3.0.0-preview3-19153-02" />
-	</ItemGroup>
+	</ItemGroup>-->
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\Core\Application\Fuxion.Application.csproj" />

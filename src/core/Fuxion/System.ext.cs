@@ -32,33 +32,33 @@ namespace System
 		/// <remarks>Extraido desde 
 		/// http://es.debugmodeon.com/articulo/clonar-objetos-de-estructura-compleja
 		/// </remarks>
-		public static T CloneWithBinary<T>(this T source)
-        {
-            // Verificamos que sea serializable antes de hacer la copia            
-            if (!typeof(T).IsSerializable)
-                throw new ArgumentException("La clase " + typeof(T).ToString() + " no es serializable");
+		//public static T CloneWithBinary<T>(this T source)
+  //      {
+  //          // Verificamos que sea serializable antes de hacer la copia            
+  //          if (!typeof(T).IsSerializable)
+  //              throw new ArgumentException("La clase " + typeof(T).ToString() + " no es serializable");
 
-            // En caso de ser nulo el objeto, se devuelve tal cual
-            if (Object.ReferenceEquals(source, null))
-                return default!;
+  //          // En caso de ser nulo el objeto, se devuelve tal cual
+  //          if (Object.ReferenceEquals(source, null))
+  //              return default!;
 
-            //Creamos un stream en memoria
-            IFormatter formatter = new BinaryFormatter();
-            Stream stream = new MemoryStream();
-            using (stream)
-            {
-                try
-                {
-                    formatter.Serialize(stream, source);
-                    stream.Seek(0, SeekOrigin.Begin);
-                    //Deserializamos la porcón de memoria en el nuevo objeto                
-                    return (T)formatter.Deserialize(stream);
-                }
-                catch (SerializationException ex)
-                { throw new ArgumentException(ex.Message, ex); }
-                catch { throw; }
-            }
-        }
+  //          //Creamos un stream en memoria
+  //          IFormatter formatter = new BinaryFormatter();
+  //          Stream stream = new MemoryStream();
+  //          using (stream)
+  //          {
+  //              try
+  //              {
+  //                  formatter.Serialize(stream, source);
+  //                  stream.Seek(0, SeekOrigin.Begin);
+  //                  //Deserializamos la porcón de memoria en el nuevo objeto                
+  //                  return (T)formatter.Deserialize(stream);
+  //              }
+  //              catch (SerializationException ex)
+  //              { throw new ArgumentException(ex.Message, ex); }
+  //              catch { throw; }
+  //          }
+  //      }
 		#region Disposable
 		public static DisposableEnvelope<T> AsDisposable<T>(this T me, Action<T>? actionOnDispose = null) { return new DisposableEnvelope<T>(me, actionOnDispose); }
 		#endregion
@@ -80,7 +80,7 @@ namespace System
 						IgnoreSerializableAttribute = true
 					}));
 		}
-		public static T FromJson<T>(this string me, JsonSerializerSettings? settings = null) => JsonConvert.DeserializeObject<T>(me, settings);
+		public static T? FromJson<T>(this string me, JsonSerializerSettings? settings = null) => JsonConvert.DeserializeObject<T>(me, settings);
 		public static object? FromJson(this string me, Type type) => JsonConvert.DeserializeObject(me, type);
 		public static T CloneWithJson<T>(this T me) => (T)(FromJson(
 			me?.ToJson() ?? throw new InvalidDataException(),

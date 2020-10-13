@@ -10,17 +10,13 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Test.ComponentModel.DataAnnotations
 {
-#if NET472
 	[MetadataType(typeof(ValidatableMockMetadata))]
-#endif
 	[ConditionalValidation(typeof(ValidatableMock), nameof(MustBeValidate))]
 	public class ValidatableMock : Notifier<ValidatableMock>
 	{
-#if !NET472
 		[Required(ErrorMessage = "Id is required")]
 		[Range(1, int.MaxValue, ErrorMessage = "Id must be greater than 0")]
 		// The validation attributes for 'Id' are in a metadata type
-#endif
 		public int Id
 		{
 			get => GetValue(() => 1);
@@ -89,14 +85,12 @@ namespace Fuxion.Test.ComponentModel.DataAnnotations
 		public bool MustBeValidate() => IsValid;
 		public override string ToString() => $"ValidatableMock({Id})";
 	}
-#if NET472
 	public class ValidatableMockMetadata
     {
         [Required(ErrorMessage = "Id is required")]
         [Range(1, int.MaxValue, ErrorMessage = "Id must be greater than 0")]
         public int Id { get; set; }
     }
-#endif
 	public class RecursiveValidatableMock : Notifier<RecursiveValidatableMock>
 	{
 		[Required]

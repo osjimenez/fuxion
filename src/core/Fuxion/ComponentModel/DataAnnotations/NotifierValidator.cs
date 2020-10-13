@@ -20,17 +20,17 @@ namespace Fuxion.ComponentModel.DataAnnotations
 				HasMessages = Messages.Count > 0;
 				if (e.NewItems != null)
 				{
-					foreach (NotifierValidatorMessage item in e.NewItems.Cast<NotifierValidatorMessage>())
+					foreach (NotifierValidatorMessage? item in e.NewItems.Cast<NotifierValidatorMessage>())
 					{
-						_stringMessages.Add(item.Message);
+						_stringMessages.Add(item?.Message);
 					}
 				}
 
 				if (e.OldItems != null)
 				{
-					foreach (NotifierValidatorMessage item in e.OldItems.Cast<NotifierValidatorMessage>())
+					foreach (NotifierValidatorMessage? item in e.OldItems.Cast<NotifierValidatorMessage>())
 					{
-						_stringMessages.Remove(item.Message);
+						_stringMessages.Remove(item?.Message);
 					}
 				}
 
@@ -85,6 +85,7 @@ namespace Fuxion.ComponentModel.DataAnnotations
 
 			foreach (PropertyDescriptor pro in TypeDescriptor.GetProperties(notifier.GetType())
 				.Cast<PropertyDescriptor>()
+				.RemoveNulls()
 				.Where(pro => !pro.Attributes.OfType<IgnoreValidationAttribute>().Any())
 				.Where(pro => pro.Attributes.OfType<RecursiveValidationAttribute>().Any())
 				.Where(pro => typeof(INotifyPropertyChanged).IsAssignableFrom(pro.PropertyType)))
@@ -97,6 +98,7 @@ namespace Fuxion.ComponentModel.DataAnnotations
 			}
 			foreach (PropertyDescriptor pro in TypeDescriptor.GetProperties(notifier.GetType())
 				.Cast<PropertyDescriptor>()
+				.RemoveNulls()
 				.Where(pro => !pro.Attributes.OfType<IgnoreValidationAttribute>().Any())
 				.Where(pro => typeof(INotifyCollectionChanged).IsAssignableFrom(pro.PropertyType))
 				.Where(pro => pro.PropertyType.IsSubclassOfRawGeneric(typeof(IEnumerable<>)))
@@ -113,7 +115,7 @@ namespace Fuxion.ComponentModel.DataAnnotations
 			bool recursive = collectionProperty.Attributes.OfType<RecursiveValidationAttribute>().Any();
 			INotifyCollectionChanged collection = (INotifyCollectionChanged)collectionProperty.GetValue(notifier);
 			if (collectionContents.ContainsKey(collection)) return;
-			collectionContents.Add(collection, ((ICollection)collection).Cast<object>().ToList());
+			collectionContents.Add(collection, ((ICollection)collection).Cast<object>().RemoveNulls().ToList());
 			if (recursive)
 			{
 				foreach (object item in (IEnumerable)collection)
@@ -134,9 +136,10 @@ namespace Fuxion.ComponentModel.DataAnnotations
 						if (item is INotifyPropertyChanged npc)
 						{
 							npc.PropertyChanged += (_, __) => RefreshEntries(notifier, collectionProperty.Name, pathFunc);
-							RegisterNotifier(npc, true, () => $"{(pathFunc() + "." + collectionProperty.Name).Trim('.')}[{item.ToString()}]");
+							RegisterNotifier(npc, true, () => $"{(pathFunc() + "." + collectionProperty.Name).Trim('.')}[{item}]");
 						}
-						collectionContents[s].Add(item);
+						if (s != null)
+							collectionContents[s].Add(item);
 					}
 				}
 				if (recursive && e.OldItems != null)
@@ -147,7 +150,8 @@ namespace Fuxion.ComponentModel.DataAnnotations
 						{
 							UnregisterNotifier(npc);
 						}
-						collectionContents[s].Remove(item);
+						if (s != null)
+							collectionContents[s].Remove(item);
 					}
 				}
 				if (e.Action == NotifyCollectionChangedAction.Reset)
@@ -174,10 +178,11 @@ namespace Fuxion.ComponentModel.DataAnnotations
 			_messages.RemoveIf(e => e.Object == notifier);
 			paths.RemoveIf(p => p.Notifier.GetHashCode() == notifier.GetHashCode());
 		}
-		private void Notifier_PropertyChanged(object sender, PropertyChangedEventArgs e)
+		private void Notifier_PropertyChanged(object? sender, PropertyChangedEventArgs e)
 		{
-			INotifyPropertyChanged notifier = TypeDescriptor.GetProperties(sender)
+			INotifyPropertyChanged? notifier = TypeDescriptor.GetProperties(sender)
 				.Cast<PropertyDescriptor>()
+				.RemoveNulls()
 				.Where(pro => pro.Name == e.PropertyName)
 				.Where(pro => !pro.Attributes.OfType<IgnoreValidationAttribute>().Any())
 				.Where(pro => pro.Attributes.OfType<RecursiveValidationAttribute>().Any())
@@ -190,8 +195,9 @@ namespace Fuxion.ComponentModel.DataAnnotations
 				RegisterNotifier(notifier, true, () => paths.First(p => p.Notifier.GetHashCode() == sender.GetHashCode()).GetMessageFunction() + e.PropertyName);
 			}
 
-			PropertyDescriptor collectionProperty = TypeDescriptor.GetProperties(sender)
+			PropertyDescriptor? collectionProperty = TypeDescriptor.GetProperties(sender)
 				.Cast<PropertyDescriptor>()
+				.RemoveNulls()
 				.Where(pro => pro.Name == e.PropertyName)
 				.Where(pro => !pro.Attributes.OfType<IgnoreValidationAttribute>().Any())
 				.Where(pro => typeof(INotifyCollectionChanged).IsAssignableFrom(pro.PropertyType))
@@ -238,6 +244,7 @@ namespace Fuxion.ComponentModel.DataAnnotations
 			// Validate all properties of the instance
 			List<NotifierValidatorMessage> insRes = TypeDescriptor.GetProperties(instance.GetType())
 				.Cast<PropertyDescriptor>()
+				.RemoveNulls()
 				.Where(pro => propertyName == null || pro.Name == propertyName)
 				.Where(pro => !pro.Attributes.OfType<IgnoreValidationAttribute>().Any())
 				.Where(pro => pro.Attributes.OfType<ValidationAttribute>().Any())
@@ -261,7 +268,7 @@ namespace Fuxion.ComponentModel.DataAnnotations
 					.Select(tup => new NotifierValidatorMessage(
 						instance, 
 						tup.RequiresValidationContext
-							? tup.Result.ErrorMessage
+							? tup.Result?.ErrorMessage ?? ""
 							: tup.Attribute.FormatErrorMessage(pro.GetDisplayName()),
 						pathFunc)
 					{
