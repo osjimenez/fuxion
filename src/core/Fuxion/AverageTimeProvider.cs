@@ -65,7 +65,7 @@ namespace Fuxion
 			public ITimeProvider Provider { get; set; }
 			public bool IsRandomized { get; set; }
 			internal Task<DateTime>? Task { get; set; }
-			public override string ToString() => Provider.ToString();
+			public override string ToString() => Provider.ToString() ?? "";
 		}
 	}
 }

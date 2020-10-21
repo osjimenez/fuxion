@@ -9,7 +9,7 @@ namespace Fuxion.Reflection
 {
 	public class TypeKeyDirectory
 	{
-		Dictionary<string?, Type> dic = new Dictionary<string?, Type>();
+		Dictionary<string, Type> dic = new Dictionary<string, Type>();
 		public Type this[string key]
 		{
 			get
@@ -25,7 +25,8 @@ namespace Fuxion.Reflection
 		{
 			var query = assembly.GetTypes()
 				.Where(t => t.HasCustomAttribute<TypeKeyAttribute>(false))
-				.Select(t => (Type: t, Attribute: t.GetCustomAttribute<TypeKeyAttribute>()));
+				// NULLABLE - I check before that custom attribute exist
+				.Select(t => (Type: t, Attribute: t.GetCustomAttribute<TypeKeyAttribute>()!));
 			if (predicate != null)
 				query = query.Where(predicate);
 			foreach (var tup in query)

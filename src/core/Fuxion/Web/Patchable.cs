@@ -19,7 +19,7 @@ namespace Fuxion.Web
 	}
 	public sealed class Patchable<T> : DynamicObject where T : class
 	{
-		private Dictionary<string, (PropertyInfo Property, object Value)> dic = new Dictionary<string, (PropertyInfo Property, object Value)>();
+		private Dictionary<string, (PropertyInfo Property, object? Value)> dic = new Dictionary<string, (PropertyInfo Property, object? Value)>();
 		//private List<(PropertyInfo Property, string PropertyName, object Value)> Properties = new List<(PropertyInfo Property, string PropertyName, object Value)>();
 		//private IDictionary<PropertyInfo, object> _changedProperties = new Dictionary<PropertyInfo, object>();
 		//public IEnumerable<string> ChangedPropertyNames { get { return _changedProperties.Keys.Select(p => p.Name); } }
@@ -108,7 +108,7 @@ namespace Fuxion.Web
 		}
 		#endregion
 		#region SET
-		public override bool TrySetMember(SetMemberBinder binder, object value)
+		public override bool TrySetMember(SetMemberBinder binder, object? value)
 		{
 			var pro = typeof(T).GetRuntimeProperty(binder.Name);
 			if (pro != null)
@@ -125,6 +125,7 @@ namespace Fuxion.Web
 				{
 					case NonExistingPropertiesMode.OnlySet:
 					case NonExistingPropertiesMode.GetAndSet:
+						// NULLABLE - To review
 						dic.Add(binder.Name, (default!, value));
 						return true;
 					case NonExistingPropertiesMode.NotAllowed:
@@ -173,19 +174,18 @@ namespace Fuxion.Web
 				}
 			}
 		}
-		private object? CastValue(Type type, object value)
+		private object? CastValue(Type type, object? value)
 		{
 			var isNullable = type.IsSubclassOfRawGeneric(typeof(Nullable<>));
 			var valueType = isNullable ? type.GetTypeInfo().GenericTypeArguments.First() : type;
 
 			object? res = null;
 			if (value != null && valueType.GetTypeInfo().IsEnum)
-				res = Enum.Parse(valueType, value.ToString());
+				res = Enum.Parse(valueType, value?.ToString() ?? "");
 			else if (value != null && valueType == typeof(Guid))
-				res = Guid.Parse(value.ToString());
+				res = Guid.Parse(value?.ToString() ?? "");
 			else if (value != null)
 				res = Convert.ChangeType(value, valueType);
-
 			if (value != null && isNullable)
 				res = Activator.CreateInstance(typeof(Nullable<>).MakeGenericType(valueType), res);
 
@@ -199,7 +199,7 @@ namespace Fuxion.Web
 			var res = new Patchable<R>();
 			//var dic = new Dictionary<PropertyInfo, object>();
 			//var list = new List<(PropertyInfo Property, string PropertyName, object Value)>();
-			var dd = new Dictionary<string, (PropertyInfo Property, object Value)>();
+			var dd = new Dictionary<string, (PropertyInfo Property, object? Value)>();
 			foreach (var pair in dic)
 			//foreach (var pair in _changedProperties)
 			{

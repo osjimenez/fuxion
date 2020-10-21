@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Repositories
 {
-	public class MemoryCachedKeyValueRepository<TKey, TValue> : IKeyValueRepository<TKey, TValue>
+	public class MemoryCachedKeyValueRepository<TKey, TValue> : IKeyValueRepository<TKey, TValue> where TKey : notnull
 	{
 		public MemoryCachedKeyValueRepository(IKeyValueRepository<TKey, TValue> originRepository)
 		{
@@ -81,7 +81,7 @@ namespace Fuxion.Repositories
 				_origin.Set(key, value);
 			});
 	}
-	public class MemoryCachedAsyncKeyValueRepository<TKey, TValue> : IAsyncKeyValueRepository<TKey, TValue>
+	public class MemoryCachedAsyncKeyValueRepository<TKey, TValue> : IAsyncKeyValueRepository<TKey, TValue> where TKey : notnull
 	{
 		public MemoryCachedAsyncKeyValueRepository(IAsyncKeyValueRepository<TKey, TValue> originRepository)
 		{

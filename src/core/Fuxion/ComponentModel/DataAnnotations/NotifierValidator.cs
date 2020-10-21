@@ -156,6 +156,7 @@ namespace Fuxion.ComponentModel.DataAnnotations
 				}
 				if (e.Action == NotifyCollectionChangedAction.Reset)
 				{
+					if(s != null)
 					foreach (var item in collectionContents[s])
 					{
 						if (item is INotifyPropertyChanged npc)

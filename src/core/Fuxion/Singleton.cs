@@ -197,7 +197,7 @@ namespace Fuxion
 				if (Key == null) return Type.GetHashCode();
 				return Type.GetHashCode() | Key.GetHashCode();
 			}
-			public override bool Equals(object obj)
+			public override bool Equals(object? obj)
 			{
 				if (obj is SingletonKey key)
 				{

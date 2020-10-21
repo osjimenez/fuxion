@@ -20,7 +20,16 @@ namespace Fuxion.Windows.Threading
 	public class SynchronousInvoker : IInvoker
 	{
 		public Task InvokeActionDelegate(IInvokable invokable, Delegate method, params object?[] args) => Task.FromResult(method.DynamicInvoke(args));
-		public Task<TResult> InvokeFuncDelegate<TResult>(IInvokable invokable, Delegate method, params object?[] args) => Task.FromResult((TResult) method.DynamicInvoke(args));
+		public Task<TResult> InvokeFuncDelegate<TResult>(IInvokable invokable, Delegate method, params object?[] args)
+		{
+			var res = method.DynamicInvoke(args);
+			// NULLABLE - To test it
+			if (!typeof(TResult).IsNullable() && res == null)
+				throw new InvalidOperationException($"Error in '{nameof(SynchronousInvoker)}', the invocation return null and the return type '{typeof(TResult).GetSignature(false)}' is not nullable.");
+			if(res is not TResult)
+				throw new InvalidOperationException($"Error in '{nameof(SynchronousInvoker)}', the invocation return value cannot be casted to type '{typeof(TResult).GetSignature(false)}'.");
+			return Task.FromResult((TResult)res);
+		}
 	}
 	public static class IInvokerExtensions
 	{
