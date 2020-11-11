@@ -22,6 +22,7 @@ namespace Fuxion.Application.Events
 					if (File.Exists(path))
 					{
 						var dic = File.ReadAllText(path).FromJson<Dictionary<Guid, List<EventSourcingPod>>>();
+						if (dic == null) throw new FileLoadException($"File '{path}' cannot be deserializer for '{nameof(InMemoryEventStorage)}'");
 						events.WriteObject(dic.Select((KeyValuePair<Guid, List<EventSourcingPod>> k) => 
 						(
 							k.Key,

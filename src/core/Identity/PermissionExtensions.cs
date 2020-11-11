@@ -31,6 +31,11 @@ namespace Fuxion.Identity
 				}
 				bool Compute()
 				{
+					if (typeDiscriminator == null)
+					{
+						Printer.WriteLine($"typeDiscriminator is null");
+						return false;
+					}
 					if (function == null || !me.MatchByFunction(function))
 					{
 						Printer.WriteLine($"Matching failed on check the function");

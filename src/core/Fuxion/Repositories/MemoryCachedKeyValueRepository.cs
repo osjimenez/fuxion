@@ -106,7 +106,7 @@ namespace Fuxion.Repositories
 				d.Add(key, res);
 				return res.HasOrigin;
 			});
-		public Task<TValue> FindAsync(TKey key)
+		public Task<TValue?> FindAsync(TKey key)
 			=> dic.WriteAsync(async d =>
 			{
 				if (key == null) return default!;
@@ -121,7 +121,7 @@ namespace Fuxion.Repositories
 					res = new MemoryKeyValueRepositoryValue<TValue>(false, default!);
 				}
 				d.Add(key, res);
-				return res.Value;
+				return (TValue?)res.Value;
 			});
 		public Task<TValue> GetAsync(TKey key)
 			=> dic.WriteAsync(async d =>

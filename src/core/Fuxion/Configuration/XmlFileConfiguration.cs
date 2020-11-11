@@ -24,14 +24,19 @@ namespace Fuxion.Configuration
 			get
 			{
 				if (!string.IsNullOrWhiteSpace(path)) return path;
-				var ass = Assembly.GetEntryAssembly() ?? Assembly.GetAssembly(typeof(XmlFileConfiguration));
-				return path = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(ass.Location), "config.xml");
+				var ass = Assembly.GetEntryAssembly()
+					?? Assembly.GetAssembly(typeof(JsonFileConfiguration))
+					?? throw new InvalidProgramException($"Application Assembly cannot be determined");
+				return path = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(ass.Location) ?? throw new InvalidProgramException($"Application directory cannot be determined"), "config.xml");
 			}
 			set
 			{
-				path = value;
-				Clear();
-				Load();
+				if (path != value)
+				{
+					path = value;
+					Clear();
+					Load();
+				}
 			}
 		}
 		private void Load()
@@ -39,8 +44,12 @@ namespace Fuxion.Configuration
 			if (File.Exists(Path))
 			{
 				var xdoc = XDocument.Load(Path);
-				foreach (var e in xdoc.Root.Elements("ConfigurationItem"))
-					elements.Add(new Guid(e.Attribute("id").Value), e.Descendants().First());
+				foreach (var e in xdoc.Root?.Elements("ConfigurationItem") ?? Array.Empty<XElement>())
+				{
+					var id = e.Attribute("id")?.Value;
+					if (id != null)
+						elements.Add(new Guid(id), e.Descendants().First());
+				}
 			}
 		}
 		public bool Save()
@@ -49,7 +58,7 @@ namespace Fuxion.Configuration
 			var xdoc = new XDocument(new XElement("Configuration"));
 			foreach (var pair in elements)
 			{
-				xdoc.Root.Add(new XElement("ConfigurationItem",
+				xdoc.Root?.Add(new XElement("ConfigurationItem",
 							new XAttribute("id", pair.Key),
 							pair.Value));
 			}

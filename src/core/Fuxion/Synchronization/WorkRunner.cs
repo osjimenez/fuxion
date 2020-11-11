@@ -135,12 +135,17 @@ namespace Fuxion.Synchronization
 						// Create item
 						var fir = gro.First(); // Use first element to get master info, all items in this group has the same master item
 						var itemType = typeof(ItemRunner<>).MakeGenericType(fir.MasterItemType);
-						var item = (IItemRunner)Activator.CreateInstance(itemType, fir.MasterRunner, fir.MasterItem, fir.MasterItemName, fir.MasterItemTag);
+
+						//Activator.CreateInstance(itemType, fir.MasterRunner, fir.MasterItem, fir.MasterItemName, fir.MasterItemTag)
+
+						var item = (IItemRunner?)Activator.CreateInstance(itemType, fir.MasterRunner, fir.MasterItem, fir.MasterItemName, fir.MasterItemTag);
+						if (item == null) throw new InvalidProgramException("Instance creation failed");
 						foreach (var i in gro)
 						{
 							// Create side
 							var sideItemType = typeof(ItemSideRunner<,>).MakeGenericType(i.SideItemType, i.Key.GetType());
-							var sideItem = (IItemSideRunner)Activator.CreateInstance(sideItemType, i.Side, i.SideName, i.Key, i.SideItem, i.SideItemName, i.SideItemTag);
+							var sideItem = (IItemSideRunner?)Activator.CreateInstance(sideItemType, i.Side, i.SideName, i.Key, i.SideItem, i.SideItemName, i.SideItemTag);
+							if (sideItem == null) throw new InvalidProgramException("Instance creation failed");
 							foreach (var pro in i.Properties)
 								((IList<IPropertyRunner>)sideItem.Properties).Add(pro);
 							sideItem.SubItems = AnalyzeResults(i.SideSubSides);
@@ -174,7 +179,7 @@ namespace Fuxion.Synchronization
 					foreach (var side in item.SideRunners)
 					{
 						var preSide = new ItemSidePreview(preItem, side.Side.Id);
-						preSide.Key = side.Key.ToString();
+						preSide.Key = side.Key.ToString() ?? "";
 						preSide.SideAllowInsert = side.Side.Definition.AllowInsert;
 						preSide.SideAllowDelete = side.Side.Definition.AllowDelete;
 						preSide.SideAllowUpdate = side.Side.Definition.AllowUpdate;
@@ -216,7 +221,7 @@ namespace Fuxion.Synchronization
 								rel.SingularSideTypeName = i.SideRunners.Single().Side.Definition.SingularItemTypeName;
 								rel.PluralSideTypeName = i.SideRunners.Single().Side.Definition.PluralItemTypeName;
 								var subSide = i.SideRunners.Single();
-								rel.Key = subSide.Key.ToString();
+								rel.Key = subSide.Key.ToString() ?? "";
 								rel.SideItemExist = subSide.SideItem != null;
 								rel.SideItemName = subSide.SideItemName;
 								rel.SideItemTag = subSide.SideItemTag;

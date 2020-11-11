@@ -20,7 +20,7 @@ namespace Fuxion.Application.Events
 		[JsonProperty]
 		public DateTime Timestamp { get; internal set; }
 
-		public T AsEvent<T>() where T : Event => base.As<T>().Transform(evt => evt.AddPublication(Timestamp));
+		public T? AsEvent<T>() where T : Event => base.As<T>().Transform(evt => evt?.AddPublication(Timestamp));
 		public Event? AsEvent(Type type) => ((Event?)base.As(type)).Transform(evt => evt?.AddPublication(Timestamp));
 		public Event? WithTypeKeyDirectory(TypeKeyDirectory typeKeyDirectory) => AsEvent(typeKeyDirectory[PayloadKey]);
 	}

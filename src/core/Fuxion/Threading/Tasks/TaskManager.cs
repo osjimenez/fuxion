@@ -36,8 +36,8 @@ namespace Fuxion.Threading.Tasks
 				throw new ArgumentException("Task wasn't created with TaskManager.");
 			return res;
 		}
-		public static Task Current => Tasks.Read(l => l.FirstOrDefault(e => Task.CurrentId.HasValue && e.Task.Id == Task.CurrentId.Value)).Task;
-		internal static ITaskManagerEntry CurrentEntry => Tasks.Read(l => l.FirstOrDefault(e => Task.CurrentId.HasValue && e.Task.Id == Task.CurrentId.Value));
+		public static Task? Current => CurrentEntry?.Task;
+		internal static ITaskManagerEntry? CurrentEntry => Tasks.Read(l => l.FirstOrDefault(e => Task.CurrentId.HasValue && e.Task.Id == Task.CurrentId.Value));
 
 		#region Void
 		private static ITaskManagerEntry CreateEntry(Action action, TaskScheduler? scheduler = null, TaskCreationOptions options = default, ConcurrencyProfile concurrencyProfile = default, Delegate? @delegate = null)
@@ -64,23 +64,28 @@ namespace Fuxion.Threading.Tasks
 		}
 		#endregion
 		#region Void<T>
-		private static ITaskManagerEntry CreateEntry<T>(Action<T> action, T param, TaskScheduler? scheduler = null, TaskCreationOptions options = default, ConcurrencyProfile concurrencyProfile = default, Delegate? @delegate = null)
+		private static ITaskManagerEntry CreateEntry<T>(Action<T> action, T param, TaskScheduler? scheduler = null, TaskCreationOptions options = default, ConcurrencyProfile concurrencyProfile = default, Delegate? @delegate = null) 
+			where T : notnull
 		{
 			var entry = new ActionTaskManagerEntry(new Action<object>(o => action((T)o)), param, scheduler, options, concurrencyProfile, @delegate);
 			AddEntry(entry);
 			return entry;
 		}
 		public static Task Create<T>(Action<T> action, T param, TaskCreationOptions options = default, ConcurrencyProfile concurrencyProfile = default)
+			where T : notnull
 			=> CreateEntry(action, param, null, options, concurrencyProfile).Task;
 		public static Task Create<T>(Func<T, Task> func, T param, TaskCreationOptions options = default, ConcurrencyProfile concurrencyProfile = default)
+			where T : notnull
 			=> CreateEntry(new Action<T>(p => func(p).Wait()), param, null, options, concurrencyProfile, func).Task;
 		public static Task StartNew<T>(Action<T> action, T param, TaskScheduler? scheduler = null, TaskCreationOptions options = default, ConcurrencyProfile concurrencyProfile = default)
+			where T : notnull
 		{
 			var task = CreateEntry(action, param, scheduler, options, concurrencyProfile).Task;
 			SearchEntry(task).Start();
 			return task;
 		}
 		public static Task StartNew<T>(Func<T, Task> func, T param, TaskScheduler? scheduler = null, TaskCreationOptions options = default, ConcurrencyProfile concurrencyProfile = default)
+			where T : notnull
 		{
 			var task = CreateEntry(new Action<T>(p => func(p).Wait()), param, scheduler, options, concurrencyProfile, func).Task;
 			SearchEntry(task).Start();
@@ -337,6 +342,7 @@ namespace Fuxion.Threading.Tasks
 		#endregion
 		#region Result<T, TResult>
 		private static ITaskManagerEntry CreateEntry<T, TResult>(Func<T, TResult> func, T param, TaskScheduler? scheduler = null, TaskCreationOptions options = default, ConcurrencyProfile concurrencyProfile = default, Delegate? @delegate = null)
+			where T : notnull
 		{
 			var entry = new FuncTaskManagerEntry<TResult>(
 				new Func<object, TResult>(o => func((T)o)),
@@ -345,16 +351,20 @@ namespace Fuxion.Threading.Tasks
 			return entry;
 		}
 		public static Task<TResult> Create<T, TResult>(Func<T, TResult> func, T param, TaskCreationOptions options = default, ConcurrencyProfile concurrencyProfile = default)
+			where T : notnull
 			=> (Task<TResult>)CreateEntry(func, param, null, options, concurrencyProfile).Task;
 		public static Task<TResult> Create<T, TResult>(Func<T, Task<TResult>> func, T param, TaskCreationOptions options = default, ConcurrencyProfile concurrencyProfile = default)
+			where T : notnull
 			=> (Task<TResult>)CreateEntry(new Func<T, TResult>(p => func(p).Result), param, null, options, concurrencyProfile, func).Task;
 		public static Task<TResult> StartNew<T, TResult>(Func<T, TResult> func, T param, TaskScheduler? scheduler = null, TaskCreationOptions options = default, ConcurrencyProfile concurrencyProfile = default)
+			where T : notnull
 		{
 			var task = (Task<TResult>)CreateEntry(func, param, scheduler, options, concurrencyProfile).Task;
 			SearchEntry(task).Start();
 			return task;
 		}
 		public static Task<TResult> StartNew<T, TResult>(Func<T, Task<TResult>> func, T param, TaskScheduler? scheduler = null, TaskCreationOptions options = default, ConcurrencyProfile concurrencyProfile = default)
+			where T : notnull
 		{
 			var task = (Task<TResult>)CreateEntry(new Func<T, TResult>(p => func(p).Result), param, scheduler, options, concurrencyProfile, func).Task;
 			SearchEntry(task).Start();

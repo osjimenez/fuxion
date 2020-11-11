@@ -34,7 +34,7 @@ namespace Fuxion.Identity.Test
 			fac.RegisterTree<BaseDao>();
 			fac.RegisterTree(typeof(BaseDvo<>));
 
-			TypeDiscriminator d1 = fac.FromType<FileDao>();
+			TypeDiscriminator d1 = fac.FromType<FileDao>(true);
 			TypeDiscriminator d2 = fac.FromType(typeof(FileDvo<>));
 
 			Assert.True(d1 == d2);
@@ -54,7 +54,7 @@ namespace Fuxion.Identity.Test
 			// Register from Base
 			fac.RegisterTree(typeof(BaseDvo<>));
 
-			TypeDiscriminator d2 = fac.FromType(typeof(BaseDvo<>));
+			TypeDiscriminator d2 = fac.FromType(typeof(BaseDvo<>), true);
 
 			Assert.Single(d2.Inclusions.Where(d => d.Name == "Person"));
 
@@ -89,7 +89,7 @@ namespace Fuxion.Identity.Test
 			TypeDiscriminatorFactory fac = new TypeDiscriminatorFactory();
 			// Register from Base
 			fac.RegisterTree<BaseDao>();
-			TypeDiscriminator dis = fac.FromType<DocumentDao>();
+			TypeDiscriminator dis = fac.FromType<DocumentDao>(true);
 			Assert.Equal(2, dis.Inclusions.Count());
 			Assert.Single(dis.Exclusions);
 		}
@@ -106,7 +106,7 @@ namespace Fuxion.Identity.Test
 			fac.Reset();
 			fac.RegisterTree<FileDao>();
 			fac.Register<BaseDao>();
-			var dis = fac.FromType<DocumentDao>();
+			var dis = fac.FromType<DocumentDao>(true);
 			Assert.Equal(2, dis.Inclusions.Count());
 			Assert.Single(dis.Exclusions);
 		}
@@ -116,7 +116,7 @@ namespace Fuxion.Identity.Test
 			TypeDiscriminatorFactory fac = new TypeDiscriminatorFactory();
 			fac.RegisterTree(typeof(FileDvo<>));
 			fac.Register(typeof(BaseDvo<>));
-			TypeDiscriminator dis = fac.FromType(typeof(DocumentDvo<>));
+			TypeDiscriminator dis = fac.FromType(typeof(DocumentDvo<>), true);
 			Assert.Equal(2, dis.Inclusions.Count());
 			Assert.Single(dis.Exclusions);
 		}
@@ -129,7 +129,7 @@ namespace Fuxion.Identity.Test
 			};
 			// Register from generic type BaseDvo<>
 			fac.RegisterTree(typeof(BaseDvo<>));
-			TypeDiscriminator dis = fac.FromType(typeof(LocationDvo<>));
+			TypeDiscriminator dis = fac.FromType(typeof(LocationDvo<>), true);
 			Assert.Equal(3, dis.Inclusions.Count());
 			Assert.Single(dis.Exclusions);
 
@@ -137,7 +137,7 @@ namespace Fuxion.Identity.Test
 			fac.AllowMoreThanOneTypeByDiscriminator = false;
 			// Register from generic type LocationDvo<>
 			fac.RegisterTree(typeof(LocationDvo<>));
-			dis = fac.FromType<CityDvo>();
+			dis = fac.FromType<CityDvo>(true);
 			Assert.Empty(dis.Inclusions);
 			Assert.Single(dis.Exclusions);
 
@@ -148,7 +148,7 @@ namespace Fuxion.Identity.Test
 		{
 			TypeDiscriminatorFactory fac = new TypeDiscriminatorFactory();
 			fac.RegisterTree<BaseDao>();
-			TypeDiscriminator dis = fac.FromType<FileDao>();
+			TypeDiscriminator dis = fac.FromType<FileDao>(true);
 			Assert.Equal(3, dis.Inclusions.Count());
 			Assert.Single(dis.Exclusions);
 			dis = fac.FromType<BaseDao>();
@@ -165,7 +165,7 @@ namespace Fuxion.Identity.Test
 			};
 
 			fac.RegisterTree<BaseDao>(typeof(BaseDao).Assembly.DefinedTypes.ToArray());
-			TypeDiscriminator dis = fac.FromType<DocumentDao>();
+			TypeDiscriminator dis = fac.FromType<DocumentDao>(true);
 			Assert.Equal(Helpers.TypeDiscriminatorIds.Document, dis.Id);
 			Assert.Equal(Helpers.TypeDiscriminatorIds.Document, dis.Name);
 			Assert.Equal(TypeDiscriminator.TypeDiscriminatorId, dis.TypeKey);
@@ -182,7 +182,7 @@ namespace Fuxion.Identity.Test
 			fac.Register(typeof(CityDao));
 			fac.Register(typeof(CountryDao));
 
-			TypeDiscriminator dao = fac.FromType<BaseDao>();
+			TypeDiscriminator dao = fac.FromType<BaseDao>(true);
 
 			fac.Reset();
 			fac.Register(typeof(BaseDao));
@@ -190,7 +190,7 @@ namespace Fuxion.Identity.Test
 			fac.Register(typeof(DocumentDao));
 			fac.Register(typeof(WordDocumentDao));
 
-			dao = fac.FromType<BaseDao>();
+			dao = fac.FromType<BaseDao>(true);
 		}
 		[Fact(DisplayName = "TypeDiscriminator - Attribute")]
 		public void TypeDiscriminatorAttribute()
@@ -202,14 +202,14 @@ namespace Fuxion.Identity.Test
 			fac.Register(typeof(CityDao));
 			fac.Register(typeof(CountryDao));
 
-			TypeDiscriminator dao = fac.FromType<CityDao>();
+			TypeDiscriminator dao = fac.FromType<CityDao>(true);
 			fac.Reset();
 			fac.Register(typeof(BaseDto));
 			fac.Register(typeof(LocationDto));
 			fac.Register(typeof(CityDto));
 			fac.Register(typeof(CountryDto));
 
-			TypeDiscriminator dto = fac.FromType<CityDto>();
+			TypeDiscriminator dto = fac.FromType<CityDto>(true);
 
 			Assert.True(dao.Id == dto.Id, $"Type discriminators DAO & DTO must have same Id. Values are '{dao.Id}' and '{dto.Id}'");
 

@@ -24,14 +24,14 @@ namespace Fuxion.Licensing
 		[JsonProperty(PropertyName = "License")]
 		public JRaw RawLicense { get; set; }
 		public LicenseContainer Set(License license) { RawLicense = new JRaw(license.ToJson(Newtonsoft.Json.Formatting.None)); return this; }
-		public T As<T>() where T : License => RawLicense.Value != null ? RawLicense.Value.ToString().FromJson<T>() : default!;
-		public License? As(Type type) => (License?)RawLicense.Value?.ToString().FromJson(type);
+		public T? As<T>() where T : License => RawLicense.Value?.ToString()?.FromJson<T>();
+		public License? As(Type type) => (License?)RawLicense.Value?.ToString()?.FromJson(type);
 		public bool Is<T>() where T : License => Is(typeof(T));
 		public bool Is(Type type)
 		{
 			try
 			{
-				return RawLicense.Value?.ToString().FromJson(type) != null;
+				return RawLicense.Value?.ToString()?.FromJson(type) != null;
 			}
 			catch (Exception ex)
 			{
@@ -80,7 +80,7 @@ namespace Fuxion.Licensing
 			XmlDocument xmlDoc = new XmlDocument();
 			xmlDoc.LoadXml(xmlString);
 
-			if (xmlDoc.DocumentElement.Name.Equals("RSAKeyValue"))
+			if (xmlDoc.DocumentElement?.Name.Equals("RSAKeyValue") ?? false)
 			{
 				foreach (XmlNode node in xmlDoc.DocumentElement.ChildNodes)
 				{
@@ -116,12 +116,16 @@ namespace Fuxion.Licensing
 		public static IQueryable<LicenseContainer> OnlyValidOfType<TLicense>(this IQueryable<LicenseContainer> me, string publicKey) where TLicense : License
 		{
 			string _;
-			return me.WithValidSignature(publicKey).OfType<TLicense>().Where(l => l.As<TLicense>().Validate(out _));
+			return me.WithValidSignature(publicKey).OfType<TLicense>()
+				.Where(l => l.Is<TLicense>())
+				.Where(l => l.As<TLicense>()!.Validate(out _));
 		}
 		public static IQueryable<LicenseContainer> OnlyValidOfType(this IQueryable<LicenseContainer> me, string publicKey, Type type)
 		{
 			string _;
-			return me.WithValidSignature(publicKey).OfType(type).Where(l => l.As(type)!.Validate(out _));
+			return me.WithValidSignature(publicKey).OfType(type)
+				.Where(l => l.Is(type))
+				.Where(l => l.As(type)!.Validate(out _));
 		}
 	}
 }

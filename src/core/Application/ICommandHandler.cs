@@ -1,4 +1,5 @@
 ﻿using Fuxion.Domain;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace Fuxion.Application

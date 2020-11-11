@@ -504,7 +504,8 @@ namespace Fuxion.Test.Synchronization
 			str.Position = 0;
 
 			// Deserialize
-			var res2 = (SessionPreview)ser.ReadObject(str);
+			var res2 = (SessionPreview?)ser.ReadObject(str);
+			if (res2 is null) throw new InvalidOperationException($"'{nameof(SessionPreview)}' is null");
 			Printer.WriteLineAction = m => output.WriteLine(m);
 			res2.ResourceManager = Strings.ResourceManager;
 			//res2.Print();

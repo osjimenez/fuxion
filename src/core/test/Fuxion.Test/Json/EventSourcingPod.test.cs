@@ -52,6 +52,9 @@ namespace Fuxion.Test.Json
 			}";
 
 			var pod = json.FromJson<EventSourcingPod>();
+			Assert.NotNull(pod);
+			// NULLABLE - Prefer Assert.NotNull() but the nullable constraint attribute is missing
+			if (pod is null) throw new NullReferenceException($"'pod' deserialization is null");
 			Assert.Equal("MockEvent", pod.PayloadKey);
 			Assert.Equal(10, pod.TargetVersion);
 			Assert.False(pod.PayloadHasValue);
@@ -87,7 +90,7 @@ namespace Fuxion.Test.Json
 		}
 		public static bool HasFeature<TFeature>(this Event me) where TFeature : EventFeature, new()
 			=> me.Features.OfType<TFeature>().Any();
-		public static TFeature GetFeature<TFeature>(this Event me) where TFeature : EventFeature, new()
+		public static TFeature? GetFeature<TFeature>(this Event me) where TFeature : EventFeature, new()
 			=> me.Features.OfType<TFeature>().SingleOrDefault();
 	}
 	public class EventFeatureNotFoundException :FuxionException
@@ -113,7 +116,7 @@ namespace Fuxion.Test.Json
 		[JsonProperty]
 		public int TargetVersion { get; private set; }
 
-		public T AsEvent<T>() where T : Event => base.As<T>().Transform(evt => evt.AddEventSourcingFeature(TargetVersion));
+		public T? AsEvent<T>() where T : Event => base.As<T>().Transform(evt => evt?.AddEventSourcingFeature(TargetVersion));
 		public Event? AsEvent(Type type) => ((Event?)base.As(type)).Transform(evt => evt?.AddEventSourcingFeature(TargetVersion));
 		public Event? WithTypeKeyDirectory(TypeKeyDirectory typeKeyDirectory) => AsEvent(typeKeyDirectory[PayloadKey]);
 	}
@@ -126,7 +129,7 @@ namespace Fuxion.Test.Json
 		public static bool HasEventSourcing(this Event me)
 			=> me.HasFeature<EventSourcingEventFeature>();
 		public static EventSourcingEventFeature EventSourcing(this Event me)
-			=> me.GetFeature<EventSourcingEventFeature>();
+			=> me.GetFeature<EventSourcingEventFeature>() ?? throw new InvalidOperationException($"Feature '{nameof(EventSourcingEventFeature)}' cannot be found");
 		public static void AddEventSourcingFeature(this Event me, int targetVersion)
 			=> me.AddFeature<EventSourcingEventFeature>(esef => esef.TargetVersion = targetVersion);
 		public static EventSourcingPod ToEventSourcingPod(this Event me) => new EventSourcingPod(me);

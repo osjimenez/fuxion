@@ -38,9 +38,9 @@ namespace Fuxion.Identity.DatabaseTest
 
 		public Task<bool> ExistAsync(string key) => throw new NotImplementedException();
 
-		public IIdentity Find(string key) => Identity.Include(i => i.Permissions).SingleOrDefault(i => i.UserName == key);
+		public IIdentity? Find(string key) => Identity.Include(i => i.Permissions).SingleOrDefault(i => i.UserName == key);
 
-		public async Task<IIdentity> FindAsync(string key) => await Identity.SingleOrDefaultAsync(i => i.UserName == key);
+		public async Task<IIdentity?> FindAsync(string key) => await Identity.SingleOrDefaultAsync(i => i.UserName == key);
 
 		public IIdentity Get(string key) => Identity.Single(i => i.UserName == key);
 

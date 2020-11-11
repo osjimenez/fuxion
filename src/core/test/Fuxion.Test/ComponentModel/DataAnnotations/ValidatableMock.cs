@@ -41,7 +41,7 @@ namespace Fuxion.Test.ComponentModel.DataAnnotations
 			get => GetValue(() => "Valid");
 			set => SetValue(value);
 		}
-		public static ValidationResult ValidateIfNameContainsFuxion(string value)
+		public static ValidationResult? ValidateIfNameContainsFuxion(string value)
 		{
 			if (value.ToLower().Contains("fuxion"))
 				return new ValidationResult("Name cannot contains 'fuxion'");
@@ -132,7 +132,7 @@ namespace Fuxion.Test.ComponentModel.DataAnnotations
 			if (item1 is null && item2 is null) return true;
 			if (item1 is null && item2 is object) return false;
 			if (item1 is object && item2 is null) return false;
-			return item1?.Key == item2.Key;
+			return item1?.Key == item2?.Key;
 		}
 		public static bool operator ==(RecursiveValidatableMock dep1, RecursiveValidatableMock dep2) => Compare(dep1, dep2);
 		public static bool operator !=(RecursiveValidatableMock dep1, RecursiveValidatableMock dep2) => !Compare(dep1, dep2);

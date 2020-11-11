@@ -99,7 +99,7 @@ namespace Fuxion.Identity.Test.Rol
 					Value = false,
 					Scopes = new[] {
 						new ScopeDao("","", Cities.Madrid,ScopePropagation.ToMe| ScopePropagation.ToInclusions),
-						new ScopeDao("","", pro.GetRequiredService<TypeDiscriminatorFactory>().FromType<PersonDao>(), ScopePropagation.ToMe| ScopePropagation.ToInclusions)
+						new ScopeDao("","", pro.GetRequiredService<TypeDiscriminatorFactory>().FromType<PersonDao>(true), ScopePropagation.ToMe| ScopePropagation.ToInclusions)
 					}
 				},
 			};
@@ -119,7 +119,7 @@ namespace Fuxion.Identity.Test.Rol
 				" No";
 			PrintTestTriedStarted(permissionExplanation + query);
 			Assert.False(ide.Can(Create).ByAll(
-				pro.GetRequiredService<TypeDiscriminatorFactory>().FromType<PersonDao>(),
+				pro.GetRequiredService<TypeDiscriminatorFactory>().FromType<PersonDao>(true),
 				Discriminator.Empty<CityDao>()), permissionExplanation + query);
 
 			{
@@ -132,7 +132,7 @@ namespace Fuxion.Identity.Test.Rol
 
 				PrintTestTriedStarted(permissionExplanation + query);
 				Assert.False(ide.Can(Create).ByAll(
-					pro.GetRequiredService<TypeDiscriminatorFactory>().FromType<PersonDao>(),
+					pro.GetRequiredService<TypeDiscriminatorFactory>().FromType<PersonDao>(true),
 					Cities.Madrid),
 					permissionExplanation + query);
 			}
@@ -288,7 +288,7 @@ namespace Fuxion.Identity.Test.Rol
 						Value =true,
 						Scopes =new[]{
 							new ScopeDao("", "", Categories.Purchases, ScopePropagation.ToMe),
-							new ScopeDao("", "", pro.GetRequiredService<TypeDiscriminatorFactory>().FromType<BaseDao>(), ScopePropagation.ToMe | ScopePropagation.ToInclusions)
+							new ScopeDao("", "", pro.GetRequiredService<TypeDiscriminatorFactory>().FromType<BaseDao>(true), ScopePropagation.ToMe | ScopePropagation.ToInclusions)
 						}
 					},
 				}.ToList();
@@ -318,7 +318,7 @@ namespace Fuxion.Identity.Test.Rol
 				new PermissionDao ("","",ide,Edit.Id.ToString() ?? ""){
 					Value = true,
 					Scopes =new[] {
-						new ScopeDao("", "", pro.GetRequiredService<TypeDiscriminatorFactory>().FromType<CategoryDao>(), ScopePropagation.ToMe | ScopePropagation.ToInclusions)
+						new ScopeDao("", "", pro.GetRequiredService<TypeDiscriminatorFactory>().FromType<CategoryDao>(true), ScopePropagation.ToMe | ScopePropagation.ToInclusions)
 					}
 				},
 				new PermissionDao ("","",ide,Read.Id.ToString() ?? ""){
@@ -410,7 +410,7 @@ namespace Fuxion.Identity.Test.Rol
 				new PermissionDao ("","",ide,Edit.Id.ToString() ?? ""){
 					Value = true,
 					Scopes =new[] {
-						new ScopeDao("", "", pro.GetRequiredService<TypeDiscriminatorFactory>().FromType<CategoryDao>(),ScopePropagation.ToMe | ScopePropagation.ToInclusions)
+						new ScopeDao("", "", pro.GetRequiredService<TypeDiscriminatorFactory>().FromType<CategoryDao>(true),ScopePropagation.ToMe | ScopePropagation.ToInclusions)
 					}
 				}
 			};
@@ -434,13 +434,13 @@ namespace Fuxion.Identity.Test.Rol
 				new PermissionDao ("","",ide,Edit.Id.ToString() ?? "") {
 					Value = true,
 					Scopes =new[] {
-						new ScopeDao("", "", pro.GetRequiredService<TypeDiscriminatorFactory>().FromType<CategoryDao>(), ScopePropagation.ToMe | ScopePropagation.ToInclusions )
+						new ScopeDao("", "", pro.GetRequiredService<TypeDiscriminatorFactory>().FromType<CategoryDao>(true), ScopePropagation.ToMe | ScopePropagation.ToInclusions )
 					}
 				},
 				new PermissionDao ("","",ide,Read.Id.ToString() ?? ""){
 					Value = false,
 					Scopes =new[] {
-						new ScopeDao("", "", pro.GetRequiredService<TypeDiscriminatorFactory>().FromType<CategoryDao>(), ScopePropagation.ToMe | ScopePropagation.ToInclusions)
+						new ScopeDao("", "", pro.GetRequiredService<TypeDiscriminatorFactory>().FromType<CategoryDao>(true), ScopePropagation.ToMe | ScopePropagation.ToInclusions)
 					}
 				},
 			};
@@ -479,7 +479,7 @@ namespace Fuxion.Identity.Test.Rol
 			Assert.False(ide.Can(Create).Instance(Documents.Word1), permissionExplanation + query);
 			PrintTestTriedStarted(permissionExplanation + query);
 			Assert.False(ide.Can(Create).ByAll(
-					pro.GetRequiredService<TypeDiscriminatorFactory>().FromType<WordDocumentDao>(),
+					pro.GetRequiredService<TypeDiscriminatorFactory>().FromType<WordDocumentDao>(true),
 					Discriminator.Empty<CategoryDao>()), permissionExplanation + query);
 
 			query =
@@ -503,7 +503,7 @@ namespace Fuxion.Identity.Test.Rol
 				new PermissionDao("","",ide,Manage.Id.ToString() ?? "") {
 					Value = true,
 					Scopes = new[] {
-						new ScopeDao("", "", pro.GetRequiredService<TypeDiscriminatorFactory>().FromType<FileDao>(), ScopePropagation.ToMe| ScopePropagation.ToInclusions)
+						new ScopeDao("", "", pro.GetRequiredService<TypeDiscriminatorFactory>().FromType<FileDao>(true), ScopePropagation.ToMe| ScopePropagation.ToInclusions)
 					}
 				},
 				new PermissionDao("","",ide,Read.Id.ToString() ?? "") {
@@ -684,14 +684,14 @@ namespace Fuxion.Identity.Test.Rol
 					Value = true,
 					Scopes = new[]
 					{
-						new ScopeDao("","",pro.GetRequiredService<TypeDiscriminatorFactory>().FromType<RolDao>(),ScopePropagation.ToMe | ScopePropagation.ToInclusions)
+						new ScopeDao("","",pro.GetRequiredService<TypeDiscriminatorFactory>().FromType<RolDao>(true),ScopePropagation.ToMe | ScopePropagation.ToInclusions)
 					}
 				},
 				new PermissionDao("","",ide,Admin.Id.ToString() ?? "") {
 					Value = true,
 					Scopes = new[]
 					{
-						new ScopeDao("","",pro.GetRequiredService<TypeDiscriminatorFactory>().FromType<CityDao>(),ScopePropagation.ToMe | ScopePropagation.ToInclusions)
+						new ScopeDao("","",pro.GetRequiredService<TypeDiscriminatorFactory>().FromType<CityDao>(true),ScopePropagation.ToMe | ScopePropagation.ToInclusions)
 					}
 				}
 			}.ToList();

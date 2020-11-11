@@ -58,7 +58,7 @@ namespace Fuxion.Identity
 				return res.Value;
 			}
 		}
-		internal static bool CheckDiscriminators(this IInternalRolCan me, bool forAll, TypeDiscriminator typeDiscriminator, params IDiscriminator[] discriminators)
+		internal static bool CheckDiscriminators(this IInternalRolCan me, bool forAll, TypeDiscriminator? typeDiscriminator, params IDiscriminator[] discriminators)
 		{
 			using (var res = Printer.CallResult<bool>())
 			{
@@ -143,7 +143,7 @@ namespace Fuxion.Identity
 				   .Select(p => (
 					   PropertyInfo: p,
 					   PropertyType: p.PropertyType,
-					   DiscriminatorType: p.GetCustomAttribute<DiscriminatedByAttribute>(true).Type,
+					   DiscriminatorType: p.GetCustomAttribute<DiscriminatedByAttribute>(true, true).Type,
 					   DiscriminatorTypeId:
 						   p.GetCustomAttribute<DiscriminatedByAttribute>(true).Type.GetTypeInfo()
 							   .GetCustomAttribute<DiscriminatorAttribute>(true).TypeKey));
@@ -194,14 +194,17 @@ namespace Fuxion.Identity
 						foreignDiscriminators = foreignDiscriminators.Union(sco.Discriminator.GetAllInclusions().Select(d => d));
 					if (sco.Propagation.HasFlag(ScopePropagation.ToExclusions))
 						foreignDiscriminators = foreignDiscriminators.Union(sco.Discriminator.GetAllExclusions().Select(d => d));
-					var foreignDiscriminatorssOfType = (IEnumerable<IDiscriminator>)GetOfTypeMethod(disType).Invoke(null, new object[] { foreignDiscriminators });
-					// Si no hay claves externas del tipo de esta propiedad, continuo con la siguiente propiedad
-					if (!foreignDiscriminatorssOfType.Any())
+					if(GetOfTypeMethod(disType).Invoke(null, new object[] { foreignDiscriminators }) is not IEnumerable<IDiscriminator> foreignDiscriminatorssOfType)
 						return null;
+					//var foreignDiscriminatorssOfType = (IEnumerable<IDiscriminator>)GetOfTypeMethod(disType).Invoke(null, new object[] { foreignDiscriminators });
+					// Si no hay claves externas del tipo de esta propiedad, continuo con la siguiente propiedad
+					if (!foreignDiscriminatorssOfType.Any()) return null;
 					var foreignKeys = foreignDiscriminatorssOfType.Select(d => d.Id);
-					var foreignKeysCasted = GetCastMethod(proInfo.PropertyType).Invoke(null, new object[] { foreignKeys });
-					var foreignKeysListed = GetToListMethod(proInfo.PropertyType).Invoke(null, new object[] { foreignKeysCasted });
 
+					var foreignKeysCasted = GetCastMethod(proInfo.PropertyType).Invoke(null, new object[] { foreignKeys });
+					if (foreignKeysCasted == null) return null;
+					var foreignKeysListed = GetToListMethod(proInfo.PropertyType).Invoke(null, new object[] { foreignKeysCasted });
+					if (foreignKeysListed == null) return null;
 
 					var entityParameter = Expression.Parameter(typeof(TEntity));
 					var memberExpression = Expression.Property(entityParameter, proInfo);
@@ -327,7 +330,7 @@ namespace Fuxion.Identity
 				var pers = functions.SelectMany(fun => me.SearchPermissions(
 					true,
 					fun,
-					Singleton.Get<TypeDiscriminatorFactory>().FromType<TEntity>(),
+					Singleton.Get<TypeDiscriminatorFactory>().FromType<TEntity>(true),
 					typeof(TEntity).GetDiscriminatorsOfDiscriminatedProperties().ToArray()
 					))
 				.Distinct().ToList();

@@ -58,10 +58,10 @@ namespace Fuxion.Identity.DatabaseTest
 		[Fact(Skip = "Desactivado")]
 		public void CheckFunctionAssigned()
 		{
-			var r1 = IM.GetCurrent().Can(Read).Type<DocumentDao>();
-			IM.GetCurrent().EnsureCan(Read).Type<DocumentDao>();
-			var r2 = IM.GetCurrent().Can(Read).AllInstances(new DocumentDao?[] { null, null, null, null, null, null });
-			IM.GetCurrent().EnsureCan(Read).AnyInstances(new DocumentDao?[] { null, null, null, null, null, null });
+			var r1 = IM.GetCurrent()?.Can(Read).Type<DocumentDao>();
+			IM.GetCurrent()?.EnsureCan(Read).Type<DocumentDao>();
+			var r2 = IM.GetCurrent()?.Can(Read).AllInstances(new DocumentDao?[] { null, null, null, null, null, null });
+			IM.GetCurrent()?.EnsureCan(Read).AnyInstances(new DocumentDao?[] { null, null, null, null, null, null });
 			// Login
 			//if (!IM.IsAuthenticated)
 			//    Assert.True(IM.Login("root", "root"));

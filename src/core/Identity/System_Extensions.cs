@@ -12,6 +12,8 @@ namespace System.Collections.Generic
 		{
 			if (rol == null)
 				rol = Singleton.Get<IdentityManager>().GetCurrent();
+			if (rol == null)
+				throw new InvalidOperationException("Current rol cannot be determined");
 			var pre = rol.FilterExpression<TSource>(functions);
 			return source is IQueryable<TSource>
 				? ((IQueryable<TSource>)source).Where(pre)
@@ -23,6 +25,8 @@ namespace System.Collections.Generic
 		{
 			if (rol == null)
 				rol = Singleton.Get<IdentityManager>().GetCurrent();
+			if (rol == null)
+				throw new InvalidOperationException("Current rol cannot be determined");
 			var pre = rol.FilterExpression<TSource>(functions);
 			return source.Where(pre);
 		}

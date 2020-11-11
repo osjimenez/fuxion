@@ -364,7 +364,12 @@ namespace Fuxion.Test.ComponentModel
 					throw new Exception("El valor del contador '" + propertyName + "_" + name + "' no es '" + value + "' sino '" + counterValue + "'.");
 			}
 		}
-		private void IncrementCounter(string propertyName, string counterName) => counters[propertyName + "_" + counterName] = counters[propertyName + "_" + counterName] + 1;
+		private void IncrementCounter(string? propertyName, string counterName)
+		{
+			// NULLABLE - Prefer Assert.NotNull() but the nullable constraint attribute is missing
+			if (propertyName is null) throw new NullReferenceException($"'{nameof(propertyName)}' deserialization is null");
+			counters[propertyName + "_" + counterName] = counters[propertyName + "_" + counterName] + 1;
+		}
 		#endregion
 		#region PropertyReadRaise
 		//private void PropertyReadRaise<T>(params PropertyInfo[] properties)
@@ -408,7 +413,8 @@ namespace Fuxion.Test.ComponentModel
 		[Fact(DisplayName = "Notifier - PreviousValueIsDefaultValue2")]
 		public void PreviousValueIsDefaultValue2()
 		{
-			var props = mock?.GetType().GetProperties().AsQueryable().Where(p => p.Name.Contains("WithDefault"));
+			var props = mock?.GetType().GetProperties().AsQueryable().Where(p => p.Name.Contains("WithDefault")) 
+				?? Array.Empty<PropertyInfo>().AsQueryable();
 			PreviousValueIsDefaultValue(222, 111, props.Where(p => p.PropertyType == typeof(int)).ToArray());
 			PreviousValueIsDefaultValue("bbb", "aaa", props.Where(p => p.PropertyType == typeof(string)).ToArray());
 			PreviousValueIsDefaultValue(
@@ -507,11 +513,11 @@ namespace Fuxion.Test.ComponentModel
 		public void RaiseOnChangeOrAlways()
 		{
 			var props = mock?.GetType().GetProperties().AsQueryable();
-			RaiseOnChangeOrAlwaysPrivate(999, props.Where(p => p.PropertyType == typeof(int)).ToArray());
-			RaiseOnChangeOrAlwaysPrivate("zzz", props.Where(p => p.PropertyType == typeof(string)).ToArray());
+			RaiseOnChangeOrAlwaysPrivate(999, props?.Where(p => p.PropertyType == typeof(int)).ToArray() ?? Array.Empty<PropertyInfo>());
+			RaiseOnChangeOrAlwaysPrivate("zzz", props?.Where(p => p.PropertyType == typeof(string)).ToArray() ?? Array.Empty<PropertyInfo>());
 			RaiseOnChangeOrAlwaysPrivate(
 				new ReferenceObjectMock { Cadena = "zzz", Entero = 999 },
-				props.Where(p => p.PropertyType == typeof(ReferenceObjectMock)).ToArray());
+				props?.Where(p => p.PropertyType == typeof(ReferenceObjectMock)).ToArray() ?? Array.Empty<PropertyInfo>());
 		}
 		#endregion
 		#region ReadInterceptionSetValue

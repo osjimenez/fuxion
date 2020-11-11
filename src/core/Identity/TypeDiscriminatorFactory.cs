@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 
@@ -70,10 +71,10 @@ namespace Fuxion.Identity
 			ValidateEntries();
 #if DEBUG
 			Debug.WriteLine("List of types to initialize");
-			var maxTypeFullNameLength = entries.SelectMany(e => e.Types).Max(t => t.Type.FullName.Length);
+			var maxTypeFullNameLength = entries.SelectMany(e => e.Types).Max(t => t.Type.FullName?.Length ?? 0);
 			foreach (var type in entries.SelectMany(e => e.Types).OrderBy(t => t.Type.Name))
 			{
-				Debug.WriteLine($"   {type.Type.FullName.PadLeft(maxTypeFullNameLength)} - {(type.Attribute == null ? "NULL" : $"{type.Attribute.DisableMode}")}");
+				Debug.WriteLine($"   {(type.Type.FullName ?? "").PadLeft(maxTypeFullNameLength)} - {(type.Attribute == null ? "NULL" : $"{type.Attribute.DisableMode}")}");
 			}
 #endif
 			// Creo todas las entradas virtuales que se han encontrado en inclusiones y exclusiones
@@ -104,15 +105,15 @@ namespace Fuxion.Identity
 				void SetHierarchy(EntryType type)
 				{
 					var parent = type.Type.GetTypeInfo().BaseType;
-					if (parent.GenericTypeArguments.Length > 0)
+					if (parent?.GenericTypeArguments.Length > 0)
 						parent = parent.GetTypeInfo().GetGenericTypeDefinition();
 					type.BaseType = allTypes.FirstOrDefault(t => t.Type == parent);
 					type.DeepBaseType = type.BaseType;
 					type.DerivedTypes = allTypes
 						.Where(t =>
 						{
-							if (t.Type.GetTypeInfo().BaseType.GenericTypeArguments.Length > 0)
-								return type.Type == t.Type.GetTypeInfo().BaseType.GetGenericTypeDefinition();
+							if (t.Type.GetTypeInfo().BaseType?.GenericTypeArguments.Length > 0)
+								return type.Type == t.Type.GetTypeInfo().BaseType?.GetGenericTypeDefinition();
 							return t.Type.GetTypeInfo().BaseType == type.Type;
 						})
 						.ToList();
@@ -234,6 +235,7 @@ namespace Fuxion.Identity
 			var errors = new List<InvalidTypeDiscriminatorException>();
 			foreach (var ent in entries)
 			{
+				//if (ent == null) continue;
 				// Comprobar incongruencias en el Mode
 				if (ent.Types?.Select(t => t.Attribute?.DisableMode).RemoveNulls().Distinct().Count() > 1)
 				{
@@ -241,7 +243,9 @@ namespace Fuxion.Identity
 					// ................
 				}
 				// Comprobar que al deshabilitar todo el arbol de herencia no se han especificado ningún otro parámetro
-				foreach (var att in ent.Types.Select(t => t.Attribute)
+				var types = ent.Types;
+				if (types == null) continue;
+				foreach (var att in types.Select(t => t.Attribute)
 					.RemoveNulls()
 					.Where(a => a.DisableMode != null))
 				{
@@ -353,14 +357,17 @@ namespace Fuxion.Identity
 			initialized = false;
 		}
 		public IEnumerable<TypeDiscriminator> GetAll() => entries.Select(e => e.Discriminator);
-		public TypeDiscriminator FromType<T>() => FromType(typeof(T));
-		public TypeDiscriminator FromType(Type type) => FromId(GetIdFunction(type, type.GetTypeInfo().GetCustomAttribute<TypeDiscriminatedAttribute>(false, false, true)));
-		public TypeDiscriminator FromId(string id)
+		public TypeDiscriminator? FromType<T>([DoesNotReturnIf(true)] bool exceptionIfNotFound = false) => FromType(typeof(T), exceptionIfNotFound);
+		public TypeDiscriminator? FromType(Type type, [DoesNotReturnIf(true)] bool exceptionIfNotFound = false) => FromId(GetIdFunction(type, type.GetTypeInfo().GetCustomAttribute<TypeDiscriminatedAttribute>(false, false, true)))
+			?? (exceptionIfNotFound
+				? throw new KeyNotFoundException($"Discriminator for type '{type.Name}' not found")
+				: null);
+		public TypeDiscriminator? FromId(string id)
 		{
-			var res = AllFromId(id);
-			if (res.Count() > 1)
+			var all = AllFromId(id);
+			if(all.Count() > 1)
 				throw new InvalidStateException($"More than one discriminator for the id '{id}'. Use '{nameof(AllFromId)}' method instead");
-			return res.FirstOrDefault();
+			return all.FirstOrDefault();
 		}
 		public IEnumerable<TypeDiscriminator> AllFromId(string id)
 		{

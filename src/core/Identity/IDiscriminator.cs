@@ -67,16 +67,16 @@ namespace Fuxion.Identity
 				case PrintMode.PropertyList:
 					break;
 				case PrintMode.Table:
-					var maxTypeId = me.Select(s => s.TypeKey.ToString().Length).Union(new[] { "TYPE_ID".Length }).Max();
+					var maxTypeId = me.Select(s => s.TypeKey.ToString()?.Length ?? 0).Union(new[] { "TYPE_ID".Length }).Max();
 					var maxTypeName = me.Select(s => s.TypeName.Length).Union(new[] { "TYPE_NAME".Length }).Max();
-					var maxId = me.Select(s => s.Id?.ToString().Length).RemoveNulls().Cast<int>().Union(new[] { "ID".Length, "null".Length }).Max();
+					var maxId = me.Select(s => s.Id?.ToString()?.Length ?? 0).Cast<int>().Union(new[] { "ID".Length, "null".Length }).Max();
 					var maxName = me.Select(s => s.Name?.Length).RemoveNulls().Cast<int>().Union(new[] { "NAME".Length, "null".Length }).Max();
 
 					Printer.WriteLine("┌" + ("".PadRight(maxTypeId, '─')) + "┬" + ("".PadRight(maxTypeName, '─')) + "┬" + ("".PadRight(maxId, '─')) + "┬" + ("".PadRight(maxName, '─')) + "┐");
 					Printer.WriteLine("│" + "TYPE_ID".PadRight(maxTypeId, ' ') + "│" + "TYPE_NAME".PadRight(maxTypeName, ' ') + "│" + "ID".PadRight(maxId, ' ') + "│" + "NAME".PadRight(maxName, ' ') + "│");
 					Printer.WriteLine("├" + ("".PadRight(maxTypeId, '─')) + "┼" + ("".PadRight(maxTypeName, '─')) + "┼" + ("".PadRight(maxId, '─')) + "┼" + ("".PadRight(maxName, '─')) + "┤");
 					foreach (var sco in me)
-						Printer.WriteLine("│" + sco.TypeKey.ToString().PadRight(maxTypeId, ' ') + "│" + sco.TypeName.PadRight(maxTypeName, ' ') + "│" + (sco.Id?.ToString() ?? "null").PadRight(maxId, ' ') + "│" + (sco.Name ?? "null").PadRight(maxName, ' ') + "│");
+						Printer.WriteLine("│" + (sco.TypeKey.ToString() ?? "").PadRight(maxTypeId, ' ') + "│" + sco.TypeName.PadRight(maxTypeName, ' ') + "│" + (sco.Id?.ToString() ?? "null").PadRight(maxId, ' ') + "│" + (sco.Name ?? "null").PadRight(maxName, ' ') + "│");
 					Printer.WriteLine("└" + ("".PadRight(maxTypeId, '─')) + "┴" + ("".PadRight(maxTypeName, '─')) + "┴" + ("".PadRight(maxId, '─')) + "┴" + ("".PadRight(maxName, '─')) + "┘");
 					break;
 			}

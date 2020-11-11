@@ -1,6 +1,8 @@
-﻿using Fuxion.ComponentModel;
+﻿using Castle.Core.Internal;
+using Fuxion.ComponentModel;
 using Fuxion.Configuration;
 using System;
+using System.Runtime;
 using System.IO;
 using System.Runtime.Serialization;
 using Xunit;
@@ -54,6 +56,8 @@ namespace Fuxion.Test.Configuration
 			if (man.GetType().GetProperty("Path") != null)
 			{
 				var path = man.GetType().GetProperty("Path")?.GetValue(man)?.ToString();
+				// NULLABLE - Prefer Assert.NotNull() but the nullable constraint attribute is missing
+				if (string.IsNullOrWhiteSpace(path)) throw new NullReferenceException($"'Path' property is null");
 				Output.WriteLine(File.ReadAllText(path));
 			}
 

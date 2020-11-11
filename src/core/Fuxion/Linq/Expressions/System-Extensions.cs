@@ -65,8 +65,7 @@ namespace System.Linq.Expressions
 
             protected override Expression VisitParameter(ParameterExpression p)
             {
-                ParameterExpression replacement;
-                if (map.TryGetValue(p, out replacement))
+                if (map.TryGetValue(p, out var replacement))
                 {
                     p = replacement;
                 }

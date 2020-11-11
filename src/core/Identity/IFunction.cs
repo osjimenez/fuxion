@@ -75,7 +75,7 @@ namespace Fuxion.Identity
 				case PrintMode.PropertyList:
 					break;
 				case PrintMode.Table:
-					var idLength = me.Select(p => p.Id.ToString().Length).Union(new[] { "ID".Length }).Max();
+					var idLength = me.Select(p => p.Id.ToString()?.Length ?? 0).Union(new[] { "ID".Length }).Max();
 					var nameLength = me.Select(p => p.Name.ToString().Length).Union(new[] { "NAME".Length }).Max();
 
 					Printer.WriteLine("┌"
@@ -95,7 +95,7 @@ namespace Fuxion.Identity
 					foreach (var per in me)
 					{
 						Printer.WriteLine("│" +
-								per.Id.ToString().PadRight(idLength, ' ') + "│" +
+								(per.Id.ToString() ?? "").PadRight(idLength, ' ') + "│" +
 								per.Name.PadRight(nameLength, ' ') + "│" +
 								"");
 					}
@@ -110,7 +110,7 @@ namespace Fuxion.Identity
 
 	internal class FunctionEqualityComparer : IEqualityComparer<IFunction>
 	{
-		public bool Equals(IFunction x, IFunction y) => AreEquals(x, y);
+		public bool Equals(IFunction? x, IFunction? y) => AreEquals(x, y);
 
 		public int GetHashCode(IFunction obj)
 		{
@@ -119,7 +119,7 @@ namespace Fuxion.Identity
 			return obj.Id.GetHashCode();
 		}
 
-		private static bool AreEquals(object obj1, object obj2)
+		private static bool AreEquals(object? obj1, object? obj2)
 		{
 			// If both are NULL, return TRUE
 			if (Equals(obj1, null) && Equals(obj2, null))

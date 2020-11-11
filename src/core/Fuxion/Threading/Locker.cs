@@ -152,14 +152,16 @@ namespace Fuxion.Threading
 		}
 		private Task<TResult> DelegateReadAsync<TResult>(Delegate del, params object?[] pars)
 		{
-			return TaskManager.StartNew((d, ps) =>
+			return TaskManager.StartNew<Delegate, object?[], TResult>((d, ps) =>
 			{
 				_ReaderWriterLockSlim.EnterReadLock();
 				try
 				{
 					var p = new object?[] { objectLocked }.ToList();
 					p.AddRange(ps);
-					return (TResult)d.DynamicInvoke(p.ToArray());
+					var res = d.DynamicInvoke(p.ToArray());
+					if (res == null) throw new ArgumentNullException("Dynamic invocation cannot return null");
+					return (TResult)res;
 				}
 				catch (Exception ex)
 				{
@@ -203,7 +205,9 @@ namespace Fuxion.Threading
 				{
 					var p = new object?[] { objectLocked }.ToList();
 					p.AddRange(ps);
-					return (TResult)d.DynamicInvoke(p.ToArray());
+					var res = d.DynamicInvoke(p.ToArray());
+					if (res == null) throw new ArgumentNullException("Dynamic invocation cannot return null");
+					return (TResult)res;
 				}
 				catch (Exception ex)
 				{

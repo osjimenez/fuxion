@@ -50,6 +50,8 @@ namespace Fuxion.Test.Json
 			Output.WriteLine(json);
 
 			var pod = json.FromJsonPod<PayloadBase, string>();
+			// NULLABLE - Prefer Assert.NotNull() but the nullable constraint attribute is missing
+			if (pod is null) throw new NullReferenceException($"'pod' deserialization is null");
 
 			Output.WriteLine("pod.PayloadJRaw.Value: ");
 			Output.WriteLine(pod.PayloadJRaw.Value?.ToString());
@@ -68,7 +70,10 @@ namespace Fuxion.Test.Json
 			Assert.Equal("podKey", pod.PayloadKey);
 			AssertBase(pod);
 			Assert.Throws<InvalidCastException>(() => AssertDerived((PayloadDerived)pod));
-			AssertDerived(pod.CastWithPayload<PayloadDerived>());
+			var derived = pod.CastWithPayload<PayloadDerived>();
+			// NULLABLE - Prefer Assert.NotNull() but the nullable constraint attribute is missing
+			if (derived is null) throw new NullReferenceException($"'derived' deserialization is null");
+			AssertDerived(derived);
 		}
 		[Fact(DisplayName = "JsonPod - CastWithPayload")]
 		public void CastWithPayload()
@@ -80,8 +85,10 @@ namespace Fuxion.Test.Json
 				Nick = "payloadNick"
 			};
 			var basePod = new JsonPod<PayloadBase, string>(payload, "podKey");
-			var derivedPod = basePod.CastWithPayload<PayloadDerived>();
-			Assert.Equal("payloadName", derivedPod.Payload.Name);
+			var derived = basePod.CastWithPayload<PayloadDerived>();
+			// NULLABLE - Prefer Assert.NotNull() but the nullable constraint attribute is missing
+			if (derived is null) throw new NullReferenceException($"'derived' deserialization is null");
+			Assert.Equal("payloadName", derived.Payload.Name);
 		}
 	}
 	public class PayloadBase

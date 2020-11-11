@@ -1,6 +1,7 @@
 ﻿using Fuxion.Repositories;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -33,7 +34,12 @@ namespace Fuxion.Reflection
 				Register(tup.Type);
 		}
 		public void Register<T>() => Register(typeof(T));
-		public void Register(Type type) => dic.Add(type.GetTypeKey(), type);
+		public void Register(Type type)
+		{
+			var key = type.GetTypeKey();
+			if (key == null) throw new ArgumentException($"The type '{type.Name}' isn't decorated with '{nameof(TypeKeyAttribute)}' attribute");
+			dic.Add(key, type);
+		}
 	}
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
 	public class TypeKeyAttribute : Attribute
@@ -47,8 +53,8 @@ namespace Fuxion.Reflection
 	}
 	public static class TypeKeyExtensions
 	{
-		public static string GetTypeKey(this Type me) => me.GetCustomAttribute<TypeKeyAttribute>(false).TypeKey;
-		public static string? GetTypeKey(this Type me, bool exceptionIfNotFound) => me.GetCustomAttribute<TypeKeyAttribute>(false, exceptionIfNotFound, true)?.TypeKey;
+		public static string GetTypeKey(this Type me) => me.GetCustomAttribute<TypeKeyAttribute>(false, true).TypeKey;
+		public static string GetTypeKey(this Type me, [DoesNotReturnIf(true)] bool exceptionIfNotFound) => me.GetCustomAttribute<TypeKeyAttribute>(false, exceptionIfNotFound, true)?.TypeKey;
 	}
 	public class TypeKeyNotFoundInDirectoryException : FuxionException
 	{

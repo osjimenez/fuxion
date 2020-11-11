@@ -22,7 +22,14 @@ namespace Fuxion.Application.Events
 			var handlers = (IEnumerable)serviceProvider.GetServices(typeof(IEventHandler<>).MakeGenericType(@event.GetType()));
 			IEventHandler<Event> c;
 			foreach (var handler in handlers)
-				await (Task)handler.GetType().GetMethod(nameof(c.HandleAsync)).Invoke(handler, new object[] { @event });
+			{
+				var met = handler.GetType().GetMethod(nameof(c.HandleAsync));
+				if (met == null) throw new InvalidProgramException($"'{nameof(c.HandleAsync)}' method not found");
+				if (met.Invoke(handler, new object[] { @event }) is Task task)
+					await task;
+				else
+					throw new InvalidProgramException($"'{nameof(c.HandleAsync)}' method not return a task");
+			}
 		}
 	}
 }

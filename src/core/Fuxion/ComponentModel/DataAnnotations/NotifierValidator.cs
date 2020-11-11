@@ -66,11 +66,6 @@ namespace Fuxion.ComponentModel.DataAnnotations
 
 		private void RegisterNotifier(INotifyPropertyChanged notifier, bool recursive, Func<string> pathFunc)
 		{
-			if (notifier == null)
-			{
-				throw new NullReferenceException($"The parameter '{nameof(notifier)}' cannot be null");
-			}
-
 			if (paths.Any(n => n.GetHashCode() == notifier.GetHashCode()))
 			{
 				return;
@@ -193,7 +188,7 @@ namespace Fuxion.ComponentModel.DataAnnotations
 				.FirstOrDefault();
 			if (notifier != null)
 			{
-				RegisterNotifier(notifier, true, () => paths.First(p => p.Notifier.GetHashCode() == sender.GetHashCode()).GetMessageFunction() + e.PropertyName);
+				RegisterNotifier(notifier, true, () => paths.First(p => p.Notifier.GetHashCode() == sender?.GetHashCode()).GetMessageFunction() + e.PropertyName);
 			}
 
 			PropertyDescriptor? collectionProperty = TypeDescriptor.GetProperties(sender)
@@ -205,15 +200,15 @@ namespace Fuxion.ComponentModel.DataAnnotations
 				.Where(pro => pro.PropertyType.IsSubclassOfRawGeneric(typeof(IEnumerable<>)))
 				.Where(pro => (INotifyCollectionChanged)pro.GetValue(sender) != null)
 				.FirstOrDefault();
-			if (collectionProperty != null)
+			if (collectionProperty != null && sender != null)
 			{
 				RegisterNotifierCollection((INotifyPropertyChanged)sender, collectionProperty, paths.First(p => p.Notifier.GetHashCode() == sender.GetHashCode()).GetMessageFunction);
 			}
 
-			var conditionalAtt = sender.GetType().GetCustomAttribute<ConditionalValidationAttribute>(true, false, true);
-			RefreshEntries(sender, conditionalAtt != null ? null : e.PropertyName, paths.First(p => p.Notifier.GetHashCode() == sender.GetHashCode()).GetMessageFunction);
+			var conditionalAtt = sender?.GetType().GetCustomAttribute<ConditionalValidationAttribute>(true, false, true);
+			RefreshEntries(sender, conditionalAtt != null ? null : e.PropertyName, paths.First(p => p.Notifier.GetHashCode() == sender?.GetHashCode()).GetMessageFunction);
 		}
-		private void RefreshEntries(object instance, string? propertyName, Func<string> pathFunc)
+		private void RefreshEntries(object? instance, string? propertyName, Func<string> pathFunc)
 		{
 			ICollection<NotifierValidatorMessage> newEntries = Validate(instance, propertyName, pathFunc);
 			_messages.RemoveIf(e => !newEntries.Contains(e) && e.Object == instance && (string.IsNullOrWhiteSpace(propertyName) || e.PropertyName == propertyName));
@@ -225,16 +220,16 @@ namespace Fuxion.ComponentModel.DataAnnotations
 				}
 			}
 		}
-		public static ICollection<NotifierValidatorMessage> Validate(object instance, string? propertyName = null)
+		public static ICollection<NotifierValidatorMessage> Validate(object? instance, string? propertyName = null)
 		{
 			return Validate(instance, propertyName, () => "");
 		}
 
-		private static ICollection<NotifierValidatorMessage> Validate(object instance, string? propertyName, Func<string?> pathFunc)
+		private static ICollection<NotifierValidatorMessage> Validate(object? instance, string? propertyName, Func<string?> pathFunc)
 		{
 			if (instance == null)
 			{
-				return new NotifierValidatorMessage[0];
+				return Array.Empty<NotifierValidatorMessage>();
 			}
 
 			var conditionalAtt = instance.GetType().GetCustomAttribute<ConditionalValidationAttribute>(true, false, true);
@@ -301,13 +296,14 @@ namespace Fuxion.ComponentModel.DataAnnotations
 					.Select(tup => new NotifierValidatorMessage(
 						instance, 
 						tup.RequiresValidationContext
-							? tup.Result.ErrorMessage
+							? tup.Result?.ErrorMessage ?? ""
 							: tup.Attribute.FormatErrorMessage(pro.GetDisplayName()), 
 						pathFunc)
 					{
 						PropertyDisplayName = pro.GetDisplayName(),
 						PropertyName = pro.Name,
-					})).ToList();
+					})
+					.Where(mes => !insRes.Contains(mes))).ToList();
 				insRes = insRes.Concat(metaRes).ToList();
 			}
 			// Validate all sub validatables

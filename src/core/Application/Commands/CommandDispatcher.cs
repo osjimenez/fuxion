@@ -18,12 +18,17 @@ namespace Fuxion.Application.Commands
 			var handlers = serviceProvider.GetServices(typeof(ICommandHandler<>).MakeGenericType(command.GetType())).ToList();
 			if (handlers.Count != 1)
 			{
-				Debug.WriteLine("");
+				throw new MoreThanOneCommandHandlerException($"Multiple command handlers was found for command '{command.GetType().GetSignature(true)}'");
 			}
 			else
 			{
-				IEventHandler<Event> c;
-				await (Task)handlers[0].GetType().GetMethod(nameof(c.HandleAsync)).Invoke(handlers[0], new object[] { command });
+				ICommandHandler<Command> c;
+				var met = handlers[0].GetType().GetMethod(nameof(c.HandleAsync));
+				if (met == null) throw new InvalidProgramException($"'{nameof(c.HandleAsync)}' method not found");
+				if (met.Invoke(handlers[0], new object[] { command }) is Task task)
+					await task;
+				else 
+					throw new InvalidProgramException($"'{nameof(c.HandleAsync)}' method not return a task");
 			}
 		}
 	}

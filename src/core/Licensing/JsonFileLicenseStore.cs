@@ -13,12 +13,16 @@ namespace Fuxion.Licensing
 		public JsonFileLicenseStore(Type[]? knownLicenseTypes = null, string licensesFileName = "licenses.json", bool listenFileForChanges = true)
 		{
 			this.knownLicenseTypes = knownLicenseTypes ?? new Type[] { };
-			var licensesFilePath = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), licensesFileName);
+			var assDirPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
+			if (assDirPath == null) throw new FileLoadException($"Assembly directory cannot be determined");
+			var licensesFilePath = Path.Combine(assDirPath, licensesFileName);
 			pathLocker = new Locker<string>(licensesFilePath);
 			LoadFile(licensesFilePath);
 			if (listenFileForChanges)
 			{
-				var w = new FileSystemWatcher(Path.GetDirectoryName(licensesFilePath), licensesFileName);
+				var assFilPath = Path.GetDirectoryName(licensesFilePath);
+				if (assFilPath == null) throw new FileLoadException($"License file path cannot be determined from '{licensesFilePath}'");
+				var w = new FileSystemWatcher(assFilPath, licensesFileName);
 				w.Created += (s, e) => LoadFile(e.FullPath);
 				w.Changed += (s, e) => LoadFile(e.FullPath);
 				w.Deleted += (s, e) => LoadFile(e.FullPath);

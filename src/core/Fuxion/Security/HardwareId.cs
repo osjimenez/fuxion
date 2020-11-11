@@ -173,7 +173,7 @@ namespace Fuxion.Security
 					//Console.WriteLine(account.Value);
 					//Console.WriteLine(sid.Value);
 
-					var value64 = string.Empty;
+					string? value64 = null;
 
 					RegistryKey localKey =
 						RegistryKey.OpenBaseKey(RegistryHive.LocalMachine,
@@ -188,7 +188,7 @@ namespace Fuxion.Security
 
 					//var key = Registry.LocalMachine.OpenSubKey(@"Software\Microsoft\Windows NT\CurrentVersion");
 					//var val = key.GetValue("ProductId");
-					_operatingSystemProductId = new Guid(ComputeHash(value64.ToString()));
+					_operatingSystemProductId = new Guid(ComputeHash(value64?.ToString() ?? throw new InvalidStateException("Value cannot be retrieved from registry")));
 				}
 				return _operatingSystemProductId;
 			}
@@ -241,7 +241,9 @@ namespace Fuxion.Security
 			{
 				if ((wmiMustBeTrue == null || mo[wmiMustBeTrue].ToString() == "True") && mo[wmiProperty] != null)
 				{
-					list.Add(mo[wmiProperty].ToString().ComputeHash());
+					var pro = mo[wmiProperty].ToString();
+					if (pro == null) throw new InvalidProgramException("Error reading WMI property");
+					list.Add(pro.ComputeHash());
 				}
 			}
 			if (list.Count == 0) return Guid.Empty;

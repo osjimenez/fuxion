@@ -22,6 +22,7 @@ namespace Fuxion.Application.Snapshots
 					if (File.Exists(path))
 					{
 						var dic = File.ReadAllText(path).FromJson<Dictionary<string, List<JsonPod<Snapshot, string>>>>();
+						if (dic == null) throw new FileLoadException($"File '{path}' cannot be deserializer for '{nameof(InMemorySnapshotStorage)}'");
 						snapshots.WriteObject(dic.Select((KeyValuePair<string, List<JsonPod<Snapshot, string>>> k) =>
 						(
 							Key: k.Key,

@@ -51,9 +51,9 @@ namespace Fuxion.Threading.Tasks
 				_Task = value;
 				_Task.ContinueWith(t =>
 				{
-					var toLog = "La tarea finalizó con " + t.Exception.InnerExceptions.Count + " errores.";
-					Exception ex = t.Exception;
-					if (t.Exception.InnerExceptions.Count == 1)
+					var toLog = "La tarea finalizó con " + t.Exception?.InnerExceptions.Count + " errores.";
+					Exception? ex = t.Exception;
+					if (t.Exception?.InnerExceptions.Count == 1)
 					{
 						ex = t.Exception.InnerExceptions[0];
 						toLog += " Error '" + ex.GetType().Name + "': " + ex.Message;
@@ -84,7 +84,7 @@ namespace Fuxion.Threading.Tasks
 					//? e.Delegate.Method == Delegate.Method && e.Delegate.Target.GetType() == Delegate.Target.GetType()
 					? ConcurrencyProfile.ByInstance
 						? e.Delegate?.Method == Delegate?.Method && e.Delegate?.Target == Delegate?.Target
-						: e.Delegate?.Method == Delegate?.Method && e.Delegate?.Target.GetType() == Delegate?.Target.GetType()
+						: e.Delegate?.Method == Delegate?.Method && e.Delegate?.Target?.GetType() == Delegate?.Target?.GetType()
 					: e.ConcurrencyProfile.Name == ConcurrencyProfile.Name).ToList());
 			Previous = allPrevious.LastOrDefault();
 			if (ConcurrencyProfile.CancelPrevious)
@@ -114,10 +114,11 @@ namespace Fuxion.Threading.Tasks
 			DoConcurrency();
 			action();
 		}, CancellationTokenSource.Token, TaskCreationOptions);
-		public ActionTaskManagerEntry(Action<object> action, object? state, TaskScheduler? scheduler, TaskCreationOptions options, ConcurrencyProfile concurrencyProfile = default, Delegate? @delegate = null) : base(@delegate ?? action, scheduler, default(TaskCreationOptions), concurrencyProfile) => Task = new Task(st =>
+		public ActionTaskManagerEntry(Action<object> action, object state, TaskScheduler? scheduler, TaskCreationOptions options, ConcurrencyProfile concurrencyProfile = default, Delegate? @delegate = null) : base(@delegate ?? action, scheduler, default(TaskCreationOptions), concurrencyProfile) 
+			=> Task = new Task(st =>
 		{
 			DoConcurrency();
-			action(st);
+			action(st ?? throw new ArgumentNullException($"'{nameof(state)}' argument acannot be null"));
 		}, state, CancellationTokenSource.Token, TaskCreationOptions);
 	}
 
@@ -129,10 +130,10 @@ namespace Fuxion.Threading.Tasks
 			var res = func();
 			return res;
 		}, CancellationTokenSource.Token, TaskCreationOptions);
-		public FuncTaskManagerEntry(Func<object, TResult> func, object? state, TaskScheduler? scheduler, TaskCreationOptions options, ConcurrencyProfile concurrencyProfile = default, Delegate? @delegate = null) : base(@delegate ?? func, scheduler, default(TaskCreationOptions), concurrencyProfile) => Task = new Task<TResult>(st =>
+		public FuncTaskManagerEntry(Func<object, TResult> func, object state, TaskScheduler? scheduler, TaskCreationOptions options, ConcurrencyProfile concurrencyProfile = default, Delegate? @delegate = null) : base(@delegate ?? func, scheduler, default(TaskCreationOptions), concurrencyProfile) => Task = new Task<TResult>(st =>
 		{
 			DoConcurrency();
-			var res = func(st);
+			var res = func(st ?? throw new ArgumentNullException($"'{nameof(state)}' argument acannot be null"));
 			return res;
 		}, state, CancellationTokenSource.Token, TaskCreationOptions);
 	}

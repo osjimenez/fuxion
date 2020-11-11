@@ -140,7 +140,7 @@ namespace System
 			=> me.GetTypeInfo().IsValueType && Nullable.GetUnderlyingType(me) == null
 				? Activator.CreateInstance(me)
 				: null;
-		public static string GetFullNameWithAssemblyName(this Type me) { return $"{me.AssemblyQualifiedName.Split(',').Take(2).Aggregate("", (a, n) => a + ", " + n, a => a.Trim(' ', ','))}"; }
+		public static string GetFullNameWithAssemblyName(this Type me) { return $"{me.AssemblyQualifiedName?.Split(',').Take(2).Aggregate("", (a, n) => a + ", " + n, a => a.Trim(' ', ','))}"; }
 		public static string GetSignature(this Type type, bool useFullNames)
 		{
 			var nullableType = Nullable.GetUnderlyingType(type);
@@ -189,8 +189,9 @@ namespace System
 				}
 				foreach (var inter in actual.GetTypeInfo().ImplementedInterfaces)
 					toProcess.Enqueue(inter);
-				if (actual.GetTypeInfo().BaseType != null)
-					toProcess.Enqueue(actual.GetTypeInfo().BaseType);
+				var baseType = actual.GetTypeInfo().BaseType;
+				if (baseType != null)
+					toProcess.Enqueue(baseType);
 			}
 			return null;
 		}

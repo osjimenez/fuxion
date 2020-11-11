@@ -39,7 +39,7 @@ namespace Fuxion.Test.Threading.Tasks
 			var task = TaskManager.StartNew(() =>
 			{
 				//task.Sleep(TimeSpan.FromMilliseconds(2500), TimeSpan.FromMilliseconds(500));
-				TaskManager.Current.Sleep(TimeSpan.FromMilliseconds(2500));
+				TaskManager.Current?.Sleep(TimeSpan.FromMilliseconds(2500));
 			});
 			task.CancelAndWait();
 			Printer.WriteLine("Cancelado en " + DateTime.Now.ToString("HH:mm:ss.fff"));
@@ -52,7 +52,7 @@ namespace Fuxion.Test.Threading.Tasks
 			var dt = DateTime.Now;
 			var task = TaskManager.StartNew(() =>
 			{
-				TaskManager.Current.Sleep(TimeSpan.FromMilliseconds(2500));
+				TaskManager.Current?.Sleep(TimeSpan.FromMilliseconds(2500));
 			});
 			return task.ContinueWith(_ =>
 			{
@@ -187,12 +187,12 @@ namespace Fuxion.Test.Threading.Tasks
 			{
 				void Void_Sync()
 				{
-					Printer.WriteLine($"Do {order} - {TaskManager.CurrentEntry.ConcurrencyProfile.Name}");
+					Printer.WriteLine($"Do {order} - {TaskManager.CurrentEntry?.ConcurrencyProfile.Name}");
 					try
 					{
 						AddToSeq($"S{order}-");
 						Printer.WriteLine("Start " + order);
-						Task.Delay(runDelay, TaskManager.Current.GetCancellationToken()).Wait();
+						Task.Delay(runDelay, TaskManager.Current?.GetCancellationToken()??throw new InvalidProgramException("Cancellation token cannot be obtained")).Wait();
 						AddToSeq($"E{order}-");
 						Printer.WriteLine("End " + order);
 					}
@@ -205,12 +205,12 @@ namespace Fuxion.Test.Threading.Tasks
 				}
 				async Task Void_Async()
 				{
-					Printer.WriteLine($"Do {order} - {TaskManager.CurrentEntry.ConcurrencyProfile.Name}");
+					Printer.WriteLine($"Do {order} - {TaskManager.CurrentEntry?.ConcurrencyProfile.Name}");
 					try
 					{
 						AddToSeq($"S{order}-");
 						Printer.WriteLine("Start " + order);
-						await Task.Delay(runDelay, TaskManager.Current.GetCancellationToken());
+						await Task.Delay(runDelay, TaskManager.Current?.GetCancellationToken() ?? throw new InvalidProgramException("Cancellation token cannot be obtained"));
 						AddToSeq($"E{order}-");
 						Printer.WriteLine("End " + order);
 					}
@@ -223,12 +223,12 @@ namespace Fuxion.Test.Threading.Tasks
 				}
 				string Result_Sync()
 				{
-					Printer.WriteLine($"Do {order} - {TaskManager.CurrentEntry.ConcurrencyProfile.Name}");
+					Printer.WriteLine($"Do {order} - {TaskManager.CurrentEntry?.ConcurrencyProfile.Name}");
 					try
 					{
 						AddToSeq($"S{order}-");
 						Printer.WriteLine("Start " + order);
-						Task.Delay(runDelay, TaskManager.Current.GetCancellationToken()).Wait();
+						Task.Delay(runDelay, TaskManager.Current?.GetCancellationToken() ?? throw new InvalidProgramException("Cancellation token cannot be obtained")).Wait();
 						AddToSeq($"E{order}-");
 						Printer.WriteLine("End " + order);
 						return $"{doneResult}_{parNum}";
@@ -242,12 +242,12 @@ namespace Fuxion.Test.Threading.Tasks
 				}
 				async Task<string> Result_Async()
 				{
-					Printer.WriteLine($"Do {order} - {TaskManager.CurrentEntry.ConcurrencyProfile.Name}");
+					Printer.WriteLine($"Do {order} - {TaskManager.CurrentEntry?.ConcurrencyProfile.Name}");
 					try
 					{
 						AddToSeq($"S{order}-");
 						Printer.WriteLine("Start " + order);
-						await Task.Delay(runDelay, TaskManager.Current.GetCancellationToken());
+						await Task.Delay(runDelay, TaskManager.Current?.GetCancellationToken() ?? throw new InvalidProgramException("Cancellation token cannot be obtained"));
 						AddToSeq($"E{order}-");
 						Printer.WriteLine("End " + order);
 						return $"{doneResult}_{parNum}";

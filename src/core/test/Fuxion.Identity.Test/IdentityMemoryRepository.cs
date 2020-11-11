@@ -33,7 +33,7 @@ namespace Fuxion.Identity.Test
 
 		public bool Exist(string key) => false;
 		public Task<bool> ExistAsync(string key) => Task.FromResult(Exist(key));
-		public IIdentity Find(string key) => Identities.All.FirstOrDefault(i => string.Compare(i.UserName, key, true) == 0);
+		public IIdentity Find(string key) => Identities.All.First(i => string.Compare(i.UserName, key, true) == 0);
 		public Task<IIdentity> FindAsync(string key) => Task.FromResult(Find(key));
 		public IIdentity Get(string key) => default!;
 		public Task<IIdentity> GetAsync(string key) => Task.FromResult(Get(key));

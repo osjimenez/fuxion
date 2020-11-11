@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 
@@ -43,7 +44,9 @@ namespace Fuxion
 				r.Timeout = (int)Timeout.TotalMilliseconds;
 				return r;
 			}).GetResponse();
-			var dt = DateTimeOffset.ParseExact(res.Headers["date"], "ddd, dd MMM yyyy HH:mm:ss 'GMT'", CultureInfo.InvariantCulture.DateTimeFormat, DateTimeStyles.AssumeUniversal).DateTime;
+			var dateHeader = res.Headers["date"];
+			if (dateHeader == null) throw new InvalidDataException("'date' header cannot be found in response");
+			var dt = DateTimeOffset.ParseExact(dateHeader, "ddd, dd MMM yyyy HH:mm:ss 'GMT'", CultureInfo.InvariantCulture.DateTimeFormat, DateTimeStyles.AssumeUniversal).DateTime;
 			res.Close();
 			return dt;
 			//return

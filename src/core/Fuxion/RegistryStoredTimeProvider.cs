@@ -17,14 +17,14 @@ namespace Fuxion
 		public override DateTime GetUtcTime()
 		{
 			var key = Registry.CurrentUser.CreateSubKey(Key);
-			var value = Deserialize(key.GetValue(Value).ToString());
-			//var value = DateTime.Parse(key.GetValue(Value).ToString());
+			var reg = key.GetValue(Value).ToString();
+			if (reg == null) throw new InvalidStateException("The time value cannot be found in registry");
+			var value = Deserialize(reg);
 			return value;
 		}
 		public override void SaveUtcTime(DateTime time)
 		{
 			var key = Registry.CurrentUser.CreateSubKey(Key);
-			//key.SetValue(Value, time.ToString());
 			key.SetValue(Value, Serialize(time));
 		}
 		static readonly byte[] entropy = { 9, 8, 7, 6, 5 };

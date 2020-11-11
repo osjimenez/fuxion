@@ -8,11 +8,36 @@ namespace Fuxion.Synchronization
 	internal static class SynchronizationExtensions
 	{
 		//internal static ISideRunner CreateRunner(this ISide me, IPrinter printer, IComparatorRunner comparator, ICollection<LoadedItem> entries, IEnumerable<IComparatorResultInternal> results, ICollection<ISideRunner> subSides)
-		//      {
+		//{
 		//	return (ISideRunner)Activator.CreateInstance(typeof(SideRunner<,>).MakeGenericType(me.GetType().GetTypeInfo().GenericTypeArguments), me, printer, comparator, entries, results, subSides);
-		//      }
-		internal static ISideRunner CreateRunner(this ISide me, IPrinter printer) => (ISideRunner)Activator.CreateInstance(typeof(SideRunner<,>).MakeGenericType(me.GetType().GetTypeInfo().GenericTypeArguments), me, printer);
-		internal static IComparatorRunner CreateRunner(this IComparator me) => (IComparatorRunner)Activator.CreateInstance(typeof(ComparatorRunner<,,>).MakeGenericType(me.GetType().GetTypeInfo().GenericTypeArguments), me);
+		//}
+
+		//internal static ISideRunner CreateRunner(this ISide me, IPrinter printer)
+		//		=> (ISideRunner)Activator.CreateInstance(typeof(SideRunner<,>).MakeGenericType(me.GetType().GetTypeInfo().GenericTypeArguments), me, printer);
+		//internal static IComparatorRunner CreateRunner(this IComparator me)
+		//		=> (IComparatorRunner)Activator.CreateInstance(typeof(ComparatorRunner<,,>).MakeGenericType(me.GetType().GetTypeInfo().GenericTypeArguments), me);
+		internal static ISideRunner CreateRunner(this ISide me, IPrinter printer)
+		{
+			if (Activator.CreateInstance(typeof(SideRunner<,>).MakeGenericType(me.GetType().GetTypeInfo().GenericTypeArguments), me, printer) is ISideRunner sr)
+				return sr;
+			throw new InvalidOperationException($"A runner for side '{me.Name}' cannot be created");
+		}
+		internal static IComparatorRunner CreateRunner(this IComparator me)
+		{
+			if (Activator.CreateInstance(typeof(ComparatorRunner<,,>).MakeGenericType(me.GetType().GetTypeInfo().GenericTypeArguments), me) is IComparatorRunner cr)
+				return cr;
+			throw new InvalidOperationException($"A runner for a comparator cannot be created");
+		}
+
+
+
+
+
+
+
+
+
+
 
 		internal static Type GetItemType(this ISideRunner me) => me.GetType().GetTypeInfo().GenericTypeArguments[1];
 		internal static ISideRunner SearchMasterSubSide(this ISideRunner me, ISideRunner masterSide)

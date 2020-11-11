@@ -49,7 +49,7 @@ namespace Fuxion.Identity
 	public class ScopeEqualityComparer : IEqualityComparer<IScope>
 	{
 		private DiscriminatorEqualityComparer disCom = new DiscriminatorEqualityComparer();
-		public bool Equals(IScope x, IScope y) => AreEquals(x, y);
+		public bool Equals(IScope? x, IScope? y) => AreEquals(x, y);
 
 		public int GetHashCode(IScope obj)
 		{
@@ -58,7 +58,7 @@ namespace Fuxion.Identity
 			return disCom.GetHashCode(obj.Discriminator) ^ obj.Propagation.GetHashCode();
 		}
 
-		private bool AreEquals(object obj1, object obj2)
+		private bool AreEquals(object? obj1, object? obj2)
 		{
 			// If both are NULL, return TRUE
 			if (Equals(obj1, null) && Equals(obj2, null))

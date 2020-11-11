@@ -1,5 +1,6 @@
 ﻿using Fuxion.Reflection;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 
@@ -27,7 +28,7 @@ namespace System.Reflection
 		/// <param name="inherit">true to inspect the ancestors of element; otherwise, false.</param>
 		/// <param name="exceptionIfNotFound">true to throw <see cref="AttributeNotFoundException"/> if custom attribute not found.</param>
 		/// <returns></returns>
-		public static TAttribute? GetCustomAttribute<TAttribute>(this MemberInfo me, bool inherit, bool exceptionIfNotFound) where TAttribute : Attribute
+		public static TAttribute? GetCustomAttribute<TAttribute>(this MemberInfo me, bool inherit, [DoesNotReturnIf(true)] bool exceptionIfNotFound) where TAttribute : Attribute
 			=> GetCustomAttribute<TAttribute>(me, inherit, exceptionIfNotFound, true);
 		/// <summary>
 		/// Retrieves a custom attribute of a specified type that is applied to a specified
@@ -39,7 +40,7 @@ namespace System.Reflection
 		/// <param name="exceptionIfNotFound">true to throw <see cref="AttributeNotFoundException"/> if custom attribute not found.</param>
 		/// <param name="exceptionIfMoreThanOne">true to throw <see cref="AttributeMoreThanOneException"/> if custom attribute found more than once.</param>
 		/// <returns></returns>
-		public static TAttribute? GetCustomAttribute<TAttribute>(this MemberInfo me, bool inherit, bool exceptionIfNotFound, bool exceptionIfMoreThanOne) where TAttribute : Attribute
+		public static TAttribute? GetCustomAttribute<TAttribute>(this MemberInfo me, bool inherit, [DoesNotReturnIf(true)] bool exceptionIfNotFound, [DoesNotReturnIf(true)] bool exceptionIfMoreThanOne) where TAttribute : Attribute
 		{
 			var objAtts = me.GetCustomAttributes(typeof(TAttribute), inherit);
 			var atts = objAtts?.Cast<TAttribute>();
@@ -52,7 +53,7 @@ namespace System.Reflection
 		}
 
 
-		public static bool HasCustomAttribute<TAttribute>(this MemberInfo member, bool inherit = true, bool exceptionIfMoreThanOne = true) where TAttribute : Attribute
+		public static bool HasCustomAttribute<TAttribute>(this MemberInfo member, bool inherit = true, [DoesNotReturnIf(true)] bool exceptionIfMoreThanOne = true) where TAttribute : Attribute
 		{
 			var att = member.GetCustomAttribute<TAttribute>(inherit, false, exceptionIfMoreThanOne);
 			return att != null;
@@ -97,7 +98,7 @@ namespace System.Reflection
 			}
 			// Method name
 			if (includeDeclaringType)
-				res.Append(method.DeclaringType.GetSignature(useFullNames) + ".");
+				res.Append(method.DeclaringType?.GetSignature(useFullNames) + ".");
 			res.Append(method.Name);
 			// Generics arguments
 			if (method.IsGenericMethod)

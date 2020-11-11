@@ -13,6 +13,9 @@ namespace Fuxion.Synchronization
 	{
 		public SynchronizationManager()
 		{
+			//cleanEntriesTask = TaskManager.Create(()=> { });
+			// NULLABLE - Use default to solve nullability
+			cleanEntriesTask = default!;
 			cleanEntriesTask = TaskManager.StartNew(async () =>
 			{
 				// Este primer delay es para que se cree la Task adecuadamente

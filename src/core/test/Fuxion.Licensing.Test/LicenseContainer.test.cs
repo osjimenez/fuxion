@@ -25,12 +25,12 @@ namespace Fuxion.Licensing.Test
 			output.WriteLine(json);
 
 			output.WriteLine("FromJson:");
-			var con2 = json.FromJson<LicenseContainer>();
+			var con2 = json.FromJson<LicenseContainer>()!;
 			var json2 = con2.ToJson();
 			output.WriteLine(json2);
 			Assert.Equal(json, json2);
 			Assert.True(con2.Is<LicenseMock>());
-			var lic2 = con2.As<LicenseMock>();
+			var lic2 = con2.As<LicenseMock>()!;
 			Assert.NotNull(lic2);
 			Assert.Equal(lic.HardwareId.Key, lic2.HardwareId.Key);
 			Assert.Equal(lic.ProductId.Key, lic2.ProductId.Key);
@@ -41,14 +41,14 @@ namespace Fuxion.Licensing.Test
 			output.WriteLine("Time: " + time);
 			Thread.Sleep(time);
 			output.WriteLine("FromJson timed:");
-			var con3 = json.FromJson<LicenseContainer>();
+			var con3 = json.FromJson<LicenseContainer>()!;
 			var json3 = con3.ToJson();
 			output.WriteLine(json3);
 
 			Assert.Equal(json, json3);
 			Assert.Equal(json2, json3);
 			Assert.True(con3.Is<LicenseMock>());
-			var lic3 = con3.As<LicenseMock>();
+			var lic3 = con3.As<LicenseMock>()!;
 			Assert.NotNull(lic3);
 			Assert.Equal(lic.HardwareId.Key, lic3.HardwareId.Key);
 			Assert.Equal(lic.ProductId.Key, lic3.ProductId.Key);

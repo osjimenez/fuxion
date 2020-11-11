@@ -8,6 +8,7 @@ namespace Fuxion.Synchronization
 	internal class ComparatorRunner<TItemA, TItemB, TKey> : IComparatorRunner
 		where TItemA : class
 		where TItemB : class
+		where TKey : notnull
 	{
 		public ComparatorRunner(Comparator<TItemA, TItemB, TKey> definition)
 		{
@@ -52,7 +53,7 @@ namespace Fuxion.Synchronization
 							var tup = new Tuple<LoadedItem, LoadedItem>(new LoadedItem(null, Enumerable.Empty<ISideRunner>().ToList()), item);
 							if (sideA?.SubSides != null)
 								foreach (var subSide in (runInverted ? sideA : sideB).SubSides)
-								{
+									{
 									var clon = subSide.Clone();
 									clon.Source = null;
 									clon.Definition.Name = $"{clon.Definition.Name} ({sideB.GetItemName(item.Item)})";
@@ -98,12 +99,14 @@ namespace Fuxion.Synchronization
 				{
 					if (side.GetItemType() == side.Comparator.GetItemTypes().Item1)
 					{
-						var side2 = a.Sides.SingleOrDefault(s => s.GetItemType() == side.Comparator.GetItemTypes().Item2);
+						var side2 = a.Sides.SingleOrDefault(s => s.GetItemType() == side.Comparator.GetItemTypes().Item2)
+							?? throw new InvalidProgramException("Side not found");
 						side.Results = side.Comparator.CompareSides(side, side2, true, printer);
 					}
 					else
 					{
-						var side2 = a.Sides.SingleOrDefault(s => s.GetItemType() == side.Comparator.GetItemTypes().Item1);
+						var side2 = a.Sides.SingleOrDefault(s => s.GetItemType() == side.Comparator.GetItemTypes().Item1)
+							?? throw new InvalidProgramException("Side not found");
 						side.Results = side.Comparator.CompareSides(side2, side, false, printer);
 					}
 					res.SubSides.Add(side);

@@ -26,7 +26,7 @@ namespace Fuxion.Reflection
         /// <param name="member">Miembro sobre el que se ha buscado el atributo personalizado.</param>
         /// <param name="attributeType">Tipo del atributo personalizado que se ha buscado.</param>
         public AttributeMoreThanOneException(MemberInfo member, Type attributeType)
-            : base("El miembro '" + member.Name + "' del tipo '" + member.DeclaringType.Name +
+            : base("El miembro '" + member.Name + "' del tipo '" + member.DeclaringType?.Name +
                     "' no esta adornado con el atributo '" + attributeType.Name + "'.")
         {
             Member = member;

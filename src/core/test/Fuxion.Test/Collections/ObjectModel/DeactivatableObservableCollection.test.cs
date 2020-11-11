@@ -19,13 +19,13 @@ namespace Fuxion.Test.Collections.ObjectModel
 						Assert.True(e.Action == NotifyCollectionChangedAction.Add);
 						Assert.NotNull(e.NewItems);
 						Assert.Null(e.OldItems);
-						Assert.True(e.NewItems.Count == 1);
+						Assert.True(e.NewItems?.Count == 1);
 						break;
 					case 1:
 						Assert.True(e.Action == NotifyCollectionChangedAction.Add);
 						Assert.NotNull(e.NewItems);
 						Assert.Null(e.OldItems);
-						Assert.True(e.NewItems.Count == 2);
+						Assert.True(e.NewItems?.Count == 2);
 						break;
 				}
 				step++;
@@ -49,13 +49,13 @@ namespace Fuxion.Test.Collections.ObjectModel
 						Assert.True(e.Action == NotifyCollectionChangedAction.Remove);
 						Assert.Null(e.NewItems);
 						Assert.NotNull(e.OldItems);
-						Assert.True(e.OldItems.Count == 1);
+						Assert.True(e.OldItems?.Count == 1);
 						break;
 					case 1:
 						Assert.True(e.Action == NotifyCollectionChangedAction.Remove);
 						Assert.Null(e.NewItems);
 						Assert.NotNull(e.OldItems);
-						Assert.True(e.OldItems.Count == 2);
+						Assert.True(e.OldItems?.Count == 2);
 						break;
 				}
 				step++;
@@ -81,21 +81,21 @@ namespace Fuxion.Test.Collections.ObjectModel
 						Assert.True(e.Action == NotifyCollectionChangedAction.Replace);
 						Assert.NotNull(e.NewItems);
 						Assert.NotNull(e.OldItems);
-						Assert.True(e.NewItems.Count == 1);
-						Assert.True(e.OldItems.Count == 1);
-						Assert.Same("Oscar", e.OldItems[0]);
-						Assert.Same("Oscar2", e.NewItems[0]);
+						Assert.True(e.NewItems?.Count == 1);
+						Assert.True(e.OldItems?.Count == 1);
+						Assert.Same("Oscar", e.OldItems?[0]);
+						Assert.Same("Oscar2", e.NewItems?[0]);
 						break;
 					case 1:
 						Assert.True(e.Action == NotifyCollectionChangedAction.Replace);
 						Assert.NotNull(e.NewItems);
 						Assert.NotNull(e.OldItems);
-						Assert.True(e.NewItems.Count == 2);
-						Assert.True(e.OldItems.Count == 2);
-						Assert.Same("Oscar2", e.OldItems[0]);
-						Assert.Same("Oscar3", e.NewItems[0]);
-						Assert.Same("Asier", e.OldItems[1]);
-						Assert.Same("Asier3", e.NewItems[1]);
+						Assert.True(e.NewItems?.Count == 2);
+						Assert.True(e.OldItems?.Count == 2);
+						Assert.Same("Oscar2", e.OldItems?[0]);
+						Assert.Same("Oscar3", e.NewItems?[0]);
+						Assert.Same("Asier", e.OldItems?[1]);
+						Assert.Same("Asier3", e.NewItems?[1]);
 						break;
 				}
 				step++;

@@ -29,7 +29,7 @@ namespace Fuxion.Application.Events
 		[JsonProperty]
 		public int ClassVersion { get; private set; }
 
-		public T AsEvent<T>() where T : Event => base.As<T>().Transform(evt => evt.AddEventSourcing(TargetVersion, CorrelationId, EventCommittedTimestamp, ClassVersion));
+		public T? AsEvent<T>() where T : Event => base.As<T>().Transform(evt => evt?.AddEventSourcing(TargetVersion, CorrelationId, EventCommittedTimestamp, ClassVersion));
 		public Event? AsEvent(Type type) => ((Event?)base.As(type)).Transform(evt => evt?.AddEventSourcing(TargetVersion, CorrelationId, EventCommittedTimestamp, ClassVersion));
 		public Event? WithTypeKeyDirectory(TypeKeyDirectory typeKeyDirectory) => AsEvent(typeKeyDirectory[PayloadKey]);
 	}

@@ -14,7 +14,7 @@ namespace Fuxion.Identity
 	{
 		private FunctionEqualityComparer funCom = new FunctionEqualityComparer();
 		private ScopeEqualityComparer scoCom = new ScopeEqualityComparer();
-		public bool Equals(IPermission x, IPermission y) => AreEquals(x, y);
+		public bool Equals(IPermission? x, IPermission? y) => AreEquals(x, y);
 
 		public int GetHashCode(IPermission obj)
 		{
@@ -23,7 +23,7 @@ namespace Fuxion.Identity
 			return funCom.GetHashCode(obj.Function) ^ obj.Scopes.Select(s => scoCom.GetHashCode(s)).Aggregate(0, (a, c) => a ^ c) ^ obj.Value.GetHashCode();
 		}
 
-		private bool AreEquals(object obj1, object obj2)
+		private bool AreEquals(object? obj1, object? obj2)
 		{
 			// If both are NULL, return TRUE
 			if (Equals(obj1, null) && Equals(obj2, null))

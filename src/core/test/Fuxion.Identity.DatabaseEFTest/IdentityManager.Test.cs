@@ -114,13 +114,13 @@ namespace Fuxion.Identity.DatabaseEFTest
 					var strArgs = $"\r\nscenario<{scenarios}>\r\nusername<{username}>\r\nfunctions<{functions.Aggregate("", (a, c) => a + c.Name + "·")}>\r\ntype<{type.Name}>";
 					if (expected)
 						Assert.True(
-							IM.GetCurrent()
+							IM.GetCurrent()?
 								.Can(functions)
 								.Type(type)
 							, $"Function assignment failed unexpected: {strArgs}");
 					else
 						Assert.False(
-							IM.GetCurrent()
+							IM.GetCurrent()?
 								.Can(functions)
 								.Type(type)
 							, $"Function assignment success unexpected: {strArgs}");

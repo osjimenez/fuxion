@@ -31,12 +31,13 @@ namespace Fuxion.ComponentModel
 	public delegate void NotifierPropertyChangedEventHandler<TNotifier>(TNotifier notifier, NotifierPropertyChangedEventArgs<TNotifier> e);
 	public class NotifierPropertyChangedEventArgs<TNotifier> : PropertyChangedEventArgs
 	{
-		public NotifierPropertyChangedEventArgs(string propertyName, TNotifier notifier, object? previousValue, object? actualValue) : base(propertyName)
+		public NotifierPropertyChangedEventArgs(string? propertyName, TNotifier notifier, object? previousValue, object? actualValue) : base(propertyName)
 		{
 			Notifier = notifier;
 			PreviousValue = previousValue;
 			ActualValue = actualValue;
 		}
+		// NULLABLE - Method removed
 		public NotifierPropertyChangedEventArgs<T> ConvertToNotifier<T>(T notifier) => new NotifierPropertyChangedEventArgs<T>(PropertyName, notifier, PreviousValue, ActualValue);
 		private object? PreviousValue { get; set; }
 		private object? ActualValue { get; set; }
@@ -164,14 +165,13 @@ namespace Fuxion.ComponentModel
 		{
 			if (value != null && value.GetType().IsSubclassOfRawGeneric(typeof(Notifier<>)))
 			{
-				//var ti = typeof(Notifier<>).GetTypeInfo();
 				var ti = value.GetType().GetTypeInfo();
-				while (!ti.IsGenericType || ti.GetGenericTypeDefinition() != typeof(Notifier<>))
+				while (ti != null && (!ti.IsGenericType || ti.GetGenericTypeDefinition() != typeof(Notifier<>)))
 				{
-					ti = ti.BaseType.GetTypeInfo();
+					ti = ti.BaseType?.GetTypeInfo();
 				}
-				var f = ti.GetDeclaredField("PropertiesDictionary");
-				var pros = (Dictionary<string, object>)f.GetValue(value);
+				var field = ti?.GetDeclaredField("PropertiesDictionary");
+				var pros = (Dictionary<string, object>)(field?.GetValue(value) ?? new NullReferenceException($"The '{nameof(value)}' parameter cannot be reflected prior to write it at json"));
 				writer.WriteStartObject();
 				foreach (var pro in pros.Where(p => p.Key != "UseSynchronizerOnRaisePropertyChanged"))
 				{
@@ -183,29 +183,16 @@ namespace Fuxion.ComponentModel
 			}
 			else
 			{
-				throw new InvalidCastException($"Type '{value?.GetType().Name ?? "null"}' isn't a subclass of '{nameof(NotifierJsonConverter)}'");
+				throw new InvalidCastException($"Type '{value?.GetType().Name ?? "null"}' isn't a subclass of '{typeof(Notifier<>).Name}'");
 			}
 		}
-		public override object ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
+		public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
 		{
 			if (existingValue == null) existingValue = Activator.CreateInstance(objectType);
-			//reader.Read();
-			//var props = objectType.GetTypeInfo().GetAllProperties();
-			//while (reader.TokenType != JsonToken.Null)
-			//{
-			//    var pro = props.FirstOrDefault(p => p.Name == reader.Path);
-			//    if (pro != null)
-			//    {
-			//        pro.SetValue(existingValue, serializer.Populate(reader, existingValue));
-			//    }
-			//    reader.Read();
-			//}
-			//var proName = reader.ReadAsString();
-
-
 			// Load JObject from stream
 			var jObject = JObject.Load(reader);
-			serializer.Populate(jObject.CreateReader(), existingValue);
+			if (existingValue != null)
+				serializer.Populate(jObject.CreateReader(), existingValue);
 			return existingValue;
 		}
 		public override bool CanConvert(Type objectType) =>
@@ -302,7 +289,7 @@ namespace Fuxion.ComponentModel
 		}
 		private Locker<T> GetLockerProperty<T>(Func<T>? defaultValueFunction = null, [CallerMemberName] string propertyName = "")
 		{
-			if (propertyName == null) throw new ArgumentNullException("propertyName");
+			if (propertyName == null) throw new ArgumentNullException(nameof(propertyName));
 			if (PropertiesDictionary.TryGetValue(GetPropertyKey(propertyName), out var objValue))
 				return (Locker<T>)(objValue!);
 			var defaultValue = defaultValueFunction == null ? default : defaultValueFunction();
@@ -314,7 +301,7 @@ namespace Fuxion.ComponentModel
 		protected string GetLockedValue(Func<string>? defaultValueFunction = null, [CallerMemberName] string propertyName = "") => OnGetLockedValue(defaultValueFunction, propertyName);
 		private T OnGetLockedValue<T>(Func<T>? defaultValueFunction = null, [CallerMemberName] string propertyName = "")
 		{
-			if (propertyName == null) throw new ArgumentNullException("propertyName");
+			if (propertyName == null) throw new ArgumentNullException(nameof(propertyName));
 			var locker = GetLockerProperty(defaultValueFunction, propertyName);
 			var value = locker.Read(_ => _);
 			//T value = locker.ObjectLocked;
@@ -339,7 +326,12 @@ namespace Fuxion.ComponentModel
 			else
 			{
 				// oldLockerValue = new ValueLocker<T>((T)GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static).GetValue(this, null));
-				oldLockerValue = new Locker<T>((T)GetType().GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).Single(p => p.Name == propertyName).GetValue(this, null));
+				var obj = (T)GetType()
+					.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
+					.Single(p => p.Name == propertyName)
+					.GetValue(this, null);
+				if (!typeof(T).IsNullable() && obj == null) throw new NullReferenceException($"The value from property '{propertyName}' was null");
+				oldLockerValue = new Locker<T>(obj!);
 				PropertiesDictionary[GetPropertyKey(propertyName)] = oldLockerValue;
 			}
 			//if (raiseOnlyIfNotEquals && ((oldLockerValue == null && value == null) || EqualityComparer<T>.Default.Equals(oldLockerValue.Read(_ => _), value)))
@@ -463,7 +455,10 @@ namespace Fuxion.ComponentModel
 		{
 			if (!(me is NotifierBinding<TNotifier, TProperty> not)) throw new InvalidCastException();
 			not.Notifier.PropertyChanged += (s, e) => e.Case(not.SourcePropertyExpression, a => targetPropertyExpression.GetPropertyInfo().SetValue(target, transformFuction(a.ActualValue)));
-			targetPropertyExpression.GetPropertyInfo().SetValue(target, transformFuction((TProperty)not.SourcePropertyExpression.GetPropertyInfo().GetValue(not.Notifier)));
+			var val = (TProperty)not.SourcePropertyExpression.GetPropertyInfo().GetValue(not.Notifier);
+			// NULLABLE - Unexpected null
+			if (val == null) throw new NullReferenceException($"Unexpected null");
+			targetPropertyExpression.GetPropertyInfo().SetValue(target, transformFuction(val));
 		}
 		public static void TwoWayTo<TNotifier, TProperty, TTargetNotifier>(this INotifierBinding<TNotifier, TProperty> me, INotifier<TTargetNotifier> target, Expression<Func<TProperty>> targetPropertyExpression)
 			where TNotifier : class, INotifier<TNotifier>

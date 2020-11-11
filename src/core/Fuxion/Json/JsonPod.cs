@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
@@ -10,7 +11,7 @@ namespace Fuxion.Json
 	public static class JsonPodExtensions
 	{
 		public static JsonPod<TPayload, TKey> ToJsonPod<TPayload, TKey>(this TPayload me, TKey key) where TPayload : class => new JsonPod<TPayload, TKey>(me, key);
-		public static JsonPod<TPayload, TKey> FromJsonPod<TPayload, TKey>(this string me) where TPayload : class => me.FromJson<JsonPod<TPayload, TKey>>();
+		public static JsonPod<TPayload, TKey>? FromJsonPod<TPayload, TKey>(this string me) where TPayload : class => me.FromJson<JsonPod<TPayload, TKey>>();
 	}
 	public class JsonPod<TPayload, TKey>
 	{
@@ -39,15 +40,18 @@ namespace Fuxion.Json
 				if (Payload == null && PayloadJRaw.Value != null)
 				{
 					bool wasFailed = false;
-					var res  = PayloadJRaw.Value.ToString().FromJson<TPayload>(new JsonSerializerSettings
+					object rr = new object();
+					var str = PayloadJRaw.Value.ToString();
+					if (str== null || str.IsNullOrEmpty()) throw new System.IO.InvalidDataException("The PayloadJRaw value hasn't a representative string");
+					var res  = str.FromJson<TPayload>(new JsonSerializerSettings
 					{
-						Error = delegate (object sender, ErrorEventArgs args)
+						Error = delegate (object? sender, ErrorEventArgs args)
 						{
 							wasFailed = true;
 							args.ErrorContext.Handled = true;
 						}
 					});
-					if (!wasFailed)
+					if (res != null && !wasFailed)
 						Payload = res;
 				}
 			}
@@ -65,13 +69,24 @@ namespace Fuxion.Json
 			}
 		}
 
-		public static implicit operator TPayload(JsonPod<TPayload, TKey> payload)
+		public static implicit operator TPayload(JsonPod<TPayload, TKey> payload)=> payload.Payload;
+		public JsonPod<T, TKey>? CastWithPayload<T>()
 		{
-			return payload.Payload;
+			var payload = PayloadJRaw.Value?.ToString();
+			if (payload == null) return null;
+			var res = payload.FromJson<T>();
+			if (res == null) return null;
+			return new JsonPod<T, TKey>(res, PayloadKey);
 		}
-		public JsonPod<T, TKey> CastWithPayload<T>() => new JsonPod<T, TKey>(PayloadJRaw?.Value != null ? PayloadJRaw.Value.ToString().FromJson<T>() : default, PayloadKey);
-		public T? As<T>() => PayloadJRaw.Value != null ? PayloadJRaw.Value.ToString().FromJson<T>() : default;
-		public object? As(Type type) => PayloadJRaw.Value?.ToString().FromJson(type);
+		public T? As<T>()
+		{
+			var payload = PayloadJRaw.Value?.ToString();
+			if (payload == null) return default;
+			var res = payload.FromJson<T>();
+			if (res == null) return default;
+			return res;
+		}
+		public object? As(Type type) => PayloadJRaw.Value?.ToString()?.FromJson(type);
 
 		public bool Is<T>() => Is(typeof(T));
 		public bool Is(Type type)

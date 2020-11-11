@@ -10,7 +10,7 @@ namespace Fuxion.Identity
 			CurrentUserNameProvider = currentUserNameProvider;
 			Repository = repository;
 		}
-		public IIdentity GetCurrent() => Repository.Find(CurrentUserNameProvider.GetCurrentUserName());
+		public IIdentity? GetCurrent() => Repository.Find(CurrentUserNameProvider.GetCurrentUserName());
 		public ICurrentUserNameProvider CurrentUserNameProvider { get; private set; }
 		public IPasswordProvider PasswordProvider { get; private set; }
 		public IKeyValueRepository<string, IIdentity> Repository { get; private set; }

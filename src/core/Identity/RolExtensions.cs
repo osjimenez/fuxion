@@ -72,7 +72,7 @@ namespace Fuxion.Identity
 		}
 		#endregion
 		#region Can().By..<IDiscriminator>()
-		public static bool ByAll(this IRolCan me, TypeDiscriminator typeDiscriminator, params IDiscriminator[] discriminators)
+		public static bool ByAll(this IRolCan me, TypeDiscriminator? typeDiscriminator, params IDiscriminator[] discriminators)
 		{
 			using (var res = Printer.CallResult<bool>())
 				return res.Value = ((IInternalRolCan)me).CheckDiscriminators(true, typeDiscriminator, discriminators);

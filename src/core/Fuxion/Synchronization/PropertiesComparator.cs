@@ -40,11 +40,15 @@ namespace Fuxion.Synchronization
 					(bValue != null && bValue.Equals(aValue))
 					||
 					(aValue == null && bValue == null)
+					|| o.a.DeclaringType == null
+					|| o.b.DeclaringType == null
 					)
 						return null;
-					return (IPropertyRunner)Activator.CreateInstance(
+					if(Activator.CreateInstance(
 						typeof(PropertyRunner<,,,>).MakeGenericType(o.a.DeclaringType, o.b.DeclaringType, o.a.PropertyType, o.b.PropertyType),
-						o.a.Name, aValue, bValue, null, null);
+						o.a.Name, aValue, bValue, null, null) is IPropertyRunner pr)
+						return pr;
+					return null;
 				});
 		}
 		internal ICollection<IPropertyRunner> Compare(TItemA itemA, TItemB itemB, bool runInverted)

@@ -30,21 +30,21 @@ namespace Fuxion.Licensing
 			{
 				var parameters = rsa.ExportParameters(true);
 				return string.Format("<RSAKeyValue>\r\t<Modulus>{0}</Modulus>\r\t<Exponent>{1}</Exponent>\r\t<P>{2}</P>\r\t<Q>{3}</Q>\r\t<DP>{4}</DP>\r\t<DQ>{5}</DQ>\r\t<InverseQ>{6}</InverseQ>\r\t<D>{7}</D>\r</RSAKeyValue>",
-					Convert.ToBase64String(parameters.Modulus),
-					Convert.ToBase64String(parameters.Exponent),
-					Convert.ToBase64String(parameters.P),
-					Convert.ToBase64String(parameters.Q),
-					Convert.ToBase64String(parameters.DP),
-					Convert.ToBase64String(parameters.DQ),
-					Convert.ToBase64String(parameters.InverseQ),
-					Convert.ToBase64String(parameters.D));
+					Convert.ToBase64String(parameters.Modulus ?? Array.Empty<byte>()),
+					Convert.ToBase64String(parameters.Exponent ?? Array.Empty<byte>()),
+					Convert.ToBase64String(parameters.P ?? Array.Empty<byte>()),
+					Convert.ToBase64String(parameters.Q ?? Array.Empty<byte>()),
+					Convert.ToBase64String(parameters.DP ?? Array.Empty<byte>()),
+					Convert.ToBase64String(parameters.DQ ?? Array.Empty<byte>()),
+					Convert.ToBase64String(parameters.InverseQ ?? Array.Empty<byte>()),
+					Convert.ToBase64String(parameters.D ?? Array.Empty<byte>()));
 			}
 			else
 			{
 				var parameters = rsa.ExportParameters(true);
 				return string.Format("<RSAKeyValue>\r\t<Modulus>{0}</Modulus>\r\t<Exponent>{1}</Exponent>\r</RSAKeyValue>",
-					Convert.ToBase64String(parameters.Modulus),
-					Convert.ToBase64String(parameters.Exponent));
+					Convert.ToBase64String(parameters.Modulus ?? Array.Empty<byte>()),
+					Convert.ToBase64String(parameters.Exponent ?? Array.Empty<byte>()));
 			}
 		}
 		// TODO - Oscar - Implement server-side validation and try to avoid public key hardcoding violation
@@ -52,7 +52,7 @@ namespace Fuxion.Licensing
 		{
 			try
 			{
-				string? validationMessage = null;
+				string validationMessage = "";
 				var cons = Store.Query()
 					.Where(c =>
 						c.VerifySignature(key)
@@ -60,8 +60,8 @@ namespace Fuxion.Licensing
 						c.Is<T>());
 				if (!cons.Any())
 					throw new LicenseValidationException($"Couldn't find any license of type '{typeof(T).Name}'");
-				if (!Store.Query().Any(l => l.Is<T>() && l.As<T>().Validate(out validationMessage)))
-					throw new LicenseValidationException(validationMessage!);
+				if (!Store.Query().Any(l => l.Is<T>() && l.As<T>()!.Validate(out validationMessage)))
+					throw new LicenseValidationException(validationMessage);
 				return true;
 			}
 			catch

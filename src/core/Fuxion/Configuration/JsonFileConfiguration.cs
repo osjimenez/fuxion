@@ -23,8 +23,10 @@ namespace Fuxion.Configuration
 			get
 			{
 				if (!string.IsNullOrWhiteSpace(path)) return path;
-				var ass = Assembly.GetEntryAssembly() ?? Assembly.GetAssembly(typeof(JsonFileConfiguration));
-				return path = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(ass.Location), "config.json");
+				var ass = Assembly.GetEntryAssembly() 
+					?? Assembly.GetAssembly(typeof(JsonFileConfiguration)) 
+					?? throw new InvalidProgramException($"Application Assembly cannot be determined");
+				return path = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(ass.Location) ?? throw new InvalidProgramException($"Application directory cannot be determined"), "config.json");
 			}
 			set
 			{
@@ -40,8 +42,12 @@ namespace Fuxion.Configuration
 		private void Load()
 		{
 			if (File.Exists(Path))
-				foreach (var con in File.ReadAllText(Path).FromJson<JsonPod<object?, Guid>[]>())
-					items.Add(JsonFileConfigurationItem.FromPod(con));
+			{
+				var pods = File.ReadAllText(Path).FromJson<JsonPod<object?, Guid>[]>();
+				if (pods == null) throw new InvalidCastException($"Deserializatiiion of path '{Path}' cannot be done as '{typeof(JsonPod<object?, Guid>[]).Name}'");
+				foreach (var pod in pods)
+					items.Add(JsonFileConfigurationItem.FromPod(pod));
+			}
 		}
 
 		public void Clear()
@@ -57,9 +63,8 @@ namespace Fuxion.Configuration
 				var item = items[id];
 				if (item.Instance != null)
 					return (TConfigurationItem)item.Instance;
-				if (item.Pod.Is<TConfigurationItem>())
-					return item.Pod.As<TConfigurationItem>();
-				throw new InvalidCastException($"Configuration item with id '{id}' is not of type '{typeof(TConfigurationItem).Name}'");
+				return item.Pod.As<TConfigurationItem>()
+					?? throw new InvalidCastException($"Configuration item with id '{id}' is not of type '{typeof(TConfigurationItem).Name}'");
 			}
 			else
 			{

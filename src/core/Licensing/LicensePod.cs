@@ -75,6 +75,7 @@ namespace Fuxion.Licensing
 		{
 			RSACryptoServiceProvider pro = new RSACryptoServiceProvider();
 			pro.FromXmlString(key);
+			if (Signature == null) throw new InvalidOperationException($"'{nameof(Signature)}' cannot be null");
 			return pro.VerifyData(
 				Encoding.Unicode.GetBytes(Payload.ToJson(Formatting.None)),
 				new SHA1CryptoServiceProvider(),
@@ -101,12 +102,16 @@ namespace Fuxion.Licensing
 		public static IQueryable<LicensePod> OnlyValidOfType<TLicense>(this IQueryable<LicensePod> me, string publicKey) where TLicense : License
 		{
 			string _;
-			return me.WithValidSignature(publicKey).OfType<TLicense>().Where(l => l.As<TLicense>().Validate(out _));
+			return me.WithValidSignature(publicKey).OfType<TLicense>()
+				.Where(l => l.Is<TLicense>())
+				.Where(l => l.As<TLicense>()!.Validate(out _));
 		}
 		public static IQueryable<LicensePod> OnlyValidOfType(this IQueryable<LicensePod> me, string publicKey, Type type)
 		{
 			string _;
-			return me.WithValidSignature(publicKey).OfType(type).Where(l => l.AsLicense(type)!.Validate(out _));
+			return me.WithValidSignature(publicKey).OfType(type)
+				.Where(l => l.Is(type))
+				.Where(l => l.AsLicense(type)!.Validate(out _));
 		}
 	}
 }

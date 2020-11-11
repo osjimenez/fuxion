@@ -50,10 +50,11 @@ namespace Fuxion.Application.Aggregates
 		public int SnapshotVersion { get; internal set; }
 		public Snapshot GetSnapshot()
 		{
-			if (!IsSnapshottable) throw new AggregateIsNotSnapshottableException();
+			if (SnapshotType == null) throw new AggregateIsNotSnapshottableException();
 			if (aggregate == null) throw new InvalidStateException($"'{nameof(GetSnapshot)}' was called before this '{nameof(EventSourcingAggregateFeature)}' would be attached to an aggregate");
 
-			var snap = (Snapshot)Activator.CreateInstance(SnapshotType);
+			var snap = (Snapshot?)Activator.CreateInstance(SnapshotType);
+			if (snap == null) throw new InvalidProgramException($"Instance of snapshot cannot be created");
 			snap.AggregateId = aggregate.Id;
 			snap.Version = aggregate.GetCurrentVersion();
 			snap.Load(aggregate);

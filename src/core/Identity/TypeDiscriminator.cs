@@ -42,7 +42,7 @@ namespace Fuxion.Identity
 
 		public override string ToString() => this.ToOneLineString();
 
-		public override bool Equals(object obj)
+		public override bool Equals(object? obj)
 			=> obj is TypeDiscriminator td
 				? td.Id == Id && td.TypeKey == TypeKey
 				: false;

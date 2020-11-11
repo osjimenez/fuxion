@@ -142,7 +142,7 @@ namespace Fuxion.Windows.Markup
 		}
 		internal IPrinter? printer;
 		Func<PropertyInfo?, string?> getValueFunction;
-		private void PropertyChanged(object sender, PropertyChangedEventArgs e)
+		private void PropertyChanged(object? sender, PropertyChangedEventArgs e)
 		{
 			if(DataContext != null)
 				if(NextLink != null)
