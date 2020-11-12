@@ -9,12 +9,12 @@ increment: Inherit
 continuous-delivery-fallback-tag: ci
 tag-prefix: '[vV]'
 
-#major-version-bump-message: '\+semver:\s?(breaking|major)'
-major-version-bump-message: '\+\+major'
-#minor-version-bump-message: '\+semver:\s?(feature|minor)'
-minor-version-bump-message: '\+\+minor'
-#patch-version-bump-message: '\+semver:\s?(fix|patch)'
-patch-version-bump-message: '\+\+patch'
+major-version-bump-message: '\+semver:\s?(breaking|major)'
+#major-version-bump-message: '\+\+major'
+minor-version-bump-message: '\+semver:\s?(feature|minor)'
+#minor-version-bump-message: '\+\+minor'
+patch-version-bump-message: '\+semver:\s?(fix|patch)'
+#patch-version-bump-message: '\+\+patch'
 
 
 no-bump-message: '\+semver:\s?(none|skip)'
