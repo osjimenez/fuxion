@@ -7,7 +7,6 @@ using System.Diagnostics;
 using System.Linq;
 using Xunit;
 using Xunit.Abstractions;
-//using static Fuxion.Identity.DatabaseEFTest.Scenario;
 using static Fuxion.Identity.Functions;
 
 namespace Fuxion.Identity.DatabaseEFTest

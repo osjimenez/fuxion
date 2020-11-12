@@ -1,4 +1,5 @@
-﻿using Fuxion.Security;
+﻿using Fuxion.Test;
+using Fuxion.Windows.Security;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Fuxion.Test.Security
+namespace Fuxion.Windows.Test.Security
 {
     public class HardwareIdTest : BaseTest
     {

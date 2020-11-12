@@ -1,19 +1,12 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>net5.0-windows</TargetFramework>
 		<UseWPF>true</UseWPF>
-
 		<Title>Fuxion Windows</Title>
 		<PackageId>Fuxion.Windows</PackageId>
 		<Description>Fuxion Windows</Description>
 	</PropertyGroup>
-
-	<!--<Target Name="WorkaroundNetStandard" AfterTargets="ResolvePackageAssets">
-		<ItemGroup>
-			<TransitiveFrameworkReference Remove="NETStandard.Library" />
-		</ItemGroup>
-	</Target>-->
 
 	<ItemGroup>
 		<Compile Update="Properties\AssemblyInfo.cs" />
@@ -31,14 +24,6 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\Core\Fuxion\Fuxion.csproj" />
 	</ItemGroup>
-
-	<!--<ItemGroup Condition="'$(TargetFramework)'!='netcoreapp3.0'">
-		<Reference Include="PresentationCore" />
-		<Reference Include="PresentationFramework" />
-		<Reference Include="System.ComponentModel.DataAnnotations" />
-		<Reference Include="WindowsBase" />
-		<Reference Include="System.Xaml" />
-	</ItemGroup>-->
 
 	<ItemGroup>
 		<EmbeddedResource Update="Resources\Strings.es.resx">

@@ -4,7 +4,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Win32;
 
-namespace Fuxion.Security
+namespace Fuxion.Windows.Security
 {
 	[Flags]
 	public enum HardwareIdField
@@ -151,7 +151,9 @@ namespace Fuxion.Security
 					//// we're done, show the results:
 					//Console.WriteLine(account.Value);
 					//Console.WriteLine(sid.Value);
-					_domainSid = new Guid(System.Security.Principal.WindowsIdentity.GetCurrent().User.AccountDomainSid.ToString().ComputeHash());
+					var guid = System.Security.Principal.WindowsIdentity.GetCurrent().User?.AccountDomainSid?.ToString()?.ComputeHash();
+					if (guid is null) throw new InvalidOperationException($"'{nameof(DomainSid)}' cannot be obtained");
+						_domainSid = new Guid(guid);
 				}
 				return _domainSid;
 			}
@@ -175,13 +177,13 @@ namespace Fuxion.Security
 
 					string? value64 = null;
 
-					RegistryKey localKey =
+					var localKey =
 						RegistryKey.OpenBaseKey(RegistryHive.LocalMachine,
 							Environment.Is64BitOperatingSystem ? RegistryView.Registry64 : RegistryView.Registry32);
 					localKey = localKey.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
-					if (localKey != null)
+					if (localKey is not null)
 					{
-						value64 = localKey.GetValue("ProductId").ToString();
+						value64 = localKey.GetValue("ProductId")?.ToString();
 					}
 					Console.WriteLine(string.Format("RegisteredOrganization [value64]: {0}", value64));
 

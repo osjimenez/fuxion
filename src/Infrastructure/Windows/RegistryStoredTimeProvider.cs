@@ -6,7 +6,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Fuxion
+namespace Fuxion.Windows
 {
 	public class RegistryStoredTimeProvider : StoredTimeProvider
 	{
@@ -17,7 +17,7 @@ namespace Fuxion
 		public override DateTime GetUtcTime()
 		{
 			var key = Registry.CurrentUser.CreateSubKey(Key);
-			var reg = key.GetValue(Value).ToString();
+			var reg = key.GetValue(Value)?.ToString();
 			if (reg == null) throw new InvalidStateException("The time value cannot be found in registry");
 			var value = Deserialize(reg);
 			return value;

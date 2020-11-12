@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>net5.0-windows</TargetFramework>
@@ -14,9 +14,26 @@
 	<ItemGroup>
 		<PackageReference Include="DynamicData.ReactiveUI" Version="6.11.0.2613" />
 		<PackageReference Include="Polly" Version="7.2.1" />
-		<PackageReference Include="Telerik.Windows.Controls.Data.for.Wpf" Version="2019.3.1023" />
 	</ItemGroup>
-
+	
+	<ItemGroup>
+		<Reference Include="Telerik.Windows.Controls">
+			<HintPath>C:\Program Files (x86)\Progress\Telerik UI for WPF R3 2020\Binaries.NoXaml\NetCore\Telerik.Windows.Controls.dll</HintPath>
+		</Reference>
+		<Reference Include="Telerik.Windows.Controls.Data">
+			<HintPath>C:\Program Files (x86)\Progress\Telerik UI for WPF R3 2020\Binaries.NoXaml\NetCore\Telerik.Windows.Controls.Data.dll</HintPath>
+		</Reference>
+		<Reference Include="Telerik.Windows.Data">
+			<HintPath>C:\Program Files (x86)\Progress\Telerik UI for WPF R3 2020\Binaries.NoXaml\NetCore\Telerik.Windows.Data.dll</HintPath>
+		</Reference>
+		<Reference Include="Telerik.Windows.Controls.GridView">
+			<HintPath>C:\Program Files (x86)\Progress\Telerik UI for WPF R3 2020\Binaries.NoXaml\NetCore\Telerik.Windows.Controls.GridView.dll</HintPath>
+		</Reference>
+		<Reference Include="Telerik.Windows.Controls.Navigation">
+			<HintPath>C:\Program Files (x86)\Progress\Telerik UI for WPF R3 2020\Binaries.NoXaml\NetCore\Telerik.Windows.Controls.Navigation.dll</HintPath>
+		</Reference>
+	</ItemGroup>
+	
 	<ItemGroup>
 		<ProjectReference Include="..\..\..\..\core\Shell\Fuxion.Shell.csproj" />
 		<ProjectReference Include="..\..\..\..\Infrastructure\AutoMapper\Fuxion.AutoMapper.csproj" />

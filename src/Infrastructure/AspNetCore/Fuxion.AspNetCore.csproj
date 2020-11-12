@@ -2,7 +2,6 @@
 
 	<PropertyGroup>
 		<TargetFramework>net5.0</TargetFramework>
-
 		<Title>Fuxion Asp.Net Core</Title>
 		<PackageId>Fuxion.AspNetCore</PackageId>
 		<Description>Fuxion library for Asp.Net Core.</Description>
@@ -15,16 +14,12 @@
 	</Target>
 
 	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
 	</ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)'!='netcoreapp3.0'">
-		<PackageReference Include="Microsoft.AspNetCore.App" Version="2.2.5" />
-	</ItemGroup>
-
-	<!--<ItemGroup Condition="'$(TargetFramework)'=='netcoreapp3.0'">
-		<FrameworkReference Include="Microsoft.AspNetCore.App" version="3.0.0-preview3-19153-02" />
-	</ItemGroup>-->
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\Core\Application\Fuxion.Application.csproj" />

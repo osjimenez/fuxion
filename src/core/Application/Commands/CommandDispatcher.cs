@@ -23,7 +23,7 @@ namespace Fuxion.Application.Commands
 			else
 			{
 				ICommandHandler<Command> c;
-				var met = handlers[0].GetType().GetMethod(nameof(c.HandleAsync));
+				var met = handlers[0]?.GetType().GetMethod(nameof(c.HandleAsync));
 				if (met == null) throw new InvalidProgramException($"'{nameof(c.HandleAsync)}' method not found");
 				if (met.Invoke(handlers[0], new object[] { command }) is Task task)
 					await task;

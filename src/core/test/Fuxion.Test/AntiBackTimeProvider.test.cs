@@ -19,21 +19,11 @@ namespace Fuxion.Test
 				}))
 				.CheckConsistency(output);
 		}
-		[Fact(DisplayName = "RegistryStoredTimeProvider - CheckConsistency")]
-		public void RegistryStorageTimeProvider_CheckConsistency()
-		{
-			new AntiBackTimeProvider(new RegistryStoredTimeProvider().Transform(s =>
-				{
-					s.SaveUtcTime(DateTime.UtcNow);
-					return s;
-				}))
-				.CheckConsistency(output);
-		}
 		[Fact(DisplayName = "AntiBackTimeProvider - BackTimeException")]
 		public void AntiBackTimeProvider_BackTimeException()
 		{
 			var mock = new MockTimeProvider();
-			var abtp = new AntiBackTimeProvider(new RegistryStoredTimeProvider().Transform(s =>
+			var abtp = new AntiBackTimeProvider(new MemoryStoredTimeProvider().Transform(s =>
 					{
 						s.SaveUtcTime(DateTime.UtcNow);
 						return s;
