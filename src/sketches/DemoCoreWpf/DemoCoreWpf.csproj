@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
-		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<TargetFramework>net5.0-windows</TargetFramework>
 		<UseWPF>true</UseWPF>
 	</PropertyGroup>
 
@@ -18,7 +18,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\..\Infrastructure\Windows\Fuxion.Windows.csproj" />
+		<ProjectReference Include="..\..\Infrastructure\Windows\Fuxion.Windows.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

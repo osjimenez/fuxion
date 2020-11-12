@@ -64,6 +64,6 @@ namespace Ordinem.Calendar.Shell.Wpf.Views
 		}
 		~AppointmentDetailView() => Debug.WriteLine($"||||||||||||||||||||||||||||||||| => {this.GetType().Name} DESTROYED");
 
-		public IPanel Panel => ViewModel as IPanel;
+		public IPanel Panel => ViewModel ?? throw new InvalidProgramException($"'{nameof(ViewModel)}' cannot be null");
 	}
 }

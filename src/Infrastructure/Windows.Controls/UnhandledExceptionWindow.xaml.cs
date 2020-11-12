@@ -33,7 +33,7 @@ namespace Fuxion.Windows.Controls
 					if (sendReportFunc != null)
 						await sendReportFunc();
 					sendReportFunc = null;
-					SendReportCommand.RaiseCanExecuteChanged();
+					SendReportCommand?.RaiseCanExecuteChanged();
 				}
 				catch (Exception ex2)
 				{

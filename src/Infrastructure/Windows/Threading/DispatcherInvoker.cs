@@ -20,14 +20,14 @@ namespace Fuxion.Windows.Threading
 				return dispatcher.InvokeAsync(() => method.DynamicInvoke(args)).Task;
 			return Task.CompletedTask;
 		}
-		public Task<TResult> InvokeFuncDelegate<TResult>(IInvokable invokable, Delegate method, params object?[] args)
+		public Task<TResult?> InvokeFuncDelegate<TResult>(IInvokable invokable, Delegate method, params object?[] args)
 		{
 			if (!invokable.UseInvoker || dispatcher == null || dispatcher.CheckAccess())
 			{
 				var r = method.DynamicInvoke(args);
 				return r == null
-					? Task.FromResult(default(TResult)!)
-					: Task.FromResult((TResult)r);
+					? Task.FromResult(default(TResult))
+					: Task.FromResult((TResult?)r);
 			}
 			else if (!dispatcher.HasShutdownStarted)
 				return dispatcher.InvokeAsync(() =>
@@ -38,7 +38,7 @@ namespace Fuxion.Windows.Threading
 						: (TResult)r;
 				}).Task;
 		
-			return Task.FromResult(default(TResult)!);
+			return Task.FromResult(default(TResult));
 		}
 	}
 }

@@ -76,7 +76,7 @@ namespace Ordinem.Tasks.Shell.Wpf.ViewModels
 			}
 			MessageBus.Current.Listen<UpdatePanelMessage>().Subscribe(msg =>
 			{
-				if (msg.UpdatedDvo.Id == Dvo.Id && msg.UpdatedDvo is ToDoTaskDvo dvo)
+				if (msg.UpdatedDvo.Id == Dvo?.Id && msg.UpdatedDvo is ToDoTaskDvo dvo)
 					Dvo = dvo;
 			});
 		}

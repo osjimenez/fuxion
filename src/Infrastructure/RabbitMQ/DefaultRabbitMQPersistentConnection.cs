@@ -108,7 +108,7 @@ namespace Fuxion.RabbitMQ
 			}
 		}
 
-		private void OnConnectionBlocked(object sender, ConnectionBlockedEventArgs e)
+		private void OnConnectionBlocked(object? sender, ConnectionBlockedEventArgs e)
 		{
 			if (_disposed) return;
 
@@ -118,7 +118,7 @@ namespace Fuxion.RabbitMQ
 			TryConnect();
 		}
 
-		void OnCallbackException(object sender, CallbackExceptionEventArgs e)
+		void OnCallbackException(object? sender, CallbackExceptionEventArgs e)
 		{
 			if (_disposed) return;
 
@@ -128,7 +128,7 @@ namespace Fuxion.RabbitMQ
 			TryConnect();
 		}
 
-		void OnConnectionShutdown(object sender, ShutdownEventArgs reason)
+		void OnConnectionShutdown(object? sender, ShutdownEventArgs reason)
 		{
 			if (_disposed) return;
 

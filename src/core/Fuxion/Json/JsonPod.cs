@@ -43,7 +43,7 @@ namespace Fuxion.Json
 					object rr = new object();
 					var str = PayloadJRaw.Value.ToString();
 					if (str== null || str.IsNullOrEmpty()) throw new System.IO.InvalidDataException("The PayloadJRaw value hasn't a representative string");
-					var res  = str.FromJson<TPayload>(new JsonSerializerSettings
+					var res  = str.FromJson<TPayload>(settings: new JsonSerializerSettings
 					{
 						Error = delegate (object? sender, ErrorEventArgs args)
 						{

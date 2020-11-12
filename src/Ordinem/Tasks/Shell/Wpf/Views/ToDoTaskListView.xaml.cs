@@ -54,7 +54,7 @@ namespace Ordinem.Tasks.Shell.Wpf.Views
 				//.DisposeWith(d);
 				this.WhenAnyValue(x => x.DataPager.PageIndex)
 					.Select(x => new PageRequest(x + 1, DataPager.PageSize))
-					.BindTo(this, x => x.ViewModel.PageRequest);
+					.BindTo(this, x => x.ViewModel!.PageRequest);
 				//this.OneWayBind(ViewModel,
 				//	x => x.PageRequest.Page,
 				//	x => x.DataPager.PageIndex,null,)
@@ -117,8 +117,7 @@ namespace Ordinem.Tasks.Shell.Wpf.Views
 		}
 		~ToDoTaskListView() => Debug.WriteLine($"||||||||||||||||||||||||||||||||| => {this.GetType().Name} DESTROYED");
 
-		public IPanel Panel => ViewModel as IPanel;
-
+		public IPanel Panel => ViewModel ?? throw new InvalidProgramException($"'{nameof(ViewModel)}' cannot be null");
 		private void RefreshButton_Click(object sender, RoutedEventArgs e)
 		{
 			MessageBus.Current.CloseAllPanels();

@@ -27,7 +27,7 @@ namespace Ordinem.Calendar.Shell.Wpf
 		}
 		public void Initialize(IServiceProvider serviceProvider)
 		{
-			serviceProvider.GetRequiredService<Cache>().Add(new GenericEqualityComparer<AppointmentDvo>((t1, t2) => t1.Name == t2.Name, t => t.GetHashCode()));
+			serviceProvider.GetRequiredService<Cache>().Add(new GenericEqualityComparer<AppointmentDvo>((t1, t2) => t1?.Name == t2?.Name, t => t.GetHashCode()));
 		}
 	}
 }

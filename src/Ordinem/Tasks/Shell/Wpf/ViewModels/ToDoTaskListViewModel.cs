@@ -63,7 +63,7 @@ namespace Ordinem.Tasks.Shell.Wpf.ViewModels
 
 				//.Filter(_ => _.Name != null)
 
-				.Sort(new GenericComparer<ToDoTaskDvo>((t1, t2) => StringComparer.CurrentCulture.Compare(t1.Name, t2.Name)))
+				.Sort(new GenericComparer<ToDoTaskDvo>((t1, t2) => StringComparer.CurrentCulture.Compare(t1?.Name, t2?.Name)))
 				.Page(this.WhenAnyValue(_ => _.PageRequest))
 				
 				.ObserveOnDispatcher()

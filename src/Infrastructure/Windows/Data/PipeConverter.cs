@@ -166,15 +166,15 @@ namespace Fuxion.Windows.Data
 			// If the current converter is the last one to be executed return the target type passed into the conversion method.
 			return finalTargetType;
 		}
-		void OnConvertersCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+		void OnConvertersCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
 		{
 			// The 'Converters' collection has been modified, so validate that each value converter it now
 			// contains is decorated with ValueConversionAttribute and then cache the attribute value.
 
 			IList convertersToProcess = new List<object>();
-			if (e.Action == NotifyCollectionChangedAction.Add || e.Action == NotifyCollectionChangedAction.Replace)
+			if (e.NewItems is not null && (e.Action == NotifyCollectionChangedAction.Add || e.Action == NotifyCollectionChangedAction.Replace))
 				convertersToProcess = e.NewItems;
-			else if (e.Action == NotifyCollectionChangedAction.Remove)
+			else if (e.OldItems is not null && (e.Action == NotifyCollectionChangedAction.Remove))
 				foreach (IValueConverter? converter in e.OldItems)
 				{
 					if (converter != null)

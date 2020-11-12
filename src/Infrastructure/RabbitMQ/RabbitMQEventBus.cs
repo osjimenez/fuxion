@@ -69,8 +69,8 @@ namespace Fuxion.RabbitMQ
 			consumer.Received += async (model, ea) =>
 			{
 				//var integrationEventTypeId = ea.RoutingKey;
-				var message = Encoding.UTF8.GetString(ea.Body);
-				var pod = message.FromJson<PublicationPod>();
+				var message = Encoding.UTF8.GetString(ea.Body.ToArray());
+				var pod = message.FromJson<PublicationPod>(true);
 				var @event = pod.WithTypeKeyDirectory(typeKeyDirectory);
 				if (@event == null) throw new InvalidCastException($"Event with key '{pod.PayloadKey}' is not registered in '{nameof(TypeKeyDirectory)}'");
 				await ProcessEvent(@event);
@@ -94,13 +94,15 @@ namespace Fuxion.RabbitMQ
 		}
 		private async Task ProcessEvent(Event @event)
 		{
-			using (var scope = serviceProvider.CreateScope())
+			using var scope = serviceProvider.CreateScope();
+			//var handlers = scope.ServiceProvider.GetServices(typeof(IEnumerable<>).MakeGenericType(typeof(IEventHandler<>).MakeGenericType(@event.GetType())));
+			var handlers = scope.ServiceProvider.GetServices(typeof(IEventHandler<>).MakeGenericType(@event.GetType()));
+			IEventHandler<Event> c;
+			foreach (var handler in handlers)
 			{
-				//var handlers = scope.ServiceProvider.GetServices(typeof(IEnumerable<>).MakeGenericType(typeof(IEventHandler<>).MakeGenericType(@event.GetType())));
-				var handlers = scope.ServiceProvider.GetServices(typeof(IEventHandler<>).MakeGenericType(@event.GetType()));
-				IEventHandler<Event> c;
-				foreach (var handler in handlers)
-					await (Task)handler.GetType().GetMethod(nameof(c.HandleAsync)).Invoke(handler, new object[] { @event });
+				var res = handler?.GetType().GetMethod(nameof(c.HandleAsync))?.Invoke(handler, new object[] { @event });
+				if (res is not null)
+					await (Task)res;
 			}
 		}
 		public async Task PublishAsync(Event @event)

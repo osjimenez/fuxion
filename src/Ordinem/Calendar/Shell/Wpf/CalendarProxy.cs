@@ -44,13 +44,13 @@ namespace Ordinem.Calendar.Shell.Wpf
 		public Task<AppointmentDto> GetAppointment(Guid toDoTaskId) => GetRetryPolicy().ExecuteAsync(async () =>
 		{
 			var json = await client.GetStringAsync($"https://{host}:{port}/api/Calendar/Appointment/" + toDoTaskId);
-			var res = json.FromJson<AppointmentDto>();
+			var res = json.FromJson<AppointmentDto>(true);
 			return res;
 		});
 		public Task<IEnumerable<AppointmentDto>> GetAppointments() => GetRetryPolicy().ExecuteAsync(async () =>
 		{
 			var json = await client.GetStringAsync($"https://{host}:{port}/api/Calendar/Appointment");
-			var res = json.FromJson<IEnumerable<AppointmentDto>>();
+			var res = json.FromJson<IEnumerable<AppointmentDto>>(true);
 			return res;
 		});
 	}

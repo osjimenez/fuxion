@@ -17,6 +17,7 @@ using System.Runtime.Serialization;
 using Fuxion.Resources;
 using System.Globalization;
 using Fuxion.Json;
+using System.Diagnostics.CodeAnalysis;
 
 namespace System
 {
@@ -80,8 +81,20 @@ namespace System
 						IgnoreSerializableAttribute = true
 					}));
 		}
-		public static T? FromJson<T>(this string me, JsonSerializerSettings? settings = null) => JsonConvert.DeserializeObject<T>(me, settings);
-		public static object? FromJson(this string me, Type type) => JsonConvert.DeserializeObject(me, type);
+		public static T? FromJson<T>(this string me, [DoesNotReturnIf(true)] bool exceptionIfNull = false, JsonSerializerSettings? settings = null)
+		{
+			var res = JsonConvert.DeserializeObject<T>(me, settings);
+			if (exceptionIfNull && res is null)
+				throw new SerializationException($"The string cannot be deserialized as '{typeof(T).Name}':\r\n{me}");
+			return res;
+		}
+		public static object? FromJson(this string me, Type type, [DoesNotReturnIf(true)] bool exceptionIfNull = false)
+		{
+			var res = JsonConvert.DeserializeObject(me, type);
+			if (exceptionIfNull && res is null)
+				throw new SerializationException($"The string cannot be deserialized as '{type.Name}':\r\n{me}");
+			return res;
+		}
 		public static T CloneWithJson<T>(this T me) => (T)(FromJson(
 			me?.ToJson() ?? throw new InvalidDataException(),
 			me?.GetType() ?? throw new InvalidDataException()) ?? default!);

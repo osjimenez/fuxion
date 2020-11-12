@@ -16,7 +16,7 @@ namespace Fuxion.Windows.Data
 		public bool AllowUnsetValues { get; set; }
 		public bool IgnoreUnsetValues { get; set; } = true;
 		public TResult UnsetValue { get; set; } = default!;
-		object? IMultiValueConverter.Convert(object?[]? values, Type targetType, object parameter, CultureInfo culture)
+		object? IMultiValueConverter.Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
 		{
 			// if allow any unset value
 			if (AllowUnsetValues)
@@ -40,7 +40,7 @@ namespace Fuxion.Windows.Data
 			// In any other case, value is not supported exception
 			throw new NotSupportedException($"The values '{values.Aggregate("", (a, c) => a + ", " + c?.ToString(), a => a.Trim(',', ' '))}' are not supported for '{GetType().Name}.{nameof(Convert)}' method, all must be of type '{typeof(TSource).Name}'");
 		}
-		object?[]? IMultiValueConverter.ConvertBack(object? value, Type[] targetTypes, object parameter, CultureInfo culture)
+		object[]? IMultiValueConverter.ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
 		{
 			// value must be TSource, call ConvertBack
 			// value is null and TResult is nullable, call ConvertBack
@@ -67,7 +67,7 @@ namespace Fuxion.Windows.Data
 		public bool AllowUnsetValues { get; set; }
 		public bool IgnoreUnsetValues { get; set; } = true;
 		public TResult UnsetValue { get; set; } = default!;
-		object? IMultiValueConverter.Convert(object?[]? values, Type targetType, object parameter, CultureInfo culture)
+		object? IMultiValueConverter.Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
 		{
 			if (typeof(TParameter) != typeof(object) && !(parameter is TParameter)) throw new NotSupportedException($"The parameter must be of type '{typeof(TParameter).Name}'");
 			// if allow any unset value
@@ -92,7 +92,7 @@ namespace Fuxion.Windows.Data
 			// In any other case, value is not supported exception
 			throw new NotSupportedException($"The values '{values.Aggregate("", (a, c) => a + ", " + c?.ToString(), a => a.Trim(',', ' '))}' are not supported for '{GetType().Name}.{nameof(Convert)}' method, all must be of type '{typeof(TSource).Name}'");
 		}
-		object?[]? IMultiValueConverter.ConvertBack(object? value, Type[] targetTypes, object parameter, CultureInfo culture)
+		object[]? IMultiValueConverter.ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
 		{
 			if (typeof(TParameter) != typeof(object) && !(parameter is TParameter)) throw new NotSupportedException($"The parameter must be of type '{typeof(TParameter).Name}'");
 			// value must be TSource, call ConvertBack

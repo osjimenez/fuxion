@@ -44,13 +44,13 @@ namespace Ordinem.Tasks.Shell.Wpf
 		public Task<ToDoTaskDto> GetToDoTask(Guid toDoTaskId) => GetRetryPolicy().ExecuteAsync(async () =>
 		{
 			var json = await client.GetStringAsync($"https://{host}:{port}/api/Tasks/ToDoTask/" + toDoTaskId);
-			var res = json.FromJson<ToDoTaskDto>();
+			var res = json.FromJson<ToDoTaskDto>(true);
 			return res;
 		});
 		public Task<IEnumerable<ToDoTaskDto>> GetToDoTasks() => GetRetryPolicy().ExecuteAsync(async () =>
 		{
 			var json = await client.GetStringAsync($"https://{host}:{port}/api/Tasks/ToDoTask");
-			var res = json.FromJson<IEnumerable<ToDoTaskDto>>();
+			var res = json.FromJson<IEnumerable<ToDoTaskDto>>(true);
 			return res;
 		});
 	}

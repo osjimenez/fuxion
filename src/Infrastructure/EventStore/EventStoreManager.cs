@@ -38,12 +38,12 @@ namespace Fuxion.EventStore
 		{
 			// TODO - Implementar un mecanismo de paginación cuando tengo que trearme mas de 4096 eventos
 			var slice = await connection.ReadStreamEventsForwardAsync(aggregateId.ToString(), start, count == int.MaxValue ? 4096 : count, false);
-			return slice.Events.Select(e => Encoding.Default.GetString(e.Event.Data).FromJson<EventSourcingPod>().WithTypeKeyDirectory(typeKeyDirectory)).RemoveNulls().AsQueryable();
+			return slice.Events.Select(e => Encoding.Default.GetString(e.Event.Data).FromJson<EventSourcingPod>(true).WithTypeKeyDirectory(typeKeyDirectory)).RemoveNulls().AsQueryable();
 		}
 		public async Task<Event?> GetLastEventAsync(Guid aggregateId)
 		{
 			var slice = await connection.ReadStreamEventsBackwardAsync(aggregateId.ToString(), StreamPosition.End, 1, false);
-			return slice.Events.Select(e => Encoding.Default.GetString(e.Event.Data).FromJson<EventSourcingPod>().WithTypeKeyDirectory(typeKeyDirectory)).LastOrDefault();
+			return slice.Events.Select(e => Encoding.Default.GetString(e.Event.Data).FromJson<EventSourcingPod>(true).WithTypeKeyDirectory(typeKeyDirectory)).LastOrDefault();
 		}
 		#endregion
 		#region ISnapshotStorage
@@ -52,7 +52,7 @@ namespace Fuxion.EventStore
 			var slice = await connection.ReadStreamEventsBackwardAsync($"{snapshotType.GetTypeKey()}@{aggregateId.ToString()}", StreamPosition.End, 1, false);
 			return slice.Events.Select(e =>
 			{
-				var pod = Encoding.Default.GetString(e.Event.Data).FromJson<JsonPod<Snapshot, string>>();
+				var pod = Encoding.Default.GetString(e.Event.Data).FromJson<JsonPod<Snapshot, string>>(true);
 				return (Snapshot?)pod.As(typeKeyDirectory[pod.PayloadKey]);
 			}).LastOrDefault();
 		}

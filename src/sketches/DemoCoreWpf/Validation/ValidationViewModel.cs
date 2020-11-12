@@ -74,13 +74,13 @@ namespace DemoCoreWpf.Validation
 		[CustomValidation(typeof(ValidationViewModel), nameof(ValidationViewModel.ValidateName))]
 		[CustomValidationWithContext(typeof(ValidationViewModel), nameof(ValidationViewModel.ValidateNameCrossField))]
 		public string Name { get => GetValue(() => "Osca"); set => SetValue(value); }
-		public static ValidationResult ValidateName(string value)
+		public static ValidationResult? ValidateName(string value)
 		{
 			if (value.ToLower().Contains("oscar"))
 				return new ValidationResult($"El '{TextLocalized.Name}' no puede ser Oscar");
 			return ValidationResult.Success;
 		}
-		public static ValidationResult ValidateNameCrossField(string value, ValidationContext context)
+		public static ValidationResult? ValidateNameCrossField(string value, ValidationContext context)
 		{
 			if (((ValidationViewModel)context.ObjectInstance).NameMustBeLower && value.ToLower() != value)
 				return new ValidationResult($"El '{TextLocalized.Name}' debe estar en minúsculas");
@@ -162,7 +162,7 @@ namespace DemoCoreWpf.Validation
 		[StringLength(10, ErrorMessage = "El nombre no puede exceder de 10 caracteres de longitud")]
 		[CustomValidation(typeof(ValidationViewModel), nameof(ValidationViewModel.ValidateName))]
 		public string Name { get => GetValue(() => "Osca"); set => SetValue(value); }
-		public static ValidationResult ValidateName(string value)
+		public static ValidationResult? ValidateName(string value)
 		{
 			if (value.ToLower().Contains("oscar"))
 				return new ValidationResult("El nombre no puede ser Oscar");

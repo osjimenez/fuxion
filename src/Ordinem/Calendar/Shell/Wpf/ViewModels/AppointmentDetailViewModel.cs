@@ -76,7 +76,7 @@ namespace Ordinem.Calendar.Shell.Wpf.ViewModels
 			}
 			MessageBus.Current.Listen<UpdatePanelMessage>().Subscribe(msg =>
 			{
-				if (msg.UpdatedDvo.Id == Dvo.Id && msg.UpdatedDvo is AppointmentDvo dvo)
+				if (msg.UpdatedDvo.Id == Dvo?.Id && msg.UpdatedDvo is AppointmentDvo dvo)
 					Dvo = dvo;
 			});
 		}

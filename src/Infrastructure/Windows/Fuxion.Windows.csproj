@@ -9,11 +9,11 @@
 		<Description>Fuxion Windows</Description>
 	</PropertyGroup>
 
-	<Target Name="WorkaroundNetStandard" AfterTargets="ResolvePackageAssets">
+	<!--<Target Name="WorkaroundNetStandard" AfterTargets="ResolvePackageAssets">
 		<ItemGroup>
 			<TransitiveFrameworkReference Remove="NETStandard.Library" />
 		</ItemGroup>
-	</Target>
+	</Target>-->
 
 	<ItemGroup>
 		<Compile Update="Properties\AssemblyInfo.cs" />
@@ -32,13 +32,13 @@
 		<ProjectReference Include="..\..\Core\Fuxion\Fuxion.csproj" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'!='netcoreapp3.0'">
+	<!--<ItemGroup Condition="'$(TargetFramework)'!='netcoreapp3.0'">
 		<Reference Include="PresentationCore" />
 		<Reference Include="PresentationFramework" />
 		<Reference Include="System.ComponentModel.DataAnnotations" />
 		<Reference Include="WindowsBase" />
 		<Reference Include="System.Xaml" />
-	</ItemGroup>
+	</ItemGroup>-->
 
 	<ItemGroup>
 		<EmbeddedResource Update="Resources\Strings.es.resx">
