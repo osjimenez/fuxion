@@ -57,25 +57,25 @@ jobs:
         echo "CommitsSinceVersionSourcePadded: ${{ steps.gitversion.outputs.commitsSinceVersionSourcePadded }}"
         echo "CommitDate: ${{ steps.gitversion.outputs.commitDate }}"
 
-#    - name: Setup .NET Core
-#      uses: actions/setup-dotnet@v1
-#      with:
-#        dotnet-version: 5.0.100
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.100
 
-#    - name: Install dependencies
-#      run: dotnet restore -p:RestoreUseSkipNonexistentTargets=false src/Fuxion-pack.sln
+    - name: Install dependencies
+      run: dotnet restore -p:RestoreUseSkipNonexistentTargets=false src/Fuxion-pack.sln
 
-#    - name: Build
-#      run: dotnet build --configuration Release --no-restore -p:Version=${{ steps.gitversion.outputs.semVer }} src/Fuxion-pack.sln
+    - name: Build
+      run: dotnet build --configuration Release --no-restore -p:Version=${{ steps.gitversion.outputs.semVer }} src/Fuxion-pack.sln
 
-#    - name: Test
-#      run: dotnet test --no-restore --verbosity normal
+    - name: Test
+      run: dotnet test --no-restore --verbosity normal
 
-#    - name: Pack
-#      run: dotnet pack --configuration Release --no-build --output nupkgs --no-build -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} src/Fuxion-pack.sln
+    - name: Pack
+      run: dotnet pack --configuration Release --no-build --output nupkgs --no-build -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} src/Fuxion-pack.sln
 
-#    - name: Configure NuGet source
-#      run: dotnet nuget add source https://nuget.pkg.github.com/osjimenez/index.json -n github -u osjimenez -p ${{ secrets.GITHUB_TOKEN }}
+    - name: Configure NuGet source
+      run: dotnet nuget add source https://nuget.pkg.github.com/osjimenez/index.json -n github -u osjimenez -p ${{ secrets.GITHUB_TOKEN }}
 
-#    - name: Publish
-#      run: dotnet nuget push "nupkgs\*.nupkg" --source "github" --skip-duplicate -k ${{ secrets.GITHUB_TOKEN }}
+    - name: Publish
+      run: dotnet nuget push "nupkgs\*.nupkg" --source "github" --skip-duplicate -k ${{ secrets.GITHUB_TOKEN }}

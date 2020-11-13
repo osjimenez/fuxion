@@ -7,10 +7,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{291B05EE-7
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{ABD253A3-63FE-4FF0-8877-E872691E8D41}"
 	ProjectSection(SolutionItems) = preProject
-		..\azure-pipelines.yml = ..\azure-pipelines.yml
 		Directory.Build.props = Directory.Build.props
 		..\.github\workflows\dotnet-core.yml = ..\.github\workflows\dotnet-core.yml
-		GitVersion.yml = GitVersion.yml
+		..\GitVersion.yml = ..\GitVersion.yml
 		Pending.txt = Pending.txt
 	EndProjectSection
 EndProject
