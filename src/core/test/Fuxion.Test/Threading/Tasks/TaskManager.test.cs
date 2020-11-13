@@ -102,7 +102,7 @@ namespace Fuxion.Test.Threading.Tasks
 			bool cancel = n == "CANCEL";
 			bool named = na == "NAMED ";
 
-			int runDelay = 50;
+			int runDelay = 250;
 			string cancelledResult = "Canceled";
 			string doneResult = "Done";
 
@@ -259,110 +259,66 @@ namespace Fuxion.Test.Threading.Tasks
 				}
 				if (@void)
 					if (sync)
-						switch (parNum)
+						return parNum switch
 						{
-							case 0:
-								return new Action(() => Void_Sync());
-							case 1:
-								return new Action<int>(s => Void_Sync());
-							case 2:
-								return new Action<int, int>((s1, s2) => Void_Sync());
-							case 3:
-								return new Action<int, int, int>((s1, s2, s3) => Void_Sync());
-							case 4:
-								return new Action<int, int, int, int>((s1, s2, s3, s4) => Void_Sync());
-							case 5:
-								return new Action<int, int, int, int, int>((s1, s2, s3, s4, s5) => Void_Sync());
-							case 6:
-								return new Action<int, int, int, int, int, int>((s1, s2, s3, s4, s5, s6) => Void_Sync());
-							case 7:
-								return new Action<int, int, int, int, int, int, int>((s1, s2, s3, s4, s5, s6, s7) => Void_Sync());
-							case 8:
-								return new Action<int, int, int, int, int, int, int, int>((s1, s2, s3, s4, s5, s6, s7, s8) => Void_Sync());
-							case 9:
-								return new Action<int, int, int, int, int, int, int, int, int>((s1, s2, s3, s4, s5, s6, s7, s8, s9) => Void_Sync());
-							default:
-								throw new InvalidProgramException();
-						}
+							0 => new Action(() => Void_Sync()),
+							1 => new Action<int>(s => Void_Sync()),
+							2 => new Action<int, int>((s1, s2) => Void_Sync()),
+							3 => new Action<int, int, int>((s1, s2, s3) => Void_Sync()),
+							4 => new Action<int, int, int, int>((s1, s2, s3, s4) => Void_Sync()),
+							5 => new Action<int, int, int, int, int>((s1, s2, s3, s4, s5) => Void_Sync()),
+							6 => new Action<int, int, int, int, int, int>((s1, s2, s3, s4, s5, s6) => Void_Sync()),
+							7 => new Action<int, int, int, int, int, int, int>((s1, s2, s3, s4, s5, s6, s7) => Void_Sync()),
+							8 => new Action<int, int, int, int, int, int, int, int>((s1, s2, s3, s4, s5, s6, s7, s8) => Void_Sync()),
+							9 => new Action<int, int, int, int, int, int, int, int, int>((s1, s2, s3, s4, s5, s6, s7, s8, s9) => Void_Sync()),
+							_ => throw new InvalidProgramException(),
+						};
 					else
-						switch (parNum)
+						return parNum switch
 						{
-							case 0:
-								return new Func<Task>(() => Void_Async());
-							case 1:
-								return new Func<int, Task>(s => Void_Async());
-							case 2:
-								return new Func<int, int, Task>((s1, s2) => Void_Async());
-							case 3:
-								return new Func<int, int, int, Task>((s1, s2, s3) => Void_Async());
-							case 4:
-								return new Func<int, int, int, int, Task>((s1, s2, s3, s4) => Void_Async());
-							case 5:
-								return new Func<int, int, int, int, int, Task>((s1, s2, s3, s4, s5) => Void_Async());
-							case 6:
-								return new Func<int, int, int, int, int, int, Task>((s1, s2, s3, s4, s5, s6) => Void_Async());
-							case 7:
-								return new Func<int, int, int, int, int, int, int, Task>((s1, s2, s3, s4, s5, s6, s7) => Void_Async());
-							case 8:
-								return new Func<int, int, int, int, int, int, int, int, Task>((s1, s2, s3, s4, s5, s6, s7, s8) => Void_Async());
-							case 9:
-								return new Func<int, int, int, int, int, int, int, int, int, Task>((s1, s2, s3, s4, s5, s6, s7, s8, s9) => Void_Async());
-							default:
-								throw new InvalidProgramException();
-						}
+							0 => new Func<Task>(() => Void_Async()),
+							1 => new Func<int, Task>(s => Void_Async()),
+							2 => new Func<int, int, Task>((s1, s2) => Void_Async()),
+							3 => new Func<int, int, int, Task>((s1, s2, s3) => Void_Async()),
+							4 => new Func<int, int, int, int, Task>((s1, s2, s3, s4) => Void_Async()),
+							5 => new Func<int, int, int, int, int, Task>((s1, s2, s3, s4, s5) => Void_Async()),
+							6 => new Func<int, int, int, int, int, int, Task>((s1, s2, s3, s4, s5, s6) => Void_Async()),
+							7 => new Func<int, int, int, int, int, int, int, Task>((s1, s2, s3, s4, s5, s6, s7) => Void_Async()),
+							8 => new Func<int, int, int, int, int, int, int, int, Task>((s1, s2, s3, s4, s5, s6, s7, s8) => Void_Async()),
+							9 => new Func<int, int, int, int, int, int, int, int, int, Task>((s1, s2, s3, s4, s5, s6, s7, s8, s9) => Void_Async()),
+							_ => throw new InvalidProgramException(),
+						};
 				else
 					if (sync)
-						switch (parNum)
+						return parNum switch
 						{
-							case 0:
-								return new Func<string>(() => Result_Sync());
-							case 1:
-								return new Func<int, string>(s => Result_Sync());
-							case 2:
-								return new Func<int, int, string>((s1, s2) => Result_Sync());
-							case 3:
-								return new Func<int, int, int, string>((s1, s2, s3) => Result_Sync());
-							case 4:
-								return new Func<int, int, int, int, string>((s1, s2, s3, s4) => Result_Sync());
-							case 5:
-								return new Func<int, int, int, int, int, string>((s1, s2, s3, s4, s5) => Result_Sync());
-							case 6:
-								return new Func<int, int, int, int, int, int, string>((s1, s2, s3, s4, s5, s6) => Result_Sync());
-							case 7:
-								return new Func<int, int, int, int, int, int, int, string>((s1, s2, s3, s4, s5, s6, s7) => Result_Sync());
-							case 8:
-								return new Func<int, int, int, int, int, int, int, int, string>((s1, s2, s3, s4, s5, s6, s7, s8) => Result_Sync());
-							case 9:
-								return new Func<int, int, int, int, int, int, int, int, int, string>((s1, s2, s3, s4, s5, s6, s7, s8, s9) => Result_Sync());
-							default:
-								throw new InvalidProgramException();
-					}
-					else
-						switch (parNum)
-						{
-							case 0:
-								return new Func<Task<string>>(() => Result_Async());
-							case 1:
-								return new Func<int, Task<string>>(s => Result_Async());
-							case 2:
-								return new Func<int, int, Task<string>>((s1, s2) => Result_Async());
-							case 3:
-								return new Func<int, int, int, Task<string>>((s1, s2, s3) => Result_Async());
-							case 4:
-								return new Func<int, int, int, int, Task<string>>((s1, s2, s3, s4) => Result_Async());
-							case 5:
-								return new Func<int, int, int, int, int, Task<string>>((s1, s2, s3, s4, s5) => Result_Async());
-							case 6:
-								return new Func<int, int, int, int, int, int, Task<string>>((s1, s2, s3, s4, s5, s6) => Result_Async());
-							case 7:
-								return new Func<int, int, int, int, int, int, int, Task<string>>((s1, s2, s3, s4, s5, s6, s7) => Result_Async());
-							case 8:
-								return new Func<int, int, int, int, int, int, int, int, Task<string>>((s1, s2, s3, s4, s5, s6, s7, s8) => Result_Async());
-							case 9:
-								return new Func<int, int, int, int, int, int, int, int, int, Task<string>>((s1, s2, s3, s4, s5, s6, s7, s8, s9) => Result_Async());
-							default:
-							throw new InvalidProgramException();
-					}
+							0 => new Func<string>(() => Result_Sync()),
+							1 => new Func<int, string>(s => Result_Sync()),
+							2 => new Func<int, int, string>((s1, s2) => Result_Sync()),
+							3 => new Func<int, int, int, string>((s1, s2, s3) => Result_Sync()),
+							4 => new Func<int, int, int, int, string>((s1, s2, s3, s4) => Result_Sync()),
+							5 => new Func<int, int, int, int, int, string>((s1, s2, s3, s4, s5) => Result_Sync()),
+							6 => new Func<int, int, int, int, int, int, string>((s1, s2, s3, s4, s5, s6) => Result_Sync()),
+							7 => new Func<int, int, int, int, int, int, int, string>((s1, s2, s3, s4, s5, s6, s7) => Result_Sync()),
+							8 => new Func<int, int, int, int, int, int, int, int, string>((s1, s2, s3, s4, s5, s6, s7, s8) => Result_Sync()),
+							9 => new Func<int, int, int, int, int, int, int, int, int, string>((s1, s2, s3, s4, s5, s6, s7, s8, s9) => Result_Sync()),
+							_ => throw new InvalidProgramException(),
+						};
+				else
+					return parNum switch
+					{
+						0 => new Func<Task<string>>(() => Result_Async()),
+						1 => new Func<int, Task<string>>(s => Result_Async()),
+						2 => new Func<int, int, Task<string>>((s1, s2) => Result_Async()),
+						3 => new Func<int, int, int, Task<string>>((s1, s2, s3) => Result_Async()),
+						4 => new Func<int, int, int, int, Task<string>>((s1, s2, s3, s4) => Result_Async()),
+						5 => new Func<int, int, int, int, int, Task<string>>((s1, s2, s3, s4, s5) => Result_Async()),
+						6 => new Func<int, int, int, int, int, int, Task<string>>((s1, s2, s3, s4, s5, s6) => Result_Async()),
+						7 => new Func<int, int, int, int, int, int, int, Task<string>>((s1, s2, s3, s4, s5, s6, s7) => Result_Async()),
+						8 => new Func<int, int, int, int, int, int, int, int, Task<string>>((s1, s2, s3, s4, s5, s6, s7, s8) => Result_Async()),
+						9 => new Func<int, int, int, int, int, int, int, int, int, Task<string>>((s1, s2, s3, s4, s5, s6, s7, s8, s9) => Result_Async()),
+						_ => throw new InvalidProgramException(),
+					};
 			}
 			ConcurrencyProfile GetConcurrencyProfile(int order) => new ConcurrencyProfile
 			{
