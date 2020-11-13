@@ -76,13 +76,13 @@ namespace Fuxion.Test.Threading.Tasks
 				//	bits[6] ? "NAMED " : "NO_NAM", // 6
 				//	};
 				var strings = new[] {
-					bits[0] ? "VOID  " : "VOID"  , // 0
-					bits[1] ? "SYNC  " : "SYNC " , // 1
-					bits[2] ? "START"  : "START ", // 2
+					bits[0] ? "VOID  " : "VOID  ", // 0
+					bits[1] ? "SYNC  " : "SYNC  ", // 1
+					bits[2] ? "START " : "START ", // 2
 					bits[3] ? "SEQUEN" : "SEQUEN", // 3
 					bits[4] ? "ALL   " : "ALL   ", // 4
 					bits[5] ? "CANCEL" : "CANCEL", // 5
-					bits[6] ? "NO_NAM " : "NO_NAM", // 6
+					bits[6] ? "NO_NAM" : "NO_NAM", // 6
 					};
 				for (int j = 0; j < maxParNum + 1; j++)
 				{
