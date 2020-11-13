@@ -3,7 +3,8 @@ assembly-versioning-scheme: MajorMinorPatch
 assembly-file-versioning-scheme: MajorMinorPatchTag
 assembly-informational-format: '{InformationalVersion}'
 #mode: ContinuousDelivery
-mode: ContinuousDeployment
+#mode: ContinuousDeployment
+mode: MainLine
 increment: Inherit
 continuous-delivery-fallback-tag: ci
 tag-prefix: '[vV]'
