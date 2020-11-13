@@ -39,7 +39,7 @@ jobs:
       run: dotnet build --configuration Release --no-restore -p:Version=${{ steps.gitversion.outputs.semVer }} src/Fuxion-pack.sln
 
     - name: Test
-      run: dotnet test --no-restore --verbosity normal src/Fuxion-pack.sln
+      run: dotnet test --no-restore --verbosity quiet src/Fuxion-pack.sln
 
     - name: Pack
       run: dotnet pack --configuration Release --no-build --output nupkgs --no-build -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} src/Fuxion-pack.sln
