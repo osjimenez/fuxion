@@ -56,5 +56,9 @@
 		<IncludeSymbols>true</IncludeSymbols>
 
 		<PackageOutputPath>$(SolutionDir)..\..\PackOutput</PackageOutputPath>
+
+		<RepositoryUrl>https://github.com/osjimenez/Fuxion.git</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		
 	</PropertyGroup>
 </Project>
