@@ -44,11 +44,12 @@ jobs:
     - name: Pack
       run: dotnet pack --configuration Release --no-build --output nupkgs --no-build -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} src/Fuxion-pack.sln
 
-    - name: Configure GitHub Packages source
-      run: dotnet nuget add source https://nuget.pkg.github.com/osjimenez/index.json -n github -u osjimenez -p ${{ secrets.GITHUB_TOKEN }}
+#    - name: Configure GitHub Packages source
+#      run: dotnet nuget add source https://nuget.pkg.github.com/osjimenez/index.json -n github -u osjimenez -p ${{ secrets.GITHUB_TOKEN }}
 
     - name: Publish to GitHub Packages
-      run: dotnet nuget push "nupkgs\*.nupkg" --source "github" --api-key ${{secrets.GITHUB_TOKEN}} --skip-duplicate
+      if: github.ref != 'refs/heads/master' && github.ref != 'refs/heads/develop'
+      run: dotnet nuget push "nupkgs\*.nupkg" --source https://nuget.pkg.github.com/osjimenez/index.json --api-key ${{secrets.GITHUB_TOKEN}} --skip-duplicate
 
     - name: Publish to NuGet.org
       if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop'
