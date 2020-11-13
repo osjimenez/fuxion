@@ -450,17 +450,17 @@ namespace Fuxion.Test.Threading.Tasks
 						}
 						catch (TaskCanceledByConcurrencyException)
 						{
-							Printer.WriteLine("TaskCanceledByConcurrencyException");
+							Printer.WriteLine($"TaskCanceledByConcurrencyException [{i}]");
 							return (true, cancelledResult);
 						}
 						catch (TaskCanceledException)
 						{
-							Printer.WriteLine("TaskCanceledException");
+							Printer.WriteLine($"TaskCanceledException [{i}]");
 							return (true, cancelledResult);
 						}
 						catch (AggregateException ex) when (ex.Flatten().InnerException is TaskCanceledException)
 						{
-							Printer.WriteLine("AggregateException");
+							Printer.WriteLine($"AggregateException [{i}]");
 							return (true, cancelledResult);
 						}
 					});
