@@ -7,6 +7,7 @@ Sustituir Newtonsoft con System.Text.Json.Serialization
 
 
 
+
 - Comprobar que funciona en Xamarin
 
 ENTITY FRAMEWORK CORE
