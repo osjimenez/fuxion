@@ -73,7 +73,7 @@ namespace Fuxion.Test.Threading.Tasks
 					bits[2] ? "CREATE" : "START ", // 2
 					bits[3] ? "SEQUEN" : "PARALL", // 3
 					bits[4] ? "LAST  " : "ALL   ", // 4
-					bits[5] ? "CANCEL" : "NO_CAN", // 5
+					bits[5] ? "NO_CAN" : "NO_CAN", // 5
 					bits[6] ? "NAMED " : "NO_NAM", // 6
 					};
 				for (int j = 0; j < maxParNum + 1; j++)
