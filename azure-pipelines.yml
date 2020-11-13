@@ -8,7 +8,7 @@ trigger:
     include: 
     - master
     - develop
-    - feature/*
+#    - feature/*
 
 variables:
   buildConfiguration: 'Release'

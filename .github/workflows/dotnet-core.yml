@@ -16,10 +16,10 @@ jobs:
       with:
         dotnet-version: 5.0.100
     - name: Install dependencies
-      working-directory: src
-      run: dotnet restore -p:RestoreUseSkipNonexistentTargets=false -nowarn:msb3202,nu1503
+      working-directory: src/core/fuxion
+      run: dotnet restore #-p:RestoreUseSkipNonexistentTargets=false -nowarn:msb3202,nu1503
     - name: Build
-      working-directory: src
+      working-directory: src/core/fuxion
       run: dotnet build --configuration Release --no-restore
 #    - name: Test
       #run: dotnet test --no-restore --verbosity normal
