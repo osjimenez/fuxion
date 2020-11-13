@@ -61,7 +61,7 @@ namespace Fuxion.Test.Threading.Tasks
 		}
 		public static IEnumerable<object[]> GenerateTheoryParameters(int maxParNum)
 		{
-			var res = new List<object[]>();
+			var list = new List<object[]>();
 			for (int i = 0; i < System.Math.Pow(2, 7); i++)
 			{
 				BitArray b = new BitArray(new int[] { i });
@@ -86,9 +86,21 @@ namespace Fuxion.Test.Threading.Tasks
 					};
 				for (int j = 0; j < maxParNum + 1; j++)
 				{
-					res.Add(strings.Cast<object>().ToList().Transform(ss => { ss.Add(j); }).ToArray());
+					list.Add(strings.Cast<object>().ToList().Transform(ss => { ss.Add(j); }).ToArray());
 				}
 			}
+			var res = new List<object[]>();
+			foreach (var r in list)
+				if (!res.Any(c =>
+				r[0] == c[0]
+				&& r[1] == c[1]
+				&& r[2] == c[2]
+				&& r[3] == c[3]
+				&& r[4] == c[4]
+				&& r[5] == c[5]
+				&& r[6] == c[6]
+				&& (int)r[7] == (int)c[7]))
+					res.Add(r);
 			return res;
 		}
 		//[Theory(DisplayName = "TaskManager")]
