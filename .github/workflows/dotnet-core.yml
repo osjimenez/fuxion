@@ -25,4 +25,4 @@ jobs:
       #run: dotnet test --no-restore --verbosity normal
 
     - name: Pack
-      run: dotnet pack --configuration Release Fuxion-pack.sln
+      run: dotnet pack --configuration Release src/Fuxion-pack.sln
