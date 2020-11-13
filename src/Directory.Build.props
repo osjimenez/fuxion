@@ -53,7 +53,7 @@
 		<PackageProjectUrl>https://github.com/osjimenez/Fuxion</PackageProjectUrl>
 		<PackageIconUrl>https://github.com/osjimenez/Fuxion/raw/master/res/logo/fuxion.png</PackageIconUrl>
 
-		<IncludeSymbols>true</IncludeSymbols>
+		<!--<IncludeSymbols>true</IncludeSymbols>-->
 
 		<PackageOutputPath>$(SolutionDir)..\..\PackOutput</PackageOutputPath>
 
