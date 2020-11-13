@@ -2,7 +2,7 @@ PASANDO A CORE 3
 He borrado las clases de Log
 He borrado las factorias usar DI o la clase Singleton
 
-PASANDO A NET 5
+PASANDO A NET 5 
 Sustituir Newtonsoft con System.Text.Json.Serialization
 
 - Comprobar que funciona en Xamarin
