@@ -13,6 +13,13 @@ jobs:
     runs-on: windows-latest
 
     steps:
+
+    - name: IF
+      if: github.ref == 'refs/heads/master'
+      run: | 
+        echo "NUGET.ORG DONE"
+        
+
     - name: Checkout
       uses: actions/checkout@v2
       with:
