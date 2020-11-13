@@ -7,7 +7,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{291B05EE-7
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{ABD253A3-63FE-4FF0-8877-E872691E8D41}"
 	ProjectSection(SolutionItems) = preProject
-		..\azure-pipelines.yml = ..\azure-pipelines.yml
 		Directory.Build.props = Directory.Build.props
 		..\.github\workflows\dotnet-core.yml = ..\.github\workflows\dotnet-core.yml
 		..\GitVersion.yml = ..\GitVersion.yml
@@ -1093,7 +1092,7 @@ Global
 		{1F769AA2-1510-49BE-8C99-965FB7DE5EE6} = {D73E328B-68C4-499C-9532-A7D9ACC4F186}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		EnterpriseLibraryConfigurationToolBinariesPathV6 = packages\EnterpriseLibrary.TransientFaultHandling.6.0.1304.0\lib\portable-net45+win+wp8;packages\EnterpriseLibrary.TransientFaultHandling.Data.6.0.1304.1\lib\NET45
 		SolutionGuid = {935D1C59-A88C-491F-B27D-3B0CF8AF2605}
+		EnterpriseLibraryConfigurationToolBinariesPathV6 = packages\EnterpriseLibrary.TransientFaultHandling.6.0.1304.0\lib\portable-net45+win+wp8;packages\EnterpriseLibrary.TransientFaultHandling.Data.6.0.1304.1\lib\NET45
 	EndGlobalSection
 EndGlobal
