@@ -59,7 +59,6 @@ namespace Fuxion.Test.Threading.Tasks
 				Assert.True(dt.AddSeconds(2) < DateTime.Now);
 			});
 		}
-#nullable disable
 		public static IEnumerable<object[]> GenerateTheoryParameters(int maxParNum)
 		{
 			var res = new List<object[]>();
@@ -85,11 +84,10 @@ namespace Fuxion.Test.Threading.Tasks
 			}
 			return res;
 		}
-#nullable enable
-		[Theory(DisplayName = "TaskManager")]
-		[MemberData(nameof(GenerateTheoryParameters), 9)]
-		public async void TaskManager_Theory2(params object[] _)
-			=> await TaskManager_Theory((string)_[0], (string)_[1], (string)_[2], (string)_[3], (string)_[4], (string)_[5], (string)_[6], (int)_[7]);
+		//[Theory(DisplayName = "TaskManager")]
+		//[MemberData(nameof(GenerateTheoryParameters), 9)]
+		//public async void TaskManager_Theory2(params object[] _)
+		//	=> await TaskManager_Theory((string)_[0], (string)_[1], (string)_[2], (string)_[3], (string)_[4], (string)_[5], (string)_[6], (int)_[7]);
 		[Theory(DisplayName = "TaskManager")]
 		[MemberData(nameof(GenerateTheoryParameters), 9)]
 		public async Task TaskManager_Theory(string r, string c, string m, string p, string o, string n, string na, int parNum)
