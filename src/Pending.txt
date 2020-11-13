@@ -5,6 +5,13 @@ He borrado las factorias usar DI o la clase Singleton
 PASANDO A NET 5
 Sustituir Newtonsoft con System.Text.Json.Serialization
 
+Poner la licencia y el icono con el nuevo formato
+https://docs.microsoft.com/en-us/nuget/reference/msbuild-targets#packageiconurl
+
+
+
+
+
 
 - Comprobar que funciona en Xamarin
 
