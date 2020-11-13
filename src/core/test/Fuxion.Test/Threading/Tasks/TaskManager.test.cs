@@ -96,7 +96,7 @@ namespace Fuxion.Test.Threading.Tasks
 		//public async void TaskManager_Theory2(params object[] _)
 		//	=> await TaskManager_Theory((string)_[0], (string)_[1], (string)_[2], (string)_[3], (string)_[4], (string)_[5], (string)_[6], (int)_[7]);
 		[Theory(DisplayName = "TaskManager")]
-		[MemberData(nameof(GenerateTheoryParameters), 0)]
+		[MemberData(nameof(GenerateTheoryParameters), 9)]
 		public async Task TaskManager_Theory(string r, string c, string m, string p, string o, string n, string na, int parNum)
 		{
 			#region Variables
