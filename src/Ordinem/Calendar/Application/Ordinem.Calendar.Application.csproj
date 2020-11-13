@@ -1,12 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net5.0</TargetFramework>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\core\Application\Fuxion.Application.csproj" />
-    <ProjectReference Include="..\Domain\Ordinem.Calendar.Domain.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\core\Application\Fuxion.Application.csproj" />
+		<ProjectReference Include="..\Domain\Ordinem.Calendar.Domain.csproj" />
+	</ItemGroup>
 
 </Project>

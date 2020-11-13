@@ -2,7 +2,6 @@
 
 	<PropertyGroup>
 		<TargetFramework>net5.0</TargetFramework>
-
 		<Title>Fuxion MongoDB</Title>
 		<PackageId>Fuxion.MongoDB</PackageId>
 		<Description>Fuxion infrastructure for MongoDB</Description>
