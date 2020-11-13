@@ -42,8 +42,8 @@ branches:
     pre-release-weight: 1000
   feature:
     regex: ^features?[/-]
-    mode: ContinuousDeployment
-#    mode: ContinuousDelivery
+#    mode: ContinuousDeployment
+    mode: ContinuousDelivery
 #    tag: 'alpha-{BranchName}'
     tag: useBranchName
     increment: Inherit
