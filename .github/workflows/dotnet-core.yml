@@ -47,10 +47,10 @@ jobs:
     - name: Configure GitHub Packages source
       run: dotnet nuget add source https://nuget.pkg.github.com/osjimenez/index.json -n github -u osjimenez -p ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Publish on GitHub Packages
-      run: dotnet nuget push "nupkgs\*.nupkg" --source "github" --skip-duplicate -k ${{ secrets.GITHUB_TOKEN }}
+    - name: Publish to GitHub Packages
+      run: dotnet nuget push "nupkgs\*.nupkg" --source "github" --api-key ${{secrets.GITHUB_TOKEN}} --skip-duplicate
 
-    - name: Publish on NuGet.org
+    - name: Publish to NuGet.org
       if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop'
-      run: dotnet nuget push *.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_ORG}} --skip-duplicate
+      run: dotnet nuget push "nupkgs\*.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_ORG}} --skip-duplicate
     
