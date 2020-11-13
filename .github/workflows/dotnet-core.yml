@@ -19,6 +19,7 @@ jobs:
       working-directory: src
       run: dotnet restore -p:RestoreUseSkipNonexistentTargets=false -nowarn:msb3202,nu1503
     - name: Build
+      working-directory: src
       run: dotnet build --configuration Release --no-restore
 #    - name: Test
       #run: dotnet test --no-restore --verbosity normal
