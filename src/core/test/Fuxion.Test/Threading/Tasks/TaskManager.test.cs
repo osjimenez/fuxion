@@ -102,7 +102,7 @@ namespace Fuxion.Test.Threading.Tasks
 			bool cancel = n == "CANCEL";
 			bool named = na == "NAMED ";
 
-			int runDelay = 5;
+			int runDelay = 50;
 			string cancelledResult = "Canceled";
 			string doneResult = "Done";
 
