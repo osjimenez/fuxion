@@ -344,11 +344,11 @@ namespace Fuxion.Test.Threading.Tasks
 				{
 					if (create)
 					{
-						var task = (Task?)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order))) ?? Task.CompletedTask;
+						var task = (Task?)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order))) ?? throw new InvalidProgramException("Method cannot return null");
 						task.Start();
 						return task;
 					}
-					else return (Task?)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order))) ?? Task.CompletedTask;
+					else return (Task?)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order))) ?? throw new InvalidProgramException("Method cannot return null");
 				}
 				catch (Exception ex)
 				{
@@ -363,11 +363,11 @@ namespace Fuxion.Test.Threading.Tasks
 				{
 					if (create)
 					{
-						var task = (Task?)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order))) ?? Task.CompletedTask;
+						var task = (Task?)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order))) ?? throw new InvalidProgramException("Method cannot return null");
 						task.Start();
 						return task;
 					}
-					else return (Task?)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order))) ?? Task.CompletedTask;
+					else return (Task?)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order))) ?? throw new InvalidProgramException("Method cannot return null");
 				}
 				catch (Exception ex)
 				{
@@ -382,11 +382,11 @@ namespace Fuxion.Test.Threading.Tasks
 				{
 					if (create)
 					{
-						var task = (Task<string?>?)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order))) ?? Task.FromResult<string?>(null);
+						var task = (Task<string?>?)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order))) ?? throw new InvalidProgramException("Method cannot return null");
 						task.Start();
 						return task;
 					}
-					else return (Task<string?>?)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order))) ?? Task.FromResult<string?>(null);
+					else return (Task<string?>?)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order))) ?? throw new InvalidProgramException("Method cannot return null");
 				}
 				catch (Exception ex)
 				{
@@ -401,11 +401,11 @@ namespace Fuxion.Test.Threading.Tasks
 				{
 					if (create)
 					{
-						var task = (Task<string?>?)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order))) ?? Task.FromResult<string?>(null);
+						var task = (Task<string?>?)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order))) ?? throw new InvalidProgramException("Method cannot return null");
 						task.Start();
 						return task;
 					}
-					else return (Task<string?>?)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order))) ?? Task.FromResult<string?>(null);
+					else return (Task<string?>?)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order))) ?? throw new InvalidProgramException("Method cannot return null");
 				}
 				catch (Exception ex)
 				{
