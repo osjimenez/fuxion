@@ -2,6 +2,7 @@
 	<PropertyGroup>
 		<LangVersion>9.0</LangVersion>
 		<Nullable>enable</Nullable>
+		<!--<IncludeSymbols>true</IncludeSymbols>-->
 		<!--<NullableContextOptions>enable</NullableContextOptions>-->
 		<WarningsAsErrors>
 			CS8600;
@@ -49,11 +50,12 @@
 		<ProductName>Fuxion</ProductName>
 
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-		<PackageLicenseUrl>https://github.com/osjimenez/Fuxion/raw/master/LICENSE</PackageLicenseUrl>
+		<!--<PackageLicenseUrl>https://github.com/osjimenez/Fuxion/raw/master/LICENSE</PackageLicenseUrl>-->
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/osjimenez/Fuxion</PackageProjectUrl>
 		<PackageIconUrl>https://github.com/osjimenez/Fuxion/raw/master/res/logo/fuxion.png</PackageIconUrl>
-
-		<!--<IncludeSymbols>true</IncludeSymbols>-->
+		<PackageIcon>icon.png</PackageIcon>
+		
 
 		<PackageOutputPath>$(SolutionDir)..\..\PackOutput</PackageOutputPath>
 
@@ -61,4 +63,7 @@
 		<RepositoryType>git</RepositoryType>
 		
 	</PropertyGroup>
+	<ItemGroup>
+		<None Include="icon.png" Pack="true" PackagePath="\"/>
+	</ItemGroup>
 </Project>
