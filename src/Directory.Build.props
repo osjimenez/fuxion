@@ -41,7 +41,6 @@
 			
 			CS8769
 		</WarningsAsErrors>
-		<!--<WarningsAsErrors>CS8653;CS8600;CS8621;CS8601;CS8602;CS8603;CS8604;CS8609;CS8612;CS8613;CS8614;CS8615;CS8618;CS8619;CS8620;CS8625;CS8629</WarningsAsErrors>-->
 		
 		<Title>Fuxion</Title>
 		<Authors>Oscar Jimenez</Authors>
@@ -53,9 +52,8 @@
 		<!--<PackageLicenseUrl>https://github.com/osjimenez/Fuxion/raw/master/LICENSE</PackageLicenseUrl>-->
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/osjimenez/Fuxion</PackageProjectUrl>
-		<PackageIconUrl>https://github.com/osjimenez/Fuxion/raw/master/res/logo/fuxion.png</PackageIconUrl>
+		<!--<PackageIconUrl>https://github.com/osjimenez/Fuxion/raw/master/res/logo/fuxion.png</PackageIconUrl>-->
 		<PackageIcon>icon.png</PackageIcon>
-		
 
 		<PackageOutputPath>$(SolutionDir)..\..\PackOutput</PackageOutputPath>
 
