@@ -42,9 +42,10 @@ branches:
     pre-release-weight: 1000
   feature:
     regex: ^features?[/-]
-    mode: ContinuousDelivery
-    tag: 'alpha-{BranchName}'
-#    tag: useBranchName
+    mode: ContinuousDeployment
+#    mode: ContinuousDelivery
+#    tag: 'alpha-{BranchName}'
+    tag: useBranchName
     increment: Inherit
     prevent-increment-of-merged-branch-version: false
     track-merge-target: false
