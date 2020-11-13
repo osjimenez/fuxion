@@ -15,11 +15,15 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 5.0.100
-    - name: Install dependencies
-      working-directory: src/core/fuxion
-      run: dotnet restore #-p:RestoreUseSkipNonexistentTargets=false -nowarn:msb3202,nu1503
-    - name: Build
-      working-directory: src/core/fuxion
-      run: dotnet build --configuration Release --no-restore
+#    - name: Install dependencies
+#      working-directory: src/core/fuxion
+#      run: dotnet restore -p:RestoreUseSkipNonexistentTargets=false -nowarn:msb3202,nu1503
+#    - name: Build
+#      working-directory: src/core/fuxion
+#      run: dotnet build --configuration Release --no-restore
 #    - name: Test
       #run: dotnet test --no-restore --verbosity normal
+
+    - name: Pack
+      working-directory: src/core/fuxion
+      run: dotnet pack --configuration Release

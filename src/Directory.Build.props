@@ -55,6 +55,7 @@
 
 		<IncludeSymbols>true</IncludeSymbols>
 
-		<PackageOutputPath>$(SolutionDir)..\..\PackOutput</PackageOutputPath>
+		<!--<PackageOutputPath>$(SolutionDir)..\..\PackOutput</PackageOutputPath>-->
+		<PackageOutputPath>bin\Pack</PackageOutputPath>
 	</PropertyGroup>
 </Project>
