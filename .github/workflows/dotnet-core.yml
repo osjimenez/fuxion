@@ -12,13 +12,8 @@ jobs:
 
     runs-on: windows-latest
 
+    
     steps:
-
-    - name: IF
-      if: github.ref == 'refs/heads/master'
-      run: | 
-        echo "NUGET.ORG DONE"
-        
 
     - name: Checkout
       uses: actions/checkout@v2
@@ -58,6 +53,6 @@ jobs:
       run: dotnet nuget push "nupkgs\*.nupkg" --source "github" --skip-duplicate -k ${{ secrets.GITHUB_TOKEN }}
 
     - name: Publish on NuGet.org
+      if: github.ref == 'refs/heads/master'
       run: | 
         echo "NUGET.ORG DONE"
-        if: github.ref == 'refs/heads/master'
