@@ -21,7 +21,7 @@ namespace Fuxion.Test.Synchronization
 		public SynchronizationTest(ITestOutputHelper output) : base(output) => this.output = output;
 
 		private readonly ITestOutputHelper output;
-		[Fact(DisplayName = "Synchronization - PostPreviewAction")]
+		[Fact(DisplayName = "Synchronization - PostPreviewAction", Skip = "revision pending ...")]
 		public async Task PostPreviewAction()
 		{
 			var fuxionRepo = new RepoFuxion();
@@ -125,7 +125,7 @@ namespace Fuxion.Test.Synchronization
 
 			Assert.True(postPreviewActionExecuted, "Post preview action wasn't executed");
 		}
-		[Fact(DisplayName = "Synchronization - PostRunAction")]
+		[Fact(DisplayName = "Synchronization - PostRunAction", Skip = "revision pending ...")]
 		public async Task PostRunAction()
 		{
 			var fuxionRepo = new RepoFuxion();
@@ -222,7 +222,7 @@ namespace Fuxion.Test.Synchronization
 
 			Assert.True(postRunActionExecuted, "Post run action wasn't executed");
 		}
-		[Fact(DisplayName = "Synchronization - Demo")]
+		[Fact(DisplayName = "Synchronization - Demo", Skip = "revision pending ...")]
 		public void Demo()
 		{
 			var es = new CultureInfo("ES-es");
@@ -556,7 +556,7 @@ namespace Fuxion.Test.Synchronization
 
 			Printer.WriteLine("TEST FINISHED");
 		}
-		[Fact(DisplayName = "Synchronization - Insert at level 0")]
+		[Fact(DisplayName = "Synchronization - Insert at level 0", Skip = "revision pending ...")]
 		public async Task InsertAtLevel0()
 		{
 			UserCRM? inserted = null;
@@ -622,7 +622,7 @@ namespace Fuxion.Test.Synchronization
 			Assert.Equal("Oscar", inserted?.Name);
 			Assert.Equal(18, inserted?.Age);
 		}
-		[Fact(DisplayName = "Synchronization - Update at level 0")]
+		[Fact(DisplayName = "Synchronization - Update at level 0", Skip = "revision pending ...")]
 		public async Task UpdateAtLevel0()
 		{
 			UserCRM? updated = null;
@@ -696,7 +696,7 @@ namespace Fuxion.Test.Synchronization
 			Assert.Equal("Oscar", updated?.Name);
 			Assert.Equal(18, updated?.Age);
 		}
-		[Fact(DisplayName = "Synchronization - Delete at level 0")]
+		[Fact(DisplayName = "Synchronization - Delete at level 0", Skip = "revision pending ...")]
 		public async Task DeleteAtLevel0()
 		{
 			UserCRM? deleted = null;
@@ -764,7 +764,7 @@ namespace Fuxion.Test.Synchronization
 			Assert.Equal(18, deleted?.Age);
 		}
 
-		[Fact(DisplayName = "Synchronization - Insert at level 1")]
+		[Fact(DisplayName = "Synchronization - Insert at level 1", Skip = "revision pending ...")]
 		public async Task InsertAtLevel1()
 		{
 			SkillCRM? inserted = null;
@@ -871,7 +871,7 @@ namespace Fuxion.Test.Synchronization
 			Assert.Equal(1, inserted?.Id);
 			Assert.Equal("Driver", inserted?.Name);
 		}
-		[Fact(DisplayName = "Synchronization - Update at level 1")]
+		[Fact(DisplayName = "Synchronization - Update at level 1", Skip = "revision pending ...")]
 		public async Task UpdateAtLevel1()
 		{
 			SkillCRM? updated = null;
@@ -985,7 +985,7 @@ namespace Fuxion.Test.Synchronization
 			Assert.Equal(1, updated?.Id);
 			Assert.Equal("Driver", updated?.Name);
 		}
-		[Fact(DisplayName = "Synchronization - Delete at level 1")]
+		[Fact(DisplayName = "Synchronization - Delete at level 1", Skip = "revision pending ...")]
 		public async Task DeleteAtLevel1()
 		{
 			SkillCRM? deleted = null;
@@ -1092,7 +1092,7 @@ namespace Fuxion.Test.Synchronization
 			Assert.Equal("Driver", deleted?.Name);
 		}
 
-		[Fact(DisplayName = "Synchronization - Insert at level 2")]
+		[Fact(DisplayName = "Synchronization - Insert at level 2", Skip = "revision pending ...")]
 		public async Task InsertAtLevel2()
 		{
 			CharacteristicCRM? inserted = null;
@@ -1231,7 +1231,7 @@ namespace Fuxion.Test.Synchronization
 			Assert.Equal(1, inserted?.Id);
 			Assert.Equal("Experience", inserted?.Name);
 		}
-		[Fact(DisplayName = "Synchronization - Update at level 2")]
+		[Fact(DisplayName = "Synchronization - Update at level 2", Skip = "revision pending ...")]
 		public async Task UpdateAtLevel2()
 		{
 			CharacteristicCRM? updated = null;
@@ -1386,7 +1386,7 @@ namespace Fuxion.Test.Synchronization
 			Assert.Equal(1, updated?.Id);
 			Assert.Equal("Experience", updated?.Name);
 		}
-		[Fact(DisplayName = "Synchronization - Delete at level 2")]
+		[Fact(DisplayName = "Synchronization - Delete at level 2", Skip = "revision pending ...")]
 		public async Task DeleteAtLevel2()
 		{
 			CharacteristicCRM? deleted = null;
@@ -1534,7 +1534,7 @@ namespace Fuxion.Test.Synchronization
 			Assert.Equal(1, deleted?.Id);
 			Assert.Equal("Experience", deleted?.Name);
 		}
-		[Fact(DisplayName = "Synchronization - Delete at levels 1 & 2")]
+		[Fact(DisplayName = "Synchronization - Delete at levels 1 & 2", Skip = "revision pending ...")]
 		public async Task DeleteAtLevels1and2()
 		{
 			SkillCRM? deleted1 = null;
