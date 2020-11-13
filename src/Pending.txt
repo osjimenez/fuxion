@@ -12,7 +12,6 @@ https://docs.microsoft.com/en-us/nuget/reference/msbuild-targets#packageiconurl
 
 
 
-
 - Comprobar que funciona en Xamarin
 
 ENTITY FRAMEWORK CORE
