@@ -80,8 +80,8 @@ jobs:
       #run: dotnet nuget add source https://nuget.pkg.github.com/osjimenez/index.json -n github -u osjimenez -p GH_TOKEN [--store-password-in-clear-text]
       run: dotnet nuget add source https://nuget.pkg.github.com/osjimenez/index.json -n github -u osjimenez -p ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Save API Key
-      run: dotnet nuget setapikey ${{ secrets.GITHUB_TOKEN }} -Source https://nuget.pkg.github.com/osjimenez/index.json -NonInteractive
+#    - name: Save API Key
+#      run: dotnet nuget setapikey ${{ secrets.GITHUB_TOKEN }} -Source https://nuget.pkg.github.com/osjimenez/index.json -NonInteractive
     
     - name: Publish
-      run: dotnet nuget push "nupkgs\*.nupkg" --source "github" --skip-duplicate
+      run: dotnet nuget push "nupkgs\*.nupkg" --source "github" --skip-duplicate -k ${{ secrets.GITHUB_TOKEN }}
