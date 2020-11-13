@@ -19,8 +19,8 @@ jobs:
       #uses: gittools/actions/gitversion/setup@v0.9.4
       #uses: GitTools/actions@v0.9.6
       uses: gittools/actions/gitversion/setup@v0.9.6
-      #with:
-      #  versionSpec: '5.3.x'
+      with:
+        versionSpec: '5.3.x'
 
     - name: Use GitVersion
       id: gitversion # step id used as reference for output values
