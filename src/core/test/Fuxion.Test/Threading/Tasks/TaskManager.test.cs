@@ -102,7 +102,7 @@ namespace Fuxion.Test.Threading.Tasks
 			bool cancel = n == "CANCEL";
 			bool named = na == "NAMED ";
 
-			int runDelay = 250;
+			int runDelay = 5;
 			string cancelledResult = "Canceled";
 			string doneResult = "Done";
 
@@ -450,17 +450,17 @@ namespace Fuxion.Test.Threading.Tasks
 						}
 						catch (TaskCanceledByConcurrencyException)
 						{
-							Printer.WriteLine($"TaskCanceledByConcurrencyException [{i}]");
+							Printer.WriteLine($"TaskCanceledByConcurrencyException [{currentNum}]");
 							return (true, cancelledResult);
 						}
 						catch (TaskCanceledException)
 						{
-							Printer.WriteLine($"TaskCanceledException [{i}]");
+							Printer.WriteLine($"TaskCanceledException [{currentNum}]");
 							return (true, cancelledResult);
 						}
 						catch (AggregateException ex) when (ex.Flatten().InnerException is TaskCanceledException)
 						{
-							Printer.WriteLine($"AggregateException [{i}]");
+							Printer.WriteLine($"AggregateException [{currentNum}]");
 							return (true, cancelledResult);
 						}
 					});
