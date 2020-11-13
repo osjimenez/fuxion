@@ -38,14 +38,11 @@ jobs:
     - name: Build
       run: dotnet build --configuration Release --no-restore -p:Version=${{ steps.gitversion.outputs.semVer }} src/Fuxion-pack.sln
 
-    - name: Test
+    - name: Run tests
       run: dotnet test --no-restore --verbosity quiet src/Fuxion-pack.sln
 
-    - name: Pack
+    - name: Create packages
       run: dotnet pack --configuration Release --no-build --output nupkgs --no-build -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} src/Fuxion-pack.sln
-
-#    - name: Configure GitHub Packages source
-#      run: dotnet nuget add source https://nuget.pkg.github.com/osjimenez/index.json -n github -u osjimenez -p ${{ secrets.GITHUB_TOKEN }}
 
     - name: Publish to GitHub Packages
       if: github.ref != 'refs/heads/master' && github.ref != 'refs/heads/develop'
