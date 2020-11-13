@@ -2,7 +2,10 @@ name: .NET Core
 
 on:
   push:
-    branches: [ feature/net5 ]
+    branches: 
+     - master
+     - develop
+     - 'feature/**'
 
 jobs:
   build:
