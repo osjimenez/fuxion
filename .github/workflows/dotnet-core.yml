@@ -63,12 +63,10 @@ jobs:
         dotnet-version: 5.0.100
 
     - name: Install dependencies
-      working-directory: src/core/fuxion
       #run: dotnet restore -p:RestoreUseSkipNonexistentTargets=false -nowarn:msb3202,nu1503 src/Fuxion-pack.sln
       run: dotnet restore -p:RestoreUseSkipNonexistentTargets=false src/Fuxion-pack.sln
 
     - name: Build
-      working-directory: src/core/fuxion
       run: dotnet build --configuration Release --no-restore -p:Version=${{ steps.gitversion.outputs.semVer }} src/Fuxion-pack.sln
 
 #    - name: Test
