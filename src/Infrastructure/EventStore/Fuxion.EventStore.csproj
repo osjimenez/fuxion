@@ -8,6 +8,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<None Include="icon.png" Pack="true" PackagePath="\"/>
+	</ItemGroup>
+	
+	<ItemGroup>
 		<PackageReference Include="EventStore.Client" Version="20.6.1" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
 	</ItemGroup>

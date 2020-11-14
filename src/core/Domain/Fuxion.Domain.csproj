@@ -7,7 +7,11 @@
 		<PackageId>Fuxion.Domain</PackageId>
 		<Description>Fuxion library for DDD</Description>
 	</PropertyGroup>
-
+	
+	<ItemGroup>
+		<None Include="icon.png" Pack="true" PackagePath="\"/>
+	</ItemGroup>
+	
 	<ItemGroup>
 		<Compile Update="Properties\AssemblyInfo.cs" />
 	</ItemGroup>
