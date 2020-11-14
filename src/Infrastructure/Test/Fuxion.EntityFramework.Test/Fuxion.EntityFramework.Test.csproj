@@ -4,12 +4,6 @@
 		<TargetFramework>net5.0</TargetFramework>
 		<IsPackable>false</IsPackable>
 	</PropertyGroup>
-
-	<Target Name="WorkaroundNetStandard" AfterTargets="ResolvePackageAssets">
-		<ItemGroup>
-			<TransitiveFrameworkReference Remove="NETStandard.Library" />
-		</ItemGroup>
-	</Target>
 	
 	<ItemGroup>
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.0" />

@@ -7,12 +7,6 @@
 		<Description>Fuxion library for Asp.Net Core.</Description>
 	</PropertyGroup>
 
-	<Target Name="WorkaroundNetStandard" AfterTargets="ResolvePackageAssets">
-		<ItemGroup>
-			<TransitiveFrameworkReference Remove="NETStandard.Library" />
-		</ItemGroup>
-	</Target>
-
 	<ItemGroup>
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 	</ItemGroup>

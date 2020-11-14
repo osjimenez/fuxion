@@ -5,12 +5,6 @@
 		<IsPackable>false</IsPackable>
 	</PropertyGroup>
 
-	<Target Name="WorkaroundNetStandard" AfterTargets="ResolvePackageAssets">
-		<ItemGroup>
-			<TransitiveFrameworkReference Remove="NETStandard.Library" />
-		</ItemGroup>
-	</Target>
-
 	<ItemGroup>
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.0" />

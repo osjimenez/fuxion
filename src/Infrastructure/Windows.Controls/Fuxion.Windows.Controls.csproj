@@ -2,19 +2,12 @@
 
 	<PropertyGroup>
 		<TargetFramework>net5.0-windows</TargetFramework>
-		<UseWpf>True</UseWpf>
-		
+		<UseWpf>True</UseWpf>		
 		<IsPackable>false</IsPackable>
 		<Title>Fuxion Windows Controls</Title>
 		<PackageId>Fuxion.Windows.Controls</PackageId>
 		<Description>Fuxion Windows Controls</Description>
 	</PropertyGroup>
-
-	<Target Name="WorkaroundNetStandard" AfterTargets="ResolvePackageAssets">
-		<ItemGroup>
-			<TransitiveFrameworkReference Remove="NETStandard.Library" />
-		</ItemGroup>
-	</Target>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />

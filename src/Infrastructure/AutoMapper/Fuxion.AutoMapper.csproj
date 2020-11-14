@@ -2,7 +2,6 @@
 
 	<PropertyGroup>
 		<TargetFramework>net5.0</TargetFramework>
-
 		<Title>Fuxion AutoMapper</Title>
 		<PackageId>Fuxion.AutoMapper</PackageId>
 		<Description>Fuxion library with extensions for AutoMapper</Description>

@@ -27,7 +27,8 @@ namespace Fuxion.Identity.DatabaseEFTest
 		//public const string scenarios = DATABASE;
 		public const string scenarios = "";
 #else
-        public const string scenarios = MEMORY+"·"+DATABASE;
+		//public const string scenarios = MEMORY+"·"+DATABASE;
+		public const string scenarios = "";
 #endif
 		private IdentityManager? _IdentityManager;
 

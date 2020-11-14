@@ -2,7 +2,6 @@
 
 	<PropertyGroup>
 		<TargetFramework>net5.0</TargetFramework>
-
 		<Title>FuxionRabbitMQ</Title>
 		<PackageId>Fuxion.RabbitMQ</PackageId>
 		<Description>Fuxion infrastructure for RabbitMQ</Description>

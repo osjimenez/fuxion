@@ -7,12 +7,6 @@
 		<StartupObject>Ordinem.Shell.Wpf.Launcher.App</StartupObject>
 	</PropertyGroup>
 
-	<Target Name="WorkaroundNetStandard" AfterTargets="ResolvePackageAssets">
-		<ItemGroup>
-			<TransitiveFrameworkReference Remove="NETStandard.Library" />
-		</ItemGroup>
-	</Target>
-
 	<ItemGroup>
 		<None Remove="appsettings.json" />
 		<None Remove="Views\AboutPanel.xaml" />

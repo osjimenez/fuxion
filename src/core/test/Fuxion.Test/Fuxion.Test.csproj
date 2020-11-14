@@ -1,15 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net5.0</TargetFrameworks>
+		<TargetFramework>net5.0</TargetFramework>
 		<IsPackable>false</IsPackable>
 	</PropertyGroup>
-
-	<Target Name="WorkaroundNetStandard" AfterTargets="ResolvePackageAssets">
-		<ItemGroup>
-			<TransitiveFrameworkReference Remove="NETStandard.Library" />
-		</ItemGroup>
-	</Target>
 
 	<ItemGroup>
 	  <Compile Remove="FakesAssemblies\**" />
@@ -34,11 +28,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Update="xunit.runner.json">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
+		<Content Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
 	</ItemGroup>
-
+	
 	<ItemGroup>
 	  <AdditionalDesignTimeBuildInput Remove="FakesAssemblies\**" />
 	</ItemGroup>

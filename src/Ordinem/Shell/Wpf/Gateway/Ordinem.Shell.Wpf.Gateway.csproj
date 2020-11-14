@@ -6,11 +6,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Remove="GatewayStartup-Core2.cs" />
+		<Compile Remove="GatewayStartup-Core2.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Include="GatewayStartup-Core2.cs" />
+		<None Include="GatewayStartup-Core2.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
