@@ -1,0 +1,34 @@
+﻿h1{
+	color:red;
+}
+
+::deep .e-dashboardlayout {
+	padding: 0px;
+	width: 80%;
+	background-color: green;
+}
+
+::deep .e-dashboardlayout .e-control .e-panel:hover span {
+	display: block;
+}
+
+::deep .e-dashboardlayout .e-panel .e-panel-container .text-align {
+	vertical-align: middle;
+	font-weight: 600;
+	font-size: 20px;
+	text-align: center;
+}
+
+::deep .e-template-icon {
+	padding: 10px;
+	float: right;
+	display: none;
+}
+
+.text-align {
+	line-height: 160px;
+}
+
+.sb-demo-section .container-fluid {
+	background: #E5E5E5;
+}
