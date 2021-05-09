@@ -253,7 +253,7 @@ namespace Fuxion.ComponentModel
 		protected bool SetValue<T>(T newValue, bool raiseOnlyIfNotEquals = true, [CallerMemberName] string propertyName = "")
 		{
 			if (propertyName == null) throw new ArgumentNullException(nameof(propertyName));
-			T oldValue;
+			T? oldValue;
 			if (PropertiesDictionary.ContainsKey(GetPropertyKey(propertyName)))
 				oldValue = GetValue<T>(propertyName: propertyName);
 			else
@@ -277,7 +277,7 @@ namespace Fuxion.ComponentModel
 				{
 					pro = props.First();
 				}
-				oldValue = (T)pro.GetValue(this, null);
+				oldValue = (T?)pro.GetValue(this, null);
 				//oldValue = (T)GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static).GetValue(this, null);
 			}
 			if (raiseOnlyIfNotEquals && EqualityComparer<T>.Default.Equals(oldValue, newValue))
@@ -326,7 +326,7 @@ namespace Fuxion.ComponentModel
 			else
 			{
 				// oldLockerValue = new ValueLocker<T>((T)GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static).GetValue(this, null));
-				var obj = (T)GetType()
+				var obj = (T?)GetType()
 					.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
 					.Single(p => p.Name == propertyName)
 					.GetValue(this, null);
@@ -455,7 +455,7 @@ namespace Fuxion.ComponentModel
 		{
 			if (!(me is NotifierBinding<TNotifier, TProperty> not)) throw new InvalidCastException();
 			not.Notifier.PropertyChanged += (s, e) => e.Case(not.SourcePropertyExpression, a => targetPropertyExpression.GetPropertyInfo().SetValue(target, transformFuction(a.ActualValue)));
-			var val = (TProperty)not.SourcePropertyExpression.GetPropertyInfo().GetValue(not.Notifier);
+			var val = (TProperty?)not.SourcePropertyExpression.GetPropertyInfo().GetValue(not.Notifier);
 			// NULLABLE - Unexpected null
 			if (val == null) throw new NullReferenceException($"Unexpected null");
 			targetPropertyExpression.GetPropertyInfo().SetValue(target, transformFuction(val));

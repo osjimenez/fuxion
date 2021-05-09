@@ -125,7 +125,7 @@ namespace Fuxion.Synchronization
 					if (comparer != null)
 					{
 						// Using comparer
-						comparationResult = !comparer.Equals(aValue, (TPropertyA)Convert.ChangeType(bValue, typeof(TPropertyA)));
+						comparationResult = !comparer.Equals(aValue, (TPropertyA?)Convert.ChangeType(bValue, typeof(TPropertyA)));
 					}
 					else
 					{

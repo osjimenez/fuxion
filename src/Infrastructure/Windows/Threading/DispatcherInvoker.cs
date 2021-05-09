@@ -11,7 +11,8 @@ namespace Fuxion.Windows.Threading
 	{
 		public DispatcherInvoker(Dispatcher? dispatcher = null) =>
 			this.dispatcher = dispatcher ?? Dispatcher.CurrentDispatcher;
-		Dispatcher dispatcher;
+
+		readonly Dispatcher dispatcher;
 		public Task InvokeActionDelegate(IInvokable invokable, Delegate method, params object?[] args)
 		{
 			if (!invokable.UseInvoker || dispatcher == null || dispatcher.CheckAccess())
@@ -20,25 +21,25 @@ namespace Fuxion.Windows.Threading
 				return dispatcher.InvokeAsync(() => method.DynamicInvoke(args)).Task;
 			return Task.CompletedTask;
 		}
-		public Task<TResult?> InvokeFuncDelegate<TResult>(IInvokable invokable, Delegate method, params object?[] args)
+		public Task<TResult> InvokeFuncDelegate<TResult>(IInvokable invokable, Delegate method, params object?[] args)
 		{
 			if (!invokable.UseInvoker || dispatcher == null || dispatcher.CheckAccess())
 			{
 				var r = method.DynamicInvoke(args);
-				return r == null
-					? Task.FromResult(default(TResult))
-					: Task.FromResult((TResult?)r);
+				return r is null
+					? throw new InvalidOperationException()// Task.FromResult(default(TResult))
+					: Task.FromResult((TResult)r);
 			}
 			else if (!dispatcher.HasShutdownStarted)
 				return dispatcher.InvokeAsync(() =>
 				{
 					var r = method.DynamicInvoke(args);
 					return r == null
-						? default
+						? throw new InvalidOperationException()//default
 						: (TResult)r;
 				}).Task;
-		
-			return Task.FromResult(default(TResult));
+			throw new InvalidOperationException();
+			//return Task.FromResult(default(TResult));
 		}
 	}
 }

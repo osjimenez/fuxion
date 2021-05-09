@@ -8,7 +8,8 @@ namespace Fuxion.Licensing.Test.Mocks
 {
 	public class LicenseStoreMock : ILicenseStore
 	{
-		public LicenseStoreMock() => licenses = JsonConvert.DeserializeObject<LicenseContainer[]>(File.ReadAllText("licenses.json")).ToList();
+		public LicenseStoreMock() => licenses = (JsonConvert.DeserializeObject<LicenseContainer[]>(File.ReadAllText("licenses.json"))
+			?? throw new InvalidOperationException("Error deserializing licenses.json")).ToList();
 
 		private readonly List<LicenseContainer> licenses;
 

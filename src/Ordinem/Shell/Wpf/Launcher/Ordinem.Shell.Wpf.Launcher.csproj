@@ -21,20 +21,20 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="5.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<Reference Include="Telerik.Windows.Themes.Fluent">
-			<HintPath>C:\Program Files (x86)\Progress\Telerik UI for WPF R3 2020\Binaries.NoXaml\NetCore\Telerik.Windows.Themes.Fluent.dll</HintPath>
+			<HintPath>C:\Program Files (x86)\Progress\Telerik UI for WPF R1 2021\Binaries.NoXaml\WPF50\Telerik.Windows.Themes.Fluent.dll</HintPath>
 		</Reference>
 		<Reference Include="Telerik.Windows.Controls">
-			<HintPath>C:\Program Files (x86)\Progress\Telerik UI for WPF R3 2020\Binaries.NoXaml\NetCore\Telerik.Windows.Controls.dll</HintPath>
+			<HintPath>C:\Program Files (x86)\Progress\Telerik UI for WPF R1 2021\Binaries.NoXaml\WPF50\Telerik.Windows.Controls.dll</HintPath>
 		</Reference>
 		<Reference Include="Telerik.Windows.Controls.Navigation">
-			<HintPath>C:\Program Files (x86)\Progress\Telerik UI for WPF R3 2020\Binaries.NoXaml\NetCore\Telerik.Windows.Controls.Navigation.dll</HintPath>
+			<HintPath>C:\Program Files (x86)\Progress\Telerik UI for WPF R1 2021\Binaries.NoXaml\WPF50\Telerik.Windows.Controls.Navigation.dll</HintPath>
 		</Reference>
 	</ItemGroup>
 

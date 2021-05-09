@@ -44,7 +44,7 @@ namespace Fuxion.Licensing
 			if (File.Exists(pathLocker.Read(path => path)))
 				listLocker.Write(l => l.AddRange(JsonConvert.DeserializeObject<LicenseContainer[]>(
 					pathLocker.Read(path => File.ReadAllText(path))
-					)));
+					) ?? throw new InvalidOperationException("Error deserializing LicenseContainer")));
 		}
 		public IQueryable<LicenseContainer> Query() => listLocker.Read(licenses => licenses.AsQueryable());
 		public void Add(LicenseContainer license)
