@@ -1,5 +1,6 @@
 ﻿using Fuxion.Reflection;
 using Fuxion.Shell;
+using Fuxion.Shell.Resources;
 using Fuxion.Shell.ViewModels;
 using Fuxion.Shell.Views;
 using System;
@@ -21,8 +22,12 @@ namespace Microsoft.Extensions.DependencyInjection
 			me.Services.AddSingleton<ShellViewModel>();
 			me.Services.AddSingleton<ShellWindow>();
 
+			me.Services.AddResource<Resources>();
+
 			me.AddToPostRegistrationList(serviceProvider =>
 			{
+				foreach (var dic in serviceProvider.GetServices<ShellResourceDictionary>())
+					Application.Current.Resources.MergedDictionaries.Add(dic);
 				foreach (var module in serviceProvider.GetServices<IModule>())
 					module.Register(me.Services);
 			});
@@ -62,7 +67,10 @@ namespace Microsoft.Extensions.DependencyInjection
 			((ShellBuilder)me).ShowWindow = false;
 			return me;
 		}
-
+		public static void AddResource<TResource>(this IServiceCollection me)where TResource : ShellResourceDictionary
+		{
+			me.AddSingleton<ShellResourceDictionary, TResource>();
+		}
 		public static void AddMenu(this IServiceCollection me, object header, Action clickAction)
 		{
 			me.AddSingleton<IMenu>(new GenericMenu(header, clickAction));
@@ -122,7 +130,8 @@ namespace Microsoft.Extensions.DependencyInjection
 			Header = header;
 			this.clickAction = clickAction;
 		}
-		Action clickAction;
+
+		readonly Action clickAction;
 		public object Header { get; }
 		public void OnClick() => clickAction();
 	}
