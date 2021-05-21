@@ -6,7 +6,7 @@ using System.Windows;
 using System.Windows.Input;
 using Telerik.Windows.Controls;
 using Telerik.Windows.Controls.Docking;
-
+using FU = ReactiveUI;
 namespace Fuxion.Shell.Views
 {
 #nullable disable

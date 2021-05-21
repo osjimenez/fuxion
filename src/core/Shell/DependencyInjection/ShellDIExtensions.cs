@@ -1,4 +1,5 @@
-﻿using Fuxion.Reflection;
+﻿using Fuxion.DynamicData;
+using Fuxion.Reflection;
 using Fuxion.Shell;
 using Fuxion.Shell.Resources;
 using Fuxion.Shell.ViewModels;

@@ -1,4 +1,5 @@
-﻿using Fuxion.Shell.Resources;
+﻿using Fuxion.DynamicData;
+using Fuxion.Shell.Resources;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Shell.Models
 {
-	public class BaseDvo : ReactiveObject
+	public class BaseDvo : ReactiveObject, ICacheable
 	{
 		Guid _Id = Guid.NewGuid();
 		[Display(Name = nameof(Strings.Id), GroupName = nameof(Strings.Ids), ResourceType = typeof(Strings))]
