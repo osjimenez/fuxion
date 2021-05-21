@@ -36,7 +36,7 @@ namespace Fuxion.Application.Snapshots
 		private readonly Locker<string>? dumpFilePath = null;
 		private readonly Locker<Dictionary<string, Dictionary<Guid, Snapshot>>> snapshots = new Locker<Dictionary<string, Dictionary<Guid, Snapshot>>>(new Dictionary<string, Dictionary<Guid, Snapshot>>());
 
-		public Task<Snapshot?> GetSnapshotAsync(Type snapshotType, Guid aggregateId) => snapshots.ReadAsync(dic =>
+		public Task<Snapshot?> GetSnapshotAsync(Type snapshotType, Guid aggregateId) => snapshots.ReadNullableAsync(dic =>
 			dic.ContainsKey(snapshotType.GetTypeKey()) && dic[snapshotType.GetTypeKey()].ContainsKey(aggregateId)
 				? (Snapshot)dic[snapshotType.GetTypeKey()][aggregateId]
 				: null);

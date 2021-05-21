@@ -9,7 +9,8 @@
 	xmlns:reactiveui="http://reactiveui.net"
 	xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
 	mc:Ignorable="d"
-	Title="Shell" Height="800" Width="1200">
+	Title="Shell" Height="800" Width="1200"
+	Background="{telerik:VisualStudio2019Resource ResourceKey=AlternativeBrush}">
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />

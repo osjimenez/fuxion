@@ -1,6 +1,7 @@
 ﻿using Fuxion.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -150,7 +151,7 @@ namespace Fuxion.Threading
 				}
 			}, del, pars);
 		}
-		private Task<TResult> DelegateReadAsync<TResult>(Delegate del, params object?[] pars)
+		private Task<TResult> DelegateReadAsync<TResult>(Delegate del, params object?[] pars) where TResult : notnull
 		{
 			return TaskManager.StartNew<Delegate, object?[], TResult>((d, ps) =>
 			{
@@ -162,6 +163,29 @@ namespace Fuxion.Threading
 					var res = d.DynamicInvoke(p.ToArray());
 					if (res == null) throw new ArgumentNullException("Dynamic invocation cannot return null");
 					return (TResult)res;
+				}
+				catch (Exception ex)
+				{
+					Logger?.LogError(ex, $"Error '{ex.GetType().Name}' in Locker.Read: {ex.Message}");
+					throw;
+				}
+				finally
+				{
+					_ReaderWriterLockSlim.ExitReadLock();
+				}
+			}, del, pars);
+		}
+		private Task<TResult?> DelegateReadNullableAsync<TResult>(Delegate del, params object?[] pars)
+		{
+			return TaskManager.StartNew<Delegate, object?[], TResult?>((d, ps) =>
+			{
+				_ReaderWriterLockSlim.EnterReadLock();
+				try
+				{
+					var p = new object?[] { objectLocked }.ToList();
+					p.AddRange(ps);
+					var res = d.DynamicInvoke(p.ToArray());
+					return (TResult?)res;
 				}
 				catch (Exception ex)
 				{
@@ -225,16 +249,17 @@ namespace Fuxion.Threading
 		// Read action
 		public Task ReadAsync(Action<TObjectLocked> action) => DelegateReadAsync(action);
 		public Task ReadAsync<T>(Action<TObjectLocked, T> action, T param) => DelegateReadAsync(action, param);
-		//public Task ReadAsync<T>(Action<TObjectLocked, T> action, T param) where T : class => DelegateReadAsync(action, param);
-		//public Task ReadAsync<T>(Action<TObjectLocked, T> action, T param) where T : struct => DelegateReadAsync(action, param);
 		public Task ReadAsync<T1, T2>(Action<TObjectLocked, T1, T2> action, T1 param1, T2 param2) => DelegateReadAsync(action, param1, param2);
 		public Task ReadAsync<T1, T2, T3>(Action<TObjectLocked, T1, T2, T3> action, T1 param1, T2 param2, T3 param3) => DelegateReadAsync(action, param1, param2, param3);
-
 		// Read function
-		public Task<TResult> ReadAsync<TResult>(Func<TObjectLocked, TResult> func) => DelegateReadAsync<TResult>(func);
-		public Task<TResult> ReadAsync<T, TResult>(Func<TObjectLocked, T, TResult> func, T param) => DelegateReadAsync<TResult>(func, param);
-		public Task<TResult> ReadAsync<T1, T2, TResult>(Func<TObjectLocked, T1, T2, TResult> func, T1 param1, T2 param2) => DelegateReadAsync<TResult>(func, param1, param2);
-		public Task<TResult> ReadAsync<T1, T2, T3, TResult>(Func<TObjectLocked, T1, T2, T3, TResult> func, T1 param1, T2 param2, T3 param3) => DelegateReadAsync<TResult>(func, param1, param2, param3);
+		public Task<TResult> ReadAsync<TResult>(Func<TObjectLocked, TResult> func) where TResult : notnull => DelegateReadAsync<TResult>(func);
+		public Task<TResult> ReadAsync<T, TResult>(Func<TObjectLocked, T, TResult> func, T param) where TResult : notnull => DelegateReadAsync<TResult>(func, param);
+		public Task<TResult> ReadAsync<T1, T2, TResult>(Func<TObjectLocked, T1, T2, TResult> func, T1 param1, T2 param2) where TResult : notnull => DelegateReadAsync<TResult>(func, param1, param2);
+		public Task<TResult> ReadAsync<T1, T2, T3, TResult>(Func<TObjectLocked, T1, T2, T3, TResult> func, T1 param1, T2 param2, T3 param3) where TResult : notnull => DelegateReadAsync<TResult>(func, param1, param2, param3);
+		public Task<TResult?> ReadNullableAsync<TResult>(Func<TObjectLocked, TResult> func) => DelegateReadNullableAsync<TResult>(func);
+		public Task<TResult?> ReadNullableAsync<T, TResult>(Func<TObjectLocked, T, TResult> func, T param) => DelegateReadNullableAsync<TResult>(func, param);
+		public Task<TResult?> ReadNullableAsync<T1, T2, TResult>(Func<TObjectLocked, T1, T2, TResult> func, T1 param1, T2 param2) => DelegateReadNullableAsync<TResult>(func, param1, param2);
+		public Task<TResult?> ReadNullableAsync<T1, T2, T3, TResult>(Func<TObjectLocked, T1, T2, T3, TResult> func, T1 param1, T2 param2, T3 param3) => DelegateReadNullableAsync<TResult>(func, param1, param2, param3);
 
 		// Write action
 		public Task WriteAsync(Action<TObjectLocked> action) => DelegateWriteAsync(action);

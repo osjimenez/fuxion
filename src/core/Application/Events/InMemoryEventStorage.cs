@@ -54,7 +54,7 @@ namespace Fuxion.Application.Events
 						.AsQueryable();
 			});
 		public Task<Event?> GetLastEventAsync(Guid aggregateId)
-			=> events.ReadAsync(str => str.ContainsKey(aggregateId)
+			=> events.ReadNullableAsync(str => str.ContainsKey(aggregateId)
 				? str[aggregateId].Last()
 				: null);
 		public async Task CommitAsync(Guid aggregateId, IEnumerable<Event> events)
