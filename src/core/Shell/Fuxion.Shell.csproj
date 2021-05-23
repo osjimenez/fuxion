@@ -23,7 +23,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Application\Fuxion.Application.csproj" />
-		<ProjectReference Include="..\DynamicData\Fuxion.DynamicData.csproj" />
 		<ProjectReference Include="..\Fuxion\Fuxion.csproj" />
 	</ItemGroup>
 
@@ -43,18 +42,6 @@
 		<Reference Include="Telerik.Windows.Controls.Navigation">
 			<HintPath>C:\Program Files (x86)\Progress\Telerik UI for WPF R2 2021\Binaries\WPF50\Telerik.Windows.Controls.Navigation.dll</HintPath>
 		</Reference>
-	</ItemGroup>
-
-	<ItemGroup>
-		<EmbeddedResource Update="Resources\Strings.resx">
-			<Generator>PublicResXFileCodeGenerator</Generator>
-			<LastGenOutput>Strings.Designer.cs</LastGenOutput>
-		</EmbeddedResource>
-		<Compile Update="Resources\Strings.Designer.cs">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>Strings.resx</DependentUpon>
-		</Compile>
 	</ItemGroup>
 
 	<ItemGroup>
