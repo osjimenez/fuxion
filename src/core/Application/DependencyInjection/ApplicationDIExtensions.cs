@@ -20,14 +20,19 @@ namespace Microsoft.Extensions.DependencyInjection
 			me.AddSingleton(typeKeyDirectory);
 			var builder = new FuxionBuilder(me, typeKeyDirectory);
 			builderAction(builder);
-			foreach (var action in builder.PostRegistrationsList)
+			foreach (var action in builder.PreRegistrationsList)
+			{
+				var sp = me.BuildServiceProvider();
+				action(sp);
+			}
+			foreach (var action in builder.RegistrationsList)
 			{
 				var sp = me.BuildServiceProvider();
 				action(sp);
 			}
 			foreach (var tup in builder.AutoActivateList)
 			{
-				IServiceProvider sp = me.BuildServiceProvider();
+				var sp = me.BuildServiceProvider();
 				tup.PreAction?.Invoke(sp);
 				var obj = sp.GetRequiredService(tup.Type);
 				tup.PostAction?.Invoke(sp, obj);
@@ -169,7 +174,8 @@ namespace Microsoft.Extensions.DependencyInjection
 	{
 		IServiceCollection Services { get; }
 		TypeKeyDirectory TypeKeyDirectory { get; }
-		void AddToPostRegistrationList(Action<IServiceProvider> action);
+		void AddToPreRegistrationList(Action<IServiceProvider> action);
+		void AddToRegistrationList(Action<IServiceProvider> action);
 		void AddToAutoActivateList<T>(Action<IServiceProvider>? preAction = null, Action<IServiceProvider, T>? postAction = null);
 	}
 
@@ -183,8 +189,11 @@ namespace Microsoft.Extensions.DependencyInjection
 		public IServiceCollection Services { get; }
 		public TypeKeyDirectory TypeKeyDirectory { get; }
 
-		public List<Action<IServiceProvider>> PostRegistrationsList = new List<Action<IServiceProvider>>();
-		public void AddToPostRegistrationList(Action<IServiceProvider> action) => PostRegistrationsList.Add(action);
+		public List<Action<IServiceProvider>> PreRegistrationsList = new();
+		public void AddToPreRegistrationList(Action<IServiceProvider> action) => PreRegistrationsList.Add(action);
+
+		public List<Action<IServiceProvider>> RegistrationsList = new();
+		public void AddToRegistrationList(Action<IServiceProvider> action) => RegistrationsList.Add(action);
 
 		public List<(Type Type, Action<IServiceProvider>? PreAction, Action<IServiceProvider, object>? PostAction)> AutoActivateList { get; } = new List<(Type Type, Action<IServiceProvider>? PreAction, Action<IServiceProvider, object>? PostAction)>();
 		public void AddToAutoActivateList<T>(Action<IServiceProvider>? preAction = null, Action<IServiceProvider, T>? postAction = null) => AutoActivateList.Add((typeof(T), preAction, postAction != null ? new Action<IServiceProvider, object>((sp, o) => postAction(sp, (T)o)) : null));

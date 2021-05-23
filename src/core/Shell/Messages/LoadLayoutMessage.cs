@@ -7,9 +7,5 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Shell.Messages
 {
-	internal class LoadLayoutMessage
-	{
-		public LoadLayoutMessage(Stream layoutFileStream) => LayoutFileStream = layoutFileStream;
-		public Stream LayoutFileStream { get; set; }
-	}
+	internal record LoadLayoutMessage(Stream LayoutFileStream);
 }

@@ -6,7 +6,5 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Shell.Messages
 {
-	internal class UnlockMessage
-	{
-	}
+	internal record UnlockMessage;
 }

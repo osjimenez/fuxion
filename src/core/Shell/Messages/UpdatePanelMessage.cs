@@ -5,12 +5,5 @@ using System.Text;
 
 namespace Fuxion.Shell.Messages
 {
-	public class UpdatePanelMessage
-	{
-		public UpdatePanelMessage(BaseDvo updatedDvo)
-		{
-			UpdatedDvo = updatedDvo;
-		}
-		public BaseDvo UpdatedDvo { get; set; }
-	}
+	public record UpdatePanelMessage(BaseDvo UpdatedDvo);
 }

@@ -1,4 +1,4 @@
 ﻿namespace Fuxion.Shell.Messages
 {
-	internal class CloseAllPanelsMessage { }
+	internal record CloseAllPanelsMessage;
 }

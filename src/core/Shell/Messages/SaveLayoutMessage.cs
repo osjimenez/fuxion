@@ -7,9 +7,5 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Shell.Messages
 {
-	internal class SaveLayoutMessage
-	{
-		public SaveLayoutMessage(Stream layoutFileStream) => LayoutFileStream = layoutFileStream;
-		public Stream LayoutFileStream { get; set; }
-	}
+	internal record SaveLayoutMessage(Stream LayoutFileStream);
 }

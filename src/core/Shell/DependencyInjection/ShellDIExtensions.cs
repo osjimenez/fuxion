@@ -23,9 +23,12 @@ namespace Microsoft.Extensions.DependencyInjection
 			me.Services.AddSingleton<ShellViewModel>();
 			me.Services.AddSingleton<ShellWindow>();
 
-			me.Services.AddResource<Resources>();
-
-			me.AddToPostRegistrationList(serviceProvider =>
+			me.AddToPreRegistrationList(serviceProvider =>
+			{
+				foreach (var module in serviceProvider.GetServices<IModule>())
+					module.PreRegister(me.Services);
+			});
+			me.AddToRegistrationList(serviceProvider =>
 			{
 				foreach (var dic in serviceProvider.GetServices<ShellResourceDictionary>())
 					Application.Current.Resources.MergedDictionaries.Add(dic);
@@ -72,7 +75,7 @@ namespace Microsoft.Extensions.DependencyInjection
 		{
 			me.AddSingleton<ShellResourceDictionary, TResource>();
 		}
-		public static void AddMenu(this IServiceCollection me, object header, Action clickAction)
+		public static void AddMenu(this IServiceCollection me, object header, Action? clickAction = null)
 		{
 			me.AddSingleton<IMenu>(new GenericMenu(header, clickAction));
 		}
@@ -126,14 +129,14 @@ namespace Microsoft.Extensions.DependencyInjection
 	}
 	internal class GenericMenu : IMenu
 	{
-		public GenericMenu(object header, Action clickAction)
+		public GenericMenu(object header, Action? clickAction = null)
 		{
 			Header = header;
 			this.clickAction = clickAction;
 		}
 
-		readonly Action clickAction;
+		readonly Action? clickAction;
 		public object Header { get; }
-		public void OnClick() => clickAction();
+		public void OnClick() => clickAction?.Invoke();
 	}
 }

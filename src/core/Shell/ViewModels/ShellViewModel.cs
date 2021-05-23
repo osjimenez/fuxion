@@ -1,4 +1,5 @@
 ﻿using Fuxion.Shell.Messages;
+using Microsoft.Extensions.Logging;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ namespace Fuxion.Shell.ViewModels
 {
 	public class ShellViewModel : BaseViewModel
 	{
+		public ShellViewModel(ILogger<ShellViewModel> logger) : base(logger) { }
 		//public ShellViewModel()
 		//{
 		//	MessageBus.Current.Listen<OpenPanelUIMessage>()

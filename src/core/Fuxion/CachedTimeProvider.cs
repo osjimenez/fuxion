@@ -9,7 +9,7 @@ namespace Fuxion
 		public CachedTimeProvider(ITimeProvider timeProvider) => TimeProvider = timeProvider;
 
 		private DateTime cachedValue;
-		private readonly Stopwatch stopwatch = new Stopwatch();
+		private readonly Stopwatch stopwatch = new();
 
 		public ILogger? Logger { get; set; }
 		public ITimeProvider TimeProvider { get; set; }
@@ -39,17 +39,17 @@ namespace Fuxion
 
 		public DateTime Now()
 		{
-			return Now(out var fromCache);
+			return Now(out _);
 		}
 		public DateTime Now(out bool fromCache) => GetUtc(out fromCache).ToLocalTime();
 		public DateTimeOffset NowOffsetted()
 		{
-			return NowOffsetted(out var fromCache);
+			return NowOffsetted(out _);
 		}
 		public DateTimeOffset NowOffsetted(out bool fromCache) => GetUtc(out fromCache).ToLocalTime();
 		public DateTime UtcNow()
 		{
-			return UtcNow(out var fromCache);
+			return UtcNow(out _);
 		}
 		public DateTime UtcNow(out bool fromCache) => GetUtc(out fromCache);
 	}

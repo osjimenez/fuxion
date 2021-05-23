@@ -39,7 +39,7 @@ namespace Fuxion.Shell
 
 		
 		public static void ClosePanel(this IMessageBus me, PanelName name) => me.SendMessage(new ClosePanelMessage(name));
-		internal static void ClosePanel(this IMessageBus me, RadPane pane) => me.SendMessage(new ClosePanelMessage(pane));
+		internal static void ClosePanel(this IMessageBus me, RadPane pane) => me.SendMessage(new ClosePanelMessage(Pane: pane));
 		internal static void OnClosePanel(this IMessageBus me, Action<ClosePanelMessage> action) => me.Listen<ClosePanelMessage>().Subscribe(action);
 
 		public static void CloseAllPanels(this IMessageBus me) => me.SendMessage(new CloseAllPanelsMessage());
