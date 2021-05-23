@@ -4,5 +4,5 @@ using System.Text;
 
 namespace Fuxion.Domain
 {
-	public abstract class Command { }
+	public abstract record Command { }
 }
