@@ -10,10 +10,10 @@ using FU = ReactiveUI;
 namespace Fuxion.Shell.Views
 {
 #nullable disable
-	public partial class ShellWindow : ReactiveWindow<ShellViewModel>
+	public partial class ShellWindow : ReactiveWindow<ShellWindowViewModel>
 #nullable enable
 	{
-		public ShellWindow(ShellViewModel viewModel, MenuManager menuManager, DockingManager dockingManager)
+		public ShellWindow(ShellWindowViewModel viewModel, MenuManager menuManager, DockingManager dockingManager)
 		{
 			InitializeComponent();
 			Docking.PreviewMouseDown += (_, e) =>

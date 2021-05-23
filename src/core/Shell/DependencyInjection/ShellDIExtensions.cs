@@ -20,7 +20,7 @@ namespace Microsoft.Extensions.DependencyInjection
 			me.Services.AddSingleton<Cache>();
 			me.Services.AddSingleton<MenuManager>();
 			me.Services.AddSingleton<DockingManager>();
-			me.Services.AddSingleton<ShellViewModel>();
+			me.Services.AddSingleton<ShellWindowViewModel>();
 			me.Services.AddSingleton<ShellWindow>();
 
 			me.AddToPreRegistrationList(serviceProvider =>

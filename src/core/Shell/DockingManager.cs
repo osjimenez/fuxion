@@ -60,7 +60,7 @@ namespace Fuxion.Shell
 		private readonly IServiceProvider serviceProvider;
 		private readonly List<IPanelDescriptor> panelDescritors;
 		private RadDocking? docking;
-		private readonly ObservableCollection<PanelInstance> panelInstances = new ObservableCollection<PanelInstance>();
+		private readonly ObservableCollection<PanelInstance> panelInstances = new();
 
 		public void AttachDocking(RadDocking docking)
 		{
