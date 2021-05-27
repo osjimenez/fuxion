@@ -10,7 +10,7 @@ namespace Fuxion.Reflection
 {
 	public class TypeKeyDirectory
 	{
-		Dictionary<string, Type> dic = new Dictionary<string, Type>();
+		readonly Dictionary<string, Type> dic = new();
 		public Type this[string key]
 		{
 			get
@@ -20,23 +20,25 @@ namespace Fuxion.Reflection
 			}
 		}
 		public bool ContainsKey(string key) => dic.ContainsKey(key);
-		public void RegisterAssemblyOf(Type type, Func<(Type Type, TypeKeyAttribute Attribute), bool>? predicate = null) => RegisterAssembly(type.Assembly, predicate);
-		public void RegisterAssemblyOf<T>(Func<(Type Type, TypeKeyAttribute Attribute), bool>? predicate = null) => RegisterAssembly(typeof(T).Assembly, predicate);
-		public void RegisterAssembly(Assembly assembly, Func<(Type Type, TypeKeyAttribute Attribute), bool>? predicate = null)
+		public void RegisterAssemblyOf(Type type, Func<(Type Type, TypeKeyAttribute? Attribute), bool>? predicate = null, bool registerByFullNameIfNotFound = false) 
+			=> RegisterAssembly(type.Assembly, predicate, registerByFullNameIfNotFound);
+		public void RegisterAssemblyOf<T>(Func<(Type Type, TypeKeyAttribute? Attribute), bool>? predicate = null, bool registerByFullNameIfNotFound = false) 
+			=> RegisterAssembly(typeof(T).Assembly, predicate, registerByFullNameIfNotFound);
+		public void RegisterAssembly(Assembly assembly, Func<(Type Type, TypeKeyAttribute? Attribute), bool>? predicate = null, bool registerByFullNameIfNotFound = false)
 		{
 			var query = assembly.GetTypes()
-				.Where(t => t.HasCustomAttribute<TypeKeyAttribute>(false))
+				.Where(t => t.HasCustomAttribute<TypeKeyAttribute>(false) || registerByFullNameIfNotFound)
 				// NULLABLE - I check before that custom attribute exist
-				.Select(t => (Type: t, Attribute: t.GetCustomAttribute<TypeKeyAttribute>()!));
+				.Select(t => (Type: t, Attribute: t.GetCustomAttribute<TypeKeyAttribute>()));
 			if (predicate != null)
 				query = query.Where(predicate);
 			foreach (var tup in query)
-				Register(tup.Type);
+				Register(tup.Type, registerByFullNameIfNotFound);
 		}
-		public void Register<T>() => Register(typeof(T));
-		public void Register(Type type)
+		public void Register<T>(bool registerByFullNameIfNotFound = false) => Register(typeof(T), registerByFullNameIfNotFound);
+		public void Register(Type type, bool registerByFullNameIfNotFound = false)
 		{
-			var key = type.GetTypeKey();
+			var key = type.GetTypeKey(returnFullNameIfNotFound: registerByFullNameIfNotFound);
 			if (key == null) throw new ArgumentException($"The type '{type.Name}' isn't decorated with '{nameof(TypeKeyAttribute)}' attribute");
 			dic.Add(key, type);
 		}
@@ -53,8 +55,12 @@ namespace Fuxion.Reflection
 	}
 	public static class TypeKeyExtensions
 	{
-		public static string GetTypeKey(this Type me) => me.GetCustomAttribute<TypeKeyAttribute>(false, true).TypeKey;
-		public static string GetTypeKey(this Type me, [DoesNotReturnIf(true)] bool exceptionIfNotFound) => me.GetCustomAttribute<TypeKeyAttribute>(false, exceptionIfNotFound, true)?.TypeKey;
+		public static string? GetTypeKey(this Type me,
+			[DoesNotReturnIf(true)] bool exceptionIfNotFound = true,
+			[NotNullWhen(true)] bool returnFullNameIfNotFound = false)
+			=> returnFullNameIfNotFound
+				? me.GetCustomAttribute<TypeKeyAttribute>(false, false, true)?.TypeKey ?? me.FullName
+				: me.GetCustomAttribute<TypeKeyAttribute>(false, exceptionIfNotFound, true)?.TypeKey;
 	}
 	public class TypeKeyNotFoundInDirectoryException : FuxionException
 	{

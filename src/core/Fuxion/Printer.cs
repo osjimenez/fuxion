@@ -55,7 +55,7 @@ namespace Fuxion
 			string resultMessage = "RESULT {0}: {1}",
 			char verticalConnectorChar = '│',
 			char resultConnectorChar = '●',
-			[CallerMemberName] string? caller = null) => Default.CallResult<T>(callMessage, resultMessage, verticalConnectorChar, resultConnectorChar, caller);
+			[CallerMemberName] string? caller = null) where T : notnull => Default.CallResult<T>(callMessage, resultMessage, verticalConnectorChar, resultConnectorChar, caller);
 		[DebuggerHidden]
 		public static IDisposable Indent2(char? verticalConnectorChar = null) => Default.Indent(verticalConnectorChar);
 		[DebuggerHidden]
@@ -68,7 +68,7 @@ namespace Fuxion
 			=> Default.ForeachAsync(message, items, action, printMessageIfNoItems);
 		#endregion
 	}
-	public class CallResultArg<T> : DisposableEnvelope<T>
+	public class CallResultArg<T> : DisposableEnvelope<T> where T : notnull
 	{
 		public CallResultArg(T obj, Action<T> actionOnDispose, string resultFormat, char resultConnectorChar, string? caller) : base(obj, actionOnDispose)
 		{
@@ -137,7 +137,7 @@ namespace Fuxion
 			}
 		}
 		[DebuggerHidden]
-		public CallResultArg<T> CallResult<T>(string callMessage = "CALL {0}:", string resultMessage = "RESULT {0}: {1}", char verticalConnectorChar = '│', char resultConnectorChar = '●', [CallerMemberName] string? caller = null)
+		public CallResultArg<T> CallResult<T>(string callMessage = "CALL {0}:", string resultMessage = "RESULT {0}: {1}", char verticalConnectorChar = '│', char resultConnectorChar = '●', [CallerMemberName] string? caller = null) where T : notnull
 		{
 			var dis = Printer.Indent2(string.Format(callMessage, caller), verticalConnectorChar);
 			var res = new CallResultArg<T>(default!, _ => dis.Dispose(), resultMessage, resultConnectorChar, caller);
@@ -225,7 +225,7 @@ namespace Fuxion
 		[DebuggerHidden]
 		IDisposable Indent(char? verticalConnectorChar = null);
 		[DebuggerHidden]
-		CallResultArg<T> CallResult<T>(string callMessage, string resultMessage, char verticalConnectorChar, char resultConnectorChar, [CallerMemberName] string? caller = null);
+		CallResultArg<T> CallResult<T>(string callMessage, string resultMessage, char verticalConnectorChar, char resultConnectorChar, [CallerMemberName] string? caller = null) where T : notnull;
 		[DebuggerHidden]
 		IDisposable Indent(string message, char? verticalConnectorChar = null);
 		[DebuggerHidden]

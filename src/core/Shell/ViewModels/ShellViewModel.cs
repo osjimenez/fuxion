@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Fuxion.Shell.ViewModels
 {
-	public abstract class ShellViewModel : ReactiveObject, IActivatableViewModel
+	public abstract class ShellViewModel : ReactiveObject, IActivatableViewModel, ICompositeDisposable
 	{
 		public ShellViewModel(ILogger<ShellViewModel> logger)
 		{
@@ -21,15 +21,19 @@ namespace Fuxion.Shell.ViewModels
 			this.WhenActivated(d =>
 			{
 				HandleActivation();
-
 				Disposable.Create(() => HandleDeactivation())
 					.DisposeWith(d);
 			});
 		}
 		public ViewModelActivator Activator { get; }
 		protected ILogger Logger { get; }
+#if DEBUG
 		~ShellViewModel() => Logger.LogTrace($"ShellViewModel '{GetType().Name}' FINALIZED");
+#endif
 		protected virtual void HandleActivation() { }
 		protected virtual void HandleDeactivation() { }
+
+		CompositeDisposable ICompositeDisposable.CompositeDisposable { get; } = new();
+		bool ICompositeDisposable.Disposed { get; set; }
 	}
 }

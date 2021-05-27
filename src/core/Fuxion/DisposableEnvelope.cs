@@ -1,16 +1,16 @@
 ﻿namespace System
 {
-	public class DisposableEnvelope<T> : IDisposable
+	public class DisposableEnvelope<T> : IDisposable where T : notnull
 	{
-		public DisposableEnvelope(T obj, Action<T>? actionOnDispose = null)
+		public DisposableEnvelope(T obj, Action<T>? actionOnDispose = null) 
 		{
-			this.Action = actionOnDispose;
-			this.Value = obj;
+			Action = actionOnDispose;
+			value = obj;
 		}
 		//internal event EventHandler<EventArgs<T>> BeforeDisposed;
 		//public event EventHandler<EventArgs<T>> Disposed;
 		//internal event EventHandler<EventArgs<T>> AfterDisposed;
-		T value = default!;
+		T value;
 		public T Value
 		{
 			get => value;

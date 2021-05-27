@@ -87,7 +87,7 @@
 	{
 		IFuxionBuilder FuxionBuilder { get; }
 	}
-	public class ShellBuilder : IShellBuilder
+	internal class ShellBuilder : IShellBuilder
 	{
 		public ShellBuilder(IFuxionBuilder fuxionBuilder) => FuxionBuilder = fuxionBuilder;
 		public IFuxionBuilder FuxionBuilder { get; }

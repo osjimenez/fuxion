@@ -21,8 +21,9 @@ namespace Fuxion.Shell
 		public DockingManager(IServiceProvider serviceProvider)
 		{
 			this.serviceProvider = serviceProvider;
-			logger = serviceProvider.GetService<ILogger<DockingManager>>();
-			panelDescritors = serviceProvider.GetServices<IPanelDescriptor>().ToList();
+			using var scope = serviceProvider.CreateScope();
+			logger = scope.ServiceProvider.GetService<ILogger<DockingManager>>();
+			panelDescritors = scope.ServiceProvider.GetServices<IPanelDescriptor>().ToList();
 
 			MessageBus.Current.OnOpenPanel(message => OpenPanel(message.Name, message.Arguments));
 			MessageBus.Current.OnClosePanel(message =>
@@ -149,6 +150,7 @@ namespace Fuxion.Shell
 					{
 						panelInstance.RadPane.RemoveFromParent();
 						panelInstances.Remove(panelInstance);
+						panelInstance.Dispose();
 					}
 				}
 			};
@@ -257,16 +259,19 @@ namespace Fuxion.Shell
 		{
 			logger?.LogTrace($"{nameof(CreatePanelInstance)}({nameof(name)}: {name}, {nameof(args)}: {args})");
 			var descriptor = panelDescritors.Single(p => p.Name.Name == name.Name);
-			var view = serviceProvider.GetService(descriptor.ViewType);
+			var scope = serviceProvider.CreateScope();
+			var view = scope.ServiceProvider.GetService(descriptor.ViewType);
 			if (!(view is FrameworkElement)) throw new ArgumentException($"The '{nameof(descriptor.ViewType)}' must be '{nameof(FrameworkElement)}'");
 			var radPane = new RadPane { Content = view, IsPinned = descriptor.IsPinned };
 			IPanel panel;
 			if (view is IPanel pa) panel = pa;
 			else if (view is IPanelView vi) panel = vi.Panel;
 			else throw new NotSupportedException($"The '{nameof(descriptor.ViewType)}' must be '{nameof(IPanel)}' or '{nameof(IPanelView)}'");
-			var panelInstance = new PanelInstance(string.IsNullOrWhiteSpace(descriptor.Name.Key)
-				? new GenericPanelDescriptor(name.ToString(), descriptor.ViewType, descriptor.DefaultPosition, descriptor.RemoveOnHide, descriptor.IsPinned)
-				: descriptor, panel, (FrameworkElement)view, radPane);
+			var panelInstance = new PanelInstance(
+				string.IsNullOrWhiteSpace(descriptor.Name.Key)
+					? new GenericPanelDescriptor(name.ToString(), descriptor.ViewType, descriptor.DefaultPosition, descriptor.RemoveOnHide, descriptor.IsPinned)
+					: descriptor,
+				panel, (FrameworkElement)view, radPane, scope);
 			panelInstances.Add(panelInstance);
 			radPane.SetBinding(RadPane.TitleProperty, new Binding(nameof(panel.Title)) { Source = panel });
 			radPane.SetBinding(RadPane.HeaderProperty, new Binding(nameof(panel.Header)) { Source = panel });

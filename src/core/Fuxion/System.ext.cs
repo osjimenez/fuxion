@@ -61,7 +61,7 @@ namespace System
   //          }
   //      }
 		#region Disposable
-		public static DisposableEnvelope<T> AsDisposable<T>(this T me, Action<T>? actionOnDispose = null) { return new DisposableEnvelope<T>(me, actionOnDispose); }
+		public static DisposableEnvelope<T> AsDisposable<T>(this T me, Action<T>? actionOnDispose = null) where T : notnull { return new DisposableEnvelope<T>(me, actionOnDispose); }
 		#endregion
 		#region Json
 		public static string ToJson(this object me, Formatting formatting = Formatting.Indented, JsonSerializerSettings? settings = null)

@@ -1,10 +1,11 @@
 ﻿using Microsoft.Extensions.Logging;
 using ReactiveUI;
 using System;
+using System.Reactive.Disposables;
 
 namespace Fuxion.Shell.Views
 {
-	public class PanelView<TViewModel> : ReactiveUserControl<TViewModel>, IPanelView where TViewModel : class, IPanel
+	public class PanelView<TViewModel> : ReactiveUserControl<TViewModel>, IPanelView, ICompositeDisposable where TViewModel : class, IPanel
 	{
 		public PanelView(ILogger<PanelView<TViewModel>> logger, TViewModel viewModel)
 		{
@@ -13,7 +14,12 @@ namespace Fuxion.Shell.Views
 			Logger.LogTrace($"PanelView '{GetType().Name}' CREATED");
 		}
 		protected ILogger Logger { get; }
+#if DEBUG
 		~PanelView() => Logger.LogTrace($"PanelView '{GetType().Name}' FINALIZED");
+#endif
 		public IPanel Panel => ViewModel ?? throw new InvalidProgramException($"'{nameof(ViewModel)}' cannot be null");
+
+		CompositeDisposable ICompositeDisposable.CompositeDisposable { get; } = new();
+		bool ICompositeDisposable.Disposed { get; set; }
 	}
 }

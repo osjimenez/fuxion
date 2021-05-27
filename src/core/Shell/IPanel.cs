@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,19 +9,23 @@ using Telerik.Windows.Controls;
 
 namespace Fuxion.Shell
 {
-	internal class PanelInstance
+	internal class PanelInstance : IDisposable
 	{
-		public PanelInstance(IPanelDescriptor descriptor, IPanel panel, FrameworkElement view, RadPane radPane)
+		public PanelInstance(IPanelDescriptor descriptor, IPanel panel, FrameworkElement view, RadPane radPane, IServiceScope serviceScope)
 		{
+			this.serviceScope = serviceScope;
 			Descriptor = descriptor;
 			Panel = panel;
 			View = view;
 			RadPane = radPane;
 		}
+		readonly IServiceScope serviceScope;
 		public IPanelDescriptor Descriptor { get; }
 		public IPanel Panel { get; }
 		public FrameworkElement View { get; }
 		public RadPane RadPane { get; }
+
+		public void Dispose() => serviceScope.Dispose();
 	}
 	public interface IPanelView
 	{
