@@ -2,9 +2,9 @@
 using System.Diagnostics;
 using Xunit.Abstractions;
 
-namespace Fuxion.Test
+namespace Fuxion.Testing
 {
-	public class BaseTest
+	public abstract class BaseTest
 	{
 		public BaseTest(ITestOutputHelper output)
 		{
@@ -20,9 +20,5 @@ namespace Fuxion.Test
 			};
 		}
 		protected ITestOutputHelper Output { get; private set; }
-	}
-	public interface IO
-	{
-		void Vamos() => Console.WriteLine("");
 	}
 }

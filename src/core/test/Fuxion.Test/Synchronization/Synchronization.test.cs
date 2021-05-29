@@ -1,5 +1,6 @@
 ﻿using Fuxion.Synchronization;
 using Fuxion.Test.Resources;
+using Fuxion.Testing;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

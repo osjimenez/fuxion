@@ -7,6 +7,7 @@ using System.IO;
 using System.Runtime.Serialization;
 using Xunit;
 using Xunit.Abstractions;
+using Fuxion.Testing;
 
 namespace Fuxion.Test.Configuration
 {

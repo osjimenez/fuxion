@@ -1,11 +1,7 @@
 ﻿using Fuxion.Collections;
-using Fuxion.Collections.Generic;
-using System;
-using System.Collections.Generic;
+using Fuxion.Testing;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 

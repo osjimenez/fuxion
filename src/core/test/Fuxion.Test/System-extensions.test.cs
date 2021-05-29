@@ -1,4 +1,5 @@
 ﻿using Fuxion.Resources;
+using Fuxion.Testing;
 using System;
 using Xunit;
 using Xunit.Abstractions;

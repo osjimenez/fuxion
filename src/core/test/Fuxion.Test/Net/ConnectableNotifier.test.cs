@@ -1,4 +1,5 @@
 ﻿using Fuxion.Net;
+using Fuxion.Testing;
 using System;
 using System.Threading.Tasks;
 using Xunit;

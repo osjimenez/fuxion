@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Fuxion.Testing;
+using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 using Xunit.Abstractions;
