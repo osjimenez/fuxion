@@ -452,6 +452,18 @@ namespace System
 			}
 			return new DateTimeOffset(new DateTime((long)temp));
 		}
+		public static long ToEpoch(this DateTime dt, bool failIfPrior1970 = false)
+		{
+			var res = (long)(dt - new DateTime(1970, 1, 1)).TotalSeconds;
+			if (res < 0)
+				if (failIfPrior1970)
+					throw new InvalidDataException("DateTime cannot be prior 1/1/1970 to be converted to EPOCH date");
+				else
+					return 0;
+			return res;
+		}
+		public static DateTime ToEpochDateTime(this long me) => new DateTime(1970, 1, 1).AddSeconds(me);
+		public static DateTime ToEpochDateTime(this double me) => new DateTime(1970, 1, 1).AddSeconds(me);
 		#endregion
 	}
 }
