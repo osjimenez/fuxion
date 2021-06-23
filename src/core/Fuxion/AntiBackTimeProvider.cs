@@ -54,7 +54,7 @@ namespace Fuxion
 					s.SaveUtcTime(value);
 				}
 				catch (Exception ex) {
-					Logger.LogError(ex, $"Error '{ex.GetType().Name}' saving storage: {ex.Message}");
+					Logger?.LogError(ex, $"Error '{ex.GetType().Name}' saving storage: {ex.Message}");
 					//Log?.Error($"Error '{ex.GetType().Name}' saving storage: {ex.Message}", ex);
 				}
 			}
