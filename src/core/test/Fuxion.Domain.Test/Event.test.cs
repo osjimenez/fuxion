@@ -21,7 +21,7 @@ namespace Fuxion.Domain.Test
 			Assert.NotEqual(Guid.Empty, @event.AggregateId);
 		}
 	}
-	public class MockEvent : Event
+	public record MockEvent : Event
 	{
 		public MockEvent(Guid id) : base(id) { }
 		public string? Name { get; set; }

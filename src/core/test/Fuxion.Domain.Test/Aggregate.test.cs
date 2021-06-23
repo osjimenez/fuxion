@@ -25,7 +25,7 @@ namespace Fuxion.Domain.Test
 			Assert.Single(agg.Object.GetPendingEvents());
 		}
 	}
-	public class TestedEvent : Event
+	public record TestedEvent : Event
 	{
 		public TestedEvent(Guid aggregateId) : base(aggregateId) { }
 	}

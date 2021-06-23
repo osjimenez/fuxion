@@ -1,4 +1,4 @@
-﻿using Fuxion.Test;
+﻿using Fuxion.Testing;
 using System;
 using System.Data.Common;
 using System.Data.Entity.Migrations;
@@ -15,7 +15,7 @@ namespace Fuxion.EntityFramework.Test
 		{
 			// https://devblogs.microsoft.com/dotnet/announcing-entity-framework-6-3-preview-with-net-core-support/
 			DbProviderFactories.RegisterFactory("System.Data.SqlClient", SqlClientFactory.Instance);
-			
+
 			con = new TestContext();
 			if (!con.Database.Exists())
 			{

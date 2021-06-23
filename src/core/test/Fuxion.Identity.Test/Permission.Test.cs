@@ -1,9 +1,9 @@
 ﻿using Fuxion.Identity.Test.Dao;
-using Fuxion.Test;
+using Fuxion.Testing;
+using System.Diagnostics;
 using Xunit;
 using Xunit.Abstractions;
 using static Fuxion.Identity.Functions;
-using System.Diagnostics;
 
 namespace Fuxion.Identity.Test
 {

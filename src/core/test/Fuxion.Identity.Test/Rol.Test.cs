@@ -1,7 +1,7 @@
 ﻿using Fuxion.Identity.Test.Dao;
 using Fuxion.Identity.Test.Mocks;
 using Fuxion.Repositories;
-using Fuxion.Test;
+using Fuxion.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;

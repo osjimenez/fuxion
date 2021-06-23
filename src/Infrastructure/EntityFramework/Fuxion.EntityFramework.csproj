@@ -1,19 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net5.0</TargetFramework>
+		<TargetFramework>net6.0</TargetFramework>
 		<Title>Fuxion Entity Framework</Title>
 		<PackageId>Fuxion.EntityFramework</PackageId>
 		<Description>Fuxion library with extensions for EntityFramework.</Description>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Include="icon.png" Pack="true" PackagePath="\"/>
+		<None Include="icon.png" Pack="true" PackagePath="\" />
 	</ItemGroup>
 	
 	<ItemGroup>
 		<PackageReference Include="EntityFramework" Version="6.4.4" />
-		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.0-beta-20204-02" PrivateAssets="All" />
 	</ItemGroup>
 
 	<ItemGroup>

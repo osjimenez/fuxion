@@ -1,26 +1,22 @@
-﻿using Fuxion.Test;
+﻿using Fuxion.Testing;
 using Fuxion.Windows.Security;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace Fuxion.Windows.Test.Security
 {
-    public class HardwareIdTest : BaseTest
-    {
-        public HardwareIdTest(ITestOutputHelper output) : base(output)
-        {
-            this.output = output;
-        }
-        ITestOutputHelper output;
-        [Fact(DisplayName = "HardwareId - Printable version of ids")]
-        public void PrintableVersion()
-        {
-            
+	public class HardwareIdTest : BaseTest
+	{
+		public HardwareIdTest(ITestOutputHelper output) : base(output)
+		{
+			this.output = output;
+		}
+		ITestOutputHelper output;
+		[Fact(DisplayName = "HardwareId - Printable version of ids")]
+		public void PrintableVersion()
+		{
+
 			var bios = HardwareId.Bios;
 			var cpu = HardwareId.Cpu;
 			var disk = HardwareId.Disk;
@@ -45,6 +41,6 @@ namespace Fuxion.Windows.Test.Security
 			Print(domain, "DOMAIN");
 			Print(so, "SO");
 			Print(video, "VIDEO");
-        }
-    }
+		}
+	}
 }

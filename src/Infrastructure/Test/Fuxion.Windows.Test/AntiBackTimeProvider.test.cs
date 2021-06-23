@@ -1,6 +1,4 @@
-﻿using Fuxion.Test;
-using Fuxion.Test.Helpers;
-using Fuxion.Windows;
+﻿using Fuxion.Testing;
 using System;
 using Xunit;
 using Xunit.Abstractions;

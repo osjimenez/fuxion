@@ -1,7 +1,7 @@
 ﻿using Fuxion.Identity.Test.Dao;
 using Fuxion.Identity.Test.Dto;
 using Fuxion.Identity.Test.Dvo;
-using Fuxion.Identity.Test.Helpers;
+using Fuxion.Testing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,11 +18,10 @@ namespace Fuxion.Identity.Test
 			me.ClearRegistrations();
 		}
 	}
-	public class TypeDiscriminatorTetst : Fuxion.Test.BaseTest
+	public class TypeDiscriminatorTetst : BaseTest
 	{
-		public TypeDiscriminatorTetst(ITestOutputHelper output) : base(output) { this.output = output; }
+		public TypeDiscriminatorTetst(ITestOutputHelper output) : base(output) { }
 
-		private readonly ITestOutputHelper output;
 		[Fact(DisplayName = "TypeDiscriminator - Equality")]
 		public void Equality()
 		{

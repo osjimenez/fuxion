@@ -1,12 +1,5 @@
-﻿using Fuxion.Test;
+﻿using Fuxion.Testing;
 using Fuxion.Windows.Data;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Data;
 using Xunit;
 using Xunit.Abstractions;
 

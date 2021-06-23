@@ -1,4 +1,4 @@
-﻿using Fuxion.Test;
+﻿using Fuxion.Testing;
 using Fuxion.Windows.Data;
 using System.Globalization;
 using Xunit;

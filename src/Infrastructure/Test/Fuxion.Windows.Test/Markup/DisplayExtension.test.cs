@@ -1,11 +1,9 @@
 ﻿using Fuxion.ComponentModel;
-using Fuxion.Test;
+using Fuxion.Testing;
 using Fuxion.Windows.Markup;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -270,18 +268,18 @@ namespace Fuxion.Windows.Test.Markup
 	}
 	public class ViewModelMock : Notifier<ViewModelMock>
 	{
-		public const string DtoDisplayName= nameof(DtoMock) + " display name";
+		public const string DtoDisplayName = nameof(DtoMock) + " display name";
 		public const string DtoDisplayShortName = nameof(DtoMock) + " display short name";
 		public const string DtoDisplayGroupName = nameof(DtoMock) + " display group name";
 		public const string DtoDisplayDescription = nameof(DtoMock) + " display description";
 		public const int DtoDisplayOrder = 1;
 		public const string DtoDisplayPrompt = nameof(DtoMock) + " display prompt";
 		[Display(
-			Name = DtoDisplayName, 
-			GroupName = DtoDisplayGroupName, 
-			Description = DtoDisplayDescription, 
-			Order = DtoDisplayOrder, 
-			Prompt = DtoDisplayPrompt, 
+			Name = DtoDisplayName,
+			GroupName = DtoDisplayGroupName,
+			Description = DtoDisplayDescription,
+			Order = DtoDisplayOrder,
+			Prompt = DtoDisplayPrompt,
 			ShortName = DtoDisplayShortName)]
 		public DtoMock Dto
 		{
@@ -289,7 +287,8 @@ namespace Fuxion.Windows.Test.Markup
 			set => SetValue(value);
 		}
 	}
-	public class DtoMock : Notifier<DtoMock> {
+	public class DtoMock : Notifier<DtoMock>
+	{
 		public const string Dto2DisplayName = nameof(Dto2Mock) + " display name";
 		[Display(Name = Dto2DisplayName)]
 		public Dto2Mock Dto2
