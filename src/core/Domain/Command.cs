@@ -1,8 +1,3 @@
-﻿using System.Collections.Generic;
-using System.Reflection;
-using System.Text;
+﻿namespace Fuxion.Domain;
 
-namespace Fuxion.Domain
-{
-	public abstract record Command { }
-}
+public abstract record Command { }

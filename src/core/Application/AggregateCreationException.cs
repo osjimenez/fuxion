@@ -1,9 +1,6 @@
-﻿using System;
+﻿namespace Fuxion.Application;
 
-namespace Fuxion.Application
+public class AggregateCreationException : FuxionException
 {
-	public class AggregateCreationException : FuxionException
-	{
-		public AggregateCreationException(string msg) : base(msg) { }
-	}
+	public AggregateCreationException(string msg) : base(msg) { }
 }

@@ -1,10 +1,9 @@
-﻿using Fuxion.Domain;
+﻿namespace Fuxion.Application.Commands;
+
+using Fuxion.Domain;
 using System.Threading.Tasks;
 
-namespace Fuxion.Application.Commands
+public interface ICommandDispatcher
 {
-	public interface ICommandDispatcher
-	{
-		Task DispatchAsync(Command command);
-	}
+	Task DispatchAsync(Command command);
 }

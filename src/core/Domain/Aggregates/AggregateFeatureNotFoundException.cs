@@ -1,9 +1,6 @@
-﻿using System;
+﻿namespace Fuxion.Domain.Aggregates;
 
-namespace Fuxion.Domain.Aggregates
+public class AggregateFeatureNotFoundException : FuxionException
 {
-	public class AggregateFeatureNotFoundException : FuxionException
-	{
-		public AggregateFeatureNotFoundException(string message) : base(message) { }
-	}
+	public AggregateFeatureNotFoundException(string message) : base(message) { }
 }

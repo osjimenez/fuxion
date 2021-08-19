@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace Fuxion
 {
@@ -37,20 +35,11 @@ namespace Fuxion
 			return cachedValue.Add(stopwatch.Elapsed);
 		}
 
-		public DateTime Now()
-		{
-			return Now(out _);
-		}
+		public DateTime Now() => Now(out _);
 		public DateTime Now(out bool fromCache) => GetUtc(out fromCache).ToLocalTime();
-		public DateTimeOffset NowOffsetted()
-		{
-			return NowOffsetted(out _);
-		}
+		public DateTimeOffset NowOffsetted() => NowOffsetted(out _);
 		public DateTimeOffset NowOffsetted(out bool fromCache) => GetUtc(out fromCache).ToLocalTime();
-		public DateTime UtcNow()
-		{
-			return UtcNow(out _);
-		}
+		public DateTime UtcNow() => UtcNow(out _);
 		public DateTime UtcNow(out bool fromCache) => GetUtc(out fromCache);
 	}
 }

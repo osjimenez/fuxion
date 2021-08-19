@@ -7,6 +7,10 @@
 		<PackageId>Fuxion.Application</PackageId>
 		<Description>Fuxion library for DDD</Description>
 	</PropertyGroup>
+
+	<ItemGroup>
+		<Import Include="Microsoft.Extensions.Logging" />
+	</ItemGroup>
 	
 	<ItemGroup>
 		<None Include="icon.png" Pack="true" PackagePath="\" />

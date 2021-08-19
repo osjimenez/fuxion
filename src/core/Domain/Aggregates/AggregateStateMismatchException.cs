@@ -1,9 +1,6 @@
-﻿using System;
+﻿namespace Fuxion.Domain.Aggregates;
 
-namespace Fuxion.Domain.Aggregates
+public class AggregateStateMismatchException : FuxionException
 {
-	public class AggregateStateMismatchException : FuxionException
-	{
-		public AggregateStateMismatchException(string message) : base(message) { }
-	}
+	public AggregateStateMismatchException(string message) : base(message) { }
 }

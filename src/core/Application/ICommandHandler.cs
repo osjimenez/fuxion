@@ -1,11 +1,8 @@
-﻿using Fuxion.Domain;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
+﻿namespace Fuxion.Application;
 
-namespace Fuxion.Application
+using Fuxion.Domain;
+
+public interface ICommandHandler<TCommand> where TCommand : Command
 {
-	public interface ICommandHandler<TCommand> where TCommand : Command
-	{
-		Task HandleAsync(TCommand command);
-	}
+	Task HandleAsync(TCommand command);
 }

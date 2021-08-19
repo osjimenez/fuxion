@@ -1,9 +1,8 @@
-﻿using Fuxion.Domain;
-using System.Threading.Tasks;
-namespace Fuxion.Application
+﻿namespace Fuxion.Application;
+
+using Fuxion.Domain;
+
+public interface IEventDispatcher
 {
-	public interface IEventDispatcher
-	{
-		Task DispatchAsync(Event @event);
-	}
+	Task DispatchAsync(Event @event);
 }

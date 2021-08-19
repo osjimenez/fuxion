@@ -1,14 +1,12 @@
-﻿using Fuxion.Domain.Events;
-using System;
+﻿namespace Fuxion.Application.Events;
 
-namespace Fuxion.Application.Events
+using Fuxion.Domain.Events;
+
+public class EventSourcingEventFeature : IEventFeature
 {
-	public class EventSourcingEventFeature : IEventFeature
-	{
-		public int TargetVersion { get; internal set; }
-		public Guid CorrelationId { get; set; }
-		public DateTime EventCommittedTimestamp { get; set; }
-		public int ClassVersion { get; set; }
-		public bool IsReplay { get; internal set; }
-	}
+	public int TargetVersion { get; internal set; }
+	public Guid CorrelationId { get; set; }
+	public DateTime EventCommittedTimestamp { get; set; }
+	public int ClassVersion { get; set; }
+	public bool IsReplay { get; internal set; }
 }

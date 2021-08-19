@@ -1,7 +1,3 @@
-﻿namespace Fuxion.Application.Aggregates
-{
-	public class AggregateIsNotSnapshottableException : FuxionException
-	{
+﻿namespace Fuxion.Application.Aggregates;
 
-	}
-}
+public class AggregateIsNotSnapshottableException : FuxionException { }

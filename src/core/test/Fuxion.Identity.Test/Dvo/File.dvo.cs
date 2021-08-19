@@ -2,7 +2,7 @@
 using static Fuxion.Identity.Test.Helpers.TypeDiscriminatorIds;
 namespace Fuxion.Identity.Test.Dvo
 {
-	[TypeDiscriminated(File, AvoidedInclusions = new[] { Media })]
+	[TypeDiscriminated(Helpers.TypeDiscriminatorIds.File, AvoidedInclusions = new[] { Media })]
 	public abstract class FileDvo<TFile> : BaseDvo<TFile>
 		where TFile : FileDvo<TFile>
 	{

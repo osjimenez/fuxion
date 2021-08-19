@@ -8,7 +8,6 @@
 
 	<ItemGroup>
 		<None Remove="ScreenCapture\ScreenCaptureWindow.xaml" />
-		<None Remove="Validation\ValidationWindow.xaml" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -19,28 +18,10 @@
 		<Compile Update="ScreenCapture\ScreenCaptureWindow.xaml.cs">
 			<DependentUpon>ScreenCaptureWindow.xaml</DependentUpon>
 		</Compile>
-		<Compile Update="Validation\TextLocalized.Designer.cs">
-			<DependentUpon>TextLocalized.resx</DependentUpon>
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-		</Compile>
-		<Compile Update="Validation\ValidationWindow.xaml.cs">
-			<DependentUpon>ValidationWindow.xaml</DependentUpon>
-		</Compile>
-	</ItemGroup>
-
-	<ItemGroup>
-		<EmbeddedResource Update="Validation\TextLocalized.resx">
-			<LastGenOutput>TextLocalized.Designer.cs</LastGenOutput>
-			<Generator>PublicResXFileCodeGenerator</Generator>
-		</EmbeddedResource>
 	</ItemGroup>
 
 	<ItemGroup>
 		<Page Update="ScreenCapture\ScreenCaptureWindow.xaml">
-			<SubType>Designer</SubType>
-		</Page>
-		<Page Update="Validation\ValidationWindow.xaml">
 			<SubType>Designer</SubType>
 		</Page>
 	</ItemGroup>

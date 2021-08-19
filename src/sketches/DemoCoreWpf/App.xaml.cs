@@ -1,5 +1,4 @@
 ﻿using DemoCoreWpf.ScreenCapture;
-using DemoCoreWpf.Validation;
 using System.Windows;
 
 namespace DemoCoreWpf

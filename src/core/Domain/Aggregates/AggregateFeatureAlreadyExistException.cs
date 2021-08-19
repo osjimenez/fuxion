@@ -1,9 +1,6 @@
-﻿using System;
+﻿namespace Fuxion.Domain.Aggregates;
 
-namespace Fuxion.Domain.Aggregates
+public class AggregateFeatureAlreadyExistException : FuxionException
 {
-	public class AggregateFeatureAlreadyExistException : FuxionException
-	{
-		public AggregateFeatureAlreadyExistException(string message) : base(message) { }
-	}
+	public AggregateFeatureAlreadyExistException(string message) : base(message) { }
 }

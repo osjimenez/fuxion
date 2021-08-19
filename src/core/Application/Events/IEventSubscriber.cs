@@ -1,11 +1,8 @@
-﻿using Fuxion.Domain;
-using System;
-using System.Collections.Generic;
+﻿namespace Fuxion.Application.Events;
 
-namespace Fuxion.Application.Events
+using Fuxion.Domain;
+
+public interface IEventSubscriber
 {
-	public interface IEventSubscriber
-	{
-		void Subscribe<TEvent>() where TEvent : Event;
-	}
+	void Subscribe<TEvent>() where TEvent : Event;
 }

@@ -1,9 +1,8 @@
-﻿using Fuxion.Domain;
+﻿namespace Fuxion.Application.Factories;
 
-namespace Fuxion.Application.Factories
+using Fuxion.Domain;
+
+public interface IFactoryFeature<TAggregate> where TAggregate : Aggregate
 {
-	public interface IFactoryFeature<TAggregate> where TAggregate : Aggregate
-	{
-		void Create(TAggregate aggregate);
-	}
+	void Create(TAggregate aggregate);
 }

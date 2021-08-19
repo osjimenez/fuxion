@@ -23,7 +23,7 @@ namespace Fuxion.Windows.Data
 			// value is null and TSource is nullable, call Convert
 			if (value is TSource
 				||
-				(value == null && typeof(TSource).IsNullable(valueTypesAreNotNullables)))
+				value == null && typeof(TSource).IsNullable(valueTypesAreNotNullables))
 				return Convert((TSource)value!, culture);
 			// value is null and TResult is nullable, return null
 			if (value == null && typeof(TResult).IsNullable(valueTypesAreNotNullables))
@@ -37,7 +37,7 @@ namespace Fuxion.Windows.Data
 			// value is null and TResult is nullable, call ConvertBack
 			if (value is TResult
 				||
-				(value == null && typeof(TResult).IsNullable(valueTypesAreNotNullables)))
+				value == null && typeof(TResult).IsNullable(valueTypesAreNotNullables))
 				return ConvertBack((TResult)value!, culture);
 			// value is null and Tsource is nullable, return null
 			if (value == null && typeof(TSource).IsNullable(valueTypesAreNotNullables))

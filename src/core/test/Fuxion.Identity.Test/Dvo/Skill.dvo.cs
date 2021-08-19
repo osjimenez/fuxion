@@ -1,5 +1,4 @@
-﻿using Fuxion.ComponentModel;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Fuxion.Identity.Test.Dvo
 {
@@ -13,32 +12,27 @@ namespace Fuxion.Identity.Test.Dvo
 	{
 		public SkillDvo(string id, string name) : base(id, name)
 		{
-			PropertyChanged += (s, e) =>
-			{
-				foreach (var i in propertyChangedList)
-					i(s, e.ConvertToNotifier<ISkillDvo>(s));
-			};
+			//PropertyChanged += (s, e) =>
+			//{
+			//	foreach (var i in propertyChangedList)
+			//		i(s, e.ConvertToNotifier<ISkillDvo>(s));
+			//};
 		}
 
-		private readonly List<NotifierPropertyChangedEventHandler<ISkillDvo>> propertyChangedList = new List<NotifierPropertyChangedEventHandler<ISkillDvo>>();
-		event NotifierPropertyChangedEventHandler<ISkillDvo> INotifier<ISkillDvo>.PropertyChanged
-		{
-			add
-			{
-				propertyChangedList.Add(value);
-				//PropertyChanged += SkillDvo_PropertyChanged;
-				//PropertyChanged += (s, e) => value.Invoke(s, e.ConvertToNotifier<ISkillDvo>(s));
-			}
-
-			remove
-			{
-				propertyChangedList.Remove(value);
-			}
-		}
-		//private void SkillDvo_PropertyChanged(TSkill notifier, NotifierPropertyChangedEventArgs<TSkill> e)
+		//private readonly List<NotifierPropertyChangedEventHandler<ISkillDvo>> propertyChangedList = new List<NotifierPropertyChangedEventHandler<ISkillDvo>>();
+		//event NotifierPropertyChangedEventHandler<ISkillDvo> INotifier<ISkillDvo>.PropertyChanged
 		//{
-		//    PropertyChanged(null, null);
-		//    ((INotifier<ISkillDvo>)this).PropertyChanged(null, null);
+		//	add
+		//	{
+		//		propertyChangedList.Add(value);
+		//		//PropertyChanged += SkillDvo_PropertyChanged;
+		//		//PropertyChanged += (s, e) => value.Invoke(s, e.ConvertToNotifier<ISkillDvo>(s));
+		//	}
+
+		//	remove
+		//	{
+		//		propertyChangedList.Remove(value);
+		//	}
 		//}
 	}
 	[TypeDiscriminated(TypeDiscriminationDisableMode.DisableHierarchy)]

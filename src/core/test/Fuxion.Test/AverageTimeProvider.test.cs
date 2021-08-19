@@ -1,16 +1,14 @@
-﻿using Fuxion.Test.Helpers;
-using System;
-using Xunit;
-using Xunit.Abstractions;
-namespace Fuxion.Test
+﻿namespace Fuxion.Test;
+
+using Fuxion.Test.Helpers;
+
+public class AverageTimeProviderTest
 {
-	public class AverageTimeProviderTest
-	{
-		public AverageTimeProviderTest(ITestOutputHelper output) => this.output = output;
+	public AverageTimeProviderTest(ITestOutputHelper output) => this.output = output;
 
-		private readonly ITestOutputHelper output;
+	private readonly ITestOutputHelper output;
 
-		private string[] NtpServersAddresses { get; } = new[]
+	private string[] NtpServersAddresses { get; } = new[]
 {
             // From NIST - http://tf.nist.gov/tf-cgi/servers.cgi
             "time-a.nist.gov",
@@ -60,8 +58,8 @@ namespace Fuxion.Test
 			"3.europe.pool.ntp.org",
 			"es.pool.ntp.org",
 		};
-		private string[] WebServersAddresses { get; } = new[]
-		{
+	private string[] WebServersAddresses { get; } = new[]
+	{
 			"http://www.google.com",
 			"http://www.google.es",
 			"http://www.youtube.com",
@@ -71,25 +69,21 @@ namespace Fuxion.Test
 			"http://www.facebook.com",
 			"http://www.twitter.com",
 		};
-		[Fact(DisplayName = "AverageTimeProvider - CheckConsistency")]
-		public void AverageTimeProvider_CheckConsistency()
-		{
-			new AverageTimeProvider()
-				.Transform(p =>
-				{
-					foreach (var add in WebServersAddresses)
-						p.AddProvider(new InternetTimeProvider
-						{
-							ServerAddress = add,
-							ServerType = InternetTimeServerType.Web,
-							Timeout = TimeSpan.FromSeconds(15)
-						});
-					p.Logger = new XunitLogger(output);
-					p.RandomizedProvidersPerTry = 3;
-					p.MaxFailsPerTry = 3;
-					return p;
-				})
-				.CheckConsistency(output);
-		}
-	}
+	[Fact(DisplayName = "AverageTimeProvider - CheckConsistency")]
+	public void AverageTimeProvider_CheckConsistency() => new AverageTimeProvider()
+			.Transform(p =>
+			{
+				foreach (var add in WebServersAddresses)
+					p.AddProvider(new InternetTimeProvider
+					{
+						ServerAddress = add,
+						ServerType = InternetTimeServerType.Web,
+						Timeout = TimeSpan.FromSeconds(15)
+					});
+				p.Logger = new XunitLogger(output);
+				p.RandomizedProvidersPerTry = 3;
+				p.MaxFailsPerTry = 3;
+				return p;
+			})
+			.CheckConsistency(output);
 }

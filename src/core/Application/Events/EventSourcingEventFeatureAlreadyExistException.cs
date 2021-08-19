@@ -1,12 +1,8 @@
-﻿using Fuxion.Domain.Events;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace Fuxion.Application.Events;
 
-namespace Fuxion.Application.Events
+using Fuxion.Domain.Events;
+
+public class EventSourcingEventFeatureAlreadyExistException : EventFeatureAlreadyExistException
 {
-	public class EventSourcingEventFeatureAlreadyExistException : EventFeatureAlreadyExistException
-	{
-		public EventSourcingEventFeatureAlreadyExistException(string message) : base(message) { }
-	}
+	public EventSourcingEventFeatureAlreadyExistException(string message) : base(message) { }
 }

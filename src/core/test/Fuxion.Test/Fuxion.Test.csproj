@@ -6,9 +6,16 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Remove="FakesAssemblies\**" />
-	  <EmbeddedResource Remove="FakesAssemblies\**" />
-	  <None Remove="FakesAssemblies\**" />
+		<Import Include="Xunit" />
+		<Import Include="Xunit.Abstractions" />
+		<Import Include="Fuxion.Testing" />
+		<Import Include="Microsoft.Extensions.Logging" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Remove="FakesAssemblies\**" />
+		<EmbeddedResource Remove="FakesAssemblies\**" />
+		<None Remove="FakesAssemblies\**" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -26,9 +33,13 @@
 	<ItemGroup>
 		<Content Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
-	  <AdditionalDesignTimeBuildInput Remove="FakesAssemblies\**" />
+		<AdditionalDesignTimeBuildInput Remove="FakesAssemblies\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="Properties\" />
 	</ItemGroup>
 
 </Project>

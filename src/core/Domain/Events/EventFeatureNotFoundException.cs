@@ -1,8 +1,6 @@
-﻿using System;
-namespace Fuxion.Domain.Events
+﻿namespace Fuxion.Domain.Events;
+
+public class EventFeatureNotFoundException : FuxionException
 {
-	public class EventFeatureNotFoundException : FuxionException
-	{
-		public EventFeatureNotFoundException(string message) : base(message) { }
-	}
+	public EventFeatureNotFoundException(string message) : base(message) { }
 }

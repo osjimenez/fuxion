@@ -1,4 +1,3 @@
-﻿namespace Fuxion.Domain.Events
-{
-	public interface IEventFeature { }
-}
+﻿namespace Fuxion.Domain.Events;
+
+public interface IEventFeature { }

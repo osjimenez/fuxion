@@ -1,9 +1,6 @@
-﻿using System;
+﻿namespace Fuxion.Application;
 
-namespace Fuxion.Application
+public class ConcurrencyException : FuxionException
 {
-	public class ConcurrencyException : FuxionException
-	{
-		public ConcurrencyException(string message) : base(message) { }
-	}
+	public ConcurrencyException(string message) : base(message) { }
 }

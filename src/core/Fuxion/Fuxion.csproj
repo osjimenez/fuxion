@@ -9,6 +9,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<Import Remove="System.Net.Http" />
+		<Import Include="Microsoft.Extensions.Logging" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<None Include="icon.png" Pack="true" PackagePath="\" />
 	</ItemGroup>
 

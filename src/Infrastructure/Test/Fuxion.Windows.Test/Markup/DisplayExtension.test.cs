@@ -1,7 +1,7 @@
-﻿using Fuxion.ComponentModel;
-using Fuxion.Testing;
+﻿using Fuxion.Testing;
 using Fuxion.Windows.Markup;
 using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading;
@@ -266,7 +266,7 @@ namespace Fuxion.Windows.Test.Markup
 		public object TargetObject { get; set; }
 		public object TargetProperty { get; set; }
 	}
-	public class ViewModelMock : Notifier<ViewModelMock>
+	public class ViewModelMock : INotifyPropertyChanged
 	{
 		public const string DtoDisplayName = nameof(DtoMock) + " display name";
 		public const string DtoDisplayShortName = nameof(DtoMock) + " display short name";
@@ -274,6 +274,8 @@ namespace Fuxion.Windows.Test.Markup
 		public const string DtoDisplayDescription = nameof(DtoMock) + " display description";
 		public const int DtoDisplayOrder = 1;
 		public const string DtoDisplayPrompt = nameof(DtoMock) + " display prompt";
+		public event PropertyChangedEventHandler? PropertyChanged;
+		DtoMock? _Dto;
 		[Display(
 			Name = DtoDisplayName,
 			GroupName = DtoDisplayGroupName,
@@ -281,45 +283,88 @@ namespace Fuxion.Windows.Test.Markup
 			Order = DtoDisplayOrder,
 			Prompt = DtoDisplayPrompt,
 			ShortName = DtoDisplayShortName)]
-		public DtoMock Dto
+		public DtoMock? Dto
 		{
-			get => GetValue<DtoMock>();
-			set => SetValue(value);
+			get => _Dto;
+			set
+			{
+				if (value != _Dto)
+				{
+					_Dto = value;
+					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Dto)));
+				}
+			}
 		}
 	}
-	public class DtoMock : Notifier<DtoMock>
+	public class DtoMock : INotifyPropertyChanged
 	{
 		public const string Dto2DisplayName = nameof(Dto2Mock) + " display name";
+		public event PropertyChangedEventHandler? PropertyChanged;
+		Dto2Mock? _Dto2;
 		[Display(Name = Dto2DisplayName)]
-		public Dto2Mock Dto2
+		public Dto2Mock? Dto2
 		{
-			get => GetValue<Dto2Mock>();
-			set => SetValue(value);
+			get => _Dto2;
+			set
+			{
+				if (value != _Dto2)
+				{
+					_Dto2 = value;
+					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Dto2)));
+				}
+			}
 		}
 	}
-	public class Dto2Mock : Notifier<Dto2Mock>
+	public class Dto2Mock : INotifyPropertyChanged
 	{
 		public const string Dto3DisplayName = nameof(Dto3Mock) + " display name";
+		public event PropertyChangedEventHandler? PropertyChanged;
+		
+		Dto3Mock? _Dto3;
 		[Display(Name = Dto3DisplayName)]
-		public Dto3Mock Dto3
+		public Dto3Mock? Dto3
 		{
-			get => GetValue<Dto3Mock>();
-			set => SetValue(value);
+			get => _Dto3;
+			set
+			{
+				if (value != _Dto3)
+				{
+					_Dto3 = value;
+					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Dto3)));
+				}
+			}
 		}
-		public Dto3Mock Dto3WithoutDisplayAttribute
+		Dto3Mock? _Dto3WithoutDisplayAttribute;
+		public Dto3Mock? Dto3WithoutDisplayAttribute
 		{
-			get => GetValue<Dto3Mock>();
-			set => SetValue(value);
+			get => _Dto3WithoutDisplayAttribute;
+			set
+			{
+				if (value != _Dto3WithoutDisplayAttribute)
+				{
+					_Dto3WithoutDisplayAttribute = value;
+					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Dto3WithoutDisplayAttribute)));
+				}
+			}
 		}
 	}
-	public class Dto3Mock : Notifier<Dto3Mock>
+	public class Dto3Mock : INotifyPropertyChanged
 	{
 		public const string ValueDisplayName = nameof(Value) + " display name";
+		public event PropertyChangedEventHandler? PropertyChanged;
+		DtoMock? _Value;
 		[Display(Name = ValueDisplayName)]
-		public string Value
+		public DtoMock? Value
 		{
-			get => GetValue<string>();
-			set => SetValue(value);
+			get => _Value;
+			set
+			{
+				if (value != _Value)
+				{
+					_Value = value;
+					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Value)));
+				}
+			}
 		}
 	}
 }

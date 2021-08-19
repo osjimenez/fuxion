@@ -1,6 +1,6 @@
 <Project>
 	<PropertyGroup>
-		<LangVersion>9.0</LangVersion>
+		<LangVersion>latest</LangVersion>
 		<Nullable>enable</Nullable>
 		<!--<IncludeSymbols>true</IncludeSymbols>-->
 		<!--<NullableContextOptions>enable</NullableContextOptions>-->
@@ -59,6 +59,7 @@
 
 		<RepositoryUrl>https://github.com/osjimenez/Fuxion.git</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		
+
+		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
 	</PropertyGroup>
 </Project>

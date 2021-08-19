@@ -1,7 +1,6 @@
-﻿namespace Fuxion.Domain.Aggregates
+﻿namespace Fuxion.Domain.Aggregates;
+
+public interface IAggregateFeature
 {
-	public interface IAggregateFeature
-	{
-		void OnAttach(Aggregate aggregate);
-	}
+	void OnAttach(Aggregate aggregate);
 }

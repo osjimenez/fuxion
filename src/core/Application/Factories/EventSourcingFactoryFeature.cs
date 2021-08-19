@@ -1,10 +1,9 @@
-﻿using Fuxion.Application.Aggregates;
+﻿namespace Fuxion.Application.Factories;
+
+using Fuxion.Application.Aggregates;
 using Fuxion.Domain;
 
-namespace Fuxion.Application.Factories
+public class EventSourcingFactoryFeature<TAggregate> : IFactoryFeature<TAggregate> where TAggregate : Aggregate
 {
-	public class EventSourcingFactoryFeature<TAggregate> : IFactoryFeature<TAggregate> where TAggregate : Aggregate
-	{
-		public void Create(TAggregate agg) => agg.AttachEventSourcing();
-	}
+	public void Create(TAggregate agg) => agg.AttachEventSourcing();
 }

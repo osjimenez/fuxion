@@ -5,7 +5,7 @@ using static Fuxion.Identity.Test.Helpers.TypeDiscriminatorIds;
 namespace Fuxion.Identity.Test.Dao
 {
 	[Table(nameof(FileDao))]
-	[TypeDiscriminated(File, AvoidedInclusions = new[] { Media })]
+	[TypeDiscriminated(Helpers.TypeDiscriminatorIds.File, AvoidedInclusions = new[] { Media })]
 	public abstract class FileDao : BaseDao
 	{
 		public FileDao(string id, string name) : base(id, name) { }
