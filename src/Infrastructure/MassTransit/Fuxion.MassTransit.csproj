@@ -2,7 +2,6 @@
 
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
-
 		<Title>Fuxion MassTransit</Title>
 		<PackageId>Fuxion.MassTransit</PackageId>
 		<Description>Fuxion library for MassTransit</Description>
@@ -12,7 +11,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.0-beta-20204-02" PrivateAssets="All" />
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.0" PrivateAssets="All" />
 	</ItemGroup>
 
 	<ItemGroup>
