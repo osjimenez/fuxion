@@ -6,10 +6,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Import Include="Xunit" />
-		<Import Include="Xunit.Abstractions" />
-		<Import Include="Fuxion.Testing" />
-		<Import Include="Microsoft.Extensions.Logging" />
+		<Using Include="Xunit" />
+		<Using Include="Xunit.Abstractions" />
+		<Using Include="Fuxion.Testing" />
+		<Using Include="Microsoft.Extensions.Logging" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -19,7 +19,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
 		<PackageReference Include="Microsoft.QualityTools.Testing.Fakes" Version="16.11.230815" />
 		<PackageReference Include="Moq" Version="4.16.1" />
 		<PackageReference Include="Pose" Version="1.2.1" />

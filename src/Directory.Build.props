@@ -2,6 +2,7 @@
 	<PropertyGroup>
 		<LangVersion>latest</LangVersion>
 		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
 		<!--<IncludeSymbols>true</IncludeSymbols>-->
 		<!--<NullableContextOptions>enable</NullableContextOptions>-->
 		<WarningsAsErrors>
@@ -41,7 +42,7 @@
 			
 			CS8769
 		</WarningsAsErrors>
-		
+
 		<Title>Fuxion</Title>
 		<Authors>Oscar Jimenez</Authors>
 
@@ -62,4 +63,9 @@
 
 		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
 	</PropertyGroup>
+
+	<ItemGroup>
+		<Using Remove="System.Net.Http" />
+		<Using Include="Microsoft.Extensions.Logging" />
+	</ItemGroup>
 </Project>
