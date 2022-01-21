@@ -49,8 +49,8 @@ jobs:
 
     - name: Publish to GitHub Packages
       if: github.ref != 'refs/heads/master' && github.ref != 'refs/heads/develop'
-      run: dotnet nuget push "nupkgs\*.nupkg" --source https://nuget.pkg.github.com/TTiVentures/index.json --api-key ${{secrets.GITHUB_PACKAGES}} --skip-duplicate
-#      run: dotnet nuget push "nupkgs\*.nupkg" --source https://nuget.pkg.github.com/TTiVentures/index.json --api-key ${{secrets.GITHUB_TOKEN}} --skip-duplicate
+#      run: dotnet nuget push "nupkgs\*.nupkg" --source https://nuget.pkg.github.com/TTiVentures/index.json --api-key ${{secrets.GITHUB_PACKAGES}} --skip-duplicate
+      run: dotnet nuget push "nupkgs\*.nupkg" --source https://nuget.pkg.github.com/TTiVentures/index.json --api-key ${{secrets.GITHUB_TOKEN}} --skip-duplicate
 #      run: dotnet nuget push "nupkgs\*.nupkg" --source "github" --skip-duplicate
 
     - name: Publish to NuGet.org
