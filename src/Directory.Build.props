@@ -50,15 +50,13 @@
 		<ProductName>Fuxion</ProductName>
 
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-		<!--<PackageLicenseUrl>https://github.com/osjimenez/Fuxion/raw/master/LICENSE</PackageLicenseUrl>-->
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<PackageProjectUrl>https://github.com/osjimenez/Fuxion</PackageProjectUrl>
-		<!--<PackageIconUrl>https://github.com/osjimenez/Fuxion/raw/master/res/logo/fuxion.png</PackageIconUrl>-->
+		<PackageProjectUrl>https://github.com/TTiVentures/Fuxion</PackageProjectUrl>
 		<PackageIcon>icon.png</PackageIcon>
 
 		<PackageOutputPath>$(SolutionDir)..\..\PackOutput</PackageOutputPath>
 
-		<RepositoryUrl>https://github.com/osjimenez/Fuxion.git</RepositoryUrl>
+		<RepositoryUrl>https://github.com/TTiVentures/Fuxion.git</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 
 		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
