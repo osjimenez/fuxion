@@ -1,13 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Fuxion.Licensing;
 
-namespace Fuxion.Licensing
-{
-    public abstract class LicenseRequest
-    {
-
-    }
-}
+public abstract class LicenseRequest { }

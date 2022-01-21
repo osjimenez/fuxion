@@ -1,8 +1,5 @@
-﻿namespace Fuxion.MassTransit
-{
-	using System;
+﻿namespace Fuxion.MassTransit;
 
-	public class Class1
-	{
-	}
+public class Class1
+{
 }

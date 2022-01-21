@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Fuxion.Windows.Data;
 
-namespace Fuxion.Windows.Data
+using System.Globalization;
+
+public class NamedEnumValueToStringConverter : GenericConverter<NamedEnumValue, string>
 {
-	public class NamedEnumValueToStringConverter : GenericConverter<NamedEnumValue, string>
-	{
-		public override string Convert(NamedEnumValue source, CultureInfo culture) => source.ToString();
-	}
+	public override string Convert(NamedEnumValue source, CultureInfo culture) => source.ToString();
 }

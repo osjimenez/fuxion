@@ -1,11 +1,9 @@
-﻿using System;
-namespace Fuxion.Identity
+﻿namespace Fuxion.Identity;
+
+[Flags]
+public enum ScopePropagation
 {
-	[Flags]
-	public enum ScopePropagation
-	{
-		ToExclusions = 1,
-		ToMe = 2,
-		ToInclusions = 4
-	}
+	ToExclusions = 1,
+	ToMe = 2,
+	ToInclusions = 4
 }

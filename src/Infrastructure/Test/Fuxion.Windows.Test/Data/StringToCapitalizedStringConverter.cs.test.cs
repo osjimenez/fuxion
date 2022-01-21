@@ -1,15 +1,16 @@
-﻿using Fuxion.Testing;
+﻿namespace Fuxion.Windows.Test.Data;
+
+using Fuxion.Testing;
 using Fuxion.Windows.Data;
 using System.Globalization;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Fuxion.Windows.Test.Data
+public class StringToCapitalizedStringConverterTest : BaseTest
 {
-	public class StringToCapitalizedStringConverterTest : BaseTest
-	{
-		public StringToCapitalizedStringConverterTest(ITestOutputHelper output) : base(output) { }
-		string[] testCases = new[]
+	public StringToCapitalizedStringConverterTest(ITestOutputHelper output) : base(output) { }
+
+	private readonly string[] testCases = new[]
 		{
 			"test string",
 			"test String",
@@ -17,50 +18,49 @@ namespace Fuxion.Windows.Test.Data
 			"test stRing",
 			"TEST STRING",
 		};
-		[Fact(DisplayName = "StringToCapitalizedStringConverter - ToUpper")]
-		public void StringToCapitalizedStringConverter_ToUpper()
+	[Fact(DisplayName = "StringToCapitalizedStringConverter - ToUpper")]
+	public void StringToCapitalizedStringConverter_ToUpper()
+	{
+		foreach (var @case in testCases)
 		{
-			foreach (var @case in testCases)
-			{
-				var res = new StringToCapitalizedStringConverter { Capitalization = StringCapitalization.ToUpper }.Convert(@case, CultureInfo.CurrentCulture);
-				Assert.Equal("TEST STRING", res);
-			}
+			var res = new StringToCapitalizedStringConverter { Capitalization = StringCapitalization.ToUpper }.Convert(@case, CultureInfo.CurrentCulture);
+			Assert.Equal("TEST STRING", res);
 		}
-		[Fact(DisplayName = "StringToCapitalizedStringConverter - ToLower")]
-		public void StringToCapitalizedStringConverter_ToLower()
+	}
+	[Fact(DisplayName = "StringToCapitalizedStringConverter - ToLower")]
+	public void StringToCapitalizedStringConverter_ToLower()
+	{
+		foreach (var @case in testCases)
 		{
-			foreach (var @case in testCases)
-			{
-				var res = new StringToCapitalizedStringConverter { Capitalization = StringCapitalization.ToLower }.Convert(@case, CultureInfo.CurrentCulture);
-				Assert.Equal("test string", res);
-			}
+			var res = new StringToCapitalizedStringConverter { Capitalization = StringCapitalization.ToLower }.Convert(@case, CultureInfo.CurrentCulture);
+			Assert.Equal("test string", res);
 		}
-		[Fact(DisplayName = "StringToCapitalizedStringConverter - ToTitleCase")]
-		public void StringToCapitalizedStringConverter_ToTitleCase()
+	}
+	[Fact(DisplayName = "StringToCapitalizedStringConverter - ToTitleCase")]
+	public void StringToCapitalizedStringConverter_ToTitleCase()
+	{
+		foreach (var @case in testCases)
 		{
-			foreach (var @case in testCases)
-			{
-				var res = new StringToCapitalizedStringConverter { Capitalization = StringCapitalization.ToTitleCase }.Convert(@case, CultureInfo.CurrentCulture);
-				Assert.Equal("Test String", res);
-			}
+			var res = new StringToCapitalizedStringConverter { Capitalization = StringCapitalization.ToTitleCase }.Convert(@case, CultureInfo.CurrentCulture);
+			Assert.Equal("Test String", res);
 		}
-		[Fact(DisplayName = "StringToCapitalizedStringConverter - ToCamelCase")]
-		public void StringToCapitalizedStringConverter_ToCamelCase()
+	}
+	[Fact(DisplayName = "StringToCapitalizedStringConverter - ToCamelCase")]
+	public void StringToCapitalizedStringConverter_ToCamelCase()
+	{
+		foreach (var @case in testCases)
 		{
-			foreach (var @case in testCases)
-			{
-				var res = new StringToCapitalizedStringConverter { Capitalization = StringCapitalization.ToCamelCase }.Convert(@case, CultureInfo.CurrentCulture);
-				Assert.Equal("testString", res);
-			}
+			var res = new StringToCapitalizedStringConverter { Capitalization = StringCapitalization.ToCamelCase }.Convert(@case, CultureInfo.CurrentCulture);
+			Assert.Equal("testString", res);
 		}
-		[Fact(DisplayName = "StringToCapitalizedStringConverter - ToPascalCase")]
-		public void StringToCapitalizedStringConverter_ToPascalCase()
+	}
+	[Fact(DisplayName = "StringToCapitalizedStringConverter - ToPascalCase")]
+	public void StringToCapitalizedStringConverter_ToPascalCase()
+	{
+		foreach (var @case in testCases)
 		{
-			foreach (var @case in testCases)
-			{
-				var res = new StringToCapitalizedStringConverter { Capitalization = StringCapitalization.ToPascalCase }.Convert(@case, CultureInfo.CurrentCulture);
-				Assert.Equal("TestString", res);
-			}
+			var res = new StringToCapitalizedStringConverter { Capitalization = StringCapitalization.ToPascalCase }.Convert(@case, CultureInfo.CurrentCulture);
+			Assert.Equal("TestString", res);
 		}
 	}
 }

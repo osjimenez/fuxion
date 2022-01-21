@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Fuxion.Licensing;
 
-namespace Fuxion.Licensing
+public interface ILicenseProvider
 {
-    public interface ILicenseProvider
-    {
-        LicenseContainer Request(LicenseRequest request);
-        LicenseContainer Refresh(LicenseContainer oldLicense);
-    }
+	LicenseContainer Request(LicenseRequest request);
+	LicenseContainer Refresh(LicenseContainer oldLicense);
 }

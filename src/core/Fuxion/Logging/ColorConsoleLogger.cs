@@ -1,5 +1,4 @@
-﻿
-namespace Fuxion.Logging;
+﻿namespace Fuxion.Logging;
 
 using Microsoft.Extensions.Logging;
 using System;

@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Fuxion;
 
-namespace Fuxion
+public class LocalMachinneTimeProvider : ITimeProvider
 {
-    public class LocalMachinneTimeProvider : ITimeProvider
-    {
-        public DateTime Now() { return DateTime.Now; }
-        public DateTimeOffset NowOffsetted() { return DateTimeOffset.Now; }
-        public DateTime UtcNow() { return DateTime.UtcNow; }
-    }
+	public DateTime Now() => DateTime.Now;
+	public DateTimeOffset NowOffsetted() => DateTimeOffset.Now;
+	public DateTime UtcNow() => DateTime.UtcNow;
 }

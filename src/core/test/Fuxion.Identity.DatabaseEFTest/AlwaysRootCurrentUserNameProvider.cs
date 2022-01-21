@@ -1,7 +1,6 @@
-﻿namespace Fuxion.Identity.DatabaseEFTest
+﻿namespace Fuxion.Identity.DatabaseEFTest;
+
+public class AlwaysRootCurrentUserNameProvider : ICurrentUserNameProvider
 {
-	public class AlwaysRootCurrentUserNameProvider : ICurrentUserNameProvider
-	{
-		public string GetCurrentUserName() => "root";
-	}
+	public string GetCurrentUserName() => "root";
 }

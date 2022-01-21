@@ -1,21 +1,18 @@
-﻿using System;
+﻿namespace Fuxion.Licensing;
 
-namespace Fuxion.Licensing
+public class TimeLimitLicenseConstraint : LicenseConstraint
 {
-	public class TimeLimitLicenseConstraint : LicenseConstraint
+	public TimeLimitLicenseConstraint(DateTime value) => Value = value;
+	public DateTime Value { get; private set; }
+	public new bool Validate(out string validationMessage)
 	{
-		public TimeLimitLicenseConstraint(DateTime value) => Value = value;
-		public DateTime Value { get; private set; }
-		public new bool Validate(out string validationMessage)
+		var res = base.Validate(out validationMessage);
+		var tp = Singleton.Get<ITimeProvider>();
+		if (tp.UtcNow() > Value)
 		{
-			var res = base.Validate(out validationMessage);
-			var tp = Singleton.Get<ITimeProvider>();
-			if (tp.UtcNow() > Value)
-			{
-				validationMessage = "Time limit expired";
-				res = false;
-			}
-			return res;
+			validationMessage = "Time limit expired";
+			res = false;
 		}
+		return res;
 	}
 }

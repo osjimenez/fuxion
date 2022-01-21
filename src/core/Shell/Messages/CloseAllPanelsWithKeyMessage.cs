@@ -1,10 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Fuxion.Shell.Messages;
 
-namespace Fuxion.Shell.Messages
-{
-	internal record CloseAllPanelsWithKeyMessage(string Key);
-}
+internal record CloseAllPanelsWithKeyMessage(string Key);

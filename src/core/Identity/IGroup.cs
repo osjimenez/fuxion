@@ -1,6 +1,3 @@
-﻿namespace Fuxion.Identity
-{
-	public interface IGroup : IRol
-	{
-	}
-}
+﻿namespace Fuxion.Identity;
+
+public interface IGroup : IRol { }

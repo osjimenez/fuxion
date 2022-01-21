@@ -1,5 +1,4 @@
-﻿
-namespace Microsoft.Extensions.Logging;
+﻿namespace Microsoft.Extensions.Logging;
 
 using Fuxion.Logging;
 using Microsoft.Extensions.DependencyInjection;

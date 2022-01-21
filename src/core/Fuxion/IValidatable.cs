@@ -1,9 +1,6 @@
-﻿using System;
+﻿namespace Fuxion;
 
-namespace Fuxion
+public interface IValidatable
 {
-	public interface IValidatable
-	{
-		bool IsValid { get; }
-	}
+	bool IsValid { get; }
 }

@@ -1,17 +1,13 @@
-﻿using RabbitMQ.Client;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace Fuxion.RabbitMQ;
 
-namespace Fuxion.RabbitMQ
-{
-	public interface IRabbitMQPersistentConnection
+using global::RabbitMQ.Client;
+
+public interface IRabbitMQPersistentConnection
 		: IDisposable
-	{
-		bool IsConnected { get; }
+{
+	bool IsConnected { get; }
 
-		bool TryConnect();
+	bool TryConnect();
 
-		IModel CreateModel();
-	}
+	IModel CreateModel();
 }

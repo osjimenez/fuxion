@@ -1,45 +1,44 @@
-﻿using System.Diagnostics;
+﻿namespace Fuxion;
 
-namespace Fuxion
+using System.Diagnostics;
+
+public class CachedTimeProvider : ITimeProvider
 {
-	public class CachedTimeProvider : ITimeProvider
+	public CachedTimeProvider(ITimeProvider timeProvider) => TimeProvider = timeProvider;
+
+	private DateTime cachedValue;
+	private readonly Stopwatch stopwatch = new();
+
+	public ILogger? Logger { get; set; }
+	public ITimeProvider TimeProvider { get; set; }
+	public TimeSpan ExpirationInterval { get; set; } = TimeSpan.FromSeconds(5);
+
+	private DateTime GetUtc(out bool fromCache)
 	{
-		public CachedTimeProvider(ITimeProvider timeProvider) => TimeProvider = timeProvider;
-
-		private DateTime cachedValue;
-		private readonly Stopwatch stopwatch = new();
-
-		public ILogger? Logger { get; set; }
-		public ITimeProvider TimeProvider { get; set; }
-		public TimeSpan ExpirationInterval { get; set; } = TimeSpan.FromSeconds(5);
-
-		private DateTime GetUtc(out bool fromCache)
+		Logger?.LogInformation($"Getting time from {nameof(CachedTimeProvider)} ...");
+		if (!stopwatch.IsRunning || stopwatch.Elapsed > ExpirationInterval)
 		{
-			Logger?.LogInformation($"Getting time from {nameof(CachedTimeProvider)} ...");
-			if (!stopwatch.IsRunning || stopwatch.Elapsed > ExpirationInterval)
-			{
-				if (!stopwatch.IsRunning)
-					Logger?.LogInformation("There is no data stored in cache yet, time provider will be used");
-				else
-					Logger?.LogInformation("Cache expired, time provider will be used");
-				fromCache = false;
-				var res = TimeProvider.UtcNow();
-				stopwatch.Restart();
-				cachedValue = res;
-			}
+			if (!stopwatch.IsRunning)
+				Logger?.LogInformation("There is no data stored in cache yet, time provider will be used");
 			else
-			{
-				Logger?.LogInformation($"Result is cache + elapsed = {cachedValue} + {stopwatch.Elapsed}");
-				fromCache = true;
-			}
-			return cachedValue.Add(stopwatch.Elapsed);
+				Logger?.LogInformation("Cache expired, time provider will be used");
+			fromCache = false;
+			var res = TimeProvider.UtcNow();
+			stopwatch.Restart();
+			cachedValue = res;
 		}
-
-		public DateTime Now() => Now(out _);
-		public DateTime Now(out bool fromCache) => GetUtc(out fromCache).ToLocalTime();
-		public DateTimeOffset NowOffsetted() => NowOffsetted(out _);
-		public DateTimeOffset NowOffsetted(out bool fromCache) => GetUtc(out fromCache).ToLocalTime();
-		public DateTime UtcNow() => UtcNow(out _);
-		public DateTime UtcNow(out bool fromCache) => GetUtc(out fromCache);
+		else
+		{
+			Logger?.LogInformation($"Result is cache + elapsed = {cachedValue} + {stopwatch.Elapsed}");
+			fromCache = true;
+		}
+		return cachedValue.Add(stopwatch.Elapsed);
 	}
+
+	public DateTime Now() => Now(out _);
+	public DateTime Now(out bool fromCache) => GetUtc(out fromCache).ToLocalTime();
+	public DateTimeOffset NowOffsetted() => NowOffsetted(out _);
+	public DateTimeOffset NowOffsetted(out bool fromCache) => GetUtc(out fromCache).ToLocalTime();
+	public DateTime UtcNow() => UtcNow(out _);
+	public DateTime UtcNow(out bool fromCache) => GetUtc(out fromCache);
 }

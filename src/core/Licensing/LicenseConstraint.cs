@@ -1,11 +1,10 @@
-﻿namespace Fuxion.Licensing
+﻿namespace Fuxion.Licensing;
+
+public class LicenseConstraint
 {
-	public class LicenseConstraint
+	protected virtual bool Validate(out string validationMessage)
 	{
-		protected virtual bool Validate(out string validationMessage)
-		{
-			validationMessage = "Success";
-			return true;
-		}
+		validationMessage = "Success";
+		return true;
 	}
 }

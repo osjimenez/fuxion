@@ -5,10 +5,7 @@ public class AntiBackTimeProvider : ITimeProvider
 	public AntiBackTimeProvider(params StoredTimeProvider[] storedProviders) => providers = storedProviders;
 
 	private readonly StoredTimeProvider[] providers;
-#if !NET45
 	public ILogger? Logger { get; set; }
-	//public ILog Log { get; set; }
-#endif
 	public ITimeProvider TimeProvider { get; set; } = new LocalMachinneTimeProvider();
 	public TimeSpan MaximumRangeOfDeviation { get; set; } = TimeSpan.FromMinutes(1);
 
@@ -30,12 +27,8 @@ public class AntiBackTimeProvider : ITimeProvider
 			throw new NoStoredTimeValueException();
 		if (now.Add(MaximumRangeOfDeviation) < stored)
 			throw new BackTimeException(stored.Value, now);
-#if !NET45
 		Logger?.LogInformation("now => " + now);
 		Logger?.LogInformation("stored => " + stored);
-		//Log?.Notice("now => " + now);
-		//Log?.Notice("stored => " + stored);
-#endif
 		SetValue(now);
 		return now;
 	}

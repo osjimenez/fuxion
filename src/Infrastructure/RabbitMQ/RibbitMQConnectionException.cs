@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace Fuxion.RabbitMQ;
 
-namespace Fuxion.RabbitMQ
+public class RabbitMQConnectionException : FuxionException
 {
-	public class RabbitMQConnectionException : FuxionException
-	{
-		public RabbitMQConnectionException(string message) : base(message) { }
-	}
+	public RabbitMQConnectionException(string message) : base(message) { }
 }

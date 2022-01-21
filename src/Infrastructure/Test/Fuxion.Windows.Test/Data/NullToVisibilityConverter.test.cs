@@ -1,4 +1,6 @@
-﻿using Fuxion.Testing;
+﻿namespace Fuxion.Windows.Test.Data;
+
+using Fuxion.Testing;
 using Fuxion.Windows.Data;
 using System.Globalization;
 using System.Windows;
@@ -6,16 +8,13 @@ using System.Windows.Data;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Fuxion.Windows.Test.Data
+public class NullToVisibilityConverterTest : BaseTest
 {
-	public class NullToVisibilityConverterTest : BaseTest
+	public NullToVisibilityConverterTest(ITestOutputHelper output) : base(output) { }
+	[Fact(DisplayName = "NullToVisibilityConverter - Enum value")]
+	public void NullToVisibilityConverter_DisplayValue()
 	{
-		public NullToVisibilityConverterTest(ITestOutputHelper output) : base(output) { }
-		[Fact(DisplayName = "NullToVisibilityConverter - Enum value")]
-		public void NullToVisibilityConverter_DisplayValue()
-		{
-			var res = ((IValueConverter)new NullToVisibilityConverter()).Convert(null, typeof(EnumTest?), null, CultureInfo.CurrentCulture);
-			Assert.Equal(Visibility.Collapsed, res);
-		}
+		var res = ((IValueConverter)new NullToVisibilityConverter()).Convert(null, typeof(EnumTest?), null, CultureInfo.CurrentCulture);
+		Assert.Equal(Visibility.Collapsed, res);
 	}
 }

@@ -1,9 +1,8 @@
-﻿namespace Fuxion.Identity
+﻿namespace Fuxion.Identity;
+
+public enum PrintMode
 {
-	public enum PrintMode
-	{
-		OneLine,
-		PropertyList,
-		Table
-	}
+	OneLine,
+	PropertyList,
+	Table
 }

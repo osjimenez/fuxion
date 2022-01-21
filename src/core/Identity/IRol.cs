@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-namespace Fuxion.Identity
+﻿namespace Fuxion.Identity;
+
+public interface IRol
 {
-	public interface IRol
-	{
-		string Name { get; }
-		IEnumerable<IGroup> Groups { get; }
-		IEnumerable<IPermission> Permissions { get; }
-	}
+	string Name { get; }
+	IEnumerable<IGroup> Groups { get; }
+	IEnumerable<IPermission> Permissions { get; }
 }

@@ -1,13 +1,10 @@
-﻿using System.Data.Entity;
+﻿namespace Fuxion.EntityFramework.Test;
 
-namespace Fuxion.EntityFramework.Test
+using System.Data.Entity;
+
+public class TestContext : DbContext
 {
-	public class TestContext : DbContext
-	{
-		public TestContext() : base("Data Source=(local);Initial Catalog=FuxionDataTest;Integrated Security=True")
-		{
-			//Database.SetInitializer(new DropCreateDatabaseAlways<TestContext>());
-			Database.SetInitializer(new MigrateDatabaseToLatestVersion<TestContext, Migrations.Configuration>());
-		}
-	}
+	public TestContext() : base("Data Source=(local);Initial Catalog=FuxionDataTest;Integrated Security=True") =>
+		//Database.SetInitializer(new DropCreateDatabaseAlways<TestContext>());
+		Database.SetInitializer(new MigrateDatabaseToLatestVersion<TestContext, Migrations.Configuration>());
 }

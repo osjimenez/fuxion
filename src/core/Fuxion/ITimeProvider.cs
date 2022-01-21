@@ -1,12 +1,9 @@
-﻿using System;
+﻿namespace Fuxion;
 
-namespace Fuxion
+[DefaultSingletonInstance(typeof(LocalMachinneTimeProvider))]
+public interface ITimeProvider
 {
-	[DefaultSingletonInstance(typeof(LocalMachinneTimeProvider))]
-	public interface ITimeProvider
-	{
-		DateTime Now();
-		DateTimeOffset NowOffsetted();
-		DateTime UtcNow();
-	}
+	DateTime Now();
+	DateTimeOffset NowOffsetted();
+	DateTime UtcNow();
 }

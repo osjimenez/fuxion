@@ -1,40 +1,36 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Fuxion.Shell;
+
+using Microsoft.Extensions.DependencyInjection;
 using Telerik.Windows.Controls;
 
-namespace Fuxion.Shell
+public class MenuManager
 {
-	public class MenuManager
+	public MenuManager(IServiceProvider serviceProvider)
 	{
-		public MenuManager(IServiceProvider serviceProvider)
-		{
-			this.serviceProvider = serviceProvider;
-			menus = serviceProvider.GetServices<IMenu>().ToList();
-		}
+		this.serviceProvider = serviceProvider;
+		menus = serviceProvider.GetServices<IMenu>().ToList();
+	}
 
-		private readonly IServiceProvider serviceProvider;
-		private readonly List<IMenu> menus;
+	private readonly IServiceProvider serviceProvider;
+	private readonly List<IMenu> menus;
 
-		public void PopulateMenu(RadMenu menu)
+	public void PopulateMenu(RadMenu menu)
+	{
+		foreach (var m in menus)
 		{
-			foreach (var m in menus)
+			if (m.Header is RadMenuItem m2)
 			{
-				if (m.Header is RadMenuItem m2)
+				m2.Click += (_, __) => m.OnClick();
+				menu.Items.Add(m2);
+			}
+			else
+			{
+				var item = new RadMenuItem
 				{
-					m2.Click += (_, __) => m.OnClick();
-					menu.Items.Add(m2);
-				}
-				else
-				{
-					var item = new RadMenuItem();
-					item.Header = m.Header;
-					item.Click += (_, __) => m.OnClick();
-					menu.Items.Add(item);
-				}
+					Header = m.Header
+				};
+				item.Click += (_, __) => m.OnClick();
+				menu.Items.Add(item);
 			}
 		}
 	}

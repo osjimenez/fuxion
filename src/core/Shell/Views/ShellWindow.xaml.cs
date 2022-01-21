@@ -1,35 +1,31 @@
-﻿using Fuxion.Shell.Messages;
+﻿namespace Fuxion.Shell.Views;
+
 using Fuxion.Shell.ViewModels;
 using ReactiveUI;
-using System.Reactive.Disposables;
-using System.Windows;
 using System.Windows.Input;
 using Telerik.Windows.Controls;
-using Telerik.Windows.Controls.Docking;
-using FU = ReactiveUI;
-namespace Fuxion.Shell.Views
-{
+
 #nullable disable
-	public partial class ShellWindow : ReactiveWindow<ShellWindowViewModel>
+public partial class ShellWindow : ReactiveWindow<ShellWindowViewModel>
 #nullable enable
+{
+	public ShellWindow(ShellWindowViewModel viewModel, MenuManager menuManager, DockingManager dockingManager)
 	{
-		public ShellWindow(ShellWindowViewModel viewModel, MenuManager menuManager, DockingManager dockingManager)
+		InitializeComponent();
+		Docking.PreviewMouseDown += (_, e) =>
 		{
-			InitializeComponent();
-			Docking.PreviewMouseDown += (_, e) =>
+			if (e.ChangedButton == MouseButton.Middle && e.ButtonState == MouseButtonState.Pressed && e.Source is RadPane pane)
 			{
-				if (e.ChangedButton == MouseButton.Middle && e.ButtonState == MouseButtonState.Pressed && e.Source is RadPane pane)
-				{
-					MessageBus.Current.ClosePanel(pane);
+				MessageBus.Current.ClosePanel(pane);
 					// TODO RadTabItem BUG. Reported in https://feedback.telerik.com/wpf/1411792-tabcontrol-tabitem-is-removed-when-clicking-with-mouse-middle-button-over-it
 					e.Handled = true;
-				}
-			};
-			Docking.MouseDown += (_, e) =>
-			{
+			}
+		};
+		Docking.MouseDown += (_, e) =>
+		{
 				//if (e.ChangedButton == MouseButton.Middle && e.ButtonState == MouseButtonState.Pressed && e.OriginalSource is FrameworkElement element)
 				if (e.ChangedButton == MouseButton.Middle && e.ButtonState == MouseButtonState.Pressed && e.Source is RadPane pane)
-				{
+			{
 					//MessageBus.Current.ClosePanel(pane);
 
 					//if (element.ParentOfType<RadPane>() is RadPane pane)
@@ -37,11 +33,10 @@ namespace Fuxion.Shell.Views
 					//else if (element.ParentOfType<PaneHeader>() is PaneHeader paneHeader)
 					//	MessageBus.Current.ClosePane(paneHeader.SelectedPane);
 				}
-			};
-			ViewModel = viewModel;
+		};
+		ViewModel = viewModel;
 
-			menuManager.PopulateMenu(Menu);
-			dockingManager.AttachDocking(Docking);
-		}
+		menuManager.PopulateMenu(Menu);
+		dockingManager.AttachDocking(Docking);
 	}
 }

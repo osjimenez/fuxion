@@ -1,39 +1,37 @@
-﻿using Fuxion.Testing;
+﻿namespace Fuxion.Windows.Test.Data;
+
+using Fuxion.Testing;
 using Fuxion.Windows.Data;
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Windows.Data;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Fuxion.Windows.Test.Data
+public class EnumToNamedEnumValueConverterTest : BaseTest
 {
-	public class EnumToNamedEnumValueConverterTest : BaseTest
+	public EnumToNamedEnumValueConverterTest(ITestOutputHelper output) : base(output) { }
+	[Fact(DisplayName = "EnumToNamedEnumValueConverter - Display value")]
+	public void EnumToNamedEnumValueConverter_DisplayValue()
 	{
-		public EnumToNamedEnumValueConverterTest(ITestOutputHelper output) : base(output) { }
-		[Fact(DisplayName = "EnumToNamedEnumValueConverter - Display value")]
-		public void EnumToNamedEnumValueConverter_DisplayValue()
-		{
-			var res = new EnumToNamedEnumValueConverter().Convert(EnumTest.One, CultureInfo.CurrentCulture);
-			Assert.Equal("One value", res.ToString());
-		}
-		[Fact(DisplayName = "EnumToNamedEnumValueConverter - Null value")]
-		public void EnumToNamedEnumValueConverter_NullValue()
-		{
-			Assert.Throws<NotSupportedException>(() =>
-			{
-				((IValueConverter)new EnumToNamedEnumValueConverter()).Convert(null, typeof(EnumTest), null, CultureInfo.CurrentCulture);
-			});
-			var res = ((IValueConverter)new NullableEnumToNamedEnumValueConverter()).Convert(null, typeof(EnumTest), null, CultureInfo.CurrentCulture);
-			Assert.Null(res?.ToString());
-		}
+		var res = new EnumToNamedEnumValueConverter().Convert(EnumTest.One, CultureInfo.CurrentCulture);
+		Assert.Equal("One value", res.ToString());
 	}
-	public enum EnumTest
+	[Fact(DisplayName = "EnumToNamedEnumValueConverter - Null value")]
+	public void EnumToNamedEnumValueConverter_NullValue()
 	{
-		[Display(Name = "One value")]
-		One,
-		[Display(Name = "Two value")]
-		Two
+		Assert.Throws<NotSupportedException>(() =>
+		{
+			((IValueConverter)new EnumToNamedEnumValueConverter()).Convert(null, typeof(EnumTest), null, CultureInfo.CurrentCulture);
+		});
+		var res = ((IValueConverter)new NullableEnumToNamedEnumValueConverter()).Convert(null, typeof(EnumTest), null, CultureInfo.CurrentCulture);
+		Assert.Null(res?.ToString());
 	}
+}
+public enum EnumTest
+{
+	[Display(Name = "One value")]
+	One,
+	[Display(Name = "Two value")]
+	Two
 }

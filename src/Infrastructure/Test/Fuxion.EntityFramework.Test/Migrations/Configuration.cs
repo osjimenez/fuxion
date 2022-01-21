@@ -1,17 +1,16 @@
-namespace Fuxion.EntityFramework.Test.Migrations
+namespace Fuxion.EntityFramework.Test.Migrations;
+
+using System.Data.Entity.Migrations;
+
+public sealed class Configuration : DbMigrationsConfiguration<Fuxion.EntityFramework.Test.TestContext>
 {
-	using System.Data.Entity.Migrations;
+	public Configuration() => AutomaticMigrationsEnabled = false;
 
-	public sealed class Configuration : DbMigrationsConfiguration<Fuxion.EntityFramework.Test.TestContext>
+	protected override void Seed(Fuxion.EntityFramework.Test.TestContext context)
 	{
-		public Configuration() => AutomaticMigrationsEnabled = false;
+		//  This method will be called after migrating to the latest version.
 
-		protected override void Seed(Fuxion.EntityFramework.Test.TestContext context)
-		{
-			//  This method will be called after migrating to the latest version.
-
-			//  You can use the DbSet<T>.AddOrUpdate() helper extension method 
-			//  to avoid creating duplicate seed data.
-		}
+		//  You can use the DbSet<T>.AddOrUpdate() helper extension method 
+		//  to avoid creating duplicate seed data.
 	}
 }

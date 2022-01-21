@@ -1,4 +1,5 @@
 ﻿namespace Fuxion.Logging;
+
 public sealed class ColorConsoleState
 {
 	public ConsoleColor ForegroundColor { get; set; }

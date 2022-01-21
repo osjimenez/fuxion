@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Fuxion.Shell;
 
-namespace Fuxion.Shell
+public interface IMenu
 {
-	public interface IMenu
-	{
-		object Header { get; }
-		void OnClick();
-	}
+	object Header { get; }
+	void OnClick();
 }

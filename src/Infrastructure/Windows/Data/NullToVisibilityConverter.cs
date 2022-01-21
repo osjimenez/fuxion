@@ -1,27 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace Fuxion.Windows.Data;
+
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Data;
 
-namespace Fuxion.Windows.Data
+public class NullToVisibilityConverter : GenericConverter<object?, Visibility>
 {
-    public class NullToVisibilityConverter : GenericConverter<object?, Visibility>
-    {
-        public Visibility NullValue { get; set; } = Visibility.Collapsed;
-        public Visibility NotNullValue { get; set; } = Visibility.Visible;
+	public Visibility NullValue { get; set; } = Visibility.Collapsed;
+	public Visibility NotNullValue { get; set; } = Visibility.Visible;
 
-        public override Visibility Convert(object? source, CultureInfo culture)
-        {
-            return source == null ? NullValue : NotNullValue;
-        }
-        public override object? ConvertBack(Visibility result, CultureInfo culture)
-        {
-            if (result == NullValue) return null;
-            throw new NotSupportedException($"The value '{result}' is not supported for 'ConvertBack' method");
-        }
-    }
+	public override Visibility Convert(object? source, CultureInfo culture) => source == null ? NullValue : NotNullValue;
+	public override object? ConvertBack(Visibility result, CultureInfo culture)
+	{
+		if (result == NullValue) return null;
+		throw new NotSupportedException($"The value '{result}' is not supported for 'ConvertBack' method");
+	}
 }

@@ -1,94 +1,105 @@
-﻿using Fuxion.Testing;
+﻿namespace Fuxion.Windows.Test.Data;
+
+using Fuxion.Testing;
 using Fuxion.Windows.Data;
 using System.Globalization;
 using System.Windows;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Fuxion.Windows.Test.Data
+public class BooleanToVisibilityMultiConverterTest : BaseTest
 {
-	public class BooleanToVisibilityMultiConverterTest : BaseTest
+	public BooleanToVisibilityMultiConverterTest(ITestOutputHelper output) : base(output) { }
+	[Fact(DisplayName = "BooleanToVisibilityMultiConverter - AllTrue")]
+	public void BooleanToVisibilityMultiConverter_AllTrue()
 	{
-		public BooleanToVisibilityMultiConverterTest(ITestOutputHelper output) : base(output) { }
-		[Fact(DisplayName = "BooleanToVisibilityMultiConverter - AllTrue")]
-		public void BooleanToVisibilityMultiConverter_AllTrue()
+		var c = new BooleanToVisibilityMultiConverter
 		{
-			var c = new BooleanToVisibilityMultiConverter();
-			c.Mode = BooleanMultiConverterMode.AllTrue;
-			var res = c.Convert(new[] { true, true }, CultureInfo.CurrentCulture);
-			Assert.Equal(Visibility.Visible, res);
-			res = c.Convert(new[] { false, false }, CultureInfo.CurrentCulture);
-			Assert.Equal(Visibility.Collapsed, res);
-			res = c.Convert(new[] { true, false }, CultureInfo.CurrentCulture);
-			Assert.Equal(Visibility.Collapsed, res);
-			res = c.Convert(new[] { true }, CultureInfo.CurrentCulture);
-			Assert.Equal(Visibility.Visible, res);
-			res = c.Convert(new[] { false }, CultureInfo.CurrentCulture);
-			Assert.Equal(Visibility.Collapsed, res);
-		}
-		[Fact(DisplayName = "BooleanToVisibilityMultiConverter - AnyTrue")]
-		public void BooleanToVisibilityMultiConverter_AnyTrue()
+			Mode = BooleanMultiConverterMode.AllTrue
+		};
+		var res = c.Convert(new[] { true, true }, CultureInfo.CurrentCulture);
+		Assert.Equal(Visibility.Visible, res);
+		res = c.Convert(new[] { false, false }, CultureInfo.CurrentCulture);
+		Assert.Equal(Visibility.Collapsed, res);
+		res = c.Convert(new[] { true, false }, CultureInfo.CurrentCulture);
+		Assert.Equal(Visibility.Collapsed, res);
+		res = c.Convert(new[] { true }, CultureInfo.CurrentCulture);
+		Assert.Equal(Visibility.Visible, res);
+		res = c.Convert(new[] { false }, CultureInfo.CurrentCulture);
+		Assert.Equal(Visibility.Collapsed, res);
+	}
+	[Fact(DisplayName = "BooleanToVisibilityMultiConverter - AnyTrue")]
+	public void BooleanToVisibilityMultiConverter_AnyTrue()
+	{
+		var c = new BooleanToVisibilityMultiConverter
 		{
-			var c = new BooleanToVisibilityMultiConverter();
-			c.Mode = BooleanMultiConverterMode.AnyTrue;
-			var res = c.Convert(new[] { true, true }, CultureInfo.CurrentCulture);
-			Assert.Equal(Visibility.Visible, res);
-			res = c.Convert(new[] { false, false }, CultureInfo.CurrentCulture);
-			Assert.Equal(Visibility.Collapsed, res);
-			res = c.Convert(new[] { true, false }, CultureInfo.CurrentCulture);
-			Assert.Equal(Visibility.Visible, res);
-			res = c.Convert(new[] { true }, CultureInfo.CurrentCulture);
-			Assert.Equal(Visibility.Visible, res);
-			res = c.Convert(new[] { false }, CultureInfo.CurrentCulture);
-			Assert.Equal(Visibility.Collapsed, res);
-		}
-		[Fact(DisplayName = "BooleanToVisibilityMultiConverter - AllFalse")]
-		public void BooleanToVisibilityMultiConverter_AllFalse()
+			Mode = BooleanMultiConverterMode.AnyTrue
+		};
+		var res = c.Convert(new[] { true, true }, CultureInfo.CurrentCulture);
+		Assert.Equal(Visibility.Visible, res);
+		res = c.Convert(new[] { false, false }, CultureInfo.CurrentCulture);
+		Assert.Equal(Visibility.Collapsed, res);
+		res = c.Convert(new[] { true, false }, CultureInfo.CurrentCulture);
+		Assert.Equal(Visibility.Visible, res);
+		res = c.Convert(new[] { true }, CultureInfo.CurrentCulture);
+		Assert.Equal(Visibility.Visible, res);
+		res = c.Convert(new[] { false }, CultureInfo.CurrentCulture);
+		Assert.Equal(Visibility.Collapsed, res);
+	}
+	[Fact(DisplayName = "BooleanToVisibilityMultiConverter - AllFalse")]
+	public void BooleanToVisibilityMultiConverter_AllFalse()
+	{
+		var c = new BooleanToVisibilityMultiConverter
 		{
-			var c = new BooleanToVisibilityMultiConverter();
-			c.Mode = BooleanMultiConverterMode.AllFalse;
-			var res = c.Convert(new[] { true, true }, CultureInfo.CurrentCulture);
-			Assert.Equal(Visibility.Collapsed, res);
-			res = c.Convert(new[] { false, false }, CultureInfo.CurrentCulture);
-			Assert.Equal(Visibility.Visible, res);
-			res = c.Convert(new[] { true, false }, CultureInfo.CurrentCulture);
-			Assert.Equal(Visibility.Collapsed, res);
-			res = c.Convert(new[] { true }, CultureInfo.CurrentCulture);
-			Assert.Equal(Visibility.Collapsed, res);
-			res = c.Convert(new[] { false }, CultureInfo.CurrentCulture);
-			Assert.Equal(Visibility.Visible, res);
-		}
-		[Fact(DisplayName = "BooleanToVisibilityMultiConverter - AnyFalse")]
-		public void BooleanToVisibilityMultiConverter_AnyFalse()
+			Mode = BooleanMultiConverterMode.AllFalse
+		};
+		var res = c.Convert(new[] { true, true }, CultureInfo.CurrentCulture);
+		Assert.Equal(Visibility.Collapsed, res);
+		res = c.Convert(new[] { false, false }, CultureInfo.CurrentCulture);
+		Assert.Equal(Visibility.Visible, res);
+		res = c.Convert(new[] { true, false }, CultureInfo.CurrentCulture);
+		Assert.Equal(Visibility.Collapsed, res);
+		res = c.Convert(new[] { true }, CultureInfo.CurrentCulture);
+		Assert.Equal(Visibility.Collapsed, res);
+		res = c.Convert(new[] { false }, CultureInfo.CurrentCulture);
+		Assert.Equal(Visibility.Visible, res);
+	}
+	[Fact(DisplayName = "BooleanToVisibilityMultiConverter - AnyFalse")]
+	public void BooleanToVisibilityMultiConverter_AnyFalse()
+	{
+		var c = new BooleanToVisibilityMultiConverter
 		{
-			var c = new BooleanToVisibilityMultiConverter();
-			c.Mode = BooleanMultiConverterMode.AnyFalse;
-			var res = c.Convert(new[] { true, true }, CultureInfo.CurrentCulture);
-			Assert.Equal(Visibility.Collapsed, res);
-			res = c.Convert(new[] { false, false }, CultureInfo.CurrentCulture);
-			Assert.Equal(Visibility.Visible, res);
-			res = c.Convert(new[] { true, false }, CultureInfo.CurrentCulture);
-			Assert.Equal(Visibility.Visible, res);
-			res = c.Convert(new[] { true }, CultureInfo.CurrentCulture);
-			Assert.Equal(Visibility.Collapsed, res);
-			res = c.Convert(new[] { false }, CultureInfo.CurrentCulture);
-			Assert.Equal(Visibility.Visible, res);
-		}
-		[Fact(DisplayName = "BooleanToVisibilityMultiConverter - NullValue")]
-		public void BooleanToVisibilityMultiConverter_NullValue()
+			Mode = BooleanMultiConverterMode.AnyFalse
+		};
+		var res = c.Convert(new[] { true, true }, CultureInfo.CurrentCulture);
+		Assert.Equal(Visibility.Collapsed, res);
+		res = c.Convert(new[] { false, false }, CultureInfo.CurrentCulture);
+		Assert.Equal(Visibility.Visible, res);
+		res = c.Convert(new[] { true, false }, CultureInfo.CurrentCulture);
+		Assert.Equal(Visibility.Visible, res);
+		res = c.Convert(new[] { true }, CultureInfo.CurrentCulture);
+		Assert.Equal(Visibility.Collapsed, res);
+		res = c.Convert(new[] { false }, CultureInfo.CurrentCulture);
+		Assert.Equal(Visibility.Visible, res);
+	}
+	[Fact(DisplayName = "BooleanToVisibilityMultiConverter - NullValue")]
+	public void BooleanToVisibilityMultiConverter_NullValue()
+	{
+		var c = new BooleanToVisibilityMultiConverter
 		{
-			var c = new BooleanToVisibilityMultiConverter();
-			c.NullValue = Visibility.Hidden;
-			var res = c.Convert(null!, CultureInfo.CurrentCulture);
-			Assert.Equal(Visibility.Hidden, res);
-		}
-		[Fact(DisplayName = "BooleanToVisibilityMultiConverter - EmptyValue")]
-		public void BooleanToVisibilityMultiConverter_EmptyValue()
+			NullValue = Visibility.Hidden
+		};
+		var res = c.Convert(null!, CultureInfo.CurrentCulture);
+		Assert.Equal(Visibility.Hidden, res);
+	}
+	[Fact(DisplayName = "BooleanToVisibilityMultiConverter - EmptyValue")]
+	public void BooleanToVisibilityMultiConverter_EmptyValue()
+	{
+		var c = new BooleanToVisibilityMultiConverter
 		{
-			var c = new BooleanToVisibilityMultiConverter();
-			c.EmptyValue = Visibility.Hidden;
-			var res = c.Convert(new bool[] { }, CultureInfo.CurrentCulture);
-			Assert.Equal(Visibility.Hidden, res);
-		}
+			EmptyValue = Visibility.Hidden
+		};
+		var res = c.Convert(new bool[] { }, CultureInfo.CurrentCulture);
+		Assert.Equal(Visibility.Hidden, res);
 	}
 }

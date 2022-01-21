@@ -1,26 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace Fuxion;
 
-namespace Fuxion
+public class ExceptionTest
 {
-	public class ExceptionTest
+	public void LaunchException()
 	{
-		public void LaunchException()
-		{
-			var test = new InternalExceptionTest();
-			test.LaunchException();
-		}
+		var test = new InternalExceptionTest();
+		test.LaunchException();
 	}
-	class InternalExceptionTest
-	{
-		public void LaunchException()
-		{
-			PrivateLaunchException();
-		}
-		private void PrivateLaunchException()
-		{
-			throw new Exception("Exception for testing purpose");
-		}
-	}
+}
+
+internal class InternalExceptionTest
+{
+	public void LaunchException() => PrivateLaunchException();
+	private void PrivateLaunchException() => throw new Exception("Exception for testing purpose");
 }
