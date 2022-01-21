@@ -30,7 +30,7 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: '6.0.x'
+        dotnet-version: '6.x.x'
 
     - name: Install dependencies
       run: dotnet restore -p:RestoreUseSkipNonexistentTargets=false src/Fuxion-pack.sln
@@ -46,7 +46,8 @@ jobs:
 
     - name: Publish to GitHub Packages
       if: github.ref != 'refs/heads/master' && github.ref != 'refs/heads/develop'
-      run: dotnet nuget push "nupkgs\*.nupkg" --source https://nuget.pkg.github.com/osjimenez/index.json --api-key ${{secrets.GITHUB_TOKEN}} --skip-duplicate
+#      run: dotnet nuget push "nupkgs\*.nupkg" --source https://nuget.pkg.github.com/osjimenez/index.json --api-key ${{secrets.GITHUB_TOKEN}} --skip-duplicate
+      run: dotnet nuget push "nupkgs\*.nupkg" --source "github""
 
     - name: Publish to NuGet.org
       if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop'
