@@ -1,9 +1,0 @@
-mode: Mainline
-#branches:
-#  master:
-#    tag: ''
-#  feature:
-#    tag: alpha
-ignore:
-  sha: []
-merge-message-formats: {}
