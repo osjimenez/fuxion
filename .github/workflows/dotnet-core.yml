@@ -1,11 +1,6 @@
 name: .NET Core
 
-on:
-  push:
-    branches: 
-     - master
-     - develop
-     - 'release/**'
+on: push
 
 jobs:
   build:
