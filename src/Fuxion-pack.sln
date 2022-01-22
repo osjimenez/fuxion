@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28407.52
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{291B05EE-78EA-412F-9449-5EC4D5E0FC9C}"
 EndProject
@@ -56,6 +56,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{5DBB4E03-13ED-4151-A780-7D0ACEC61103}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fuxion.Windows.Test", "Infrastructure\Test\Fuxion.Windows.Test\Fuxion.Windows.Test.csproj", "{186B412A-DCC2-4961-9E39-8B2CA0FF85E7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fuxion.MassTransit", "Infrastructure\MassTransit\Fuxion.MassTransit.csproj", "{A581D808-CFB5-4EF6-B79A-5A3BF586C18A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fuxion.Testing", "core\Testing\Fuxion.Testing.csproj", "{59C04CCB-EBCC-420B-A0AF-8FCF8E00CC39}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -529,6 +533,54 @@ Global
 		{186B412A-DCC2-4961-9E39-8B2CA0FF85E7}.Release|x64.Build.0 = Release|Any CPU
 		{186B412A-DCC2-4961-9E39-8B2CA0FF85E7}.Release|x86.ActiveCfg = Release|Any CPU
 		{186B412A-DCC2-4961-9E39-8B2CA0FF85E7}.Release|x86.Build.0 = Release|Any CPU
+		{A581D808-CFB5-4EF6-B79A-5A3BF586C18A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A581D808-CFB5-4EF6-B79A-5A3BF586C18A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A581D808-CFB5-4EF6-B79A-5A3BF586C18A}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{A581D808-CFB5-4EF6-B79A-5A3BF586C18A}.Debug|ARM.Build.0 = Debug|Any CPU
+		{A581D808-CFB5-4EF6-B79A-5A3BF586C18A}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{A581D808-CFB5-4EF6-B79A-5A3BF586C18A}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{A581D808-CFB5-4EF6-B79A-5A3BF586C18A}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{A581D808-CFB5-4EF6-B79A-5A3BF586C18A}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{A581D808-CFB5-4EF6-B79A-5A3BF586C18A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A581D808-CFB5-4EF6-B79A-5A3BF586C18A}.Debug|x64.Build.0 = Debug|Any CPU
+		{A581D808-CFB5-4EF6-B79A-5A3BF586C18A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A581D808-CFB5-4EF6-B79A-5A3BF586C18A}.Debug|x86.Build.0 = Debug|Any CPU
+		{A581D808-CFB5-4EF6-B79A-5A3BF586C18A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A581D808-CFB5-4EF6-B79A-5A3BF586C18A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A581D808-CFB5-4EF6-B79A-5A3BF586C18A}.Release|ARM.ActiveCfg = Release|Any CPU
+		{A581D808-CFB5-4EF6-B79A-5A3BF586C18A}.Release|ARM.Build.0 = Release|Any CPU
+		{A581D808-CFB5-4EF6-B79A-5A3BF586C18A}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{A581D808-CFB5-4EF6-B79A-5A3BF586C18A}.Release|iPhone.Build.0 = Release|Any CPU
+		{A581D808-CFB5-4EF6-B79A-5A3BF586C18A}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{A581D808-CFB5-4EF6-B79A-5A3BF586C18A}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{A581D808-CFB5-4EF6-B79A-5A3BF586C18A}.Release|x64.ActiveCfg = Release|Any CPU
+		{A581D808-CFB5-4EF6-B79A-5A3BF586C18A}.Release|x64.Build.0 = Release|Any CPU
+		{A581D808-CFB5-4EF6-B79A-5A3BF586C18A}.Release|x86.ActiveCfg = Release|Any CPU
+		{A581D808-CFB5-4EF6-B79A-5A3BF586C18A}.Release|x86.Build.0 = Release|Any CPU
+		{59C04CCB-EBCC-420B-A0AF-8FCF8E00CC39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59C04CCB-EBCC-420B-A0AF-8FCF8E00CC39}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59C04CCB-EBCC-420B-A0AF-8FCF8E00CC39}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{59C04CCB-EBCC-420B-A0AF-8FCF8E00CC39}.Debug|ARM.Build.0 = Debug|Any CPU
+		{59C04CCB-EBCC-420B-A0AF-8FCF8E00CC39}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{59C04CCB-EBCC-420B-A0AF-8FCF8E00CC39}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{59C04CCB-EBCC-420B-A0AF-8FCF8E00CC39}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{59C04CCB-EBCC-420B-A0AF-8FCF8E00CC39}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{59C04CCB-EBCC-420B-A0AF-8FCF8E00CC39}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{59C04CCB-EBCC-420B-A0AF-8FCF8E00CC39}.Debug|x64.Build.0 = Debug|Any CPU
+		{59C04CCB-EBCC-420B-A0AF-8FCF8E00CC39}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{59C04CCB-EBCC-420B-A0AF-8FCF8E00CC39}.Debug|x86.Build.0 = Debug|Any CPU
+		{59C04CCB-EBCC-420B-A0AF-8FCF8E00CC39}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59C04CCB-EBCC-420B-A0AF-8FCF8E00CC39}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59C04CCB-EBCC-420B-A0AF-8FCF8E00CC39}.Release|ARM.ActiveCfg = Release|Any CPU
+		{59C04CCB-EBCC-420B-A0AF-8FCF8E00CC39}.Release|ARM.Build.0 = Release|Any CPU
+		{59C04CCB-EBCC-420B-A0AF-8FCF8E00CC39}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{59C04CCB-EBCC-420B-A0AF-8FCF8E00CC39}.Release|iPhone.Build.0 = Release|Any CPU
+		{59C04CCB-EBCC-420B-A0AF-8FCF8E00CC39}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{59C04CCB-EBCC-420B-A0AF-8FCF8E00CC39}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{59C04CCB-EBCC-420B-A0AF-8FCF8E00CC39}.Release|x64.ActiveCfg = Release|Any CPU
+		{59C04CCB-EBCC-420B-A0AF-8FCF8E00CC39}.Release|x64.Build.0 = Release|Any CPU
+		{59C04CCB-EBCC-420B-A0AF-8FCF8E00CC39}.Release|x86.ActiveCfg = Release|Any CPU
+		{59C04CCB-EBCC-420B-A0AF-8FCF8E00CC39}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -555,6 +607,8 @@ Global
 		{6DB1BD7B-52B0-49AD-80E7-C8B05948110D} = {F2A5455C-7A84-45D1-9956-0CAF4A252685}
 		{5DBB4E03-13ED-4151-A780-7D0ACEC61103} = {96FC6DCB-2238-4610-BF05-8F031669948C}
 		{186B412A-DCC2-4961-9E39-8B2CA0FF85E7} = {5DBB4E03-13ED-4151-A780-7D0ACEC61103}
+		{A581D808-CFB5-4EF6-B79A-5A3BF586C18A} = {96FC6DCB-2238-4610-BF05-8F031669948C}
+		{59C04CCB-EBCC-420B-A0AF-8FCF8E00CC39} = {291B05EE-78EA-412F-9449-5EC4D5E0FC9C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		EnterpriseLibraryConfigurationToolBinariesPathV6 = packages\EnterpriseLibrary.TransientFaultHandling.6.0.1304.0\lib\portable-net45+win+wp8;packages\EnterpriseLibrary.TransientFaultHandling.Data.6.0.1304.1\lib\NET45

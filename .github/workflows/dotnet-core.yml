@@ -44,14 +44,9 @@ jobs:
     - name: Create packages
       run: dotnet pack --configuration Release --no-build --output nupkgs --no-build -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} src/Fuxion-pack.sln
 
-#    - name: Create GitHub source
-#      run: dotnet nuget add source --username osjimenez --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/TTiVentures/index.json"
-
     - name: Publish to GitHub Packages
       if: github.ref != 'refs/heads/master' && github.ref != 'refs/heads/develop'
-#      run: dotnet nuget push "nupkgs\*.nupkg" --source https://nuget.pkg.github.com/TTiVentures/index.json --api-key ${{secrets.GITHUB_PACKAGES}} --skip-duplicate
       run: dotnet nuget push "nupkgs\*.nupkg" --source https://nuget.pkg.github.com/TTiVentures/index.json --api-key ${{secrets.GITHUB_TOKEN}} --skip-duplicate
-#      run: dotnet nuget push "nupkgs\*.nupkg" --source "github" --skip-duplicate
 
     - name: Publish to NuGet.org
       if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop'
