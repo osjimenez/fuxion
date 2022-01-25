@@ -154,7 +154,7 @@ public class RolTest : BaseTest
 			" No";
 		PrintTestTriedStarted(permissionExplanation + query);
 		var source1 = source.AuthorizedTo(ide, Create);
-		using (Printer.Indent2("Source filtered results:"))
+		using (Printer.Indent("Source filtered results:"))
 		{
 			foreach (var per in source1)
 			{

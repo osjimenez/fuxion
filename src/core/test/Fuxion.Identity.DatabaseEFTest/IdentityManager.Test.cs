@@ -102,7 +102,7 @@ public class IdentityManagerTest
 		//		var im = Factory.Get<IdentityManager>();
 		var functions = functionsIds.Select(id => GetById(id)).ToArray();
 		Assert.True(IM.CheckCredentials(username, password), $"Login fail unexpected: username<{username}> password<{password}>");
-		using (Printer.Indent2("Parameters:"))
+		using (Printer.Indent("Parameters:"))
 		{
 			Printer.WriteLine($"Username: {username}");
 			Printer.WriteLine($"Functions: {functions.Aggregate("", (a, c) => a + c.Name + "·")}");

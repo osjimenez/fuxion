@@ -23,7 +23,7 @@ internal static class IdentityExtensions
 		using (var res = Printer.CallResult<IPermission[]>())
 		{
 			discriminators = discriminators.RemoveNulls();
-			using (Printer.Indent2("Inpupt Prameters"))
+			using (Printer.Indent("Inpupt Prameters"))
 			{
 				Printer.WriteLine($"Rol: {me.Name}");
 				Printer.WriteLine($"For filter: " + forFilter);
@@ -47,9 +47,9 @@ internal static class IdentityExtensions
 
 			// Get & print rol permissions
 			var permissions = me.AllPermissions();
-			using (Printer.Indent2("Permissions:"))
+			using (Printer.Indent("Permissions:"))
 				permissions.Print(PrintMode.Table);
-			using (Printer.Indent2("Iterate permissions:"))
+			using (Printer.Indent("Iterate permissions:"))
 				res.Value = permissions.Where(p => p.Match(forFilter, function, typeDiscriminator, discriminators)).ToArray();
 			res.OnPrintResult = r => r.Print(PrintMode.Table);
 			return res.Value;
@@ -59,7 +59,7 @@ internal static class IdentityExtensions
 	{
 		using (var res = Printer.CallResult<bool>())
 		{
-			using (Printer.Indent2("Input parameters"))
+			using (Printer.Indent("Input parameters"))
 			{
 				Printer.WriteLine($"Rol: {me.Rol?.Name}");
 				Printer.WriteLine($"Functions: {string.Join(",", me.Functions.Select(f => f.Name)) ?? "<null>"}");
@@ -231,7 +231,7 @@ internal static class IdentityExtensions
 			}
 			void PrintBinaryExpression(BinaryExpression exp)
 			{
-				using (Printer.Indent2("("))
+				using (Printer.Indent("("))
 				{
 					PrintExpression(exp.Left);
 					if (Printer.IsLineWritePending)
@@ -301,7 +301,7 @@ internal static class IdentityExtensions
 			}
 			#endregion
 			#endregion
-			using (Printer.Indent2("Input parameters:"))
+			using (Printer.Indent("Input parameters:"))
 			{
 				Printer.WriteLine("Rol:");
 				new[] { me }.Print(PrintMode.Table);
@@ -335,11 +335,11 @@ internal static class IdentityExtensions
 			Printer.Foreach("Deny permissions:", pers.Where(p => !p.Value), per =>
 			{
 				Expression<Func<TEntity, bool>>? perExp = null;
-				using (Printer.Indent2($"Permission: {per.ToOneLineString()}"))
+				using (Printer.Indent($"Permission: {per.ToOneLineString()}"))
 				{
 					Printer.Foreach("Scopes:", per.Scopes, sco =>
 					{
-						using (Printer.Indent2($"Scope: {sco.ToOneLineString()}"))
+						using (Printer.Indent($"Scope: {sco.ToOneLineString()}"))
 						{
 								// Recorro las propiedades que son del tipo de este discriminador
 								foreach (var pro in props.Where(p => AreEquals(p.DiscriminatorTypeId, sco.Discriminator.TypeKey)).ToList())
@@ -371,12 +371,12 @@ internal static class IdentityExtensions
 			Expression<Func<TEntity, bool>>? grantPersExp = null;
 			Printer.Foreach("Grant permissions:", pers.Where(p => p.Value), per =>
 			{
-				using (Printer.Indent2($"Permission: {per.ToOneLineString()}"))
+				using (Printer.Indent($"Permission: {per.ToOneLineString()}"))
 				{
 					Expression<Func<TEntity, bool>>? perExp = null;
 					Printer.Foreach("Scopes:", per.Scopes, sco =>
 					{
-						using (Printer.Indent2($"Scope: {sco.ToOneLineString()}"))
+						using (Printer.Indent($"Scope: {sco.ToOneLineString()}"))
 						{
 								// Recorro las propiedades que son del tipo de este discriminador
 								foreach (var pro in props.Where(p => AreEquals(p.DiscriminatorTypeId, sco.Discriminator.TypeKey)).ToList())

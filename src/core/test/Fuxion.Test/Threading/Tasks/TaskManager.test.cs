@@ -114,13 +114,13 @@ public class TaskManagerTest : BaseTest
 		var cancelledResult = "Canceled";
 		var doneResult = "Done";
 
-		using (Printer.Indent2("Test constants"))
+		using (Printer.Indent("Test constants"))
 		{
 			Printer.WriteLine($"{nameof(runDelay)}: {runDelay}");
 			Printer.WriteLine($"{nameof(cancelledResult)}: {cancelledResult}");
 			Printer.WriteLine($"{nameof(doneResult)}: {doneResult}");
 		}
-		using (Printer.Indent2("Test parameters"))
+		using (Printer.Indent("Test parameters"))
 		{
 			Printer.WriteLine($"{nameof(@void)}: {@void}");
 			Printer.WriteLine($"{nameof(sync)}: {sync}");
@@ -421,7 +421,7 @@ public class TaskManagerTest : BaseTest
 
 		#region Run
 		Printer.WriteLine("==============");
-		using (Printer.Indent2("Run"))
+		using (Printer.Indent("Run"))
 		{
 			var res = new Task<(bool WasCancelled, string? Result)>[3];
 			var num = 1;
@@ -513,7 +513,7 @@ public class TaskManagerTest : BaseTest
 		}
 
 		#endregion
-		using (Printer.Indent2("Assert"))
+		using (Printer.Indent("Assert"))
 		{
 			if (sequentially)
 			{

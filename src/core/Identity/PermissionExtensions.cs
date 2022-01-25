@@ -8,7 +8,7 @@ public static class PermissionExtensions
 	{
 		using (var res = Printer.CallResult<bool>())
 		{
-			using (Printer.Indent2("Input parameters"))
+			using (Printer.Indent("Input parameters"))
 			{
 				Printer.WriteLine($"Permission:");
 				new[] { me }.Print(PrintMode.Table);
@@ -51,7 +51,7 @@ public static class PermissionExtensions
 	{
 		using (var res = Printer.CallResult<bool>())
 		{
-			using (Printer.Indent2("Input parameters"))
+			using (Printer.Indent("Input parameters"))
 			{
 				Printer.WriteLine($"Permission:");
 				new[] { me }.Print(PrintMode.Table);
@@ -82,9 +82,9 @@ public static class PermissionExtensions
 	internal static bool MatchByDiscriminatorsInclusionsAndExclusions(this IPermission me, bool forFilter, TypeDiscriminator typeDiscriminator, params IDiscriminator[] discriminators)
 	{
 		var res = false;
-		using (Printer.Indent2($"CALL {nameof(MatchByDiscriminatorsInclusionsAndExclusions)}:", '│'))
+		using (Printer.Indent($"CALL {nameof(MatchByDiscriminatorsInclusionsAndExclusions)}:", '│'))
 		{
-			using (Printer.Indent2("Input parameters"))
+			using (Printer.Indent("Input parameters"))
 			{
 				Printer.WriteLine($"Permission:");
 				new[] { me }.Print(PrintMode.Table);
@@ -113,7 +113,7 @@ public static class PermissionExtensions
 				}
 				var typeDiscriminatorRelatedWithAnyPermissionScope = false;
 				// Compruebo el discriminador de tipo
-				using (Printer.Indent2($"Checking type discriminator"))
+				using (Printer.Indent($"Checking type discriminator"))
 				{
 					var scopeOfTypeOfTypeDiscriminator = me.Scopes.FirstOrDefault(s => Comparer.AreEquals(s.Discriminator.TypeKey, typeDiscriminator.TypeKey));
 					if (scopeOfTypeOfTypeDiscriminator != null)
@@ -145,7 +145,7 @@ public static class PermissionExtensions
 							Printer.WriteLine($"Have some discriminators, check discriminators");
 					}
 				}
-				using (Printer.Indent2($"Checking discriminators:"))
+				using (Printer.Indent($"Checking discriminators:"))
 				{
 					// Compruebo el resto de discriminadores
 					return discriminators.All(dis =>

@@ -53,9 +53,9 @@ public class Printer
 		char resultConnectorChar = '●',
 		[CallerMemberName] string? caller = null) where T : notnull => Default.CallResult<T>(callMessage, resultMessage, verticalConnectorChar, resultConnectorChar, caller);
 	[DebuggerHidden]
-	public static IDisposable Indent2(char? verticalConnectorChar = null) => Default.Indent(verticalConnectorChar);
+	public static IDisposable Indent(char? verticalConnectorChar = null) => Default.Indent(verticalConnectorChar);
 	[DebuggerHidden]
-	public static IDisposable Indent2(string message, char? verticalConnectorChar = null) => Default.Indent(message, verticalConnectorChar);
+	public static IDisposable Indent(string message, char? verticalConnectorChar = null) => Default.Indent(message, verticalConnectorChar);
 	[DebuggerHidden]
 	public static void Foreach<T>(string message, IEnumerable<T> items, Action<T> action, bool printMessageIfNoItems = true)
 		=> Default.Foreach(message, items, action, printMessageIfNoItems);
@@ -79,7 +79,7 @@ public class CallResultArg<T> : DisposableEnvelope<T> where T : notnull
 	protected override void OnDispose()
 	{
 		base.OnDispose();
-		var dis = Printer.Indent2(resultConnectorChar);
+		var dis = Printer.Indent(resultConnectorChar);
 		Printer.WriteLine(string.Format(resultFormat, caller, Value));
 		OnPrintResult?.Invoke(Value);
 		dis.Dispose();
@@ -138,7 +138,7 @@ internal class PrinterInstance : IPrinter
 	[DebuggerHidden]
 	public CallResultArg<T> CallResult<T>(string callMessage = "CALL {0}:", string resultMessage = "RESULT {0}: {1}", char verticalConnectorChar = '│', char resultConnectorChar = '●', [CallerMemberName] string? caller = null) where T : notnull
 	{
-		var dis = Printer.Indent2(string.Format(callMessage, caller), verticalConnectorChar);
+		var dis = Printer.Indent(string.Format(callMessage, caller), verticalConnectorChar);
 		var res = new CallResultArg<T>(default!, _ => dis.Dispose(), resultMessage, resultConnectorChar, caller);
 		return res;
 	}
