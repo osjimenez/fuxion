@@ -1,7 +1,7 @@
 ﻿namespace System;
 using Fuxion.Json;
 using Fuxion.Resources;
-using Newtonsoft.Json;
+//using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -57,29 +57,32 @@ public static partial class Extensions
 	public static DisposableEnvelope<T> AsDisposable<T>(this T me, Action<T>? actionOnDispose = null) where T : notnull => new DisposableEnvelope<T>(me, actionOnDispose);
 	#endregion
 	#region Json
-	public static string ToJson(this object me, Formatting formatting = Formatting.Indented, JsonSerializerSettings? settings = null)
-	{
-		if (settings != null)
-			return JsonConvert.SerializeObject(me, formatting, settings);
-		return JsonConvert.SerializeObject(me, formatting);
-	}
+	public static string ToJson<T>(this T me, JsonSerializerOptions? options = null)
+		=> JsonSerializer.Serialize<T>(me, options);
+	//public static string ToJson<TPod, TPayload, TKey>(this JsonPod<TPayload, TKey> me, bool writeIndented = true) where TPod : JsonPod<TPayload, TKey>
+	//{
+	//	JsonSerializerOptions options = new();
+	//	options.WriteIndented = writeIndented;
+	//	options.Converters.Add(new JsonPodConverter<TPod, TPayload, TKey>());
+	//	return JsonSerializer.Serialize(me, options);
+	//}
 	public static string ToJson(this Exception me, bool writeIndented = true)
 	{
 		JsonSerializerOptions options = new();
 		options.WriteIndented = writeIndented;
 		options.Converters.Add(new FallbackConverter<Exception>(new MultilineStringToCollectionPropertyFallbackResolver()));
-		return Text.Json.JsonSerializer.Serialize(me, options);
+		return JsonSerializer.Serialize(me, options);
 	}
-	public static T? FromJson<T>(this string me, [DoesNotReturnIf(true)] bool exceptionIfNull = false, JsonSerializerSettings? settings = null)
+	public static T? FromJson<T>(this string me, [DoesNotReturnIf(true)] bool exceptionIfNull = false, JsonSerializerOptions? options = null)
 	{
-		var res = JsonConvert.DeserializeObject<T>(me, settings);
+		var res = JsonSerializer.Deserialize<T>(me, options);
 		if (exceptionIfNull && res is null)
 			throw new SerializationException($"The string cannot be deserialized as '{typeof(T).Name}':\r\n{me}");
 		return res;
 	}
-	public static object? FromJson(this string me, Type type, [DoesNotReturnIf(true)] bool exceptionIfNull = false)
+	public static object? FromJson(this string me, Type type, [DoesNotReturnIf(true)] bool exceptionIfNull = false, JsonSerializerOptions? options = null)
 	{
-		var res = JsonConvert.DeserializeObject(me, type);
+		var res = JsonSerializer.Deserialize(me, type, options);
 		if (exceptionIfNull && res is null)
 			throw new SerializationException($"The string cannot be deserialized as '{type.Name}':\r\n{me}");
 		return res;
@@ -87,6 +90,54 @@ public static partial class Extensions
 	public static T CloneWithJson<T>(this T me) => (T)(FromJson(
 		me?.ToJson() ?? throw new InvalidDataException(),
 		me?.GetType() ?? throw new InvalidDataException()) ?? default!);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	//public static string ToJson(this object me, Formatting formatting = Formatting.Indented, JsonSerializerSettings? settings = null)
+	//{
+	//	if (settings != null)
+	//		return JsonConvert.SerializeObject(me, formatting, settings);
+	//	return JsonConvert.SerializeObject(me, formatting);
+	//}
+	//public static string ToJson(this Exception me, bool writeIndented = true)
+	//{
+	//	JsonSerializerOptions options = new();
+	//	options.WriteIndented = writeIndented;
+	//	options.Converters.Add(new FallbackConverter<Exception>(new MultilineStringToCollectionPropertyFallbackResolver()));
+	//	return Text.Json.JsonSerializer.Serialize(me, options);
+	//}
+	//public static T? FromJson<T>(this string me, [DoesNotReturnIf(true)] bool exceptionIfNull = false, JsonSerializerSettings? settings = null)
+	//{
+	//	var res = JsonConvert.DeserializeObject<T>(me, settings);
+	//	if (exceptionIfNull && res is null)
+	//		throw new SerializationException($"The string cannot be deserialized as '{typeof(T).Name}':\r\n{me}");
+	//	return res;
+	//}
+	//public static object? FromJson(this string me, Type type, [DoesNotReturnIf(true)] bool exceptionIfNull = false)
+	//{
+	//	var res = JsonConvert.DeserializeObject(me, type);
+	//	if (exceptionIfNull && res is null)
+	//		throw new SerializationException($"The string cannot be deserialized as '{type.Name}':\r\n{me}");
+	//	return res;
+	//}
+	//public static T CloneWithJson<T>(this T me) => (T)(FromJson(
+	//	me?.ToJson() ?? throw new InvalidDataException(),
+	//	me?.GetType() ?? throw new InvalidDataException()) ?? default!);
 	#endregion
 	#region Transform
 	public static TResult Transform<TSource, TResult>(this TSource me, Func<TSource, TResult> transformFunction) => transformFunction(me);

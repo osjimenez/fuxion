@@ -21,7 +21,7 @@ public class JsonPodTest : BaseTest
 		Output.WriteLine("Serialized json: ");
 		Output.WriteLine(json);
 
-		Assert.Contains(@"""PayloadKey"": ""podKey""", json);
+		Assert.Contains(@"""PayloadKey"":""podKey""", json);
 		Assert.Contains(@"""Name"": ""payloadName""", json);
 		Assert.Contains(@"""Age"": 23", json);
 		Assert.Contains(@"""Nick"": ""payloadNick""", json);
@@ -47,7 +47,7 @@ public class JsonPodTest : BaseTest
 		if (pod is null) throw new NullReferenceException($"'pod' deserialization is null");
 
 		Output.WriteLine("pod.PayloadJRaw.Value: ");
-		Output.WriteLine(pod.PayloadJRaw.Value?.ToString());
+		Output.WriteLine(pod.PayloadJRaw);
 
 		void AssertBase(PayloadBase payload)
 		{
