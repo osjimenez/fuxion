@@ -1,6 +1,4 @@
 ﻿namespace System.Text.Json.Serialization;
-
-using Fuxion;
 using System.Collections;
 using System.Reflection;
 
@@ -41,7 +39,7 @@ public class CollectionPropertyFallbackResolver : PropertyFallbackResolver
 	public override bool Match(object value, PropertyInfo propertyInfo) => propertyInfo.GetValue(value) is ICollection;
 	public override void Do(object value, PropertyInfo propertyInfo, Utf8JsonWriter writer, JsonSerializerOptions options, List<PropertyFallbackResolver> resolvers)
 	{
-		if (propertyInfo.GetValue(value) is not ICollection collection) 
+		if (propertyInfo.GetValue(value) is not ICollection collection)
 			throw new InvalidProgramException("Collection cannot be null");
 		writer.WritePropertyName(propertyInfo.Name);
 		writer.WriteStartArray();
@@ -61,7 +59,7 @@ public class MultilineStringToCollectionPropertyFallbackResolver : PropertyFallb
 	public override bool Match(object value, PropertyInfo propertyInfo) => propertyInfo.GetValue(value) is string s && s.Contains('\r');
 	public override void Do(object value, PropertyInfo propertyInfo, Utf8JsonWriter writer, JsonSerializerOptions options, List<PropertyFallbackResolver> resolvers)
 	{
-		if (propertyInfo.GetValue(value) is not string str) 
+		if (propertyInfo.GetValue(value) is not string str)
 			throw new InvalidProgramException("str cannot be null");
 		writer.WritePropertyName(propertyInfo.Name);
 		writer.WriteStartArray();

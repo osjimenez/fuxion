@@ -10,6 +10,8 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 public static partial class Extensions
@@ -61,14 +63,13 @@ public static partial class Extensions
 			return JsonConvert.SerializeObject(me, formatting, settings);
 		return JsonConvert.SerializeObject(me, formatting);
 	}
-	public static string ToJson(this Exception me, Formatting formatting = Formatting.Indented) => me.ToJson(
-			formatting,
-			new JsonSerializerSettings().Transform<JsonSerializerSettings>(s =>
-				s.ContractResolver = new ExceptionContractResolver
-				{
-					IgnoreSerializableInterface = true,
-					IgnoreSerializableAttribute = true
-				}));
+	public static string ToJson(this Exception me, bool writeIndented = true)
+	{
+		JsonSerializerOptions options = new();
+		options.WriteIndented = writeIndented;
+		options.Converters.Add(new FallbackConverter<Exception>(new MultilineStringToCollectionPropertyFallbackResolver()));
+		return Text.Json.JsonSerializer.Serialize(me, options);
+	}
 	public static T? FromJson<T>(this string me, [DoesNotReturnIf(true)] bool exceptionIfNull = false, JsonSerializerSettings? settings = null)
 	{
 		var res = JsonConvert.DeserializeObject<T>(me, settings);
