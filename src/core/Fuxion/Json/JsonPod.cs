@@ -4,34 +4,43 @@ using System.Diagnostics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-public class JsonPod<TPayload, TKey>
+public abstract class JsonPod
+{
+	internal abstract string PayloadRaw { get; set; }
+}
+
+public class JsonPod<TPayload, TKey> : JsonPod
 {
 	[JsonConstructor]
 	protected JsonPod()
 	{
 		PayloadKey = default!;
 		_Payload = default!;
-		_PayloadJRaw = null!;
+		_PayloadRaw = null!;
 	}
 	public JsonPod(TPayload payload, TKey key) : this()
 	{
 		PayloadKey = key;
 		Payload = payload;
-		PayloadJRaw = payload.ToJson();
+		JsonSerializerOptions options = new()
+		{
+			WriteIndented = true,
+		};
+		PayloadRaw = payload.ToJson(options);
 	}
 	public TKey PayloadKey { get; private set; }
 	
-	private string _PayloadJRaw;
+	private string _PayloadRaw;
 	[JsonPropertyName(nameof(Payload))]
-	internal string PayloadJRaw
+	internal override string PayloadRaw
 	{
-		get => _PayloadJRaw;
+		get => _PayloadRaw;
 		set
 		{
-			_PayloadJRaw = value;
-			if (Payload == null && PayloadJRaw != null)
+			_PayloadRaw = value;
+			if (Payload == null && PayloadRaw != null)
 			{
-				Payload = PayloadJRaw.FromJson<TPayload>() ?? throw new InvalidDataException("The PayloadJRaw value hasn't a representative string"); ;
+				Payload = PayloadRaw.FromJson<TPayload>() ?? throw new InvalidDataException("The PayloadJRaw value hasn't a representative string"); ;
 
 
 				//var wasFailed = false;
@@ -70,19 +79,19 @@ public class JsonPod<TPayload, TKey>
 	public static implicit operator TPayload(JsonPod<TPayload, TKey> payload) => payload.Payload;
 	public JsonPod<T, TKey>? CastWithPayload<T>()
 	{
-		if (PayloadJRaw == null) return null;
-		var res = PayloadJRaw.FromJson<T>();
+		if (PayloadRaw == null) return null;
+		var res = PayloadRaw.FromJson<T>();
 		if (res == null) return null;
 		return new JsonPod<T, TKey>(res, PayloadKey);
 	}
 	public T? As<T>()
 	{
-		if (PayloadJRaw == null) return default;
-		var res = PayloadJRaw.FromJson<T>();
+		if (PayloadRaw == null) return default;
+		var res = PayloadRaw.FromJson<T>();
 		if (res == null) return default;
 		return res;
 	}
-	public object? As(Type type) => PayloadJRaw.FromJson(type);
+	public object? As(Type type) => PayloadRaw.FromJson(type);
 
 	public bool Is<T>() => Is(typeof(T));
 	public bool Is(Type type)

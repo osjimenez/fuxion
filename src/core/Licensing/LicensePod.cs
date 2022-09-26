@@ -73,7 +73,7 @@ public class LicensePod : JsonPod<License, Type>
 		pro.FromXmlString(key);
 		if (Signature == null) throw new InvalidOperationException($"'{nameof(Signature)}' cannot be null");
 		return pro.VerifyData(
-			Encoding.Unicode.GetBytes(Payload.ToJson(Formatting.None)),
+			Encoding.Unicode.GetBytes(Payload.ToJson()),
 			SHA1.Create(),
 			Convert.FromBase64String(Signature));
 	}

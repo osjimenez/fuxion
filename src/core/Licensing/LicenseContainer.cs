@@ -5,6 +5,7 @@ using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
 using System.Xml;
 
 public class LicenseContainer
@@ -15,13 +16,13 @@ public class LicenseContainer
 	public LicenseContainer(string signature, License license)
 	{
 		Signature = signature;
-		RawLicense = new JRaw(license.ToJson(Newtonsoft.Json.Formatting.None));
+		RawLicense = new JRaw(license.ToJson());
 	}
 	public string? Comment { get; set; }
 	public string Signature { get; set; }
 	[JsonProperty(PropertyName = "License")]
 	public JRaw RawLicense { get; set; }
-	public LicenseContainer Set(License license) { RawLicense = new JRaw(license.ToJson(Newtonsoft.Json.Formatting.None)); return this; }
+	public LicenseContainer Set(License license) { RawLicense = new JRaw(license.ToJson()); return this; }
 	public T? As<T>() where T : License => RawLicense.Value?.ToString()?.FromJson<T>();
 	public License? As(Type type) => (License?)RawLicense.Value?.ToString()?.FromJson(type);
 	public bool Is<T>() where T : License => Is(typeof(T));
@@ -40,7 +41,7 @@ public class LicenseContainer
 	public static LicenseContainer Sign(License license, string key)
 	{
 		license.SignatureUtcTime = DateTime.UtcNow;
-		var originalData = Encoding.Unicode.GetBytes(license.ToJson(Newtonsoft.Json.Formatting.None));
+		var originalData = Encoding.Unicode.GetBytes(license.ToJson());
 		byte[] signedData;
 		var pro = new RSACryptoServiceProvider();
 		//pro.FromXmlString(key);
@@ -65,7 +66,7 @@ public class LicenseContainer
 		//pro.FromXmlString(key);
 		FromXmlString(pro, key);
 		return pro.VerifyData(
-			Encoding.Unicode.GetBytes(RawLicense.ToJson(Newtonsoft.Json.Formatting.None)),
+			Encoding.Unicode.GetBytes(RawLicense.ToJson()),
 			SHA1.Create(),
 			Convert.FromBase64String(Signature));
 		//=> VerifySignature(Convert.FromBase64String(key));

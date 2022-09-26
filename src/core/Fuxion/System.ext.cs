@@ -59,13 +59,15 @@ public static partial class Extensions
 	#region Json
 	public static string ToJson<T>(this T me, JsonSerializerOptions? options = null)
 		=> JsonSerializer.Serialize<T>(me, options);
-	//public static string ToJson<TPod, TPayload, TKey>(this JsonPod<TPayload, TKey> me, bool writeIndented = true) where TPod : JsonPod<TPayload, TKey>
-	//{
-	//	JsonSerializerOptions options = new();
-	//	options.WriteIndented = writeIndented;
-	//	options.Converters.Add(new JsonPodConverter<TPod, TPayload, TKey>());
-	//	return JsonSerializer.Serialize(me, options);
-	//}
+	public static string ToJson<TPod, TPayload, TKey>(this JsonPod<TPayload, TKey> me, bool writeIndented = true) where TPod : JsonPod<TPayload, TKey>
+	{
+		JsonSerializerOptions options = new()
+		{
+			WriteIndented = writeIndented
+		};
+		options.Converters.Add(new JsonPodConverter<TPod, TPayload, TKey>());
+		return JsonSerializer.Serialize(me, options);
+	}
 	public static string ToJson(this Exception me, bool writeIndented = true)
 	{
 		JsonSerializerOptions options = new();

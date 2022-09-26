@@ -17,11 +17,12 @@ public class JsonPodTest : BaseTest
 		};
 		var pod = payload.ToJsonPod("podKey");
 		var json = pod.ToJson();
+		//var json = pod.ToJson<JsonPod<PayloadDerived, string>, PayloadDerived, string>();
 
 		Output.WriteLine("Serialized json: ");
 		Output.WriteLine(json);
 
-		Assert.Contains(@"""PayloadKey"":""podKey""", json);
+		Assert.Contains(@"""PayloadKey"": ""podKey""", json);
 		Assert.Contains(@"""Name"": ""payloadName""", json);
 		Assert.Contains(@"""Age"": 23", json);
 		Assert.Contains(@"""Nick"": ""payloadNick""", json);
@@ -29,15 +30,16 @@ public class JsonPodTest : BaseTest
 	[Fact(DisplayName = "JsonPod - FromJson")]
 	public void FromJson()
 	{
-		var json = @"
+		var json = """
 			{
-				""PayloadKey"": ""podKey"",
-				""Payload"": {
-					""Name"": ""payloadName"",
-					""Age"": 23,
-					""Nick"": ""payloadNick""
+				"PayloadKey": "podKey",
+				"Payload": {
+					"Name": "payloadName",
+					"Age": 23,
+					"Nick": "payloadNick"
 				}
-			}";
+			}
+			""";
 
 		Output.WriteLine("Initial json: ");
 		Output.WriteLine(json);
@@ -46,8 +48,8 @@ public class JsonPodTest : BaseTest
 		// NULLABLE - Prefer Assert.NotNull() but the nullable constraint attribute is missing
 		if (pod is null) throw new NullReferenceException($"'pod' deserialization is null");
 
-		Output.WriteLine("pod.PayloadJRaw.Value: ");
-		Output.WriteLine(pod.PayloadJRaw);
+		Output.WriteLine("pod.PayloadRaw.Value: ");
+		Output.WriteLine(pod.PayloadRaw);
 
 		void AssertBase(PayloadBase payload)
 		{
