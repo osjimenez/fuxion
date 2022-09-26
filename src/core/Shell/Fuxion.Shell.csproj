@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net6.0-windows</TargetFramework>
+		<TargetFramework>net7.0-windows</TargetFramework>
 		<UseWPF>true</UseWPF>
 		<Title>Fuxion Shell</Title>
 		<PackageId>Fuxion.Shell</PackageId>
@@ -18,7 +18,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
-		<PackageReference Include="ReactiveUI.WPF" Version="17.1.17" />
+		<PackageReference Include="ReactiveUI.WPF" Version="18.3.1" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -37,6 +37,7 @@
 		<Reference Include="Telerik.Windows.Controls.Navigation">
 			<HintPath>$(TelerikInstallDir)\Binaries\WPF60\Telerik.Windows.Controls.Navigation.dll</HintPath>
 		</Reference>
+		
 	</ItemGroup>
 
 	<ItemGroup>

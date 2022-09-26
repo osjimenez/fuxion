@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net7.0</TargetFramework>
 		<Title>FuxionRabbitMQ</Title>
 		<PackageId>Fuxion.RabbitMQ</PackageId>
 		<Description>Fuxion infrastructure for RabbitMQ</Description>
@@ -13,7 +13,7 @@
 	
 	<ItemGroup>
 		<PackageReference Include="Polly" Version="7.2.3" />
-		<PackageReference Include="RabbitMQ.Client" Version="6.2.2" />
+		<PackageReference Include="RabbitMQ.Client" Version="6.4.0" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
 	</ItemGroup>
 
