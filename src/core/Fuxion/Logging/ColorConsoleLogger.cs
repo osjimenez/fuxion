@@ -14,7 +14,7 @@ public class ColorConsoleLogger : ILogger
 		ColorConsoleLoggerConfiguration config) =>
 		(_name, _config) = (name, config);
 
-	public IDisposable BeginScope<TState>(TState state) => default!;
+	public IDisposable BeginScope<TState>(TState state) where TState : notnull => default!;
 
 	public bool IsEnabled(LogLevel logLevel) =>
 		_config.LogLevels.ContainsKey(logLevel);
