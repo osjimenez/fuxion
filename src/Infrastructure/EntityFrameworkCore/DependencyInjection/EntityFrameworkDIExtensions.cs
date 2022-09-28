@@ -16,6 +16,7 @@ public static class EntityFrameworkDIExtensions
 				DataSource = dataSource,
 				InitialCatalog = initialCatalog
 			};
+			connectionBuilder.TrustServerCertificate = true;
 			if (string.IsNullOrWhiteSpace(userID) || string.IsNullOrWhiteSpace(password))
 				connectionBuilder.IntegratedSecurity = true;
 			else
