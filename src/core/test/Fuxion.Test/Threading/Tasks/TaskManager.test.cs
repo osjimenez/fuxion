@@ -63,7 +63,7 @@ public class TaskManagerTest : BaseTest
 					bits[5] ? "CANCEL" : "NO_CAN", // 5
 					bits[6] ? "NAMED " : "NO_NAM", // 6
 					};
-			// TODO - Test not work on CI
+			//TODO - Test not work on CI
 			//var strings = new[] {
 			//	bits[0] ? "VOID  " : "VOID  ", // 0
 			//	bits[1] ? "SYNC  " : "SYNC  ", // 1

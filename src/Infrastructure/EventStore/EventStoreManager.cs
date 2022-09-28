@@ -32,7 +32,7 @@ public class EventStoreStorage : IEventStorage, ISnapshotStorage
 	}
 	public async Task<IQueryable<Event>> GetEventsAsync(Guid aggregateId, int start, int count)
 	{
-		// TODO - Implementar un mecanismo de paginación cuando tengo que trearme mas de 4096 eventos
+		//TODO - Implementar un mecanismo de paginación cuando tengo que trearme mas de 4096 eventos
 		var slice = await connection.ReadStreamEventsForwardAsync(aggregateId.ToString(), start, count == int.MaxValue ? 4096 : count, false);
 		return slice.Events.Select(e => Encoding.Default.GetString(e.Event.Data).FromJson<EventSourcingPod>(true).WithTypeKeyDirectory(typeKeyDirectory)).RemoveNulls().AsQueryable();
 	}

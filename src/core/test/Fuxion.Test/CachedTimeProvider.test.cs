@@ -1,7 +1,5 @@
 ﻿namespace Fuxion.Test;
 
-using Fuxion.Test.Helpers;
-
 public class CachedTimeProviderTest
 {
 	public CachedTimeProviderTest(ITestOutputHelper output) => this.output = output;

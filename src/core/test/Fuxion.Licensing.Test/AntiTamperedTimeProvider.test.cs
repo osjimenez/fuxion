@@ -1,14 +1,13 @@
 ﻿namespace Fuxion.Licensing.Test;
 
-using Fuxion.Test.Helpers;
+using Fuxion.Testing;
 using Xunit;
 using Xunit.Abstractions;
 
-public class AntiTamperedTimeProviderTest
+public class AntiTamperedTimeProviderTest : BaseTest
 {
-	public AntiTamperedTimeProviderTest(ITestOutputHelper output) => this.output = output;
+	public AntiTamperedTimeProviderTest(ITestOutputHelper output) : base(output) { }
 
-	private readonly ITestOutputHelper output;
 
 	private string[] WebServersAddresses { get; } = new[]
 {
@@ -26,7 +25,7 @@ public class AntiTamperedTimeProviderTest
 	{
 		var atp = new AverageTimeProvider
 		{
-			Logger = new XunitLogger(output),
+			Logger = new XunitLogger(Output),
 			MaxFailsPerTry = 1,
 			RandomizedProvidersPerTry = WebServersAddresses.Length
 		};
@@ -36,10 +35,14 @@ public class AntiTamperedTimeProviderTest
 			ServerType = InternetTimeServerType.Web,
 			Timeout = TimeSpan.FromSeconds(5)
 		})) atp.AddProvider(pro, true);
-		new AntiTamperedTimeProvider(atp, new AntiBackTimeProvider
+		new AntiTamperedTimeProvider(atp, new AntiBackTimeProvider(new MemoryStoredTimeProvider().Transform(s =>
 		{
-			Logger = new XunitLogger(output)
+			s.SaveUtcTime(DateTime.UtcNow);
+			return s;
+		}))
+		{
+			Logger = new XunitLogger(Output)
 		})
-			.CheckConsistency(output);
+			.CheckConsistency(Output);
 	}
 }

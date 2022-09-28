@@ -1,4 +1,5 @@
-﻿namespace Fuxion.Test.Json;
+﻿namespace Fuxion.Test.Text.Json.Serialization;
+
 using System;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -8,13 +9,10 @@ public class FallbackConverterTest : BaseTest
 {
 	public FallbackConverterTest(ITestOutputHelper output) : base(output)
 	{
-		int t = 8;
-		//Printer.WriteLineAction = m => output.WriteLine(m);
 	}
 	[Fact(DisplayName = "FallbackConverter2 - Serialize")]
 	public void FallbackConverter2_Serialize()
 	{
-		int t = 8;
 		Exception ex = new Exception("VAMOSSSSS");
 		//JsonSerializerOptions opt = new();
 		//opt.WriteIndented = true;

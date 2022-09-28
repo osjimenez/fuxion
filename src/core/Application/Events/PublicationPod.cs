@@ -4,7 +4,7 @@ using Fuxion.Domain;
 using Fuxion.Domain.Events;
 using Fuxion.Json;
 using Fuxion.Reflection;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 public class PublicationPod : JsonPod<Event, string>
 {
@@ -16,7 +16,7 @@ public class PublicationPod : JsonPod<Event, string>
 		var es = @event.Publication();
 		Timestamp = es.Timestamp;
 	}
-	[JsonProperty]
+	[JsonInclude]
 	public DateTime Timestamp { get; internal set; }
 
 	public T? AsEvent<T>() where T : Event => base.As<T>().Transform(evt => evt?.AddPublication(Timestamp));

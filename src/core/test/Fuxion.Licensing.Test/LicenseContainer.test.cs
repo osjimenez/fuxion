@@ -15,7 +15,7 @@ public class LicenseContainerTest
 	{
 		var hardwareId = Guid.NewGuid().ToString();
 		var productId = Guid.NewGuid().ToString();
-		var lic = new LicenseMock();//, DateTime.UtcNow, DateTime.UtcNow);
+		var lic = new LicenseMock();
 		lic.SetHarwareId(hardwareId);
 		lic.SetProductId(productId);
 		var con = new LicenseContainer("signature", lic);

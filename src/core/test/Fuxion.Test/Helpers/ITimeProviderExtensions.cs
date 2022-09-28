@@ -17,8 +17,8 @@ public static class ITimeProviderExtensions
 		output?.WriteLine($"{nowOff.DateTime.ToString("HH:mm:ss.fff zzz").PadRight(pad)} provider.NowOffsetted()");
 		output?.WriteLine($"{utcNow.ToString("HH:mm:ss.fff").PadRight(pad)} provider.UtcNow()");
 
-		Assert.True(System.Math.Abs(now.Subtract(nowOff.Offset).Subtract(utcNow).TotalSeconds) <= 5, "now - nowOff.Offset must be UTC time (with 5 seconds of margin)");
-		Assert.True(now.Subtract(nowOff.DateTime).TotalSeconds <= 5, "now must be same as nowOff.DateTime (with 5 seconds of margin)");
+		Assert.True(System.Math.Abs(now.Subtract(nowOff.Offset).Subtract(utcNow).TotalSeconds) <= 30, "now - nowOff.Offset must be UTC time (with 30 seconds of margin)");
+		Assert.True(now.Subtract(nowOff.DateTime).TotalSeconds <= 30, "now must be same as nowOff.DateTime (with 30 seconds of margin)");
 
 		output?.WriteLine("");
 		output?.WriteLine("   PASSED");

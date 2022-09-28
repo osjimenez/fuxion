@@ -15,7 +15,11 @@ public class PatchableTest
 		dynamic dyn = new Patchable<ToPatch>();
 		dyn.Integer = 111;
 
-		dyn.Patch(toPatch);
+		// Serialize and deserialize to simulate network service passthrough
+		var ser = ((Patchable<ToPatch>)dyn).ToJson().FromJson<Patchable<ToPatch>>();
+
+		Assert.NotNull(ser);
+		ser.Patch(toPatch);
 
 		Assert.Equal(111, toPatch.Integer);
 	}
@@ -53,10 +57,9 @@ public class PatchableTest
 
 		Assert.Equal(Guid.Parse("{7F27735C-FDE1-4141-985A-214502599C63}"), id);
 	}
-	[Fact(DisplayName = "Patchable - Allow non existing properties")]
+	[Fact(DisplayName = "Patchable - NonExistingPropertiesMode")]
 	public void NonExistingProperties()
 	{
-		Patchable<ToPatch>.NonExistingPropertiesMode = NonExistingPropertiesMode.NotAllowed;
 		// Create a Patchable
 		dynamic dyn = new Patchable<ToPatch>();
 		// Set non existing property
@@ -65,7 +68,7 @@ public class PatchableTest
 			dyn.Integer = 123;
 			dyn.DerivedInteger = 123;
 		});
-		Patchable<ToPatch>.NonExistingPropertiesMode = NonExistingPropertiesMode.OnlySet;
+		dyn.NonExistingPropertiesMode = NonExistingPropertiesMode.OnlySet;
 		dyn.Integer = 123;
 		dyn.DerivedInteger = 123;
 
@@ -83,12 +86,27 @@ public class PatchableTest
 			res = delta.Get<int>("Integer");
 			derivedRed = delta.Get<int>("DerivedInteger");
 		});
-		Patchable<ToPatch>.NonExistingPropertiesMode = NonExistingPropertiesMode.GetAndSet;
+		dyn.NonExistingPropertiesMode = NonExistingPropertiesMode.GetAndSet;
+		delta.NonExistingPropertiesMode = NonExistingPropertiesMode.GetAndSet;
 		res = delta?.Get<int>("Integer");
 		derivedRed = delta?.Get<int>("DerivedInteger");
 
 		Assert.Equal(123, res);
 		Assert.Equal(123, derivedRed);
+	}
+	[Fact(DisplayName = "Patchable - List")]
+	public void List()
+	{
+		var toPatch = new ToPatch
+		{
+			Integer = 123,
+			String = "TEST"
+		};
+		dynamic dyn = new Patchable<ToPatch>();
+		dyn.List = new List<int>();
+		dyn.List.Add(1);
+		dyn.Patch(toPatch);
+		Assert.NotEmpty(toPatch.List);
 	}
 }
 public class ToPatch
@@ -96,6 +114,7 @@ public class ToPatch
 	public int Integer { get; set; }
 	public string? String { get; set; }
 	public Guid Id { get; set; }
+	public List<int> List { get; set; } = new();
 }
 public class DerivedToPatch : ToPatch
 {

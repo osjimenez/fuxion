@@ -3,7 +3,7 @@
 using Fuxion.Domain;
 using Fuxion.Json;
 using Fuxion.Reflection;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 public class CommandPod : JsonPod<Command, string>
 {

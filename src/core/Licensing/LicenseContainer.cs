@@ -1,11 +1,12 @@
 ﻿namespace Fuxion.Licensing; 
 
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System.Diagnostics;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 using System.Xml;
 
 public class LicenseContainer
@@ -16,21 +17,39 @@ public class LicenseContainer
 	public LicenseContainer(string signature, License license)
 	{
 		Signature = signature;
-		RawLicense = new JRaw(license.ToJson());
+		RawLicense = CreateRaw(license);
+	}
+	JsonValue CreateRaw(License license)
+	{
+		var met = typeof(JsonValue)
+			.GetMethods(BindingFlags.Static| BindingFlags.Public)
+			.Where(m => 
+			m.Name == nameof(JsonValue.Create) && 
+			m.GetGenericArguments().Any() &&
+			m.GetParameters().Count() == 2)
+			.FirstOrDefault();
+		if (met is null) throw new InvalidProgramException("The JsonValue.Create<T>() method could not be determined");
+		var met2 = met.MakeGenericMethod(license.GetType());
+		var res = met2.Invoke(null, new object?[] { license, null });
+		if (res is null) throw new InvalidProgramException("The JsonValue could not be created");
+		return (JsonValue)res;
 	}
 	public string? Comment { get; set; }
 	public string Signature { get; set; }
-	[JsonProperty(PropertyName = "License")]
-	public JRaw RawLicense { get; set; }
-	public LicenseContainer Set(License license) { RawLicense = new JRaw(license.ToJson()); return this; }
-	public T? As<T>() where T : License => RawLicense.Value?.ToString()?.FromJson<T>();
-	public License? As(Type type) => (License?)RawLicense.Value?.ToString()?.FromJson(type);
+	[JsonPropertyName("License")]
+	public JsonValue RawLicense { get; set; }
+	public LicenseContainer Set(License license) { 
+		RawLicense = CreateRaw(license) ?? throw new InvalidProgramException("JsonValue could not be created");
+		return this; 
+	}
+	public T? As<T>() where T : License => RawLicense.Deserialize<T>();
+	public License? As(Type type) => (License?)RawLicense.Deserialize(type);
 	public bool Is<T>() where T : License => Is(typeof(T));
 	public bool Is(Type type)
 	{
 		try
 		{
-			return RawLicense.Value?.ToString()?.FromJson(type) != null;
+			return RawLicense.Deserialize(type) != null;
 		}
 		catch (Exception ex)
 		{
@@ -66,12 +85,15 @@ public class LicenseContainer
 		//pro.FromXmlString(key);
 		FromXmlString(pro, key);
 		return pro.VerifyData(
-			Encoding.Unicode.GetBytes(RawLicense.ToJson()),
+			Encoding.Unicode.GetBytes(JsonSerializer.Serialize(RawLicense,new JsonSerializerOptions
+			{
+				WriteIndented = false
+			})),
 			SHA1.Create(),
 			Convert.FromBase64String(Signature));
 		//=> VerifySignature(Convert.FromBase64String(key));
 	}
-	// TODO - Must be done in framework when solved issue https://github.com/dotnet/corefx/pull/37593
+	//TODO - Must be done in framework when solved issue https://github.com/dotnet/corefx/pull/37593
 	private static void FromXmlString(RSACryptoServiceProvider rsa, string xmlString)
 	{
 		var parameters = new RSAParameters();

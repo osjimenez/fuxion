@@ -1,16 +1,16 @@
 ﻿namespace Fuxion.Application.Snapshots;
 
 using Fuxion.Domain;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 public abstract class Snapshot
 {
 	internal Snapshot() { }
-	[JsonProperty]
+	[JsonInclude]
 	public Guid Id { get; internal set; } = Guid.NewGuid();
-	[JsonProperty]
+	[JsonInclude]
 	public Guid AggregateId { get; internal set; }
-	[JsonProperty]
+	[JsonInclude]
 	public int Version { get; internal set; }
 	internal abstract void Load(Aggregate aggregate);
 }

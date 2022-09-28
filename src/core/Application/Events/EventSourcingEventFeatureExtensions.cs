@@ -2,6 +2,7 @@
 
 using Fuxion.Domain;
 using Fuxion.Domain.Events;
+using Fuxion.Json;
 
 public static class EventSourcingEventFeatureExtensions
 {
@@ -18,5 +19,6 @@ public static class EventSourcingEventFeatureExtensions
 			esef.ClassVersion = classVersion;
 		});
 	public static Event Replay(this Event me) => me.Transform<Event>(e => e.EventSourcing().IsReplay = true);
-	public static EventSourcingPod ToEventSourcingPod(this Event me) => new EventSourcingPod(me);
+	public static EventSourcingPod ToEventSourcingPod(this Event me) => new(me);
+	public static EventSourcingPod? FromEventSourcingPod(this string me) => me.FromJson<EventSourcingPod>();
 }

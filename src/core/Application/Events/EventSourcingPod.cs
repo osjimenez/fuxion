@@ -4,8 +4,10 @@ using Fuxion.Domain;
 using Fuxion.Domain.Events;
 using Fuxion.Json;
 using Fuxion.Reflection;
-using Newtonsoft.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
+[JsonConverter(typeof(EventSourcingPodConverter))]
 public class EventSourcingPod : JsonPod<Event, string>
 {
 	[JsonConstructor]
@@ -19,13 +21,13 @@ public class EventSourcingPod : JsonPod<Event, string>
 		EventCommittedTimestamp = es.EventCommittedTimestamp;
 		ClassVersion = es.ClassVersion;
 	}
-	[JsonProperty]
+	[JsonInclude]
 	public int TargetVersion { get; private set; }
-	[JsonProperty]
+	[JsonInclude]
 	public Guid CorrelationId { get; private set; }
-	[JsonProperty]
+	[JsonInclude]
 	public DateTime EventCommittedTimestamp { get; internal set; }
-	[JsonProperty]
+	[JsonInclude]
 	public int ClassVersion { get; private set; }
 
 	public T? AsEvent<T>() where T : Event => base.As<T>().Transform(evt => evt?.AddEventSourcing(TargetVersion, CorrelationId, EventCommittedTimestamp, ClassVersion));

@@ -8,7 +8,6 @@ using global::RabbitMQ.Client;
 using global::RabbitMQ.Client.Events;
 using global::RabbitMQ.Client.Exceptions;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
 using Polly;
 using Polly.Retry;
 using System.Diagnostics;
@@ -104,7 +103,7 @@ public class RabbitMQEventBus : IEventPublisher, IEventSubscriber
 	}
 	public async Task PublishAsync(Event @event)
 	{
-		// TODO - Es aqui donde se debe poner la feature de publicacion ?? no lo sé
+		//TODO - Es aqui donde se debe poner la feature de publicacion ?? no lo sé
 		@event.AddPublication(DateTime.UtcNow);
 		if (!persistentConnection.IsConnected)
 		{
@@ -126,7 +125,11 @@ public class RabbitMQEventBus : IEventPublisher, IEventSubscriber
 			channel.ExchangeDeclare(exchange: exchangeName,
 								type: "direct");
 			var eventPod = @event.ToPublicationPod();
-			var message = JsonConvert.SerializeObject(eventPod);
+			//TODO - Comprobar que funciona este cambio
+			//var message = JsonConvert.SerializeObject(eventPod);
+			var message = eventPod.ToJson();
+
+
 			var body = Encoding.UTF8.GetBytes(message);
 			await policy.ExecuteAsync(() =>
 			{

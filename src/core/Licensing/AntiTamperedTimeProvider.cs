@@ -33,7 +33,7 @@ public class AntiTamperedTimeProvider : ITimeProvider
 	public ILogger? Logger { get; set; }
 	public ITimeProvider ReliableTimeProvider { get; set; }
 	public AntiBackTimeProvider AntiBackTimeProvider { get; set; }
-	// TODO - Define a margin to move time and review possible tamper scenarios
+	//TODO - Define a margin to move time and review possible tamper scenarios
 	private DateTime GetUtc()
 	{
 		DateTime? antiBack = null;

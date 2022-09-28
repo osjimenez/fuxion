@@ -19,7 +19,6 @@ public class HardwareIdTest : BaseTest
 		var disk = HardwareId.Disk;
 		var mac = HardwareId.Mac;
 		var motherboard = HardwareId.Motherboard;
-		var domain = HardwareId.DomainSid;
 		var so = HardwareId.OperatingSystemProductId;
 		var video = HardwareId.Video;
 
@@ -35,7 +34,6 @@ public class HardwareIdTest : BaseTest
 		Print(disk, "DISK");
 		Print(mac, "MAC");
 		Print(motherboard, "MOTHERBOARD");
-		Print(domain, "DOMAIN");
 		Print(so, "SO");
 		Print(video, "VIDEO");
 	}

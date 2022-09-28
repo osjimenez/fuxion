@@ -17,7 +17,7 @@ public partial class ShellWindow : ReactiveWindow<ShellWindowViewModel>
 			if (e.ChangedButton == MouseButton.Middle && e.ButtonState == MouseButtonState.Pressed && e.Source is RadPane pane)
 			{
 				MessageBus.Current.ClosePanel(pane);
-					// TODO RadTabItem BUG. Reported in https://feedback.telerik.com/wpf/1411792-tabcontrol-tabitem-is-removed-when-clicking-with-mouse-middle-button-over-it
+					//TODO RadTabItem BUG. Reported in https://feedback.telerik.com/wpf/1411792-tabcontrol-tabitem-is-removed-when-clicking-with-mouse-middle-button-over-it
 					e.Handled = true;
 			}
 		};

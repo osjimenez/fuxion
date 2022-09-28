@@ -1,7 +1,6 @@
 ﻿namespace Fuxion.Licensing;
 
 using Fuxion.Threading;
-using Newtonsoft.Json;
 using System.Reflection;
 
 public class JsonFileLicenseStore : ILicenseStore
@@ -38,9 +37,14 @@ public class JsonFileLicenseStore : ILicenseStore
 	{
 		listLocker.Write(l => l.Clear());
 		if (File.Exists(pathLocker.Read(path => path)))
-			listLocker.Write(l => l.AddRange(JsonConvert.DeserializeObject<LicenseContainer[]>(
-				pathLocker.Read(path => File.ReadAllText(path))
-				) ?? throw new InvalidOperationException("Error deserializing LicenseContainer")));
+			listLocker.Write(l => l.AddRange(
+				pathLocker.Read(path => File.ReadAllText(path)).FromJson<LicenseContainer[]>()
+				?? throw new InvalidOperationException("Error deserializing LicenseContainer")));
+
+
+		//listLocker.Write(l => l.AddRange(JsonConvert.DeserializeObject<LicenseContainer[]>(
+		//		pathLocker.Read(path => File.ReadAllText(path))
+		//		) ?? throw new InvalidOperationException("Error deserializing LicenseContainer")));
 	}
 	public IQueryable<LicenseContainer> Query() => listLocker.Read(licenses => licenses.AsQueryable());
 	public void Add(LicenseContainer license)
@@ -64,10 +68,10 @@ public class JsonFileLicenseStore : ILicenseStore
 		});
 	}
 	public bool Remove(LicenseContainer license) => listLocker.Write(licenses =>
-															  {
-																  var res = licenses.Remove(license);
-																  pathLocker.Write(path => File.WriteAllText(path, licenses.ToJson()));
-																  LicenseRemoved?.Invoke(this, new EventArgs<LicenseContainer>(license));
-																  return res;
-															  });
+		{
+			var res = licenses.Remove(license);
+			pathLocker.Write(path => File.WriteAllText(path, licenses.ToJson()));
+			LicenseRemoved?.Invoke(this, new EventArgs<LicenseContainer>(license));
+			return res;
+		});
 }

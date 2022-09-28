@@ -1,14 +1,16 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net7.0-windows</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\core\Fuxion\Fuxion.csproj" />
+    <ProjectReference Include="..\..\Core\Licensing\Fuxion.Licensing.csproj" />
+    <ProjectReference Include="..\..\core\Testing\Fuxion.Testing.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,6 @@
-﻿namespace Fuxion.Test.Helpers;
+﻿namespace Fuxion.Testing;
+
+using Xunit.Abstractions;
 
 public class XunitLogger : ILogger
 {

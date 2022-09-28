@@ -1,4 +1,6 @@
 ﻿namespace System.Text.Json.Serialization;
+
+using Fuxion;
 using System.Collections;
 using System.Reflection;
 
@@ -87,19 +89,22 @@ public class FallbackConverter<T> : JsonConverter<T>
 	public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
 	{
 		if (value is null) throw new ArgumentNullException(nameof(value));
-		//Printer.Write($"Write '{typeof(T).Name}'");
+		Printer.Write($"Write '{typeof(T).Name}'");
 		try
 		{
 			JsonSerializerOptions opt = new(options);
-			foreach (var conv in options.Converters.Where(_ => _ is not FallbackConverter<T>))
-				opt.Converters.Add(conv);
+			var con = opt.Converters.FirstOrDefault(c => c is FallbackConverter<T>);
+			if(con is not null)
+				opt.Converters.Remove(con);
+			//foreach (var conv in options.Converters.Where(_ => _ is not FallbackConverter<T>))
+			//	opt.Converters.Add(conv);
 			var json = JsonSerializer.Serialize(value, opt);
 			writer.WriteRawValue(json);
-			//Printer.WriteLine($" = OK");
+			Printer.WriteLine($" = OK");
 		}
 		catch
 		{
-			//Printer.WriteLine($" = FAILED");
+			Printer.WriteLine($" = FAILED");
 			writer.WriteStartObject();
 			foreach (var prop in value.GetType().GetProperties())
 			{
@@ -129,13 +134,13 @@ public class FallbackConverter<T> : JsonConverter<T>
 			var converter = Activator.CreateInstance(converterType, new object?[] { resolvers.ToArray() });
 			if (converter is null) throw new InvalidProgramException($"Program couldn't create IgnoreErrorsConverter<{value.GetType().Name}>");
 			opt.Converters.Add((JsonConverter)converter);
-			//using var d = Printer.Indent($"Write RAW with {converterType.GetSignature(false)}", '·');
+			using var d = Printer.Indent($"Write RAW with {converterType.GetSignature(false)}", '·');
 			var json = JsonSerializer.Serialize(value, opt);
 			writer.WriteRawValue(json);
 		}
 		catch (Exception ex)
 		{
-			//Printer.WriteLine($"***** ERROR '{ex.Message}'");
+			Printer.WriteLine($"***** ERROR '{ex.Message}'");
 			writer.WriteRawValue($"\"ERROR '{ex.Message}'\"");
 		}
 	}

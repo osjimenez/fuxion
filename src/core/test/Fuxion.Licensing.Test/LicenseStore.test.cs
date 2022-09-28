@@ -31,7 +31,7 @@ public class LicenseStoreTest
 #nullable enable
 	public void OnlyValidLicenses(string _, string hardwareId, string productId, int offsetDays, bool expectedValidation)
 	{
-		// TODO - Test this https://github.com/tonerdo/pose for mock DateTime.Now
+		//TODO - Test this https://github.com/tonerdo/pose for mock DateTime.Now
 
 
 		var pro = services.BuildServiceProvider();

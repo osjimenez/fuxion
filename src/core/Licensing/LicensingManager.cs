@@ -22,7 +22,7 @@ public class LicensingManager
 		fullKey = ToXmlString(pro, true);
 		publicKey = ToXmlString(pro, false);
 	}
-	// TODO - Must be done in framework when solved issue https://github.com/dotnet/corefx/pull/37593
+	//TODO - Must be done in framework when solved issue https://github.com/dotnet/corefx/pull/37593
 	private static string ToXmlString(RSACryptoServiceProvider rsa, bool includePrivateParameters)
 	{
 		if (includePrivateParameters)
@@ -46,7 +46,7 @@ public class LicensingManager
 				Convert.ToBase64String(parameters.Exponent ?? Array.Empty<byte>()));
 		}
 	}
-	// TODO - Oscar - Implement server-side validation and try to avoid public key hardcoding violation
+	//TODO - Oscar - Implement server-side validation and try to avoid public key hardcoding violation
 	public bool Validate<T>(string key, bool throwExceptionIfNotValidate = false) where T : License
 	{
 		try

@@ -1,7 +1,5 @@
 ﻿namespace Fuxion.Test;
 
-using Fuxion.Test.Helpers;
-
 public class AverageTimeProviderTest
 {
 	public AverageTimeProviderTest(ITestOutputHelper output) => this.output = output;

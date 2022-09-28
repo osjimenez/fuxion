@@ -1,10 +1,12 @@
 ﻿namespace Fuxion.Web;
 
 using Microsoft.CSharp.RuntimeBinder;
-using Newtonsoft.Json.Linq;
 using System.Collections;
 using System.Dynamic;
+using System.Linq.Expressions;
+using System.Net;
 using System.Reflection;
+using System.Text.Json.Serialization;
 
 public enum NonExistingPropertiesMode
 {
@@ -12,13 +14,22 @@ public enum NonExistingPropertiesMode
 	OnlySet = 1,
 	GetAndSet = 2
 }
+[JsonConverter(typeof(PatchableJsonConverterFactory))]
 public sealed class Patchable<T> : DynamicObject where T : class
 {
-	private Dictionary<string, (PropertyInfo Property, object? Value)> dic = new Dictionary<string, (PropertyInfo Property, object? Value)>();
+	[JsonConstructor]
+	private Patchable() : this(NonExistingPropertiesMode.NotAllowed) { }
+	public Patchable(NonExistingPropertiesMode nonExistingPropertiesMode = NonExistingPropertiesMode.NotAllowed)
+	{
+		NonExistingPropertiesMode = nonExistingPropertiesMode;
+	}
+	internal Dictionary<string, (PropertyInfo Property, object? Value)> dic = new Dictionary<string, (PropertyInfo Property, object? Value)>();
 	//private List<(PropertyInfo Property, string PropertyName, object Value)> Properties = new List<(PropertyInfo Property, string PropertyName, object Value)>();
 	//private IDictionary<PropertyInfo, object> _changedProperties = new Dictionary<PropertyInfo, object>();
 	//public IEnumerable<string> ChangedPropertyNames { get { return _changedProperties.Keys.Select(p => p.Name); } }
-	public static NonExistingPropertiesMode NonExistingPropertiesMode { get; set; }
+
+	//public static NonExistingPropertiesMode NonExistingPropertiesMode { get; set; }
+	public NonExistingPropertiesMode NonExistingPropertiesMode { get; set; }
 
 
 
@@ -152,14 +163,16 @@ public sealed class Patchable<T> : DynamicObject where T : class
 			{
 				var listType = typeof(List<>).MakeGenericType(property.PropertyType.GenericTypeArguments[0]);
 				var list = Activator.CreateInstance(listType) as IList;
-				foreach (var item in pro.Value.Value as IList ?? new object[] { })
+				foreach (var item in pro.Value.Value as IList ?? Array.Empty<object>())
 				{
-					if (item is JToken jobj)
-					{
-						var proType = property.PropertyType.GetTypeInfo().GenericTypeArguments[0];
-						var obj2 = jobj.ToObject(proType);
-						list?.Add(obj2);
-					}
+					list?.Add(item);
+
+					//if (item is JToken jobj)
+					//{
+					//	var proType = property.PropertyType.GetTypeInfo().GenericTypeArguments[0];
+					//	var obj2 = jobj.ToObject(proType);
+					//	list?.Add(obj2);
+					//}
 				}
 				property.SetValue(obj, list);
 			}
@@ -191,7 +204,7 @@ public sealed class Patchable<T> : DynamicObject where T : class
 
 	public Patchable<R> ToPatchable<R>(bool allowNonExistingProperties = false) where R : class
 	{
-		var res = new Patchable<R>();
+		var res = new Patchable<R>(NonExistingPropertiesMode);
 		//var dic = new Dictionary<PropertyInfo, object>();
 		//var list = new List<(PropertyInfo Property, string PropertyName, object Value)>();
 		var dd = new Dictionary<string, (PropertyInfo Property, object? Value)>();

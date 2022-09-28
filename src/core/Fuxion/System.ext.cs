@@ -1,7 +1,7 @@
 ﻿namespace System;
+
 using Fuxion.Json;
 using Fuxion.Resources;
-//using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -57,17 +57,8 @@ public static partial class Extensions
 	public static DisposableEnvelope<T> AsDisposable<T>(this T me, Action<T>? actionOnDispose = null) where T : notnull => new DisposableEnvelope<T>(me, actionOnDispose);
 	#endregion
 	#region Json
-	public static string ToJson<T>(this T me, JsonSerializerOptions? options = null)
-		=> JsonSerializer.Serialize<T>(me, options);
-	public static string ToJson<TPod, TPayload, TKey>(this JsonPod<TPayload, TKey> me, bool writeIndented = true) where TPod : JsonPod<TPayload, TKey>
-	{
-		JsonSerializerOptions options = new()
-		{
-			WriteIndented = writeIndented
-		};
-		options.Converters.Add(new JsonPodConverter<TPod, TPayload, TKey>());
-		return JsonSerializer.Serialize(me, options);
-	}
+	public static string ToJson(this object? me, JsonSerializerOptions? options = null)
+		=> JsonSerializer.Serialize(me, me?.GetType() ?? typeof(object), options);
 	public static string ToJson(this Exception me, bool writeIndented = true)
 	{
 		JsonSerializerOptions options = new();
@@ -75,15 +66,23 @@ public static partial class Extensions
 		options.Converters.Add(new FallbackConverter<Exception>(new MultilineStringToCollectionPropertyFallbackResolver()));
 		return JsonSerializer.Serialize(me, options);
 	}
-	public static T? FromJson<T>(this string me, [DoesNotReturnIf(true)] bool exceptionIfNull = false, JsonSerializerOptions? options = null)
+	public static T? FromJson<T>(this string me, 
+		[DoesNotReturnIf(true)] bool exceptionIfNull = false, 
+		JsonSerializerOptions? options = null,
+		bool usePrivateConstructor = true)
+		=> (T?)FromJson(me, typeof(T), exceptionIfNull, options, usePrivateConstructor);
+	
+	public static object? FromJson(this string me, 
+		Type type, 
+		[DoesNotReturnIf(true)] bool exceptionIfNull = false, 
+		JsonSerializerOptions? options = null
+		,bool usePrivateConstructor = true)
 	{
-		var res = JsonSerializer.Deserialize<T>(me, options);
-		if (exceptionIfNull && res is null)
-			throw new SerializationException($"The string cannot be deserialized as '{typeof(T).Name}':\r\n{me}");
-		return res;
-	}
-	public static object? FromJson(this string me, Type type, [DoesNotReturnIf(true)] bool exceptionIfNull = false, JsonSerializerOptions? options = null)
-	{
+		if (usePrivateConstructor)
+		{
+			options ??= new();
+			options.TypeInfoResolver = new PrivateConstructorContractResolver();
+		}
 		var res = JsonSerializer.Deserialize(me, type, options);
 		if (exceptionIfNull && res is null)
 			throw new SerializationException($"The string cannot be deserialized as '{type.Name}':\r\n{me}");
@@ -92,54 +91,6 @@ public static partial class Extensions
 	public static T CloneWithJson<T>(this T me) => (T)(FromJson(
 		me?.ToJson() ?? throw new InvalidDataException(),
 		me?.GetType() ?? throw new InvalidDataException()) ?? default!);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	//public static string ToJson(this object me, Formatting formatting = Formatting.Indented, JsonSerializerSettings? settings = null)
-	//{
-	//	if (settings != null)
-	//		return JsonConvert.SerializeObject(me, formatting, settings);
-	//	return JsonConvert.SerializeObject(me, formatting);
-	//}
-	//public static string ToJson(this Exception me, bool writeIndented = true)
-	//{
-	//	JsonSerializerOptions options = new();
-	//	options.WriteIndented = writeIndented;
-	//	options.Converters.Add(new FallbackConverter<Exception>(new MultilineStringToCollectionPropertyFallbackResolver()));
-	//	return Text.Json.JsonSerializer.Serialize(me, options);
-	//}
-	//public static T? FromJson<T>(this string me, [DoesNotReturnIf(true)] bool exceptionIfNull = false, JsonSerializerSettings? settings = null)
-	//{
-	//	var res = JsonConvert.DeserializeObject<T>(me, settings);
-	//	if (exceptionIfNull && res is null)
-	//		throw new SerializationException($"The string cannot be deserialized as '{typeof(T).Name}':\r\n{me}");
-	//	return res;
-	//}
-	//public static object? FromJson(this string me, Type type, [DoesNotReturnIf(true)] bool exceptionIfNull = false)
-	//{
-	//	var res = JsonConvert.DeserializeObject(me, type);
-	//	if (exceptionIfNull && res is null)
-	//		throw new SerializationException($"The string cannot be deserialized as '{type.Name}':\r\n{me}");
-	//	return res;
-	//}
-	//public static T CloneWithJson<T>(this T me) => (T)(FromJson(
-	//	me?.ToJson() ?? throw new InvalidDataException(),
-	//	me?.GetType() ?? throw new InvalidDataException()) ?? default!);
 	#endregion
 	#region Transform
 	public static TResult Transform<TSource, TResult>(this TSource me, Func<TSource, TResult> transformFunction) => transformFunction(me);
@@ -193,7 +144,7 @@ public static partial class Extensions
 			? Activator.CreateInstance(me)
 			: null;
 	public static string GetFullNameWithAssemblyName(this Type me) => $"{me.AssemblyQualifiedName?.Split(',').Take(2).Aggregate("", (a, n) => a + ", " + n, a => a.Trim(' ', ','))}";
-	public static string GetSignature(this Type type, bool useFullNames)
+	public static string GetSignature(this Type type, bool useFullNames = false)
 	{
 		var nullableType = Nullable.GetUnderlyingType(type);
 		if (nullableType != null)
@@ -246,6 +197,92 @@ public static partial class Extensions
 				toProcess.Enqueue(baseType);
 		}
 		return null;
+	}
+	// Source: https://stackoverflow.com/questions/1565734/is-it-possible-to-set-private-property-via-reflection
+	/// <summary>
+	/// Returns a _private_ Property Value from a given Object. Uses Reflection.
+	/// Throws a ArgumentOutOfRangeException if the Property is not found.
+	/// </summary>
+	/// <typeparam name="T">Type of the Property</typeparam>
+	/// <param name="obj">Object from where the Property Value is returned</param>
+	/// <param name="propName">Propertyname as string.</param>
+	/// <returns>PropertyValue</returns>
+	public static T? GetPrivatePropertyValue<T>(this object obj, string propName)
+	{
+		if (obj == null) throw new ArgumentNullException(nameof(obj));
+		var pi = obj.GetType().GetProperty(propName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+		if (pi == null) throw new ArgumentOutOfRangeException(nameof(propName), string.Format("Property {0} was not found in Type {1}", propName, obj.GetType().FullName));
+		return (T?)pi.GetValue(obj, null);
+	}
+
+	/// <summary>
+	/// Returns a private Property Value from a given Object. Uses Reflection.
+	/// Throws a ArgumentOutOfRangeException if the Property is not found.
+	/// </summary>
+	/// <typeparam name="T">Type of the Property</typeparam>
+	/// <param name="obj">Object from where the Property Value is returned</param>
+	/// <param name="propName">Propertyname as string.</param>
+	/// <returns>PropertyValue</returns>
+	public static T? GetPrivateFieldValue<T>(this object obj, string propName)
+	{
+		if (obj == null) throw new ArgumentNullException(nameof(obj));
+		Type? t = obj.GetType();
+		FieldInfo? fi = null;
+		while (fi == null && t != null)
+		{
+			fi = t.GetField(propName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+			t = t.BaseType;
+		}
+		if (fi == null) throw new ArgumentOutOfRangeException(nameof(propName), string.Format("Field {0} was not found in Type {1}", propName, obj.GetType().FullName));
+		return (T?)fi.GetValue(obj);
+	}
+
+	/// <summary>
+	/// Sets a _private_ Property Value from a given Object. Uses Reflection.
+	/// Throws a ArgumentOutOfRangeException if the Property is not found.
+	/// </summary>
+	/// <typeparam name="T">Type of the Property</typeparam>
+	/// <param name="obj">Object from where the Property Value is set</param>
+	/// <param name="propName">Propertyname as string.</param>
+	/// <param name="val">Value to set.</param>
+	/// <returns>PropertyValue</returns>
+	public static void SetPrivatePropertyValue(this object obj, string propName, object? val)
+	{
+		Type t = obj.GetType();
+		var prop = t.GetProperty(propName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+		if (prop is null)
+			throw new ArgumentOutOfRangeException(nameof(propName), string.Format("Property {0} was not found in Type {1}", propName, obj.GetType().FullName));
+		prop.DeclaringType?
+			.InvokeMember(propName, 
+			BindingFlags.Public | 
+			BindingFlags.NonPublic | 
+			BindingFlags.SetProperty | 
+			BindingFlags.Instance, Type.DefaultBinder, obj, new object?[] { val });
+	}
+
+	/// <summary>
+	/// Set a private Property Value on a given Object. Uses Reflection.
+	/// </summary>
+	/// <typeparam name="T">Type of the Property</typeparam>
+	/// <param name="obj">Object from where the Property Value is returned</param>
+	/// <param name="propName">Propertyname as string.</param>
+	/// <param name="val">the value to set</param>
+	/// <exception cref="ArgumentOutOfRangeException">if the Property is not found</exception>
+	public static void SetPrivateFieldValue(this object obj, string propName, object? val)
+	{
+		if (obj == null) throw new ArgumentNullException(nameof(obj));
+		Type? t = obj.GetType();
+		FieldInfo? fi = null;
+		while (fi == null && t != null)
+		{
+			fi = t.GetField(propName, 
+				BindingFlags.Public | 
+				BindingFlags.NonPublic | 
+				BindingFlags.Instance);
+			t = t.BaseType;
+		}
+		if (fi == null) throw new ArgumentOutOfRangeException(nameof(propName), string.Format("Field {0} was not found in Type {1}", propName, obj.GetType().FullName));
+		fi.SetValue(obj, val);
 	}
 	#endregion
 	#region Math

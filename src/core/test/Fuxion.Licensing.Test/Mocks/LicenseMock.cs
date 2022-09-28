@@ -1,6 +1,6 @@
 ﻿namespace Fuxion.Licensing.Test.Mocks;
 
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 public class LicenseMock : License
 {
@@ -21,9 +21,9 @@ public class LicenseMock : License
 	}
 	public TimeLimitLicenseConstraint DeactivationUtcTime { get; private set; }
 	public TimeLimitLicenseConstraint ExpirationUtcTime { get; private set; }
-	//[JsonProperty]
+	[JsonInclude]
 	public KeyModelLicenseConstraint HardwareId { get; private set; }
-	//[JsonProperty]
+	[JsonInclude]
 	public KeyModelLicenseConstraint ProductId { get; private set; }
 	protected override bool Validate(out string validationMessage)
 	{

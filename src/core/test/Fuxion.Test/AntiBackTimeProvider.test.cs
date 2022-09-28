@@ -1,6 +1,6 @@
 ﻿namespace Fuxion.Test;
 
-using Fuxion.Test.Helpers;
+using Fuxion.Testing;
 
 public class AntiBackTimeProviderTest : BaseTest
 {

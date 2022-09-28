@@ -12,8 +12,7 @@ public enum HardwareIdField
 	Motherboard = 4,
 	Disk = 8,
 	Video = 16,
-	Mac = 32,
-	OperatingSystemSid = 64
+	Mac = 32
 }
 public static class HardwareId
 {
@@ -135,29 +134,6 @@ public static class HardwareId
 		set => _mac = value;
 	}
 
-	private static Guid _domainSid = Guid.Empty;
-	public static Guid DomainSid
-	{
-		get
-		{
-			if (_domainSid == Guid.Empty)
-			{
-				//NTAccount account = new NTAccount(Environment.MachineName, "SYSTEM");
-				//SecurityIdentifier sid =
-				//(SecurityIdentifier)account.Translate(typeof(SecurityIdentifier));
-
-				//// we're done, show the results:
-				//Console.WriteLine(account.Value);
-				//Console.WriteLine(sid.Value);
-				var guid = System.Security.Principal.WindowsIdentity.GetCurrent().User?.AccountDomainSid?.ToString()?.ComputeHash();
-				if (guid is null) throw new InvalidOperationException($"'{nameof(DomainSid)}' cannot be obtained");
-				_domainSid = new Guid(guid);
-			}
-			return _domainSid;
-		}
-		set => _domainSid = value;
-	}
-
 	private static Guid _operatingSystemProductId = Guid.Empty;
 	public static Guid OperatingSystemProductId
 	{
@@ -165,14 +141,6 @@ public static class HardwareId
 		{
 			if (_operatingSystemProductId == Guid.Empty)
 			{
-				//NTAccount account = new NTAccount(Environment.MachineName, "SYSTEM");
-				//SecurityIdentifier sid =
-				//(SecurityIdentifier)account.Translate(typeof(SecurityIdentifier));
-
-				//// we're done, show the results:
-				//Console.WriteLine(account.Value);
-				//Console.WriteLine(sid.Value);
-
 				string? value64 = null;
 
 				var localKey =
@@ -209,8 +177,6 @@ public static class HardwareId
 			res = CombineHash(res, Motherboard);
 		if (fields.HasFlag(HardwareIdField.Video))
 			res = CombineHash(res, Video);
-		if (fields.HasFlag(HardwareIdField.OperatingSystemSid))
-			res = CombineHash(res, DomainSid);
 		return res;
 	}
 	private static Guid CombineHash(Guid guid1, Guid guid2)
