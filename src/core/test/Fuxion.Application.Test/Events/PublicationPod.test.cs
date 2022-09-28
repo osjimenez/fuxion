@@ -17,12 +17,7 @@ public class PublicationPodTest : BaseTest
 	[Fact(DisplayName = "PublicationPodTest - ToJson")]
 	public void ToJson()
 	{
-		var payload = new EventDerived(Guid.NewGuid())
-		{
-			Name = "payloadName",
-			Age = 23,
-			Nick = "payloadNick"
-		};
+		var payload = new DerivedEvent(Guid.NewGuid(),"payloadName",23,"payloadNick");
 		payload.AddEventSourcing(1, Guid.NewGuid(), DateTime.Now, 1);
 		var pod = payload.ToEventSourcingPod();
 		var json = pod.ToJson();
@@ -30,7 +25,7 @@ public class PublicationPodTest : BaseTest
 		Output.WriteLine("Serialized json: ");
 		Output.WriteLine(json);
 
-		Assert.Contains(@"""PayloadKey"": """ + nameof(EventDerived) + @"""", json);
+		Assert.Contains($@"""PayloadKey"": ""{nameof(DerivedEvent)}""", json);
 		Assert.Contains(@"""Name"": ""payloadName""", json);
 		Assert.Contains(@"""Age"": 23", json);
 		Assert.Contains(@"""Nick"": ""payloadNick""", json);
@@ -38,13 +33,13 @@ public class PublicationPodTest : BaseTest
 	[Fact(DisplayName = "PublicationPodTest - FromJson")]
 	public void FromJson()
 	{
-		var json = """
+		var json = $$"""
 			{
 				"TargetVersion": 1,
 				"CorrelationId": "0260aeb2-7f6b-4f32-93e9-7202f7c14fdb",
 				"EventCommittedTimestamp": "2022-09-27T11:24:24.0008666+02:00",
 				"ClassVersion": 1,
-				"PayloadKey": "EventDerived",
+				"PayloadKey": "{{nameof(DerivedEvent)}}",
 				"Payload": {
 					"Nick": "payloadNick",
 					"Name": "payloadName",
@@ -63,21 +58,21 @@ public class PublicationPodTest : BaseTest
 		Output.WriteLine("pod.PayloadValue: ");
 		Output.WriteLine(pod.PayloadValue.ToString());
 
-		void AssertBase(EventBase? payload)
+		void AssertBase(BaseEvent? payload)
 		{
 			Assert.NotNull(payload);
 			Assert.Equal("payloadName", payload.Name);
 			Assert.Equal(23, payload.Age);
 		}
-		void AssertDerived(EventDerived? payload)
+		void AssertDerived(DerivedEvent? payload)
 		{
 			Assert.NotNull(payload);
 			AssertBase(payload);
 			Assert.Equal("payloadNick", payload.Nick);
 		}
 
-		Assert.Equal(typeof(EventDerived).GetTypeKey(), pod.PayloadKey);
-		AssertBase(pod.AsEvent<EventBase>());
-		AssertDerived(pod.AsEvent<EventDerived>());
+		Assert.Equal(typeof(DerivedEvent).GetTypeKey(), pod.PayloadKey);
+		AssertBase(pod.AsEvent<BaseEvent>());
+		AssertDerived(pod.AsEvent<DerivedEvent>());
 	}
 }

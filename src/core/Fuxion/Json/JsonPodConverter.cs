@@ -28,7 +28,7 @@ public class JsonPodConverter<TPod, TPayload, TKey> : JsonConverter<TPod> where 
 				throw new JsonException("The reader expected JsonTokenType.PropertyName");
 			}
 			string propertyName = reader.GetString() ?? throw new InvalidProgramException("Current property name could not be read from Utf8JsonReader.");
-			PropertyInfo prop = pod.GetType().GetProperty(propertyName) ?? throw new InvalidProgramException("Current property could not be obtained from pod object");
+			PropertyInfo prop = pod.GetType().GetProperty(propertyName) ?? throw new InvalidProgramException($"Property '{propertyName}' could not be obtained from pod object");
 			var ele = JsonDocument.ParseValue(ref reader).RootElement;
 			if (propertyName == nameof(JsonPod<string, string>.Payload))
 			{

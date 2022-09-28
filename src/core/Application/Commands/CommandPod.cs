@@ -1,10 +1,12 @@
 ﻿namespace Fuxion.Application.Commands;
 
+using Fuxion.Application.Events;
 using Fuxion.Domain;
 using Fuxion.Json;
 using Fuxion.Reflection;
 using System.Text.Json.Serialization;
 
+[JsonConverter(typeof(CommandPodConverter))]
 public class CommandPod : JsonPod<Command, string>
 {
 	[JsonConstructor]
