@@ -4,8 +4,6 @@ using System.Text.Json;
 
 public class LicenseStoreMock : ILicenseStore
 {
-	//public LicenseStoreMock() => licenses = (JsonSerializer.Deserialize<LicenseContainer[]>(File.ReadAllText("licenses.json"))
-	//	?? throw new InvalidOperationException("Error deserializing licenses.json")).ToList();
 	public LicenseStoreMock() => licenses = (File.ReadAllText("licenses.json").FromJson<LicenseContainer[]>()
 		?? throw new InvalidOperationException("Error deserializing licenses.json")).ToList();
 

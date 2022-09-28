@@ -30,10 +30,10 @@ public class EventSourcingPodTest : BaseTest
 		var json = pod.ToJson();
 		Output.WriteLine("Serialized json:");
 		Output.WriteLine(json);
-		Assert.Contains(@"""PayloadKey"":""EventBase""", json);
-		Assert.Contains(@"""TargetVersion"":10", json);
-		Assert.Contains($@"""AggregateId"":""{id}""", json);
-		Assert.Contains(@"""Name"":""mockName""", json);
+		Assert.Contains(@"""PayloadKey"": ""EventBase""", json);
+		Assert.Contains(@"""TargetVersion"": 10", json);
+		Assert.Contains($@"""AggregateId"": ""{id}""", json);
+		Assert.Contains(@"""Name"": ""mockName""", json);
 	}
 	[Fact(DisplayName = "EventSourcingPod - FromJson")]
 	public void FromJson()

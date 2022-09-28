@@ -63,35 +63,18 @@ public class LicenseContainer
 		var originalData = Encoding.Unicode.GetBytes(license.ToJson());
 		byte[] signedData;
 		var pro = new RSACryptoServiceProvider();
-		//pro.FromXmlString(key);
 		FromXmlString(pro, key);
 		signedData = pro.SignData(originalData, SHA1.Create());
 		return new LicenseContainer(Convert.ToBase64String(signedData), license);
-
-
-		// Export the key information to an RSAParameters object.
-		// You must pass true to export the private key for signing.
-		// However, you do not need to export the private key
-		// for verification.
-		//RSAParameters Key = pro.ExportParameters(true);
-
-		// Sign
-		//signedData = pro.SignData(originalData, new SHA1CryptoServiceProvider());
-		//=> Sign(content, Convert.FromBase64String(key));
 	}
 	public bool VerifySignature(string key)
 	{
 		var pro = new RSACryptoServiceProvider();
-		//pro.FromXmlString(key);
 		FromXmlString(pro, key);
 		return pro.VerifyData(
-			Encoding.Unicode.GetBytes(JsonSerializer.Serialize(RawLicense,new JsonSerializerOptions
-			{
-				WriteIndented = false
-			})),
+			Encoding.Unicode.GetBytes(RawLicense.ToJson()),
 			SHA1.Create(),
 			Convert.FromBase64String(Signature));
-		//=> VerifySignature(Convert.FromBase64String(key));
 	}
 	//TODO - Must be done in framework when solved issue https://github.com/dotnet/corefx/pull/37593
 	private static void FromXmlString(RSACryptoServiceProvider rsa, string xmlString)

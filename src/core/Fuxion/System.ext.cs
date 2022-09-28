@@ -2,6 +2,7 @@
 
 using Fuxion.Json;
 using Fuxion.Resources;
+using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -58,12 +59,18 @@ public static partial class Extensions
 	#endregion
 	#region Json
 	public static string ToJson(this object? me, JsonSerializerOptions? options = null)
-		=> JsonSerializer.Serialize(me, me?.GetType() ?? typeof(object), options);
-	public static string ToJson(this Exception me, bool writeIndented = true)
+		=> JsonSerializer.Serialize(me, me?.GetType() ?? typeof(object), options ?? new JsonSerializerOptions
+		{
+			WriteIndented = true
+		});
+	public static string ToJson(this Exception me, JsonSerializerOptions? options = null)
 	{
-		JsonSerializerOptions options = new();
-		options.WriteIndented = writeIndented;
-		options.Converters.Add(new FallbackConverter<Exception>(new MultilineStringToCollectionPropertyFallbackResolver()));
+		options ??= new JsonSerializerOptions
+			{
+				WriteIndented = true
+			};
+		if (!options.Converters.Any(c => c.GetType().IsSubclassOfRawGeneric(typeof(FallbackConverter<>))))
+			options.Converters.Add(new FallbackConverter<Exception>(new MultilineStringToCollectionPropertyFallbackResolver()));
 		return JsonSerializer.Serialize(me, options);
 	}
 	public static T? FromJson<T>(this string me, 
@@ -80,8 +87,10 @@ public static partial class Extensions
 	{
 		if (usePrivateConstructor)
 		{
-			options ??= new();
-			options.TypeInfoResolver = new PrivateConstructorContractResolver();
+			options ??= new()
+			{
+				TypeInfoResolver = new PrivateConstructorContractResolver()
+			};
 		}
 		var res = JsonSerializer.Deserialize(me, type, options);
 		if (exceptionIfNull && res is null)

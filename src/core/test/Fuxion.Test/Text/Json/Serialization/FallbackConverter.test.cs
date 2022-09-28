@@ -7,20 +7,7 @@ using System.Text.Json;
 
 public class FallbackConverterTest : BaseTest
 {
-	public FallbackConverterTest(ITestOutputHelper output) : base(output)
-	{
-	}
-	[Fact(DisplayName = "FallbackConverter2 - Serialize")]
-	public void FallbackConverter2_Serialize()
-	{
-		Exception ex = new Exception("VAMOSSSSS");
-		//JsonSerializerOptions opt = new();
-		//opt.WriteIndented = true;
-		//opt.Converters.Add(new FallbackConverter<Exception>(new MultilineStringToCollectionPropertyFallbackResolver()));
-		//var res = JsonSerializer.Serialize(ex, opt);
-		//Output.WriteLine("Exception serialized JSON:");
-		//Output.WriteLine(res);
-	}
+	public FallbackConverterTest(ITestOutputHelper output) : base(output) { }
 	[Fact(DisplayName = "FallbackConverter - Serialize")]
 	public void FallbackConverter_Serialize()
 	{
@@ -42,19 +29,9 @@ public class FallbackConverterTest : BaseTest
 		}
 		catch (Exception ex)
 		{
-			JsonSerializerOptions opt = new();
-			opt.WriteIndented = true;
-			opt.Converters.Add(new FallbackConverter<Exception>(new MultilineStringToCollectionPropertyFallbackResolver()));
-			var res = JsonSerializer.Serialize(ex, opt);
+			var res = ex.ToJson();
 			Output.WriteLine("Exception serialized JSON:");
 			Output.WriteLine(res);
 		}
-		//Exception ex = new Exception("VAMOSSSSS");
-		//JsonSerializerOptions opt = new();
-		//opt.WriteIndented = true;
-		//opt.Converters.Add(new FallbackConverter<Exception>(new MultilineStringToCollectionPropertyFallbackResolver()));
-		//var res = JsonSerializer.Serialize(ex, opt);
-		//Output.WriteLine("Exception serialized JSON:");
-		//Output.WriteLine(res);
 	}
 }

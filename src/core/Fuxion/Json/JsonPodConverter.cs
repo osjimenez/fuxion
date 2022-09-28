@@ -34,7 +34,7 @@ public class JsonPodConverter<TPod, TPayload, TKey> : JsonConverter<TPod> where 
 			{
 				PropertyInfo rawProp = pod.GetType().GetProperty(nameof(JsonPod<string, string>.PayloadValue), BindingFlags.NonPublic | BindingFlags.Instance)
 					?? throw new InvalidProgramException($"'{nameof(JsonPod<string, string>.PayloadValue)}' property could not be obtained from pod object");
-				var jsonValue = JsonSerializer.Deserialize<JsonValue>(ele.GetRawText(), options);
+				var jsonValue = ele.GetRawText().FromJson<JsonValue>(options: options);
 				rawProp.SetValue(pod, jsonValue);
 				try
 				{
@@ -64,7 +64,7 @@ public class JsonPodConverter<TPod, TPayload, TKey> : JsonConverter<TPod> where 
 			.Where(p => p.GetCustomAttribute<JsonIgnoreAttribute>() == null))
 		{
 			writer.WritePropertyName(prop.GetCustomAttribute<JsonPropertyNameAttribute>()?.Name ?? prop.Name);
-			writer.WriteRawValue(JsonSerializer.Serialize(prop.GetValue(value), options));
+			writer.WriteRawValue(prop.GetValue(value).ToJson(options));
 		}
 		var rawProp = value.GetType().GetProperty(nameof(JsonPod<string, string>.PayloadValue), BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
 		if (rawProp is null) throw new InvalidProgramException($"The pod '{value.GetType().Name}' doesn't has '{nameof(JsonPod<string, string>.PayloadValue)}' property");

@@ -23,10 +23,10 @@ public class JsonPodTest : BaseTest
 		Output.WriteLine("Serialized json: ");
 		Output.WriteLine(json);
 
-		Assert.Contains(@"""PayloadKey"":""podKey""", json);
-		Assert.Contains(@"""Name"":""payloadName""", json);
-		Assert.Contains(@"""Age"":23", json);
-		Assert.Contains(@"""Nick"":""payloadNick""", json);
+		Assert.Contains(@"""PayloadKey"": ""podKey""", json);
+		Assert.Contains(@"""Name"": ""payloadName""", json);
+		Assert.Contains(@"""Age"": 23", json);
+		Assert.Contains(@"""Nick"": ""payloadNick""", json);
 	}
 	[Fact(DisplayName = "JsonPod - FromJson")]
 	public void FromJson()

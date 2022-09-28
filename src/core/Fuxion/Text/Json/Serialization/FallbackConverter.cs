@@ -98,7 +98,7 @@ public class FallbackConverter<T> : JsonConverter<T>
 				opt.Converters.Remove(con);
 			//foreach (var conv in options.Converters.Where(_ => _ is not FallbackConverter<T>))
 			//	opt.Converters.Add(conv);
-			var json = JsonSerializer.Serialize(value, opt);
+			var json = value.ToJson(opt);
 			writer.WriteRawValue(json);
 			Printer.WriteLine($" = OK");
 		}
@@ -135,7 +135,7 @@ public class FallbackConverter<T> : JsonConverter<T>
 			if (converter is null) throw new InvalidProgramException($"Program couldn't create IgnoreErrorsConverter<{value.GetType().Name}>");
 			opt.Converters.Add((JsonConverter)converter);
 			using var d = Printer.Indent($"Write RAW with {converterType.GetSignature(false)}", '·');
-			var json = JsonSerializer.Serialize(value, opt);
+			var json = value.ToJson(opt);
 			writer.WriteRawValue(json);
 		}
 		catch (Exception ex)

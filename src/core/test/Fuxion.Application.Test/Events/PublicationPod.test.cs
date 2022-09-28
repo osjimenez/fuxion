@@ -30,10 +30,10 @@ public class PublicationPodTest : BaseTest
 		Output.WriteLine("Serialized json: ");
 		Output.WriteLine(json);
 
-		Assert.Contains(@"""PayloadKey"":""" + nameof(EventDerived) + @"""", json);
-		Assert.Contains(@"""Name"":""payloadName""", json);
-		Assert.Contains(@"""Age"":23", json);
-		Assert.Contains(@"""Nick"":""payloadNick""", json);
+		Assert.Contains(@"""PayloadKey"": """ + nameof(EventDerived) + @"""", json);
+		Assert.Contains(@"""Name"": ""payloadName""", json);
+		Assert.Contains(@"""Age"": 23", json);
+		Assert.Contains(@"""Nick"": ""payloadNick""", json);
 	}
 	[Fact(DisplayName = "PublicationPodTest - FromJson")]
 	public void FromJson()

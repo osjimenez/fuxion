@@ -44,7 +44,7 @@ public class PatchableJsonConverter<T> : JsonConverter<Patchable<T>> where T : c
 		foreach(var pvk in value.dic)
 		{
 			writer.WritePropertyName(pvk.Key);
-			writer.WriteRawValue(JsonSerializer.Serialize(pvk.Value.Value, options));
+			writer.WriteRawValue(pvk.Value.Value.ToJson(options));
 		}
 		writer.WriteEndObject();
 	}
