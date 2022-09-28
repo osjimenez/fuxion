@@ -48,8 +48,8 @@ public class JsonPodTest : BaseTest
 		var pod = json.FromJsonPod<PayloadBase, string>();
 		Assert.NotNull(pod);
 
-		Output.WriteLine("pod.PayloadRaw.Value: ");
-		Output.WriteLine(pod.PayloadRaw);
+		Output.WriteLine("pod.PayloadValue: ");
+		Output.WriteLine(pod.PayloadValue.ToString());
 
 		void AssertBase(PayloadBase? payload)
 		{

@@ -1,7 +1,10 @@
 ﻿namespace Fuxion.Json;
 
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Reflection;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 
 [JsonConverter(typeof(JsonPodConverterFactory))]
@@ -12,29 +15,45 @@ public class JsonPod<TPayload, TKey>
 	{
 		PayloadKey = default!;
 		_Payload = default!;
-		_PayloadRaw = null!;
+		_PayloadValue = null!;
 	}
 	public JsonPod(TPayload payload, TKey key) : this()
 	{
 		PayloadKey = key;
 		Payload = payload;
-		PayloadRaw = payload.ToJson();
+		PayloadValue = CreateValue(payload);
+	}
+	JsonValue CreateValue(TPayload payload)
+	{
+		var met = typeof(JsonValue)
+			.GetMethods(BindingFlags.Static | BindingFlags.Public)
+			.Where(m =>
+			m.Name == nameof(JsonValue.Create) &&
+			m.GetGenericArguments().Any() &&
+			m.GetParameters().Count() == 2)
+			.FirstOrDefault();
+		if (met is null) throw new InvalidProgramException("The JsonValue.Create<T>() method could not be determined");
+		if (payload is null) throw new ArgumentNullException("payload could not be null");
+		var met2 = met.MakeGenericMethod(payload.GetType());
+		var res = met2.Invoke(null, new object?[] { payload, null });
+		if (res is null) throw new InvalidProgramException("The JsonValue could not be created");
+		return (JsonValue)res;
 	}
 	public TKey PayloadKey { get; private set; }
 	
-	private string _PayloadRaw;
+	private JsonValue _PayloadValue;
 	[JsonPropertyName(nameof(Payload))]
-	protected internal string PayloadRaw
+	protected internal JsonValue PayloadValue
 	{
-		get => _PayloadRaw;
+		get => _PayloadValue;
 		set
 		{
-			_PayloadRaw = value;
-			if (Payload == null && PayloadRaw != null)
+			_PayloadValue = value;
+			if (Payload == null && PayloadValue != null)
 			{
 				try
 				{
-					Payload = PayloadRaw.FromJson<TPayload>();
+					Payload = PayloadValue.Deserialize<TPayload>();
 				}
 				catch { }
 			}
@@ -58,19 +77,19 @@ public class JsonPod<TPayload, TKey>
 	public static implicit operator TPayload?(JsonPod<TPayload, TKey> pod) => pod.Payload;
 	public JsonPod<T, TKey>? CastWithPayload<T>()
 	{
-		if (PayloadRaw == null) return null;
-		var res = PayloadRaw.FromJson<T>();
+		if (PayloadValue == null) return null;
+		var res = PayloadValue.Deserialize<T>();
 		if (res == null) return null;
 		return new JsonPod<T, TKey>(res, PayloadKey);
 	}
 	public T? As<T>()
 	{
-		if (PayloadRaw == null) return default;
-		var res = PayloadRaw.FromJson<T>();
+		if (PayloadValue == null) return default;
+		var res = PayloadValue.Deserialize<T>();
 		if (res == null) return default;
 		return res;
 	}
-	public object? As(Type type) => PayloadRaw.FromJson(type);
+	public object? As(Type type) => PayloadValue.Deserialize(type);
 
 	public bool Is<T>() => Is(typeof(T));
 	public bool Is(Type type)

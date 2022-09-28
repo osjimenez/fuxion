@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 
 public class JsonPodConverter<TPod, TPayload, TKey> : JsonConverter<TPod> where TPod : JsonPod<TPayload, TKey>
@@ -31,10 +32,10 @@ public class JsonPodConverter<TPod, TPayload, TKey> : JsonConverter<TPod> where 
 			var ele = JsonDocument.ParseValue(ref reader).RootElement;
 			if (propertyName == nameof(JsonPod<string, string>.Payload))
 			{
-				PropertyInfo rawProp = pod.GetType().GetProperty(nameof(JsonPod<string, string>.PayloadRaw), BindingFlags.NonPublic | BindingFlags.Instance)
-					?? throw new InvalidProgramException("'PayloadRaw' property could not be obtained from pod object");
-				var eleStr = ele.GetRawText();
-				rawProp.SetValue(pod, eleStr);
+				PropertyInfo rawProp = pod.GetType().GetProperty(nameof(JsonPod<string, string>.PayloadValue), BindingFlags.NonPublic | BindingFlags.Instance)
+					?? throw new InvalidProgramException($"'{nameof(JsonPod<string, string>.PayloadValue)}' property could not be obtained from pod object");
+				var jsonValue = JsonSerializer.Deserialize<JsonValue>(ele.GetRawText(), options);
+				rawProp.SetValue(pod, jsonValue);
 				try
 				{
 					var val = ele.Deserialize(prop.PropertyType, new JsonSerializerOptions()
@@ -65,10 +66,10 @@ public class JsonPodConverter<TPod, TPayload, TKey> : JsonConverter<TPod> where 
 			writer.WritePropertyName(prop.GetCustomAttribute<JsonPropertyNameAttribute>()?.Name ?? prop.Name);
 			writer.WriteRawValue(JsonSerializer.Serialize(prop.GetValue(value), options));
 		}
-		var rawProp = value.GetType().GetProperty(nameof(JsonPod<string, string>.PayloadRaw), BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
-		if (rawProp is null) throw new InvalidProgramException($"The pod '{value.GetType().Name}' doesn't has '{nameof(JsonPod<string, string>.PayloadRaw)}' property");
+		var rawProp = value.GetType().GetProperty(nameof(JsonPod<string, string>.PayloadValue), BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
+		if (rawProp is null) throw new InvalidProgramException($"The pod '{value.GetType().Name}' doesn't has '{nameof(JsonPod<string, string>.PayloadValue)}' property");
 		writer.WritePropertyName(rawProp.GetCustomAttribute<JsonPropertyNameAttribute>()?.Name ?? rawProp.Name);
-		writer.WriteRawValue(value.PayloadRaw);
+		value.PayloadValue.WriteTo(writer, options);
 		writer.WriteEndObject();
 	}
 }

@@ -60,8 +60,8 @@ public class PublicationPodTest : BaseTest
 		var pod = json.FromEventSourcingPod();
 		Assert.NotNull(pod);
 
-		Output.WriteLine("pod.PayloadRaw.Value: ");
-		Output.WriteLine(pod.PayloadRaw);
+		Output.WriteLine("pod.PayloadValue: ");
+		Output.WriteLine(pod.PayloadValue.ToString());
 
 		void AssertBase(EventBase? payload)
 		{
