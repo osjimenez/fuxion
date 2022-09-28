@@ -218,4 +218,4 @@ ModelManifest.xml
 **/.build/NuGet/**/lib/**
 
 # GitVersion
-GitVersion/
+GitVersion.exe
