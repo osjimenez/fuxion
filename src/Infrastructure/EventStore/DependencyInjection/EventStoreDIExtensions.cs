@@ -1,16 +1,20 @@
 ﻿namespace Microsoft.Extensions.DependencyInjection;
 
-using EventStore.ClientAPI;
+using EventStore.Client;
 using Fuxion.EventStore;
 using Fuxion.Reflection;
 
 public static class EventStoreDIExtensions
 {
-	public static IFuxionBuilder EventStore(this IFuxionBuilder me, out Func<IServiceProvider, EventStoreStorage> builder, string hostName = "localhost", int port = 1113, string username = "admin", string password = "changeit")
+	public static IFuxionBuilder EventStore(this IFuxionBuilder me, out Func<IServiceProvider, EventStoreStorage> builder, string hostName = "localhost", int port = 2113, string username = "admin", string password = "changeit")
 	{
-		me.Services.AddSingleton(sp => EventStoreConnection.Create($"ConnectTo=tcp://{username}:{password}@{hostName}:{port}; HeartBeatTimeout=500", ConnectionSettings.Create().KeepReconnecting()).Transform(c => c.ConnectAsync().Wait()));
+		// https://developers.eventstore.com/clients/grpc/#connection-details
+		var connectionString = $"esdb+discover://{hostName}:{port}?tls=false&keepAliveTimeout=10000&keepAliveInterval=10000";
+		var settings = EventStoreClientSettings.Create(connectionString);
+		var client = new EventStoreClient(settings);
+		me.Services.AddSingleton(client);
 
-		builder = new Func<IServiceProvider, EventStoreStorage>(sp => new EventStoreStorage(sp.GetRequiredService<IEventStoreConnection>(), sp.GetRequiredService<TypeKeyDirectory>()));
+		builder = new Func<IServiceProvider, EventStoreStorage>(sp => new EventStoreStorage(sp.GetRequiredService<EventStoreClient>(), sp.GetRequiredService<TypeKeyDirectory>()));
 		me.Services.AddSingleton(builder);
 		return me;
 	}

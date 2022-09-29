@@ -5,59 +5,97 @@ using Fuxion.Application.Snapshots;
 using Fuxion.Domain;
 using Fuxion.Json;
 using Fuxion.Reflection;
-using global::EventStore.ClientAPI;
+using global::EventStore.Client;
 using System.Text;
+using System.Text.Json;
 
 public class EventStoreStorage : IEventStorage, ISnapshotStorage
 {
-	public EventStoreStorage(IEventStoreConnection connection, TypeKeyDirectory typeKeyDirectory)
+	public EventStoreStorage(EventStoreClient client, TypeKeyDirectory typeKeyDirectory)
 	{
-		this.connection = connection;
+		this.client = client;
 		this.typeKeyDirectory = typeKeyDirectory;
 	}
 
-	private readonly IEventStoreConnection connection;
+	private readonly EventStoreClient client;
 	private readonly TypeKeyDirectory typeKeyDirectory;
 	#region IEventStorage
 	public async Task CommitAsync(Guid aggregateId, IEnumerable<Event> events)
 	{
-		var res = await connection.AppendToStreamAsync(
+		var res = await client.AppendToStreamAsync(
 			aggregateId.ToString(),
-			ExpectedVersion.Any,
+			StreamState.Any,
 			events.Select(e =>
 			{
 				var pod = e.ToEventSourcingPod();
-				return new EventData(Guid.NewGuid(), pod.PayloadKey, true, Encoding.Default.GetBytes(pod.ToJson()), null);
+				return new EventData(Uuid.NewUuid(), pod.PayloadKey,JsonSerializer.SerializeToUtf8Bytes(pod));
 			}).ToArray());
 	}
 	public async Task<IQueryable<Event>> GetEventsAsync(Guid aggregateId, int start, int count)
 	{
-		//TODO - Implementar un mecanismo de paginación cuando tengo que trearme mas de 4096 eventos
-		var slice = await connection.ReadStreamEventsForwardAsync(aggregateId.ToString(), start, count == int.MaxValue ? 4096 : count, false);
-		return slice.Events.Select(e => Encoding.Default.GetString(e.Event.Data).FromJson<EventSourcingPod>(true).WithTypeKeyDirectory(typeKeyDirectory)).RemoveNulls().AsQueryable();
+		//TODO - Encontrar una forma de quitar los try-catch solo para detectar que el stream no existe
+		try
+		{
+			//TODO - Implementar un mecanismo de paginación?
+			var slice = await client.ReadStreamAsync(Direction.Forwards, aggregateId.ToString(), (ulong)start, count, false)
+			.ToListAsync();
+			return slice.Select(e =>
+				Encoding.Default.GetString(e.Event.Data.ToArray())
+				.FromJson<EventSourcingPod>(true)
+				.WithTypeKeyDirectory(typeKeyDirectory)).RemoveNulls().AsQueryable();
+		}
+		catch (StreamNotFoundException)
+		{
+			return Array.Empty<Event>().AsQueryable();
+		}
 	}
 	public async Task<Event?> GetLastEventAsync(Guid aggregateId)
 	{
-		var slice = await connection.ReadStreamEventsBackwardAsync(aggregateId.ToString(), StreamPosition.End, 1, false);
-		return slice.Events.Select(e => Encoding.Default.GetString(e.Event.Data).FromJson<EventSourcingPod>(true).WithTypeKeyDirectory(typeKeyDirectory)).LastOrDefault();
+		try
+		{
+			var slice = await client.ReadStreamAsync(Direction.Backwards, aggregateId.ToString(), StreamPosition.End, 1, false)
+				.ToListAsync();
+			return slice.Select(e =>
+				Encoding.Default.GetString(e.Event.Data.ToArray())
+				.FromJson<EventSourcingPod>(true)
+				.WithTypeKeyDirectory(typeKeyDirectory)).LastOrDefault();
+		}catch(StreamNotFoundException)
+		{
+			return null;
+		}
 	}
 	#endregion
 	#region ISnapshotStorage
 	public async Task<Snapshot?> GetSnapshotAsync(Type snapshotType, Guid aggregateId)
 	{
-		var slice = await connection.ReadStreamEventsBackwardAsync($"{snapshotType.GetTypeKey()}@{aggregateId.ToString()}", StreamPosition.End, 1, false);
-		return slice.Events.Select(e =>
+		try
 		{
-			var pod = Encoding.Default.GetString(e.Event.Data).FromJson<JsonPod<Snapshot, string>>(true);
-			return (Snapshot?)pod.As(typeKeyDirectory[pod.PayloadKey]);
-		}).LastOrDefault();
+			var slice = await client.ReadStreamAsync(Direction.Backwards, $"{snapshotType.GetTypeKey()}@{aggregateId.ToString()}", StreamPosition.End, 1, false)
+			.ToListAsync();
+			return slice.Select(e =>
+			{
+				var pod = Encoding.Default.GetString(e.Event.Data.ToArray()).FromJson<JsonPod<Snapshot, string>>(true);
+				return (Snapshot?)pod.As(typeKeyDirectory[pod.PayloadKey]);
+			}).LastOrDefault();
+		}
+		catch (StreamNotFoundException)
+		{
+			return null;
+		}
 	}
 	public async Task SaveSnapshotAsync(Snapshot snapshot)
 	{
-		var res = await connection.AppendToStreamAsync(
+		var res = await client.AppendToStreamAsync(
 			$"{snapshot.GetType().GetTypeKey()}@{snapshot.AggregateId.ToString()}",
-			ExpectedVersion.Any,
-			new EventData(Guid.NewGuid(), snapshot.GetType().GetTypeKey(), true, Encoding.Default.GetBytes(new JsonPod<Snapshot, string>(snapshot, snapshot.GetType().GetTypeKey()).ToJson()), null));
+			StreamState.Any,
+			new EventData[] {
+				new EventData(
+					Uuid.NewUuid(),
+					snapshot.GetType().GetTypeKey(),
+					JsonSerializer.SerializeToUtf8Bytes(new JsonPod<Snapshot, string>(snapshot, snapshot.GetType().GetTypeKey()))
+				)
+			}
+		);
 	}
 	#endregion
 }
