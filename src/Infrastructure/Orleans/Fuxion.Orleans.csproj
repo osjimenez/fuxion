@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<Title>Fuxion Orleans</Title>
+		<PackageId>Fuxion.Orleans</PackageId>
+		<Description>Fuxion infrastructure for Orleans frameowrk</Description>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="icon.png" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\core\Application\Fuxion.Application.csproj" />
+	</ItemGroup>
+
+</Project>
