@@ -1,7 +1,6 @@
-﻿namespace Fuxion.Application.Commands;
+﻿using Fuxion.Domain;
 
-using Fuxion.Domain;
-using System.Threading.Tasks;
+namespace Fuxion.Application.Commands;
 
 public interface ICommandDispatcher
 {

@@ -1,42 +1,30 @@
-﻿namespace Fuxion.Identity.Test;
-
-using Fuxion.Identity.Test.Mocks;
+﻿using Fuxion.Identity.Test.Mocks;
 using Fuxion.Math.Graph;
 using Fuxion.Testing;
 using Xunit;
 using Xunit.Abstractions;
-using static Fuxion.Identity.Functions;
+
+namespace Fuxion.Identity.Test;
+
+using static Functions;
 
 public class FunctionTest : BaseTest
 {
 	public FunctionTest(ITestOutputHelper output) : base(output) { }
-	[Fact(DisplayName = "Function - IsValid")]
-	public void Validate()
+	[Fact(DisplayName = "Function - Create custom function")]
+	public void CustomFunction()
 	{
-		Assert.False(new GuidFunction(Guid.NewGuid(), null!).IsValid());
-		Assert.False(new GuidFunction(Guid.NewGuid(), "").IsValid());
-		Assert.False(new GuidFunction(Guid.NewGuid(), " ").IsValid());
-		Assert.False(new GuidFunction(default(Guid), "valid").IsValid());
-		Assert.True(new GuidFunction(Guid.NewGuid(), "valid").IsValid());
-
-		Assert.False(new StringFunction(null!).IsValid());
-		Assert.False(new StringFunction("").IsValid());
-		Assert.False(new StringFunction(" ").IsValid());
-		Assert.True(new StringFunction("valid").IsValid());
-	}
-	[Fact(DisplayName = "Function - Inclusions & exclusion")]
-	public void IncludesAndExcludes()
-	{
-		Reset();
-		Assert.Empty(Read.GetAllInclusions());
-		Assert.Equal(5, Read.GetAllExclusions().Count());
-		Assert.Single(Edit.GetAllInclusions());
-		Assert.Equal(4, Edit.GetAllExclusions().Count());
-		var Custom = AddCustom(CreateCustom("CUSTOM", new[] { Read }, new[] { Manage }));
-		Assert.Single(Custom.GetAllInclusions());
-		Assert.Equal(2, Custom.GetAllExclusions().Count());
-		var oo = Read.GetAllExclusions();
-		Assert.Equal(6, Read.GetAllExclusions().Count());
+		//Reset();
+		var cus = CreateCustom("Custom", new[]
+		{
+			Read
+		}, new[]
+		{
+			Edit
+		});
+		AddCustom(cus);
+		var cus2 = GetById("Custom");
+		Assert.True(cus.Id == cus2.Id);
 		Reset();
 	}
 	[Fact(DisplayName = "Function - Cycles detection")]
@@ -60,15 +48,17 @@ public class FunctionTest : BaseTest
 		//graph.AddEdge(Read, CustomCycle);
 		//Assert.True(graph.HasCycles());
 		//Assert.True(false, "Graph is not used yet in Functions class");
-		Assert.Throws<GraphCyclicException>(() => AddCustom(CreateCustom("CUSTOM", new[] { Edit }, new[] { Read })));
+		Assert.Throws<GraphCyclicException>(() => AddCustom(CreateCustom("CUSTOM", new[]
+		{
+			Edit
+		}, new[]
+		{
+			Read
+		})));
 		foreach (var fun in GetAll())
 		{
-			if (fun.Inclusions != null)
-				Assert.False(fun.Inclusions.Any(f => f.Id.ToString() == "CUSTOM"),
-					$"La funcion {fun.Name} tiene incluido a CUSTOM");
-			if (fun.Exclusions != null)
-				Assert.False(fun.Exclusions.Any(f => f.Id.ToString() == "CUSTOM"),
-					$"La funcion {fun.Name} tiene excluido a CUSTOM");
+			if (fun.Inclusions != null) Assert.False(fun.Inclusions.Any(f => f.Id.ToString() == "CUSTOM"), $"La funcion {fun.Name} tiene incluido a CUSTOM");
+			if (fun.Exclusions != null) Assert.False(fun.Exclusions.Any(f => f.Id.ToString() == "CUSTOM"), $"La funcion {fun.Name} tiene excluido a CUSTOM");
 		}
 		//Reset();
 	}
@@ -78,26 +68,55 @@ public class FunctionTest : BaseTest
 		IEnumerable<IFunction> funcs;
 		try
 		{
-			funcs = Functions.GetAll();
+			funcs = GetAll();
 			//Reset();
-			var intFunction = AddCustom(CreateCustom(1, new[] { Read }, new[] { Manage }));
+			var intFunction = AddCustom(CreateCustom(1, new[]
+			{
+				Read
+			}, new[]
+			{
+				Manage
+			}));
 			Reset();
-		}
-		catch
+		} catch
 		{
-			var oo = Functions.GetAll();
+			var oo = GetAll();
 			throw;
 		}
 	}
-	[Fact(DisplayName = "Function - Create custom function")]
-	public void CustomFunction()
+	[Fact(DisplayName = "Function - Inclusions & exclusion")]
+	public void IncludesAndExcludes()
 	{
-		//Reset();
-		var cus = CreateCustom("Custom", new[] { Read }, new[] { Edit });
-		AddCustom(cus);
-		var cus2 = GetById("Custom");
-		Assert.True(cus.Id == cus2.Id);
 		Reset();
+		Assert.Empty(Read.GetAllInclusions());
+		Assert.Equal(5, Read.GetAllExclusions().Count());
+		Assert.Single(Edit.GetAllInclusions());
+		Assert.Equal(4, Edit.GetAllExclusions().Count());
+		var Custom = AddCustom(CreateCustom("CUSTOM", new[]
+		{
+			Read
+		}, new[]
+		{
+			Manage
+		}));
+		Assert.Single(Custom.GetAllInclusions());
+		Assert.Equal(2, Custom.GetAllExclusions().Count());
+		var oo = Read.GetAllExclusions();
+		Assert.Equal(6, Read.GetAllExclusions().Count());
+		Reset();
+	}
+	[Fact(DisplayName = "Function - IsValid")]
+	public void Validate()
+	{
+		Assert.False(new GuidFunction(Guid.NewGuid(), null!).IsValid());
+		Assert.False(new GuidFunction(Guid.NewGuid(), "").IsValid());
+		Assert.False(new GuidFunction(Guid.NewGuid(), " ").IsValid());
+		Assert.False(new GuidFunction(default,        "valid").IsValid());
+		Assert.True(new GuidFunction(Guid.NewGuid(),  "valid").IsValid());
+		Assert.False(new StringFunction(null!).IsValid());
+		Assert.False(new StringFunction("").IsValid());
+		Assert.False(new StringFunction(" ").IsValid());
+		Assert.True(new StringFunction("valid").IsValid());
 	}
 }
 //public static class ext

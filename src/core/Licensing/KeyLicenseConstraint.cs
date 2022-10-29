@@ -3,14 +3,14 @@
 public class KeyModelLicenseConstraint : LicenseConstraint
 {
 	public KeyModelLicenseConstraint(string? key) => Key = key;
-	public string? Key { get; private set; }
+	public string? Key { get; }
 	public bool Validate(out string validationMessage, string model)
 	{
 		var res = base.Validate(out validationMessage);
 		if (Key != model)
 		{
 			validationMessage = "License and model differ";
-			res = false;
+			res               = false;
 		}
 		return res;
 	}

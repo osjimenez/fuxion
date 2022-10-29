@@ -1,6 +1,6 @@
-﻿namespace Fuxion.Application;
+﻿using Fuxion.Domain;
 
-using Fuxion.Domain;
+namespace Fuxion.Application;
 
 public interface IEventHandler<in TEvent> where TEvent : Event
 {

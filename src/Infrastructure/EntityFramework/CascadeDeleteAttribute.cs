@@ -1,4 +1,4 @@
 ﻿namespace Fuxion.EntityFramework;
 
-[AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
+[AttributeUsage(AttributeTargets.Property)]
 public class CascadeDeleteAttribute : Attribute { }

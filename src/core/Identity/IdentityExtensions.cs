@@ -1,18 +1,19 @@
-﻿namespace Fuxion.Identity;
-
-using System.Collections;
+﻿using System.Collections;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using static Fuxion.Identity.Helpers.Comparer;
+using Comparer = Fuxion.Identity.Helpers.Comparer;
 
-internal static class IdentityExtensions
+namespace Fuxion.Identity;
+
+using static Comparer;
+
+static class IdentityExtensions
 {
 	internal static IEnumerable<IPermission> AllPermissions(this IRol me)
 	{
 		var r = new List<IPermission>();
-		if (me.Permissions != null)
-			r.AddRange(me.Permissions);
+		if (me.Permissions != null) r.AddRange(me.Permissions);
 		if (me.Groups != null)
 			foreach (var gro in me.Groups)
 				r.AddRange(gro.AllPermissions());
@@ -26,31 +27,25 @@ internal static class IdentityExtensions
 			using (Printer.Indent("Inpupt Prameters"))
 			{
 				Printer.WriteLine($"Rol: {me.Name}");
-				Printer.WriteLine($"For filter: " + forFilter);
-				Printer.WriteLine($"Function: {function.ToString() ?? "<null>"}");
+				Printer.WriteLine("For filter: " + forFilter);
+				Printer.WriteLine($"Function: {function.ToString()                    ?? "<null>"}");
 				Printer.WriteLine($"Type discriminator: {typeDiscriminator.ToString() ?? "<null>"}");
-				Printer.Foreach($"Discriminators:", discriminators, dis => Printer.WriteLine($"{dis}"));
+				Printer.Foreach("Discriminators:", discriminators, dis => Printer.WriteLine($"{dis}"));
 			}
 			// Function validation
-			if (!function.IsValid())
-				throw new ArgumentException($"The '{nameof(function)}' pararameter with value '{function}' has an invalid state", nameof(function));
+			if (!function.IsValid()) throw new ArgumentException($"The '{nameof(function)}' pararameter with value '{function}' has an invalid state", nameof(function));
 
 			// TypeDiscriminator validation
-			if (!typeDiscriminator.IsValid())
-				throw new InvalidStateException($"The '{typeDiscriminator}' discriminator has an invalid state");
+			if (!typeDiscriminator.IsValid()) throw new InvalidStateException($"The '{typeDiscriminator}' discriminator has an invalid state");
 
 			// Discriminators validation
 			var invalidDiscriminator = discriminators.FirstOrDefault(d => !d.IsValid());
-
-			if (invalidDiscriminator != null)
-				throw new InvalidStateException($"The '{invalidDiscriminator}' discriminator has an invalid state");
+			if (invalidDiscriminator != null) throw new InvalidStateException($"The '{invalidDiscriminator}' discriminator has an invalid state");
 
 			// Get & print rol permissions
 			var permissions = me.AllPermissions();
-			using (Printer.Indent("Permissions:"))
-				permissions.Print(PrintMode.Table);
-			using (Printer.Indent("Iterate permissions:"))
-				res.Value = permissions.Where(p => p.Match(forFilter, function, typeDiscriminator, discriminators)).ToArray();
+			using (Printer.Indent("Permissions:")) permissions.Print(PrintMode.Table);
+			using (Printer.Indent("Iterate permissions:")) res.Value = permissions.Where(p => p.Match(forFilter, function, typeDiscriminator, discriminators)).ToArray();
 			res.OnPrintResult = r => r.Print(PrintMode.Table);
 			return res.Value;
 		}
@@ -65,18 +60,18 @@ internal static class IdentityExtensions
 				Printer.WriteLine($"Functions: {string.Join(",", me.Functions.Select(f => f.Name)) ?? "<null>"}");
 				Printer.WriteLine($"For all: {forAll}");
 				Printer.WriteLine($"Type discriminator: {typeDiscriminator?.ToString() ?? "null"}");
-				Printer.Foreach($"Discriminators:", discriminators, dis => Printer.WriteLine($"{dis}"));
+				Printer.Foreach("Discriminators:", discriminators, dis => Printer.WriteLine($"{dis}"));
 			}
 			// If Rol is null, return false
 			if (me.Rol == null)
 			{
-				Printer.WriteLine($"Rol is NULL, return FALSE");
+				Printer.WriteLine("Rol is NULL, return FALSE");
 				return res.Value = false;
 			}
 			// If target discriminator is null, return true
 			if (typeDiscriminator == null)
 			{
-				Printer.WriteLine($"TypeDiscriminator is NULL, return TRUE");
+				Printer.WriteLine("TypeDiscriminator is NULL, return TRUE");
 				return res.Value = true;
 			}
 			bool Compute()
@@ -86,43 +81,37 @@ internal static class IdentityExtensions
 				{
 					Printer.WriteLine($"Function '{fun.Name}':");
 					var pers = SearchPermissions(me.Rol, false, fun, typeDiscriminator, discriminators);
-					if (!pers.Any())
-						return false;
+					if (!pers.Any()) return false;
+					var grantPermissions  = pers.Where(p => p.Value).ToList();
+					var deniedPermissions = pers.Where(p => !p.Value).ToList();
+					Printer.WriteLine($"Found '{grantPermissions.Count}' grant permissions");
+					Printer.WriteLine($"Found '{deniedPermissions.Count}' denied permissions");
+					var r = false;
+					if (discriminators.IsNullOrEmpty())
+						r = grantPermissions.Count > 0 && deniedPermissions.Count == 0;
 					else
-					{
-						var grantPermissions = pers.Where(p => p.Value).ToList();
-						var deniedPermissions = pers.Where(p => !p.Value).ToList();
-						Printer.WriteLine($"Found '{grantPermissions.Count}' grant permissions");
-						Printer.WriteLine($"Found '{deniedPermissions.Count}' denied permissions");
-						var r = false;
-						if (discriminators.IsNullOrEmpty())
-						{
-							r = grantPermissions.Count > 0 && deniedPermissions.Count == 0;
-						}
-						else
-						{
-							r = forAll
-								? discriminators.All(dis =>
-								{
-									return grantPermissions.Count > 0 && deniedPermissions.Count == 0;// || grantPermissions.Count == 0;
-									})
-								: discriminators.Any(dis =>
-								{
-										//var pers = me.Rol.SearchPermissions(fun, dis);
-										//return !pers.Any(p => !p.Value && p.Scopes.Any(s => dis.TypeId == s.Discriminator.TypeId)) && pers.Any(p => p.Value);
-										return !pers.Any(p => !p.Value && p.Match(false, fun, typeDiscriminator, discriminators)) && pers.Any(p => p.Value);
-								});
-						}
-						if (!r && me.ThrowExceptionIfCannot)
-							throw new UnauthorizedAccessException($"The rol '{me.Rol.Name}' cannot '{me.Functions.Aggregate("", (a, c) => a + c.Name + "·", a => a.Trim('·'))}' of type '{typeDiscriminator.Name}' with given discriminators '{discriminators.Aggregate("", (a, c) => $"{a}, {c.TypeName + "<" + c.Name + ">"}", a => a.Trim(',', ' ')) }'");
-						return r;
-					}
+						r = forAll
+							? discriminators.All(dis =>
+							{
+								return grantPermissions.Count > 0 && deniedPermissions.Count == 0; // || grantPermissions.Count == 0;
+							})
+							: discriminators.Any(dis =>
+							{
+								//var pers = me.Rol.SearchPermissions(fun, dis);
+								//return !pers.Any(p => !p.Value && p.Scopes.Any(s => dis.TypeId == s.Discriminator.TypeId)) && pers.Any(p => p.Value);
+								return !pers.Any(p => !p.Value && p.Match(false, fun, typeDiscriminator, discriminators)) && pers.Any(p => p.Value);
+							});
+					if (!r && me.ThrowExceptionIfCannot)
+						throw new UnauthorizedAccessException(
+							$"The rol '{me.Rol.Name}' cannot '{me.Functions.Aggregate("", (a, c) => a + c.Name + "·", a => a.Trim('·'))}' of type '{typeDiscriminator.Name}' with given discriminators '{discriminators.Aggregate("", (a, c) => $"{a}, {c.TypeName + "<" + c.Name + ">"}", a => a.Trim(',', ' '))}'");
+					return r;
 				}
 				return false;
 			}
 			res.Value = Compute();
 			if (!res.Value && me.ThrowExceptionIfCannot)
-				throw new UnauthorizedAccessException($"The rol '{me.Rol.Name}' cannot '{me.Functions.Aggregate("", (a, c) => a + c.Name + "·", a => a.Trim('·'))}' of type '{typeDiscriminator.Name}' with given discriminators '{discriminators.Aggregate("", (a, c) => $"{a}, {c.TypeName + "<" + c.Name + ">"}", a => a.Trim(',', ' ')) }'");
+				throw new UnauthorizedAccessException(
+					$"The rol '{me.Rol.Name}' cannot '{me.Functions.Aggregate("", (a, c) => a + c.Name + "·", a => a.Trim('·'))}' of type '{typeDiscriminator.Name}' with given discriminators '{discriminators.Aggregate("", (a, c) => $"{a}, {c.TypeName + "<" + c.Name + ">"}", a => a.Trim(',', ' '))}'");
 			return res.Value;
 		}
 	}
@@ -135,82 +124,68 @@ internal static class IdentityExtensions
 				foreach (var p in r)
 					Printer.WriteLine($"Property '{p.PropertyInfo.Name}' of type '{p.PropertyType.Name}' is discriminated by '{p.DiscriminatorTypeId.ToString()}' of type '{p.DiscriminatorType.Name}'");
 			};
-			return res.Value = me.GetRuntimeProperties()
-			   .Where(p => p.GetCustomAttribute<DiscriminatedByAttribute>(true, false, false) != null)
-			   .Select(p => (
-				   PropertyInfo: p,
-				   PropertyType: p.PropertyType,
-				   DiscriminatorType: p.GetCustomAttribute<DiscriminatedByAttribute>(true, true).Type,
-				   DiscriminatorTypeId:
-					   p.GetCustomAttribute<DiscriminatedByAttribute>(true).Type.GetTypeInfo()
-						   .GetCustomAttribute<DiscriminatorAttribute>(true).TypeKey));
+			return res.Value = me.GetRuntimeProperties().Where(p => p.GetCustomAttribute<DiscriminatedByAttribute>(true, false) != null).Select(p =>
+				(PropertyInfo: p, p.PropertyType, DiscriminatorType: p.GetCustomAttribute<DiscriminatedByAttribute>(true, true).Type,
+					DiscriminatorTypeId: p.GetCustomAttribute<DiscriminatedByAttribute>(true).Type.GetTypeInfo().GetCustomAttribute<DiscriminatorAttribute>(true).TypeKey));
 		}
 	}
-	internal static IEnumerable<IDiscriminator> GetDiscriminatorsOfDiscriminatedProperties(this Type me, object? value = null)
-	=>
+	internal static IEnumerable<IDiscriminator> GetDiscriminatorsOfDiscriminatedProperties(this Type me, object? value = null) =>
 		me.GetDiscriminatedProperties().Select(p =>
-		 {
-			 object? val = null;
-			 if (value != null)
-				 val = p.PropertyInfo.GetValue(value);
-			 if (val == null)
-				 return Discriminator.Empty(p.DiscriminatorType);
-			 return Discriminator.ForId(p.DiscriminatorType, val);
-		 }).RemoveNulls();
+		{
+			object? val            = null;
+			if (value != null) val = p.PropertyInfo.GetValue(value);
+			if (val   == null) return Discriminator.Empty(p.DiscriminatorType);
+			return Discriminator.ForId(p.DiscriminatorType, val);
+		}).RemoveNulls();
 	internal static Expression<Func<TEntity, bool>> FilterExpression<TEntity>(this IRol me, IFunction[] functions)
 	{
 		using (var res = Printer.CallResult<Expression<Func<TEntity, bool>>>())
 		{
 			#region Methods
 			MethodInfo GetCastMethod(Type type) =>
-				typeof(Enumerable).GetTypeInfo().DeclaredMethods
-					.Where(m => m.Name == nameof(Enumerable.Cast))
-					.Single(m => m.GetParameters().Length == 1)
-					.MakeGenericMethod(type);
+				typeof(Enumerable).GetTypeInfo().DeclaredMethods.Where(m => m.Name == nameof(Enumerable.Cast)).Single(m => m.GetParameters().Length == 1).MakeGenericMethod(type);
 			MethodInfo GetOfTypeMethod(Type type) =>
-				typeof(Enumerable).GetTypeInfo().DeclaredMethods
-					.Where(m => m.Name == nameof(Enumerable.OfType))
-					.Single(m => m.GetParameters().Length == 1)
-					.MakeGenericMethod(type);
+				typeof(Enumerable).GetTypeInfo().DeclaredMethods.Where(m => m.Name == nameof(Enumerable.OfType)).Single(m => m.GetParameters().Length == 1).MakeGenericMethod(type);
 			MethodInfo GetToListMethod(Type type) =>
-				typeof(Enumerable).GetTypeInfo().DeclaredMethods
-					.Where(m => m.Name == nameof(Enumerable.ToList))
-					.Single(m => m.GetParameters().Length == 1)
-					.MakeGenericMethod(type);
+				typeof(Enumerable).GetTypeInfo().DeclaredMethods.Where(m => m.Name == nameof(Enumerable.ToList)).Single(m => m.GetParameters().Length == 1).MakeGenericMethod(type);
 			MethodInfo GetContainsMethod(Type type) =>
-				typeof(Enumerable).GetTypeInfo().DeclaredMethods
-					.Where(m => m.Name == nameof(Enumerable.Contains))
-					.Single(m => m.GetParameters().Length == 2)
-					.MakeGenericMethod(type);
+				typeof(Enumerable).GetTypeInfo().DeclaredMethods.Where(m => m.Name == nameof(Enumerable.Contains)).Single(m => m.GetParameters().Length == 2).MakeGenericMethod(type);
 			Expression<Func<TEntity, bool>>? GetContainsExpression(bool value, IScope sco, Type disType, PropertyInfo proInfo)
 			{
 				var foreignDiscriminators = Enumerable.Empty<IDiscriminator>();
 				if (sco.Propagation.HasFlag(ScopePropagation.ToMe))
-					foreignDiscriminators = foreignDiscriminators.Union(new[] { sco.Discriminator });
-				if (sco.Propagation.HasFlag(ScopePropagation.ToInclusions))
-					foreignDiscriminators = foreignDiscriminators.Union(sco.Discriminator.GetAllInclusions().Select(d => d));
-				if (sco.Propagation.HasFlag(ScopePropagation.ToExclusions))
-					foreignDiscriminators = foreignDiscriminators.Union(sco.Discriminator.GetAllExclusions().Select(d => d));
-				if (GetOfTypeMethod(disType).Invoke(null, new object[] { foreignDiscriminators }) is not IEnumerable<IDiscriminator> foreignDiscriminatorssOfType)
+					foreignDiscriminators = foreignDiscriminators.Union(new[]
+					{
+						sco.Discriminator
+					});
+				if (sco.Propagation.HasFlag(ScopePropagation.ToInclusions)) foreignDiscriminators = foreignDiscriminators.Union(sco.Discriminator.GetAllInclusions().Select(d => d));
+				if (sco.Propagation.HasFlag(ScopePropagation.ToExclusions)) foreignDiscriminators = foreignDiscriminators.Union(sco.Discriminator.GetAllExclusions().Select(d => d));
+				if (GetOfTypeMethod(disType).Invoke(null, new object[]
+					 {
+						 foreignDiscriminators
+					 }) is not IEnumerable<IDiscriminator> foreignDiscriminatorssOfType)
 					return null;
 				//var foreignDiscriminatorssOfType = (IEnumerable<IDiscriminator>)GetOfTypeMethod(disType).Invoke(null, new object[] { foreignDiscriminators });
 				// Si no hay claves externas del tipo de esta propiedad, continuo con la siguiente propiedad
 				if (!foreignDiscriminatorssOfType.Any()) return null;
 				var foreignKeys = foreignDiscriminatorssOfType.Select(d => d.Id);
-
-				var foreignKeysCasted = GetCastMethod(proInfo.PropertyType).Invoke(null, new object[] { foreignKeys });
+				var foreignKeysCasted = GetCastMethod(proInfo.PropertyType).Invoke(null, new object[]
+				{
+					foreignKeys
+				});
 				if (foreignKeysCasted == null) return null;
-				var foreignKeysListed = GetToListMethod(proInfo.PropertyType).Invoke(null, new object[] { foreignKeysCasted });
+				var foreignKeysListed = GetToListMethod(proInfo.PropertyType).Invoke(null, new[]
+				{
+					foreignKeysCasted
+				});
 				if (foreignKeysListed == null) return null;
-
-				var entityParameter = Expression.Parameter(typeof(TEntity));
-				var memberExpression = Expression.Property(entityParameter, proInfo);
-				var containsExpression = Expression.Call(GetContainsMethod(proInfo.PropertyType),
-					Expression.Constant(foreignKeysListed, foreignKeysListed.GetType()),
-					memberExpression);
-				var curExp = Expression.Lambda<Func<TEntity, bool>>((value ? (Expression)containsExpression : Expression.Not(containsExpression)), entityParameter);
+				var entityParameter    = Expression.Parameter(typeof(TEntity));
+				var memberExpression   = Expression.Property(entityParameter, proInfo);
+				var containsExpression = Expression.Call(GetContainsMethod(proInfo.PropertyType), Expression.Constant(foreignKeysListed, foreignKeysListed.GetType()), memberExpression);
+				var curExp             = Expression.Lambda<Func<TEntity, bool>>(value ? containsExpression : Expression.Not(containsExpression), entityParameter);
 				return curExp;
 			}
+
 			#region PrintExpression
 			void PrintExpression(Expression exp)
 			{
@@ -234,15 +209,12 @@ internal static class IdentityExtensions
 				using (Printer.Indent("("))
 				{
 					PrintExpression(exp.Left);
-					if (Printer.IsLineWritePending)
-						Printer.WriteLine("");
+					if (Printer.IsLineWritePending) Printer.WriteLine("");
 					Printer.WriteLine(exp.NodeType.ToString().ToUpper());
 					PrintExpression(exp.Right);
-					if (Printer.IsLineWritePending)
-						Printer.WriteLine("");
+					if (Printer.IsLineWritePending) Printer.WriteLine("");
 				}
-				if (Printer.IsLineWritePending)
-					Printer.WriteLine("");
+				if (Printer.IsLineWritePending) Printer.WriteLine("");
 				Printer.WriteLine(")");
 			}
 			void PrintMethodCallExpression(MethodCallExpression exp)
@@ -252,14 +224,11 @@ internal static class IdentityExtensions
 				{
 					PrintExpression(exp.Arguments[0]);
 					Printer.Write($".{exp.Method.Name}(");
-					foreach (var e in exp.Arguments.Skip(1))
-						PrintExpression(e);
-				}
-				else
+					foreach (var e in exp.Arguments.Skip(1)) PrintExpression(e);
+				} else
 				{
 					Printer.Write($"{exp.Method.Name}(");
-					foreach (var e in exp.Arguments)
-						PrintExpression(e);
+					foreach (var e in exp.Arguments) PrintExpression(e);
 				}
 				Printer.Write(")");
 			}
@@ -270,13 +239,11 @@ internal static class IdentityExtensions
 					r += "null";
 				else if (exp.Value.GetType().IsSubclassOfRawGeneric(typeof(List<>)))
 				{
-					var toAdd = "[";
-					foreach (var obj in (IEnumerable)exp.Value)
-						toAdd += obj + ", ";
-					toAdd = toAdd.Trim(' ', ',') + "]";
-					r += toAdd;
-				}
-				else
+					var toAdd                                         = "[";
+					foreach (var obj in (IEnumerable)exp.Value) toAdd += obj + ", ";
+					toAdd =  toAdd.Trim(' ', ',') + "]";
+					r     += toAdd;
+				} else
 					r += exp.Value;
 				Printer.Write(r);
 			}
@@ -301,10 +268,14 @@ internal static class IdentityExtensions
 			}
 			#endregion
 			#endregion
+
 			using (Printer.Indent("Input parameters:"))
 			{
 				Printer.WriteLine("Rol:");
-				new[] { me }.Print(PrintMode.Table);
+				new[]
+				{
+					me
+				}.Print(PrintMode.Table);
 				Printer.WriteLine("Functions:");
 				functions.Print(PrintMode.Table);
 				Printer.WriteLine("Type: " + typeof(TEntity).Name);
@@ -321,16 +292,10 @@ internal static class IdentityExtensions
 				Printer.WriteLine($"Type '{typeof(TEntity).Name}' hasn't TypeDiscriminator associated to it, no filter applies");
 				return res.Value = Expression.Lambda<Func<TEntity, bool>>(Expression.Constant(true), Expression.Parameter(typeof(TEntity)));
 			}
-
 			var props = typeof(TEntity).GetDiscriminatedProperties();
 			Printer.Foreach("Properties:", props, p => Printer.WriteLine($"{p.PropertyType.Name} {p.PropertyInfo.Name} - {p.DiscriminatorTypeId} {p.DiscriminatorType.Name}"));
 			var pers = functions.SelectMany(fun => me.SearchPermissions(
-				true,
-				fun,
-				Singleton.Get<TypeDiscriminatorFactory>().FromType<TEntity>(true),
-				typeof(TEntity).GetDiscriminatorsOfDiscriminatedProperties().ToArray()
-				))
-			.Distinct().ToList();
+				true, fun, Singleton.Get<TypeDiscriminatorFactory>().FromType<TEntity>(true), typeof(TEntity).GetDiscriminatorsOfDiscriminatedProperties().ToArray())).Distinct().ToList();
 			Expression<Func<TEntity, bool>>? denyPersExp = null;
 			Printer.Foreach("Deny permissions:", pers.Where(p => !p.Value), per =>
 			{
@@ -340,25 +305,19 @@ internal static class IdentityExtensions
 					Printer.Foreach("Scopes:", per.Scopes, sco =>
 					{
 						using (Printer.Indent($"Scope: {sco.ToOneLineString()}"))
-						{
-								// Recorro las propiedades que son del tipo de este discriminador
-								foreach (var pro in props.Where(p => AreEquals(p.DiscriminatorTypeId, sco.Discriminator.TypeKey)).ToList())
+							// Recorro las propiedades que son del tipo de este discriminador
+							foreach (var pro in props.Where(p => AreEquals(p.DiscriminatorTypeId, sco.Discriminator.TypeKey)).ToList())
 							{
 								Printer.WriteLine($"Property: {pro.PropertyType.Name} {pro.PropertyInfo.Name}");
-								var exp = GetContainsExpression(per.Value, sco, pro.DiscriminatorType, pro.PropertyInfo);
-								if (exp == null)
-									exp = Expression.Lambda<Func<TEntity, bool>>(Expression.Constant(false), Expression.Parameter(typeof(TEntity)));
+								var exp              = GetContainsExpression(per.Value, sco, pro.DiscriminatorType, pro.PropertyInfo);
+								if (exp == null) exp = Expression.Lambda<Func<TEntity, bool>>(Expression.Constant(false), Expression.Parameter(typeof(TEntity)));
 								if (perExp == null)
 									perExp = exp;
 								else
 									perExp = perExp.And(exp);
 							}
-						}
 					});
-					if (perExp == null)
-					{
-						perExp = Expression.Lambda<Func<TEntity, bool>>(Expression.Constant(false), Expression.Parameter(typeof(TEntity)));
-					}
+					if (perExp == null) perExp = Expression.Lambda<Func<TEntity, bool>>(Expression.Constant(false), Expression.Parameter(typeof(TEntity)));
 				}
 				if (perExp != null)
 				{
@@ -377,25 +336,19 @@ internal static class IdentityExtensions
 					Printer.Foreach("Scopes:", per.Scopes, sco =>
 					{
 						using (Printer.Indent($"Scope: {sco.ToOneLineString()}"))
-						{
-								// Recorro las propiedades que son del tipo de este discriminador
-								foreach (var pro in props.Where(p => AreEquals(p.DiscriminatorTypeId, sco.Discriminator.TypeKey)).ToList())
+							// Recorro las propiedades que son del tipo de este discriminador
+							foreach (var pro in props.Where(p => AreEquals(p.DiscriminatorTypeId, sco.Discriminator.TypeKey)).ToList())
 							{
 								Printer.WriteLine($"Property: {pro.PropertyType.Name} {pro.PropertyInfo.Name}");
-								var exp = GetContainsExpression(per.Value, sco, pro.DiscriminatorType, pro.PropertyInfo);
-								if (exp == null)
-									exp = Expression.Lambda<Func<TEntity, bool>>(Expression.Constant(false), Expression.Parameter(typeof(TEntity)));
+								var exp              = GetContainsExpression(per.Value, sco, pro.DiscriminatorType, pro.PropertyInfo);
+								if (exp == null) exp = Expression.Lambda<Func<TEntity, bool>>(Expression.Constant(false), Expression.Parameter(typeof(TEntity)));
 								if (perExp == null)
 									perExp = exp;
 								else
 									perExp = perExp.Or(exp);
 							}
-						}
 					});
-					if (perExp == null)
-					{
-						perExp = Expression.Lambda<Func<TEntity, bool>>(Expression.Constant(true), Expression.Parameter(typeof(TEntity)));
-					}
+					if (perExp == null) perExp = Expression.Lambda<Func<TEntity, bool>>(Expression.Constant(true), Expression.Parameter(typeof(TEntity)));
 					if (perExp != null)
 					{
 						if (grantPersExp != null)
@@ -405,15 +358,10 @@ internal static class IdentityExtensions
 					}
 				}
 			});
-			if (denyPersExp != null && grantPersExp != null)
-				res.Value = denyPersExp.And(grantPersExp);
-			if (denyPersExp != null && grantPersExp == null)
-				res.Value = denyPersExp;
-			if (denyPersExp == null && grantPersExp != null)
-				res.Value = grantPersExp;
+			if (denyPersExp != null && grantPersExp != null) res.Value = denyPersExp.And(grantPersExp);
+			if (denyPersExp != null && grantPersExp == null) res.Value = denyPersExp;
+			if (denyPersExp == null && grantPersExp != null) res.Value = grantPersExp;
 			res.Value = res.Value ?? Expression.Lambda<Func<TEntity, bool>>(Expression.Constant(false), Expression.Parameter(typeof(TEntity)));
-
-
 			return res.Value;
 		}
 	}

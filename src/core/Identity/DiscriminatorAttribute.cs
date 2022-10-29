@@ -1,7 +1,7 @@
 ﻿namespace Fuxion.Identity;
 
 /// <summary>
-/// Mark a class to be a discriminator for other classes
+///    Mark a class to be a discriminator for other classes
 /// </summary>
 [AttributeUsage(AttributeTargets.Class)]
 public class DiscriminatorAttribute : Attribute

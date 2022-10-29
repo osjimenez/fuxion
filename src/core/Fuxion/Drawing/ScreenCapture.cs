@@ -33,7 +33,6 @@
 //	[DllImport("user32.dll")]
 //	public static extern bool GetCursorPos(out POINT lpPoint);
 
-
 //	public static Image? CaptureDesktop(bool drawMousePoint = false) => CaptureWindow(GetDesktopWindow(), drawMousePoint);
 
 //	public static Bitmap? CaptureActiveWindow(bool drawMousePoint = false) => CaptureWindow(GetForegroundWindow(), drawMousePoint);
@@ -76,3 +75,4 @@
 //		return bitmap;
 //	}
 //}
+

@@ -1,9 +1,6 @@
-﻿namespace Fuxion.Application.Commands;
-
-using Fuxion.Domain;
+﻿using Fuxion.Domain;
 using Fuxion.Json;
 
-public class CommandPodConverter : JsonPodConverter<CommandPod, Command, string>
-{
+namespace Fuxion.Application.Commands;
 
-}
+public class CommandPodConverter : JsonPodConverter<CommandPod, Command, string> { }

@@ -1,6 +1,6 @@
-﻿namespace Fuxion.Application.Factories;
+﻿using Fuxion.Domain;
 
-using Fuxion.Domain;
+namespace Fuxion.Application.Factories;
 
 public interface IFactoryFeature<TAggregate> where TAggregate : Aggregate
 {

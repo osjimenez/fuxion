@@ -7,21 +7,21 @@
 		<PackageId>Fuxion.Domain</PackageId>
 		<Description>Fuxion library for DDD</Description>
 	</PropertyGroup>
-	
+
 	<ItemGroup>
-		<None Include="icon.png" Pack="true" PackagePath="\" />
-	</ItemGroup>
-	
-	<ItemGroup>
-		<Compile Update="Properties\AssemblyInfo.cs" />
+		<None Include="icon.png" Pack="true" PackagePath="\"/>
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
+		<Compile Update="Properties\AssemblyInfo.cs"/>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Fuxion\Fuxion.csproj" />
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All"/>
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Fuxion\Fuxion.csproj"/>
 	</ItemGroup>
 
 </Project>

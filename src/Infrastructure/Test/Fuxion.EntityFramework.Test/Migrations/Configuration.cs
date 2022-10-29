@@ -1,12 +1,11 @@
-namespace Fuxion.EntityFramework.Test.Migrations;
-
 using System.Data.Entity.Migrations;
 
-public sealed class Configuration : DbMigrationsConfiguration<Fuxion.EntityFramework.Test.TestContext>
+namespace Fuxion.EntityFramework.Test.Migrations;
+
+public sealed class Configuration : DbMigrationsConfiguration<TestContext>
 {
 	public Configuration() => AutomaticMigrationsEnabled = false;
-
-	protected override void Seed(Fuxion.EntityFramework.Test.TestContext context)
+	protected override void Seed(TestContext context)
 	{
 		//  This method will be called after migrating to the latest version.
 

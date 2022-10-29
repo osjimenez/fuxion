@@ -26,7 +26,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Using Remove="System.Net.Http" />
-		<Using Include="Microsoft.Extensions.Logging" />
+		<Using Remove="System.Net.Http"/>
+		<Using Include="Microsoft.Extensions.Logging"/>
 	</ItemGroup>
 </Project>

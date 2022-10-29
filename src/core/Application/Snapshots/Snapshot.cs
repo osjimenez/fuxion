@@ -1,7 +1,7 @@
-﻿namespace Fuxion.Application.Snapshots;
-
+﻿using System.Text.Json.Serialization;
 using Fuxion.Domain;
-using System.Text.Json.Serialization;
+
+namespace Fuxion.Application.Snapshots;
 
 public abstract class Snapshot
 {

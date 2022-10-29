@@ -1,62 +1,59 @@
-﻿namespace Fuxion.Domain.Aggregates;
-
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Reflection;
+
+namespace Fuxion.Domain.Aggregates;
 
 public class EventsAggregateFeature : IAggregateFeature
 {
-	private Aggregate? aggregate;
+	static readonly ConcurrentDictionary<Type, Dictionary<Type, MethodInfo>> aggregateEventHandlerCache = new();
 
-	public event EventHandler<EventArgs<Event>>? Applying;
-	public event EventHandler<EventArgs<Event>>? Validated;
-	public event EventHandler<EventArgs<Event>>? Handled;
-	public event EventHandler<EventArgs<Event>>? Pendent;
-
+	// Pending events
+	readonly ConcurrentStack<Event> pendingEvents = new();
+	Aggregate?                      aggregate;
+	// Event handlers
+	Dictionary<Type, MethodInfo> eventHandlerCache = new();
 	public void OnAttach(Aggregate aggregate)
 	{
 		this.aggregate = aggregate;
 		// Setup internal event handlers
 		var aggregateType = aggregate.GetType();
-		aggregateEventHandlerCache.AddOrUpdate(aggregateType, type =>
-			type.GetRuntimeMethods().Where(m =>
-				m.ReturnType == typeof(void) &&
-				m.GetCustomAttribute<AggregateEventHandlerAttribute>(true) != null &&
-				m.GetParameters().Count() == 1 &&
-				typeof(Event).IsAssignableFrom(m.GetParameters().First().ParameterType))
-				.ToDictionary(m => m.GetParameters().First().ParameterType),
-			(_, __) => __);
+		aggregateEventHandlerCache.AddOrUpdate(aggregateType,
+			type => type.GetRuntimeMethods()
+							.Where(m => m.ReturnType == typeof(void) && m.GetCustomAttribute<AggregateEventHandlerAttribute>(true) != null && m.GetParameters().Count() == 1
+											&& typeof(Event).IsAssignableFrom(m.GetParameters().First().ParameterType)).ToDictionary(m => m.GetParameters().First().ParameterType), (_, __) => __);
 		eventHandlerCache = aggregateEventHandlerCache[aggregateType].ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 	}
+	public event EventHandler<EventArgs<Event>>? Applying;
+	public event EventHandler<EventArgs<Event>>? Validated;
+	public event EventHandler<EventArgs<Event>>? Handled;
+	public event EventHandler<EventArgs<Event>>? Pendent;
 
 	// Events appling
 	internal void ApplyEvent(Event @event)
 	{
-		Applying?.Invoke(this, new EventArgs<Event>(@event));
+		Applying?.Invoke(this, new(@event));
 		Validate(@event);
-		Validated?.Invoke(this, new EventArgs<Event>(@event));
+		Validated?.Invoke(this, new(@event));
 		Handle(@event);
-		Handled?.Invoke(this, new EventArgs<Event>(@event));
+		Handled?.Invoke(this, new(@event));
 		pendingEvents.Push(@event);
-		Pendent?.Invoke(this, new EventArgs<Event>(@event));
+		Pendent?.Invoke(this, new(@event));
 	}
 	internal void Validate(Event @event)
 	{
-		if (aggregate?.Id != @event.AggregateId)
-			throw new AggregateStateMismatchException($"Aggregate Id is '{aggregate?.Id}' and event.AggregateId is '{@event.AggregateId}'");
+		if (aggregate?.Id != @event.AggregateId) throw new AggregateStateMismatchException($"Aggregate Id is '{aggregate?.Id}' and event.AggregateId is '{@event.AggregateId}'");
 	}
 	internal void Handle(Event @event)
 	{
 		if (eventHandlerCache.ContainsKey(@event.GetType()))
-			eventHandlerCache[@event.GetType()].Invoke(aggregate, new object[] { @event });
-		else throw new AggregateApplyEventMethodMissingException($"No event handler specified for '{@event.GetType()}' on '{GetType()}'");
+			eventHandlerCache[@event.GetType()].Invoke(aggregate, new object[]
+			{
+				@event
+			});
+		else
+			throw new AggregateApplyEventMethodMissingException($"No event handler specified for '{@event.GetType()}' on '{GetType()}'");
 	}
-
-	// Pending events
-	private readonly ConcurrentStack<Event> pendingEvents = new ConcurrentStack<Event>();
-	internal bool HasPendingEvents() => !pendingEvents.IsEmpty;
-	internal IEnumerable<Event> GetPendingEvents() => pendingEvents.ToArray();
-	internal void ClearPendingEvents() => pendingEvents.Clear();
-	// Event handlers
-	private Dictionary<Type, MethodInfo> eventHandlerCache = new Dictionary<Type, MethodInfo>();
-	private static readonly ConcurrentDictionary<Type, Dictionary<Type, MethodInfo>> aggregateEventHandlerCache = new ConcurrentDictionary<Type, Dictionary<Type, MethodInfo>>();
+	internal bool               HasPendingEvents()   => !pendingEvents.IsEmpty;
+	internal IEnumerable<Event> GetPendingEvents()   => pendingEvents.ToArray();
+	internal void               ClearPendingEvents() => pendingEvents.Clear();
 }

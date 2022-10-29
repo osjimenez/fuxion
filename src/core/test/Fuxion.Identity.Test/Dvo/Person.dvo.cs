@@ -6,6 +6,7 @@ public class PersonDvo : BaseDvo<PersonDvo>
 	public PersonDvo(string id, string name) : base(id, name) { }
 	public IList<ISkillDvo> Skills { get; set; } = new List<ISkillDvo>();
 }
+
 [TypeDiscriminated(TypeDiscriminatorIds.Person)]
 public class PersonSummaryDvo : BaseDvo<PersonSummaryDvo>
 {

@@ -1,8 +1,5 @@
-﻿namespace Fuxion.Shell;
+﻿using System.Windows;
 
-using System.Windows;
+namespace Fuxion.Shell;
 
-public class ShellResourceDictionary : ResourceDictionary
-{
-
-}
+public class ShellResourceDictionary : ResourceDictionary { }

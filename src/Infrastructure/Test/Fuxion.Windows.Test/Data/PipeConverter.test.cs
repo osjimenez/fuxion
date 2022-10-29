@@ -1,11 +1,11 @@
-﻿namespace Fuxion.Windows.Test.Data;
-
+﻿using System.Globalization;
+using System.Windows;
 using Fuxion.Testing;
 using Fuxion.Windows.Data;
-using System.Globalization;
-using System.Windows;
 using Xunit;
 using Xunit.Abstractions;
+
+namespace Fuxion.Windows.Test.Data;
 
 public class PipeConverterTest : BaseTest
 {

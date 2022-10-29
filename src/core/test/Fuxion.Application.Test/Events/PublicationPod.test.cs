@@ -1,35 +1,13 @@
-﻿namespace Fuxion.Application.Test.Events;
-
-using Fuxion.Application.Events;
-using Fuxion.Domain;
-using Fuxion.Json;
+﻿using Fuxion.Application.Events;
 using Fuxion.Reflection;
 using Fuxion.Testing;
-using System.Net.Mime;
 using Xunit.Abstractions;
+
+namespace Fuxion.Application.Test.Events;
 
 public class PublicationPodTest : BaseTest
 {
-	public PublicationPodTest(ITestOutputHelper output) : base(output) {
-		Printer.WriteLineAction = m => output.WriteLine(m);
-	}
-
-	[Fact(DisplayName = "PublicationPodTest - ToJson")]
-	public void ToJson()
-	{
-		var payload = new DerivedEvent(Guid.NewGuid(),"payloadName",23,"payloadNick");
-		payload.AddEventSourcing(1, Guid.NewGuid(), DateTime.Now, 1);
-		var pod = payload.ToEventSourcingPod();
-		var json = pod.ToJson();
-
-		Output.WriteLine("Serialized json: ");
-		Output.WriteLine(json);
-
-		Assert.Contains($@"""PayloadKey"": ""{nameof(DerivedEvent)}""", json);
-		Assert.Contains(@"""Name"": ""payloadName""", json);
-		Assert.Contains(@"""Age"": 23", json);
-		Assert.Contains(@"""Nick"": ""payloadNick""", json);
-	}
+	public PublicationPodTest(ITestOutputHelper output) : base(output) => Printer.WriteLineAction = m => output.WriteLine(m);
 	[Fact(DisplayName = "PublicationPodTest - FromJson")]
 	public void FromJson()
 	{
@@ -48,21 +26,17 @@ public class PublicationPodTest : BaseTest
 				}
 			}
 			""";
-
 		Output.WriteLine("Initial json: ");
 		Output.WriteLine(json);
-
 		var pod = json.FromEventSourcingPod();
 		Assert.NotNull(pod);
-
 		Output.WriteLine("pod.PayloadValue: ");
 		Output.WriteLine(pod.PayloadValue.ToString());
-
 		void AssertBase(BaseEvent? payload)
 		{
 			Assert.NotNull(payload);
 			Assert.Equal("payloadName", payload.Name);
-			Assert.Equal(23, payload.Age);
+			Assert.Equal(23,            payload.Age);
 		}
 		void AssertDerived(DerivedEvent? payload)
 		{
@@ -70,9 +44,22 @@ public class PublicationPodTest : BaseTest
 			AssertBase(payload);
 			Assert.Equal("payloadNick", payload.Nick);
 		}
-
 		Assert.Equal(typeof(DerivedEvent).GetTypeKey(), pod.PayloadKey);
 		AssertBase(pod.AsEvent<BaseEvent>());
 		AssertDerived(pod.AsEvent<DerivedEvent>());
+	}
+	[Fact(DisplayName = "PublicationPodTest - ToJson")]
+	public void ToJson()
+	{
+		var payload = new DerivedEvent(Guid.NewGuid(), "payloadName", 23, "payloadNick");
+		payload.AddEventSourcing(1, Guid.NewGuid(), DateTime.Now, 1);
+		var pod  = payload.ToEventSourcingPod();
+		var json = pod.ToJson();
+		Output.WriteLine("Serialized json: ");
+		Output.WriteLine(json);
+		Assert.Contains($@"""PayloadKey"": ""{nameof(DerivedEvent)}""", json);
+		Assert.Contains(@"""Name"": ""payloadName""",                   json);
+		Assert.Contains(@"""Age"": 23",                                 json);
+		Assert.Contains(@"""Nick"": ""payloadNick""",                   json);
 	}
 }

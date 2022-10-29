@@ -1,11 +1,12 @@
-﻿namespace Fuxion.EntityFramework.Test;
-
-using Fuxion.Testing;
-using System.Data.Common;
+﻿using System.Data.Common;
 using System.Data.Entity.Migrations;
 using System.Data.SqlClient;
+using Fuxion.EntityFramework.Test.Migrations;
+using Fuxion.Testing;
 using Xunit;
 using Xunit.Abstractions;
+
+namespace Fuxion.EntityFramework.Test;
 
 [Collection("Sequences")]
 public class Sequences : BaseTest, IDisposable
@@ -14,11 +15,10 @@ public class Sequences : BaseTest, IDisposable
 	{
 		// https://devblogs.microsoft.com/dotnet/announcing-entity-framework-6-3-preview-with-net-core-support/
 		DbProviderFactories.RegisterFactory("System.Data.SqlClient", SqlClientFactory.Instance);
-
-		con = new TestContext();
+		con = new();
 		if (!con.Database.Exists())
 		{
-			var mig = new DbMigrator(new Migrations.Configuration());
+			var mig = new DbMigrator(new Configuration());
 			mig.Update();
 		}
 	}
@@ -27,7 +27,7 @@ public class Sequences : BaseTest, IDisposable
 		con.Database.Delete();
 		con.Dispose();
 	}
-	private readonly TestContext con;
+	readonly TestContext con;
 
 	//[Fact(Skip = "Desactivado")]
 	[Fact(DisplayName = "Sequences - Create and delete")]

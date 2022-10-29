@@ -6,15 +6,15 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0-preview-20221003-04" />
-		<PackageReference Include="EntityFramework" Version="6.4.4" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0-preview-20221003-04"/>
+		<PackageReference Include="EntityFramework" Version="6.4.4"/>
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\..\Infrastructure\EntityFramework\Fuxion.EntityFramework.csproj" />
-		<ProjectReference Include="..\..\Identity\Fuxion.Identity.csproj" />
-		<ProjectReference Include="..\Fuxion.Identity.Test\Fuxion.Identity.Test.csproj" />
-		<ProjectReference Include="..\Fuxion.Test\Fuxion.Test.csproj" />
+		<ProjectReference Include="..\..\..\Infrastructure\EntityFramework\Fuxion.EntityFramework.csproj"/>
+		<ProjectReference Include="..\..\Identity\Fuxion.Identity.csproj"/>
+		<ProjectReference Include="..\Fuxion.Identity.Test\Fuxion.Identity.Test.csproj"/>
+		<ProjectReference Include="..\Fuxion.Test\Fuxion.Test.csproj"/>
 	</ItemGroup>
 
 </Project>

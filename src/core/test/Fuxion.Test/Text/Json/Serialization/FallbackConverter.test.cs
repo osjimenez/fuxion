@@ -1,10 +1,5 @@
 ﻿namespace Fuxion.Test.Text.Json.Serialization;
 
-using System;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using System.Text.Json;
-
 public class FallbackConverterTest : BaseTest
 {
 	public FallbackConverterTest(ITestOutputHelper output) : base(output) { }
@@ -20,14 +15,12 @@ public class FallbackConverterTest : BaseTest
 					InvalidProgramException ipex = new("InvalidProgramException message");
 					throw ipex;
 				}).Wait();
-			}
-			catch (Exception ex)
+			} catch (Exception ex)
 			{
 				InvalidOperationException ioex = new("InvalidOperationException message", ex);
 				throw ioex;
 			}
-		}
-		catch (Exception ex)
+		} catch (Exception ex)
 		{
 			var res = ex.ToJson();
 			Output.WriteLine("Exception serialized JSON:");

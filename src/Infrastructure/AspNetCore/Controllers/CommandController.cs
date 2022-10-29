@@ -1,8 +1,8 @@
-﻿namespace Fuxion.AspNetCore.Controllers;
-
-using Fuxion.Application.Commands;
+﻿using Fuxion.Application.Commands;
 using Fuxion.Reflection;
 using Microsoft.AspNetCore.Mvc;
+
+namespace Fuxion.AspNetCore.Controllers;
 
 [Route("api/[controller]")]
 public class CommandController : ControllerBase
@@ -10,11 +10,10 @@ public class CommandController : ControllerBase
 	public CommandController(ICommandDispatcher commandDispatcher, TypeKeyDirectory typeKeyDirectory)
 	{
 		this.commandDispatcher = commandDispatcher;
-		this.typeKeyDirectory = typeKeyDirectory;
+		this.typeKeyDirectory  = typeKeyDirectory;
 	}
-
-	private readonly ICommandDispatcher commandDispatcher;
-	private readonly TypeKeyDirectory typeKeyDirectory;
+	readonly ICommandDispatcher commandDispatcher;
+	readonly TypeKeyDirectory   typeKeyDirectory;
 	[HttpPost]
 	public async Task<IActionResult> Post([FromBody] CommandPod pod)
 	{

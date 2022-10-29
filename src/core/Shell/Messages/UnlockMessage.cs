@@ -1,3 +1,3 @@
 ﻿namespace Fuxion.Shell.Messages;
 
-internal record UnlockMessage;
+record UnlockMessage;

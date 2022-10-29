@@ -1,6 +1,6 @@
-﻿namespace Fuxion.EntityFramework;
+﻿using System.Data.Entity.ModelConfiguration.Conventions;
 
-using System.Data.Entity.ModelConfiguration.Conventions;
+namespace Fuxion.EntityFramework;
 
 public class DateTime2Convention : Convention
 {

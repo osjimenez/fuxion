@@ -9,8 +9,7 @@ public static class EventFeatureExtensions
 		initializeAction?.Invoke(fea);
 		me.Features.Add(fea);
 	}
-	public static bool HasFeature<TFeature>(this Event me) where TFeature : IEventFeature, new()
-		=> me.Features.OfType<TFeature>().Any();
-	public static TFeature GetFeature<TFeature>(this Event me) where TFeature : IEventFeature, new()
-		=> me.Features.OfType<TFeature>().SingleOrDefault() ?? throw new EventFeatureNotFoundException($"'{typeof(TFeature).Name}' must be present in the event");
+	public static bool HasFeature<TFeature>(this Event me) where TFeature : IEventFeature, new() => me.Features.OfType<TFeature>().Any();
+	public static TFeature GetFeature<TFeature>(this Event me) where TFeature : IEventFeature, new() =>
+		me.Features.OfType<TFeature>().SingleOrDefault() ?? throw new EventFeatureNotFoundException($"'{typeof(TFeature).Name}' must be present in the event");
 }

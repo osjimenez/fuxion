@@ -1,9 +1,6 @@
-﻿namespace Fuxion.Application.Events;
-
-using Fuxion.Domain;
+﻿using Fuxion.Domain;
 using Fuxion.Json;
 
-public class EventSourcingPodConverter : JsonPodConverter<EventSourcingPod, Event, string>
-{
+namespace Fuxion.Application.Events;
 
-}
+public class EventSourcingPodConverter : JsonPodConverter<EventSourcingPod, Event, string> { }

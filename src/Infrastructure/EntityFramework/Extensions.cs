@@ -1,8 +1,8 @@
-﻿namespace Fuxion.EntityFramework;
-
-using System.Data;
+﻿using System.Data;
 using System.Data.Entity;
 using System.Data.SqlClient;
+
+namespace Fuxion.EntityFramework;
 
 public static class Extensions
 {
@@ -21,9 +21,7 @@ public static class Extensions
 				list.Add("__MigrationHistory");
 				excludedTable = list.ToArray();
 			}
-			var exclusions = usePartialExcludedTableName ?
-				tables.Where(t => excludedTable.Any(t.Contains)) :
-				tables.Where(excludedTable.Contains);
+			var exclusions = usePartialExcludedTableName ? tables.Where(t => excludedTable.Any(t.Contains)) : tables.Where(excludedTable.Contains);
 			// Remove exlusions
 			tables.RemoveAll(exclusions.Contains);
 			// Deactivate db consistency check
@@ -51,6 +49,7 @@ public static class Extensions
 			connection.Close();
 		}
 	}
+
 	#region Sequences
 	public static int CreateSequence(this DbContext me, string name, int startWith = 1, int increment = 1, int minValue = 1, int maxValue = int.MaxValue, bool cycle = false)
 	{
@@ -82,14 +81,9 @@ public static class Extensions
 		con.Open();
 		SqlCommand com;
 		if (increment)
-		{
-			com = new SqlCommand($"SELECT NEXT VALUE FOR [{name}]", con);
-		}
+			com = new($"SELECT NEXT VALUE FOR [{name}]", con);
 		else
-		{
-			com = new SqlCommand($"SELECT current_value FROM sys.sequences WHERE name = '{name}'", con);
-		}
-
+			com = new($"SELECT current_value FROM sys.sequences WHERE name = '{name}'", con);
 		var res = Convert.ToInt32(com.ExecuteScalar());
 		con.Close();
 		return res;

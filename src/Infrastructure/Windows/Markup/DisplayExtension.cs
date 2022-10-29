@@ -1,10 +1,10 @@
-﻿namespace Fuxion.Windows.Markup;
-
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Markup;
+
+namespace Fuxion.Windows.Markup;
 
 public class DisplayExtension : MarkupExtension
 {
@@ -23,16 +23,12 @@ public class DisplayExtension : MarkupExtension
 		}
 		var pros = bindExpression.Split('.');
 		for (var i = pros.Length - 1; i >= 0; i--)
-		{
-			chain.Add(new NotifierChainLink(pros[i], pro =>
+			chain.Add(new(pros[i], pro =>
 			{
-				var att = pro?.GetCustomAttribute<DisplayAttribute>(true, false);
-
-				var nonAttributeValue = pro?.Name;
-				if (nonAttributeValue != null)
-					nonAttributeValue = NonAttrributePrefix + nonAttributeValue + NonAttrributeSufix;
-
-				string? attRes = null;
+				var att                                          = pro?.GetCustomAttribute<DisplayAttribute>(true, false);
+				var nonAttributeValue                            = pro?.Name;
+				if (nonAttributeValue != null) nonAttributeValue = NonAttrributePrefix + nonAttributeValue + NonAttrributeSufix;
+				string? attRes                                   = null;
 				switch (mode)
 				{
 					case DisplayMode.Name:
@@ -54,42 +50,33 @@ public class DisplayExtension : MarkupExtension
 						attRes = att?.GetPrompt();
 						break;
 				}
-
 				return attRes ?? nonAttributeValue;
 			})
 			{
-				printer = Printer,
-				NextLink = i == (pros.Length - 1) ? null : chain.FirstOrDefault(l => l.PropertyName == pros[i + 1])
+				printer = Printer, NextLink = i == pros.Length - 1 ? null : chain.FirstOrDefault(l => l.PropertyName == pros[i + 1])
 			});
-		}
 		chain.Reverse();
-		for (var i = 0; i < chain.Count; i++)
-			chain[i].PreviousLink = i == 0 ? null : chain[i - 1];
+		for (var i = 0; i < chain.Count; i++) chain[i].PreviousLink = i == 0 ? null : chain[i - 1];
 	}
-
-	public static string NonAttrributePrefix { get; set; } = "";
-	public static string NonAttrributeSufix { get; set; } = "";
-
-	private IPrinter? _Printer;
+	IPrinter?                             _Printer;
+	internal      List<NotifierChainLink> chain = new();
+	public static string                  NonAttrributePrefix { get; set; } = "";
+	public static string                  NonAttrributeSufix  { get; set; } = "";
 	internal IPrinter? Printer
 	{
 		get => _Printer;
 		set
 		{
 			_Printer = value;
-			foreach (var link in chain)
-				link.printer = value;
+			foreach (var link in chain) link.printer = value;
 		}
 	}
-	internal List<NotifierChainLink> chain = new List<NotifierChainLink>();
 	public override object? ProvideValue(IServiceProvider serviceProvider)
 	{
 		if (serviceProvider.GetService(typeof(IProvideValueTarget)) is IProvideValueTarget provider)
 		{
 			if (provider.TargetObject == null || provider.TargetProperty == null) return null;
-
 			var first = chain.First();
-
 			if (provider.TargetObject is FrameworkElement element)
 			{
 				first.TargetObject = element;
@@ -100,8 +87,7 @@ public class DisplayExtension : MarkupExtension
 					first.SetValue();
 				};
 				first.DataContext = element.DataContext;
-			}
-			else if (provider.TargetObject is FrameworkContentElement contentElement)
+			} else if (provider.TargetObject is FrameworkContentElement contentElement)
 			{
 				first.TargetObject = contentElement;
 				contentElement.DataContextChanged += (s, e) =>
@@ -119,7 +105,7 @@ public class DisplayExtension : MarkupExtension
 	}
 }
 
-internal enum DisplayMode
+enum DisplayMode
 {
 	Name,
 	Description,
@@ -128,91 +114,72 @@ internal enum DisplayMode
 	Order,
 	Prompt
 }
-internal class NotifierChainLink
+
+class NotifierChainLink
 {
 	public NotifierChainLink(string propertyName, Func<PropertyInfo?, string?> getValueFunction)
 	{
 		this.getValueFunction = getValueFunction;
-		PropertyName = propertyName;
-		EventHandler = PropertyChanged;
+		PropertyName          = propertyName;
+		EventHandler          = PropertyChanged;
 	}
+	readonly Func<PropertyInfo?, string?> getValueFunction;
+	object? _DataContext;
+	DependencyProperty? _TargetDependencyProperty;
+	object? _TargetElement;
 	internal IPrinter? printer;
-	private readonly Func<PropertyInfo?, string?> getValueFunction;
-	private void PropertyChanged(object? sender, PropertyChangedEventArgs e)
-	{
-		if (DataContext != null)
-			if (NextLink != null)
-				NextLink.DataContext = ContextProperty?.GetValue(DataContext);
-		SetValue();
-	}
-
-	public NotifierChainLink? NextLink { get; set; }
-	public NotifierChainLink? PreviousLink { get; set; }
-
-	public string PropertyName { get; set; }
-	public PropertyChangedEventHandler EventHandler { get; set; }
-
-	public INotifyPropertyChanged? ContextNotifier => DataContext != null
-		? typeof(INotifyPropertyChanged).IsAssignableFrom(DataContext.GetType())
-			? (INotifyPropertyChanged?)Context
-			: null
-		: null;
-
-	private object? _DataContext;
+	public   NotifierChainLink? NextLink { get; set; }
+	public   NotifierChainLink? PreviousLink { get; set; }
+	public   string PropertyName { get; set; }
+	public   PropertyChangedEventHandler EventHandler { get; set; }
+	public   INotifyPropertyChanged? ContextNotifier => DataContext != null ? typeof(INotifyPropertyChanged).IsAssignableFrom(DataContext.GetType()) ? (INotifyPropertyChanged?)Context : null : null;
 	public object? DataContext
 	{
 		get => _DataContext;
 		set
 		{
 			_DataContext = value;
-			if (ContextNotifier != null)
-				ContextNotifier.PropertyChanged += EventHandler;
+			if (ContextNotifier != null) ContextNotifier.PropertyChanged += EventHandler;
 		}
 	}
-
-	private object? Context => DataContext ?? (PreviousLink?.Context != null
-			? PreviousLink?.ContextProperty?.GetValue(PreviousLink.Context)
-			: null);
-
-	private Type? ContextType => Context?.GetType();
-
-	private PropertyInfo? ContextProperty => ContextType?.GetProperty(PropertyName);
-
-	private DisplayAttribute? ContextAttribute => ContextProperty?.GetCustomAttribute<DisplayAttribute>(true, false);
-
-	private DependencyProperty? _TargetDependencyProperty;
+	object?           Context          => DataContext ?? (PreviousLink?.Context != null ? PreviousLink?.ContextProperty?.GetValue(PreviousLink.Context) : null);
+	Type?             ContextType      => Context?.GetType();
+	PropertyInfo?     ContextProperty  => ContextType?.GetProperty(PropertyName);
+	DisplayAttribute? ContextAttribute => ContextProperty?.GetCustomAttribute<DisplayAttribute>(true, false);
 	public DependencyProperty? TargetDependencyProperty
 	{
 		get => _TargetDependencyProperty ?? PreviousLink?.TargetDependencyProperty;
 		set => _TargetDependencyProperty = value;
 	}
-
-	private object? _TargetElement;
 	public object? TargetObject
 	{
 		get => _TargetElement ?? PreviousLink?.TargetObject;
 		set => _TargetElement = value;
 	}
 	public PropertyInfo? TargetProperty => TargetDependencyProperty?.Name != null ? TargetObject?.GetType().GetProperty(TargetDependencyProperty.Name) : null;
-
+	void PropertyChanged(object? sender, PropertyChangedEventArgs e)
+	{
+		if (DataContext != null)
+			if (NextLink != null)
+				NextLink.DataContext = ContextProperty?.GetValue(DataContext);
+		SetValue();
+	}
 	public void SetValue()
 	{
 		printer?.WriteLine($"Setting value for {PropertyName}");
 		if (NextLink == null)
 		{
-			printer?.WriteLine($"   DataContext: {(DataContext?.ToString() ?? "null")}");
-			printer?.WriteLine($"   PreviousLink: {(PreviousLink?.ToString() ?? "null")}");
-			printer?.WriteLine($"   Context: {(Context?.ToString() ?? "null")}");
-			printer?.WriteLine($"   ContextType: {(ContextType?.Name ?? "null")}");
-			printer?.WriteLine($"   ContextProperty: {(ContextProperty?.Name ?? "null")}");
-			printer?.WriteLine($"   ContextAttribute: {(ContextAttribute?.ToString() ?? "null")}");
-			printer?.WriteLine($"   TargetElement: {(TargetObject?.ToString() ?? "null")}");
-			printer?.WriteLine($"   TargetProperty: {(TargetProperty?.Name ?? "null")}");
-			if (TargetObject != null)
-				TargetProperty?.SetValue(TargetObject, getValueFunction(ContextProperty));
-		}
-		else NextLink.SetValue();
+			printer?.WriteLine($"   DataContext: {DataContext?.ToString()           ?? "null"}");
+			printer?.WriteLine($"   PreviousLink: {PreviousLink?.ToString()         ?? "null"}");
+			printer?.WriteLine($"   Context: {Context?.ToString()                   ?? "null"}");
+			printer?.WriteLine($"   ContextType: {ContextType?.Name                 ?? "null"}");
+			printer?.WriteLine($"   ContextProperty: {ContextProperty?.Name         ?? "null"}");
+			printer?.WriteLine($"   ContextAttribute: {ContextAttribute?.ToString() ?? "null"}");
+			printer?.WriteLine($"   TargetElement: {TargetObject?.ToString()        ?? "null"}");
+			printer?.WriteLine($"   TargetProperty: {TargetProperty?.Name           ?? "null"}");
+			if (TargetObject != null) TargetProperty?.SetValue(TargetObject, getValueFunction(ContextProperty));
+		} else
+			NextLink.SetValue();
 	}
-
 	public override string? ToString() => PropertyName;
 }

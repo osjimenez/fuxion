@@ -1,8 +1,8 @@
-﻿namespace Fuxion.Windows.Data;
-
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Globalization;
+
+namespace Fuxion.Windows.Data;
 
 public class INotifyCollectionChangedToRemovedDuplicatesINotifyCollectionChangedConverter : GenericConverter<INotifyCollectionChanged, INotifyCollectionChanged?>
 {
@@ -21,8 +21,7 @@ public class INotifyCollectionChangedToRemovedDuplicatesINotifyCollectionChanged
 				foreach (var item in e.OldItems)
 					if (item != null && !((IEnumerable<object>)source).Contains(item))
 						res.Remove(item);
-			if (e.Action == NotifyCollectionChangedAction.Reset)
-				res.Clear();
+			if (e.Action == NotifyCollectionChangedAction.Reset) res.Clear();
 		};
 		return res;
 	}

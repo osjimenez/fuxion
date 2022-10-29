@@ -1,32 +1,21 @@
-﻿namespace Fuxion.Test.Json;
+﻿using Fuxion.Json;
 
-using Fuxion.Json;
+namespace Fuxion.Test.Json;
 
 public class JsonPodTest : BaseTest
 {
-	public JsonPodTest(ITestOutputHelper output) : base(output) {
-		Printer.WriteLineAction = m => output.WriteLine(m);
-	}
-
-	[Fact(DisplayName = "JsonPod - ToJson")]
-	public void ToJson()
+	public JsonPodTest(ITestOutputHelper output) : base(output) => Printer.WriteLineAction = m => output.WriteLine(m);
+	[Fact(DisplayName = "JsonPod - CastWithPayload")]
+	public void CastWithPayload()
 	{
 		var payload = new PayloadDerived
 		{
-			Name = "payloadName",
-			Age = 23,
-			Nick = "payloadNick"
+			Name = "payloadName", Age = 23, Nick = "payloadNick"
 		};
-		var pod = payload.ToJsonPod("podKey");
-		var json = pod.ToJson();
-
-		Output.WriteLine("Serialized json: ");
-		Output.WriteLine(json);
-
-		Assert.Contains(@"""PayloadKey"": ""podKey""", json);
-		Assert.Contains(@"""Name"": ""payloadName""", json);
-		Assert.Contains(@"""Age"": 23", json);
-		Assert.Contains(@"""Nick"": ""payloadNick""", json);
+		var basePod = new JsonPod<PayloadBase, string>(payload, "podKey");
+		var derived = basePod.CastWithPayload<PayloadDerived>();
+		Assert.NotNull(derived);
+		Assert.Equal("payloadName", derived.Payload!.Name);
 	}
 	[Fact(DisplayName = "JsonPod - FromJson")]
 	public void FromJson()
@@ -41,21 +30,17 @@ public class JsonPodTest : BaseTest
 				}
 			}
 			""";
-
 		Output.WriteLine("Initial json: ");
 		Output.WriteLine(json);
-
 		var pod = json.FromJsonPod<PayloadBase, string>();
 		Assert.NotNull(pod);
-
 		Output.WriteLine("pod.PayloadValue: ");
 		Output.WriteLine(pod.PayloadValue.ToString());
-
 		void AssertBase(PayloadBase? payload)
 		{
 			Assert.NotNull(payload);
 			Assert.Equal("payloadName", payload.Name);
-			Assert.Equal(23, payload.Age);
+			Assert.Equal(23,            payload.Age);
 		}
 		void AssertDerived(PayloadDerived? payload)
 		{
@@ -63,7 +48,6 @@ public class JsonPodTest : BaseTest
 			AssertBase(payload);
 			Assert.Equal("payloadNick", payload.Nick);
 		}
-
 		Assert.Equal("podKey", pod.PayloadKey);
 		AssertBase(pod);
 		Assert.Throws<InvalidCastException>(() => AssertDerived((PayloadDerived?)pod));
@@ -71,26 +55,30 @@ public class JsonPodTest : BaseTest
 		Assert.NotNull(derived);
 		AssertDerived(derived);
 	}
-	[Fact(DisplayName = "JsonPod - CastWithPayload")]
-	public void CastWithPayload()
+	[Fact(DisplayName = "JsonPod - ToJson")]
+	public void ToJson()
 	{
 		var payload = new PayloadDerived
 		{
-			Name = "payloadName",
-			Age = 23,
-			Nick = "payloadNick"
+			Name = "payloadName", Age = 23, Nick = "payloadNick"
 		};
-		var basePod = new JsonPod<PayloadBase, string>(payload, "podKey");
-		var derived = basePod.CastWithPayload<PayloadDerived>();
-		Assert.NotNull(derived);
-		Assert.Equal("payloadName", derived.Payload!.Name);
+		var pod  = payload.ToJsonPod("podKey");
+		var json = pod.ToJson();
+		Output.WriteLine("Serialized json: ");
+		Output.WriteLine(json);
+		Assert.Contains(@"""PayloadKey"": ""podKey""", json);
+		Assert.Contains(@"""Name"": ""payloadName""",  json);
+		Assert.Contains(@"""Age"": 23",                json);
+		Assert.Contains(@"""Nick"": ""payloadNick""",  json);
 	}
 }
+
 public class PayloadBase
 {
 	public string? Name { get; set; }
-	public int Age { get; set; }
+	public int     Age  { get; set; }
 }
+
 public class PayloadDerived : PayloadBase
 {
 	public string? Nick { get; set; }

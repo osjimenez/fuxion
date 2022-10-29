@@ -1,22 +1,21 @@
-﻿namespace Fuxion.Shell.Views;
-
+﻿using System.Reactive.Disposables;
 using ReactiveUI;
-using System.Reactive.Disposables;
+
+namespace Fuxion.Shell.Views;
 
 public class PanelView<TViewModel> : ReactiveUserControl<TViewModel>, IPanelView, ICompositeDisposable where TViewModel : class, IPanel
 {
 	public PanelView(ILogger<PanelView<TViewModel>> logger, TViewModel viewModel)
 	{
 		ViewModel = viewModel;
-		Logger = logger;
+		Logger    = logger;
 		Logger.LogTrace($"PanelView '{GetType().Name}' CREATED");
 	}
-	protected ILogger Logger { get; }
+	protected ILogger                        Logger              { get; }
+	CompositeDisposable ICompositeDisposable.CompositeDisposable { get; } = new();
+	bool ICompositeDisposable.               Disposed            { get; set; }
+	public IPanel                            Panel               => ViewModel ?? throw new InvalidProgramException($"'{nameof(ViewModel)}' cannot be null");
 #if DEBUG
 	~PanelView() => Logger.LogTrace($"PanelView '{GetType().Name}' FINALIZED");
 #endif
-	public IPanel Panel => ViewModel ?? throw new InvalidProgramException($"'{nameof(ViewModel)}' cannot be null");
-
-	CompositeDisposable ICompositeDisposable.CompositeDisposable { get; } = new();
-	bool ICompositeDisposable.Disposed { get; set; }
 }

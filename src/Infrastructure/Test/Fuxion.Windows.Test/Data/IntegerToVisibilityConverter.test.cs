@@ -1,12 +1,12 @@
-﻿namespace Fuxion.Windows.Test.Data;
-
-using Fuxion.Testing;
-using Fuxion.Windows.Data;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
+using Fuxion.Testing;
+using Fuxion.Windows.Data;
 using Xunit;
 using Xunit.Abstractions;
+
+namespace Fuxion.Windows.Test.Data;
 
 public class IntegerToVisibilityConverterTest : BaseTest
 {
@@ -16,9 +16,7 @@ public class IntegerToVisibilityConverterTest : BaseTest
 	{
 		var converter = new IntegerToVisibilityConverter
 		{
-			VisibleValuesCommaSeparated = "1 ,2,3",
-			CollapsedValuesCommaSeparated = "3, 4,5",
-			HiddenValuesCommaSeparated = "5, 6 ,7"
+			VisibleValuesCommaSeparated = "1 ,2,3", CollapsedValuesCommaSeparated = "3, 4,5", HiddenValuesCommaSeparated = "5, 6 ,7"
 		};
 		var res = ((IValueConverter)converter).Convert(1, typeof(EnumTest?), null, CultureInfo.CurrentCulture);
 		Assert.Equal(Visibility.Visible, res);

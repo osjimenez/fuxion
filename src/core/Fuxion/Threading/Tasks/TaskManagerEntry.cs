@@ -1,30 +1,28 @@
-﻿namespace Fuxion.Threading.Tasks;
+﻿using System.Diagnostics;
 
-using System.Diagnostics;
+namespace Fuxion.Threading.Tasks;
 
-internal abstract class TaskManagerEntry : ITaskManagerEntry
+abstract class TaskManagerEntry : ITaskManagerEntry
 {
 	protected TaskManagerEntry(Delegate? @delegate, TaskScheduler? scheduler, TaskCreationOptions options, ConcurrencyProfile concurrencyProfile)
 	{
-		CancellationTokenSource = new CancellationTokenSource();
-		Delegate = @delegate;
-		TaskScheduler = scheduler ?? TaskScheduler.Default;
-		TaskCreationOptions = options;
-		ConcurrencyProfile = concurrencyProfile;
+		CancellationTokenSource = new();
+		Delegate                = @delegate;
+		TaskScheduler           = scheduler ?? TaskScheduler.Default;
+		TaskCreationOptions     = options;
+		ConcurrencyProfile      = concurrencyProfile;
 	}
-	public ILogger? Logger { get; set; }
-
-	private ITaskManagerEntry? _Next;
-	private ITaskManagerEntry? _Previous;
-	private Task? _Task;
+	ITaskManagerEntry? _Next;
+	ITaskManagerEntry? _Previous;
+	Task?              _Task;
+	public ILogger?    Logger { get; set; }
 	public ITaskManagerEntry? Previous
 	{
 		get => _Previous;
 		set
 		{
 			_Previous = value;
-			if (value != null)
-				((TaskManagerEntry)value)._Next = this;
+			if (value != null) ((TaskManagerEntry)value)._Next = this;
 		}
 	}
 	public ITaskManagerEntry? Next
@@ -33,8 +31,7 @@ internal abstract class TaskManagerEntry : ITaskManagerEntry
 		set
 		{
 			_Next = value;
-			if (value != null)
-				((TaskManagerEntry)value)._Previous = this;
+			if (value != null) ((TaskManagerEntry)value)._Previous = this;
 		}
 	}
 	public ConcurrencyProfile ConcurrencyProfile { get; set; }
@@ -46,11 +43,11 @@ internal abstract class TaskManagerEntry : ITaskManagerEntry
 			_Task = value;
 			_Task.ContinueWith(t =>
 			{
-				var toLog = "La tarea finalizó con " + t.Exception?.InnerExceptions.Count + " errores.";
-				Exception? ex = t.Exception;
+				var        toLog = "La tarea finalizó con " + t.Exception?.InnerExceptions.Count + " errores.";
+				Exception? ex    = t.Exception;
 				if (t.Exception?.InnerExceptions.Count == 1)
 				{
-					ex = t.Exception.InnerExceptions[0];
+					ex    =  t.Exception.InnerExceptions[0];
 					toLog += " Error '" + ex.GetType().Name + "': " + ex.Message;
 				}
 				if (ex is TaskCanceledByConcurrencyException tccex)
@@ -60,13 +57,13 @@ internal abstract class TaskManagerEntry : ITaskManagerEntry
 			}, TaskContinuationOptions.OnlyOnFaulted);
 		}
 	}
-	public TaskScheduler TaskScheduler { get; set; }
-	public TaskCreationOptions TaskCreationOptions { get; set; }
-	public void Start() => Task.Start(TaskScheduler);
-	public event EventHandler? CancelRequested;
-	public bool IsCancellationRequested => CancellationTokenSource.IsCancellationRequested;
-	public CancellationTokenSource CancellationTokenSource { get; set; }
-	public Delegate? Delegate { get; set; }
+	public TaskScheduler           TaskScheduler       { get; }
+	public TaskCreationOptions     TaskCreationOptions { get; }
+	public void                    Start()             => Task.Start(TaskScheduler);
+	public event EventHandler?     CancelRequested;
+	public bool                    IsCancellationRequested => CancellationTokenSource.IsCancellationRequested;
+	public CancellationTokenSource CancellationTokenSource { get; }
+	public Delegate?               Delegate                { get; }
 	public void Cancel()
 	{
 		CancellationTokenSource.Cancel();
@@ -74,13 +71,12 @@ internal abstract class TaskManagerEntry : ITaskManagerEntry
 	}
 	public void DoConcurrency()
 	{
-		var allPrevious = TaskManager.Tasks.Read(l => l.Take(l.IndexOf(this)).Where(e =>
-			string.IsNullOrWhiteSpace(ConcurrencyProfile.Name)
-				//? e.Delegate.Method == Delegate.Method && e.Delegate.Target.GetType() == Delegate.Target.GetType()
-				? ConcurrencyProfile.ByInstance
-					? e.Delegate?.Method == Delegate?.Method && e.Delegate?.Target == Delegate?.Target
-					: e.Delegate?.Method == Delegate?.Method && e.Delegate?.Target?.GetType() == Delegate?.Target?.GetType()
-				: e.ConcurrencyProfile.Name == ConcurrencyProfile.Name).ToList());
+		var allPrevious = TaskManager.Tasks.Read(l => l.Take(l.IndexOf(this)).Where(e => string.IsNullOrWhiteSpace(ConcurrencyProfile.Name)
+			//? e.Delegate.Method == Delegate.Method && e.Delegate.Target.GetType() == Delegate.Target.GetType()
+			? ConcurrencyProfile.ByInstance
+				? e.Delegate?.Method == Delegate?.Method && e.Delegate?.Target            == Delegate?.Target
+				: e.Delegate?.Method == Delegate?.Method && e.Delegate?.Target?.GetType() == Delegate?.Target?.GetType()
+			: e.ConcurrencyProfile.Name == ConcurrencyProfile.Name).ToList());
 		Previous = allPrevious.LastOrDefault();
 		if (ConcurrencyProfile.CancelPrevious)
 			foreach (var entry in allPrevious)

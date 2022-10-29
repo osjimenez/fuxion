@@ -1,5 +1,5 @@
-﻿namespace Fuxion.Shell.Messages;
+﻿using System.IO;
 
-using System.IO;
+namespace Fuxion.Shell.Messages;
 
-internal record SaveLayoutMessage(Stream LayoutFileStream);
+record SaveLayoutMessage(Stream LayoutFileStream);

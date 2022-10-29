@@ -1,6 +1,6 @@
 ﻿namespace Fuxion.Reflection;
 
-[AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
+[AttributeUsage(AttributeTargets.Class, Inherited = false)]
 public class TypeKeyAttribute : Attribute
 {
 	public TypeKeyAttribute(string typeKey)

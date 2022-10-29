@@ -1,8 +1,9 @@
-﻿namespace Fuxion.Testing;
-
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using Xunit.Abstractions;
+using Xunit.Sdk;
+
+namespace Fuxion.Testing;
 
 public abstract class BaseTest
 {
@@ -15,15 +16,13 @@ public abstract class BaseTest
 			{
 				output.WriteLine(m);
 				Debug.WriteLine(m);
-			}
-			catch { }
+			} catch { }
 		};
 	}
-	protected ITestOutputHelper Output { get; private set; }
-
+	protected ITestOutputHelper Output { get; }
 	protected T AssertNotNull<T>([NotNull] T? @object)
 	{
-		if (@object is null) throw new Xunit.Sdk.NotNullException();
+		if (@object is null) throw new NotNullException();
 		return @object;
 	}
 }

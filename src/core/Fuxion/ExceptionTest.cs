@@ -9,8 +9,8 @@ public class ExceptionTest
 	}
 }
 
-internal class InternalExceptionTest
+class InternalExceptionTest
 {
-	public void LaunchException() => PrivateLaunchException();
-	private void PrivateLaunchException() => throw new Exception("Exception for testing purpose");
+	public void LaunchException()        => PrivateLaunchException();
+	void        PrivateLaunchException() => throw new("Exception for testing purpose");
 }

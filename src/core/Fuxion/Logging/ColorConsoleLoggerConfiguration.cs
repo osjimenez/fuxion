@@ -1,10 +1,6 @@
 ﻿namespace Fuxion.Logging;
 
-using Fuxion;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using static Fuxion.ConsoleTools;
+using static ConsoleTools;
 
 // https://docs.microsoft.com/en-us/dotnet/core/extensions/custom-logging-provider
 public class ColorConsoleLoggerConfiguration
@@ -40,7 +36,6 @@ public class ColorConsoleLoggerConfiguration
 		get => ConsoleTools.MessagePrefix;
 		set => ConsoleTools.MessagePrefix = value;
 	}
-
 	public Func<string> FirstLineSufix
 	{
 		get => ConsoleTools.FirstLineSufix;
@@ -61,18 +56,16 @@ public class ColorConsoleLoggerConfiguration
 		get => ConsoleTools.MessageSufix;
 		set => ConsoleTools.MessageSufix = value;
 	}
-
-	public bool UseLock { get; set; }
-
+	public bool UseLock { get;                                       set; }
 	public Dictionary<LogLevel, Func<ConsoleColor>> LogLevels { get; set; } = new()
 	{
-		[LogLevel.Critical] = () => CriticalColor,
-		[LogLevel.Error] = () => ErrorColor,
-		[LogLevel.Warning] = () => WarnColor,
+		[LogLevel.Critical]    = () => CriticalColor,
+		[LogLevel.Error]       = () => ErrorColor,
+		[LogLevel.Warning]     = () => WarnColor,
 		[LogLevel.Information] = () => InfoColor,
-		[LogLevel.Debug] = () => DebugColor,
-		[LogLevel.Trace] = () => TraceColor,
-		[LogLevel.None] = () => ConsoleColor.Black,
+		[LogLevel.Debug]       = () => DebugColor,
+		[LogLevel.Trace]       = () => TraceColor,
+		[LogLevel.None]        = () => ConsoleColor.Black
 	};
 }
 

@@ -1,6 +1,6 @@
-﻿namespace Fuxion.Application.Commands;
+﻿using Fuxion.Domain;
 
-using Fuxion.Domain;
+namespace Fuxion.Application.Commands;
 
 public static class CommandPodExtensions
 {

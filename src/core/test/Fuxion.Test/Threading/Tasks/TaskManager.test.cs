@@ -1,13 +1,14 @@
-﻿namespace Fuxion.Test.Threading.Tasks;
-
-using Fuxion.Threading.Tasks;
-using System.Collections;
+﻿using System.Collections;
 using System.Diagnostics;
 using System.Reflection;
+using Fuxion.Threading.Tasks;
+
+namespace Fuxion.Test.Threading.Tasks;
 
 public class TaskManagerTest : BaseTest
 {
-	public TaskManagerTest(ITestOutputHelper output) : base(output) => Printer.WriteLineAction = m =>
+	public TaskManagerTest(ITestOutputHelper output) : base(output) =>
+		Printer.WriteLineAction = m =>
 		{
 			try
 			{
@@ -15,54 +16,28 @@ public class TaskManagerTest : BaseTest
 				var message = $"{m}{(Task.CurrentId != null ? $" - {Task.CurrentId.Value}" : "")}";
 				output.WriteLine(message);
 				Debug.WriteLine(message);
-			}
-			catch { }
+			} catch { }
 		};
-
-	[Fact(DisplayName = "TaskManager - SleepCancelation")]
-	public void TaskManager_SleepCancelation()
-	{
-		var dt = DateTime.Now;
-		Printer.WriteLine("Inicio en " + dt.ToString("HH:mm:ss.fff"));
-		var task = TaskManager.StartNew(() =>
-		{
-			//task.Sleep(TimeSpan.FromMilliseconds(2500), TimeSpan.FromMilliseconds(500));
-			TaskManager.Current?.Sleep(TimeSpan.FromMilliseconds(2500));
-		});
-		task.CancelAndWait();
-		Printer.WriteLine("Cancelado en " + DateTime.Now.ToString("HH:mm:ss.fff"));
-		Assert.True(dt.AddSeconds(1) > DateTime.Now);
-		//Assert.True(dt.AddMilliseconds(400) < DateTime.Now);
-	}
-	[Fact(DisplayName = "TaskManager - Sleep")]
-	public Task TaskManager_Sleep()
-	{
-		var dt = DateTime.Now;
-		var task = TaskManager.StartNew(() =>
-		{
-			TaskManager.Current?.Sleep(TimeSpan.FromMilliseconds(2500));
-		});
-		return task.ContinueWith(_ =>
-		{
-			Assert.True(dt.AddSeconds(2) < DateTime.Now);
-		});
-	}
 	public static IEnumerable<object[]> GenerateTheoryParameters(int maxParNum)
 	{
 		var list = new List<object[]>();
 		for (var i = 0; i < System.Math.Pow(2, 7); i++)
 		{
-			var b = new BitArray(new int[] { i });
+			var b = new BitArray(new[]
+			{
+				i
+			});
 			var bits = b.Cast<bool>().Take(7).ToList();
-			var strings = new[] {
-					bits[0] ? "VOID  " : "RESULT", // 0
-					bits[1] ? "SYNC  " : "ASYNC ", // 1
-					bits[2] ? "CREATE" : "START ", // 2
-					bits[3] ? "SEQUEN" : "PARALL", // 3
-					bits[4] ? "LAST  " : "ALL   ", // 4
-					bits[5] ? "CANCEL" : "NO_CAN", // 5
-					bits[6] ? "NAMED " : "NO_NAM", // 6
-					};
+			var strings = new[]
+			{
+				bits[0] ? "VOID  " : "RESULT", // 0
+				bits[1] ? "SYNC  " : "ASYNC ", // 1
+				bits[2] ? "CREATE" : "START ", // 2
+				bits[3] ? "SEQUEN" : "PARALL", // 3
+				bits[4] ? "LAST  " : "ALL   ", // 4
+				bits[5] ? "CANCEL" : "NO_CAN", // 5
+				bits[6] ? "NAMED " : "NO_NAM"  // 6
+			};
 			//TODO - Test not work on CI
 			//var strings = new[] {
 			//	bits[0] ? "VOID  " : "VOID  ", // 0
@@ -73,22 +48,11 @@ public class TaskManagerTest : BaseTest
 			//	bits[5] ? "CANCEL" : "CANCEL", // 5
 			//	bits[6] ? "NO_NAM" : "NO_NAM", // 6
 			//	};
-			for (var j = 0; j < maxParNum + 1; j++)
-			{
-				list.Add(strings.Cast<object>().ToList().Transform(ss => { ss.Add(j); }).ToArray());
-			}
+			for (var j = 0; j < maxParNum + 1; j++) list.Add(strings.Cast<object>().ToList().Transform(ss => { ss.Add(j); }).ToArray());
 		}
 		var res = new List<object[]>();
 		foreach (var r in list)
-			if (!res.Any(c =>
-			r[0] == c[0]
-			&& r[1] == c[1]
-			&& r[2] == c[2]
-			&& r[3] == c[3]
-			&& r[4] == c[4]
-			&& r[5] == c[5]
-			&& r[6] == c[6]
-			&& (int)r[7] == (int)c[7]))
+			if (!res.Any(c => r[0] == c[0] && r[1] == c[1] && r[2] == c[2] && r[3] == c[3] && r[4] == c[4] && r[5] == c[5] && r[6] == c[6] && (int)r[7] == (int)c[7]))
 				res.Add(r);
 		return res;
 	}
@@ -102,18 +66,16 @@ public class TaskManagerTest : BaseTest
 	{
 		#region Variables
 		// Convert parameters to bool
-		var @void = r == "VOID  ";
-		var sync = c == "SYNC  ";
-		var create = m == "CREATE";
-		var sequentially = p == "SEQUEN";
-		var onlyLast = o == "LAST  ";
-		var cancel = n == "CANCEL";
-		var named = na == "NAMED ";
-
-		var runDelay = 5;
+		var @void           = r  == "VOID  ";
+		var sync            = c  == "SYNC  ";
+		var create          = m  == "CREATE";
+		var sequentially    = p  == "SEQUEN";
+		var onlyLast        = o  == "LAST  ";
+		var cancel          = n  == "CANCEL";
+		var named           = na == "NAMED ";
+		var runDelay        = 5;
 		var cancelledResult = "Canceled";
-		var doneResult = "Done";
-
+		var doneResult      = "Done";
 		using (Printer.Indent("Test constants"))
 		{
 			Printer.WriteLine($"{nameof(runDelay)}: {runDelay}");
@@ -131,28 +93,23 @@ public class TaskManagerTest : BaseTest
 			Printer.WriteLine($"{nameof(named)}: {named}");
 			Printer.WriteLine($"{nameof(parNum)}: {parNum}");
 		}
-
-
-		AutoResetEvent are = new(true);
-		object seqLocker = new();
-		var seq = "";
-		var results = new (bool WasCancelled, string? Result)[3];
+		AutoResetEvent are       = new(true);
+		object         seqLocker = new();
+		var            seq       = "";
+		var            results   = new (bool WasCancelled, string? Result)[3];
 
 		#region Methods
 		void AddToSeq(string val)
 		{
-			lock (seqLocker)
-			{
-				seq += val;
-			}
+			lock (seqLocker) seq += val;
 		}
 		object?[] GenerateParameters(Delegate del, ConcurrencyProfile pro)
 		{
 			var res = new List<object?>
-			{ del
+			{
+				del
 			};
-			for (var i = 0; i < parNum; i++)
-				res.Add(i);
+			for (var i = 0; i < parNum; i++) res.Add(i);
 			if (!create) res.Add(null);
 			res.Add(null);
 			res.Add(pro);
@@ -161,33 +118,21 @@ public class TaskManagerTest : BaseTest
 		MethodInfo GetMethod()
 		{
 			var mets = typeof(TaskManager).GetMethods().ToList();
-			mets = mets.Where(me => me.Name == (create ? nameof(TaskManager.Create) : nameof(TaskManager.StartNew))).ToList();
-			mets = mets.Where(me => me.GetParameters().Count() == (3 + parNum + (create ? 0 : 1))).ToList();
+			mets = mets.Where(me => me.Name                          == (create ? nameof(TaskManager.Create) : nameof(TaskManager.StartNew))).ToList();
+			mets = mets.Where(me => me.GetParameters().Count()       == 3 + parNum + (create ? 0 : 1)).ToList();
 			mets = mets.Where(me => me.GetGenericArguments().Count() == (@void ? parNum : parNum + 1)).ToList();
-			mets = mets.Where(me => me.GetParameters().First().ParameterType.Name.StartsWith(@void && sync
-							? "Action"
-							: "Func")).ToList();
-
-			mets = mets.Where(me => me.GetParameters().First().ParameterType.GetGenericArguments().Count() == (!sync
-							? parNum + 1
-							: @void
-								? parNum
-								: parNum + 1)).ToList();
-			mets = mets.Where(me =>
-				@void && parNum == 0
-				||
-				sync && !typeof(Task).IsAssignableFrom(me.GetParameters().First().ParameterType.GetGenericArguments().Last())
-				||
-				!sync && typeof(Task).IsAssignableFrom(me.GetParameters().First().ParameterType.GetGenericArguments().Last())).ToList();
+			mets = mets.Where(me => me.GetParameters().First().ParameterType.Name.StartsWith(@void && sync ? "Action" : "Func")).ToList();
+			mets = mets.Where(me => me.GetParameters().First().ParameterType.GetGenericArguments().Count() == (!sync ? parNum + 1 : @void ? parNum : parNum + 1)).ToList();
+			mets = mets.Where(me => @void && parNum == 0 || sync  && !typeof(Task).IsAssignableFrom(me.GetParameters().First().ParameterType.GetGenericArguments().Last())
+																		|| !sync && typeof(Task).IsAssignableFrom(me.GetParameters().First().ParameterType.GetGenericArguments().Last())).ToList();
 			var met = mets.Single();
 			if (met.IsGenericMethod)
 			{
-				var args = met.GetGenericArguments().Select(a => typeof(int)).ToArray();
-				if (!@void)
-					args[args.Length - 1] = typeof(string);
+				var args                          = met.GetGenericArguments().Select(a => typeof(int)).ToArray();
+				if (!@void) args[args.Length - 1] = typeof(string);
 				met = met.MakeGenericMethod(args);
 			}
-			Printer.WriteLine("Method: " + met.GetSignature(true, true, true, false, true, false));
+			Printer.WriteLine("Method: " + met.GetSignature(true, true));
 			return met;
 		}
 		Delegate GetDelegate(int order)
@@ -202,8 +147,7 @@ public class TaskManagerTest : BaseTest
 					Task.Delay(runDelay, TaskManager.Current?.GetCancellationToken() ?? throw new InvalidProgramException("Cancellation token cannot be obtained")).Wait();
 					AddToSeq($"E{order}-");
 					Printer.WriteLine("End " + order);
-				}
-				catch
+				} catch
 				{
 					AddToSeq($"E{order}X-");
 					Printer.WriteLine($"End {order} - in catch");
@@ -220,8 +164,7 @@ public class TaskManagerTest : BaseTest
 					await Task.Delay(runDelay, TaskManager.Current?.GetCancellationToken() ?? throw new InvalidProgramException("Cancellation token cannot be obtained"));
 					AddToSeq($"E{order}-");
 					Printer.WriteLine("End " + order);
-				}
-				catch
+				} catch
 				{
 					AddToSeq($"E{order}X-");
 					Printer.WriteLine($"End {order} - in catch");
@@ -239,8 +182,7 @@ public class TaskManagerTest : BaseTest
 					AddToSeq($"E{order}-");
 					Printer.WriteLine("End " + order);
 					return $"{doneResult}_{parNum}";
-				}
-				catch
+				} catch
 				{
 					AddToSeq($"E{order}X-");
 					Printer.WriteLine($"End {order} - in catch");
@@ -258,8 +200,7 @@ public class TaskManagerTest : BaseTest
 					AddToSeq($"E{order}-");
 					Printer.WriteLine("End " + order);
 					return $"{doneResult}_{parNum}";
-				}
-				catch
+				} catch
 				{
 					AddToSeq($"E{order}X-");
 					Printer.WriteLine($"End {order} - in catch");
@@ -272,74 +213,66 @@ public class TaskManagerTest : BaseTest
 					{
 						0 => new Action(() => Void_Sync()),
 						1 => new Action<int>(s => Void_Sync()),
-						2 => new Action<int, int>((s1, s2) => Void_Sync()),
-						3 => new Action<int, int, int>((s1, s2, s3) => Void_Sync()),
-						4 => new Action<int, int, int, int>((s1, s2, s3, s4) => Void_Sync()),
-						5 => new Action<int, int, int, int, int>((s1, s2, s3, s4, s5) => Void_Sync()),
-						6 => new Action<int, int, int, int, int, int>((s1, s2, s3, s4, s5, s6) => Void_Sync()),
-						7 => new Action<int, int, int, int, int, int, int>((s1, s2, s3, s4, s5, s6, s7) => Void_Sync()),
-						8 => new Action<int, int, int, int, int, int, int, int>((s1, s2, s3, s4, s5, s6, s7, s8) => Void_Sync()),
+						2 => new Action<int, int>((s1,                                    s2) => Void_Sync()),
+						3 => new Action<int, int, int>((s1,                               s2, s3) => Void_Sync()),
+						4 => new Action<int, int, int, int>((s1,                          s2, s3, s4) => Void_Sync()),
+						5 => new Action<int, int, int, int, int>((s1,                     s2, s3, s4, s5) => Void_Sync()),
+						6 => new Action<int, int, int, int, int, int>((s1,                s2, s3, s4, s5, s6) => Void_Sync()),
+						7 => new Action<int, int, int, int, int, int, int>((s1,           s2, s3, s4, s5, s6, s7) => Void_Sync()),
+						8 => new Action<int, int, int, int, int, int, int, int>((s1,      s2, s3, s4, s5, s6, s7, s8) => Void_Sync()),
 						9 => new Action<int, int, int, int, int, int, int, int, int>((s1, s2, s3, s4, s5, s6, s7, s8, s9) => Void_Sync()),
-						_ => throw new InvalidProgramException(),
+						_ => throw new InvalidProgramException()
 					};
 				else
 					return parNum switch
 					{
 						0 => new Func<Task>(() => Void_Async()),
 						1 => new Func<int, Task>(s => Void_Async()),
-						2 => new Func<int, int, Task>((s1, s2) => Void_Async()),
-						3 => new Func<int, int, int, Task>((s1, s2, s3) => Void_Async()),
-						4 => new Func<int, int, int, int, Task>((s1, s2, s3, s4) => Void_Async()),
-						5 => new Func<int, int, int, int, int, Task>((s1, s2, s3, s4, s5) => Void_Async()),
-						6 => new Func<int, int, int, int, int, int, Task>((s1, s2, s3, s4, s5, s6) => Void_Async()),
-						7 => new Func<int, int, int, int, int, int, int, Task>((s1, s2, s3, s4, s5, s6, s7) => Void_Async()),
-						8 => new Func<int, int, int, int, int, int, int, int, Task>((s1, s2, s3, s4, s5, s6, s7, s8) => Void_Async()),
+						2 => new Func<int, int, Task>((s1,                                    s2) => Void_Async()),
+						3 => new Func<int, int, int, Task>((s1,                               s2, s3) => Void_Async()),
+						4 => new Func<int, int, int, int, Task>((s1,                          s2, s3, s4) => Void_Async()),
+						5 => new Func<int, int, int, int, int, Task>((s1,                     s2, s3, s4, s5) => Void_Async()),
+						6 => new Func<int, int, int, int, int, int, Task>((s1,                s2, s3, s4, s5, s6) => Void_Async()),
+						7 => new Func<int, int, int, int, int, int, int, Task>((s1,           s2, s3, s4, s5, s6, s7) => Void_Async()),
+						8 => new Func<int, int, int, int, int, int, int, int, Task>((s1,      s2, s3, s4, s5, s6, s7, s8) => Void_Async()),
 						9 => new Func<int, int, int, int, int, int, int, int, int, Task>((s1, s2, s3, s4, s5, s6, s7, s8, s9) => Void_Async()),
-						_ => throw new InvalidProgramException(),
+						_ => throw new InvalidProgramException()
 					};
-			else
-				if (sync)
+			if (sync)
 				return parNum switch
 				{
 					0 => new Func<string>(() => Result_Sync()),
 					1 => new Func<int, string>(s => Result_Sync()),
-					2 => new Func<int, int, string>((s1, s2) => Result_Sync()),
-					3 => new Func<int, int, int, string>((s1, s2, s3) => Result_Sync()),
-					4 => new Func<int, int, int, int, string>((s1, s2, s3, s4) => Result_Sync()),
-					5 => new Func<int, int, int, int, int, string>((s1, s2, s3, s4, s5) => Result_Sync()),
-					6 => new Func<int, int, int, int, int, int, string>((s1, s2, s3, s4, s5, s6) => Result_Sync()),
-					7 => new Func<int, int, int, int, int, int, int, string>((s1, s2, s3, s4, s5, s6, s7) => Result_Sync()),
-					8 => new Func<int, int, int, int, int, int, int, int, string>((s1, s2, s3, s4, s5, s6, s7, s8) => Result_Sync()),
+					2 => new Func<int, int, string>((s1,                                    s2) => Result_Sync()),
+					3 => new Func<int, int, int, string>((s1,                               s2, s3) => Result_Sync()),
+					4 => new Func<int, int, int, int, string>((s1,                          s2, s3, s4) => Result_Sync()),
+					5 => new Func<int, int, int, int, int, string>((s1,                     s2, s3, s4, s5) => Result_Sync()),
+					6 => new Func<int, int, int, int, int, int, string>((s1,                s2, s3, s4, s5, s6) => Result_Sync()),
+					7 => new Func<int, int, int, int, int, int, int, string>((s1,           s2, s3, s4, s5, s6, s7) => Result_Sync()),
+					8 => new Func<int, int, int, int, int, int, int, int, string>((s1,      s2, s3, s4, s5, s6, s7, s8) => Result_Sync()),
 					9 => new Func<int, int, int, int, int, int, int, int, int, string>((s1, s2, s3, s4, s5, s6, s7, s8, s9) => Result_Sync()),
-					_ => throw new InvalidProgramException(),
+					_ => throw new InvalidProgramException()
 				};
-			else
-				return parNum switch
-				{
-					0 => new Func<Task<string>>(() => Result_Async()),
-					1 => new Func<int, Task<string>>(s => Result_Async()),
-					2 => new Func<int, int, Task<string>>((s1, s2) => Result_Async()),
-					3 => new Func<int, int, int, Task<string>>((s1, s2, s3) => Result_Async()),
-					4 => new Func<int, int, int, int, Task<string>>((s1, s2, s3, s4) => Result_Async()),
-					5 => new Func<int, int, int, int, int, Task<string>>((s1, s2, s3, s4, s5) => Result_Async()),
-					6 => new Func<int, int, int, int, int, int, Task<string>>((s1, s2, s3, s4, s5, s6) => Result_Async()),
-					7 => new Func<int, int, int, int, int, int, int, Task<string>>((s1, s2, s3, s4, s5, s6, s7) => Result_Async()),
-					8 => new Func<int, int, int, int, int, int, int, int, Task<string>>((s1, s2, s3, s4, s5, s6, s7, s8) => Result_Async()),
-					9 => new Func<int, int, int, int, int, int, int, int, int, Task<string>>((s1, s2, s3, s4, s5, s6, s7, s8, s9) => Result_Async()),
-					_ => throw new InvalidProgramException(),
-				};
+			return parNum switch
+			{
+				0 => new Func<Task<string>>(() => Result_Async()),
+				1 => new Func<int, Task<string>>(s => Result_Async()),
+				2 => new Func<int, int, Task<string>>((s1,                                    s2) => Result_Async()),
+				3 => new Func<int, int, int, Task<string>>((s1,                               s2, s3) => Result_Async()),
+				4 => new Func<int, int, int, int, Task<string>>((s1,                          s2, s3, s4) => Result_Async()),
+				5 => new Func<int, int, int, int, int, Task<string>>((s1,                     s2, s3, s4, s5) => Result_Async()),
+				6 => new Func<int, int, int, int, int, int, Task<string>>((s1,                s2, s3, s4, s5, s6) => Result_Async()),
+				7 => new Func<int, int, int, int, int, int, int, Task<string>>((s1,           s2, s3, s4, s5, s6, s7) => Result_Async()),
+				8 => new Func<int, int, int, int, int, int, int, int, Task<string>>((s1,      s2, s3, s4, s5, s6, s7, s8) => Result_Async()),
+				9 => new Func<int, int, int, int, int, int, int, int, int, Task<string>>((s1, s2, s3, s4, s5, s6, s7, s8, s9) => Result_Async()),
+				_ => throw new InvalidProgramException()
+			};
 		}
-		ConcurrencyProfile GetConcurrencyProfile(int order) => new ConcurrencyProfile
-		{
-			Name = named
-				? order % 2 == 0
-					? "even"
-					: "odd"
-				: "",
-			Sequentially = sequentially,
-			ExecuteOnlyLast = onlyLast,
-			CancelPrevious = cancel,
-		};
+		ConcurrencyProfile GetConcurrencyProfile(int order) =>
+			new()
+			{
+				Name = named ? order % 2 == 0 ? "even" : "odd" : "", Sequentially = sequentially, ExecuteOnlyLast = onlyLast, CancelPrevious = cancel
+			};
 		Task Action_Sync(int order)
 		{
 			try
@@ -349,15 +282,16 @@ public class TaskManagerTest : BaseTest
 					var task = (Task?)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order))) ?? throw new InvalidProgramException("Method cannot return null");
 					task.Start();
 					return task;
-				}
-				else return (Task?)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order))) ?? throw new InvalidProgramException("Method cannot return null");
-			}
-			catch (Exception ex)
+				} else
+					return (Task?)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order))) ?? throw new InvalidProgramException("Method cannot return null");
+			} catch (Exception ex)
 			{
 				Printer.WriteLine($"Error '{ex.GetType().Name}': {ex.Message}");
 				throw;
+			} finally
+			{
+				are.Set();
 			}
-			finally { are.Set(); }
 		}
 		Task Action_Async(int order)
 		{
@@ -368,15 +302,16 @@ public class TaskManagerTest : BaseTest
 					var task = (Task?)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order))) ?? throw new InvalidProgramException("Method cannot return null");
 					task.Start();
 					return task;
-				}
-				else return (Task?)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order))) ?? throw new InvalidProgramException("Method cannot return null");
-			}
-			catch (Exception ex)
+				} else
+					return (Task?)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order))) ?? throw new InvalidProgramException("Method cannot return null");
+			} catch (Exception ex)
 			{
 				Printer.WriteLine($"Error '{ex.GetType().Name}': {ex.Message}");
 				throw;
+			} finally
+			{
+				are.Set();
 			}
-			finally { are.Set(); }
 		}
 		Task<string?> Func_Sync(int order)
 		{
@@ -384,18 +319,20 @@ public class TaskManagerTest : BaseTest
 			{
 				if (create)
 				{
-					var task = (Task<string?>?)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order))) ?? throw new InvalidProgramException("Method cannot return null");
+					var task = (Task<string?>?)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order)))
+								  ?? throw new InvalidProgramException("Method cannot return null");
 					task.Start();
 					return task;
-				}
-				else return (Task<string?>?)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order))) ?? throw new InvalidProgramException("Method cannot return null");
-			}
-			catch (Exception ex)
+				} else
+					return (Task<string?>?)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order))) ?? throw new InvalidProgramException("Method cannot return null");
+			} catch (Exception ex)
 			{
 				Printer.WriteLine($"Error '{ex.GetType().Name}': {ex.Message}");
 				throw;
+			} finally
+			{
+				are.Set();
 			}
-			finally { are.Set(); }
 		}
 		Task<string?> Func_Async(int order)
 		{
@@ -403,18 +340,20 @@ public class TaskManagerTest : BaseTest
 			{
 				if (create)
 				{
-					var task = (Task<string?>?)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order))) ?? throw new InvalidProgramException("Method cannot return null");
+					var task = (Task<string?>?)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order)))
+								  ?? throw new InvalidProgramException("Method cannot return null");
 					task.Start();
 					return task;
-				}
-				else return (Task<string?>?)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order))) ?? throw new InvalidProgramException("Method cannot return null");
-			}
-			catch (Exception ex)
+				} else
+					return (Task<string?>?)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order))) ?? throw new InvalidProgramException("Method cannot return null");
+			} catch (Exception ex)
 			{
 				Printer.WriteLine($"Error '{ex.GetType().Name}': {ex.Message}");
 				throw;
+			} finally
+			{
+				are.Set();
 			}
-			finally { are.Set(); }
 		}
 		#endregion
 		#endregion
@@ -423,18 +362,14 @@ public class TaskManagerTest : BaseTest
 		Printer.WriteLine("==============");
 		using (Printer.Indent("Run"))
 		{
-			var res = new Task<(bool WasCancelled, string? Result)>[3];
-			var num = 1;
+			var res       = new Task<(bool WasCancelled, string? Result)>[3];
+			var num       = 1;
 			var numLocker = new object();
 			int GetNum()
 			{
-				lock (numLocker)
-				{
-					return num++;
-				}
+				lock (numLocker) return num++;
 			}
 			for (var i = 0; i < 3; i++)
-			{
 				res[i] = Task.Run(async () =>
 				{
 					are.WaitOne();
@@ -450,52 +385,43 @@ public class TaskManagerTest : BaseTest
 								await Action_Async(currentNum);
 							return (false, doneResult);
 						}
-						else
-						{
-							return sync
-								? (false, await Func_Sync(currentNum))
-								: (false, await Func_Async(currentNum));
-						}
-					}
-					catch (TaskCanceledByConcurrencyException)
+						return sync ? (false, await Func_Sync(currentNum)) : (false, await Func_Async(currentNum));
+					} catch (TaskCanceledByConcurrencyException)
 					{
 						Printer.WriteLine($"TaskCanceledByConcurrencyException [{currentNum}]");
 						return (true, cancelledResult);
-					}
-					catch (TaskCanceledException)
+					} catch (TaskCanceledException)
 					{
 						Printer.WriteLine($"TaskCanceledException [{currentNum}]");
 						return (true, cancelledResult);
-					}
-					catch (AggregateException ex) when (ex.Flatten().InnerException is TaskCanceledException)
+					} catch (AggregateException ex) when (ex.Flatten().InnerException is TaskCanceledException)
 					{
 						Printer.WriteLine($"AggregateException [{currentNum}]");
 						return (true, cancelledResult);
 					}
 				});
-			}
 			await Task.WhenAll(res);
 			results[0] = res[0].Result;
 			results[1] = res[1].Result;
 			results[2] = res[2].Result;
-			seq = seq.Trim('-');
-			for (var i = 0; i < results.Length; i++)
-				Printer.WriteLine($"Result {i + 1}: WasCanceled<{results[i].WasCancelled}>,Result<{results[i].Result}>");
-			Printer.WriteLine($"Sequence: " + seq);
+			seq        = seq.Trim('-');
+			for (var i = 0; i < results.Length; i++) Printer.WriteLine($"Result {i + 1}: WasCanceled<{results[i].WasCancelled}>,Result<{results[i].Result}>");
+			Printer.WriteLine("Sequence: " + seq);
 		}
 		#endregion
 
 		#region Assert sequence
 		Printer.WriteLine("==============");
 		var seqs = seq.Split('-').ToList();
-		#region Methods
-		bool WasTaskFinishBeforeOtherStart(int taskThatHadToFinished, int taskThatHadToStartAfter)
-			=> new[] { seqs.IndexOf($"E{taskThatHadToFinished}"), seqs.IndexOf($"E{taskThatHadToFinished}X") }.Max() < seqs.IndexOf($"S{taskThatHadToStartAfter}");
-		bool WasTaskExecuted(int task)
-			=> seqs.Contains($"S{task}") && (seqs.Contains($"E{task}") || seqs.Contains($"E{task}X"));
-		bool WasTaskExecutedSuccessfully(int task)
-			=> seqs.Contains($"S{task}") && seqs.Contains($"E{task}");
 
+		#region Methods
+		bool WasTaskFinishBeforeOtherStart(int taskThatHadToFinished, int taskThatHadToStartAfter) =>
+			new[]
+			{
+				seqs.IndexOf($"E{taskThatHadToFinished}"), seqs.IndexOf($"E{taskThatHadToFinished}X")
+			}.Max() < seqs.IndexOf($"S{taskThatHadToStartAfter}");
+		bool WasTaskExecuted(int             task) => seqs.Contains($"S{task}") && (seqs.Contains($"E{task}") || seqs.Contains($"E{task}X"));
+		bool WasTaskExecutedSuccessfully(int task) => seqs.Contains($"S{task}") && seqs.Contains($"E{task}");
 		void AssertIfTaskWasFinishBeforeOtherStart(int taskThatHadToFinished, int taskThatHadToStartAfter)
 		{
 			Printer.WriteLine($"Asserting if task {taskThatHadToFinished} finished before task {taskThatHadToStartAfter} was started");
@@ -511,10 +437,9 @@ public class TaskManagerTest : BaseTest
 			Printer.WriteLine($"Asserting if task {task} was executed successfully");
 			Assert.True(WasTaskExecutedSuccessfully(task), $"Task {task} had to be executed successfully");
 		}
-
 		#endregion
+
 		using (Printer.Indent("Assert"))
-		{
 			if (sequentially)
 			{
 				if (cancel)
@@ -528,8 +453,7 @@ public class TaskManagerTest : BaseTest
 								AssertIfTaskWasFinishBeforeOtherStart(1, 3);
 							AssertIfTaskWasExecutedSuccessfully(2);
 							AssertIfTaskWasExecutedSuccessfully(3);
-						}
-						else
+						} else
 						{
 							Printer.WriteLine("Only last call executed sequentially canceling previous");
 							if (WasTaskExecuted(1) && WasTaskExecuted(2))
@@ -538,13 +462,11 @@ public class TaskManagerTest : BaseTest
 								AssertIfTaskWasFinishBeforeOtherStart(1, 2);
 								AssertIfTaskWasExecuted(2);
 								AssertIfTaskWasFinishBeforeOtherStart(2, 3);
-							}
-							else if (!WasTaskExecuted(1) && WasTaskExecuted(2))
+							} else if (!WasTaskExecuted(1) && WasTaskExecuted(2))
 							{
 								AssertIfTaskWasExecuted(2);
 								AssertIfTaskWasFinishBeforeOtherStart(2, 3);
-							}
-							else if (WasTaskExecuted(1) && !WasTaskExecuted(2))
+							} else if (WasTaskExecuted(1) && !WasTaskExecuted(2))
 							{
 								AssertIfTaskWasExecuted(1);
 								AssertIfTaskWasFinishBeforeOtherStart(1, 3);
@@ -555,18 +477,15 @@ public class TaskManagerTest : BaseTest
 							//|| seq == "S2-E2-S3-E3" || seq == "S2-E2X-S3-E3"
 							//|| seq == "S3-E3");
 						}
-					}
-					else
+					} else
 					{
 						if (named)
 						{
 							Printer.WriteLine("All executed sequentially canceling previous with naming even/odd");
-							if (WasTaskExecuted(1))
-								AssertIfTaskWasFinishBeforeOtherStart(1, 3);
+							if (WasTaskExecuted(1)) AssertIfTaskWasFinishBeforeOtherStart(1, 3);
 							AssertIfTaskWasExecutedSuccessfully(2);
 							AssertIfTaskWasExecutedSuccessfully(3);
-						}
-						else
+						} else
 						{
 							Printer.WriteLine("All executed sequentially canceling previous");
 							AssertIfTaskWasExecuted(1);
@@ -577,8 +496,7 @@ public class TaskManagerTest : BaseTest
 							//Assert.True(seq == "S1-E1-S2-E2-S3-E3" || seq == "S1-E1-S2-E2X-S3-E3" || seq == "S1-E1X-S2-E2-S3-E3" || seq == "S1-E1X-S2-E2X-S3-E3");
 						}
 					}
-				}
-				else
+				} else
 				{
 					if (onlyLast)
 					{
@@ -592,8 +510,7 @@ public class TaskManagerTest : BaseTest
 							}
 							AssertIfTaskWasExecutedSuccessfully(2);
 							AssertIfTaskWasExecutedSuccessfully(3);
-						}
-						else
+						} else
 						{
 							Printer.WriteLine("Only last call executed sequentially without cancelations");
 							if (WasTaskExecuted(1) && WasTaskExecuted(2))
@@ -602,13 +519,11 @@ public class TaskManagerTest : BaseTest
 								AssertIfTaskWasFinishBeforeOtherStart(1, 2);
 								AssertIfTaskWasExecutedSuccessfully(2);
 								AssertIfTaskWasFinishBeforeOtherStart(2, 3);
-							}
-							else if (!WasTaskExecuted(1) && WasTaskExecuted(2))
+							} else if (!WasTaskExecuted(1) && WasTaskExecuted(2))
 							{
 								AssertIfTaskWasExecutedSuccessfully(2);
 								AssertIfTaskWasFinishBeforeOtherStart(2, 3);
-							}
-							else if (WasTaskExecuted(1) && !WasTaskExecuted(2))
+							} else if (WasTaskExecuted(1) && !WasTaskExecuted(2))
 							{
 								AssertIfTaskWasExecutedSuccessfully(1);
 								AssertIfTaskWasFinishBeforeOtherStart(1, 3);
@@ -616,8 +531,7 @@ public class TaskManagerTest : BaseTest
 							AssertIfTaskWasExecutedSuccessfully(3);
 							// Assert.True(seq == "S1-E1-S2-E2-S3-E3" || seq == "S1-E1-S3-E3" || seq == "S2-E2-S3-E3" || seq == "S3-E3");
 						}
-					}
-					else
+					} else
 					{
 						if (named)
 						{
@@ -626,8 +540,7 @@ public class TaskManagerTest : BaseTest
 							AssertIfTaskWasExecutedSuccessfully(2);
 							AssertIfTaskWasFinishBeforeOtherStart(1, 3);
 							AssertIfTaskWasExecutedSuccessfully(3);
-						}
-						else
+						} else
 						{
 							Printer.WriteLine("All executed sequentially without cancelations");
 							AssertIfTaskWasExecutedSuccessfully(1);
@@ -639,8 +552,7 @@ public class TaskManagerTest : BaseTest
 						}
 					}
 				}
-			}
-			else
+			} else
 			{
 				if (cancel)
 				{
@@ -651,15 +563,13 @@ public class TaskManagerTest : BaseTest
 							Printer.WriteLine("Only last call executed in any order canceling previous with naming even/odd");
 							AssertIfTaskWasExecutedSuccessfully(2);
 							AssertIfTaskWasExecutedSuccessfully(3);
-						}
-						else
+						} else
 						{
 							Printer.WriteLine("Only last call executed in any order canceling previous");
 							AssertIfTaskWasExecutedSuccessfully(3);
 							//Assert.True(seq.Contains("S3") && seq.Contains("E3"));
 						}
-					}
-					else
+					} else
 					{
 						if (named)
 						{
@@ -667,8 +577,7 @@ public class TaskManagerTest : BaseTest
 							AssertIfTaskWasExecuted(1);
 							AssertIfTaskWasExecutedSuccessfully(2);
 							AssertIfTaskWasExecutedSuccessfully(3);
-						}
-						else
+						} else
 						{
 							Printer.WriteLine("All executed in any order canceling previous");
 							AssertIfTaskWasExecuted(1);
@@ -681,31 +590,25 @@ public class TaskManagerTest : BaseTest
 							//  && seq.Contains("S3") && seq.Contains("E3"));
 						}
 					}
-				}
-				else
+				} else
 				{
 					if (onlyLast)
 					{
 						if (named)
 						{
 							Printer.WriteLine("Only last call executed in any order without cancelations with naming even/odd");
-							if (WasTaskExecuted(1))
-								AssertIfTaskWasExecutedSuccessfully(1);
+							if (WasTaskExecuted(1)) AssertIfTaskWasExecutedSuccessfully(1);
 							AssertIfTaskWasExecutedSuccessfully(2);
 							AssertIfTaskWasExecutedSuccessfully(3);
-						}
-						else
+						} else
 						{
 							Printer.WriteLine("Only last call executed in any order without cancelations");
-							if (WasTaskExecuted(1))
-								AssertIfTaskWasExecutedSuccessfully(1);
-							if (WasTaskExecuted(2))
-								AssertIfTaskWasExecutedSuccessfully(2);
+							if (WasTaskExecuted(1)) AssertIfTaskWasExecutedSuccessfully(1);
+							if (WasTaskExecuted(2)) AssertIfTaskWasExecutedSuccessfully(2);
 							AssertIfTaskWasExecutedSuccessfully(3);
 							//Assert.True(seq.Contains("S3") && seq.Contains("E3"));
 						}
-					}
-					else
+					} else
 					{
 						if (named)
 						{
@@ -713,8 +616,7 @@ public class TaskManagerTest : BaseTest
 							AssertIfTaskWasExecutedSuccessfully(1);
 							AssertIfTaskWasExecutedSuccessfully(2);
 							AssertIfTaskWasExecutedSuccessfully(3);
-						}
-						else
+						} else
 						{
 							Printer.WriteLine("All executed in any order without cancelations");
 							AssertIfTaskWasExecutedSuccessfully(1);
@@ -730,7 +632,6 @@ public class TaskManagerTest : BaseTest
 					}
 				}
 			}
-		}
 		#endregion
 
 		#region Assert results
@@ -741,5 +642,27 @@ public class TaskManagerTest : BaseTest
 			if (!results[2].WasCancelled) Assert.Equal($"{doneResult}_{parNum}", results[2].Result);
 		}
 		#endregion
+	}
+	[Fact(DisplayName = "TaskManager - Sleep")]
+	public Task TaskManager_Sleep()
+	{
+		var dt   = DateTime.Now;
+		var task = TaskManager.StartNew(() => { TaskManager.Current?.Sleep(TimeSpan.FromMilliseconds(2500)); });
+		return task.ContinueWith(_ => { Assert.True(dt.AddSeconds(2) < DateTime.Now); });
+	}
+	[Fact(DisplayName = "TaskManager - SleepCancelation")]
+	public void TaskManager_SleepCancelation()
+	{
+		var dt = DateTime.Now;
+		Printer.WriteLine("Inicio en " + dt.ToString("HH:mm:ss.fff"));
+		var task = TaskManager.StartNew(() =>
+		{
+			//task.Sleep(TimeSpan.FromMilliseconds(2500), TimeSpan.FromMilliseconds(500));
+			TaskManager.Current?.Sleep(TimeSpan.FromMilliseconds(2500));
+		});
+		task.CancelAndWait();
+		Printer.WriteLine("Cancelado en " + DateTime.Now.ToString("HH:mm:ss.fff"));
+		Assert.True(dt.AddSeconds(1) > DateTime.Now);
+		//Assert.True(dt.AddMilliseconds(400) < DateTime.Now);
 	}
 }

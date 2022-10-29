@@ -1,6 +1,6 @@
-﻿namespace Microsoft.Extensions.DependencyInjection;
+﻿using AutoMapper;
 
-using AutoMapper;
+namespace Microsoft.Extensions.DependencyInjection;
 
 public static class AutoMapperDIExtensions
 {
@@ -11,17 +11,13 @@ public static class AutoMapperDIExtensions
 		{
 			return new MapperConfiguration(cfg =>
 			{
-					//add your profiles (either resolve from container or however else you acquire them)
-					foreach (var profile in sp.GetServices<Profile>())
-				{
-					cfg.AddProfile(profile);
-				}
+				//add your profiles (either resolve from container or however else you acquire them)
+				foreach (var profile in sp.GetServices<Profile>()) cfg.AddProfile(profile);
 			});
 		});
 
 		// Mapper
 		services.AddScoped(sp => sp.GetRequiredService<MapperConfiguration>().CreateMapper(sp.GetRequiredService));
-
 		return new AutoMapperBuilder(services);
 	}
 	public static IAutoMapperBuilder AddProfile<T>(this IAutoMapperBuilder me) where T : Profile
@@ -35,12 +31,13 @@ public static class AutoMapperDIExtensions
 		return me;
 	}
 }
+
 public interface IAutoMapperBuilder
 {
 	IServiceCollection Services { get; }
 }
 
-internal class AutoMapperBuilder : IAutoMapperBuilder
+class AutoMapperBuilder : IAutoMapperBuilder
 {
 	public AutoMapperBuilder(IServiceCollection services) => Services = services;
 	public IServiceCollection Services { get; }

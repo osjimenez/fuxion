@@ -1,15 +1,16 @@
-﻿namespace Fuxion.Windows.Test.Data;
-
-using Fuxion.Testing;
+﻿using Fuxion.Testing;
 using Fuxion.Windows.Data;
 using Xunit;
 using Xunit.Abstractions;
+
+namespace Fuxion.Windows.Test.Data;
 
 public class ConverterTest : BaseTest
 {
 	public ConverterTest(ITestOutputHelper output) : base(output) { }
 	protected void Convert() { }
 }
+
 public class TimeSpanToLongConverterTest : BaseTest
 {
 	public TimeSpanToLongConverterTest(ITestOutputHelper output) : base(output) { }

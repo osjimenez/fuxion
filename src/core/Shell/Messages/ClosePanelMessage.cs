@@ -1,5 +1,5 @@
-﻿namespace Fuxion.Shell.Messages; 
+﻿using Telerik.Windows.Controls;
 
-using Telerik.Windows.Controls;
+namespace Fuxion.Shell.Messages; 
 
-internal record ClosePanelMessage(PanelName? Name = null, RadPane? Pane = null);
+record ClosePanelMessage(PanelName? Name = null, RadPane? Pane = null);

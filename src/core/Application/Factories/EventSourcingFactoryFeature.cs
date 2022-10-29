@@ -1,7 +1,7 @@
-﻿namespace Fuxion.Application.Factories;
-
-using Fuxion.Application.Aggregates;
+﻿using Fuxion.Application.Aggregates;
 using Fuxion.Domain;
+
+namespace Fuxion.Application.Factories;
 
 public class EventSourcingFactoryFeature<TAggregate> : IFactoryFeature<TAggregate> where TAggregate : Aggregate
 {

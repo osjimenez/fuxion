@@ -1,7 +1,7 @@
-﻿namespace Fuxion.Test.Collections.ObjectModel;
-
+﻿using System.Collections.Specialized;
 using Fuxion.Collections.ObjectModel;
-using System.Collections.Specialized;
+
+namespace Fuxion.Test.Collections.ObjectModel;
 
 public class DeactivatableObservableCollectionTest
 {
@@ -9,7 +9,7 @@ public class DeactivatableObservableCollectionTest
 	public void DeactivatableObservableCollection_Add()
 	{
 		var step = 0;
-		var col = new DeactivatableObservableCollection<string>();
+		var col  = new DeactivatableObservableCollection<string>();
 		col.CollectionChanged += (s, e) =>
 		{
 			switch (step)
@@ -30,16 +30,37 @@ public class DeactivatableObservableCollectionTest
 			step++;
 		};
 		col.Add("Oscar");
-		col.Add(new string[] { "Oscar", "Asier" });
+		col.Add(new[]
+		{
+			"Oscar", "Asier"
+		});
+	}
+	[Fact(DisplayName = "DeactivatableObservableCollection - Clear")]
+	public void DeactivatableObservableCollection_Clear()
+	{
+		var col = new DeactivatableObservableCollection<string>
+		{
+			new[]
+			{
+				"Oscar", "Asier"
+			}
+		};
+		col.CollectionChanged += (s, e) =>
+		{
+			Assert.True(e.Action == NotifyCollectionChangedAction.Reset);
+			Assert.Null(e.NewItems);
+			Assert.Null(e.OldItems);
+		};
+		col.Clear();
 	}
 	[Fact(DisplayName = "DeactivatableObservableCollection - Remove")]
 	public void DeactivatableObservableCollection_Remove()
 	{
 		var step = 0;
 		var col = new DeactivatableObservableCollection<string>
-			{
-				"Oscar"
-			};
+		{
+			"Oscar"
+		};
 		col.CollectionChanged += (s, e) =>
 		{
 			switch (step)
@@ -60,18 +81,23 @@ public class DeactivatableObservableCollectionTest
 			step++;
 		};
 		col.Remove("Oscar");
-		col.Add(new string[] { "Oscar", "Asier" }, false);
-		col.Remove(new string[] { "Oscar", "Asier" });
+		col.Add(new[]
+		{
+			"Oscar", "Asier"
+		}, false);
+		col.Remove(new[]
+		{
+			"Oscar", "Asier"
+		});
 	}
 	[Fact(DisplayName = "DeactivatableObservableCollection - Replace")]
 	public void DeactivatableObservableCollection_Replace()
 	{
 		var step = 0;
 		var col = new DeactivatableObservableCollection<string>
-			{
-				"Oscar",
-				"Asier"
-			};
+		{
+			"Oscar", "Asier"
+		};
 		col.CollectionChanged += (s, e) =>
 		{
 			switch (step)
@@ -82,7 +108,7 @@ public class DeactivatableObservableCollectionTest
 					Assert.NotNull(e.OldItems);
 					Assert.True(e.NewItems?.Count == 1);
 					Assert.True(e.OldItems?.Count == 1);
-					Assert.Same("Oscar", e.OldItems?[0]);
+					Assert.Same("Oscar",  e.OldItems?[0]);
 					Assert.Same("Oscar2", e.NewItems?[0]);
 					break;
 				case 1:
@@ -93,31 +119,19 @@ public class DeactivatableObservableCollectionTest
 					Assert.True(e.OldItems?.Count == 2);
 					Assert.Same("Oscar2", e.OldItems?[0]);
 					Assert.Same("Oscar3", e.NewItems?[0]);
-					Assert.Same("Asier", e.OldItems?[1]);
+					Assert.Same("Asier",  e.OldItems?[1]);
 					Assert.Same("Asier3", e.NewItems?[1]);
 					break;
 			}
 			step++;
 		};
 		col[0] = "Oscar2";
-		col.Replace(
-			new string[] { "Oscar2", "Asier" },
-			new string[] { "Oscar3", "Asier3" },
-			true);
-	}
-	[Fact(DisplayName = "DeactivatableObservableCollection - Clear")]
-	public void DeactivatableObservableCollection_Clear()
-	{
-		var col = new DeactivatableObservableCollection<string>
-			{
-				new string[] { "Oscar", "Asier" }
-			};
-		col.CollectionChanged += (s, e) =>
+		col.Replace(new[]
 		{
-			Assert.True(e.Action == NotifyCollectionChangedAction.Reset);
-			Assert.Null(e.NewItems);
-			Assert.Null(e.OldItems);
-		};
-		col.Clear();
+			"Oscar2", "Asier"
+		}, new[]
+		{
+			"Oscar3", "Asier3"
+		}, true);
 	}
 }

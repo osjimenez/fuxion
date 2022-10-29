@@ -9,16 +9,16 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Include="icon.png" Pack="true" PackagePath="\" />
-	</ItemGroup>
-	
-	<ItemGroup>
-		<None Remove="Views\ShellWindow.xaml" />
+		<None Include="icon.png" Pack="true" PackagePath="\"/>
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
-		<PackageReference Include="ReactiveUI.WPF" Version="18.3.1" />
+		<None Remove="Views\ShellWindow.xaml"/>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All"/>
+		<PackageReference Include="ReactiveUI.WPF" Version="18.3.1"/>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -37,7 +37,7 @@
 		<Reference Include="Telerik.Windows.Controls.Navigation">
 			<HintPath>$(TelerikInstallDir)\Binaries\WPF60\Telerik.Windows.Controls.Navigation.dll</HintPath>
 		</Reference>
-		
+
 	</ItemGroup>
 
 	<ItemGroup>
@@ -50,11 +50,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Properties\" />
+		<Folder Include="Properties\"/>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Application\Fuxion.Application.csproj" />
+		<ProjectReference Include="..\Application\Fuxion.Application.csproj"/>
 	</ItemGroup>
 
 </Project>

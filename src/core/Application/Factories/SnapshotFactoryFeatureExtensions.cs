@@ -1,7 +1,7 @@
-﻿namespace Fuxion.Application.Factories;
-
-using Fuxion.Application.Aggregates;
+﻿using Fuxion.Application.Aggregates;
 using Fuxion.Domain;
+
+namespace Fuxion.Application.Factories;
 
 public static class SnapshotFactoryFeatureExtensions
 {
@@ -11,9 +11,9 @@ public static class SnapshotFactoryFeatureExtensions
 	{
 		var agg = me.Create(snapshot.AggregateId);
 		snapshot.Hydrate(agg);
-		agg.EventSourcing().CurrentVersion = snapshot.Version;
+		agg.EventSourcing().CurrentVersion       = snapshot.Version;
 		agg.EventSourcing().LastCommittedVersion = snapshot.Version;
-		agg.EventSourcing().SnapshotVersion = snapshot.Version;
+		agg.EventSourcing().SnapshotVersion      = snapshot.Version;
 		return agg;
 	}
 }

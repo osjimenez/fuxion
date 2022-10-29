@@ -1,10 +1,11 @@
-﻿namespace Fuxion.Identity.DatabaseTest;
-
-using Fuxion.Identity.Test;
+﻿using Fuxion.Identity.Test;
 using Fuxion.Identity.Test.Dao;
 using Fuxion.Identity.Test.Mocks;
 using Xunit;
-using static Fuxion.Identity.Functions;
+
+namespace Fuxion.Identity.DatabaseTest;
+
+using static Functions;
 
 public class IdentityManagerTest
 {
@@ -20,21 +21,18 @@ public class IdentityManagerTest
 		if (rep.Database.EnsureCreated() || !rep.Identity.Any())
 		{
 			var ides = Identities.All;
-			var iii = ides.ToArray();
+			var iii  = ides.ToArray();
 			rep.Identity.AddRange(ides);
 			rep.AttachRange(ides);
 			rep.SaveChanges();
 		}
 	}
-
-	private IdentityManager? _IdentityManager;
-
-	private IdentityManager IM
+	IdentityManager? _IdentityManager;
+	IdentityManager IM
 	{
 		get
 		{
-			if (_IdentityManager == null)
-				_IdentityManager = new IdentityManager(new PasswordProviderMock(), null!, new IdentityDatabaseRepository());
+			if (_IdentityManager == null) _IdentityManager = new(new PasswordProviderMock(), null!, new IdentityDatabaseRepository());
 			return _IdentityManager;
 		}
 	}
@@ -42,16 +40,16 @@ public class IdentityManagerTest
 	public void CheckCredentials()
 	{
 		// Check when null values
-		Assert.False(IM.CheckCredentials(null!, null!));
+		Assert.False(IM.CheckCredentials(null!,  null!));
 		Assert.False(IM.CheckCredentials("root", null!));
-		Assert.False(IM.CheckCredentials(null!, "root"));
+		Assert.False(IM.CheckCredentials(null!,  "root"));
 		// Check when empty values
-		Assert.False(IM.CheckCredentials("", ""));
+		Assert.False(IM.CheckCredentials("",     ""));
 		Assert.False(IM.CheckCredentials("root", ""));
-		Assert.False(IM.CheckCredentials("", "root"));
+		Assert.False(IM.CheckCredentials("",     "root"));
 		// Check when wrong values
 		Assert.False(IM.CheckCredentials("wrong", "root"));
-		Assert.False(IM.CheckCredentials("root", "wrong"));
+		Assert.False(IM.CheckCredentials("root",  "wrong"));
 		// Check when success
 		Assert.True(IM.CheckCredentials("root", "root"));
 	}
@@ -60,8 +58,14 @@ public class IdentityManagerTest
 	{
 		var r1 = IM.GetCurrent()?.Can(Read).Type<DocumentDao>();
 		IM.GetCurrent()?.EnsureCan(Read).Type<DocumentDao>();
-		var r2 = IM.GetCurrent()?.Can(Read).AllInstances(new DocumentDao?[] { null, null, null, null, null, null });
-		IM.GetCurrent()?.EnsureCan(Read).AnyInstances(new DocumentDao?[] { null, null, null, null, null, null });
+		var r2 = IM.GetCurrent()?.Can(Read).AllInstances(new DocumentDao?[]
+		{
+			null, null, null, null, null, null
+		});
+		IM.GetCurrent()?.EnsureCan(Read).AnyInstances(new DocumentDao?[]
+		{
+			null, null, null, null, null, null
+		});
 		// Login
 		//if (!IM.IsAuthenticated)
 		//    Assert.True(IM.Login("root", "root"));
@@ -75,6 +79,5 @@ public class IdentityManagerTest
 		//    IM.Current
 		//        .Can(Create, Delete)
 		//        .OfAllTypes<Order, Invoice>());
-		return;
 	}
 }

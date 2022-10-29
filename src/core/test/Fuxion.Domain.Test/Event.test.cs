@@ -1,6 +1,6 @@
-﻿namespace Fuxion.Domain.Test;
+﻿using Xunit;
 
-using Xunit;
+namespace Fuxion.Domain.Test;
 
 public class EventTest
 {
@@ -17,6 +17,7 @@ public class EventTest
 		Assert.NotEqual(Guid.Empty, @event.AggregateId);
 	}
 }
+
 public record MockEvent : Event
 {
 	public MockEvent(Guid AggregateId) : base(AggregateId) { }

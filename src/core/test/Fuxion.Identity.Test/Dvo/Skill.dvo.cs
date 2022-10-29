@@ -1,12 +1,9 @@
 ﻿namespace Fuxion.Identity.Test.Dvo;
 
-public interface ISkillDvo : IBaseDvo<ISkillDvo>
-{
+public interface ISkillDvo : IBaseDvo<ISkillDvo> { }
 
-}
 [TypeDiscriminated(TypeDiscriminationDisableMode.DisableHierarchy)]
-public abstract class SkillDvo<TSkill> : BaseDvo<TSkill>, ISkillDvo
-	where TSkill : SkillDvo<TSkill>
+public abstract class SkillDvo<TSkill> : BaseDvo<TSkill>, ISkillDvo where TSkill : SkillDvo<TSkill>
 {
 	public SkillDvo(string id, string name) : base(id, name)
 	{
@@ -33,21 +30,25 @@ public abstract class SkillDvo<TSkill> : BaseDvo<TSkill>, ISkillDvo
 	//	}
 	//}
 }
+
 [TypeDiscriminated(TypeDiscriminationDisableMode.DisableHierarchy)]
 public class ActorSkillDvo : SkillDvo<ActorSkillDvo>
 {
 	public ActorSkillDvo(string id, string name) : base(id, name) { }
 }
+
 [TypeDiscriminated(TypeDiscriminationDisableMode.DisableHierarchy)]
 public class SingerSkillDvo : SkillDvo<SingerSkillDvo>
 {
 	public SingerSkillDvo(string id, string name) : base(id, name) { }
 }
+
 [TypeDiscriminated(TypeDiscriminationDisableMode.DisableHierarchy)]
 public class WriterSkillDvo : SkillDvo<WriterSkillDvo>
 {
 	public WriterSkillDvo(string id, string name) : base(id, name) { }
 }
+
 [TypeDiscriminated(TypeDiscriminationDisableMode.DisableHierarchy)]
 public class DirectorSkillDvo : SkillDvo<DirectorSkillDvo>
 {

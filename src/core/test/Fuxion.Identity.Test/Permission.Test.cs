@@ -1,28 +1,50 @@
-﻿namespace Fuxion.Identity.Test;
-
+﻿using System.Diagnostics;
 using Fuxion.Identity.Test.Dao;
 using Fuxion.Testing;
-using System.Diagnostics;
 using Xunit;
 using Xunit.Abstractions;
-using static Fuxion.Identity.Functions;
+
+namespace Fuxion.Identity.Test;
+
+using static Functions;
 
 public class PermissionTest : BaseTest
 {
 	public PermissionTest(ITestOutputHelper helper) : base(helper) => Context.Initialize();
-	[Fact(DisplayName = "Permission - Match by function")]
-	public void WhenPermission_MatchByFunction()
+	[Fact(DisplayName = "Permission - Match")]
+	public void WhenPermission_Match()
 	{
-		// Un permiso de concesion para editar algo implicará que tambien puedo leerlo
-		Assert.True(new PermissionDao("", "", null!, Edit.Id.ToString() ?? "")
+		var propagation = ScopePropagation.ToMe | ScopePropagation.ToInclusions;
+		var per = new PermissionDao("", "", null!, Edit.Id.ToString() ?? "")
 		{
 			Value = true,
-		}.MatchByFunction(Read));
-		// Un permiso de denegación para leer algo implicará que tampoco puedo editarlo
-		Assert.True(new PermissionDao("", "", null!, Read.Id.ToString() ?? "" ?? "")
-		{
-			Value = false,
-		}.MatchByFunction(Edit));
+			Scopes = new ScopeDao[]
+			{
+				//new ScopeDao("","", States.California,propagation)
+			}
+		};
+		var de  = TypeDiscriminator.Empty;
+		var dsf = Cities.SanFrancisco;
+		var r   = per.Match(false, Read, de, dsf);
+		Debug.WriteLine("");
+		Assert.True(new PermissionDao("", "", null!, Edit.Id.ToString() ?? "")
+			{
+				Value = true,
+				Scopes = new ScopeDao[]
+				{
+					//new ScopeDao("","", States.California,propagation)
+				}
+			}.Match(false, Read, TypeDiscriminator.Empty, Cities.SanFrancisco),
+			$"Si tengo permiso para {nameof(Edit)} en {nameof(States.California)} y se propaga {propagation}." + $"¿Debería poder {nameof(Read)} en {nameof(Cities.SanFrancisco)}? => SI");
+		Assert.True(new PermissionDao("", "", null!, Edit.Id.ToString() ?? "")
+			{
+				Value = true,
+				Scopes = new[]
+				{
+					new ScopeDao("", "", States.California, propagation)
+				}
+			}.Match(false, Read, TypeDiscriminator.Empty, Cities.SanFrancisco),
+			$"Si tengo permiso para {nameof(Edit)} en {nameof(States.California)} y se propaga {propagation}." + $"¿Debería poder {nameof(Read)} en {nameof(Cities.SanFrancisco)}? => SI");
 	}
 	//[Fact(DisplayName = "Permission - Match by discriminators type")]
 	//public void WhenPermission_MatchByDiscriminatorsType()
@@ -95,147 +117,106 @@ public class PermissionTest : BaseTest
 	{
 		// CASE 1 - Propagation to parents
 		var propagation = ScopePropagation.ToExclusions;
-		Assert.False(
-			new PermissionDao("", "", null!, Read.Id.ToString() ?? "" ?? "")
+		Assert.False(new PermissionDao("", "", null!, Read.Id.ToString() ?? "" ?? "")
 			{
 				Value = true,
-				Scopes = new[] {
-						new ScopeDao("","", States.California, propagation)
+				Scopes = new[]
+				{
+					new ScopeDao("", "", States.California, propagation)
 				}
-			}.MatchByDiscriminatorsInclusionsAndExclusions(false, TypeDiscriminator.Empty, new IDiscriminator[] {
-					States.California
-			}), $"Permiso de {nameof(States.California)} hacia {propagation}, me pasan {nameof(States.California)}, no debería encajar");
-		Assert.True(
-			new PermissionDao("", "", null!, Read.Id.ToString() ?? "")
+			}.MatchByDiscriminatorsInclusionsAndExclusions(false, TypeDiscriminator.Empty, States.California),
+			$"Permiso de {nameof(States.California)} hacia {propagation}, me pasan {nameof(States.California)}, no debería encajar");
+		Assert.True(new PermissionDao("", "", null!, Read.Id.ToString() ?? "")
 			{
 				Value = true,
-				Scopes = new[] {
-						new ScopeDao ("","", States.California, propagation)
+				Scopes = new[]
+				{
+					new ScopeDao("", "", States.California, propagation)
 				}
-			}.MatchByDiscriminatorsInclusionsAndExclusions(false, TypeDiscriminator.Empty, new IDiscriminator[] {
-					Countries.Usa
-			}), $"Permiso de {nameof(States.California)} hacia {propagation}, me pasan {nameof(Countries.Usa)}, debería encajar");
-		Assert.False(
-			new PermissionDao("", "", null!, Read.Id.ToString() ?? "")
+			}.MatchByDiscriminatorsInclusionsAndExclusions(false, TypeDiscriminator.Empty, Countries.Usa),
+			$"Permiso de {nameof(States.California)} hacia {propagation}, me pasan {nameof(Countries.Usa)}, debería encajar");
+		Assert.False(new PermissionDao("", "", null!, Read.Id.ToString() ?? "")
 			{
 				Value = true,
-				Scopes = new[] {
-						new ScopeDao("","", States.California, propagation)
+				Scopes = new[]
+				{
+					new ScopeDao("", "", States.California, propagation)
 				}
-			}.MatchByDiscriminatorsInclusionsAndExclusions(false, TypeDiscriminator.Empty, new IDiscriminator[] {
-					Cities.SanFrancisco
-			}), $"Permiso de {nameof(States.California)} hacia {propagation}, me pasan {nameof(Cities.SanFrancisco)}, no debería encajar");
+			}.MatchByDiscriminatorsInclusionsAndExclusions(false, TypeDiscriminator.Empty, Cities.SanFrancisco),
+			$"Permiso de {nameof(States.California)} hacia {propagation}, me pasan {nameof(Cities.SanFrancisco)}, no debería encajar");
 
 		// CASE 2 - Propagation to me
 		propagation = ScopePropagation.ToMe;
-		Assert.True(
-			new PermissionDao("", "", null!, Read.Id.ToString() ?? "")
+		Assert.True(new PermissionDao("", "", null!, Read.Id.ToString() ?? "")
 			{
 				Value = true,
-				Scopes = new[] {
-						new ScopeDao("","", States.California, propagation)
+				Scopes = new[]
+				{
+					new ScopeDao("", "", States.California, propagation)
 				}
-			}.MatchByDiscriminatorsInclusionsAndExclusions(false, TypeDiscriminator.Empty, new IDiscriminator[] {
-					States.California
-			}), $"Permiso de {nameof(States.California)} hacia {propagation}, me pasan {nameof(States.California)}, debería encajar");
-		Assert.False(
-			new PermissionDao("", "", null!, Read.Id.ToString() ?? "")
+			}.MatchByDiscriminatorsInclusionsAndExclusions(false, TypeDiscriminator.Empty, States.California),
+			$"Permiso de {nameof(States.California)} hacia {propagation}, me pasan {nameof(States.California)}, debería encajar");
+		Assert.False(new PermissionDao("", "", null!, Read.Id.ToString() ?? "")
 			{
 				Value = true,
-				Scopes = new[] {
-						new ScopeDao("","", States.California,  propagation)
+				Scopes = new[]
+				{
+					new ScopeDao("", "", States.California, propagation)
 				}
-			}.MatchByDiscriminatorsInclusionsAndExclusions(false, TypeDiscriminator.Empty, new[] {
-					Countries.Usa
-			}), $"Permiso de {nameof(States.California)} hacia {propagation}, me pasan {nameof(Countries.Usa)}, no debería encajar");
-		Assert.False(
-			new PermissionDao("", "", null!, Read.Id.ToString() ?? "")
+			}.MatchByDiscriminatorsInclusionsAndExclusions(false, TypeDiscriminator.Empty, Countries.Usa),
+			$"Permiso de {nameof(States.California)} hacia {propagation}, me pasan {nameof(Countries.Usa)}, no debería encajar");
+		Assert.False(new PermissionDao("", "", null!, Read.Id.ToString() ?? "")
 			{
 				Value = true,
-				Scopes = new[] {
-						new ScopeDao("","", States.California,  propagation)
+				Scopes = new[]
+				{
+					new ScopeDao("", "", States.California, propagation)
 				}
-			}.MatchByDiscriminatorsInclusionsAndExclusions(false, TypeDiscriminator.Empty, new[] {
-					Cities.SanFrancisco
-			}), $"Permiso de {nameof(States.California)} hacia {propagation}, me pasan {nameof(Cities.SanFrancisco)}, no debería encajar");
+			}.MatchByDiscriminatorsInclusionsAndExclusions(false, TypeDiscriminator.Empty, Cities.SanFrancisco),
+			$"Permiso de {nameof(States.California)} hacia {propagation}, me pasan {nameof(Cities.SanFrancisco)}, no debería encajar");
 
 		// CASE 3 - Propagation to childs
 		propagation = ScopePropagation.ToInclusions;
-		Assert.False(
-			new PermissionDao("", "", null!, Read.Id.ToString() ?? "")
+		Assert.False(new PermissionDao("", "", null!, Read.Id.ToString() ?? "")
 			{
 				Value = true,
-				Scopes = new[] {
-						new ScopeDao ("","", States.California,  propagation)
+				Scopes = new[]
+				{
+					new ScopeDao("", "", States.California, propagation)
 				}
-			}.MatchByDiscriminatorsInclusionsAndExclusions(false, TypeDiscriminator.Empty, new[] {
-					States.California
-			}), $"Permiso de {nameof(States.California)} hacia {propagation}, me pasan {nameof(States.California)}, no debería encajar");
-		Assert.False(
-			new PermissionDao("", "", null!, Read.Id.ToString() ?? "")
+			}.MatchByDiscriminatorsInclusionsAndExclusions(false, TypeDiscriminator.Empty, States.California),
+			$"Permiso de {nameof(States.California)} hacia {propagation}, me pasan {nameof(States.California)}, no debería encajar");
+		Assert.False(new PermissionDao("", "", null!, Read.Id.ToString() ?? "")
 			{
 				Value = true,
-				Scopes = new[] {
-						new ScopeDao("","",States.California, propagation)
+				Scopes = new[]
+				{
+					new ScopeDao("", "", States.California, propagation)
 				}
-			}.MatchByDiscriminatorsInclusionsAndExclusions(false, TypeDiscriminator.Empty, new[] {
-					Countries.Usa
-			}), $"Permiso de {nameof(States.California)} hacia {propagation}, me pasan {nameof(Countries.Usa)}, no debería encajar");
-		Assert.True(
-			new PermissionDao("", "", null!, Read.Id.ToString() ?? "")
+			}.MatchByDiscriminatorsInclusionsAndExclusions(false, TypeDiscriminator.Empty, Countries.Usa),
+			$"Permiso de {nameof(States.California)} hacia {propagation}, me pasan {nameof(Countries.Usa)}, no debería encajar");
+		Assert.True(new PermissionDao("", "", null!, Read.Id.ToString() ?? "")
 			{
 				Value = true,
-				Scopes = new[] {
-						new ScopeDao ("","", States.California,   propagation )
+				Scopes = new[]
+				{
+					new ScopeDao("", "", States.California, propagation)
 				}
-			}.MatchByDiscriminatorsInclusionsAndExclusions(false, TypeDiscriminator.Empty, new[] {
-					Cities.SanFrancisco
-			}), $"Permiso de {nameof(States.California)} hacia {propagation}, me pasan {nameof(Cities.SanFrancisco)}, debería encajar");
+			}.MatchByDiscriminatorsInclusionsAndExclusions(false, TypeDiscriminator.Empty, Cities.SanFrancisco),
+			$"Permiso de {nameof(States.California)} hacia {propagation}, me pasan {nameof(Cities.SanFrancisco)}, debería encajar");
 	}
-	[Fact(DisplayName = "Permission - Match")]
-	public void WhenPermission_Match()
+	[Fact(DisplayName = "Permission - Match by function")]
+	public void WhenPermission_MatchByFunction()
 	{
-		var propagation = ScopePropagation.ToMe | ScopePropagation.ToInclusions;
-		var per = new PermissionDao("", "", null!, Edit.Id.ToString() ?? "")
+		// Un permiso de concesion para editar algo implicará que tambien puedo leerlo
+		Assert.True(new PermissionDao("", "", null!, Edit.Id.ToString() ?? "")
 		{
-			Value = true,
-			Scopes = new ScopeDao[] {
-						//new ScopeDao("","", States.California,propagation)
-					}
-		};
-		var de = TypeDiscriminator.Empty;
-		var dsf = Cities.SanFrancisco;
-		var r = per.Match(false, Read, de,
-				new[] {
-						dsf
-				});
-		Debug.WriteLine("");
-		Assert.True(
-			new PermissionDao("", "", null!, Edit.Id.ToString() ?? "")
-			{
-				Value = true,
-				Scopes = new ScopeDao[] {
-					//new ScopeDao("","", States.California,propagation)
-				}
-			}.Match(false, Read, TypeDiscriminator.Empty,
-				new[] {
-						Cities.SanFrancisco
-				}),
-			$"Si tengo permiso para {nameof(Edit)} en {nameof(States.California)} y se propaga {propagation}." +
-			$"¿Debería poder {nameof(Read)} en {nameof(Cities.SanFrancisco)}? => SI");
-
-		Assert.True(
-			new PermissionDao("", "", null!, Edit.Id.ToString() ?? "")
-			{
-				Value = true,
-				Scopes = new[] {
-						new ScopeDao("","",States.California,propagation)
-				}
-			}.Match(false, Read, TypeDiscriminator.Empty,
-				new IDiscriminator[] {
-						Cities.SanFrancisco
-				}),
-			$"Si tengo permiso para {nameof(Edit)} en {nameof(States.California)} y se propaga {propagation}." +
-			$"¿Debería poder {nameof(Read)} en {nameof(Cities.SanFrancisco)}? => SI");
+			Value = true
+		}.MatchByFunction(Read));
+		// Un permiso de denegación para leer algo implicará que tampoco puedo editarlo
+		Assert.True(new PermissionDao("", "", null!, Read.Id.ToString() ?? "" ?? "")
+		{
+			Value = false
+		}.MatchByFunction(Edit));
 	}
 }

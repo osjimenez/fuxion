@@ -1,8 +1,8 @@
-﻿namespace Fuxion.Windows.Data;
-
-using System.Globalization;
+﻿using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
+
+namespace Fuxion.Windows.Data;
 
 public enum TypeMatchConverterDefaultType
 {
@@ -11,11 +11,12 @@ public enum TypeMatchConverterDefaultType
 	Long,
 	UIElement
 }
+
 public class TypeMatchToVisibilityConverter : IValueConverter
 {
 	public TypeMatchConverterDefaultType TargetType { get; set; }
-	public Visibility Match { get; set; } = Visibility.Visible;
-	public Visibility NotMatch { get; set; } = Visibility.Collapsed;
+	public Visibility                    Match      { get; set; } = Visibility.Visible;
+	public Visibility                    NotMatch   { get; set; } = Visibility.Collapsed;
 	public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 	{
 		switch (TargetType)

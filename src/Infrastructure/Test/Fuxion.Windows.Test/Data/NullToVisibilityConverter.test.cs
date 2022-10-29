@@ -1,12 +1,12 @@
-﻿namespace Fuxion.Windows.Test.Data;
-
-using Fuxion.Testing;
-using Fuxion.Windows.Data;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
+using Fuxion.Testing;
+using Fuxion.Windows.Data;
 using Xunit;
 using Xunit.Abstractions;
+
+namespace Fuxion.Windows.Test.Data;
 
 public class NullToVisibilityConverterTest : BaseTest
 {

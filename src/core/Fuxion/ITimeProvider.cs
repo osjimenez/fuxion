@@ -3,7 +3,7 @@
 [DefaultSingletonInstance(typeof(LocalMachinneTimeProvider))]
 public interface ITimeProvider
 {
-	DateTime Now();
+	DateTime       Now();
 	DateTimeOffset NowOffsetted();
-	DateTime UtcNow();
+	DateTime       UtcNow();
 }

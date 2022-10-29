@@ -1,6 +1,6 @@
-﻿namespace Fuxion.Domain;
+﻿using Fuxion.Domain.Events;
 
-using Fuxion.Domain.Events;
+namespace Fuxion.Domain;
 
 public abstract record Event(Guid AggregateId)
 {

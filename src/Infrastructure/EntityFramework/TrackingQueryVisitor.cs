@@ -1,7 +1,7 @@
-﻿namespace Fuxion.EntityFramework;
-
-using System.Data.Entity.Core.Common.CommandTrees;
+﻿using System.Data.Entity.Core.Common.CommandTrees;
 using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
+
+namespace Fuxion.EntityFramework;
 
 public class TrackingQueryVisitor : DefaultExpressionVisitor
 {
@@ -12,17 +12,9 @@ public class TrackingQueryVisitor : DefaultExpressionVisitor
 		if (column != null)
 		{
 			var binding = expression.Bind();
-			return binding
-				.Filter(binding.VariableType.Variable(binding.VariableName)
-					.Property(column)
-					.NotEqual(DbExpression.FromBoolean(true))
-					.Or(binding.VariableType.Variable(binding.VariableName)
-						.Property(column).IsNull()));
-
+			return binding.Filter(binding.VariableType.Variable(binding.VariableName).Property(column).NotEqual(DbExpression.FromBoolean(true))
+												  .Or(binding.VariableType.Variable(binding.VariableName).Property(column).IsNull()));
 		}
-		else
-		{
-			return base.Visit(expression);
-		}
+		return base.Visit(expression);
 	}
 }

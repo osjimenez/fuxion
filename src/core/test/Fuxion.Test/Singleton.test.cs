@@ -8,7 +8,6 @@ public class SingletonTest
 		var id = Guid.NewGuid();
 		Singleton.Add(id);
 		Assert.Equal(Singleton.Get<Guid>(), id);
-
 		Singleton.Add<string?>(null);
 		Assert.Null(Singleton.Get<string>());
 	}
@@ -26,14 +25,8 @@ public class SingletonTest
 		SingletonConstants.Run();
 		var ip = Singleton.Constants.IpAddress();
 		var id = Singleton.Constants.DefaultId();
-		Assert.Equal("127.0.0.1", ip);
+		Assert.Equal("127.0.0.1",                                          ip);
 		Assert.Equal(Guid.Parse("{760B9485-B3A3-477F-B393-8927FAAA0C56}"), id);
-	}
-	[Fact(DisplayName = "Singleton - Get with DefaultSingletonInstance")]
-	public void Singleton_GetWithDefaultSingletonInstance()
-	{
-		var target = Singleton.Get<IDefaultSingletonInstanceTest>();
-		Assert.IsAssignableFrom<DefaultSingletonInstanceTestTarget>(target);
 	}
 	[Fact(DisplayName = "Singleton - Find with DefaultSingletonInstance")]
 	public void Singleton_FindWithDefaultSingletonInstance()
@@ -41,18 +34,26 @@ public class SingletonTest
 		var target = Singleton.Find<IDefaultSingletonInstanceTest>();
 		Assert.IsAssignableFrom<DefaultSingletonInstanceTestTarget>(target);
 	}
+	[Fact(DisplayName = "Singleton - Get with DefaultSingletonInstance")]
+	public void Singleton_GetWithDefaultSingletonInstance()
+	{
+		var target = Singleton.Get<IDefaultSingletonInstanceTest>();
+		Assert.IsAssignableFrom<DefaultSingletonInstanceTestTarget>(target);
+	}
 }
 
-internal static class SingletonConstants
+static class SingletonConstants
 {
 	public static void Run()
 	{
-		Singleton.Add("127.0.0.1", nameof(IpAddress));
+		Singleton.Add("127.0.0.1",                                          nameof(IpAddress));
 		Singleton.Add(Guid.Parse("{760B9485-B3A3-477F-B393-8927FAAA0C56}"), nameof(DefaultId));
 	}
 	internal static string IpAddress(this ISingletonConstants _) => Singleton.Get<string>(nameof(IpAddress));
-	internal static Guid DefaultId(this ISingletonConstants _) => Singleton.Get<Guid>(nameof(DefaultId));
+	internal static Guid   DefaultId(this ISingletonConstants _) => Singleton.Get<Guid>(nameof(DefaultId));
 }
+
 [DefaultSingletonInstance(typeof(DefaultSingletonInstanceTestTarget))]
 public interface IDefaultSingletonInstanceTest { }
+
 public class DefaultSingletonInstanceTestTarget : IDefaultSingletonInstanceTest { }

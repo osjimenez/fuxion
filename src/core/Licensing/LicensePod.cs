@@ -1,12 +1,12 @@
-﻿namespace Fuxion.Licensing;
-
-using Fuxion.Json;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
+using Fuxion.Json;
+
+namespace Fuxion.Licensing;
 
 public class LicensePod : JsonPod<License, Type>
 {
-	public string? Comment { get; set; }
+	public string? Comment   { get; set; }
 	public string? Signature { get; set; }
 	//[JsonProperty(PropertyName = "License")]
 	//public JRaw RawLicense { get; set; }
@@ -21,7 +21,6 @@ public class LicensePod : JsonPod<License, Type>
 	//{
 	//	return (License)RawLicense.Value.ToString().FromJson(type);
 	//}
-
 	public License? AsLicense(Type type) => (License?)As(type);
 
 	//public bool Is<T>() where T : License
@@ -55,7 +54,6 @@ public class LicensePod : JsonPod<License, Type>
 	//		Signature = Convert.ToBase64String(signedData),
 	//	}.Set(license);
 
-
 	//	// Export the key information to an RSAParameters object.
 	//	// You must pass true to export the private key for signing.
 	//	// However, you do not need to export the private key
@@ -71,32 +69,23 @@ public class LicensePod : JsonPod<License, Type>
 		var pro = new RSACryptoServiceProvider();
 		pro.FromXmlString(key);
 		if (Signature == null) throw new InvalidOperationException($"'{nameof(Signature)}' cannot be null");
-		return pro.VerifyData(
-			Encoding.Unicode.GetBytes(Payload.ToJson()),
-			SHA1.Create(),
-			Convert.FromBase64String(Signature));
+		return pro.VerifyData(Encoding.Unicode.GetBytes(Payload.ToJson()), SHA1.Create(), Convert.FromBase64String(Signature));
 	}
 }
+
 public static class LicensePodExtensions
 {
 	public static IQueryable<LicensePod> WithValidSignature(this IQueryable<LicensePod> me, string publicKey) => me.Where(l => l.VerifySignature(publicKey));
-
-	public static IQueryable<LicensePod> OfType<TLicense>(this IQueryable<LicensePod> me) where TLicense : License => me.Where(l => l.Is<TLicense>());
-
-	public static IQueryable<LicensePod> OfType(this IQueryable<LicensePod> me, Type type) => me.Where(l => l.Is(type));
-
+	public static IQueryable<LicensePod> OfType<TLicense>(this   IQueryable<LicensePod> me) where TLicense : License => me.Where(l => l.Is<TLicense>());
+	public static IQueryable<LicensePod> OfType(this             IQueryable<LicensePod> me, Type type)               => me.Where(l => l.Is(type));
 	public static IQueryable<LicensePod> OnlyValidOfType<TLicense>(this IQueryable<LicensePod> me, string publicKey) where TLicense : License
 	{
 		string _;
-		return me.WithValidSignature(publicKey).OfType<TLicense>()
-			.Where(l => l.Is<TLicense>())
-			.Where(l => l.As<TLicense>()!.Validate(out _));
+		return me.WithValidSignature(publicKey).OfType<TLicense>().Where(l => l.Is<TLicense>()).Where(l => l.As<TLicense>()!.Validate(out _));
 	}
 	public static IQueryable<LicensePod> OnlyValidOfType(this IQueryable<LicensePod> me, string publicKey, Type type)
 	{
 		string _;
-		return me.WithValidSignature(publicKey).OfType(type)
-			.Where(l => l.Is(type))
-			.Where(l => l.AsLicense(type)!.Validate(out _));
+		return me.WithValidSignature(publicKey).OfType(type).Where(l => l.Is(type)).Where(l => l.AsLicense(type)!.Validate(out _));
 	}
 }

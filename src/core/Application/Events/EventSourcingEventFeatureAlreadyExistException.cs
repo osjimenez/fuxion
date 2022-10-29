@@ -1,6 +1,6 @@
-﻿namespace Fuxion.Application.Events;
+﻿using Fuxion.Domain.Events;
 
-using Fuxion.Domain.Events;
+namespace Fuxion.Application.Events;
 
 public class EventSourcingEventFeatureAlreadyExistException : EventFeatureAlreadyExistException
 {

@@ -1,7 +1,7 @@
-﻿namespace Fuxion.Windows.Data;
-
-using System.Globalization;
+﻿using System.Globalization;
 using System.Windows.Data;
+
+namespace Fuxion.Windows.Data;
 
 [ValueConversion(typeof(string), typeof(string))]
 public class StringToCapitalizedStringConverter : GenericConverter<string, string>
@@ -11,21 +11,16 @@ public class StringToCapitalizedStringConverter : GenericConverter<string, strin
 	{
 		switch (Capitalization)
 		{
-			case StringCapitalization.ToUpper:
-				return source.ToUpper(culture);
-			case StringCapitalization.ToLower:
-				return source.ToLower(culture);
-			case StringCapitalization.ToTitleCase:
-				return source.ToTitleCase(culture);
-			case StringCapitalization.ToCamelCase:
-				return source.ToCamelCase(culture);
-			case StringCapitalization.ToPascalCase:
-				return source.ToPascalCase(culture);
-			default:
-				return source;
+			case StringCapitalization.ToUpper:      return source.ToUpper(culture);
+			case StringCapitalization.ToLower:      return source.ToLower(culture);
+			case StringCapitalization.ToTitleCase:  return source.ToTitleCase(culture);
+			case StringCapitalization.ToCamelCase:  return source.ToCamelCase(culture);
+			case StringCapitalization.ToPascalCase: return source.ToPascalCase(culture);
+			default:                                return source;
 		}
 	}
 }
+
 public enum StringCapitalization
 {
 	ToUpper,

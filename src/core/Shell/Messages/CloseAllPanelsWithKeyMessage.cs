@@ -1,3 +1,3 @@
 ﻿namespace Fuxion.Shell.Messages;
 
-internal record CloseAllPanelsWithKeyMessage(string Key);
+record CloseAllPanelsWithKeyMessage(string Key);

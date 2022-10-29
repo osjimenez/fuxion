@@ -1,12 +1,12 @@
 ﻿namespace Fuxion.Repositories;
 
-internal class MemoryKeyValueRepositoryValue<TValue>
+class MemoryKeyValueRepositoryValue<TValue>
 {
 	public MemoryKeyValueRepositoryValue(bool hasOrigin, TValue value)
 	{
 		HasOrigin = hasOrigin;
-		Value = value;
+		Value     = value;
 	}
-	public bool HasOrigin { get; set; }
-	public TValue Value { get; set; }
+	public bool   HasOrigin { get; set; }
+	public TValue Value     { get; set; }
 }

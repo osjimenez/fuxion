@@ -1,6 +1,6 @@
-﻿namespace Fuxion.Windows.Data;
+﻿using System.Globalization;
 
-using System.Globalization;
+namespace Fuxion.Windows.Data;
 
 public class NamedEnumValueToStringConverter : GenericConverter<NamedEnumValue, string>
 {
