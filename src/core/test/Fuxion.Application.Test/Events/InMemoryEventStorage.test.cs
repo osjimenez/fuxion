@@ -6,6 +6,6 @@ namespace Fuxion.Application.Test.Events;
 public class InMemoryEventStorageTest : BaseTest
 {
 	public InMemoryEventStorageTest(ITestOutputHelper output) : base(output) { }
-	[Fact(DisplayName = "InMemoryEventStorage - Pending")]
+	[Fact(DisplayName = "InMemoryEventStorage - Pending", Skip = "Not implemented yet")]
 	public void Pending() => throw new NotImplementedException();
 }

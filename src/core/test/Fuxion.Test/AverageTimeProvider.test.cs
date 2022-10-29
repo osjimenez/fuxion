@@ -28,8 +28,14 @@ public class AverageTimeProviderTest
 	};
 	string[] WebServersAddresses { get; } =
 	{
-		"http://www.google.com", "http://www.google.es", "http://www.youtube.com", "http://www.microsoft.com", "http://www.yahoo.com", "http://www.amazon.com", "http://www.facebook.com",
-		"http://www.twitter.com"
+		"https://www.google.com", 
+		"https://www.google.es", 
+		"https://www.youtube.com",
+		// "https://www.microsoft.com",
+		"https://www.yahoo.com", 
+		"https://www.amazon.com", 
+		"https://www.facebook.com",
+		"https://www.twitter.com"
 	};
 	[Fact(DisplayName = "AverageTimeProvider - CheckConsistency")]
 	public void AverageTimeProvider_CheckConsistency() =>

@@ -22,9 +22,9 @@ public class JsonPod<TPayload, TKey>
 		Payload      = payload;
 		PayloadValue = CreateValue(payload);
 	}
-	TPayload?   _Payload;
-	JsonValue   _PayloadValue;
-	public TKey PayloadKey { get; }
+	private TPayload? _Payload;
+	private JsonValue _PayloadValue;
+	public  TKey      PayloadKey { get; internal set; }
 	[JsonPropertyName(nameof(Payload))]
 	protected internal JsonValue PayloadValue
 	{
@@ -51,10 +51,9 @@ public class JsonPod<TPayload, TKey>
 			PayloadHasValue = true;
 		}
 	}
-	JsonValue CreateValue(TPayload payload)
+	private JsonValue CreateValue(TPayload payload)
 	{
-		var met = typeof(JsonValue).GetMethods(BindingFlags.Static | BindingFlags.Public)
-											.Where(m => m.Name == nameof(JsonValue.Create) && m.GetGenericArguments().Any() && m.GetParameters().Count() == 2).FirstOrDefault();
+		var met = typeof(JsonValue).GetMethods(BindingFlags.Static | BindingFlags.Public).Where(m => m.Name == nameof(JsonValue.Create) && m.GetGenericArguments().Any() && m.GetParameters().Count() == 2).FirstOrDefault();
 		if (met is null) throw new InvalidProgramException("The JsonValue.Create<T>() method could not be determined");
 		if (payload is null) throw new ArgumentNullException("payload could not be null");
 		var met2 = met.MakeGenericMethod(payload.GetType());
