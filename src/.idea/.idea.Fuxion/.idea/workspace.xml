@@ -11,394 +11,33 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b4905114-69e1-4359-8461-bda4d23b97a9" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.Fuxion/.idea/codeStyles/Project.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/Identity/FunctionEqualityComparer.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/Identity/FunctionExtensions.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/Identity/Functions.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.editorconfig" beforeDir="false" afterPath="$PROJECT_DIR$/.editorconfig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Fuxion/.idea/codeStyles/codeStyleConfig.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Fuxion/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Fuxion/.idea/riderMarkupCache.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Fuxion/.idea/riderMarkupCache.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Fuxion/.idea/codeStyles/Project.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Fuxion/.idea/codeStyles/Project.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Fuxion/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Fuxion/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Directory.Build.props" beforeDir="false" afterPath="$PROJECT_DIR$/Directory.Build.props" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/AspNetCore/Controllers/CommandController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/AspNetCore/Controllers/CommandController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/AspNetCore/DependencyInjection/AspNetCoreDIExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/AspNetCore/DependencyInjection/AspNetCoreDIExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/AspNetCore/Fuxion.AspNetCore.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/AspNetCore/Fuxion.AspNetCore.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/AutoMapper/DependencyInjection/AutoMapperDIExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/AutoMapper/DependencyInjection/AutoMapperDIExtensions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Fuxion.sln" beforeDir="false" afterPath="$PROJECT_DIR$/Fuxion.sln" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Infrastructure/AutoMapper/Fuxion.AutoMapper.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/AutoMapper/Fuxion.AutoMapper.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/EntityFramework/CascadeDeleteAttribute.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/EntityFramework/CascadeDeleteAttribute.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/EntityFramework/CascadeDeleteAttributeConvention.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/EntityFramework/CascadeDeleteAttributeConvention.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/EntityFramework/ColumnAnnotationAttribute.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/EntityFramework/ColumnAnnotationAttribute.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/EntityFramework/DateTime2Convention.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/EntityFramework/DateTime2Convention.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/EntityFramework/Extensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/EntityFramework/Extensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/EntityFramework/Fuxion.EntityFramework.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/EntityFramework/Fuxion.EntityFramework.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/EntityFramework/TrackAttributes.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/EntityFramework/TrackAttributes.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/EntityFramework/TrackingConvention.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/EntityFramework/TrackingConvention.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/EntityFramework/TrackingInterceptor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/EntityFramework/TrackingInterceptor.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/EntityFramework/TrackingQueryVisitor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/EntityFramework/TrackingQueryVisitor.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/EntityFrameworkCore/DbContextRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/EntityFrameworkCore/DbContextRepository.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/EntityFrameworkCore/DependencyInjection/EntityFrameworkDIExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/EntityFrameworkCore/DependencyInjection/EntityFrameworkDIExtensions.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Infrastructure/EntityFrameworkCore/Fuxion.EntityFrameworkCore.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/EntityFrameworkCore/Fuxion.EntityFrameworkCore.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/EventStore/DependencyInjection/EventStoreDIExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/EventStore/DependencyInjection/EventStoreDIExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/EventStore/EventStoreManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/EventStore/EventStoreManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/EventStore/Fuxion.EventStore.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/EventStore/Fuxion.EventStore.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/MassTransit/Class1.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/MassTransit/Class1.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/MassTransit/Fuxion.MassTransit.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/MassTransit/Fuxion.MassTransit.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/MongoDB/Fuxion.MongoDB.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/MongoDB/Fuxion.MongoDB.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/RabbitMQ/DefaultRabbitMQPersistentConnection.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/RabbitMQ/DefaultRabbitMQPersistentConnection.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/RabbitMQ/DependencyInjection/RabbitDIExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/RabbitMQ/DependencyInjection/RabbitDIExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/RabbitMQ/Fuxion.RabbitMQ.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/RabbitMQ/Fuxion.RabbitMQ.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/RabbitMQ/IRabbitMQPersistentConnection.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/RabbitMQ/IRabbitMQPersistentConnection.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/RabbitMQ/RabbitMQEventBus.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/RabbitMQ/RabbitMQEventBus.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Test/Fuxion.EntityFramework.Test/Fuxion.EntityFramework.Test.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Test/Fuxion.EntityFramework.Test/Fuxion.EntityFramework.Test.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Test/Fuxion.EntityFramework.Test/Migrations/Configuration.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Test/Fuxion.EntityFramework.Test/Migrations/Configuration.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Test/Fuxion.EntityFramework.Test/Sequences.test.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Test/Fuxion.EntityFramework.Test/Sequences.test.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Test/Fuxion.EntityFramework.Test/TestContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Test/Fuxion.EntityFramework.Test/TestContext.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Test/Fuxion.Windows.Test/AntiBackTimeProvider.test.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Test/Fuxion.Windows.Test/AntiBackTimeProvider.test.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Test/Fuxion.Windows.Test/Data/BooleanToBooleanMultiConverter.test.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Test/Fuxion.Windows.Test/Data/BooleanToBooleanMultiConverter.test.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Test/Fuxion.Windows.Test/Data/BooleanToVisibilityMultiConverter.test.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Test/Fuxion.Windows.Test/Data/BooleanToVisibilityMultiConverter.test.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Test/Fuxion.Windows.Test/Data/EnumToNamedEnumValueConverter.test.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Test/Fuxion.Windows.Test/Data/EnumToNamedEnumValueConverter.test.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Test/Fuxion.Windows.Test/Data/GenericConverter.test.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Test/Fuxion.Windows.Test/Data/GenericConverter.test.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Test/Fuxion.Windows.Test/Data/GenericMultiConverter.test.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Test/Fuxion.Windows.Test/Data/GenericMultiConverter.test.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Test/Fuxion.Windows.Test/Data/IntegerToVisibilityConverter.test.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Test/Fuxion.Windows.Test/Data/IntegerToVisibilityConverter.test.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Test/Fuxion.Windows.Test/Data/NullToVisibilityConverter.test.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Test/Fuxion.Windows.Test/Data/NullToVisibilityConverter.test.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Test/Fuxion.Windows.Test/Data/PipeConverter.test.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Test/Fuxion.Windows.Test/Data/PipeConverter.test.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Test/Fuxion.Windows.Test/Data/StringToCapitalizedStringConverter.cs.test.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Test/Fuxion.Windows.Test/Data/StringToCapitalizedStringConverter.cs.test.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Test/Fuxion.Windows.Test/Data/TimeSpanToLongConverter.test.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Test/Fuxion.Windows.Test/Data/TimeSpanToLongConverter.test.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Test/Fuxion.Windows.Test/Data/TimeSpanToStringConverter.test.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Test/Fuxion.Windows.Test/Data/TimeSpanToStringConverter.test.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Test/Fuxion.Windows.Test/Fuxion.Windows.Test.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Test/Fuxion.Windows.Test/Fuxion.Windows.Test.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Test/Fuxion.Windows.Test/Markup/DisplayExtension.test.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Test/Fuxion.Windows.Test/Markup/DisplayExtension.test.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Test/Fuxion.Windows.Test/Security/HardwareId.Test.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Test/Fuxion.Windows.Test/Security/HardwareId.Test.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Windows.Controls/Fuxion.Windows.Controls.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Windows.Controls/Fuxion.Windows.Controls.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Windows.Controls/UnhandledExceptionWindow.xaml" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Windows.Controls/UnhandledExceptionWindow.xaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Windows.Controls/UnhandledExceptionWindow.xaml.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Windows.Controls/UnhandledExceptionWindow.xaml.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Windows/Controls/AutoGrid.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Windows/Controls/AutoGrid.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Windows/Data/BooleanToBooleanMultiConverter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Windows/Data/BooleanToBooleanMultiConverter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Windows/Data/BooleanToNegateBooleanConverter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Windows/Data/BooleanToNegateBooleanConverter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Windows/Data/BooleanToVisibilityConverter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Windows/Data/BooleanToVisibilityConverter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Windows/Data/BooleanToVisibilityMultiConverter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Windows/Data/BooleanToVisibilityMultiConverter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Windows/Data/EnumToNamedEnumValueConverter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Windows/Data/EnumToNamedEnumValueConverter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Windows/Data/EnumTypeToNamedEnumValueListConverter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Windows/Data/EnumTypeToNamedEnumValueListConverter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Windows/Data/GenericConverter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Windows/Data/GenericConverter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Windows/Data/GenericMultiConverter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Windows/Data/GenericMultiConverter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Windows/Data/ICollectionCountToBooleanConverter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Windows/Data/ICollectionCountToBooleanConverter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Windows/Data/ICollectionCountToVisibilityConverter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Windows/Data/ICollectionCountToVisibilityConverter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Windows/Data/INotifyCollectionChangedToRemovedDuplicatesINotifyCollectionChangedConverter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Windows/Data/INotifyCollectionChangedToRemovedDuplicatesINotifyCollectionChangedConverter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Windows/Data/IntegerToVisibilityConverter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Windows/Data/IntegerToVisibilityConverter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Windows/Data/NamedEnumValueToStringConverter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Windows/Data/NamedEnumValueToStringConverter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Windows/Data/NullToBooleanConverter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Windows/Data/NullToBooleanConverter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Windows/Data/NullToVisibilityConverter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Windows/Data/NullToVisibilityConverter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Windows/Data/NullableBooleanToVisibilityConverter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Windows/Data/NullableBooleanToVisibilityConverter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Windows/Data/NullableEnumToNamedEnumValueConverter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Windows/Data/NullableEnumToNamedEnumValueConverter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Windows/Data/PipeConverter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Windows/Data/PipeConverter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Windows/Data/StringNullOrWhiteSpaceToReplacementStringConverter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Windows/Data/StringNullOrWhiteSpaceToReplacementStringConverter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Windows/Data/StringNullOrWhiteSpaceToVisibilityConverter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Windows/Data/StringNullOrWhiteSpaceToVisibilityConverter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Windows/Data/StringToCapitalizedStringConverter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Windows/Data/StringToCapitalizedStringConverter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Windows/Data/StringToFontFamilyConverter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Windows/Data/StringToFontFamilyConverter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Windows/Data/TimeSpanToLongConverter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Windows/Data/TimeSpanToLongConverter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Windows/Data/TimeSpanToStringConverter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Windows/Data/TimeSpanToStringConverter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Windows/Data/TypeMatchToVisibilityConverter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Windows/Data/TypeMatchToVisibilityConverter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Windows/Data/WindowStateToVisibilityConverter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Windows/Data/WindowStateToVisibilityConverter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Windows/Documents/FlowDocumentExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Windows/Documents/FlowDocumentExtensions.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Infrastructure/Windows/Fuxion.Windows.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Windows/Fuxion.Windows.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Windows/Helpers/FocusHelper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Windows/Helpers/FocusHelper.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Windows/Markup/DisplayExtension.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Windows/Markup/DisplayExtension.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Windows/Properties/AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Windows/Properties/AssemblyInfo.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Windows/RegistryStoredTimeProvider.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Windows/RegistryStoredTimeProvider.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Windows/Resources/Strings.Designer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Windows/Resources/Strings.Designer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Windows/Resources/Strings.es.resx" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Windows/Resources/Strings.es.resx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Windows/Resources/Strings.resx" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Windows/Resources/Strings.resx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Windows/Security/HardwareId.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Windows/Security/HardwareId.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Infrastructure/Windows/Threading/DispatcherInvoker.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Windows/Threading/DispatcherInvoker.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Application/Aggregates/EventSourcingAggregateFeature.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Application/Aggregates/EventSourcingAggregateFeature.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Application/Aggregates/EventSourcingAggregateFeatureExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Application/Aggregates/EventSourcingAggregateFeatureExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Application/Commands/CommandDispatcher.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Application/Commands/CommandDispatcher.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Application/Commands/CommandPod.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Application/Commands/CommandPod.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Application/Commands/CommandPodConverter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Application/Commands/CommandPodConverter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Application/Commands/CommandPodExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Application/Commands/CommandPodExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Application/Commands/ICommandDispatcher.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Application/Commands/ICommandDispatcher.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Application/DependencyInjection/ApplicationDIExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Application/DependencyInjection/ApplicationDIExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Application/Events/EventDispatcher.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Application/Events/EventDispatcher.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Application/Events/EventPublisherDecorator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Application/Events/EventPublisherDecorator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Application/Events/EventSourcingEventFeature.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Application/Events/EventSourcingEventFeature.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Application/Events/EventSourcingEventFeatureAlreadyExistException.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Application/Events/EventSourcingEventFeatureAlreadyExistException.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Application/Events/EventSourcingEventFeatureExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Application/Events/EventSourcingEventFeatureExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Application/Events/EventSourcingPod.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Application/Events/EventSourcingPod.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Application/Events/EventSourcingPodConverter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Application/Events/EventSourcingPodConverter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Application/Events/EventStorageDecorator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Application/Events/EventStorageDecorator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Application/Events/IEventPublisher.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Application/Events/IEventPublisher.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Application/Events/IEventStorage.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Application/Events/IEventStorage.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Application/Events/IEventSubscriber.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Application/Events/IEventSubscriber.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Application/Events/InMemoryEventStorage.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Application/Events/InMemoryEventStorage.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Application/Events/PublicationEventFeature.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Application/Events/PublicationEventFeature.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Application/Events/PublicationEventFeatureExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Application/Events/PublicationEventFeatureExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Application/Events/PublicationPod.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Application/Events/PublicationPod.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Application/Events/PublicationPodConverter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Application/Events/PublicationPodConverter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Application/Factories/EventSourcingFactoryFeature.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Application/Factories/EventSourcingFactoryFeature.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Application/Factories/EventsFactoryFeature.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Application/Factories/EventsFactoryFeature.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Application/Factories/FactoryFeatureExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Application/Factories/FactoryFeatureExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Application/Factories/IFactoryFeature.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Application/Factories/IFactoryFeature.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Application/Factories/SnapshotFactoryFeature.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Application/Factories/SnapshotFactoryFeature.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Application/Factories/SnapshotFactoryFeatureExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Application/Factories/SnapshotFactoryFeatureExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Application/Factory.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Application/Factory.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/Application/Fuxion.Application.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/core/Application/Fuxion.Application.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Application/ICommandHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Application/ICommandHandler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Application/IEventDispatcher.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Application/IEventDispatcher.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Application/IEventHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Application/IEventHandler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Application/IEventPublisher.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Application/IEventPublisher.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Application/IRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Application/IRepository.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Application/Repositories/EventSourcingRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Application/Repositories/EventSourcingRepository.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Application/Snapshot.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Application/Snapshot.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Application/Snapshots/ISnapshotStorage.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Application/Snapshots/ISnapshotStorage.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Application/Snapshots/ISnapshottable.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Application/Snapshots/ISnapshottable.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Application/Snapshots/InMemorySnapshotStorage.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Application/Snapshots/InMemorySnapshotStorage.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Application/Snapshots/Snapshot.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Application/Snapshots/Snapshot.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Application/Snapshots/SnapshotStorageDecorator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Application/Snapshots/SnapshotStorageDecorator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Domain/Aggregate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Domain/Aggregate.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Domain/AggregateEventHandlerAttribute.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Domain/AggregateEventHandlerAttribute.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Domain/Aggregates/AggregateFeatureExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Domain/Aggregates/AggregateFeatureExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Domain/Aggregates/EventsAggregateFeature.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Domain/Aggregates/EventsAggregateFeature.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Domain/Event.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Domain/Event.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Domain/Events/EventFeatureExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Domain/Events/EventFeatureExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Domain/Events/EventsAggregateFeatureExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Domain/Events/EventsAggregateFeatureExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Domain/Fuxion.Domain.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/core/Domain/Fuxion.Domain.csproj" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/Drawing/Fuxion.Drawing.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/core/Drawing/Fuxion.Drawing.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Drawing/ScreenCapture.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Drawing/ScreenCapture.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/AntiBackTimeProvider.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/AntiBackTimeProvider.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/AverageTimeProvider.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/AverageTimeProvider.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/CachedTimeProvider.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/CachedTimeProvider.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Collections/Generic/GenericComparer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Collections/Generic/GenericComparer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Collections/Generic/GenericEqualityComparer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Collections/Generic/GenericEqualityComparer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Collections/Generic/System.ext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Collections/Generic/System.ext.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Collections/ObjectModel/DeactivatableObservableCollection.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Collections/ObjectModel/DeactivatableObservableCollection.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Collections/ObjectModel/System.ext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Collections/ObjectModel/System.ext.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Collections/TreeSynchronizer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Collections/TreeSynchronizer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/ComponentModel/DataAnnotations/EnsureMinimumElementsAttribute.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/ComponentModel/DataAnnotations/EnsureMinimumElementsAttribute.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/ComponentModel/DataAnnotations/EnsureNoDuplicatesAttribute.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/ComponentModel/DataAnnotations/EnsureNoDuplicatesAttribute.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/ComponentModel/DataAnnotations/IpAddressAttribute.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/ComponentModel/DataAnnotations/IpAddressAttribute.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/ComponentModel/DataAnnotations/NullableEmailAddress.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/ComponentModel/DataAnnotations/NullableEmailAddress.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/ComponentModel/System-Extensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/ComponentModel/System-Extensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/ConsoleTools.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/ConsoleTools.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/DisposableEnvelope.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/DisposableEnvelope.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Drawing/ScreenCapture.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Drawing/ScreenCapture.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/EventArgs.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/EventArgs.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/ExceptionTest.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/ExceptionTest.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/FileSystemStorageTimeProvider.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/FileSystemStorageTimeProvider.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/Fuxion/Fuxion.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Fuxion.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/FuxionException.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/FuxionException.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/ITimeProvider.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/ITimeProvider.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/Fuxion/InternetTimeProvider.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/InternetTimeProvider.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/InvalidStateException.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/InvalidStateException.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Json/JsonPod.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Json/JsonPod.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Json/JsonPodConverter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Json/JsonPodConverter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Json/JsonPodConverterFactory.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Json/JsonPodConverterFactory.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Json/JsonPodExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Json/JsonPodExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Json/LiteralJsonConverter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Json/LiteralJsonConverter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Json/PrivateConstructorContractResolver.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Json/PrivateConstructorContractResolver.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Linq/Expressions/System-Extensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Linq/Expressions/System-Extensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/LocalMachinneTimeProvider.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/LocalMachinneTimeProvider.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Logging/ColorConsoleLogger.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Logging/ColorConsoleLogger.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Logging/ColorConsoleLoggerConfiguration.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Logging/ColorConsoleLoggerConfiguration.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Logging/ColorConsoleLoggerExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Logging/ColorConsoleLoggerExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Logging/ColorConsoleLoggerProvider.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Logging/ColorConsoleLoggerProvider.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Logging/ColorConsoleState.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Logging/ColorConsoleState.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Math/Graph/Edge.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Math/Graph/Edge.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Math/Graph/Graph.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Math/Graph/Graph.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Math/Graph/GraphCyclicException.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Math/Graph/GraphCyclicException.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Math/Graph/Vertex.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Math/Graph/Vertex.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/NamedEnumValue.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/NamedEnumValue.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Printer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Printer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Reflection/AttributeMoreThanOneException.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Reflection/AttributeMoreThanOneException.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Reflection/AttributeNotFoundException.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Reflection/AttributeNotFoundException.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Reflection/System-Extensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Reflection/System-Extensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Reflection/TypeKeyAttribute.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Reflection/TypeKeyAttribute.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Reflection/TypeKeyDirectory.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Reflection/TypeKeyDirectory.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Reflection/TypeKeyExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Reflection/TypeKeyExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Repositories/IAsyncKeyValueRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Repositories/IAsyncKeyValueRepository.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Repositories/IKeyValueRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Repositories/IKeyValueRepository.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Repositories/MemoryCachedAsyncKeyValueRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Repositories/MemoryCachedAsyncKeyValueRepository.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Repositories/MemoryCachedKeyValueRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Repositories/MemoryCachedKeyValueRepository.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Repositories/MemoryKeyValueRepositoryValue.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Repositories/MemoryKeyValueRepositoryValue.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Resources/Strings.Designer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Resources/Strings.Designer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Resources/Strings.es.resx" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Resources/Strings.es.resx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Resources/Strings.resx" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Resources/Strings.resx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Singleton.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Singleton.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/StoredTimeProvider.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/StoredTimeProvider.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/System.ext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/System.ext.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Text/Json/Serialization/FallbackConverter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Text/Json/Serialization/FallbackConverter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Threading/Locker.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Threading/Locker.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Threading/Tasks/ActionTaskManagerEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Threading/Tasks/ActionTaskManagerEntry.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Threading/Tasks/ConcurrencyProfile.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Threading/Tasks/ConcurrencyProfile.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Threading/Tasks/FuncTaskManagerEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Threading/Tasks/FuncTaskManagerEntry.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Threading/Tasks/ITaskManagerEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Threading/Tasks/ITaskManagerEntry.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Threading/Tasks/System-Extensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Threading/Tasks/System-Extensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Threading/Tasks/TaskManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Threading/Tasks/TaskManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Threading/Tasks/TaskManagerEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Threading/Tasks/TaskManagerEntry.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Web/Patchable.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Web/Patchable.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Web/PatchableJsonConverter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Web/PatchableJsonConverter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Web/PatchableJsonConverterFactory.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Web/PatchableJsonConverterFactory.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Windows/Input/GenericCommand.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Windows/Input/GenericCommand.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Windows/Threading/IInvoker.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Windows/Threading/IInvoker.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Fuxion/Xml/XElementExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Fuxion/Xml/XElementExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Identity/DiscriminatedByAttribute.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Identity/DiscriminatedByAttribute.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Identity/DiscriminatorAttribute.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Identity/DiscriminatorAttribute.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Identity/DiscriminatorEqualityComparer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Identity/DiscriminatorEqualityComparer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Identity/Helpers/Comparer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Identity/Helpers/Comparer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Identity/Helpers/PasswordProvider.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Identity/Helpers/PasswordProvider.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Identity/ICurrentUserNameProvider.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Identity/ICurrentUserNameProvider.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Identity/IDiscriminator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Identity/IDiscriminator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Identity/IFunction.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Identity/IFunction.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Identity/IIdentity.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Identity/IIdentity.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Identity/IIdentityRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Identity/IIdentityRepository.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Identity/IPasswordProvider.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Identity/IPasswordProvider.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Identity/IPermission.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Identity/IPermission.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Identity/IRol.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Identity/IRol.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Identity/IScope.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Identity/IScope.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Identity/IdentityExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Identity/IdentityExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Identity/IdentityManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Identity/IdentityManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Identity/PermissionExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Identity/PermissionExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Identity/RolExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Identity/RolExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Identity/ScopePropagation.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Identity/ScopePropagation.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Identity/System_Extensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Identity/System_Extensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Identity/TypeDiscriminatedAttribute.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Identity/TypeDiscriminatedAttribute.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Identity/TypeDiscriminator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Identity/TypeDiscriminator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Identity/TypeDiscriminatorFactory.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Identity/TypeDiscriminatorFactory.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Licensing/AntiTamperedTimeProvider.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Licensing/AntiTamperedTimeProvider.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Licensing/Fuxion.Licensing.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/core/Licensing/Fuxion.Licensing.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Licensing/ILicenseProvider.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Licensing/ILicenseProvider.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Licensing/ILicenseStore.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Licensing/ILicenseStore.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Licensing/JsonFileLicenseStore.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Licensing/JsonFileLicenseStore.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Licensing/KeyLicenseConstraint.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Licensing/KeyLicenseConstraint.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Licensing/License.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Licensing/License.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Licensing/LicenseContainer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Licensing/LicenseContainer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Licensing/LicensePod.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Licensing/LicensePod.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Licensing/LicensingManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Licensing/LicensingManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Licensing/TimeLimitLicenseConstraint.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Licensing/TimeLimitLicenseConstraint.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Shell/Cache.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Shell/Cache.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Shell/DependencyInjection/ShellDIExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Shell/DependencyInjection/ShellDIExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Shell/DockingManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Shell/DockingManager.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/Shell/Fuxion.Shell.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/core/Shell/Fuxion.Shell.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Shell/ICompositeDisposable.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Shell/ICompositeDisposable.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Shell/IMenu.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Shell/IMenu.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Shell/IModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Shell/IModule.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Shell/IPanel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Shell/IPanel.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Shell/MenuManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Shell/MenuManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Shell/MessageBusExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Shell/MessageBusExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Shell/Messages/CloseAllPanelsMessage.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Shell/Messages/CloseAllPanelsMessage.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Shell/Messages/CloseAllPanelsWithKeyMessage.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Shell/Messages/CloseAllPanelsWithKeyMessage.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Shell/Messages/ClosePanelMessage.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Shell/Messages/ClosePanelMessage.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Shell/Messages/LoadLayoutMessage.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Shell/Messages/LoadLayoutMessage.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Shell/Messages/LockMessage.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Shell/Messages/LockMessage.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Shell/Messages/OpenPanelMessage.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Shell/Messages/OpenPanelMessage.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Shell/Messages/SaveLayoutMessage.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Shell/Messages/SaveLayoutMessage.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Shell/Messages/UnlockMessage.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Shell/Messages/UnlockMessage.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Shell/Messages/UpdatePanelMessage.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Shell/Messages/UpdatePanelMessage.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Shell/PanePosition.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Shell/PanePosition.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Shell/PanelName.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Shell/PanelName.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Shell/ShellResourceDictionary.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Shell/ShellResourceDictionary.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Shell/ViewModels/ShellViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Shell/ViewModels/ShellViewModel.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Shell/Views/PanelView.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Shell/Views/PanelView.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Shell/Views/ShellWindow.xaml" beforeDir="false" afterPath="$PROJECT_DIR$/core/Shell/Views/ShellWindow.xaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Shell/Views/ShellWindow.xaml.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Shell/Views/ShellWindow.xaml.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Testing/BaseTest.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Testing/BaseTest.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/Testing/Fuxion.Testing.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/core/Testing/Fuxion.Testing.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Testing/xUnitLogger.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/Testing/xUnitLogger.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Application.Test/Commands/CommandBase.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Application.Test/Commands/CommandBase.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Application.Test/Commands/CommandPod.test.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Application.Test/Commands/CommandPod.test.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Application.Test/Events/BaseEvent.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Application.Test/Events/BaseEvent.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Application.Test/Events/DerivedEvent.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Application.Test/Events/DerivedEvent.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Application.Test/Events/EventSourcingPod.test.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Application.Test/Events/EventSourcingPod.test.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Application.Test/Events/InMemoryEventStorage.test.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Application.Test/Events/InMemoryEventStorage.test.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Application.Test/Events/PublicationPod.test.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Application.Test/Events/PublicationPod.test.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Application.Test/Fuxion.Application.Test.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Application.Test/Fuxion.Application.Test.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Application.Test/Snapshots/Snapshot.test.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Application.Test/Snapshots/Snapshot.test.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Domain.Test/Aggregate.test.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Domain.Test/Aggregate.test.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Domain.Test/Event.test.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Domain.Test/Event.test.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Domain.Test/Fuxion.Domain.Test.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Domain.Test/Fuxion.Domain.Test.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Identity.DatabaseEFTest/Fuxion.Identity.DatabaseEFTest.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Identity.DatabaseEFTest/Fuxion.Identity.DatabaseEFTest.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Identity.DatabaseEFTest/GlobalSuppressions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Identity.DatabaseEFTest/GlobalSuppressions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Identity.DatabaseEFTest/IdentityDatabaseEFRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Identity.DatabaseEFTest/IdentityDatabaseEFRepository.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Identity.DatabaseEFTest/IdentityManager.Test.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Identity.DatabaseEFTest/IdentityManager.Test.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Identity.DatabaseEFTest/Scenario.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Identity.DatabaseEFTest/Scenario.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Identity.DatabaseTest/Fuxion.Identity.DatabaseTest.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Identity.DatabaseTest/Fuxion.Identity.DatabaseTest.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Identity.DatabaseTest/IdentityDatabaseRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Identity.DatabaseTest/IdentityDatabaseRepository.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Identity.DatabaseTest/IdentityManager.Test.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Identity.DatabaseTest/IdentityManager.Test.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Identity.DatabaseTest/Migrations/IdentityDatabaseRepositoryModelSnapshot.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Identity.DatabaseTest/Migrations/IdentityDatabaseRepositoryModelSnapshot.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Context.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Context.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Dao/Base.dao.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Dao/Base.dao.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Dao/Discriminator.dao.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Dao/Discriminator.dao.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Dao/File.dao.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Dao/File.dao.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Dao/Permission.dao.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Dao/Permission.dao.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Dao/Person.dao.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Dao/Person.dao.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Dao/Rol.dao.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Dao/Rol.dao.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Dao/Scope.dao.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Dao/Scope.dao.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Dao/Skill.dao.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Dao/Skill.dao.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Discriminator.Test.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Discriminator.Test.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Dto/Base.dto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Dto/Base.dto.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Dto/Discriminator.dto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Dto/Discriminator.dto.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Dvo/Base.dvo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Dvo/Base.dvo.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Dvo/Discriminator.dvo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Dvo/Discriminator.dvo.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Dvo/File.dvo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Dvo/File.dvo.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Dvo/Person.dvo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Dvo/Person.dvo.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Dvo/Skill.dvo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Dvo/Skill.dvo.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Function.Test.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Function.Test.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Helpers/PasswordProviderTest.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Helpers/PasswordProviderTest.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Helpers/TypeDiscriminatorIds.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Helpers/TypeDiscriminatorIds.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/IdentityMemoryRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/IdentityMemoryRepository.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Mocks/CurrentUserNameProviderMock.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Mocks/CurrentUserNameProviderMock.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Mocks/GuidDiscriminator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Mocks/GuidDiscriminator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Mocks/GuidFunction.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Mocks/GuidFunction.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Mocks/GuidStringDiscriminator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Mocks/GuidStringDiscriminator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Mocks/PasswordProviderMock.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Mocks/PasswordProviderMock.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Mocks/StringDiscriminator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Mocks/StringDiscriminator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Mocks/StringFunction.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Mocks/StringFunction.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Permission.Test.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Permission.Test.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/RolExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/RolExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Scope.Test.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/Scope.Test.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/TypeDiscriminator.Test.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/TypeDiscriminator.Test.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/TypeDiscriminatorIds.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Identity.Test/TypeDiscriminatorIds.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Licensing.Test/AntiTamperedTimeProvider.test.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Licensing.Test/AntiTamperedTimeProvider.test.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Licensing.Test/Const.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Licensing.Test/Const.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Licensing.Test/Fuxion.Licensing.Test.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Licensing.Test/Fuxion.Licensing.Test.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Licensing.Test/GlobalSuppressions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Licensing.Test/GlobalSuppressions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Licensing.Test/LicenseContainer.test.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Licensing.Test/LicenseContainer.test.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Licensing.Test/LicenseStore.test.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Licensing.Test/LicenseStore.test.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Licensing.Test/LicensingManager.test.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Licensing.Test/LicensingManager.test.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Licensing.Test/Mocks/LicenseMock.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Licensing.Test/Mocks/LicenseMock.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Licensing.Test/Mocks/LicenseStoreMock.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Licensing.Test/Mocks/LicenseStoreMock.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Licensing.Test/xunit.runner.json" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Licensing.Test/xunit.runner.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Test/AntiBackTimeProvider.test.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Test/AntiBackTimeProvider.test.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Test/AverageTimeProvider.test.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Test/AverageTimeProvider.test.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Test/CachedTimeProvider.test.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Test/CachedTimeProvider.test.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Test/Collections/Generic/GenericEqualityComparer.test.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Test/Collections/Generic/GenericEqualityComparer.test.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Test/Collections/Generic/IEnumerableExtensions.Test.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Test/Collections/Generic/IEnumerableExtensions.Test.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Test/Collections/Generic/IListExtensions.Test.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Test/Collections/Generic/IListExtensions.Test.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Test/Collections/ObjectModel/DeactivatableObservableCollection.test.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Test/Collections/ObjectModel/DeactivatableObservableCollection.test.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Test/Collections/TreeSynchronizer.test.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Test/Collections/TreeSynchronizer.test.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Test/Fuxion.Test.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Test/Fuxion.Test.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Test/Helpers/ITimeProviderExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Test/Helpers/ITimeProviderExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Test/Helpers/MockTimeProvider.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Test/Helpers/MockTimeProvider.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Test/InternetTimeProvider.test.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Test/InternetTimeProvider.test.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Test/Json/JsonPod.test.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Test/Json/JsonPod.test.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Test/LocalMachineTimeProvider.test.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Test/LocalMachineTimeProvider.test.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Test/NamedEnumValue.Test.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Test/NamedEnumValue.Test.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Test/Resources/Strings.ES-es.resx" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Test/Resources/Strings.ES-es.resx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Test/Resources/Strings.resx" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Test/Resources/Strings.resx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Test/Singleton.test.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Test/Singleton.test.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Test/System-extensions.test.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Test/System-extensions.test.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Test/Text/Json/Serialization/FallbackConverter.test.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Test/Text/Json/Serialization/FallbackConverter.test.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Test/Threading/Locker.test.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Test/Threading/Locker.test.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Test/Threading/Tasks/TaskManager.test.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Test/Threading/Tasks/TaskManager.test.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Test/Web/Patchable.test.cs" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Test/Web/Patchable.test.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/Fuxion.Test/xunit.runner.json" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/Fuxion.Test/xunit.runner.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ChangesViewManager">
-    <option name="groupingKeys">
-      <option value="directory" />
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$/.." value="876bb6aa29d04292f005b3a7d6ec0939b0e369e9" />
+      </map>
     </option>
   </component>
   <component name="GitHubPullRequestSearchHistory">{
@@ -414,13 +53,11 @@
     </option>
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="mock://O:/Dev/TTI/Fuxion/Repo/src/Infrastructure/EventStore/EventStoreManager.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://O:/Dev/TTI/Fuxion/Repo/src/core/Fuxion/AntiBackTimeProvider.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://O:/Dev/TTI/Fuxion/Repo/src/core/Fuxion/ExceptionTest.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://O:/Dev/TTI/Fuxion/Repo/src/core/Fuxion/FileSystemStorageTimeProvider.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://O:/Dev/TTI/Fuxion/Repo/src/core/Fuxion/Singleton.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://O:/Dev/TTI/Fuxion/Repo/src/core/Fuxion/Threading/Tasks/ActionTaskManagerEntry.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://O:/Dev/TTI/Fuxion/Repo/src/core/Fuxion/Windows/Input/GenericCommand.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/23c7c81ff1655fd7497d7a879e74abd0adb1675ba7be67a5168d1a7acb833ba/RuntimeType.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/bd8123923be4696da2ece667ec8846b6eadb110f5dd84e5438fdc0a3195526/FactAttribute.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/f22aa103071d468cb9b6ad48ed418ee9b1c880/_9884a/__Canon.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../Ordinem/Repo/src/Fuxion/src/Infrastructure/Orleans/EntityGrain.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../Ordinem/Repo/src/Fuxion/src/core/Domain/Aggregate.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -530,11 +167,95 @@
       <workItem from="1666989556512" duration="1979000" />
       <workItem from="1667044214843" duration="5428000" />
       <workItem from="1667050115048" duration="6627000" />
+      <workItem from="1667064868174" duration="33000" />
+      <workItem from="1667064978754" duration="618000" />
+      <workItem from="1667588787242" duration="1280000" />
+      <workItem from="1667931264788" duration="257000" />
+      <workItem from="1668163121944" duration="1258000" />
+      <workItem from="1668700792018" duration="145000" />
+      <workItem from="1668700962551" duration="2383000" />
+      <workItem from="1668947653823" duration="1223000" />
     </task>
+    <task id="LOCAL-00001" summary="Test running">
+      <created>1667060210511</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1667060210511</updated>
+    </task>
+    <task id="LOCAL-00002" summary="GitVersion.exe +semver: major">
+      <created>1667060594988</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1667060594989</updated>
+    </task>
+    <task id="LOCAL-00003" summary="going to 7.0 +semver: major">
+      <created>1667060667458</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1667060667458</updated>
+    </task>
+    <task id="LOCAL-00004" summary="+semver: major">
+      <created>1667060762017</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1667060762017</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="UnitTestsCoverage.Settings">
+    <option name="coveragePercentColumnWidth" value="150" />
+    <option name="sortOrder" value="DESCENDING" />
+    <option name="sortedColumn" value="1" />
+    <option name="symbolColumnWidth" value="211" />
+    <coverage-tree-state>
+      <expand>
+        <path>
+          <item name="rootNode" type="c53c71d1:RiderDotCoverCoverageTreeModel$RootNode" />
+          <item name="Total 1% 12646/12743" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+        </path>
+        <path>
+          <item name="rootNode" type="c53c71d1:RiderDotCoverCoverageTreeModel$RootNode" />
+          <item name="Total 1% 12646/12743" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+          <item name="Core 1% 10125/10222" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+        </path>
+        <path>
+          <item name="rootNode" type="c53c71d1:RiderDotCoverCoverageTreeModel$RootNode" />
+          <item name="Total 1% 12646/12743" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+          <item name="Core 1% 10125/10222" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+          <item name="Test 1% 3557/3607" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+        </path>
+        <path>
+          <item name="rootNode" type="c53c71d1:RiderDotCoverCoverageTreeModel$RootNode" />
+          <item name="Total 1% 12646/12743" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+          <item name="Core 1% 10125/10222" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+          <item name="Fuxion 1% 3412/3459" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+        </path>
+        <path>
+          <item name="rootNode" type="c53c71d1:RiderDotCoverCoverageTreeModel$RootNode" />
+          <item name="Total 1% 12646/12743" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+          <item name="Core 1% 10125/10222" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+          <item name="Fuxion 1% 3412/3459" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+          <item name="(1.0.0.0, net7.0) 1% 3412/3459" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+        </path>
+        <path>
+          <item name="rootNode" type="c53c71d1:RiderDotCoverCoverageTreeModel$RootNode" />
+          <item name="Total 1% 12646/12743" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+          <item name="Core 1% 10125/10222" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+          <item name="Fuxion 1% 3412/3459" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+          <item name="(1.0.0.0, net7.0) 1% 3412/3459" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+          <item name="Fuxion 2% 2492/2535" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+        </path>
+      </expand>
+      <select />
+    </coverage-tree-state>
   </component>
   <component name="UnityCheckinConfiguration" checkUnsavedScenes="true" />
   <component name="UnityUnitTestConfiguration" currentTestLauncher="NUnit" />
@@ -551,5 +272,10 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+    <MESSAGE value="Test running" />
+    <MESSAGE value="GitVersion.exe +semver: major" />
+    <MESSAGE value="going to 7.0 +semver: major" />
+    <MESSAGE value="+semver: major" />
+    <option name="LAST_COMMIT_MESSAGE" value="+semver: major" />
   </component>
 </project>

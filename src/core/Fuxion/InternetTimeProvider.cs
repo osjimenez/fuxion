@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using System.Net;
+﻿using System.Net;
 using System.Net.Sockets;
 
 namespace Fuxion;
@@ -28,27 +27,11 @@ public class InternetTimeProvider : ITimeProvider
 		};
 	DateTime FromWeb()
 	{
-		var res = WebRequest.Create(ServerAddress).Transform(r =>
-		{
-			r.Timeout = (int)Timeout.TotalMilliseconds;
-			return r;
-		}).GetResponse();
-		var dateHeader = res.Headers["date"];
+		HttpClient          client = new();
+		HttpResponseMessage res    = client.GetAsync(ServerAddress).Result;
+		DateTimeOffset? dateHeader = res.Headers.Date;
 		if (dateHeader == null) throw new InvalidDataException("'date' header cannot be found in response");
-		var dt = DateTimeOffset.ParseExact(dateHeader, "ddd, dd MMM yyyy HH:mm:ss 'GMT'", CultureInfo.InvariantCulture.DateTimeFormat, DateTimeStyles.AssumeUniversal).DateTime;
-		res.Close();
-		return dt;
-		//return
-		//     DateTimeOffset.ParseExact(
-		//        WebRequest.Create(ServerAddress).Transform(r =>
-		//        {
-		//            r.Timeout = (int)Timeout.TotalMilliseconds;
-		//            return r;
-		//        }).GetResponse().Headers["date"], 
-		//        "ddd, dd MMM yyyy HH:mm:ss 'GMT'", 
-		//        CultureInfo.InvariantCulture.DateTimeFormat,
-		//        DateTimeStyles.AssumeUniversal)
-		//        .DateTime;
+		return dateHeader.Value.DateTime;
 	}
 	DateTime FromNtp()
 	{
@@ -56,16 +39,16 @@ public class InternetTimeProvider : ITimeProvider
 		//const string ntpServer = "time.windows.com";
 
 		// NTP message size - 16 bytes of the digest (RFC 2030)
-		var ntpData = new byte[48];
+		byte[] ntpData = new byte[48];
 
 		//Setting the Leap Indicator, Version Number and Mode values
 		ntpData[0] = 0x1B; //LI = 0 (no warning), VN = 3 (IPv4 only), Mode = 3 (Client Mode)
-		var addresses = Dns.GetHostEntry(ServerAddress).AddressList;
+		IPAddress[] addresses = Dns.GetHostEntry(ServerAddress).AddressList;
 
 		//The UDP port number assigned to NTP is 123
-		var ipEndPoint = new IPEndPoint(addresses[0], 123);
+		IPEndPoint ipEndPoint = new IPEndPoint(addresses[0], 123);
 		//NTP uses UDP
-		var socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+		Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 		socket.Connect(ipEndPoint);
 
 		//Stops code hang if NTP is blocked
@@ -87,10 +70,10 @@ public class InternetTimeProvider : ITimeProvider
 		//Convert From big-endian to little-endian
 		intPart   = SwapEndianness(intPart);
 		fractPart = SwapEndianness(fractPart);
-		var milliseconds = intPart * 1000 + fractPart * 1000 / 0x100000000L;
+		ulong milliseconds = intPart * 1000 + fractPart * 1000 / 0x100000000L;
 
 		//**UTC** time
-		var networkDateTime = new DateTime(1900, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds((long)milliseconds);
+		DateTime networkDateTime = new DateTime(1900, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds((long)milliseconds);
 		return networkDateTime;
 		//return networkDateTime.ToLocalTime();
 	}
