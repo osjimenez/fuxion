@@ -139,7 +139,7 @@ class PrinterInstance : IPrinter
 			{
 				var step = "";
 				var t    = verticalConnectorLevels.Read(dic => dic.ContainsKey(i) ? dic[i] : (char?)null);
-				if (t != null && t.HasValue)
+				if (t is not null && t.HasValue)
 					step += t.Value;
 				else
 					step += IndentationChar;
@@ -164,7 +164,7 @@ class PrinterInstance : IPrinter
 	{
 		var o                       = new object();
 		var currentIndentationLevel = IndentationLevel;
-		if (verticalConnectorChar != null)
+		if (verticalConnectorChar is not null)
 			verticalConnectorLevels.Write(dic =>
 			{
 				if (!dic.ContainsKey(currentIndentationLevel)) dic.Add(currentIndentationLevel, verticalConnectorChar!.Value);

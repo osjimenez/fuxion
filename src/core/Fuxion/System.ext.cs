@@ -154,7 +154,7 @@ public static class Extensions
 					return typeName;
 				}
 			}
-		var sb = new StringBuilder(typeName.Substring(0, typeName.IndexOf('`')));
+		StringBuilder sb = new(typeName.Substring(0, typeName.IndexOf('`')));
 		sb.Append('<');
 		var first = true;
 		foreach (var t in type.GenericTypeArguments)
@@ -169,7 +169,7 @@ public static class Extensions
 	public static bool IsSubclassOfRawGeneric(this Type me, Type generic) => GetSubclassOfRawGeneric(me, generic) != null;
 	public static Type? GetSubclassOfRawGeneric(this Type me, Type generic)
 	{
-		var toProcess = new Queue<Type>(new[]
+		Queue<Type> toProcess = new(new[]
 		{
 			me
 		});
@@ -281,14 +281,14 @@ public static class Extensions
 			hex = BitConverter.ToString(me.Reverse().ToArray());
 		else
 			hex = BitConverter.ToString(me);
-		if (separatorChar != null) return hex.Replace('-', separatorChar.Value);
+		if (separatorChar is not null) return hex.Replace('-', separatorChar.Value);
 		return hex.Replace("-", string.Empty);
 	}
 	public static byte[] ToByteArrayFromHexadecimal(this string me, char? separatorChar = null, bool isBigEndian = false)
 	{
-		if (separatorChar != null) me = me.RemoveChar(separatorChar.Value);
-		var NumberChars               = me.Length;
-		var bytes                     = new byte[NumberChars / 2];
+		if (separatorChar is not null) me = me.RemoveChar(separatorChar.Value);
+		var NumberChars                   = me.Length;
+		var bytes                         = new byte[NumberChars / 2];
 		if (isBigEndian)
 			for (var i = NumberChars; i > 1; i -= 2)
 				bytes[(i - 2) / 2] = Convert.ToByte(me.Substring(i - 2, 2), 16);
@@ -381,8 +381,8 @@ public static class Extensions
 		// Concateno el texto de todos los elementos
 		var allText = me.Aggregate("", (a, c) => a + c);
 		// Busco todas las apariciones del texto buscado
-		var indexes = allText.AllIndexesOf(text, comparisonType);
-		var res     = new List<((int ItemIndex, int PositionIndex) Start, (int ItemIndex, int PositionIndex) End)>();
+		var                                                                                      indexes = allText.AllIndexesOf(text, comparisonType);
+		List<((int ItemIndex, int PositionIndex) Start, (int ItemIndex, int PositionIndex) End)> res     = new();
 		foreach (var index in indexes)
 		{
 			var counter          = 0;
