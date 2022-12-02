@@ -9,11 +9,11 @@ public class WindowStateToVisibilityConverter : GenericConverter<WindowState, Vi
 	{
 		MaximizedValue = Visibility.Visible;
 		MinimizedValue = Visibility.Collapsed;
-		NormalValue    = Visibility.Visible;
+		NormalValue = Visibility.Visible;
 	}
 	public Visibility MaximizedValue { get; set; }
 	public Visibility MinimizedValue { get; set; }
-	public Visibility NormalValue    { get; set; }
+	public Visibility NormalValue { get; set; }
 	public override Visibility Convert(WindowState source, CultureInfo culture)
 	{
 		switch (source)

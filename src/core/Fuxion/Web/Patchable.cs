@@ -137,7 +137,8 @@ public sealed class Patchable<T> : DynamicObject where T : class
 		var pro = typeof(T).GetRuntimeProperty(propertyName);
 		if (dic.ContainsKey(propertyName))
 		{
-			if (pro == null && (NonExistingPropertiesMode == NonExistingPropertiesMode.NotAllowed || NonExistingPropertiesMode == NonExistingPropertiesMode.OnlySet)) throw new RuntimeBinderException($"Type '{typeof(T).GetSignature()}' not has a property with name '{propertyName}'");
+			if (pro == null && (NonExistingPropertiesMode == NonExistingPropertiesMode.NotAllowed || NonExistingPropertiesMode == NonExistingPropertiesMode.OnlySet))
+				throw new RuntimeBinderException($"Type '{typeof(T).GetSignature()}' not has a property with name '{propertyName}'");
 			return dic[propertyName].Value;
 		}
 		switch (NonExistingPropertiesMode)

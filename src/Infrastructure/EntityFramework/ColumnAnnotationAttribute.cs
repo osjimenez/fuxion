@@ -8,7 +8,7 @@ public abstract class ColumnAnnotationAttribute : Attribute
 	public static string? GetColumnName<TTrackAttribute>(EdmType type) where TTrackAttribute : ColumnAnnotationAttribute
 	{
 		var mems = (ReadOnlyMetadataCollection<EdmMember>)type.MetadataProperties.Single(mp => mp.Name == "Members").Value;
-		var pro  = mems.SingleOrDefault(m => m.MetadataProperties.SingleOrDefault(p => p.Name.EndsWith("customannotation:" + (typeof(TTrackAttribute).FullName ?? "").Replace('.', '_'))) != null);
+		var pro = mems.SingleOrDefault(m => m.MetadataProperties.SingleOrDefault(p => p.Name.EndsWith("customannotation:" + (typeof(TTrackAttribute).FullName ?? "").Replace('.', '_'))) != null);
 		return pro == null ? null : pro.Name;
 	}
 	public static void Annotate(Convention convention, IEnumerable<Type>? trackAttributes = null)

@@ -14,11 +14,14 @@ public class EnsureNoDuplicatesAttribute : ValidationAttribute
 			if (method.ReturnType == typeof(bool))
 			{
 				var pars = method.GetParameters();
-				if (pars.Count() != 2) throw new ArgumentException($"Method '{comparassionMethodName}' in type '{type.Name}' specified for this '{nameof(EnsureNoDuplicatesAttribute)}' must has 2 parameters. Both of them must be of type of property.");
+				if (pars.Count() != 2)
+					throw new ArgumentException(
+						$"Method '{comparassionMethodName}' in type '{type.Name}' specified for this '{nameof(EnsureNoDuplicatesAttribute)}' must has 2 parameters. Both of them must be of type of property.");
 			} else
 				throw new ArgumentException($"Method '{comparassionMethodName}' in type '{type.Name}' specified for this '{nameof(EnsureNoDuplicatesAttribute)}' must return 'bool'.");
 		} else
-			throw new ArgumentException($"Method '{comparassionMethodName}' in type '{type.Name}' specified for this '{nameof(EnsureNoDuplicatesAttribute)}' was not found. This method must be public and static.");
+			throw new ArgumentException(
+				$"Method '{comparassionMethodName}' in type '{type.Name}' specified for this '{nameof(EnsureNoDuplicatesAttribute)}' was not found. This method must be public and static.");
 	}
 	readonly MethodInfo? method;
 	readonly Type type;

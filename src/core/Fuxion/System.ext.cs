@@ -72,10 +72,12 @@ public static class Extensions
 		{
 			WriteIndented = true
 		};
-		if (!options.Converters.Any(c => c.GetType().IsSubclassOfRawGeneric(typeof(FallbackConverter<>)))) options.Converters.Add(new FallbackConverter<Exception>(new MultilineStringToCollectionPropertyFallbackResolver()));
+		if (!options.Converters.Any(c => c.GetType().IsSubclassOfRawGeneric(typeof(FallbackConverter<>))))
+			options.Converters.Add(new FallbackConverter<Exception>(new MultilineStringToCollectionPropertyFallbackResolver()));
 		return JsonSerializer.Serialize(me, options);
 	}
-	public static T? FromJson<T>(this string me, [DoesNotReturnIf(true)] bool exceptionIfNull = false, JsonSerializerOptions? options = null, bool usePrivateConstructor = true) => (T?)FromJson(me, typeof(T), exceptionIfNull, options, usePrivateConstructor);
+	public static T? FromJson<T>(this string me, [DoesNotReturnIf(true)] bool exceptionIfNull = false, JsonSerializerOptions? options = null, bool usePrivateConstructor = true) =>
+		(T?)FromJson(me, typeof(T), exceptionIfNull, options, usePrivateConstructor);
 	public static object? FromJson(this string me, Type type, [DoesNotReturnIf(true)] bool exceptionIfNull = false, JsonSerializerOptions? options = null, bool usePrivateConstructor = true)
 	{
 		if (usePrivateConstructor)
@@ -129,7 +131,8 @@ public static class Extensions
 		return false;
 	}
 	public static bool IsNullableValue<T>(this Type me) where T : struct => me.IsGenericType && me.GetGenericTypeDefinition() == typeof(Nullable<>) && me.GetGenericArguments()[0] == typeof(T);
-	public static bool IsNullableEnum(this Type me, bool valueTypesAreNotNullables = true) => me.IsGenericType && me.GetGenericTypeDefinition() == typeof(Nullable<>) && me.GetGenericArguments()[0].IsEnum;
+	public static bool IsNullableEnum(this Type me, bool valueTypesAreNotNullables = true) =>
+		me.IsGenericType && me.GetGenericTypeDefinition() == typeof(Nullable<>) && me.GetGenericArguments()[0].IsEnum;
 	public static object? GetDefaultValue(this Type me) => me.GetTypeInfo().IsValueType && Nullable.GetUnderlyingType(me) == null ? Activator.CreateInstance(me) : null;
 	public static string GetFullNameWithAssemblyName(this Type me) => $"{me.AssemblyQualifiedName?.Split(',').Take(2).Aggregate("", (a, n) => a + ", " + n, a => a.Trim(' ', ','))}";
 	public static string GetSignature(this Type type, bool useFullNames = false)
@@ -266,7 +269,8 @@ public static class Extensions
 	public static int Pow(this int me, int power) => (int)Math.Pow(me, power);
 	public static (long Quotient, long Remainder) Division(this long me, long dividend) => (me / dividend, me % dividend);
 	public static (long Quotient, long Remainder) DivisionByPowerOfTwo(this long me, ushort numberOfBits) => me.Division(2.Pow(numberOfBits));
-	public static (long Quotient, long Remainder) DivisionByPowerOfTwo(this byte[] me, ushort numberOfBits) => BitConverter.ToInt64(me.Concat(Enumerable.Repeat((byte)0, 8 - me.Length)).ToArray(), 0).DivisionByPowerOfTwo(numberOfBits);
+	public static (long Quotient, long Remainder) DivisionByPowerOfTwo(this byte[] me, ushort numberOfBits) =>
+		BitConverter.ToInt64(me.Concat(Enumerable.Repeat((byte)0, 8 - me.Length)).ToArray(), 0).DivisionByPowerOfTwo(numberOfBits);
 	#endregion
 
 	#region Bytes

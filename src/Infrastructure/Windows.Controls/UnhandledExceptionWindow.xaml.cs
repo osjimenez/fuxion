@@ -11,11 +11,11 @@ public partial class UnhandledExceptionWindow : Window, INotifyPropertyChanged
 {
 	public UnhandledExceptionWindow(Exception ex, bool showDetails, Func<Task>? sendReportFunc = null)
 	{
-		_CanShowDetails     = showDetails;
-		this.ex             = ex;
+		_CanShowDetails = showDetails;
+		this.ex = ex;
 		this.sendReportFunc = sendReportFunc;
 		// Create commands
-		IgnoreCommand       = new(() => Close(), () => Buttons.HasFlag(UnhandledExceptionWindowButtons.CloseWindow));
+		IgnoreCommand = new(() => Close(), () => Buttons.HasFlag(UnhandledExceptionWindowButtons.CloseWindow));
 		CloseConsoleCommand = new(() => Application.Current.Shutdown(), () => Buttons.HasFlag(UnhandledExceptionWindowButtons.CloseWindow));
 		RestartApplicationCommand = new(() =>
 		{
@@ -45,13 +45,13 @@ public partial class UnhandledExceptionWindow : Window, INotifyPropertyChanged
 		// Populate Document
 		Document.Blocks.AddRange(ex.ToBlocks());
 	}
-	bool                            _CanShowDetails;
+	readonly Exception ex;
+	bool _CanShowDetails;
 	UnhandledExceptionWindowButtons _Commands;
-	string?                         _Message;
-	bool                            _SendingReport;
-	readonly Exception              ex;
-	Func<Task>?                     sendReportFunc;
-	public string                   ExceptionType => ex.GetType().FullName ?? throw new InvalidProgramException($"Type '{ex.GetType().Name}' hasn't FullName");
+	string? _Message;
+	bool _SendingReport;
+	Func<Task>? sendReportFunc;
+	public string ExceptionType => ex.GetType().FullName ?? throw new InvalidProgramException($"Type '{ex.GetType().Name}' hasn't FullName");
 	public string? Message
 	{
 		get => _Message;
@@ -95,30 +95,30 @@ public partial class UnhandledExceptionWindow : Window, INotifyPropertyChanged
 		get => ResizeMode == ResizeMode.CanResizeWithGrip;
 		set
 		{
-			ResizeMode    = value ? ResizeMode.CanResizeWithGrip : ResizeMode.NoResize;
+			ResizeMode = value ? ResizeMode.CanResizeWithGrip : ResizeMode.NoResize;
 			SizeToContent = value ? SizeToContent.Manual : SizeToContent.WidthAndHeight;
-			WindowStyle   = value ? WindowStyle.SingleBorderWindow : WindowStyle.None;
-			WindowState   = value ? WindowState.Maximized : WindowState.Normal;
+			WindowStyle = value ? WindowStyle.SingleBorderWindow : WindowStyle.None;
+			WindowState = value ? WindowState.Maximized : WindowState.Normal;
 			PropertyChanged?.Invoke(this, new(nameof(ShowDetails)));
 		}
 	}
-	public GenericCommand SendReportCommand         { get; }
-	public GenericCommand ShowDetailsCommand        { get; }
-	public GenericCommand IgnoreCommand             { get; }
-	public GenericCommand CloseConsoleCommand       { get; }
+	public GenericCommand SendReportCommand { get; }
+	public GenericCommand ShowDetailsCommand { get; }
+	public GenericCommand IgnoreCommand { get; }
+	public GenericCommand CloseConsoleCommand { get; }
 	public GenericCommand RestartApplicationCommand { get; }
 	public FlowDocument Document { get; set; } = new()
 	{
 		TextAlignment = TextAlignment.Left, PagePadding = new(10), FontFamily = new("Segoe UI")
 	};
 	public event PropertyChangedEventHandler? PropertyChanged;
-	void                                      ButtonClose_Click(object sender, RoutedEventArgs e) => CloseButtonsPopUp.IsOpen = true;
+	void ButtonClose_Click(object sender, RoutedEventArgs e) => CloseButtonsPopUp.IsOpen = true;
 }
 
 [Flags]
 public enum UnhandledExceptionWindowButtons
 {
-	CloseWindow                      = 1,
-	RestartApplication               = 2,
+	CloseWindow = 1,
+	RestartApplication = 2,
 	CloseWindowAndRestartApplication = 3
 }

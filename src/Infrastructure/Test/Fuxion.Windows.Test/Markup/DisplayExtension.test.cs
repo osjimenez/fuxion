@@ -37,8 +37,8 @@ public class DisplayExtensionTest : BaseTest<DisplayExtensionTest>
 		{
 			Printer = Printer.Default
 		};
-		var element  = new T();
-		var ser      = new ServiceProviderMock(element, property);
+		var element = new T();
+		var ser = new ServiceProviderMock(element, property);
 		var provider = ser.GetService(null!) as ProvideValueTargetMock;
 		ext.ProvideValue(ser);
 		return element;
@@ -49,8 +49,8 @@ public class DisplayExtensionTest : BaseTest<DisplayExtensionTest>
 		{
 			Printer = Printer.Default
 		};
-		var element  = new T();
-		var ser      = new ServiceProviderMock(element, property);
+		var element = new T();
+		var ser = new ServiceProviderMock(element, property);
 		var provider = ser.GetService(null!) as ProvideValueTargetMock;
 		ext.ProvideValue(ser);
 		return element;
@@ -59,38 +59,38 @@ public class DisplayExtensionTest : BaseTest<DisplayExtensionTest>
 	public async Task DifferentValues() =>
 		await StartSTATask(() =>
 		{
-			var textBlock     = RegisterFrameworkElement<TextBlock>(TextBox.TextProperty, "[Name]Dto");
+			var textBlock = RegisterFrameworkElement<TextBlock>(TextBox.TextProperty, "[Name]Dto");
 			var expectedValue = ViewModelMock.DtoDisplayName;
 			textBlock.DataContext = new ViewModelMock();
 			Assert.Equal(expectedValue, textBlock.Text);
 
 			// ShortName
-			textBlock             = RegisterFrameworkElement<TextBlock>(TextBox.TextProperty, "[ShortName]Dto");
-			expectedValue         = ViewModelMock.DtoDisplayShortName;
+			textBlock = RegisterFrameworkElement<TextBlock>(TextBox.TextProperty, "[ShortName]Dto");
+			expectedValue = ViewModelMock.DtoDisplayShortName;
 			textBlock.DataContext = new ViewModelMock();
 			Assert.Equal(expectedValue, textBlock.Text);
 
 			// GroupName
-			textBlock             = RegisterFrameworkElement<TextBlock>(TextBox.TextProperty, "[GroupName]Dto");
-			expectedValue         = ViewModelMock.DtoDisplayGroupName;
+			textBlock = RegisterFrameworkElement<TextBlock>(TextBox.TextProperty, "[GroupName]Dto");
+			expectedValue = ViewModelMock.DtoDisplayGroupName;
 			textBlock.DataContext = new ViewModelMock();
 			Assert.Equal(expectedValue, textBlock.Text);
 
 			// Description
-			textBlock             = RegisterFrameworkElement<TextBlock>(TextBox.TextProperty, "[Description]Dto");
-			expectedValue         = ViewModelMock.DtoDisplayDescription;
+			textBlock = RegisterFrameworkElement<TextBlock>(TextBox.TextProperty, "[Description]Dto");
+			expectedValue = ViewModelMock.DtoDisplayDescription;
 			textBlock.DataContext = new ViewModelMock();
 			Assert.Equal(expectedValue, textBlock.Text);
 
 			// Order
-			textBlock             = RegisterFrameworkElement<TextBlock>(TextBox.TextProperty, "[Order]Dto");
-			expectedValue         = ViewModelMock.DtoDisplayOrder.ToString();
+			textBlock = RegisterFrameworkElement<TextBlock>(TextBox.TextProperty, "[Order]Dto");
+			expectedValue = ViewModelMock.DtoDisplayOrder.ToString();
 			textBlock.DataContext = new ViewModelMock();
 			Assert.Equal(expectedValue, textBlock.Text);
 
 			// Prompt
-			textBlock             = RegisterFrameworkElement<TextBlock>(TextBox.TextProperty, "[Prompt]Dto");
-			expectedValue         = ViewModelMock.DtoDisplayPrompt;
+			textBlock = RegisterFrameworkElement<TextBlock>(TextBox.TextProperty, "[Prompt]Dto");
+			expectedValue = ViewModelMock.DtoDisplayPrompt;
 			textBlock.DataContext = new ViewModelMock();
 			Assert.Equal(expectedValue, textBlock.Text);
 		});
@@ -98,7 +98,7 @@ public class DisplayExtensionTest : BaseTest<DisplayExtensionTest>
 	public async Task DirectProperty() =>
 		await StartSTATask(() =>
 		{
-			var textBlock     = RegisterFrameworkElement<TextBlock>(TextBox.TextProperty, "Dto");
+			var textBlock = RegisterFrameworkElement<TextBlock>(TextBox.TextProperty, "Dto");
 			var expectedValue = ViewModelMock.DtoDisplayName;
 			Assert.NotEqual(expectedValue, textBlock.Text);
 			textBlock.DataContext = new ViewModelMock();
@@ -109,7 +109,7 @@ public class DisplayExtensionTest : BaseTest<DisplayExtensionTest>
 		await StartSTATask(() =>
 		{
 			var contentElement = RegisterFrameworkContentElement<FrameworkContentElement>(FrameworkContentElement.TagProperty, "Dto");
-			var expectedValue  = ViewModelMock.DtoDisplayName;
+			var expectedValue = ViewModelMock.DtoDisplayName;
 			Assert.NotEqual(expectedValue, contentElement.Tag);
 			contentElement.DataContext = new ViewModelMock();
 			Assert.Equal(expectedValue, contentElement.Tag);
@@ -122,27 +122,27 @@ public class DisplayExtensionTest : BaseTest<DisplayExtensionTest>
 			{
 				Printer = Printer.Default
 			};
-			var dtoLink    = ext.chain.First();
+			var dtoLink = ext.chain.First();
 			var subDtoLink = ext.chain.Skip(1).First();
-			var valueLink  = ext.chain.Skip(2).First();
+			var valueLink = ext.chain.Skip(2).First();
 			// Check property names
-			Assert.Equal("Dto",    dtoLink.PropertyName);
+			Assert.Equal("Dto", dtoLink.PropertyName);
 			Assert.Equal("SubDto", subDtoLink.PropertyName);
-			Assert.Equal("Value",  valueLink.PropertyName);
+			Assert.Equal("Value", valueLink.PropertyName);
 			// Check NextLink
-			Assert.True(dtoLink.NextLink    == subDtoLink);
+			Assert.True(dtoLink.NextLink == subDtoLink);
 			Assert.True(subDtoLink.NextLink == valueLink);
 			Assert.Null(valueLink.NextLink);
 			// Check PreviousLink
 			Assert.Null(dtoLink.PreviousLink);
 			Assert.True(subDtoLink.PreviousLink == dtoLink);
-			Assert.True(valueLink.PreviousLink  == subDtoLink);
+			Assert.True(valueLink.PreviousLink == subDtoLink);
 		});
 	[Fact(DisplayName = "DisplayExtension - Four level property")]
 	public async Task FourLevelProperty() =>
 		await StartSTATask(() =>
 		{
-			var textBlock     = RegisterFrameworkElement<TextBlock>(TextBox.TextProperty, "Dto.Dto2.Dto3.Value");
+			var textBlock = RegisterFrameworkElement<TextBlock>(TextBox.TextProperty, "Dto.Dto2.Dto3.Value");
 			var expectedValue = Dto3Mock.ValueDisplayName;
 			Assert.NotEqual(expectedValue, textBlock.Text);
 			var viewModel = new ViewModelMock();
@@ -163,7 +163,7 @@ public class DisplayExtensionTest : BaseTest<DisplayExtensionTest>
 	public async Task ThreeLevelProperty() =>
 		await StartSTATask(() =>
 		{
-			var textBlock     = RegisterFrameworkElement<TextBlock>(TextBox.TextProperty, "Dto.Dto2.Dto3");
+			var textBlock = RegisterFrameworkElement<TextBlock>(TextBox.TextProperty, "Dto.Dto2.Dto3");
 			var expectedValue = Dto2Mock.Dto3DisplayName;
 			Assert.NotEqual(expectedValue, textBlock.Text);
 			var viewModel = new ViewModelMock();
@@ -182,8 +182,8 @@ public class DisplayExtensionTest : BaseTest<DisplayExtensionTest>
 		await StartSTATask(() =>
 		{
 			DisplayExtension.NonAttrributePrefix = "prefix:";
-			DisplayExtension.NonAttrributeSufix  = ":sufix";
-			var textBlock     = RegisterFrameworkElement<TextBlock>(TextBox.TextProperty, "Dto.Dto2.Dto3WithoutDisplayAttribute");
+			DisplayExtension.NonAttrributeSufix = ":sufix";
+			var textBlock = RegisterFrameworkElement<TextBlock>(TextBox.TextProperty, "Dto.Dto2.Dto3WithoutDisplayAttribute");
 			var expectedValue = DisplayExtension.NonAttrributePrefix + "Dto3WithoutDisplayAttribute" + DisplayExtension.NonAttrributeSufix;
 			Assert.NotEqual(expectedValue, textBlock.Text);
 			Assert.Equal("", textBlock.Text);
@@ -201,7 +201,7 @@ public class DisplayExtensionTest : BaseTest<DisplayExtensionTest>
 	public async Task TwoLevelProperty() =>
 		await StartSTATask(() =>
 		{
-			var textBlock     = RegisterFrameworkElement<TextBlock>(TextBox.TextProperty, "Dto.Dto2");
+			var textBlock = RegisterFrameworkElement<TextBlock>(TextBox.TextProperty, "Dto.Dto2");
 			var expectedValue = DtoMock.Dto2DisplayName;
 			Assert.NotEqual(expectedValue, textBlock.Text);
 			var viewModel = new ViewModelMock();
@@ -216,30 +216,30 @@ public class ServiceProviderMock : IServiceProvider
 {
 	public ServiceProviderMock(object targetObject, object targetProperty) => provideValueTargetMock = new(targetObject, targetProperty);
 	readonly ProvideValueTargetMock provideValueTargetMock;
-	public   object                 GetService(Type serviceType) => provideValueTargetMock;
+	public object GetService(Type serviceType) => provideValueTargetMock;
 }
 
 public class ProvideValueTargetMock : IProvideValueTarget
 {
 	public ProvideValueTargetMock(object targetObject, object targetProperty)
 	{
-		TargetObject   = targetObject;
+		TargetObject = targetObject;
 		TargetProperty = targetProperty;
 	}
 	public TextBlock textBlock = new();
-	public object    TargetObject   { get; set; }
-	public object    TargetProperty { get; set; }
+	public object TargetObject { get; set; }
+	public object TargetProperty { get; set; }
 }
 
 public class ViewModelMock : INotifyPropertyChanged
 {
-	public const string DtoDisplayName        = nameof(DtoMock) + " display name";
-	public const string DtoDisplayShortName   = nameof(DtoMock) + " display short name";
-	public const string DtoDisplayGroupName   = nameof(DtoMock) + " display group name";
+	public const string DtoDisplayName = nameof(DtoMock) + " display name";
+	public const string DtoDisplayShortName = nameof(DtoMock) + " display short name";
+	public const string DtoDisplayGroupName = nameof(DtoMock) + " display group name";
 	public const string DtoDisplayDescription = nameof(DtoMock) + " display description";
-	public const int    DtoDisplayOrder       = 1;
-	public const string DtoDisplayPrompt      = nameof(DtoMock) + " display prompt";
-	DtoMock?            _Dto;
+	public const int DtoDisplayOrder = 1;
+	public const string DtoDisplayPrompt = nameof(DtoMock) + " display prompt";
+	DtoMock? _Dto;
 	[Display(Name = DtoDisplayName, GroupName = DtoDisplayGroupName, Description = DtoDisplayDescription, Order = DtoDisplayOrder, Prompt = DtoDisplayPrompt, ShortName = DtoDisplayShortName)]
 	public DtoMock? Dto
 	{
@@ -259,7 +259,7 @@ public class ViewModelMock : INotifyPropertyChanged
 public class DtoMock : INotifyPropertyChanged
 {
 	public const string Dto2DisplayName = nameof(Dto2Mock) + " display name";
-	Dto2Mock?           _Dto2;
+	Dto2Mock? _Dto2;
 	[Display(Name = Dto2DisplayName)]
 	public Dto2Mock? Dto2
 	{
@@ -279,8 +279,8 @@ public class DtoMock : INotifyPropertyChanged
 public class Dto2Mock : INotifyPropertyChanged
 {
 	public const string Dto3DisplayName = nameof(Dto3Mock) + " display name";
-	Dto3Mock?           _Dto3;
-	Dto3Mock?           _Dto3WithoutDisplayAttribute;
+	Dto3Mock? _Dto3;
+	Dto3Mock? _Dto3WithoutDisplayAttribute;
 	[Display(Name = Dto3DisplayName)]
 	public Dto3Mock? Dto3
 	{
@@ -312,7 +312,7 @@ public class Dto2Mock : INotifyPropertyChanged
 public class Dto3Mock : INotifyPropertyChanged
 {
 	public const string ValueDisplayName = nameof(Value) + " display name";
-	DtoMock?            _Value;
+	DtoMock? _Value;
 	[Display(Name = ValueDisplayName)]
 	public DtoMock? Value
 	{

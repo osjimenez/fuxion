@@ -21,7 +21,7 @@ public static class FlowDocumentExtensions
 	}
 	internal static Block ProcessProperty(this object? obj, string name, Type type)
 	{
-		var res     = new List<Block>();
+		var res = new List<Block>();
 		var objType = obj?.GetType() ?? type;
 		return IsBasicType(objType)
 			? new Paragraph().Transform(p =>
@@ -40,8 +40,8 @@ class CollapsibleSection : Section
 {
 	public CollapsibleSection(object? obj, string name, Type type, bool expandEnumerable)
 	{
-		var objType         = obj?.GetType() ?? type;
-		var isEnumerable    = obj is IEnumerable || typeof(IEnumerable).IsAssignableFrom(objType);
+		var objType = obj?.GetType() ?? type;
+		var isEnumerable = obj is IEnumerable || typeof(IEnumerable).IsAssignableFrom(objType);
 		var enumerableCount = 0;
 		if (isEnumerable)
 			foreach (var item in (obj as IEnumerable)!)

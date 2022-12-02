@@ -9,11 +9,11 @@ public abstract class DbContextRepository<TContext, TAggregate> : IRepository<TA
 {
 	public DbContextRepository(TContext context, IEventDispatcher eventDispatcher)
 	{
-		Context         = context;
+		Context = context;
 		EventDispatcher = eventDispatcher;
 	}
-	readonly  List<TAggregate> attached = new();
-	protected TContext         Context         { get; }
+	readonly List<TAggregate> attached = new();
+	protected TContext Context { get; }
 	protected IEventDispatcher EventDispatcher { get; }
 	async Task<TAggregate> IRepository<TAggregate>.GetAsync(Guid aggregateId)
 	{
@@ -34,7 +34,7 @@ public abstract class DbContextRepository<TContext, TAggregate> : IRepository<TA
 		// Dispatch events asynchronously
 		foreach (var e in changesToCommit) await EventDispatcher.DispatchAsync(e);
 	}
-	public          void             Dispose() => Context.Dispose();
-	public abstract Task<TAggregate> GetAsync(Guid       aggregateId);
-	public abstract Task             AddAsync(TAggregate aggregate);
+	public void Dispose() => Context.Dispose();
+	public abstract Task<TAggregate> GetAsync(Guid aggregateId);
+	public abstract Task AddAsync(TAggregate aggregate);
 }

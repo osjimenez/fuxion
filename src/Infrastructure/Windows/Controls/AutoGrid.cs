@@ -20,7 +20,7 @@ public class AutoGrid : Grid
 		set => SetValue(RowHeightProperty, value);
 	}
 	int GetChildColumnIndex(UIElement child) => Children.IndexOf(child) % ColumnDefinitions.Count;
-	int GetChildRowIndex(UIElement    child) => Children.IndexOf(child) / ColumnDefinitions.Count;
+	int GetChildRowIndex(UIElement child) => Children.IndexOf(child) / ColumnDefinitions.Count;
 	internal void PerformLayout(bool force = false)
 	{
 		if (mustRelayout || force)
@@ -38,12 +38,12 @@ public class AutoGrid : Grid
 				{
 					var colIndex = GetChildColumnIndex(child);
 					child.SetValue(ColumnProperty, colIndex);
-					child.SetValue(RowProperty,    GetChildRowIndex(child));
+					child.SetValue(RowProperty, GetChildRowIndex(child));
 					if (ColumnDefinitions[colIndex] is AutoColumnDefinition acd)
 					{
 						child.SetValue(HorizontalAlignmentProperty, acd.HorizontalContentAlignment);
-						child.SetValue(VerticalAlignmentProperty,   acd.VerticalContentAlignment);
-						child.SetValue(MarginProperty,              acd.ContentMargin);
+						child.SetValue(VerticalAlignmentProperty, acd.VerticalContentAlignment);
+						child.SetValue(MarginProperty, acd.ContentMargin);
 					}
 				}
 		}

@@ -9,9 +9,9 @@ public abstract class GenericConverter<TSource, TResult> : IValueConverter
 {
 	public GenericConverter() { }
 	public GenericConverter(bool valueTypesAreNotNullables) : this() => this.valueTypesAreNotNullables = valueTypesAreNotNullables;
-	readonly bool    valueTypesAreNotNullables = true;
-	public   bool    AllowUnsetValue { get; set; }
-	public   TResult UnsetValue      { get; set; } = default!;
+	readonly bool valueTypesAreNotNullables = true;
+	public bool AllowUnsetValue { get; set; }
+	public TResult UnsetValue { get; set; } = default!;
 	object? IValueConverter.Convert(object? value, Type targetType, object parameter, CultureInfo culture)
 	{
 		// if allow unset value
@@ -45,9 +45,9 @@ public abstract class GenericConverter<TSource, TResult, TParameter> : IValueCon
 {
 	public GenericConverter() { }
 	public GenericConverter(bool valueTypesAreNotNullables) : this() => this.valueTypesAreNotNullables = valueTypesAreNotNullables;
-	readonly bool    valueTypesAreNotNullables = true;
-	public   bool    AllowUnsetValue { get; set; }
-	public   TResult UnsetValue      { get; set; } = default!;
+	readonly bool valueTypesAreNotNullables = true;
+	public bool AllowUnsetValue { get; set; }
+	public TResult UnsetValue { get; set; } = default!;
 	object? IValueConverter.Convert(object? value, Type targetType, object parameter, CultureInfo culture)
 	{
 		if (typeof(TParameter) != typeof(object) && !(parameter is TParameter)) throw new NotSupportedException($"The parameter must be of type '{typeof(TParameter).GetSignature()}'");

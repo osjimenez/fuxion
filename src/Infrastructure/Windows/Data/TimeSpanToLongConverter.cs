@@ -14,8 +14,8 @@ public enum TimeSpanToLongValue
 
 public class TimeSpanToLongConverter : GenericConverter<TimeSpan?, long?>
 {
-	public TimeSpanToLongValue Value                     { get; set; }
-	public bool                ConvertToLongAsTotalCount { get; set; }
+	public TimeSpanToLongValue Value { get; set; }
+	public bool ConvertToLongAsTotalCount { get; set; }
 	public override long? Convert(TimeSpan? source, CultureInfo culture)
 	{
 		if (source == null || !source.HasValue) return null;

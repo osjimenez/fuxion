@@ -4,11 +4,11 @@ namespace Fuxion.Windows.Data;
 
 public sealed class BooleanToBooleanMultiConverter : GenericMultiConverter<bool, bool>
 {
-	public BooleanMultiConverterMode Mode       { get; set; } = BooleanMultiConverterMode.AllTrue;
-	public bool                      TrueValue  { get; set; } = true;
-	public bool                      FalseValue { get; set; } = false;
-	public bool                      EmptyValue { get; set; } = false;
-	public bool                      NullValue  { get; set; } = false;
+	public BooleanMultiConverterMode Mode { get; set; } = BooleanMultiConverterMode.AllTrue;
+	public bool TrueValue { get; set; } = true;
+	public bool FalseValue { get; set; } = false;
+	public bool EmptyValue { get; set; } = false;
+	public bool NullValue { get; set; } = false;
 	public override bool Convert(bool[] source, CultureInfo culture)
 	{
 		if (source == null) return NullValue;

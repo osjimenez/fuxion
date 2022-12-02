@@ -10,10 +10,10 @@ public class CommandController : ControllerBase
 	public CommandController(ICommandDispatcher commandDispatcher, TypeKeyDirectory typeKeyDirectory)
 	{
 		this.commandDispatcher = commandDispatcher;
-		this.typeKeyDirectory  = typeKeyDirectory;
+		this.typeKeyDirectory = typeKeyDirectory;
 	}
 	readonly ICommandDispatcher commandDispatcher;
-	readonly TypeKeyDirectory   typeKeyDirectory;
+	readonly TypeKeyDirectory typeKeyDirectory;
 	[HttpPost]
 	public async Task<IActionResult> Post([FromBody] CommandPod pod)
 	{

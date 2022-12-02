@@ -10,14 +10,14 @@ public class TrackingInterceptor : IDbCommandTreeInterceptor
 {
 	public TrackingInterceptor(ITimeProvider timeProvider, Func<TimeZoneInfo>? getCurrentTimeZoneFunction = null, Func<string>? getCurrentIdentityFunction = null)
 	{
-		this.timeProvider               = timeProvider;
+		this.timeProvider = timeProvider;
 		this.getCurrentTimeZoneFunction = getCurrentTimeZoneFunction ?? (() => TimeZoneInfo.Local);
 		this.getCurrentIdentityFunction = getCurrentIdentityFunction ?? (() => "<undefined>"); //Thread.CurrentPrincipal.Identity.Name
 	}
-	static   TimeSpan           _dateTimeAdjustment = TimeSpan.Zero;
-	readonly Func<string>       getCurrentIdentityFunction;
+	static TimeSpan _dateTimeAdjustment = TimeSpan.Zero;
+	readonly Func<string> getCurrentIdentityFunction;
 	readonly Func<TimeZoneInfo> getCurrentTimeZoneFunction;
-	readonly ITimeProvider      timeProvider;
+	readonly ITimeProvider timeProvider;
 	public void TreeCreated(DbCommandTreeInterceptionContext interceptionContext)
 	{
 		if (interceptionContext.Result.DataSpace == DataSpace.SSpace && interceptionContext.DbContexts.All(con => con.GetType().GetCustomAttribute<TrackDisabledAttribute>() == null))
@@ -35,10 +35,10 @@ public class TrackingInterceptor : IDbCommandTreeInterceptor
 			var deleteCommand = interceptionContext.Result as DbDeleteCommandTree;
 			if (deleteCommand != null)
 			{
-				var bitColumn      = ColumnAnnotationAttribute.GetColumnName<TrackDeletedBitAttribute>(deleteCommand.Target.VariableType.EdmType);
-				var dateColumn     = ColumnAnnotationAttribute.GetColumnName<TrackDeletedDateAttribute>(deleteCommand.Target.VariableType.EdmType);
+				var bitColumn = ColumnAnnotationAttribute.GetColumnName<TrackDeletedBitAttribute>(deleteCommand.Target.VariableType.EdmType);
+				var dateColumn = ColumnAnnotationAttribute.GetColumnName<TrackDeletedDateAttribute>(deleteCommand.Target.VariableType.EdmType);
 				var identityColumn = ColumnAnnotationAttribute.GetColumnName<TrackDeletedIdentityAttribute>(deleteCommand.Target.VariableType.EdmType);
-				var clauses        = new List<DbModificationClause>();
+				var clauses = new List<DbModificationClause>();
 				if (bitColumn != null)
 				{
 					clauses.Add(DbExpressionBuilder.SetClause(deleteCommand.Target.Variable.Property(bitColumn), DbExpression.FromBoolean(true)));
@@ -61,9 +61,9 @@ public class TrackingInterceptor : IDbCommandTreeInterceptor
 			var insertCommand = interceptionContext.Result as DbInsertCommandTree;
 			if (insertCommand != null)
 			{
-				var dateColumn     = ColumnAnnotationAttribute.GetColumnName<TrackCreatedDateAttribute>(insertCommand.Target.VariableType.EdmType);
+				var dateColumn = ColumnAnnotationAttribute.GetColumnName<TrackCreatedDateAttribute>(insertCommand.Target.VariableType.EdmType);
 				var identityColumn = ColumnAnnotationAttribute.GetColumnName<TrackCreatedIdentityAttribute>(insertCommand.Target.VariableType.EdmType);
-				var clauses        = insertCommand.SetClauses.ToList();
+				var clauses = insertCommand.SetClauses.ToList();
 				RemoveClause(clauses, ColumnAnnotationAttribute.GetColumnName<TrackDeletedBitAttribute>(insertCommand.Target.VariableType.EdmType));
 				RemoveClause(clauses, ColumnAnnotationAttribute.GetColumnName<TrackDeletedDateAttribute>(insertCommand.Target.VariableType.EdmType));
 				RemoveClause(clauses, ColumnAnnotationAttribute.GetColumnName<TrackDeletedIdentityAttribute>(insertCommand.Target.VariableType.EdmType));

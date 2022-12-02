@@ -15,24 +15,28 @@ namespace Fuxion.RabbitMQ;
 
 public class RabbitMQEventBus : IEventPublisher, IEventSubscriber
 {
-	public RabbitMQEventBus(IServiceProvider serviceProvider, IRabbitMQPersistentConnection persistentConnection, TypeKeyDirectory typeKeyDirectory, string exchangeName, string queueName,
-									int              retryCount)
+	public RabbitMQEventBus(IServiceProvider serviceProvider,
+									IRabbitMQPersistentConnection persistentConnection,
+									TypeKeyDirectory typeKeyDirectory,
+									string exchangeName,
+									string queueName,
+									int retryCount)
 	{
-		this.serviceProvider      = serviceProvider;
+		this.serviceProvider = serviceProvider;
 		this.persistentConnection = persistentConnection ?? throw new ArgumentNullException(nameof(persistentConnection));
-		this.typeKeyDirectory     = typeKeyDirectory;
-		this.exchangeName         = exchangeName;
-		this.queueName            = queueName;
-		this.retryCount           = retryCount;
-		_consumerChannel          = CreateConsumerChannel();
+		this.typeKeyDirectory = typeKeyDirectory;
+		this.exchangeName = exchangeName;
+		this.queueName = queueName;
+		this.retryCount = retryCount;
+		_consumerChannel = CreateConsumerChannel();
 	}
-	readonly string                        exchangeName;
+	readonly string exchangeName;
 	readonly IRabbitMQPersistentConnection persistentConnection;
-	readonly string                        queueName;
-	readonly int                           retryCount;
-	readonly IServiceProvider              serviceProvider;
-	readonly TypeKeyDirectory              typeKeyDirectory;
-	IModel                                 _consumerChannel;
+	readonly string queueName;
+	readonly int retryCount;
+	readonly IServiceProvider serviceProvider;
+	readonly TypeKeyDirectory typeKeyDirectory;
+	IModel _consumerChannel;
 	public async Task PublishAsync(Event @event)
 	{
 		//TODO - Es aqui donde se debe poner la feature de publicacion ?? no lo sé
@@ -51,7 +55,7 @@ public class RabbitMQEventBus : IEventPublisher, IEventSubscriber
 			//TODO - Comprobar que funciona este cambio
 			//var message = JsonConvert.SerializeObject(eventPod);
 			var message = eventPod.ToJson();
-			var body    = Encoding.UTF8.GetBytes(message);
+			var body = Encoding.UTF8.GetBytes(message);
 			await policy.ExecuteAsync(() =>
 			{
 				var properties = channel.CreateBasicProperties();
@@ -74,8 +78,8 @@ public class RabbitMQEventBus : IEventPublisher, IEventSubscriber
 		{
 			//var integrationEventTypeId = ea.RoutingKey;
 			var message = Encoding.UTF8.GetString(ea.Body.ToArray());
-			var pod     = message.FromJson<PublicationPod>(true);
-			var @event  = pod.WithTypeKeyDirectory(typeKeyDirectory);
+			var pod = message.FromJson<PublicationPod>(true);
+			var @event = pod.WithTypeKeyDirectory(typeKeyDirectory);
 			if (@event == null) throw new InvalidCastException($"Event with key '{pod.PayloadKey}' is not registered in '{nameof(TypeKeyDirectory)}'");
 			await ProcessEvent(@event);
 			//await ProcessEvent(integrationEventTypeId, message);
@@ -94,7 +98,7 @@ public class RabbitMQEventBus : IEventPublisher, IEventSubscriber
 	{
 		using var scope = serviceProvider.CreateScope();
 		//var handlers = scope.ServiceProvider.GetServices(typeof(IEnumerable<>).MakeGenericType(typeof(IEventHandler<>).MakeGenericType(@event.GetType())));
-		var                  handlers = scope.ServiceProvider.GetServices(typeof(IEventHandler<>).MakeGenericType(@event.GetType()));
+		var handlers = scope.ServiceProvider.GetServices(typeof(IEventHandler<>).MakeGenericType(@event.GetType()));
 		IEventHandler<Event> c;
 		foreach (var handler in handlers)
 		{

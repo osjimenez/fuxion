@@ -2,13 +2,19 @@
 
 class ActionTaskManagerEntry : TaskManagerEntry
 {
-	public ActionTaskManagerEntry(Action action, TaskScheduler? scheduler, TaskCreationOptions options, ConcurrencyProfile concurrencyProfile = default, Delegate? @delegate = null) : base(@delegate ?? action, scheduler, options, concurrencyProfile) =>
+	public ActionTaskManagerEntry(Action action, TaskScheduler? scheduler, TaskCreationOptions options, ConcurrencyProfile concurrencyProfile = default, Delegate? @delegate = null) : base(
+		@delegate ?? action, scheduler, options, concurrencyProfile) =>
 		Task = new(() =>
 		{
 			DoConcurrency();
 			action();
 		}, CancellationTokenSource.Token, TaskCreationOptions);
-	public ActionTaskManagerEntry(Action<object> action, object state, TaskScheduler? scheduler, TaskCreationOptions options, ConcurrencyProfile concurrencyProfile = default, Delegate? @delegate = null) : base(@delegate ?? action, scheduler, default, concurrencyProfile) =>
+	public ActionTaskManagerEntry(Action<object> action,
+											object state,
+											TaskScheduler? scheduler,
+											TaskCreationOptions options,
+											ConcurrencyProfile concurrencyProfile = default,
+											Delegate? @delegate = null) : base(@delegate ?? action, scheduler, default, concurrencyProfile) =>
 		Task = new(st =>
 		{
 			DoConcurrency();

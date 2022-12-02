@@ -13,11 +13,11 @@ public enum BooleanMultiConverterMode
 
 public sealed class BooleanToVisibilityMultiConverter : GenericMultiConverter<bool, Visibility>
 {
-	public BooleanMultiConverterMode Mode       { get; set; } = BooleanMultiConverterMode.AllTrue;
-	public Visibility                TrueValue  { get; set; } = Visibility.Visible;
-	public Visibility                FalseValue { get; set; } = Visibility.Collapsed;
-	public Visibility                EmptyValue { get; set; } = Visibility.Collapsed;
-	public Visibility                NullValue  { get; set; } = Visibility.Collapsed;
+	public BooleanMultiConverterMode Mode { get; set; } = BooleanMultiConverterMode.AllTrue;
+	public Visibility TrueValue { get; set; } = Visibility.Visible;
+	public Visibility FalseValue { get; set; } = Visibility.Collapsed;
+	public Visibility EmptyValue { get; set; } = Visibility.Collapsed;
+	public Visibility NullValue { get; set; } = Visibility.Collapsed;
 	//public bool AllowNullValues { get; set; }
 	//public bool NullValue { get; set; }
 	public override Visibility Convert(bool[] source, CultureInfo culture)

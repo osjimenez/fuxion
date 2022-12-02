@@ -10,9 +10,9 @@ public class RegistryStoredTimeProvider : StoredTimeProvider
 	{
 		9, 8, 7, 6, 5
 	};
-	public string Key          { get; set; } = @"Software\Fuxion\RegistryStorageTimeProvider";
-	public string Value        { get; set; } = "Value";
-	public bool   EncryptValue { get; set; }
+	public string Key { get; set; } = @"Software\Fuxion\RegistryStorageTimeProvider";
+	public string Value { get; set; } = "Value";
+	public bool EncryptValue { get; set; }
 	public override DateTime GetUtcTime()
 	{
 		var key = Registry.CurrentUser.CreateSubKey(Key);

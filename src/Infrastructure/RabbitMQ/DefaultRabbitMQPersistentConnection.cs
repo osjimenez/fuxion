@@ -18,11 +18,11 @@ public class DefaultRabbitMQPersistentConnection : IRabbitMQPersistentConnection
 	}
 	readonly IConnectionFactory _connectionFactory;
 	//private readonly ILogger<DefaultRabbitMQPersistentConnection> _logger;
-	readonly int    _retryCount;
+	readonly int _retryCount;
 	readonly object sync_root = new();
-	IConnection?    _connection;
-	bool            _disposed;
-	public bool     IsConnected => _connection != null && _connection.IsOpen && !_disposed;
+	IConnection? _connection;
+	bool _disposed;
+	public bool IsConnected => _connection != null && _connection.IsOpen && !_disposed;
 	public IModel CreateModel()
 	{
 		if (!IsConnected) throw new InvalidOperationException("No RabbitMQ connections are available to perform this action");
@@ -56,8 +56,8 @@ public class DefaultRabbitMQPersistentConnection : IRabbitMQPersistentConnection
 			if (IsConnected)
 			{
 				_connection!.ConnectionShutdown += OnConnectionShutdown;
-				_connection!.CallbackException  += OnCallbackException;
-				_connection!.ConnectionBlocked  += OnConnectionBlocked;
+				_connection!.CallbackException += OnCallbackException;
+				_connection!.ConnectionBlocked += OnConnectionBlocked;
 				Debug.WriteLine($"RabbitMQ persistent connection acquired a connection {_connection.Endpoint.HostName} and is subscribed to failure events");
 				//_logger.LogInformation($"RabbitMQ persistent connection acquired a connection {_connection.Endpoint.HostName} and is subscribed to failure events");
 				return true;

@@ -14,8 +14,10 @@ public class TypeKeyDirectory
 		}
 	}
 	public bool ContainsKey(string key) => dic.ContainsKey(key);
-	public void RegisterAssemblyOf(Type type, Func<(Type Type, TypeKeyAttribute? Attribute), bool>? predicate = null, bool registerByFullNameIfNotFound = false) => RegisterAssembly(type.Assembly, predicate, registerByFullNameIfNotFound);
-	public void RegisterAssemblyOf<T>(Func<(Type Type, TypeKeyAttribute? Attribute), bool>? predicate = null, bool registerByFullNameIfNotFound = false) => RegisterAssembly(typeof(T).Assembly, predicate, registerByFullNameIfNotFound);
+	public void RegisterAssemblyOf(Type type, Func<(Type Type, TypeKeyAttribute? Attribute), bool>? predicate = null, bool registerByFullNameIfNotFound = false) =>
+		RegisterAssembly(type.Assembly, predicate, registerByFullNameIfNotFound);
+	public void RegisterAssemblyOf<T>(Func<(Type Type, TypeKeyAttribute? Attribute), bool>? predicate = null, bool registerByFullNameIfNotFound = false) =>
+		RegisterAssembly(typeof(T).Assembly, predicate, registerByFullNameIfNotFound);
 	public void RegisterAssembly(Assembly assembly, Func<(Type Type, TypeKeyAttribute? Attribute), bool>? predicate = null, bool registerByFullNameIfNotFound = false)
 	{
 		var query = assembly.GetTypes().Where(t => t.HasCustomAttribute<TypeKeyAttribute>(false) || registerByFullNameIfNotFound)

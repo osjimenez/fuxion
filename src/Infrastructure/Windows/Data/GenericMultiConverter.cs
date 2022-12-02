@@ -9,10 +9,10 @@ public abstract class GenericMultiConverter<TSource, TResult> : IMultiValueConve
 {
 	public GenericMultiConverter() { }
 	public GenericMultiConverter(bool valueTypesAreNotNullables) : this() => this.valueTypesAreNotNullables = valueTypesAreNotNullables;
-	readonly bool    valueTypesAreNotNullables = true;
-	public   bool    AllowUnsetValues  { get; set; }
-	public   bool    IgnoreUnsetValues { get; set; } = true;
-	public   TResult UnsetValue        { get; set; } = default!;
+	readonly bool valueTypesAreNotNullables = true;
+	public bool AllowUnsetValues { get; set; }
+	public bool IgnoreUnsetValues { get; set; } = true;
+	public TResult UnsetValue { get; set; } = default!;
 	object? IMultiValueConverter.Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
 	{
 		// if allow any unset value
@@ -53,10 +53,10 @@ public abstract class GenericMultiConverter<TSource, TResult, TParameter> : IMul
 {
 	public GenericMultiConverter() { }
 	public GenericMultiConverter(bool valueTypesAreNotNullables) : this() => this.valueTypesAreNotNullables = valueTypesAreNotNullables;
-	readonly bool    valueTypesAreNotNullables = true;
-	public   bool    AllowUnsetValues  { get; set; }
-	public   bool    IgnoreUnsetValues { get; set; } = true;
-	public   TResult UnsetValue        { get; set; } = default!;
+	readonly bool valueTypesAreNotNullables = true;
+	public bool AllowUnsetValues { get; set; }
+	public bool IgnoreUnsetValues { get; set; } = true;
+	public TResult UnsetValue { get; set; } = default!;
 	object? IMultiValueConverter.Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
 	{
 		if (typeof(TParameter) != typeof(object) && !(parameter is TParameter)) throw new NotSupportedException($"The parameter must be of type '{typeof(TParameter).Name}'");

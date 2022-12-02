@@ -43,8 +43,10 @@ public static class Extensions
 	}
 
 	// Remove outliers: http://www.ehow.com/how_5201412_calculate-outliers.html
-	public static IEnumerable<int> RemoveOutliers(this IEnumerable<int> list, Action<string>? outputConsole = null) => list.Select(i => (long)i).RemoveOutliers(outputConsole: outputConsole).Select(i => (int)i);
-	public static IEnumerable<DateTime> RemoveOutliers(this IEnumerable<DateTime> list, Action<string>? outputConsole = null) => list.Select(i => i.Ticks).RemoveOutliers(outputConsole: outputConsole).Select(t => new DateTime(t));
+	public static IEnumerable<int> RemoveOutliers(this IEnumerable<int> list, Action<string>? outputConsole = null) =>
+		list.Select(i => (long)i).RemoveOutliers(outputConsole: outputConsole).Select(i => (int)i);
+	public static IEnumerable<DateTime> RemoveOutliers(this IEnumerable<DateTime> list, Action<string>? outputConsole = null) =>
+		list.Select(i => i.Ticks).RemoveOutliers(outputConsole: outputConsole).Select(t => new DateTime(t));
 	public static IEnumerable<long> RemoveOutliers(this IEnumerable<long> me, double interquartileOutlierValueRangeFactor = 1.5, Action<string>? outputConsole = null)
 	{
 		if (!me.Any()) return me;

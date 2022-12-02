@@ -232,11 +232,13 @@ public class Locker<TObjectLocked> : IDisposable
 	public Task<TResult> ReadAsync<TResult>(Func<TObjectLocked, TResult> func) where TResult : notnull => DelegateReadAsync<TResult>(func);
 	public Task<TResult> ReadAsync<T, TResult>(Func<TObjectLocked, T, TResult> func, T param) where TResult : notnull => DelegateReadAsync<TResult>(func, param);
 	public Task<TResult> ReadAsync<T1, T2, TResult>(Func<TObjectLocked, T1, T2, TResult> func, T1 param1, T2 param2) where TResult : notnull => DelegateReadAsync<TResult>(func, param1, param2);
-	public Task<TResult> ReadAsync<T1, T2, T3, TResult>(Func<TObjectLocked, T1, T2, T3, TResult> func, T1 param1, T2 param2, T3 param3) where TResult : notnull => DelegateReadAsync<TResult>(func, param1, param2, param3);
+	public Task<TResult> ReadAsync<T1, T2, T3, TResult>(Func<TObjectLocked, T1, T2, T3, TResult> func, T1 param1, T2 param2, T3 param3) where TResult : notnull =>
+		DelegateReadAsync<TResult>(func, param1, param2, param3);
 	public Task<TResult?> ReadNullableAsync<TResult>(Func<TObjectLocked, TResult> func) => DelegateReadNullableAsync<TResult>(func);
 	public Task<TResult?> ReadNullableAsync<T, TResult>(Func<TObjectLocked, T, TResult> func, T param) => DelegateReadNullableAsync<TResult>(func, param);
 	public Task<TResult?> ReadNullableAsync<T1, T2, TResult>(Func<TObjectLocked, T1, T2, TResult> func, T1 param1, T2 param2) => DelegateReadNullableAsync<TResult>(func, param1, param2);
-	public Task<TResult?> ReadNullableAsync<T1, T2, T3, TResult>(Func<TObjectLocked, T1, T2, T3, TResult> func, T1 param1, T2 param2, T3 param3) => DelegateReadNullableAsync<TResult>(func, param1, param2, param3);
+	public Task<TResult?> ReadNullableAsync<T1, T2, T3, TResult>(Func<TObjectLocked, T1, T2, T3, TResult> func, T1 param1, T2 param2, T3 param3) =>
+		DelegateReadNullableAsync<TResult>(func, param1, param2, param3);
 
 	// Write action
 	public Task WriteAsync(Action<TObjectLocked> action) => DelegateWriteAsync(action);
@@ -256,6 +258,7 @@ public class Locker<TObjectLocked> : IDisposable
 	public Task<TResult> WriteAsync<T1, T2, TResult>(Action<TObjectLocked, T1, T2, TResult> func, T1 param1, T2 param2) => DelegateWriteAsync<TResult>(func, param1, param2);
 	public Task<TResult> WriteAsync<T1, T2, TResult>(Action<TObjectLocked, T1, T2, Task<TResult>> func, T1 param1, T2 param2) => DelegateWriteAsync<TResult>(func, param1, param2);
 	public Task<TResult> WriteAsync<T1, T2, T3, TResult>(Action<TObjectLocked, T1, T2, T3, TResult> func, T1 param1, T2 param2, T3 param3) => DelegateWriteAsync<TResult>(func, param1, param2, param3);
-	public Task<TResult> WriteAsync<T1, T2, T3, TResult>(Action<TObjectLocked, T1, T2, T3, Task<TResult>> func, T1 param1, T2 param2, T3 param3) => DelegateWriteAsync<TResult>(func, param1, param2, param3);
+	public Task<TResult> WriteAsync<T1, T2, T3, TResult>(Action<TObjectLocked, T1, T2, T3, Task<TResult>> func, T1 param1, T2 param2, T3 param3) =>
+		DelegateWriteAsync<TResult>(func, param1, param2, param3);
 	#endregion
 }

@@ -5,8 +5,8 @@ namespace Fuxion.Windows.Data;
 
 public class BooleanToVisibilityConverter : GenericConverter<bool, Visibility>
 {
-	public          Visibility TrueValue                                 { get; set; } = Visibility.Visible;
-	public          Visibility FalseValue                                { get; set; } = Visibility.Collapsed;
+	public Visibility TrueValue { get; set; } = Visibility.Visible;
+	public Visibility FalseValue { get; set; } = Visibility.Collapsed;
 	public override Visibility Convert(bool source, CultureInfo culture) => source ? TrueValue : FalseValue;
 	public override bool ConvertBack(Visibility result, CultureInfo culture)
 	{

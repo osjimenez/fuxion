@@ -67,7 +67,12 @@ public class Printer
 	public static void Write(string message) => Default.Write(message);
 	[DebuggerHidden]
 	public static void WriteLine(string message) => Default.WriteLine(message);
-	public static CallResultArg<T> CallResult<T>(string callMessage = "CALL {0}:", string resultMessage = "RESULT {0}: {1}", char verticalConnectorChar = '│', char resultConnectorChar = '●', [CallerMemberName] string? caller = null) where T : notnull => Default.CallResult<T>(callMessage, resultMessage, verticalConnectorChar, resultConnectorChar, caller);
+	public static CallResultArg<T> CallResult<T>(string callMessage = "CALL {0}:",
+																string resultMessage = "RESULT {0}: {1}",
+																char verticalConnectorChar = '│',
+																char resultConnectorChar = '●',
+																[CallerMemberName] string? caller = null) where T : notnull =>
+		Default.CallResult<T>(callMessage, resultMessage, verticalConnectorChar, resultConnectorChar, caller);
 	[DebuggerHidden]
 	public static IDisposable Indent(char? verticalConnectorChar = null) => Default.Indent(verticalConnectorChar);
 	[DebuggerHidden]
@@ -75,7 +80,8 @@ public class Printer
 	[DebuggerHidden]
 	public static void Foreach<T>(string message, IEnumerable<T> items, Action<T> action, bool printMessageIfNoItems = true) => Default.Foreach(message, items, action, printMessageIfNoItems);
 	[DebuggerHidden]
-	public static Task ForeachAsync<T>(string message, IEnumerable<T> items, Func<T, Task> action, bool printMessageIfNoItems = true) => Default.ForeachAsync(message, items, action, printMessageIfNoItems);
+	public static Task ForeachAsync<T>(string message, IEnumerable<T> items, Func<T, Task> action, bool printMessageIfNoItems = true) =>
+		Default.ForeachAsync(message, items, action, printMessageIfNoItems);
 	#endregion
 }
 
@@ -147,7 +153,11 @@ class PrinterInstance : IPrinter
 		}
 	}
 	[DebuggerHidden]
-	public CallResultArg<T> CallResult<T>(string callMessage = "CALL {0}:", string resultMessage = "RESULT {0}: {1}", char verticalConnectorChar = '│', char resultConnectorChar = '●', [CallerMemberName] string? caller = null) where T : notnull
+	public CallResultArg<T> CallResult<T>(string callMessage = "CALL {0}:",
+													  string resultMessage = "RESULT {0}: {1}",
+													  char verticalConnectorChar = '│',
+													  char resultConnectorChar = '●',
+													  [CallerMemberName] string? caller = null) where T : notnull
 	{
 		var dis = Printer.Indent(string.Format(callMessage, caller), verticalConnectorChar);
 		var res = new CallResultArg<T>(default!, _ => dis.Dispose(), resultMessage, resultConnectorChar, caller);

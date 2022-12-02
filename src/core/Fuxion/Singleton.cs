@@ -210,7 +210,8 @@ public class Singleton
 	//    if (Instance.objects.ContainsKey(key)) changeAction((T)Instance.objects[key]);
 	//}
 	public static void Subscribe<T>(Action<SingletonSubscriptionArgs<T>> changeAction, bool raiseAddIfAlreadyAdded = true) => Subscribe(changeAction, SingletonKey.GetKey<T>(), raiseAddIfAlreadyAdded);
-	public static void Subscribe<T>(Action<SingletonSubscriptionArgs<T>> changeAction, object key, bool raiseAddIfAlreadyAdded = true) => Subscribe(changeAction, SingletonKey.GetKey<T>(key), raiseAddIfAlreadyAdded);
+	public static void Subscribe<T>(Action<SingletonSubscriptionArgs<T>> changeAction, object key, bool raiseAddIfAlreadyAdded = true) =>
+		Subscribe(changeAction, SingletonKey.GetKey<T>(key), raiseAddIfAlreadyAdded);
 	static void Subscribe<T>(Action<SingletonSubscriptionArgs<T>> changeAction, SingletonKey key, bool raiseAddIfAlreadyAdded = true)
 	{
 		Instance.subscriptions.Add(new(typeof(T), key, changeAction));

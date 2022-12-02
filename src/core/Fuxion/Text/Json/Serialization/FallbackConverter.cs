@@ -25,7 +25,8 @@ public abstract class PropertyFallbackResolver
 public class IfNullWritePropertyFallbackResolver : PropertyFallbackResolver
 {
 	public override bool Match(object value, PropertyInfo propertyInfo) => propertyInfo.GetValue(value) is null;
-	public override void Do(object value, PropertyInfo propertyInfo, Utf8JsonWriter writer, JsonSerializerOptions options, List<PropertyFallbackResolver> resolvers) => writer.WriteNull(propertyInfo.Name);
+	public override void Do(object value, PropertyInfo propertyInfo, Utf8JsonWriter writer, JsonSerializerOptions options, List<PropertyFallbackResolver> resolvers) =>
+		writer.WriteNull(propertyInfo.Name);
 }
 
 public class IfMemeberInfoWriteNamePropertyFallbackResolver : PropertyFallbackResolver
@@ -84,7 +85,8 @@ public class FallbackConverter<T> : JsonConverter<T>
 		this.resolvers.AddRange(resolvers);
 	}
 	readonly List<PropertyFallbackResolver> resolvers = new();
-	public override T? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) => throw new NotSupportedException($"{nameof(FallbackConverter<T>)} doesn't support deserialization");
+	public override T? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
+		throw new NotSupportedException($"{nameof(FallbackConverter<T>)} doesn't support deserialization");
 	public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
 	{
 		if (value is null) throw new ArgumentNullException(nameof(value));

@@ -8,7 +8,7 @@ public static class FocusHelper
 {
 	public static readonly DependencyProperty SetKeyboardFocusOnLoadProperty =
 		DependencyProperty.RegisterAttached("SetKeyboardFocusOnLoad", typeof(bool), typeof(FocusHelper), new(false, SetKeyboardFocusOnLoadChanged));
-	public static bool GetSetKeyboardFocusOnLoad(DependencyObject obj)             => (bool)obj.GetValue(SetKeyboardFocusOnLoadProperty);
+	public static bool GetSetKeyboardFocusOnLoad(DependencyObject obj) => (bool)obj.GetValue(SetKeyboardFocusOnLoadProperty);
 	public static void SetSetKeyboardFocusOnLoad(DependencyObject obj, bool value) => obj.SetValue(SetKeyboardFocusOnLoadProperty, value);
 	static void SetKeyboardFocusOnLoadChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
 	{

@@ -13,7 +13,7 @@ public class EventStoreStorage : IEventStorage, ISnapshotStorage
 {
 	public EventStoreStorage(EventStoreClient client, TypeKeyDirectory typeKeyDirectory)
 	{
-		this.client           = client;
+		this.client = client;
 		this.typeKeyDirectory = typeKeyDirectory;
 	}
 	readonly EventStoreClient client;
@@ -31,7 +31,7 @@ public class EventStoreStorage : IEventStorage, ISnapshotStorage
 	public async Task<IQueryable<Event>> GetEventsAsync(Guid aggregateId, int start, int count)
 	{
 		//TODO - Implementar un mecanismo de paginación?
-		var res   = client.ReadStreamAsync(Direction.Forwards, aggregateId.ToString(), (ulong)start, count);
+		var res = client.ReadStreamAsync(Direction.Forwards, aggregateId.ToString(), (ulong)start, count);
 		var state = await res.ReadState;
 		if (state == ReadState.Ok)
 		{
@@ -42,7 +42,7 @@ public class EventStoreStorage : IEventStorage, ISnapshotStorage
 	}
 	public async Task<Event?> GetLastEventAsync(Guid aggregateId)
 	{
-		var res   = client.ReadStreamAsync(Direction.Backwards, aggregateId.ToString(), StreamPosition.End, 1);
+		var res = client.ReadStreamAsync(Direction.Backwards, aggregateId.ToString(), StreamPosition.End, 1);
 		var state = await res.ReadState;
 		if (state == ReadState.Ok)
 		{
@@ -56,7 +56,7 @@ public class EventStoreStorage : IEventStorage, ISnapshotStorage
 	#region ISnapshotStorage
 	public async Task<Snapshot?> GetSnapshotAsync(Type snapshotType, Guid aggregateId)
 	{
-		var res   = client.ReadStreamAsync(Direction.Backwards, $"{snapshotType.GetTypeKey()}@{aggregateId.ToString()}", StreamPosition.End, 1);
+		var res = client.ReadStreamAsync(Direction.Backwards, $"{snapshotType.GetTypeKey()}@{aggregateId.ToString()}", StreamPosition.End, 1);
 		var state = await res.ReadState;
 		if (state == ReadState.Ok)
 		{

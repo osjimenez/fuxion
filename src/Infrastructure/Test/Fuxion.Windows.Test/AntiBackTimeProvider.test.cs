@@ -18,7 +18,7 @@ public class RegistryStoredTimeProviderTest : BaseTest<RegistryStoredTimeProvide
 
 public class MockStorageTimeProvider : StoredTimeProvider
 {
-	DateTime                 value;
-	public override DateTime GetUtcTime()               => value;
-	public override void     SaveUtcTime(DateTime time) => value = time.ToUniversalTime();
+	DateTime value;
+	public override DateTime GetUtcTime() => value;
+	public override void SaveUtcTime(DateTime time) => value = time.ToUniversalTime();
 }

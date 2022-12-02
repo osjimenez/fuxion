@@ -12,9 +12,9 @@ namespace Fuxion.Windows.Data;
 [ContentProperty(nameof(Converters))]
 public class PipeConverter : IValueConverter
 {
-	public PipeConverterParameterMode            ParameterMode      { get; set; }
-	public string                                ParameterSeparator { get; set; } = "|";
-	public ObservableCollection<IValueConverter> Converters         { get; }      = new();
+	public PipeConverterParameterMode ParameterMode { get; set; }
+	public string ParameterSeparator { get; set; } = "|";
+	public ObservableCollection<IValueConverter> Converters { get; } = new();
 	public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
 	{
 		var output = value;
@@ -55,7 +55,7 @@ public class PipeConverter : IValueConverter
 			{ };
 		var index = Converters.IndexOf(converter);
 		if (pars.Length <= index) throw new ArgumentOutOfRangeException("PipeConverter parameter was not define properly, has less parameters than converters");
-		var val     = pars[index];
+		var val = pars[index];
 		var parType = GetConverterTypes(converter).ParameterType;
 		if (parType == null) return val;
 		return TypeDescriptor.GetConverter(parType).ConvertFrom(val);
@@ -82,13 +82,13 @@ public class ValueConverterGroup : IValueConverter
 {
 	public ValueConverterGroup() => Converters.CollectionChanged += OnConvertersCollectionChanged;
 	readonly Dictionary<IValueConverter, ValueConversionAttribute> cachedAttributes = new();
-	public   ObservableCollection<IValueConverter>                 Converters { get; } = new();
+	public ObservableCollection<IValueConverter> Converters { get; } = new();
 	object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture)
 	{
 		var output = value;
 		for (var i = 0; i < Converters.Count; ++i)
 		{
-			var converter         = Converters[i];
+			var converter = Converters[i];
 			var currentTargetType = GetTargetType(i, targetType, true);
 			output = converter.Convert(output, currentTargetType, parameter, culture);
 
@@ -102,7 +102,7 @@ public class ValueConverterGroup : IValueConverter
 		var output = value;
 		for (var i = Converters.Count - 1; i > -1; --i)
 		{
-			var converter         = Converters[i];
+			var converter = Converters[i];
 			var currentTargetType = GetTargetType(i, targetType, false);
 			output = converter.ConvertBack(output, currentTargetType, parameter, culture);
 
@@ -120,14 +120,14 @@ public class ValueConverterGroup : IValueConverter
 		{
 			if (converterIndex < Converters.Count - 1)
 			{
-				nextConverter = Converters[converterIndex                                                                                                                  + 1];
+				nextConverter = Converters[converterIndex + 1];
 				if (nextConverter == null) throw new InvalidOperationException("The Converters collection of the ValueConverterGroup contains a null reference at index: " + (converterIndex + 1));
 			}
 		} else
 		{
 			if (converterIndex > 0)
 			{
-				nextConverter = Converters[converterIndex                                                                                                                  - 1];
+				nextConverter = Converters[converterIndex - 1];
 				if (nextConverter == null) throw new InvalidOperationException("The Converters collection of the ValueConverterGroup contains a null reference at index: " + (converterIndex - 1));
 			}
 		}

@@ -42,9 +42,9 @@ public class CascadeDeleteConvention : IConceptualModelConvention<AssociationTyp
 		if (deleteActionProperty == null) throw new InvalidProgramException("Property 'DeleteAction' cannot be found");
 		NavigationPropertyConfigurationGetDeleteAction = navProperty => (OperationAction?)deleteActionProperty.GetValue(navProperty);
 	}
-	static readonly Func<AssociationType, bool>    IsSelfReferencing;
-	static readonly Func<AssociationType, bool>    IsRequiredToMany;
-	static readonly Func<AssociationType, bool>    IsManyToRequired;
+	static readonly Func<AssociationType, bool> IsSelfReferencing;
+	static readonly Func<AssociationType, bool> IsRequiredToMany;
+	static readonly Func<AssociationType, bool> IsManyToRequired;
 	static readonly Func<AssociationType, object?> GetConfiguration;
 	static readonly Func<object, OperationAction?> NavigationPropertyConfigurationGetDeleteAction;
 	public virtual void Apply(AssociationType item, DbModel model)
@@ -52,20 +52,20 @@ public class CascadeDeleteConvention : IConceptualModelConvention<AssociationTyp
 		if (IsSelfReferencing(item)) return;
 		var propertyConfiguration = GetConfiguration(item);
 		if (propertyConfiguration != null && NavigationPropertyConfigurationGetDeleteAction(propertyConfiguration).HasValue) return;
-		AssociationEndMember? collectionEndMember       = null;
+		AssociationEndMember? collectionEndMember = null;
 		AssociationEndMember? singleNavigationEndMember = null;
 		if (IsRequiredToMany(item))
 		{
-			collectionEndMember       = GetSourceEnd(item);
+			collectionEndMember = GetSourceEnd(item);
 			singleNavigationEndMember = GetTargetEnd(item);
 		} else if (IsManyToRequired(item))
 		{
-			collectionEndMember       = GetTargetEnd(item);
+			collectionEndMember = GetTargetEnd(item);
 			singleNavigationEndMember = GetSourceEnd(item);
 		}
 		if (collectionEndMember == null || singleNavigationEndMember == null) return;
-		var collectionCascadeDeleteAttribute                                                                                     = GetCascadeDeleteAttribute(collectionEndMember);
-		var singleCascadeDeleteAttribute                                                                                         = GetCascadeDeleteAttribute(singleNavigationEndMember);
+		var collectionCascadeDeleteAttribute = GetCascadeDeleteAttribute(collectionEndMember);
+		var singleCascadeDeleteAttribute = GetCascadeDeleteAttribute(singleNavigationEndMember);
 		if (collectionCascadeDeleteAttribute != null || singleCascadeDeleteAttribute != null) collectionEndMember.DeleteBehavior = OperationAction.Cascade;
 	}
 	static AssociationEndMember? GetSourceEnd(AssociationType item) => item.KeyMembers.FirstOrDefault() as AssociationEndMember;

@@ -15,8 +15,8 @@ public enum TypeMatchConverterDefaultType
 public class TypeMatchToVisibilityConverter : IValueConverter
 {
 	public TypeMatchConverterDefaultType TargetType { get; set; }
-	public Visibility                    Match      { get; set; } = Visibility.Visible;
-	public Visibility                    NotMatch   { get; set; } = Visibility.Collapsed;
+	public Visibility Match { get; set; } = Visibility.Visible;
+	public Visibility NotMatch { get; set; } = Visibility.Collapsed;
 	public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 	{
 		switch (TargetType)
