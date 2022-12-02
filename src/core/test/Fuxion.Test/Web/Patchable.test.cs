@@ -12,7 +12,7 @@ public class PatchableTest
 		//dyn.Id = Guid.Parse("{7F27735C-FDE1-4141-985A-214502599C63}");
 		dyn.Id = "{7F27735C-FDE1-4141-985A-214502599C63}";
 		var delta = dyn as Patchable<ToPatch>;
-		var id    = delta?.Get<Guid>("Id");
+		var id = delta?.Get<Guid>("Id");
 		Assert.Equal(Guid.Parse("{7F27735C-FDE1-4141-985A-214502599C63}"), id);
 	}
 	[Fact(DisplayName = "Patchable - Get")]
@@ -54,12 +54,12 @@ public class PatchableTest
 		// Set non existing property
 		Assert.Throws<RuntimeBinderException>(() =>
 		{
-			dyn.Integer        = 123;
+			dyn.Integer = 123;
 			dyn.DerivedInteger = 123;
 		});
 		dyn.NonExistingPropertiesMode = NonExistingPropertiesMode.OnlySet;
-		dyn.Integer                   = 123;
-		dyn.DerivedInteger            = 123;
+		dyn.Integer = 123;
+		dyn.DerivedInteger = 123;
 
 		// Path a derived class
 		var derived = new DerivedToPatch();
@@ -68,17 +68,17 @@ public class PatchableTest
 		Assert.Equal(123, derived.DerivedInteger);
 
 		// Get non existing property
-		var  delta = (Patchable<ToPatch>)dyn;
+		var delta = (Patchable<ToPatch>)dyn;
 		int? res, derivedRed;
 		Assert.Throws<RuntimeBinderException>(() =>
 		{
-			res        = delta.Get<int>("Integer");
+			res = delta.Get<int>("Integer");
 			derivedRed = delta.Get<int>("DerivedInteger");
 		});
-		dyn.NonExistingPropertiesMode   = NonExistingPropertiesMode.GetAndSet;
+		dyn.NonExistingPropertiesMode = NonExistingPropertiesMode.GetAndSet;
 		delta.NonExistingPropertiesMode = NonExistingPropertiesMode.GetAndSet;
-		res                             = delta?.Get<int>("Integer");
-		derivedRed                      = delta?.Get<int>("DerivedInteger");
+		res = delta?.Get<int>("Integer");
+		derivedRed = delta?.Get<int>("DerivedInteger");
 		Assert.Equal(123, res);
 		Assert.Equal(123, derivedRed);
 	}
@@ -102,10 +102,10 @@ public class PatchableTest
 
 public class ToPatch
 {
-	public int       Integer { get; set; }
-	public string?   String  { get; set; }
-	public Guid      Id      { get; set; }
-	public List<int> List    { get; set; } = new();
+	public int Integer { get; set; }
+	public string? String { get; set; }
+	public Guid Id { get; set; }
+	public List<int> List { get; set; } = new();
 }
 
 public class DerivedToPatch : ToPatch

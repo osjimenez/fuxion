@@ -8,17 +8,17 @@ public class LicensingManager
 	public LicensingManager(IServiceProvider serviceProvider, ILicenseStore store)
 	{
 		this.serviceProvider = serviceProvider;
-		Store                = store;
+		Store = store;
 	}
 	readonly IServiceProvider serviceProvider;
-	public   ILicenseStore    Store         { get; set; }
-	public   ILicenseProvider GetProvider() => serviceProvider.GetRequiredService<ILicenseProvider>();
+	public ILicenseStore Store { get; set; }
+	public ILicenseProvider GetProvider() => serviceProvider.GetRequiredService<ILicenseProvider>();
 	public static void GenerateKey(out string fullKey, out string publicKey)
 	{
 		var pro = new RSACryptoServiceProvider();
 		//fullKey = XDocument.Parse(pro.ToXmlString(true)).ToString();
 		//publicKey = XDocument.Parse(pro.ToXmlString(false)).ToString();
-		fullKey   = ToXmlString(pro, true);
+		fullKey = ToXmlString(pro, true);
 		publicKey = ToXmlString(pro, false);
 	}
 	//TODO - Must be done in framework when solved issue https://github.com/dotnet/corefx/pull/37593
@@ -37,7 +37,7 @@ public class LicensingManager
 		{
 			var parameters = rsa.ExportParameters(true);
 			return string.Format("<RSAKeyValue>\r\t<Modulus>{0}</Modulus>\r\t<Exponent>{1}</Exponent>\r</RSAKeyValue>", Convert.ToBase64String(parameters.Modulus ?? Array.Empty<byte>()),
-				Convert.ToBase64String(parameters.Exponent                                                                                                         ?? Array.Empty<byte>()));
+				Convert.ToBase64String(parameters.Exponent ?? Array.Empty<byte>()));
 		}
 	}
 	//TODO - Oscar - Implement server-side validation and try to avoid public key hardcoding violation
@@ -46,7 +46,7 @@ public class LicensingManager
 		try
 		{
 			var validationMessage = "";
-			var cons              = Store.Query().Where(c => c.VerifySignature(key) && c.Is<T>());
+			var cons = Store.Query().Where(c => c.VerifySignature(key) && c.Is<T>());
 			if (!cons.Any()) throw new LicenseValidationException($"Couldn't find any license of type '{typeof(T).Name}'");
 			if (!Store.Query().Any(l => l.Is<T>() && l.As<T>()!.Validate(out validationMessage))) throw new LicenseValidationException(validationMessage);
 			return true;

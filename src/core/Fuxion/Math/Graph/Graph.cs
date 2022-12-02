@@ -6,7 +6,7 @@ namespace Fuxion.Math.Graph;
 public class Graph<T> where T : class
 {
 	readonly List<Edge<T>> Edges = new();
-	bool                   _allowCycles;
+	bool _allowCycles;
 	public bool AllowCycles
 	{
 		get => _allowCycles;
@@ -43,7 +43,7 @@ public class Graph<T> where T : class
 			var dep = Edges.Where(e => e.Source == vertex.Value).Select(e => e.Target);
 			vertex.Dependencies = graph.Where(v => dep.Contains(v.Value)).ToList();
 		}
-		var detector   = new StronglyConnectedComponentFinder<T>();
+		var detector = new StronglyConnectedComponentFinder<T>();
 		var components = detector.DetectCycle(graph);
 		return components.Cycles().Any();
 	}
@@ -51,7 +51,7 @@ public class Graph<T> where T : class
 	{
 		if (comparer == null) comparer = EqualityComparer<T>.Default;
 		Debug.WriteLine("DESCENDANTS of " + vertex);
-		var res          = new List<T>();
+		var res = new List<T>();
 		var currentLevel = Edges.Where(e => comparer!.Equals(e.Source, vertex)).Select(e => e.Target).ToList();
 		Debug.WriteLine("First level: " + currentLevel.Aggregate("", (c, n) => c.ToString() + " -> " + n));
 		while (currentLevel.Any())
@@ -70,7 +70,7 @@ public class Graph<T> where T : class
 	{
 		if (comparer == null) comparer = EqualityComparer<T>.Default;
 		Debug.WriteLine("ASCENDANTS of " + vertex);
-		var res          = new List<T>();
+		var res = new List<T>();
 		var currentLevel = Edges.Where(e => comparer!.Equals(e.Target, vertex)).Select(e => e.Source).ToList();
 		Debug.WriteLine("First level: " + currentLevel.Aggregate("", (c, n) => c.ToString() + " -> " + n));
 		while (currentLevel.Any())
@@ -91,12 +91,12 @@ public class StronglyConnectedComponent<T> : IEnumerable<Vertex<T>>
 {
 	public StronglyConnectedComponent() => list = new();
 	public StronglyConnectedComponent(IEnumerable<Vertex<T>> collection) => list = new(collection);
-	readonly LinkedList<Vertex<T>>  list;
-	public   int                    Count                 => list.Count;
-	public   bool                   IsCycle               => list.Count > 1;
-	public   IEnumerator<Vertex<T>> GetEnumerator()       => list.GetEnumerator();
-	IEnumerator IEnumerable.        GetEnumerator()       => list.GetEnumerator();
-	public void                     Add(Vertex<T> vertex) => list.AddLast(vertex);
+	readonly LinkedList<Vertex<T>> list;
+	public int Count => list.Count;
+	public bool IsCycle => list.Count > 1;
+	public IEnumerator<Vertex<T>> GetEnumerator() => list.GetEnumerator();
+	IEnumerator IEnumerable.GetEnumerator() => list.GetEnumerator();
+	public void Add(Vertex<T> vertex) => list.AddLast(vertex);
 }
 
 /// <summary>
@@ -106,8 +106,8 @@ public class StronglyConnectedComponent<T> : IEnumerable<Vertex<T>>
 /// <seealso cref="http://stackoverflow.com/questions/261573/best-algorithm-for-detecting-cycles-in-a-directed-graph" />
 public class StronglyConnectedComponentFinder<T>
 {
-	int                                index;
-	Stack<Vertex<T>>?                  stack;
+	int index;
+	Stack<Vertex<T>>? stack;
 	StronglyConnectedComponentList<T>? stronglyConnectedComponents;
 	/// <summary>
 	///    Calculates the sets of strongly connected vertices.
@@ -117,8 +117,8 @@ public class StronglyConnectedComponentFinder<T>
 	public StronglyConnectedComponentList<T> DetectCycle(IEnumerable<Vertex<T>> graph)
 	{
 		stronglyConnectedComponents = new();
-		index                       = 0;
-		stack                       = new();
+		index = 0;
+		stack = new();
 		foreach (var v in graph)
 			if (v.Index < 0)
 				StrongConnect(v);
@@ -126,7 +126,7 @@ public class StronglyConnectedComponentFinder<T>
 	}
 	void StrongConnect(Vertex<T> v)
 	{
-		v.Index   = index;
+		v.Index = index;
 		v.LowLink = index;
 		index++;
 		stack?.Push(v);
@@ -138,7 +138,7 @@ public class StronglyConnectedComponentFinder<T>
 			} else if (stack?.Contains(w) ?? false) v.LowLink = System.Math.Min(v.LowLink, w.Index);
 		if (v.LowLink == v.Index)
 		{
-			var        scc = new StronglyConnectedComponent<T>();
+			var scc = new StronglyConnectedComponent<T>();
 			Vertex<T>? w;
 			do
 			{
@@ -154,11 +154,11 @@ public class StronglyConnectedComponentList<T> : IEnumerable<StronglyConnectedCo
 {
 	public StronglyConnectedComponentList() => collection = new();
 	public StronglyConnectedComponentList(IEnumerable<StronglyConnectedComponent<T>> collection) => this.collection = new(collection);
-	readonly LinkedList<StronglyConnectedComponent<T>>  collection;
-	public   int                                        Count                                  => collection.Count;
-	public   IEnumerator<StronglyConnectedComponent<T>> GetEnumerator()                        => collection.GetEnumerator();
-	IEnumerator IEnumerable.                            GetEnumerator()                        => collection.GetEnumerator();
-	public void                                         Add(StronglyConnectedComponent<T> scc) => collection.AddLast(scc);
-	public IEnumerable<StronglyConnectedComponent<T>>   IndependentComponents()                => this.Where(c => !c.IsCycle);
-	public IEnumerable<StronglyConnectedComponent<T>>   Cycles()                               => this.Where(c => c.IsCycle);
+	readonly LinkedList<StronglyConnectedComponent<T>> collection;
+	public int Count => collection.Count;
+	public IEnumerator<StronglyConnectedComponent<T>> GetEnumerator() => collection.GetEnumerator();
+	IEnumerator IEnumerable.GetEnumerator() => collection.GetEnumerator();
+	public void Add(StronglyConnectedComponent<T> scc) => collection.AddLast(scc);
+	public IEnumerable<StronglyConnectedComponent<T>> IndependentComponents() => this.Where(c => !c.IsCycle);
+	public IEnumerable<StronglyConnectedComponent<T>> Cycles() => this.Where(c => c.IsCycle);
 }

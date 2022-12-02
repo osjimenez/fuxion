@@ -2,7 +2,8 @@
 
 namespace Fuxion.Collections.ObjectModel;
 
-public static class ObservableCollectionExtensions {
+public static class ObservableCollectionExtensions
+{
 	public static void Sort<T>(this ObservableCollection<T> collection, Comparison<T> comparison)
 	{
 		// Create a list from collection

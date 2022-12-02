@@ -39,7 +39,7 @@ public class CommandPodTest : BaseTest<CommandPodTest>
 	[Fact(DisplayName = "CommandPodTest - ToJson")]
 	public void ToJson()
 	{
-		var id  = Guid.NewGuid();
+		var id = Guid.NewGuid();
 		var com = new BaseCommand(id, "mockName");
 		var pod = com.ToCommandPod();
 		Assert.True(pod.PayloadHasValue);
@@ -48,7 +48,7 @@ public class CommandPodTest : BaseTest<CommandPodTest>
 		Output.WriteLine("Serialized json:");
 		Output.WriteLine(json);
 		Assert.Contains($@"""PayloadKey"": ""{nameof(BaseCommand)}""", json);
-		Assert.Contains($@"""Id"": ""{id}""",                          json);
-		Assert.Contains(@"""Name"": ""mockName""",                     json);
+		Assert.Contains($@"""Id"": ""{id}""", json);
+		Assert.Contains(@"""Name"": ""mockName""", json);
 	}
 }

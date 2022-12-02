@@ -8,13 +8,13 @@ public class PanelView<TViewModel> : ReactiveUserControl<TViewModel>, IPanelView
 	public PanelView(ILogger<PanelView<TViewModel>> logger, TViewModel viewModel)
 	{
 		ViewModel = viewModel;
-		Logger    = logger;
+		Logger = logger;
 		Logger.LogTrace($"PanelView '{GetType().Name}' CREATED");
 	}
-	protected ILogger                        Logger              { get; }
+	protected ILogger Logger { get; }
 	CompositeDisposable ICompositeDisposable.CompositeDisposable { get; } = new();
-	bool ICompositeDisposable.               Disposed            { get; set; }
-	public IPanel                            Panel               => ViewModel ?? throw new InvalidProgramException($"'{nameof(ViewModel)}' cannot be null");
+	bool ICompositeDisposable.Disposed { get; set; }
+	public IPanel Panel => ViewModel ?? throw new InvalidProgramException($"'{nameof(ViewModel)}' cannot be null");
 #if DEBUG
 	~PanelView() => Logger.LogTrace($"PanelView '{GetType().Name}' FINALIZED");
 #endif

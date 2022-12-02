@@ -2,17 +2,17 @@
 
 public interface IPermission
 {
-	IFunction           Function { get; }
-	IEnumerable<IScope> Scopes   { get; }
-	bool                Value    { get; }
-	IRol                Rol      { get; }
+	IFunction Function { get; }
+	IEnumerable<IScope> Scopes { get; }
+	bool Value { get; }
+	IRol Rol { get; }
 }
 
 public class PermissionEqualityComparer : IEqualityComparer<IPermission>
 {
 	readonly FunctionEqualityComparer funCom = new();
-	readonly ScopeEqualityComparer    scoCom = new();
-	public   bool                     Equals(IPermission? x, IPermission? y) => AreEquals(x, y);
+	readonly ScopeEqualityComparer scoCom = new();
+	public bool Equals(IPermission? x, IPermission? y) => AreEquals(x, y);
 	public int GetHashCode(IPermission obj)
 	{
 		if (obj == null) return 0;

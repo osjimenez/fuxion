@@ -12,7 +12,7 @@ public class Printer
 {
 	Printer() { }
 	static readonly Dictionary<object, PrinterInstance> factories = new();
-	public static   IPrinter                            Default { get; } = new PrinterInstance();
+	public static IPrinter Default { get; } = new PrinterInstance();
 	public static IPrinter WithKey(object key)
 	{
 		if (key == null) return Default;
@@ -67,9 +67,7 @@ public class Printer
 	public static void Write(string message) => Default.Write(message);
 	[DebuggerHidden]
 	public static void WriteLine(string message) => Default.WriteLine(message);
-	public static CallResultArg<T> CallResult<T>(string callMessage = "CALL {0}:", string resultMessage = "RESULT {0}: {1}", char verticalConnectorChar = '│', char resultConnectorChar = '●',
-																[CallerMemberName] string? caller = null) where T : notnull =>
-		Default.CallResult<T>(callMessage, resultMessage, verticalConnectorChar, resultConnectorChar, caller);
+	public static CallResultArg<T> CallResult<T>(string callMessage = "CALL {0}:", string resultMessage = "RESULT {0}: {1}", char verticalConnectorChar = '│', char resultConnectorChar = '●', [CallerMemberName] string? caller = null) where T : notnull => Default.CallResult<T>(callMessage, resultMessage, verticalConnectorChar, resultConnectorChar, caller);
 	[DebuggerHidden]
 	public static IDisposable Indent(char? verticalConnectorChar = null) => Default.Indent(verticalConnectorChar);
 	[DebuggerHidden]
@@ -77,8 +75,7 @@ public class Printer
 	[DebuggerHidden]
 	public static void Foreach<T>(string message, IEnumerable<T> items, Action<T> action, bool printMessageIfNoItems = true) => Default.Foreach(message, items, action, printMessageIfNoItems);
 	[DebuggerHidden]
-	public static Task ForeachAsync<T>(string message, IEnumerable<T> items, Func<T, Task> action, bool printMessageIfNoItems = true) =>
-		Default.ForeachAsync(message, items, action, printMessageIfNoItems);
+	public static Task ForeachAsync<T>(string message, IEnumerable<T> items, Func<T, Task> action, bool printMessageIfNoItems = true) => Default.ForeachAsync(message, items, action, printMessageIfNoItems);
 	#endregion
 }
 
@@ -86,14 +83,14 @@ public class CallResultArg<T> : DisposableEnvelope<T> where T : notnull
 {
 	public CallResultArg(T obj, Action<T> actionOnDispose, string resultFormat, char resultConnectorChar, string? caller) : base(obj, actionOnDispose)
 	{
-		this.resultFormat        = resultFormat;
+		this.resultFormat = resultFormat;
 		this.resultConnectorChar = resultConnectorChar;
-		this.caller              = caller;
+		this.caller = caller;
 	}
-	readonly string?    caller;
-	readonly char       resultConnectorChar;
-	readonly string     resultFormat;
-	public   Action<T>? OnPrintResult { get; set; }
+	readonly string? caller;
+	readonly char resultConnectorChar;
+	readonly string resultFormat;
+	public Action<T>? OnPrintResult { get; set; }
 	protected override void OnDispose()
 	{
 		base.OnDispose();
@@ -106,13 +103,13 @@ public class CallResultArg<T> : DisposableEnvelope<T> where T : notnull
 
 class PrinterInstance : IPrinter
 {
-	readonly List<string>                  lineMessages            = new();
+	readonly List<string> lineMessages = new();
 	readonly Locker<Dictionary<int, char>> verticalConnectorLevels = new(new());
-	public   object?                       Key              { get; set; }
-	public   bool                          Enabled          { get; set; } = true;
-	public   int                           IndentationLevel { get; set; }
-	public   int                           IndentationStep  { get; set; } = 3;
-	public   char                          IndentationChar  { get; set; } = ' ';
+	public object? Key { get; set; }
+	public bool Enabled { get; set; } = true;
+	public int IndentationLevel { get; set; }
+	public int IndentationStep { get; set; } = 3;
+	public char IndentationChar { get; set; } = ' ';
 	[DebuggerHidden]
 	public Action<string> WriteLineAction { get; set; } = m => Debug.WriteLine(m);
 	public bool IsLineWritePending
@@ -138,7 +135,7 @@ class PrinterInstance : IPrinter
 			for (var i = 0; i < IndentationLevel; i++)
 			{
 				var step = "";
-				var t    = verticalConnectorLevels.Read(dic => dic.ContainsKey(i) ? dic[i] : (char?)null);
+				var t = verticalConnectorLevels.Read(dic => dic.ContainsKey(i) ? dic[i] : (char?)null);
 				if (t is not null && t.HasValue)
 					step += t.Value;
 				else
@@ -150,8 +147,7 @@ class PrinterInstance : IPrinter
 		}
 	}
 	[DebuggerHidden]
-	public CallResultArg<T> CallResult<T>(string callMessage = "CALL {0}:", string resultMessage = "RESULT {0}: {1}", char verticalConnectorChar = '│', char resultConnectorChar = '●',
-													  [CallerMemberName] string? caller = null) where T : notnull
+	public CallResultArg<T> CallResult<T>(string callMessage = "CALL {0}:", string resultMessage = "RESULT {0}: {1}", char verticalConnectorChar = '│', char resultConnectorChar = '●', [CallerMemberName] string? caller = null) where T : notnull
 	{
 		var dis = Printer.Indent(string.Format(callMessage, caller), verticalConnectorChar);
 		var res = new CallResultArg<T>(default!, _ => dis.Dispose(), resultMessage, resultConnectorChar, caller);
@@ -162,7 +158,7 @@ class PrinterInstance : IPrinter
 	[DebuggerHidden]
 	public IDisposable Indent(char? verticalConnectorChar = null)
 	{
-		var o                       = new object();
+		var o = new object();
 		var currentIndentationLevel = IndentationLevel;
 		if (verticalConnectorChar is not null)
 			verticalConnectorLevels.Write(dic =>
@@ -222,10 +218,10 @@ class PrinterInstance : IPrinter
 
 public interface IPrinter
 {
-	bool Enabled            { get; set; }
-	int  IndentationLevel   { get; set; }
-	int  IndentationStep    { get; set; }
-	char IndentationChar    { get; set; }
+	bool Enabled { get; set; }
+	int IndentationLevel { get; set; }
+	int IndentationStep { get; set; }
+	char IndentationChar { get; set; }
 	bool IsLineWritePending { get; }
 	[DebuggerHidden]
 	Action<string> WriteLineAction { get; set; }

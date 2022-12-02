@@ -23,7 +23,7 @@ public class InMemorySnapshotStorage : ISnapshotStorage
 			});
 		}
 	}
-	readonly Locker<string>?                                        dumpFilePath;
+	readonly Locker<string>? dumpFilePath;
 	readonly Locker<Dictionary<string, Dictionary<Guid, Snapshot>>> snapshots = new(new());
 	public Task<Snapshot?> GetSnapshotAsync(Type snapshotType, Guid aggregateId) =>
 		snapshots.ReadNullableAsync(dic => dic.ContainsKey(snapshotType.GetTypeKey()) && dic[snapshotType.GetTypeKey()].ContainsKey(aggregateId) ? dic[snapshotType.GetTypeKey()][aggregateId] : null);

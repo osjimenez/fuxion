@@ -42,9 +42,9 @@ public class IdentityDatabaseEFTestRepository : DbContext, IIdentityTestReposito
 		throw new KeyNotFoundException();
 	}
 	IEnumerable<AlbumDao> IIdentityTestRepository.Album => Album.Include(a => a.Songs);
-	IEnumerable<SongDao> IIdentityTestRepository. Song  => Song;
+	IEnumerable<SongDao> IIdentityTestRepository.Song => Song;
 	//IEnumerable<Circle> IIdentityTestRepository.Circle { get { return Circle; } }
-	IEnumerable<GroupDao> IIdentityTestRepository.   Group    => Group;
+	IEnumerable<GroupDao> IIdentityTestRepository.Group => Group;
 	IEnumerable<DocumentDao> IIdentityTestRepository.Document => Document;
 	public IIdentity Find(string key)
 	{
@@ -63,8 +63,8 @@ public class IdentityDatabaseEFTestRepository : DbContext, IIdentityTestReposito
 		if (res == null) throw new KeyNotFoundException($"Key '{key}' was not found in database");
 		return res;
 	}
-	public void Remove(string key)                  => throw new NotImplementedException();
-	public void Set(string    key, IIdentity value) => throw new NotImplementedException();
+	public void Remove(string key) => throw new NotImplementedException();
+	public void Set(string key, IIdentity value) => throw new NotImplementedException();
 	public void Initialize()
 	{
 		Database.SetInitializer(new TestDatabaseInitializer());
@@ -127,22 +127,22 @@ public class IdentityDatabaseEFTestRepository : DbContext, IIdentityTestReposito
 			}
 		}
 	}
-	public async Task<IIdentity> FindAsync(string  key) => await Identity.SingleOrDefaultAsync(i => i.UserName == key).ConfigureAwait(false);
-	public async Task<bool>      ExistAsync(string key) => await FindAsync(key).ConfigureAwait(false) != null;
+	public async Task<IIdentity> FindAsync(string key) => await Identity.SingleOrDefaultAsync(i => i.UserName == key).ConfigureAwait(false);
+	public async Task<bool> ExistAsync(string key) => await FindAsync(key).ConfigureAwait(false) != null;
 	public async Task<IIdentity> GetAsync(string key)
 	{
 		var res = await FindAsync(key).ConfigureAwait(false);
 		if (res == null) throw new KeyNotFoundException($"Key '{key}' was not found in database");
 		return res;
 	}
-	public Task RemoveAsync(string key)                  => throw new NotImplementedException();
-	public Task SetAsync(string    key, IIdentity value) => throw new NotImplementedException();
+	public Task RemoveAsync(string key) => throw new NotImplementedException();
+	public Task SetAsync(string key, IIdentity value) => throw new NotImplementedException();
 #nullable disable
 	public DbSet<IdentityDao> Identity { get; set; }
-	public DbSet<AlbumDao>    Album    { get; set; }
-	public DbSet<SongDao>     Song     { get; set; }
+	public DbSet<AlbumDao> Album { get; set; }
+	public DbSet<SongDao> Song { get; set; }
 	//public DbSet<Circle> Circle { get; set; }
-	public DbSet<GroupDao>    Group    { get; set; }
+	public DbSet<GroupDao> Group { get; set; }
 	public DbSet<DocumentDao> Document { get; set; }
 #nullable enable
 }

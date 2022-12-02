@@ -9,7 +9,7 @@ public class DeactivatableObservableCollectionTest
 	public void DeactivatableObservableCollection_Add()
 	{
 		var step = 0;
-		var col  = new DeactivatableObservableCollection<string>();
+		var col = new DeactivatableObservableCollection<string>();
 		col.CollectionChanged += (s, e) =>
 		{
 			switch (step)
@@ -108,7 +108,7 @@ public class DeactivatableObservableCollectionTest
 					Assert.NotNull(e.OldItems);
 					Assert.True(e.NewItems?.Count == 1);
 					Assert.True(e.OldItems?.Count == 1);
-					Assert.Same("Oscar",  e.OldItems?[0]);
+					Assert.Same("Oscar", e.OldItems?[0]);
 					Assert.Same("Oscar2", e.NewItems?[0]);
 					break;
 				case 1:
@@ -119,7 +119,7 @@ public class DeactivatableObservableCollectionTest
 					Assert.True(e.OldItems?.Count == 2);
 					Assert.Same("Oscar2", e.OldItems?[0]);
 					Assert.Same("Oscar3", e.NewItems?[0]);
-					Assert.Same("Asier",  e.OldItems?[1]);
+					Assert.Same("Asier", e.OldItems?[1]);
 					Assert.Same("Asier3", e.NewItems?[1]);
 					break;
 			}

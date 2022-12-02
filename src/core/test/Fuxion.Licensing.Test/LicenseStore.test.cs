@@ -7,11 +7,11 @@ using Xunit.Abstractions;
 namespace Fuxion.Licensing.Test;
 
 [Collection("Licensing")]
-public class LicenseStoreTest:BaseTest<LicenseStoreTest>
+public class LicenseStoreTest : BaseTest<LicenseStoreTest>
 {
-	public LicenseStoreTest(ITestOutputHelper output):base(output)
+	public LicenseStoreTest(ITestOutputHelper output) : base(output)
 	{
-		services    = new();
+		services = new();
 		services.AddSingleton<ILicenseProvider>(new LicenseProviderMock());
 		services.AddSingleton<ILicenseStore>(new LicenseStoreMock());
 		services.AddSingleton<IHardwareIdProvider>(new HardwareIdProviderMock());
@@ -22,11 +22,11 @@ public class LicenseStoreTest:BaseTest<LicenseStoreTest>
 	readonly ServiceCollection services;
 	[Theory(DisplayName = "LicenseStore - OnlyValidLicenses")]
 #nullable disable
-	[InlineData("Match",              Const.HARDWARE_ID,                        Const.PRODUCT_ID,                         10,  true)]
-	[InlineData("Deactivated",        Const.HARDWARE_ID,                        Const.PRODUCT_ID,                         50,  false)]
-	[InlineData("Expired",            Const.HARDWARE_ID,                        Const.PRODUCT_ID,                         400, false)]
-	[InlineData("Product not match",  Const.HARDWARE_ID,                        "{105B337E-EBCE-48EA-87A7-852E3A699A98}", 10,  false)]
-	[InlineData("Hardware not match", "{AE2C70B9-6622-4341-81A0-10EAA078E7DF}", Const.PRODUCT_ID,                         10,  false)]
+	[InlineData("Match", Const.HARDWARE_ID, Const.PRODUCT_ID, 10, true)]
+	[InlineData("Deactivated", Const.HARDWARE_ID, Const.PRODUCT_ID, 50, false)]
+	[InlineData("Expired", Const.HARDWARE_ID, Const.PRODUCT_ID, 400, false)]
+	[InlineData("Product not match", Const.HARDWARE_ID, "{105B337E-EBCE-48EA-87A7-852E3A699A98}", 10, false)]
+	[InlineData("Hardware not match", "{AE2C70B9-6622-4341-81A0-10EAA078E7DF}", Const.PRODUCT_ID, 10, false)]
 #nullable enable
 	public void OnlyValidLicenses(string _, string hardwareId, string productId, int offsetDays, bool expectedValidation)
 	{

@@ -19,9 +19,9 @@ public struct ConcurrencyProfile
 	{
 		Sequentially = true, CancelPrevious = true, ExecuteOnlyLast = true
 	};
-	public string Name            { get; set; }
-	public bool   ByInstance      { get; set; }
-	public bool   Sequentially    { get; set; }
-	public bool   ExecuteOnlyLast { get; set; }
-	public bool   CancelPrevious  { get; set; }
+	public string Name { get; set; }
+	public bool ByInstance { get; set; }
+	public bool Sequentially { get; set; }
+	public bool ExecuteOnlyLast { get; set; }
+	public bool CancelPrevious { get; set; }
 }

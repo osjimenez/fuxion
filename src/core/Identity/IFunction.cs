@@ -12,7 +12,7 @@ public interface IExclusive<T>
 
 public interface IFunction : IInclusive<IFunction>, IExclusive<IFunction>
 {
-	object Id   { get; }
+	object Id { get; }
 	string Name { get; set; }
 }
 

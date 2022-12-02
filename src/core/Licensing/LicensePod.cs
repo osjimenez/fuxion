@@ -6,7 +6,7 @@ namespace Fuxion.Licensing;
 
 public class LicensePod : JsonPod<License, Type>
 {
-	public string? Comment   { get; set; }
+	public string? Comment { get; set; }
 	public string? Signature { get; set; }
 	//[JsonProperty(PropertyName = "License")]
 	//public JRaw RawLicense { get; set; }
@@ -76,8 +76,8 @@ public class LicensePod : JsonPod<License, Type>
 public static class LicensePodExtensions
 {
 	public static IQueryable<LicensePod> WithValidSignature(this IQueryable<LicensePod> me, string publicKey) => me.Where(l => l.VerifySignature(publicKey));
-	public static IQueryable<LicensePod> OfType<TLicense>(this   IQueryable<LicensePod> me) where TLicense : License => me.Where(l => l.Is<TLicense>());
-	public static IQueryable<LicensePod> OfType(this             IQueryable<LicensePod> me, Type type)               => me.Where(l => l.Is(type));
+	public static IQueryable<LicensePod> OfType<TLicense>(this IQueryable<LicensePod> me) where TLicense : License => me.Where(l => l.Is<TLicense>());
+	public static IQueryable<LicensePod> OfType(this IQueryable<LicensePod> me, Type type) => me.Where(l => l.Is(type));
 	public static IQueryable<LicensePod> OnlyValidOfType<TLicense>(this IQueryable<LicensePod> me, string publicKey) where TLicense : License
 	{
 		string _;

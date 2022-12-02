@@ -8,11 +8,11 @@ public static class Functions
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 	static Functions() => CreatePredefinedFunctions();
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-	static          Graph<IFunction> graph = new();
+	static Graph<IFunction> graph = new();
 	static readonly Dictionary<object, IFunction> dic = new();
-	public static   IFunction GetById(string id) => dic[id];
-	public static   IEnumerable<IFunction> GetAll() => dic.Values;
-	public static   IFunction CreateCustom<T>(T id, IEnumerable<IFunction>? inclusions = null, IEnumerable<IFunction>? exclusions = null) => new Function<T>(id, inclusions, exclusions);
+	public static IFunction GetById(string id) => dic[id];
+	public static IEnumerable<IFunction> GetAll() => dic.Values;
+	public static IFunction CreateCustom<T>(T id, IEnumerable<IFunction>? inclusions = null, IEnumerable<IFunction>? exclusions = null) => new Function<T>(id, inclusions, exclusions);
 	public static IFunction AddCustom(IFunction function)
 	{
 		if (function.Inclusions != null)
@@ -84,12 +84,12 @@ public static class Functions
 	abstract class Function : IFunction
 	{
 		public Function(string name) => Name = name;
-		public             object                 Id         => GetId();
-		public             string                 Name       { get; set; }
-		public             IEnumerable<IFunction> Inclusions { get; internal set; } = new List<IFunction>();
-		public             IEnumerable<IFunction> Exclusions { get; internal set; } = new List<IFunction>();
-		protected abstract object                 GetId();
-		public override    string                 ToString() => Name;
+		public object Id => GetId();
+		public string Name { get; set; }
+		public IEnumerable<IFunction> Inclusions { get; internal set; } = new List<IFunction>();
+		public IEnumerable<IFunction> Exclusions { get; internal set; } = new List<IFunction>();
+		protected abstract object GetId();
+		public override string ToString() => Name;
 	}
 
 	[DebuggerDisplay("{" + nameof(Name) + "}")]
@@ -98,28 +98,28 @@ public static class Functions
 		public Function(T id, IEnumerable<IFunction>? inclusions = null, IEnumerable<IFunction>? exclusions = null) : base(id?.ToString()
 																																								 ?? throw new ArgumentException("'id' cannot be null", nameof(id)))
 		{
-			Id         = id         ?? throw new ArgumentException("'id' cannot be null", nameof(id));
+			Id = id ?? throw new ArgumentException("'id' cannot be null", nameof(id));
 			Inclusions = inclusions ?? new List<IFunction>();
 			Exclusions = exclusions ?? new List<IFunction>();
 		}
-		public new T              Id      { get; }
-		object IFunction.         Id      => Id!;
+		public new T Id { get; }
+		object IFunction.Id => Id!;
 		protected override object GetId() => Id!;
 	}
 
 	#region Predefined functions
-	const         string    READ   = nameof(READ);
-	const         string    EDIT   = nameof(EDIT);
-	const         string    CREATE = nameof(CREATE);
-	const         string    DELETE = nameof(DELETE);
-	const         string    MANAGE = nameof(MANAGE);
-	const         string    ADMIN  = nameof(ADMIN);
-	public static IFunction Read   { get; private set; }
-	public static IFunction Edit   { get; private set; }
+	const string READ = nameof(READ);
+	const string EDIT = nameof(EDIT);
+	const string CREATE = nameof(CREATE);
+	const string DELETE = nameof(DELETE);
+	const string MANAGE = nameof(MANAGE);
+	const string ADMIN = nameof(ADMIN);
+	public static IFunction Read { get; private set; }
+	public static IFunction Edit { get; private set; }
 	public static IFunction Create { get; private set; }
 	public static IFunction Delete { get; private set; }
 	public static IFunction Manage { get; private set; }
-	public static IFunction Admin  { get; private set; }
+	public static IFunction Admin { get; private set; }
 	static void CreatePredefinedFunctions()
 	{
 		Read = AddCustom(CreateCustom(READ));

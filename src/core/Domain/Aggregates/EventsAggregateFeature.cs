@@ -9,7 +9,7 @@ public class EventsAggregateFeature : IAggregateFeature
 
 	// Pending events
 	readonly ConcurrentStack<Event> pendingEvents = new();
-	Aggregate?                      aggregate;
+	Aggregate? aggregate;
 	// Event handlers
 	Dictionary<Type, MethodInfo> eventHandlerCache = new();
 	public void OnAttach(Aggregate aggregate)
@@ -53,7 +53,7 @@ public class EventsAggregateFeature : IAggregateFeature
 		else
 			throw new AggregateApplyEventMethodMissingException($"No event handler specified for '{@event.GetType()}' on '{GetType()}'");
 	}
-	internal bool               HasPendingEvents()   => !pendingEvents.IsEmpty;
-	internal IEnumerable<Event> GetPendingEvents()   => pendingEvents.ToArray();
-	internal void               ClearPendingEvents() => pendingEvents.Clear();
+	internal bool HasPendingEvents() => !pendingEvents.IsEmpty;
+	internal IEnumerable<Event> GetPendingEvents() => pendingEvents.ToArray();
+	internal void ClearPendingEvents() => pendingEvents.Clear();
 }

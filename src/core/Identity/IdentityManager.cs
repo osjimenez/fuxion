@@ -4,17 +4,18 @@ namespace Fuxion.Identity;
 
 public class IdentityManager
 {
-	public IdentityManager(IPasswordProvider                      passwordProvider, ICurrentUserNameProvider currentUserNameProvider,
+	public IdentityManager(IPasswordProvider passwordProvider,
+								  ICurrentUserNameProvider currentUserNameProvider,
 								  IKeyValueRepository<string, IIdentity> repository) //, IPrincipalProvider principalProvider)
 	{
-		PasswordProvider        = passwordProvider;
+		PasswordProvider = passwordProvider;
 		CurrentUserNameProvider = currentUserNameProvider;
-		Repository              = repository;
+		Repository = repository;
 	}
-	public ICurrentUserNameProvider               CurrentUserNameProvider { get; }
-	public IPasswordProvider                      PasswordProvider        { get; }
-	public IKeyValueRepository<string, IIdentity> Repository              { get; }
-	public IIdentity?                             GetCurrent()            => Repository.Find(CurrentUserNameProvider.GetCurrentUserName());
+	public ICurrentUserNameProvider CurrentUserNameProvider { get; }
+	public IPasswordProvider PasswordProvider { get; }
+	public IKeyValueRepository<string, IIdentity> Repository { get; }
+	public IIdentity? GetCurrent() => Repository.Find(CurrentUserNameProvider.GetCurrentUserName());
 	public bool CheckCredentials(string username, string password)
 	{
 		Printer.WriteLine($"Validando credenciales\r\n   Usuario: {username}\r\n   Contraseña: {password}\r\n");

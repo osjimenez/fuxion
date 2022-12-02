@@ -2,7 +2,7 @@
 
 public class AntiBackTimeProviderTest : BaseTest<AntiBackTimeProviderTest>
 {
-	public AntiBackTimeProviderTest(ITestOutputHelper output) : base(output) {}
+	public AntiBackTimeProviderTest(ITestOutputHelper output) : base(output) { }
 	[Fact(DisplayName = "AntiBackTimeProvider - BackTimeException")]
 	public void AntiBackTimeProvider_BackTimeException()
 	{
@@ -29,7 +29,7 @@ public class AntiBackTimeProviderTest : BaseTest<AntiBackTimeProviderTest>
 
 public class MockStorageTimeProvider : StoredTimeProvider
 {
-	DateTime                 value;
-	public override DateTime GetUtcTime()               => value;
-	public override void     SaveUtcTime(DateTime time) => value = time.ToUniversalTime();
+	DateTime value;
+	public override DateTime GetUtcTime() => value;
+	public override void SaveUtcTime(DateTime time) => value = time.ToUniversalTime();
 }

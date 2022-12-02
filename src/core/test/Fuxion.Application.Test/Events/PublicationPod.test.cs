@@ -36,7 +36,7 @@ public class PublicationPodTest : BaseTest<PublicationPodTest>
 		{
 			Assert.NotNull(payload);
 			Assert.Equal("payloadName", payload.Name);
-			Assert.Equal(23,            payload.Age);
+			Assert.Equal(23, payload.Age);
 		}
 		void AssertDerived(DerivedEvent? payload)
 		{
@@ -53,13 +53,13 @@ public class PublicationPodTest : BaseTest<PublicationPodTest>
 	{
 		var payload = new DerivedEvent(Guid.NewGuid(), "payloadName", 23, "payloadNick");
 		payload.AddEventSourcing(1, Guid.NewGuid(), DateTime.Now, 1);
-		var pod  = payload.ToEventSourcingPod();
+		var pod = payload.ToEventSourcingPod();
 		var json = pod.ToJson();
 		Output.WriteLine("Serialized json: ");
 		Output.WriteLine(json);
 		Assert.Contains($@"""PayloadKey"": ""{nameof(DerivedEvent)}""", json);
-		Assert.Contains(@"""Name"": ""payloadName""",                   json);
-		Assert.Contains(@"""Age"": 23",                                 json);
-		Assert.Contains(@"""Nick"": ""payloadNick""",                   json);
+		Assert.Contains(@"""Name"": ""payloadName""", json);
+		Assert.Contains(@"""Age"": 23", json);
+		Assert.Contains(@"""Nick"": ""payloadNick""", json);
 	}
 }

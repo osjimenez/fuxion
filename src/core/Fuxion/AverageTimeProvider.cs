@@ -4,14 +4,14 @@ namespace Fuxion;
 
 public class AverageTimeProvider : ITimeProvider
 {
-	readonly Random       ran = new((int)DateTime.Now.Ticks);
-	public   ILogger?     Logger                    { get; set; }
-	List<Entry>           Providers                 { get; }      = new();
-	public int            RandomizedProvidersPerTry { get; set; } = 5;
-	public int            MaxFailsPerTry            { get; set; } = 4;
-	public DateTime       Now()                     => GetUtc().ToLocalTime();
-	public DateTimeOffset NowOffsetted()            => GetUtc().ToLocalTime();
-	public DateTime       UtcNow()                  => GetUtc();
+	readonly Random ran = new((int)DateTime.Now.Ticks);
+	public ILogger? Logger { get; set; }
+	List<Entry> Providers { get; } = new();
+	public int RandomizedProvidersPerTry { get; set; } = 5;
+	public int MaxFailsPerTry { get; set; } = 4;
+	public DateTime Now() => GetUtc().ToLocalTime();
+	public DateTimeOffset NowOffsetted() => GetUtc().ToLocalTime();
+	public DateTime UtcNow() => GetUtc();
 	public DateTime GetUtc()
 	{
 		Logger?.LogInformation($"Get UTC time using {RandomizedProvidersPerTry} randomized servers with a maximum of {MaxFailsPerTry} fails.");
@@ -41,11 +41,11 @@ public class AverageTimeProvider : ITimeProvider
 		public Entry(bool isRandomized, ITimeProvider provider)
 		{
 			IsRandomized = isRandomized;
-			Provider     = provider;
+			Provider = provider;
 		}
-		public          ITimeProvider   Provider     { get; }
-		public          bool            IsRandomized { get; }
-		internal        Task<DateTime>? Task         { get; set; }
-		public override string          ToString()   => Provider.ToString() ?? "";
+		public ITimeProvider Provider { get; }
+		public bool IsRandomized { get; }
+		internal Task<DateTime>? Task { get; set; }
+		public override string ToString() => Provider.ToString() ?? "";
 	}
 }

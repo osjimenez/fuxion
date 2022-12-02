@@ -56,16 +56,16 @@ public class ColorConsoleLoggerConfiguration
 		get => ConsoleTools.MessageSufix;
 		set => ConsoleTools.MessageSufix = value;
 	}
-	public bool UseLock { get;                                       set; }
+	public bool UseLock { get; set; }
 	public Dictionary<LogLevel, Func<ConsoleColor>> LogLevels { get; set; } = new()
 	{
-		[LogLevel.Critical]    = () => CriticalColor,
-		[LogLevel.Error]       = () => ErrorColor,
-		[LogLevel.Warning]     = () => WarnColor,
+		[LogLevel.Critical] = () => CriticalColor,
+		[LogLevel.Error] = () => ErrorColor,
+		[LogLevel.Warning] = () => WarnColor,
 		[LogLevel.Information] = () => InfoColor,
-		[LogLevel.Debug]       = () => DebugColor,
-		[LogLevel.Trace]       = () => TraceColor,
-		[LogLevel.None]        = () => ConsoleColor.Black
+		[LogLevel.Debug] = () => DebugColor,
+		[LogLevel.Trace] = () => TraceColor,
+		[LogLevel.None] = () => ConsoleColor.Black
 	};
 }
 

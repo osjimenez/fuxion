@@ -11,33 +11,36 @@ namespace Fuxion.Application.Repositories;
 
 public class EventSourcingRepository<TAggregate> : IRepository<TAggregate> where TAggregate : Aggregate, new()
 {
-	public EventSourcingRepository(IEventStorage<TAggregate> eventStorage, ISnapshotStorage<TAggregate> snapshotStorage, IEventDispatcher eventDispatcher, TypeKeyDirectory typeKeyDirectory,
-											 Factory<TAggregate>       aggregateFactory)
+	public EventSourcingRepository(IEventStorage<TAggregate> eventStorage,
+											 ISnapshotStorage<TAggregate> snapshotStorage,
+											 IEventDispatcher eventDispatcher,
+											 TypeKeyDirectory typeKeyDirectory,
+											 Factory<TAggregate> aggregateFactory)
 	{
-		this.eventStorage     = eventStorage;
-		this.snapshotStorage  = snapshotStorage;
-		this.eventDispatcher  = eventDispatcher;
+		this.eventStorage = eventStorage;
+		this.snapshotStorage = snapshotStorage;
+		this.eventDispatcher = eventDispatcher;
 		this.typeKeyDirectory = typeKeyDirectory;
 		this.aggregateFactory = aggregateFactory;
 	}
-	readonly Factory<TAggregate>          aggregateFactory;
-	readonly IEventDispatcher             eventDispatcher;
-	readonly IEventStorage<TAggregate>    eventStorage;
+	readonly Factory<TAggregate> aggregateFactory;
+	readonly IEventDispatcher eventDispatcher;
+	readonly IEventStorage<TAggregate> eventStorage;
 	readonly ISnapshotStorage<TAggregate> snapshotStorage;
-	readonly Dictionary<Guid, Aggregate>  trackedAggregates = new();
-	readonly TypeKeyDirectory             typeKeyDirectory;
-	public   ILogger?                     Logger    { get; set; }
-	public   void                         Dispose() { }
+	readonly Dictionary<Guid, Aggregate> trackedAggregates = new();
+	readonly TypeKeyDirectory typeKeyDirectory;
+	public ILogger? Logger { get; set; }
+	public void Dispose() { }
 	public virtual async Task<TAggregate> GetAsync(Guid aggregateId)
 	{
-		TAggregate? aggregate  = null;
-		var         startEvent = 0;
+		TAggregate? aggregate = null;
+		var startEvent = 0;
 		if (aggregateFactory.IsSnapshottable())
 		{
 			var snapshot = await snapshotStorage.GetSnapshotAsync(aggregateFactory.GetSnapshotType(), aggregateId);
 			if (snapshot != null)
 			{
-				aggregate  = aggregateFactory.FromSnapshot((Snapshot<TAggregate>)snapshot);
+				aggregate = aggregateFactory.FromSnapshot((Snapshot<TAggregate>)snapshot);
 				startEvent = snapshot.Version;
 			}
 		}
@@ -63,7 +66,7 @@ public class EventSourcingRepository<TAggregate> : IRepository<TAggregate> where
 					throw new AggregateFeatureNotFoundException(
 						$"Aggregate '{aggregate.GetType().Name}:{aggregate.Id}' must has '{nameof(EventSourcingAggregateFeature)}' to uses '{nameof(EventSourcingRepository<TAggregate>)}'.");
 				var expectedVersion = aggregate.GetLastCommittedVersion();
-				var lastEvent       = await eventStorage.GetLastEventAsync(aggregate.Id);
+				var lastEvent = await eventStorage.GetLastEventAsync(aggregate.Id);
 				if (lastEvent != null && expectedVersion == 0)
 					throw new AggregateCreationException($"Aggregate '{aggregate.Id}' can't be created as it already exists with version {lastEvent.EventSourcing().TargetVersion + 1}");
 				if (lastEvent != null && lastEvent.EventSourcing().TargetVersion + 1 != expectedVersion)

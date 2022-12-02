@@ -19,19 +19,19 @@ public class JsonFileLicenseStore : ILicenseStore
 			var assFilPath = Path.GetDirectoryName(licensesFilePath);
 			if (assFilPath == null) throw new FileLoadException($"License file path cannot be determined from '{licensesFilePath}'");
 			var w = new FileSystemWatcher(assFilPath, licensesFileName);
-			w.Created             += (s, e) => LoadFile(e.FullPath);
-			w.Changed             += (s, e) => LoadFile(e.FullPath);
-			w.Deleted             += (s, e) => LoadFile(e.FullPath);
-			w.Renamed             += (s, e) => LoadFile(e.FullPath);
-			w.EnableRaisingEvents =  true;
+			w.Created += (s, e) => LoadFile(e.FullPath);
+			w.Changed += (s, e) => LoadFile(e.FullPath);
+			w.Deleted += (s, e) => LoadFile(e.FullPath);
+			w.Renamed += (s, e) => LoadFile(e.FullPath);
+			w.EnableRaisingEvents = true;
 		}
 	}
-	readonly Type[]                                         knownLicenseTypes;
-	readonly Locker<List<LicenseContainer>>                 listLocker = new(new());
-	readonly Locker<string>                                 pathLocker;
+	readonly Type[] knownLicenseTypes;
+	readonly Locker<List<LicenseContainer>> listLocker = new(new());
+	readonly Locker<string> pathLocker;
 	public event EventHandler<EventArgs<LicenseContainer>>? LicenseAdded;
 	public event EventHandler<EventArgs<LicenseContainer>>? LicenseRemoved;
-	public IQueryable<LicenseContainer>                     Query() => listLocker.Read(licenses => licenses.AsQueryable());
+	public IQueryable<LicenseContainer> Query() => listLocker.Read(licenses => licenses.AsQueryable());
 	public void Add(LicenseContainer license)
 	{
 		Type? licenseType = null;

@@ -7,7 +7,7 @@ namespace System.Text.Json.Serialization;
 public abstract class PropertyFallbackResolver
 {
 	public abstract bool Match(object value, PropertyInfo propertyInfo);
-	public abstract void Do(object    value, PropertyInfo propertyInfo, Utf8JsonWriter writer, JsonSerializerOptions options, List<PropertyFallbackResolver> resolvers);
+	public abstract void Do(object value, PropertyInfo propertyInfo, Utf8JsonWriter writer, JsonSerializerOptions options, List<PropertyFallbackResolver> resolvers);
 	protected void FallbackWriteRaw(object value, Utf8JsonWriter writer, JsonSerializerOptions options, List<PropertyFallbackResolver> resolvers)
 	{
 		var converterType = typeof(FallbackConverter<>).MakeGenericType(value.GetType());
@@ -25,8 +25,7 @@ public abstract class PropertyFallbackResolver
 public class IfNullWritePropertyFallbackResolver : PropertyFallbackResolver
 {
 	public override bool Match(object value, PropertyInfo propertyInfo) => propertyInfo.GetValue(value) is null;
-	public override void Do(object value, PropertyInfo propertyInfo, Utf8JsonWriter writer, JsonSerializerOptions options, List<PropertyFallbackResolver> resolvers) =>
-		writer.WriteNull(propertyInfo.Name);
+	public override void Do(object value, PropertyInfo propertyInfo, Utf8JsonWriter writer, JsonSerializerOptions options, List<PropertyFallbackResolver> resolvers) => writer.WriteNull(propertyInfo.Name);
 }
 
 public class IfMemeberInfoWriteNamePropertyFallbackResolver : PropertyFallbackResolver
@@ -85,8 +84,7 @@ public class FallbackConverter<T> : JsonConverter<T>
 		this.resolvers.AddRange(resolvers);
 	}
 	readonly List<PropertyFallbackResolver> resolvers = new();
-	public override T? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
-		throw new NotSupportedException($"{nameof(FallbackConverter<T>)} doesn't support deserialization");
+	public override T? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) => throw new NotSupportedException($"{nameof(FallbackConverter<T>)} doesn't support deserialization");
 	public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
 	{
 		if (value is null) throw new ArgumentNullException(nameof(value));
@@ -94,7 +92,7 @@ public class FallbackConverter<T> : JsonConverter<T>
 		try
 		{
 			JsonSerializerOptions opt = new(options);
-			var                   con = opt.Converters.FirstOrDefault(c => c is FallbackConverter<T>);
+			var con = opt.Converters.FirstOrDefault(c => c is FallbackConverter<T>);
 			if (con is not null) opt.Converters.Remove(con);
 			//foreach (var conv in options.Converters.Where(_ => _ is not FallbackConverter<T>))
 			//	opt.Converters.Add(conv);
@@ -126,16 +124,16 @@ public class FallbackConverter<T> : JsonConverter<T>
 	{
 		try
 		{
-			JsonSerializerOptions opt           = new(options);
-			var                   converterType = typeof(FallbackConverter<>).MakeGenericType(value.GetType());
+			JsonSerializerOptions opt = new(options);
+			var converterType = typeof(FallbackConverter<>).MakeGenericType(value.GetType());
 			var converter = Activator.CreateInstance(converterType, new object?[]
 			{
 				resolvers.ToArray()
 			});
 			if (converter is null) throw new InvalidProgramException($"Program couldn't create IgnoreErrorsConverter<{value.GetType().Name}>");
 			opt.Converters.Add((JsonConverter)converter);
-			using var d    = Printer.Indent($"Write RAW with {converterType.GetSignature()}", '·');
-			var       json = value.ToJson(opt);
+			using var d = Printer.Indent($"Write RAW with {converterType.GetSignature()}", '·');
+			var json = value.ToJson(opt);
 			writer.WriteRawValue(json);
 		} catch (Exception ex)
 		{

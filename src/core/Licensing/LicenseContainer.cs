@@ -7,7 +7,7 @@ using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using System.Xml;
 
-namespace Fuxion.Licensing; 
+namespace Fuxion.Licensing;
 
 public class LicenseContainer
 {
@@ -16,11 +16,11 @@ public class LicenseContainer
 #nullable enable
 	public LicenseContainer(string signature, License license)
 	{
-		Signature  = signature;
+		Signature = signature;
 		RawLicense = CreateRaw(license);
 	}
-	public string? Comment   { get; set; }
-	public string  Signature { get; set; }
+	public string? Comment { get; set; }
+	public string Signature { get; set; }
 	[JsonPropertyName("License")]
 	public JsonValue RawLicense { get; set; }
 	JsonValue CreateRaw(License license)
@@ -41,9 +41,9 @@ public class LicenseContainer
 		RawLicense = CreateRaw(license) ?? throw new InvalidProgramException("JsonValue could not be created");
 		return this;
 	}
-	public T?       As<T>() where T : License => RawLicense.Deserialize<T>();
-	public License? As(Type type)             => (License?)RawLicense.Deserialize(type);
-	public bool     Is<T>() where T : License => Is(typeof(T));
+	public T? As<T>() where T : License => RawLicense.Deserialize<T>();
+	public License? As(Type type) => (License?)RawLicense.Deserialize(type);
+	public bool Is<T>() where T : License => Is(typeof(T));
 	public bool Is(Type type)
 	{
 		try
@@ -58,9 +58,9 @@ public class LicenseContainer
 	public static LicenseContainer Sign(License license, string key)
 	{
 		license.SignatureUtcTime = DateTime.UtcNow;
-		var    originalData = Encoding.Unicode.GetBytes(license.ToJson());
+		var originalData = Encoding.Unicode.GetBytes(license.ToJson());
 		byte[] signedData;
-		var    pro = new RSACryptoServiceProvider();
+		var pro = new RSACryptoServiceProvider();
 		FromXmlString(pro, key);
 		signedData = pro.SignData(originalData, SHA1.Create());
 		return new(Convert.ToBase64String(signedData), license);
@@ -75,7 +75,7 @@ public class LicenseContainer
 	static void FromXmlString(RSACryptoServiceProvider rsa, string xmlString)
 	{
 		var parameters = new RSAParameters();
-		var xmlDoc     = new XmlDocument();
+		var xmlDoc = new XmlDocument();
 		xmlDoc.LoadXml(xmlString);
 		if (xmlDoc.DocumentElement?.Name.Equals("RSAKeyValue") ?? false)
 			foreach (XmlNode node in xmlDoc.DocumentElement.ChildNodes)
@@ -115,8 +115,8 @@ public class LicenseContainer
 public static class LicenseContainerExtensions
 {
 	public static IQueryable<LicenseContainer> WithValidSignature(this IQueryable<LicenseContainer> me, string publicKey) => me.Where(l => l.VerifySignature(publicKey));
-	public static IQueryable<LicenseContainer> OfType<TLicense>(this   IQueryable<LicenseContainer> me) where TLicense : License => me.Where(l => l.Is<TLicense>());
-	public static IQueryable<LicenseContainer> OfType(this             IQueryable<LicenseContainer> me, Type type)               => me.Where(l => l.Is(type));
+	public static IQueryable<LicenseContainer> OfType<TLicense>(this IQueryable<LicenseContainer> me) where TLicense : License => me.Where(l => l.Is<TLicense>());
+	public static IQueryable<LicenseContainer> OfType(this IQueryable<LicenseContainer> me, Type type) => me.Where(l => l.Is(type));
 	public static IQueryable<LicenseContainer> OnlyValidOfType<TLicense>(this IQueryable<LicenseContainer> me, string publicKey) where TLicense : License
 	{
 		string _;

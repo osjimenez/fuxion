@@ -2,14 +2,14 @@
 
 public interface IScope
 {
-	IDiscriminator   Discriminator { get; }
-	ScopePropagation Propagation   { get; }
+	IDiscriminator Discriminator { get; }
+	ScopePropagation Propagation { get; }
 }
 
 public static class IScope_Extensions
 {
 	public static string ToOneLineString(this IScope me) => $"{me.Discriminator}->{me.Propagation}";
-	public static bool   IsValid(this         IScope me) => me.Discriminator != null && me.Discriminator.IsValid();
+	public static bool IsValid(this IScope me) => me.Discriminator != null && me.Discriminator.IsValid();
 	public static IEnumerable<IDiscriminator> AllDiscriminators(this IScope me)
 	{
 		var res = new List<IDiscriminator>();
@@ -52,7 +52,7 @@ public static class IScope_Extensions
 public class ScopeEqualityComparer : IEqualityComparer<IScope>
 {
 	readonly DiscriminatorEqualityComparer disCom = new();
-	public   bool                          Equals(IScope? x, IScope? y) => AreEquals(x, y);
+	public bool Equals(IScope? x, IScope? y) => AreEquals(x, y);
 	public int GetHashCode(IScope obj)
 	{
 		if (obj == null) return 0;

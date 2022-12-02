@@ -49,13 +49,13 @@ public static class ShellDIExtensions
 	public static IShellBuilder ModulesFromAssemblyOf<T>(this IShellBuilder me) => ModulesFromAssemblyOf(me, typeof(T));
 	public static IShellBuilder ShellFactory(this IShellBuilder me, out Func<ShellWindow> shellFactory)
 	{
-		shellFactory                  = () => ((ShellBuilder)me).GetShellWindow() ?? throw new InvalidProgramException("ShellFactory error, Shell window is not ready jet");
+		shellFactory = () => ((ShellBuilder)me).GetShellWindow() ?? throw new InvalidProgramException("ShellFactory error, Shell window is not ready jet");
 		((ShellBuilder)me).ShowWindow = false;
 		return me;
 	}
-	public static void AddResource<TResource>(this IServiceCollection me) where TResource : ShellResourceDictionary  => me.AddSingleton<ShellResourceDictionary, TResource>();
-	public static void AddMenu(this                IServiceCollection me, object header, Action? clickAction = null) => me.AddSingleton<IMenu>(new GenericMenu(header, clickAction));
-	public static void AddMenu<TMenu>(this         IServiceCollection me) where TMenu : class, IMenu => me.AddSingleton<IMenu, TMenu>();
+	public static void AddResource<TResource>(this IServiceCollection me) where TResource : ShellResourceDictionary => me.AddSingleton<ShellResourceDictionary, TResource>();
+	public static void AddMenu(this IServiceCollection me, object header, Action? clickAction = null) => me.AddSingleton<IMenu>(new GenericMenu(header, clickAction));
+	public static void AddMenu<TMenu>(this IServiceCollection me) where TMenu : class, IMenu => me.AddSingleton<IMenu, TMenu>();
 	public static void AddPanel<TPanelView, TPanel>(this IServiceCollection me, PanelPosition defaultPosition = PanelPosition.Document, bool removeOnHide = true, bool isPinned = true)
 		where TPanelView : FrameworkElement where TPanel : class, IPanel
 	{
@@ -78,37 +78,37 @@ public interface IShellBuilder
 class ShellBuilder : IShellBuilder
 {
 	public ShellBuilder(IFuxionBuilder fuxionBuilder) => FuxionBuilder = fuxionBuilder;
-	public bool           ShowWindow       { get; set; } = true;
-	public ShellWindow?   ShellWindow      { get; set; }
-	public IFuxionBuilder FuxionBuilder    { get; }
-	public ShellWindow?   GetShellWindow() => ShellWindow;
+	public bool ShowWindow { get; set; } = true;
+	public ShellWindow? ShellWindow { get; set; }
+	public IFuxionBuilder FuxionBuilder { get; }
+	public ShellWindow? GetShellWindow() => ShellWindow;
 }
 
 class GenericPanelDescriptor : IPanelDescriptor
 {
 	public GenericPanelDescriptor(string name, Type viewType, PanelPosition defaultPosition, bool removeOnHide, bool isPinned)
 	{
-		Name            = PanelName.Parse(name);
-		ViewType        = viewType;
+		Name = PanelName.Parse(name);
+		ViewType = viewType;
 		DefaultPosition = defaultPosition;
-		RemoveOnHide    = removeOnHide;
-		IsPinned        = isPinned;
+		RemoveOnHide = removeOnHide;
+		IsPinned = isPinned;
 	}
-	public Type          ViewType        { get; }
+	public Type ViewType { get; }
 	public PanelPosition DefaultPosition { get; }
-	public PanelName     Name            { get; }
-	public bool          RemoveOnHide    { get; }
-	public bool          IsPinned        { get; }
+	public PanelName Name { get; }
+	public bool RemoveOnHide { get; }
+	public bool IsPinned { get; }
 }
 
 class GenericMenu : IMenu
 {
 	public GenericMenu(object header, Action? clickAction = null)
 	{
-		Header           = header;
+		Header = header;
 		this.clickAction = clickAction;
 	}
 	readonly Action? clickAction;
-	public   object  Header    { get; }
-	public   void    OnClick() => clickAction?.Invoke();
+	public object Header { get; }
+	public void OnClick() => clickAction?.Invoke();
 }

@@ -10,7 +10,7 @@ public class KeyModelLicenseConstraint : LicenseConstraint
 		if (Key != model)
 		{
 			validationMessage = "License and model differ";
-			res               = false;
+			res = false;
 		}
 		return res;
 	}

@@ -3,14 +3,14 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
-namespace Fuxion.Identity; 
+namespace Fuxion.Identity;
 
 public class TypeDiscriminatorFactory
 {
 	readonly EntryList entries = new();
-	bool               initialized;
-	public string      DiscriminatorTypeName               { get;               set; } = TypeDiscriminator.TypeDiscriminatorId;
-	public bool        AllowMoreThanOneTypeByDiscriminator { get;               set; }
+	bool initialized;
+	public string DiscriminatorTypeName { get; set; } = TypeDiscriminator.TypeDiscriminatorId;
+	public bool AllowMoreThanOneTypeByDiscriminator { get; set; }
 	public Func<Type, TypeDiscriminatedAttribute?, string> GetIdFunction { get; set; } = (type, att) =>
 	{
 		if (att != null && !string.IsNullOrWhiteSpace(att.Id)) return att.Id;
@@ -36,9 +36,9 @@ public class TypeDiscriminatorFactory
 		// De esta forma, puedo NO cargar todos los tipos de un arbol y no tener errores con los tipos virtuales
 		foreach (var id in entries.SelectMany(e => e.Types).SelectMany(t => new string[]
 						   { }.Concat(t.Attribute?.ExplicitInclusions ?? Enumerable.Empty<string>()).Concat(t.Attribute?.AdditionalInclusions ?? Enumerable.Empty<string>())
-							   .Concat(t.Attribute?.AvoidedInclusions  ?? Enumerable.Empty<string>())).Intersect(entries.SelectMany(e => e.Types).SelectMany(t => new string[]
+							   .Concat(t.Attribute?.AvoidedInclusions ?? Enumerable.Empty<string>())).Intersect(entries.SelectMany(e => e.Types).SelectMany(t => new string[]
 						   { }.Concat(t.Attribute?.ExplicitExclusions ?? Enumerable.Empty<string>()).Concat(t.Attribute?.AdditionalExclusions ?? Enumerable.Empty<string>())
-							   .Concat(t.Attribute?.AvoidedExclusions  ?? Enumerable.Empty<string>()))).Where(id => !entries.Contains(id)).ToList())
+							   .Concat(t.Attribute?.AvoidedExclusions ?? Enumerable.Empty<string>()))).Where(id => !entries.Contains(id)).ToList())
 			entries.Add(new(new(TypeDiscriminator.TypeDiscriminatorId, DiscriminatorTypeName)
 			{
 				Id = id, Name = GetVirtualNameFunction(id)
@@ -48,18 +48,18 @@ public class TypeDiscriminatorFactory
 			var allTypes = entries.SelectMany(e => e.Types ?? Enumerable.Empty<EntryType>()).ToList();
 			void SetHierarchy(EntryType type)
 			{
-				var parent                                          = type.Type.GetTypeInfo().BaseType;
+				var parent = type.Type.GetTypeInfo().BaseType;
 				if (parent?.GenericTypeArguments.Length > 0) parent = parent.GetTypeInfo().GetGenericTypeDefinition();
-				type.BaseType     = allTypes.FirstOrDefault(t => t.Type == parent);
+				type.BaseType = allTypes.FirstOrDefault(t => t.Type == parent);
 				type.DeepBaseType = type.BaseType;
 				type.DerivedTypes = allTypes.Where(t =>
 				{
 					if (t.Type.GetTypeInfo().BaseType?.GenericTypeArguments.Length > 0) return type.Type == t.Type.GetTypeInfo().BaseType?.GetGenericTypeDefinition();
-					return t.Type.GetTypeInfo().BaseType                           == type.Type;
+					return t.Type.GetTypeInfo().BaseType == type.Type;
 				}).ToList();
 				while (type.DeepBaseType == null && parent != null)
 				{
-					parent            = parent.GetTypeInfo().BaseType;
+					parent = parent.GetTypeInfo().BaseType;
 					type.DeepBaseType = allTypes.FirstOrDefault(t => t.Type == parent);
 				}
 			}
@@ -72,7 +72,7 @@ public class TypeDiscriminatorFactory
 					entries.Remove(type.Entry);
 					allTypes.Remove(type);
 					foreach (var t in allTypes.Where(t => t.DerivedTypes.Contains(type))) SetHierarchy(t);
-					foreach (var t in allTypes.Where(t => t.BaseType     != null && t.BaseType == type)) SetHierarchy(t);
+					foreach (var t in allTypes.Where(t => t.BaseType != null && t.BaseType == type)) SetHierarchy(t);
 					foreach (var t in allTypes.Where(t => t.DeepBaseType != null && t.BaseType == type)) SetHierarchy(t);
 				}
 				void ClearDerived(EntryType ty)
@@ -267,9 +267,9 @@ public class TypeDiscriminatorFactory
 		entries.Clear();
 		initialized = false;
 	}
-	public IEnumerable<TypeDiscriminator> GetAll()                                                              => entries.Select(e => e.Discriminator);
-	public TypeDiscriminator?             FromType<T>([DoesNotReturnIf(true)] bool exceptionIfNotFound = false) => FromType(typeof(T), exceptionIfNotFound);
-	public TypeDiscriminator? FromType(Type type, [DoesNotReturnIf(    true)] bool exceptionIfNotFound = false) =>
+	public IEnumerable<TypeDiscriminator> GetAll() => entries.Select(e => e.Discriminator);
+	public TypeDiscriminator? FromType<T>([DoesNotReturnIf(true)] bool exceptionIfNotFound = false) => FromType(typeof(T), exceptionIfNotFound);
+	public TypeDiscriminator? FromType(Type type, [DoesNotReturnIf(true)] bool exceptionIfNotFound = false) =>
 		FromId(GetIdFunction(type, type.GetTypeInfo().GetCustomAttribute<TypeDiscriminatedAttribute>(false, false, true)))
 		?? (exceptionIfNotFound ? throw new KeyNotFoundException($"Discriminator for type '{type.Name}' not found") : null);
 	public TypeDiscriminator? FromId(string id)
@@ -295,10 +295,10 @@ public class TypeDiscriminatorFactory
 	class Entry
 	{
 		public Entry(TypeDiscriminator discriminaator) => Discriminator = discriminaator;
-		public string            Id            => Discriminator.Id;
-		public List<EntryType>   Types         { get; set; } = new();
+		public string Id => Discriminator.Id;
+		public List<EntryType> Types { get; set; } = new();
 		public TypeDiscriminator Discriminator { get; set; }
-		public bool              IsVirtual     => Types.IsNullOrEmpty();
+		public bool IsVirtual => Types.IsNullOrEmpty();
 	}
 
 	[DebuggerDisplay("{" + nameof(Type) + "}")]
@@ -306,16 +306,16 @@ public class TypeDiscriminatorFactory
 	{
 		public EntryType(Entry entry, Type type, TypeDiscriminatedAttribute? attribute)
 		{
-			Entry     = entry;
-			Type      = type;
+			Entry = entry;
+			Type = type;
 			Attribute = attribute;
 		}
-		public Entry                       Entry        { get; set; }
-		public Type                        Type         { get; set; }
-		public TypeDiscriminatedAttribute? Attribute    { get; }
-		public EntryType?                  BaseType     { get; set; }
-		public EntryType?                  DeepBaseType { get; set; }
-		public List<EntryType>             DerivedTypes { get; set; } = new();
+		public Entry Entry { get; set; }
+		public Type Type { get; set; }
+		public TypeDiscriminatedAttribute? Attribute { get; }
+		public EntryType? BaseType { get; set; }
+		public EntryType? DeepBaseType { get; set; }
+		public List<EntryType> DerivedTypes { get; set; } = new();
 	}
 
 	[DebuggerDisplay("{" + nameof(Count) + "} entries")]

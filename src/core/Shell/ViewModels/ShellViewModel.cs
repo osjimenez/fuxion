@@ -8,7 +8,7 @@ public abstract class ShellViewModel : ReactiveObject, IActivatableViewModel, IC
 	public ShellViewModel(ILogger<ShellViewModel> logger)
 	{
 		Activator = new();
-		Logger    = logger;
+		Logger = logger;
 		Logger.LogTrace($"ShellViewModel '{GetType().Name}' CREATED");
 		this.WhenActivated(d =>
 		{
@@ -16,13 +16,13 @@ public abstract class ShellViewModel : ReactiveObject, IActivatableViewModel, IC
 			Disposable.Create(() => HandleDeactivation()).DisposeWith(d);
 		});
 	}
-	protected ILogger                        Logger              { get; }
-	public    ViewModelActivator             Activator           { get; }
+	protected ILogger Logger { get; }
+	public ViewModelActivator Activator { get; }
 	CompositeDisposable ICompositeDisposable.CompositeDisposable { get; } = new();
-	bool ICompositeDisposable.               Disposed            { get; set; }
+	bool ICompositeDisposable.Disposed { get; set; }
 #if DEBUG
 	~ShellViewModel() => Logger.LogTrace($"ShellViewModel '{GetType().Name}' FINALIZED");
 #endif
-	protected virtual void HandleActivation()   { }
+	protected virtual void HandleActivation() { }
 	protected virtual void HandleDeactivation() { }
 }

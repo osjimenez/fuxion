@@ -62,7 +62,8 @@ public static class ApplicationDIExtensions
 		}
 		return me;
 	}
-	public static IFuxionBuilder Aggregate<TAggregate, TAggregateFactory>(this IFuxionBuilder                      me, Func<IServiceProvider, IEventStorage> eventStorage,
+	public static IFuxionBuilder Aggregate<TAggregate, TAggregateFactory>(this IFuxionBuilder me,
+																								 Func<IServiceProvider, IEventStorage> eventStorage,
 																								 Func<IServiceProvider, IEventPublisher>? eventPublisher = null) where TAggregate : Aggregate, new()
 		where TAggregateFactory : Factory<TAggregate>
 	{
@@ -73,8 +74,10 @@ public static class ApplicationDIExtensions
 		me.Services.AddSingleton<IEventStorage<TAggregate>>(sp => new EventStorageDecorator<TAggregate>(eventStorage(sp)));
 		return me;
 	}
-	public static IFuxionBuilder Aggregate<TAggregate, TAggregateFactory, TSnapshot>(this IFuxionBuilder                      me,              Func<IServiceProvider, IEventStorage> eventStorage,
-																												Func<IServiceProvider, ISnapshotStorage> snapshotStorage, int snapshotFrecuency = 3,
+	public static IFuxionBuilder Aggregate<TAggregate, TAggregateFactory, TSnapshot>(this IFuxionBuilder me,
+																												Func<IServiceProvider, IEventStorage> eventStorage,
+																												Func<IServiceProvider, ISnapshotStorage> snapshotStorage,
+																												int snapshotFrecuency = 3,
 																												Func<IServiceProvider, IEventPublisher>? eventPublisher = null) where TAggregate : Aggregate, new()
 		where TAggregateFactory : Factory<TAggregate>
 		where TSnapshot : Snapshot<TAggregate>
@@ -145,18 +148,18 @@ public static class ApplicationDIExtensions
 
 public interface IFuxionBuilder
 {
-	IServiceCollection Services         { get; }
-	TypeKeyDirectory   TypeKeyDirectory { get; }
-	void               AddToPreRegistrationList(Action<IServiceProvider>  action);
-	void               AddToRegistrationList(Action<IServiceProvider>     action);
-	void               AddToAutoActivateList<T>(Action<IServiceProvider>? preAction = null, Action<IServiceProvider, T>? postAction = null);
+	IServiceCollection Services { get; }
+	TypeKeyDirectory TypeKeyDirectory { get; }
+	void AddToPreRegistrationList(Action<IServiceProvider> action);
+	void AddToRegistrationList(Action<IServiceProvider> action);
+	void AddToAutoActivateList<T>(Action<IServiceProvider>? preAction = null, Action<IServiceProvider, T>? postAction = null);
 }
 
 class FuxionBuilder : IFuxionBuilder
 {
 	public FuxionBuilder(IServiceCollection services, TypeKeyDirectory typeKeyDirectory)
 	{
-		Services         = services;
+		Services = services;
 		TypeKeyDirectory = typeKeyDirectory;
 	}
 	public List<Action<IServiceProvider>> PreRegistrationsList = new();

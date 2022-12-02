@@ -48,12 +48,12 @@ public static class ExpressionExtensions
 		return Expression.Lambda<T>(merge(first.Body, secondBody), first.Parameters);
 	}
 	public static Expression<Func<T, bool>> And<T>(this Expression<Func<T, bool>> first, Expression<Func<T, bool>> second) => first.Compose(second, Expression.And);
-	public static Expression<Func<T, bool>> Or<T>(this  Expression<Func<T, bool>> first, Expression<Func<T, bool>> second) => first.Compose(second, Expression.Or);
+	public static Expression<Func<T, bool>> Or<T>(this Expression<Func<T, bool>> first, Expression<Func<T, bool>> second) => first.Compose(second, Expression.Or);
 
 	public class ParameterRebinder : ExpressionVisitor
 	{
 		public ParameterRebinder(Dictionary<ParameterExpression, ParameterExpression> map) => this.map = map ?? new Dictionary<ParameterExpression, ParameterExpression>();
-		readonly      Dictionary<ParameterExpression, ParameterExpression> map;
+		readonly Dictionary<ParameterExpression, ParameterExpression> map;
 		public static Expression ReplaceParameters(Dictionary<ParameterExpression, ParameterExpression> map, Expression exp) => new ParameterRebinder(map).Visit(exp);
 		protected override Expression VisitParameter(ParameterExpression p)
 		{

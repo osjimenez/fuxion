@@ -11,9 +11,9 @@ public sealed class ColorConsoleLoggerProvider : ILoggerProvider
 		_onChangeToken = config.OnChange(updatedConfig => _currentConfig = updatedConfig);
 	}
 	readonly ConcurrentDictionary<string, ColorConsoleLogger> _loggers = new();
-	readonly IDisposable?                                     _onChangeToken;
-	ColorConsoleLoggerConfiguration                           _currentConfig;
-	public ILogger                                            CreateLogger(string categoryName) => _loggers.GetOrAdd(categoryName, name => new(name, _currentConfig));
+	readonly IDisposable? _onChangeToken;
+	ColorConsoleLoggerConfiguration _currentConfig;
+	public ILogger CreateLogger(string categoryName) => _loggers.GetOrAdd(categoryName, name => new(name, _currentConfig));
 	public void Dispose()
 	{
 		_loggers.Clear();

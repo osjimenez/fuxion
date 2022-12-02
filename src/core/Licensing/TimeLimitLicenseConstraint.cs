@@ -7,11 +7,11 @@ public class TimeLimitLicenseConstraint : LicenseConstraint
 	public new bool Validate(out string validationMessage)
 	{
 		var res = base.Validate(out validationMessage);
-		var tp  = Singleton.Get<ITimeProvider>();
+		var tp = Singleton.Get<ITimeProvider>();
 		if (tp.UtcNow() > Value)
 		{
 			validationMessage = "Time limit expired";
-			res               = false;
+			res = false;
 		}
 		return res;
 	}

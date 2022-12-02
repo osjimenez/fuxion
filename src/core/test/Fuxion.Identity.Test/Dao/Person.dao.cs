@@ -6,14 +6,14 @@ using static Helpers.TypeDiscriminatorIds;
 public class PersonDao : BaseDao
 {
 	public PersonDao(string id, string name) : base(id, name) { }
-	CityDao?               _City;
+	CityDao? _City;
 	public IList<SkillDao> Skills { get; set; } = new List<SkillDao>();
 	public CityDao? City
 	{
 		get => _City;
 		set
 		{
-			_City  = value;
+			_City = value;
 			CityId = value?.Id;
 		}
 	}

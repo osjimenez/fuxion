@@ -5,7 +5,7 @@ public class DisposableEnvelope<T> : IDisposable where T : notnull
 	public DisposableEnvelope(T obj, Action<T>? actionOnDispose = null)
 	{
 		Action = actionOnDispose;
-		value  = obj;
+		value = obj;
 	}
 	bool disposed;
 
@@ -22,8 +22,8 @@ public class DisposableEnvelope<T> : IDisposable where T : notnull
 			this.value = value;
 		}
 	}
-	protected Action<T>? Action    { get; set; }
-	void IDisposable.    Dispose() => OnDispose();
+	protected Action<T>? Action { get; set; }
+	void IDisposable.Dispose() => OnDispose();
 	protected virtual void OnDispose()
 	{
 		disposed = true;

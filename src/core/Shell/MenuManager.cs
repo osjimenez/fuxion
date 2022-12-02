@@ -8,9 +8,9 @@ public class MenuManager
 	public MenuManager(IServiceProvider serviceProvider)
 	{
 		this.serviceProvider = serviceProvider;
-		menus                = serviceProvider.GetServices<IMenu>().ToList();
+		menus = serviceProvider.GetServices<IMenu>().ToList();
 	}
-	readonly List<IMenu>      menus;
+	readonly List<IMenu> menus;
 	readonly IServiceProvider serviceProvider;
 	public void PopulateMenu(RadMenu menu)
 	{

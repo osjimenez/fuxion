@@ -10,7 +10,7 @@ public class EventDispatcher : IEventDispatcher
 	readonly IServiceProvider serviceProvider;
 	public async Task DispatchAsync(Event @event)
 	{
-		var                  handlers = (IEnumerable)serviceProvider.GetServices(typeof(IEventHandler<>).MakeGenericType(@event.GetType()));
+		var handlers = (IEnumerable)serviceProvider.GetServices(typeof(IEventHandler<>).MakeGenericType(@event.GetType()));
 		IEventHandler<Event> c;
 		foreach (var handler in handlers)
 		{

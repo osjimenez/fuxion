@@ -6,20 +6,20 @@ namespace Fuxion.Identity.Test.Dao;
 public abstract class DiscriminatorDao : BaseDao, IDiscriminator<string, string>
 {
 	public DiscriminatorDao(string id, string name) : base(id, name) { }
-	object? IDiscriminator.                                                                Id         => Id;
-	string? IDiscriminator.                                                                Name       => Name;
-	object IDiscriminator.                                                                 TypeKey    => GetTypeId();
-	string IDiscriminator.                                                                 TypeName   => GetTypeName();
-	IEnumerable<IDiscriminator> IExclusive<IDiscriminator>.                                Exclusions => GetExclusions();
-	IEnumerable<IDiscriminator> IInclusive<IDiscriminator>.                                Inclusions => GetInclusions();
-	string IDiscriminator<string, string>.                                                 TypeKey    => GetTypeId();
+	object? IDiscriminator.Id => Id;
+	string? IDiscriminator.Name => Name;
+	object IDiscriminator.TypeKey => GetTypeId();
+	string IDiscriminator.TypeName => GetTypeName();
+	IEnumerable<IDiscriminator> IExclusive<IDiscriminator>.Exclusions => GetExclusions();
+	IEnumerable<IDiscriminator> IInclusive<IDiscriminator>.Inclusions => GetInclusions();
+	string IDiscriminator<string, string>.TypeKey => GetTypeId();
 	IEnumerable<IDiscriminator<string, string>> IInclusive<IDiscriminator<string, string>>.Inclusions => GetInclusions();
 	IEnumerable<IDiscriminator<string, string>> IExclusive<IDiscriminator<string, string>>.Exclusions => GetExclusions();
-	public override    string                                                              ToString() => this.ToOneLineString();
-	protected abstract string                                                              GetTypeId();
-	protected abstract string                                                              GetTypeName();
-	protected virtual  IEnumerable<DiscriminatorDao>                                       GetExclusions() => Enumerable.Empty<DiscriminatorDao>();
-	protected virtual  IEnumerable<DiscriminatorDao>                                       GetInclusions() => Enumerable.Empty<DiscriminatorDao>();
+	public override string ToString() => this.ToOneLineString();
+	protected abstract string GetTypeId();
+	protected abstract string GetTypeName();
+	protected virtual IEnumerable<DiscriminatorDao> GetExclusions() => Enumerable.Empty<DiscriminatorDao>();
+	protected virtual IEnumerable<DiscriminatorDao> GetInclusions() => Enumerable.Empty<DiscriminatorDao>();
 }
 
 [Discriminator("LOC")]
@@ -27,12 +27,12 @@ public abstract class DiscriminatorDao : BaseDao, IDiscriminator<string, string>
 public abstract class LocationDao : DiscriminatorDao
 {
 	public LocationDao(string id, string name) : base(id, name) { }
-	protected sealed override string                        GetTypeId()     => "LOC";
-	protected sealed override string                        GetTypeName()   => nameof(LocationDao);
+	protected sealed override string GetTypeId() => "LOC";
+	protected sealed override string GetTypeName() => nameof(LocationDao);
 	protected sealed override IEnumerable<DiscriminatorDao> GetExclusions() => GetLocationExclusions();
-	protected abstract        IEnumerable<LocationDao>      GetLocationExclusions();
+	protected abstract IEnumerable<LocationDao> GetLocationExclusions();
 	protected sealed override IEnumerable<DiscriminatorDao> GetInclusions() => GetLocationInclusions();
-	protected abstract        IEnumerable<LocationDao>      GetLocationInclusions();
+	protected abstract IEnumerable<LocationDao> GetLocationInclusions();
 }
 
 [Table(nameof(CountryDao))]
@@ -59,7 +59,7 @@ public class StateDao : LocationDao
 {
 	public StateDao(string id, string name, CountryDao country) : base(id, name)
 	{
-		_Country  = country;
+		_Country = country;
 		CountryId = country.Id;
 	}
 	CountryDao _Country;
@@ -75,7 +75,7 @@ public class StateDao : LocationDao
 		get => _Country;
 		set
 		{
-			_Country  = value;
+			_Country = value;
 			CountryId = value.Id;
 		}
 	}
@@ -95,7 +95,7 @@ public class CityDao : LocationDao
 {
 	public CityDao(string id, string name, StateDao state) : base(id, name)
 	{
-		_State  = state;
+		_State = state;
 		StateId = state.Id;
 	}
 	StateDao _State;
@@ -110,7 +110,7 @@ public class CityDao : LocationDao
 		get => _State;
 		set
 		{
-			_State  = value;
+			_State = value;
 			StateId = value.Id;
 		}
 	}
@@ -140,11 +140,11 @@ public class CategoryDao : DiscriminatorDao
 	}
 	public CategoryDao? Parent { get; set; }
 	//[DiscriminatedBy(typeof(CategoryDao))]
-	public                    string?                       ParentId        { get; set; }
-	public                    IEnumerable<CategoryDao>      Children        { get; set; } = new List<CategoryDao>();
-	protected sealed override string                        GetTypeId()     => "CAT";
-	protected sealed override string                        GetTypeName()   => nameof(CategoryDao);
-	protected override        IEnumerable<DiscriminatorDao> GetInclusions() => Children;
+	public string? ParentId { get; set; }
+	public IEnumerable<CategoryDao> Children { get; set; } = new List<CategoryDao>();
+	protected sealed override string GetTypeId() => "CAT";
+	protected sealed override string GetTypeName() => nameof(CategoryDao);
+	protected override IEnumerable<DiscriminatorDao> GetInclusions() => Children;
 	protected override IEnumerable<DiscriminatorDao> GetExclusions() =>
 		new[]
 		{
@@ -156,6 +156,6 @@ public class CategoryDao : DiscriminatorDao
 public class TagDao : DiscriminatorDao
 {
 	public TagDao(string id, string name) : base(id, name) { }
-	protected override string GetTypeId()   => "TAG";
+	protected override string GetTypeId() => "TAG";
 	protected override string GetTypeName() => nameof(TagDao);
 }

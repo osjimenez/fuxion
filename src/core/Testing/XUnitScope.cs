@@ -2,7 +2,5 @@
 
 public class XUnitScope : IDisposable
 {
-	public void Dispose()
-	{
-	}
+	public void Dispose() { }
 }

@@ -12,9 +12,7 @@ public class PrivateConstructorContractResolver : DefaultJsonTypeInfoResolver
 		if (jsonTypeInfo.Kind == JsonTypeInfoKind.Object && jsonTypeInfo.CreateObject is null)
 			if (jsonTypeInfo.Type.GetConstructors(BindingFlags.Public | BindingFlags.Instance).Length == 0)
 				// The type doesn't have public constructors
-				jsonTypeInfo.CreateObject = () =>
-					Activator.CreateInstance(jsonTypeInfo.Type, true)
-					?? throw new InvalidOperationException($"Instance of type '{jsonTypeInfo.Type.GetSignature()}' could not be created with non public constructor");
+				jsonTypeInfo.CreateObject = () => Activator.CreateInstance(jsonTypeInfo.Type, true) ?? throw new InvalidOperationException($"Instance of type '{jsonTypeInfo.Type.GetSignature()}' could not be created with non public constructor");
 		return jsonTypeInfo;
 	}
 }

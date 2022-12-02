@@ -9,8 +9,8 @@ namespace Fuxion.Web;
 public enum NonExistingPropertiesMode
 {
 	NotAllowed = 0,
-	OnlySet    = 1,
-	GetAndSet  = 2
+	OnlySet = 1,
+	GetAndSet = 2
 }
 
 [JsonConverter(typeof(PatchableJsonConverterFactory))]
@@ -73,7 +73,7 @@ public sealed class Patchable<T> : DynamicObject where T : class
 			if (isList)
 			{
 				var listType = typeof(List<>).MakeGenericType(property.PropertyType.GenericTypeArguments[0]);
-				var list     = Activator.CreateInstance(listType) as IList;
+				var list = Activator.CreateInstance(listType) as IList;
 				foreach (var item in pro.Value.Value as IList ?? Array.Empty<object>()) list?.Add(item);
 				//if (item is JToken jobj)
 				//{
@@ -88,13 +88,13 @@ public sealed class Patchable<T> : DynamicObject where T : class
 	}
 	object? CastValue(Type type, object? value)
 	{
-		var     isNullable = type.IsSubclassOfRawGeneric(typeof(Nullable<>));
-		var     valueType  = isNullable ? type.GetTypeInfo().GenericTypeArguments.First() : type;
-		object? res        = null;
+		var isNullable = type.IsSubclassOfRawGeneric(typeof(Nullable<>));
+		var valueType = isNullable ? type.GetTypeInfo().GenericTypeArguments.First() : type;
+		object? res = null;
 		if (value != null && valueType.GetTypeInfo().IsEnum)
 			res = Enum.Parse(valueType, value?.ToString() ?? "");
 		else if (value != null && valueType == typeof(Guid))
-			res                      = Guid.Parse(value?.ToString() ?? "");
+			res = Guid.Parse(value?.ToString() ?? "");
 		else if (value != null) res = Convert.ChangeType(value, valueType);
 		if (value != null && isNullable) res = Activator.CreateInstance(typeof(Nullable<>).MakeGenericType(valueType), res);
 		return res;
@@ -137,8 +137,7 @@ public sealed class Patchable<T> : DynamicObject where T : class
 		var pro = typeof(T).GetRuntimeProperty(propertyName);
 		if (dic.ContainsKey(propertyName))
 		{
-			if (pro == null && (NonExistingPropertiesMode == NonExistingPropertiesMode.NotAllowed || NonExistingPropertiesMode == NonExistingPropertiesMode.OnlySet))
-				throw new RuntimeBinderException($"Type '{typeof(T).GetSignature()}' not has a property with name '{propertyName}'");
+			if (pro == null && (NonExistingPropertiesMode == NonExistingPropertiesMode.NotAllowed || NonExistingPropertiesMode == NonExistingPropertiesMode.OnlySet)) throw new RuntimeBinderException($"Type '{typeof(T).GetSignature()}' not has a property with name '{propertyName}'");
 			return dic[propertyName].Value;
 		}
 		switch (NonExistingPropertiesMode)

@@ -28,7 +28,7 @@ static class IdentityExtensions
 			{
 				Printer.WriteLine($"Rol: {me.Name}");
 				Printer.WriteLine("For filter: " + forFilter);
-				Printer.WriteLine($"Function: {function.ToString()                    ?? "<null>"}");
+				Printer.WriteLine($"Function: {function.ToString() ?? "<null>"}");
 				Printer.WriteLine($"Type discriminator: {typeDiscriminator.ToString() ?? "<null>"}");
 				Printer.Foreach("Discriminators:", discriminators, dis => Printer.WriteLine($"{dis}"));
 			}
@@ -82,7 +82,7 @@ static class IdentityExtensions
 					Printer.WriteLine($"Function '{fun.Name}':");
 					var pers = SearchPermissions(me.Rol, false, fun, typeDiscriminator, discriminators);
 					if (!pers.Any()) return false;
-					var grantPermissions  = pers.Where(p => p.Value).ToList();
+					var grantPermissions = pers.Where(p => p.Value).ToList();
 					var deniedPermissions = pers.Where(p => !p.Value).ToList();
 					Printer.WriteLine($"Found '{grantPermissions.Count}' grant permissions");
 					Printer.WriteLine($"Found '{deniedPermissions.Count}' denied permissions");
@@ -132,9 +132,9 @@ static class IdentityExtensions
 	internal static IEnumerable<IDiscriminator> GetDiscriminatorsOfDiscriminatedProperties(this Type me, object? value = null) =>
 		me.GetDiscriminatedProperties().Select(p =>
 		{
-			object? val            = null;
+			object? val = null;
 			if (value != null) val = p.PropertyInfo.GetValue(value);
-			if (val   == null) return Discriminator.Empty(p.DiscriminatorType);
+			if (val == null) return Discriminator.Empty(p.DiscriminatorType);
 			return Discriminator.ForId(p.DiscriminatorType, val);
 		}).RemoveNulls();
 	internal static Expression<Func<TEntity, bool>> FilterExpression<TEntity>(this IRol me, IFunction[] functions)
@@ -179,10 +179,10 @@ static class IdentityExtensions
 					foreignKeysCasted
 				});
 				if (foreignKeysListed == null) return null;
-				var entityParameter    = Expression.Parameter(typeof(TEntity));
-				var memberExpression   = Expression.Property(entityParameter, proInfo);
+				var entityParameter = Expression.Parameter(typeof(TEntity));
+				var memberExpression = Expression.Property(entityParameter, proInfo);
 				var containsExpression = Expression.Call(GetContainsMethod(proInfo.PropertyType), Expression.Constant(foreignKeysListed, foreignKeysListed.GetType()), memberExpression);
-				var curExp             = Expression.Lambda<Func<TEntity, bool>>(value ? containsExpression : Expression.Not(containsExpression), entityParameter);
+				var curExp = Expression.Lambda<Func<TEntity, bool>>(value ? containsExpression : Expression.Not(containsExpression), entityParameter);
 				return curExp;
 			}
 
@@ -239,10 +239,10 @@ static class IdentityExtensions
 					r += "null";
 				else if (exp.Value.GetType().IsSubclassOfRawGeneric(typeof(List<>)))
 				{
-					var toAdd                                         = "[";
+					var toAdd = "[";
 					foreach (var obj in (IEnumerable)exp.Value) toAdd += obj + ", ";
-					toAdd =  toAdd.Trim(' ', ',') + "]";
-					r     += toAdd;
+					toAdd = toAdd.Trim(' ', ',') + "]";
+					r += toAdd;
 				} else
 					r += exp.Value;
 				Printer.Write(r);
@@ -309,7 +309,7 @@ static class IdentityExtensions
 							foreach (var pro in props.Where(p => AreEquals(p.DiscriminatorTypeId, sco.Discriminator.TypeKey)).ToList())
 							{
 								Printer.WriteLine($"Property: {pro.PropertyType.Name} {pro.PropertyInfo.Name}");
-								var exp              = GetContainsExpression(per.Value, sco, pro.DiscriminatorType, pro.PropertyInfo);
+								var exp = GetContainsExpression(per.Value, sco, pro.DiscriminatorType, pro.PropertyInfo);
 								if (exp == null) exp = Expression.Lambda<Func<TEntity, bool>>(Expression.Constant(false), Expression.Parameter(typeof(TEntity)));
 								if (perExp == null)
 									perExp = exp;
@@ -340,7 +340,7 @@ static class IdentityExtensions
 							foreach (var pro in props.Where(p => AreEquals(p.DiscriminatorTypeId, sco.Discriminator.TypeKey)).ToList())
 							{
 								Printer.WriteLine($"Property: {pro.PropertyType.Name} {pro.PropertyInfo.Name}");
-								var exp              = GetContainsExpression(per.Value, sco, pro.DiscriminatorType, pro.PropertyInfo);
+								var exp = GetContainsExpression(per.Value, sco, pro.DiscriminatorType, pro.PropertyInfo);
 								if (exp == null) exp = Expression.Lambda<Func<TEntity, bool>>(Expression.Constant(false), Expression.Parameter(typeof(TEntity)));
 								if (perExp == null)
 									perExp = exp;

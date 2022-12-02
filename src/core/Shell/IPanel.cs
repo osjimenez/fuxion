@@ -9,17 +9,17 @@ class PanelInstance : IDisposable
 	public PanelInstance(IPanelDescriptor descriptor, IPanel panel, FrameworkElement view, RadPane radPane, IServiceScope serviceScope)
 	{
 		this.serviceScope = serviceScope;
-		Descriptor        = descriptor;
-		Panel             = panel;
-		View              = view;
-		RadPane           = radPane;
+		Descriptor = descriptor;
+		Panel = panel;
+		View = view;
+		RadPane = radPane;
 	}
-	readonly IServiceScope    serviceScope;
-	public   IPanelDescriptor Descriptor { get; }
-	public   IPanel           Panel      { get; }
-	public   FrameworkElement View       { get; }
-	public   RadPane          RadPane    { get; }
-	public   void             Dispose()  => serviceScope.Dispose();
+	readonly IServiceScope serviceScope;
+	public IPanelDescriptor Descriptor { get; }
+	public IPanel Panel { get; }
+	public FrameworkElement View { get; }
+	public RadPane RadPane { get; }
+	public void Dispose() => serviceScope.Dispose();
 }
 
 public interface IPanelView
@@ -29,7 +29,7 @@ public interface IPanelView
 
 public interface IPanel
 {
-	string Title  { get; }
+	string Title { get; }
 	string Header { get; }
 }
 
@@ -40,9 +40,9 @@ public interface IInitializablePanel : IPanel
 
 interface IPanelDescriptor
 {
-	PanelName     Name            { get; }
-	Type          ViewType        { get; }
+	PanelName Name { get; }
+	Type ViewType { get; }
 	PanelPosition DefaultPosition { get; }
-	bool          RemoveOnHide    { get; }
-	bool          IsPinned        { get; }
+	bool RemoveOnHide { get; }
+	bool IsPinned { get; }
 }

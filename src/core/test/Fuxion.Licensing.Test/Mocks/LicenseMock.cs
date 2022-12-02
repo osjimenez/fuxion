@@ -6,21 +6,21 @@ public class LicenseMock : License
 {
 	public LicenseMock()
 	{
-		ExpirationUtcTime   = new(DateTime.UtcNow.AddYears(1));
+		ExpirationUtcTime = new(DateTime.UtcNow.AddYears(1));
 		DeactivationUtcTime = new(DateTime.UtcNow.AddMonths(1));
-		HardwareId          = new(null);
-		ProductId           = new(null);
+		HardwareId = new(null);
+		ProductId = new(null);
 	}
 	[JsonConstructor]
 	public LicenseMock(KeyModelLicenseConstraint hardwareId, KeyModelLicenseConstraint productId, TimeLimitLicenseConstraint deactivationUtcTime, TimeLimitLicenseConstraint expirationUtcTime) : this()
 	{
-		HardwareId          = hardwareId;
-		ProductId           = productId;
-		ExpirationUtcTime   = expirationUtcTime;
+		HardwareId = hardwareId;
+		ProductId = productId;
+		ExpirationUtcTime = expirationUtcTime;
 		DeactivationUtcTime = deactivationUtcTime;
 	}
 	public TimeLimitLicenseConstraint DeactivationUtcTime { get; }
-	public TimeLimitLicenseConstraint ExpirationUtcTime   { get; }
+	public TimeLimitLicenseConstraint ExpirationUtcTime { get; }
 	[JsonInclude]
 	public KeyModelLicenseConstraint HardwareId { get; private set; }
 	[JsonInclude]
@@ -35,5 +35,5 @@ public class LicenseMock : License
 		return res;
 	}
 	internal void SetHarwareId(string hardwareId) => HardwareId = new(hardwareId);
-	internal void SetProductId(string productId)  => ProductId = new(productId);
+	internal void SetProductId(string productId) => ProductId = new(productId);
 }

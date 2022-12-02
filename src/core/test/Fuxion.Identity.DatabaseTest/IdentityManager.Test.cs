@@ -21,7 +21,7 @@ public class IdentityManagerTest
 		if (rep.Database.EnsureCreated() || !rep.Identity.Any())
 		{
 			var ides = Identities.All;
-			var iii  = ides.ToArray();
+			var iii = ides.ToArray();
 			rep.Identity.AddRange(ides);
 			rep.AttachRange(ides);
 			rep.SaveChanges();
@@ -40,16 +40,16 @@ public class IdentityManagerTest
 	public void CheckCredentials()
 	{
 		// Check when null values
-		Assert.False(IM.CheckCredentials(null!,  null!));
+		Assert.False(IM.CheckCredentials(null!, null!));
 		Assert.False(IM.CheckCredentials("root", null!));
-		Assert.False(IM.CheckCredentials(null!,  "root"));
+		Assert.False(IM.CheckCredentials(null!, "root"));
 		// Check when empty values
-		Assert.False(IM.CheckCredentials("",     ""));
+		Assert.False(IM.CheckCredentials("", ""));
 		Assert.False(IM.CheckCredentials("root", ""));
-		Assert.False(IM.CheckCredentials("",     "root"));
+		Assert.False(IM.CheckCredentials("", "root"));
 		// Check when wrong values
 		Assert.False(IM.CheckCredentials("wrong", "root"));
-		Assert.False(IM.CheckCredentials("root",  "wrong"));
+		Assert.False(IM.CheckCredentials("root", "wrong"));
 		// Check when success
 		Assert.True(IM.CheckCredentials("root", "root"));
 	}

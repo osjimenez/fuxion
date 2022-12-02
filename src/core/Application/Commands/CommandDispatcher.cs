@@ -12,7 +12,7 @@ public class CommandDispatcher : ICommandDispatcher
 		var handlers = serviceProvider.GetServices(typeof(ICommandHandler<>).MakeGenericType(command.GetType())).ToList();
 		if (handlers.Count != 1) throw new MoreThanOneCommandHandlerException($"Multiple command handlers was found for command '{command.GetType().GetSignature(true)}'");
 		ICommandHandler<Command> c;
-		var                      met = handlers[0]?.GetType().GetMethod(nameof(c.HandleAsync));
+		var met = handlers[0]?.GetType().GetMethod(nameof(c.HandleAsync));
 		if (met == null) throw new InvalidProgramException($"'{nameof(c.HandleAsync)}' method not found");
 		if (met.Invoke(handlers[0], new object[]
 			 {

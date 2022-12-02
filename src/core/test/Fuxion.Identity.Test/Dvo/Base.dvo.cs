@@ -15,9 +15,9 @@ public abstract class BaseDvo<TNotifier> : IBaseDvo<TNotifier> where TNotifier :
 {
 	public BaseDvo(string id, string name)
 	{
-		Id   = id;
+		Id = id;
 		Name = name;
 	}
-	public string Id   { get; set; }
+	public string Id { get; set; }
 	public string Name { get; set; }
 }

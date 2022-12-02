@@ -14,9 +14,9 @@ public class SnapshotTest : BaseTest<SnapshotTest>
 	{
 		var snapshot = new TestSnapshot();
 		snapshot.AggregateId = Guid.NewGuid();
-		snapshot.Version     = 101;
-		snapshot.Id          = Guid.NewGuid();
-		snapshot.Name        = "Test";
+		snapshot.Version = 101;
+		snapshot.Id = Guid.NewGuid();
+		snapshot.Name = "Test";
 		var json = snapshot.ToJson();
 		Output.WriteLine(json);
 	}
@@ -28,7 +28,7 @@ public class TestSnapshot : Snapshot<TestAggregate>
 	[JsonInclude]
 	public string? Name { get; internal set; }
 	protected internal override void Hydrate(TestAggregate aggregate) => throw new NotImplementedException();
-	protected internal override void Load(TestAggregate    aggregate) => throw new NotImplementedException();
+	protected internal override void Load(TestAggregate aggregate) => throw new NotImplementedException();
 }
 
 public class TestAggregate : Aggregate { }

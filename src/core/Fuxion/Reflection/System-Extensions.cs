@@ -17,11 +17,10 @@ public static class MemberInfoExtensions
 	/// <param name="exceptionIfNotFound">true to throw <see cref="AttributeNotFoundException" /> if custom attribute not found.</param>
 	/// <param name="exceptionIfMoreThanOne">true to throw <see cref="AttributeMoreThanOneException" /> if custom attribute found more than once.</param>
 	/// <returns></returns>
-	public static TAttribute? GetCustomAttribute<TAttribute>(this                    MemberInfo me, bool inherit = true, [DoesNotReturnIf(true)] bool exceptionIfNotFound = false,
-																				[DoesNotReturnIf(true)] bool       exceptionIfMoreThanOne = false) where TAttribute : Attribute
+	public static TAttribute? GetCustomAttribute<TAttribute>(this MemberInfo me, bool inherit = true, [DoesNotReturnIf(true)] bool exceptionIfNotFound = false, [DoesNotReturnIf(true)] bool exceptionIfMoreThanOne = false) where TAttribute : Attribute
 	{
 		var objAtts = me.GetCustomAttributes(typeof(TAttribute), inherit);
-		var atts    = objAtts?.Cast<TAttribute>();
+		var atts = objAtts?.Cast<TAttribute>();
 		if (exceptionIfMoreThanOne && atts != null && atts.Count() > 1) throw new AttributeMoreThanOneException(me, typeof(TAttribute));
 		var att = atts?.FirstOrDefault();
 		if (exceptionIfNotFound && att == null) throw new AttributeNotFoundException(me, typeof(TAttribute));
@@ -32,9 +31,7 @@ public static class MemberInfoExtensions
 		var att = member.GetCustomAttribute<TAttribute>(inherit, false, exceptionIfMoreThanOne);
 		return att != null;
 	}
-	public static string GetSignature(this MethodBase method, bool includeAccessModifiers = false, bool includeReturn = false, bool includeDeclaringType = true, bool useFullNames = false,
-												 bool            includeParameters           = true, bool includeParametersNames = false, Func<bool, bool, MethodBase, object?, string>? parametersFunction = null,
-												 object?         parametersFunctionArguments = null)
+	public static string GetSignature(this MethodBase method, bool includeAccessModifiers = false, bool includeReturn = false, bool includeDeclaringType = true, bool useFullNames = false, bool includeParameters = true, bool includeParametersNames = false, Func<bool, bool, MethodBase, object?, string>? parametersFunction = null, object? parametersFunctionArguments = null)
 	{
 		var res = new StringBuilder();
 		// Access modifiers

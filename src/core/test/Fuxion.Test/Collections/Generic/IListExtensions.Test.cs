@@ -30,10 +30,10 @@ public class Mock
 {
 	public Mock(int id, string name)
 	{
-		Id   = id;
+		Id = id;
 		Name = name;
 	}
-	public int    Id   { get; set; }
+	public int Id { get; set; }
 	public string Name { get; set; }
 	public override bool Equals(object? obj)
 	{

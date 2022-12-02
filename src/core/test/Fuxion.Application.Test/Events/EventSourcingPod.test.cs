@@ -34,7 +34,7 @@ public class EventSourcingPodTest : BaseTest<EventSourcingPodTest>
 		Assert.NotNull(pod);
 		Output.WriteLine(pod.PayloadKey);
 		Assert.Equal(nameof(BaseEvent), pod.PayloadKey);
-		Assert.Equal(10,                pod.TargetVersion);
+		Assert.Equal(10, pod.TargetVersion);
 		Assert.False(pod.PayloadHasValue);
 		Assert.Null(pod.Payload);
 		var evt = pod.WithTypeKeyDirectory(tkd);
@@ -42,12 +42,12 @@ public class EventSourcingPodTest : BaseTest<EventSourcingPodTest>
 		Assert.IsType<BaseEvent>(evt);
 		var mevt = (BaseEvent?)evt;
 		Assert.Equal("mockName", mevt?.Name);
-		Assert.Equal(10,         mevt?.EventSourcing().TargetVersion);
+		Assert.Equal(10, mevt?.EventSourcing().TargetVersion);
 	}
 	[Fact(DisplayName = "EventSourcingPod - ToJson")]
 	public void ToJson()
 	{
-		var id  = Guid.NewGuid();
+		var id = Guid.NewGuid();
 		var evt = new BaseEvent(id, "mockName", 10);
 		Assert.Throws<EventFeatureNotFoundException>(() => new EventSourcingPod(evt));
 		evt.AddEventSourcing(10, Guid.NewGuid(), DateTime.UtcNow, 11);
@@ -58,8 +58,8 @@ public class EventSourcingPodTest : BaseTest<EventSourcingPodTest>
 		Output.WriteLine("Serialized json:");
 		Output.WriteLine(json);
 		Assert.Contains($@"""PayloadKey"": ""{nameof(BaseEvent)}""", json);
-		Assert.Contains(@"""TargetVersion"": 10",                    json);
-		Assert.Contains($@"""AggregateId"": ""{id}""",               json);
-		Assert.Contains(@"""Name"": ""mockName""",                   json);
+		Assert.Contains(@"""TargetVersion"": 10", json);
+		Assert.Contains($@"""AggregateId"": ""{id}""", json);
+		Assert.Contains(@"""Name"": ""mockName""", json);
 	}
 }

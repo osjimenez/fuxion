@@ -7,12 +7,12 @@ namespace Fuxion.Identity.Test.Dao;
 public abstract class RolDao : BaseDao, IRol
 {
 	public RolDao(string id, string name) : base(id, name) { }
-	public IList<GroupDao>      Groups      { get; set; } = new List<GroupDao>();
+	public IList<GroupDao> Groups { get; set; } = new List<GroupDao>();
 	public IList<PermissionDao> Permissions { get; set; } = new List<PermissionDao>();
 	[DiscriminatedBy(typeof(CategoryDao))]
-	public string? CategoryId { get;                 set; }
-	public CategoryDao?           Category    { get; set; }
-	IEnumerable<IGroup> IRol.     Groups      => Groups;
+	public string? CategoryId { get; set; }
+	public CategoryDao? Category { get; set; }
+	IEnumerable<IGroup> IRol.Groups => Groups;
 	IEnumerable<IPermission> IRol.Permissions => Permissions;
 }
 
@@ -21,8 +21,8 @@ public abstract class RolDao : BaseDao, IRol
 public class GroupDao : RolDao, IGroup
 {
 	public GroupDao(string id, string name) : base(id, name) { }
-	public List<RolDao>           Rols        { get; set; } = new();
-	IEnumerable<IGroup> IRol.     Groups      => Groups;
+	public List<RolDao> Rols { get; set; } = new();
+	IEnumerable<IGroup> IRol.Groups => Groups;
 	IEnumerable<IPermission> IRol.Permissions => Permissions;
 }
 
@@ -35,12 +35,12 @@ public class IdentityDao : RolDao, IIdentity<string>
 #nullable enable
 	public IdentityDao(string id, string name, string userName, byte[] passwordHash, byte[] passwordSalt) : this(id, name)
 	{
-		UserName     = userName;
+		UserName = userName;
 		PasswordHash = passwordHash;
 		PasswordSalt = passwordSalt;
 	}
-	public string    UserName     { get; set; }
-	public byte[]    PasswordHash { get; set; }
-	public byte[]    PasswordSalt { get; set; }
-	object IIdentity.Id           => UserName;
+	public string UserName { get; set; }
+	public byte[] PasswordHash { get; set; }
+	public byte[] PasswordSalt { get; set; }
+	object IIdentity.Id => UserName;
 }

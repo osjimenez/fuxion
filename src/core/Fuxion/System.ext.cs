@@ -72,12 +72,10 @@ public static class Extensions
 		{
 			WriteIndented = true
 		};
-		if (!options.Converters.Any(c => c.GetType().IsSubclassOfRawGeneric(typeof(FallbackConverter<>))))
-			options.Converters.Add(new FallbackConverter<Exception>(new MultilineStringToCollectionPropertyFallbackResolver()));
+		if (!options.Converters.Any(c => c.GetType().IsSubclassOfRawGeneric(typeof(FallbackConverter<>)))) options.Converters.Add(new FallbackConverter<Exception>(new MultilineStringToCollectionPropertyFallbackResolver()));
 		return JsonSerializer.Serialize(me, options);
 	}
-	public static T? FromJson<T>(this string me, [DoesNotReturnIf(true)] bool exceptionIfNull = false, JsonSerializerOptions? options = null, bool usePrivateConstructor = true) =>
-		(T?)FromJson(me, typeof(T), exceptionIfNull, options, usePrivateConstructor);
+	public static T? FromJson<T>(this string me, [DoesNotReturnIf(true)] bool exceptionIfNull = false, JsonSerializerOptions? options = null, bool usePrivateConstructor = true) => (T?)FromJson(me, typeof(T), exceptionIfNull, options, usePrivateConstructor);
 	public static object? FromJson(this string me, Type type, [DoesNotReturnIf(true)] bool exceptionIfNull = false, JsonSerializerOptions? options = null, bool usePrivateConstructor = true)
 	{
 		if (usePrivateConstructor)
@@ -131,10 +129,9 @@ public static class Extensions
 		return false;
 	}
 	public static bool IsNullableValue<T>(this Type me) where T : struct => me.IsGenericType && me.GetGenericTypeDefinition() == typeof(Nullable<>) && me.GetGenericArguments()[0] == typeof(T);
-	public static bool IsNullableEnum(this Type me, bool valueTypesAreNotNullables = true) =>
-		me.IsGenericType && me.GetGenericTypeDefinition() == typeof(Nullable<>) && me.GetGenericArguments()[0].IsEnum;
-	public static object? GetDefaultValue(this             Type me) => me.GetTypeInfo().IsValueType && Nullable.GetUnderlyingType(me) == null ? Activator.CreateInstance(me) : null;
-	public static string  GetFullNameWithAssemblyName(this Type me) => $"{me.AssemblyQualifiedName?.Split(',').Take(2).Aggregate("", (a, n) => a + ", " + n, a => a.Trim(' ', ','))}";
+	public static bool IsNullableEnum(this Type me, bool valueTypesAreNotNullables = true) => me.IsGenericType && me.GetGenericTypeDefinition() == typeof(Nullable<>) && me.GetGenericArguments()[0].IsEnum;
+	public static object? GetDefaultValue(this Type me) => me.GetTypeInfo().IsValueType && Nullable.GetUnderlyingType(me) == null ? Activator.CreateInstance(me) : null;
+	public static string GetFullNameWithAssemblyName(this Type me) => $"{me.AssemblyQualifiedName?.Split(',').Take(2).Aggregate("", (a, n) => a + ", " + n, a => a.Trim(' ', ','))}";
 	public static string GetSignature(this Type type, bool useFullNames = false)
 	{
 		var nullableType = Nullable.GetUnderlyingType(type);
@@ -176,7 +173,7 @@ public static class Extensions
 		while (toProcess.Count > 0)
 		{
 			var actual = toProcess.Dequeue();
-			var cur    = actual.GetTypeInfo().IsGenericType ? actual.GetGenericTypeDefinition() : actual;
+			var cur = actual.GetTypeInfo().IsGenericType ? actual.GetGenericTypeDefinition() : actual;
 			if (cur.GetTypeInfo().IsGenericType && generic.GetGenericTypeDefinition() == cur.GetGenericTypeDefinition()) return actual;
 			foreach (var inter in actual.GetTypeInfo().ImplementedInterfaces) toProcess.Enqueue(inter);
 			var baseType = actual.GetTypeInfo().BaseType;
@@ -211,12 +208,12 @@ public static class Extensions
 	public static T? GetPrivateFieldValue<T>(this object obj, string propName)
 	{
 		if (obj == null) throw new ArgumentNullException(nameof(obj));
-		var        t  = obj.GetType();
+		var t = obj.GetType();
 		FieldInfo? fi = null;
 		while (fi == null && t != null)
 		{
 			fi = t.GetField(propName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-			t  = t.BaseType;
+			t = t.BaseType;
 		}
 		if (fi == null) throw new ArgumentOutOfRangeException(nameof(propName), string.Format("Field {0} was not found in Type {1}", propName, obj.GetType().FullName));
 		return (T?)fi.GetValue(obj);
@@ -232,7 +229,7 @@ public static class Extensions
 	/// <returns>PropertyValue</returns>
 	public static void SetPrivatePropertyValue(this object obj, string propName, object? val)
 	{
-		var t    = obj.GetType();
+		var t = obj.GetType();
 		var prop = t.GetProperty(propName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 		if (prop is null) throw new ArgumentOutOfRangeException(nameof(propName), string.Format("Property {0} was not found in Type {1}", propName, obj.GetType().FullName));
 		prop.DeclaringType?.InvokeMember(propName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.SetProperty | BindingFlags.Instance, Type.DefaultBinder, obj, new[]
@@ -251,12 +248,12 @@ public static class Extensions
 	public static void SetPrivateFieldValue(this object obj, string propName, object? val)
 	{
 		if (obj == null) throw new ArgumentNullException(nameof(obj));
-		var        t  = obj.GetType();
+		var t = obj.GetType();
 		FieldInfo? fi = null;
 		while (fi == null && t != null)
 		{
 			fi = t.GetField(propName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-			t  = t.BaseType;
+			t = t.BaseType;
 		}
 		if (fi == null) throw new ArgumentOutOfRangeException(nameof(propName), string.Format("Field {0} was not found in Type {1}", propName, obj.GetType().FullName));
 		fi.SetValue(obj, val);
@@ -264,13 +261,12 @@ public static class Extensions
 	#endregion
 
 	#region Math
-	public static double                          Pow(this                  double me, double power)        => Math.Pow(me, power);
-	public static long                            Pow(this                  long   me, long   power)        => (long)Math.Pow(me, power);
-	public static int                             Pow(this                  int    me, int    power)        => (int)Math.Pow(me,  power);
-	public static (long Quotient, long Remainder) Division(this             long   me, long   dividend)     => (me / dividend, me % dividend);
-	public static (long Quotient, long Remainder) DivisionByPowerOfTwo(this long   me, ushort numberOfBits) => me.Division(2.Pow(numberOfBits));
-	public static (long Quotient, long Remainder) DivisionByPowerOfTwo(this byte[] me, ushort numberOfBits) =>
-		BitConverter.ToInt64(me.Concat(Enumerable.Repeat((byte)0, 8 - me.Length)).ToArray(), 0).DivisionByPowerOfTwo(numberOfBits);
+	public static double Pow(this double me, double power) => Math.Pow(me, power);
+	public static long Pow(this long me, long power) => (long)Math.Pow(me, power);
+	public static int Pow(this int me, int power) => (int)Math.Pow(me, power);
+	public static (long Quotient, long Remainder) Division(this long me, long dividend) => (me / dividend, me % dividend);
+	public static (long Quotient, long Remainder) DivisionByPowerOfTwo(this long me, ushort numberOfBits) => me.Division(2.Pow(numberOfBits));
+	public static (long Quotient, long Remainder) DivisionByPowerOfTwo(this byte[] me, ushort numberOfBits) => BitConverter.ToInt64(me.Concat(Enumerable.Repeat((byte)0, 8 - me.Length)).ToArray(), 0).DivisionByPowerOfTwo(numberOfBits);
 	#endregion
 
 	#region Bytes
@@ -287,8 +283,8 @@ public static class Extensions
 	public static byte[] ToByteArrayFromHexadecimal(this string me, char? separatorChar = null, bool isBigEndian = false)
 	{
 		if (separatorChar is not null) me = me.RemoveChar(separatorChar.Value);
-		var NumberChars                   = me.Length;
-		var bytes                         = new byte[NumberChars / 2];
+		var NumberChars = me.Length;
+		var bytes = new byte[NumberChars / 2];
 		if (isBigEndian)
 			for (var i = NumberChars; i > 1; i -= 2)
 				bytes[(i - 2) / 2] = Convert.ToByte(me.Substring(i - 2, 2), 16);
@@ -321,7 +317,7 @@ public static class Extensions
 	/// </summary>
 	public static bool IsSubPathOf(this string path, string baseDirPath)
 	{
-		var normalizedPath        = path.Replace('/', '\\').WithEnding("\\");
+		var normalizedPath = path.Replace('/', '\\').WithEnding("\\");
 		var normalizedBaseDirPath = baseDirPath.Replace('/', '\\').WithEnding("\\");
 		return normalizedPath.StartsWith(normalizedBaseDirPath, StringComparison.OrdinalIgnoreCase);
 	}
@@ -351,21 +347,21 @@ public static class Extensions
 	/// <returns>The substring.</returns>
 	public static string Right(this string value, int length)
 	{
-		if (value  == null) throw new ArgumentNullException("value");
+		if (value == null) throw new ArgumentNullException("value");
 		if (length < 0) throw new ArgumentOutOfRangeException("length", length, "Length is less than zero");
 		return length < value.Length ? value.Substring(value.Length - length) : value;
 	}
 	public static string RandomString(this string me, int length, Random? ran = null)
 	{
 		const string defaultStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-		if (ran == null) ran    = new((int)DateTime.Now.Ticks);
-		var str                 = string.IsNullOrWhiteSpace(me) ? defaultStr : me;
+		if (ran == null) ran = new((int)DateTime.Now.Ticks);
+		var str = string.IsNullOrWhiteSpace(me) ? defaultStr : me;
 		return new(Enumerable.Repeat(str, length).Select(s => s[ran!.Next(s.Length)]).ToArray());
 	}
 	public static string ToTitleCase(this string me, CultureInfo? culture = null) => (culture ?? CultureInfo.CurrentCulture).TextInfo.ToTitleCase(me.ToLower());
 	public static string ToCamelCase(this string me, CultureInfo? culture = null) => me.ToTitleCase(culture).Replace(" ", "").Transform(s => s.Substring(0, 1).ToLower() + s.Substring(1, s.Length - 1));
 	public static string ToPascalCase(this string me, CultureInfo? culture = null) => me.ToTitleCase(culture).Replace(" ", "");
-	public static bool   Contains(this string source, string value, StringComparison comparisonType) => source != null && value != null && source?.IndexOf(value, comparisonType) >= 0;
+	public static bool Contains(this string source, string value, StringComparison comparisonType) => source != null && value != null && source?.IndexOf(value, comparisonType) >= 0;
 	public static IEnumerable<int> AllIndexesOf(this string me, string value, StringComparison comparisonType)
 	{
 		if (string.IsNullOrEmpty(value)) throw new ArgumentException("The string to find may not be empty", "value");
@@ -381,12 +377,12 @@ public static class Extensions
 		// Concateno el texto de todos los elementos
 		var allText = me.Aggregate("", (a, c) => a + c);
 		// Busco todas las apariciones del texto buscado
-		var                                                                                      indexes = allText.AllIndexesOf(text, comparisonType);
-		List<((int ItemIndex, int PositionIndex) Start, (int ItemIndex, int PositionIndex) End)> res     = new();
+		var indexes = allText.AllIndexesOf(text, comparisonType);
+		List<((int ItemIndex, int PositionIndex) Start, (int ItemIndex, int PositionIndex) End)> res = new();
 		foreach (var index in indexes)
 		{
-			var counter          = 0;
-			var startItemIndex   = 0;
+			var counter = 0;
+			var startItemIndex = 0;
 			var startIndexInItem = 0;
 			for (; startItemIndex < me.Length; startItemIndex++)
 			{
@@ -397,7 +393,7 @@ public static class Extensions
 					break;
 				}
 			}
-			var endItemIndex   = startItemIndex;
+			var endItemIndex = startItemIndex;
 			var endIndexInItem = 0;
 			for (; endItemIndex < me.Length; endItemIndex++)
 			{
@@ -416,15 +412,15 @@ public static class Extensions
 	#endregion
 
 	#region IsBetween
-	public static bool IsBetween(this short    me, short    minimum, short    maximum) => minimum <= me && me <= maximum;
-	public static bool IsBetween(this ushort   me, ushort   minimum, ushort   maximum) => minimum <= me && me <= maximum;
-	public static bool IsBetween(this int      me, int      minimum, int      maximum) => minimum <= me && me <= maximum;
-	public static bool IsBetween(this uint     me, uint     minimum, uint     maximum) => minimum <= me && me <= maximum;
-	public static bool IsBetween(this long     me, long     minimum, long     maximum) => minimum <= me && me <= maximum;
-	public static bool IsBetween(this ulong    me, ulong    minimum, ulong    maximum) => minimum <= me && me <= maximum;
-	public static bool IsBetween(this decimal  me, decimal  minimum, decimal  maximum) => minimum <= me && me <= maximum;
-	public static bool IsBetween(this double   me, double   minimum, double   maximum) => minimum <= me && me <= maximum;
-	public static bool IsBetween(this float    me, float    minimum, float    maximum) => minimum <= me && me <= maximum;
+	public static bool IsBetween(this short me, short minimum, short maximum) => minimum <= me && me <= maximum;
+	public static bool IsBetween(this ushort me, ushort minimum, ushort maximum) => minimum <= me && me <= maximum;
+	public static bool IsBetween(this int me, int minimum, int maximum) => minimum <= me && me <= maximum;
+	public static bool IsBetween(this uint me, uint minimum, uint maximum) => minimum <= me && me <= maximum;
+	public static bool IsBetween(this long me, long minimum, long maximum) => minimum <= me && me <= maximum;
+	public static bool IsBetween(this ulong me, ulong minimum, ulong maximum) => minimum <= me && me <= maximum;
+	public static bool IsBetween(this decimal me, decimal minimum, decimal maximum) => minimum <= me && me <= maximum;
+	public static bool IsBetween(this double me, double minimum, double maximum) => minimum <= me && me <= maximum;
+	public static bool IsBetween(this float me, float minimum, float maximum) => minimum <= me && me <= maximum;
 	public static bool IsBetween(this DateTime me, DateTime minimum, DateTime maximum) => minimum <= me && me <= maximum;
 	public static bool IsBetween(this TimeSpan me, TimeSpan minimum, TimeSpan maximum) => minimum <= me && me <= maximum;
 	#endregion
@@ -432,7 +428,7 @@ public static class Extensions
 	#region Time
 	public static string ToTimeString(this TimeSpan ts, int numberOfElements = 5, bool onlyLetters = false)
 	{
-		var res   = "";
+		var res = "";
 		var count = 0;
 		if (count >= numberOfElements) return res.Trim(',', ' ');
 		if (ts.Days > 0)
@@ -468,15 +464,15 @@ public static class Extensions
 	}
 	public static DateTime AverageDateTime(this IEnumerable<DateTime> me)
 	{
-		var list                                  = me.ToList();
-		var temp                                  = 0D;
+		var list = me.ToList();
+		var temp = 0D;
 		for (var i = 0; i < list.Count; i++) temp += list[i].Ticks / (double)list.Count;
 		return new((long)temp);
 	}
 	public static DateTimeOffset AverageDateTime(this IEnumerable<DateTimeOffset> me)
 	{
-		var list                                  = me.ToList();
-		var temp                                  = 0D;
+		var list = me.ToList();
+		var temp = 0D;
 		for (var i = 0; i < list.Count; i++) temp += list[i].Ticks / (double)list.Count;
 		return new(new((long)temp));
 	}
@@ -491,7 +487,7 @@ public static class Extensions
 				return 0;
 		return res;
 	}
-	public static DateTime ToEpochDateTime(this long   me) => startTime.AddSeconds(me);
+	public static DateTime ToEpochDateTime(this long me) => startTime.AddSeconds(me);
 	public static DateTime ToEpochDateTime(this double me) => startTime.AddSeconds(me);
 	#endregion
 }

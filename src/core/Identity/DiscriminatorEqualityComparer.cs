@@ -4,8 +4,8 @@ namespace Fuxion.Identity;
 
 public class DiscriminatorEqualityComparer : IEqualityComparer<IDiscriminator>
 {
-	public bool Equals(IDiscriminator?     x, IDiscriminator? y) => AreEquals(x, y);
-	public int  GetHashCode(IDiscriminator obj) => obj != null ? obj.Id?.GetHashCode() ?? 0 : 0;
+	public bool Equals(IDiscriminator? x, IDiscriminator? y) => AreEquals(x, y);
+	public int GetHashCode(IDiscriminator obj) => obj != null ? obj.Id?.GetHashCode() ?? 0 : 0;
 	static bool AreEquals(object? obj1, object? obj2)
 	{
 		// If both are NULL, return TRUE

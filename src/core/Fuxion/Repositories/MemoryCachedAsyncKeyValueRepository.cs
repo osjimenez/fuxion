@@ -5,7 +5,7 @@ namespace Fuxion.Repositories;
 public class MemoryCachedAsyncKeyValueRepository<TKey, TValue> : IAsyncKeyValueRepository<TKey, TValue> where TKey : notnull
 {
 	public MemoryCachedAsyncKeyValueRepository(IAsyncKeyValueRepository<TKey, TValue> originRepository) => _origin = originRepository;
-	readonly IAsyncKeyValueRepository<TKey, TValue>                          _origin;
+	readonly IAsyncKeyValueRepository<TKey, TValue> _origin;
 	readonly Locker<Dictionary<TKey, MemoryKeyValueRepositoryValue<TValue>>> dic = new(new());
 	public Task<bool> ExistAsync(TKey key) =>
 		dic.WriteAsync(async d =>

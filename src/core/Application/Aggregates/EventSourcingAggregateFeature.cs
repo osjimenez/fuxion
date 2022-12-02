@@ -11,12 +11,12 @@ public class EventSourcingAggregateFeature : IAggregateFeature
 	Aggregate? aggregate;
 	// Versioning
 	public int LastCommittedVersion { get; internal set; }
-	public int CurrentVersion       { get; internal set; }
+	public int CurrentVersion { get; internal set; }
 	// Snapshoting
-	public bool  IsSnapshottable   => SnapshotType != null;
-	public Type? SnapshotType      { get; internal set; }
-	public int   SnapshotFrequency { get; internal set; }
-	public int   SnapshotVersion   { get; internal set; }
+	public bool IsSnapshottable => SnapshotType != null;
+	public Type? SnapshotType { get; internal set; }
+	public int SnapshotFrequency { get; internal set; }
+	public int SnapshotVersion { get; internal set; }
 	public void OnAttach(Aggregate aggregate)
 	{
 		this.aggregate = aggregate;
@@ -42,11 +42,11 @@ public class EventSourcingAggregateFeature : IAggregateFeature
 	public Snapshot GetSnapshot()
 	{
 		if (SnapshotType == null) throw new AggregateIsNotSnapshottableException();
-		if (aggregate    == null) throw new InvalidStateException($"'{nameof(GetSnapshot)}' was called before this '{nameof(EventSourcingAggregateFeature)}' would be attached to an aggregate");
+		if (aggregate == null) throw new InvalidStateException($"'{nameof(GetSnapshot)}' was called before this '{nameof(EventSourcingAggregateFeature)}' would be attached to an aggregate");
 		var snap = (Snapshot?)Activator.CreateInstance(SnapshotType);
 		if (snap == null) throw new InvalidProgramException("Instance of snapshot cannot be created");
 		snap.AggregateId = aggregate.Id;
-		snap.Version     = aggregate.GetCurrentVersion();
+		snap.Version = aggregate.GetCurrentVersion();
 		snap.Load(aggregate);
 		return snap;
 	}

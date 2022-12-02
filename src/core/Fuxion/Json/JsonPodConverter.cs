@@ -17,13 +17,12 @@ public class JsonPodConverter<TPod, TPayload, TKey> : JsonConverter<TPod> where 
 		{
 			if (reader.TokenType == JsonTokenType.EndObject) return pod;
 			if (reader.TokenType != JsonTokenType.PropertyName) throw new JsonException("The reader expected JsonTokenType.PropertyName");
-			var propertyName = reader.GetString()                      ?? throw new InvalidProgramException("Current property name could not be read from Utf8JsonReader.");
-			var prop         = pod.GetType().GetProperty(propertyName) ?? throw new InvalidProgramException($"Property '{propertyName}' could not be obtained from pod object");
-			var ele          = JsonDocument.ParseValue(ref reader).RootElement;
+			var propertyName = reader.GetString() ?? throw new InvalidProgramException("Current property name could not be read from Utf8JsonReader.");
+			var prop = pod.GetType().GetProperty(propertyName) ?? throw new InvalidProgramException($"Property '{propertyName}' could not be obtained from pod object");
+			var ele = JsonDocument.ParseValue(ref reader).RootElement;
 			if (propertyName == nameof(JsonPod<string, string>.Payload))
 			{
-				var rawProp = pod.GetType().GetProperty(nameof(JsonPod<string, string>.PayloadValue), BindingFlags.NonPublic | BindingFlags.Instance)
-								  ?? throw new InvalidProgramException($"'{nameof(JsonPod<string, string>.PayloadValue)}' property could not be obtained from pod object");
+				var rawProp = pod.GetType().GetProperty(nameof(JsonPod<string, string>.PayloadValue), BindingFlags.NonPublic | BindingFlags.Instance) ?? throw new InvalidProgramException($"'{nameof(JsonPod<string, string>.PayloadValue)}' property could not be obtained from pod object");
 				var jsonValue = ele.GetRawText().FromJson<JsonValue>(options: options);
 				rawProp.SetValue(pod, jsonValue);
 				try

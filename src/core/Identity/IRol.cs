@@ -2,7 +2,7 @@
 
 public interface IRol
 {
-	string                   Name        { get; }
-	IEnumerable<IGroup>      Groups      { get; }
+	string Name { get; }
+	IEnumerable<IGroup> Groups { get; }
 	IEnumerable<IPermission> Permissions { get; }
 }

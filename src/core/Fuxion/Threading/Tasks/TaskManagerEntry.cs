@@ -7,15 +7,15 @@ abstract class TaskManagerEntry : ITaskManagerEntry
 	protected TaskManagerEntry(Delegate? @delegate, TaskScheduler? scheduler, TaskCreationOptions options, ConcurrencyProfile concurrencyProfile)
 	{
 		CancellationTokenSource = new();
-		Delegate                = @delegate;
-		TaskScheduler           = scheduler ?? TaskScheduler.Default;
-		TaskCreationOptions     = options;
-		ConcurrencyProfile      = concurrencyProfile;
+		Delegate = @delegate;
+		TaskScheduler = scheduler ?? TaskScheduler.Default;
+		TaskCreationOptions = options;
+		ConcurrencyProfile = concurrencyProfile;
 	}
 	ITaskManagerEntry? _Next;
 	ITaskManagerEntry? _Previous;
-	Task?              _Task;
-	public ILogger?    Logger { get; set; }
+	Task? _Task;
+	public ILogger? Logger { get; set; }
 	public ITaskManagerEntry? Previous
 	{
 		get => _Previous;
@@ -43,11 +43,11 @@ abstract class TaskManagerEntry : ITaskManagerEntry
 			_Task = value;
 			_Task.ContinueWith(t =>
 			{
-				var        toLog = "La tarea finalizó con " + t.Exception?.InnerExceptions.Count + " errores.";
-				Exception? ex    = t.Exception;
+				var toLog = "La tarea finalizó con " + t.Exception?.InnerExceptions.Count + " errores.";
+				Exception? ex = t.Exception;
 				if (t.Exception?.InnerExceptions.Count == 1)
 				{
-					ex    =  t.Exception.InnerExceptions[0];
+					ex = t.Exception.InnerExceptions[0];
 					toLog += " Error '" + ex.GetType().Name + "': " + ex.Message;
 				}
 				if (ex is TaskCanceledByConcurrencyException tccex)
@@ -57,13 +57,13 @@ abstract class TaskManagerEntry : ITaskManagerEntry
 			}, TaskContinuationOptions.OnlyOnFaulted);
 		}
 	}
-	public TaskScheduler           TaskScheduler       { get; }
-	public TaskCreationOptions     TaskCreationOptions { get; }
-	public void                    Start()             => Task.Start(TaskScheduler);
-	public event EventHandler?     CancelRequested;
-	public bool                    IsCancellationRequested => CancellationTokenSource.IsCancellationRequested;
+	public TaskScheduler TaskScheduler { get; }
+	public TaskCreationOptions TaskCreationOptions { get; }
+	public void Start() => Task.Start(TaskScheduler);
+	public event EventHandler? CancelRequested;
+	public bool IsCancellationRequested => CancellationTokenSource.IsCancellationRequested;
 	public CancellationTokenSource CancellationTokenSource { get; }
-	public Delegate?               Delegate                { get; }
+	public Delegate? Delegate { get; }
 	public void Cancel()
 	{
 		CancellationTokenSource.Cancel();
@@ -73,9 +73,7 @@ abstract class TaskManagerEntry : ITaskManagerEntry
 	{
 		var allPrevious = TaskManager.Tasks.Read(l => l.Take(l.IndexOf(this)).Where(e => string.IsNullOrWhiteSpace(ConcurrencyProfile.Name)
 			//? e.Delegate.Method == Delegate.Method && e.Delegate.Target.GetType() == Delegate.Target.GetType()
-			? ConcurrencyProfile.ByInstance
-				? e.Delegate?.Method == Delegate?.Method && e.Delegate?.Target            == Delegate?.Target
-				: e.Delegate?.Method == Delegate?.Method && e.Delegate?.Target?.GetType() == Delegate?.Target?.GetType()
+			? ConcurrencyProfile.ByInstance ? e.Delegate?.Method == Delegate?.Method && e.Delegate?.Target == Delegate?.Target : e.Delegate?.Method == Delegate?.Method && e.Delegate?.Target?.GetType() == Delegate?.Target?.GetType()
 			: e.ConcurrencyProfile.Name == ConcurrencyProfile.Name).ToList());
 		Previous = allPrevious.LastOrDefault();
 		if (ConcurrencyProfile.CancelPrevious)

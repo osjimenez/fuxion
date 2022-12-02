@@ -2,7 +2,7 @@
 
 public class AverageTimeProviderTest : BaseTest<AverageTimeProviderTest>
 {
-	public AverageTimeProviderTest(ITestOutputHelper output) :base(output) { }
+	public AverageTimeProviderTest(ITestOutputHelper output) : base(output) { }
 	string[] NtpServersAddresses { get; } =
 	{
 		// From NIST - http://tf.nist.gov/tf-cgi/servers.cgi
@@ -27,14 +27,9 @@ public class AverageTimeProviderTest : BaseTest<AverageTimeProviderTest>
 	};
 	string[] WebServersAddresses { get; } =
 	{
-		"https://www.google.com", 
-		"https://www.google.es", 
-		"https://www.youtube.com",
+		"https://www.google.com", "https://www.google.es", "https://www.youtube.com",
 		// "https://www.microsoft.com",
-		"https://www.yahoo.com", 
-		"https://www.amazon.com", 
-		"https://www.facebook.com",
-		"https://www.twitter.com"
+		"https://www.yahoo.com", "https://www.amazon.com", "https://www.facebook.com", "https://www.twitter.com"
 	};
 	[Fact(DisplayName = "AverageTimeProvider - CheckConsistency")]
 	public void AverageTimeProvider_CheckConsistency() =>
@@ -45,9 +40,9 @@ public class AverageTimeProviderTest : BaseTest<AverageTimeProviderTest>
 				{
 					ServerAddress = add, ServerType = InternetTimeServerType.Web, Timeout = TimeSpan.FromSeconds(15)
 				});
-			p.Logger                    = Logger;
+			p.Logger = Logger;
 			p.RandomizedProvidersPerTry = 3;
-			p.MaxFailsPerTry            = 3;
+			p.MaxFailsPerTry = 3;
 			return p;
 		}).CheckConsistency(Output);
 }

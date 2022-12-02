@@ -18,7 +18,7 @@ public class PatchableJsonConverter<T> : JsonConverter<Patchable<T>> where T : c
 			if (reader.TokenType == JsonTokenType.EndObject) return patchable;
 			if (reader.TokenType != JsonTokenType.PropertyName) throw new JsonException("The reader expected JsonTokenType.PropertyName");
 			var propertyName = reader.GetString() ?? throw new InvalidProgramException("Current property name could not be read from Utf8JsonReader.");
-			var prop         = typeof(T).GetRuntimeProperty(propertyName);
+			var prop = typeof(T).GetRuntimeProperty(propertyName);
 			if (prop is null) throw new InvalidProgramException($"The property '{propertyName}' is not present in type '{typeof(T)}'");
 			var ele = JsonDocument.ParseValue(ref reader).RootElement;
 			var val = ele.Deserialize(prop.PropertyType, new JsonSerializerOptions

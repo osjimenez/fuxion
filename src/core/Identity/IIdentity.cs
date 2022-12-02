@@ -2,7 +2,7 @@
 
 public interface IIdentity : IRol
 {
-	object Id           { get; }
+	object Id { get; }
 	byte[] PasswordHash { get; }
 	byte[] PasswordSalt { get; }
 }

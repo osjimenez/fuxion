@@ -18,7 +18,7 @@ public class PublicationPod : JsonPod<Event, string>
 	}
 	[JsonInclude]
 	public DateTime Timestamp { get; internal set; }
-	public T?     AsEvent<T>() where T : Event                            => As<T>().Transform(evt => evt?.AddPublication(Timestamp));
-	public Event? AsEvent(Type                          type)             => ((Event?)As(type)).Transform(evt => evt?.AddPublication(Timestamp));
+	public T? AsEvent<T>() where T : Event => As<T>().Transform(evt => evt?.AddPublication(Timestamp));
+	public Event? AsEvent(Type type) => ((Event?)As(type)).Transform(evt => evt?.AddPublication(Timestamp));
 	public Event? WithTypeKeyDirectory(TypeKeyDirectory typeKeyDirectory) => AsEvent(typeKeyDirectory[PayloadKey]);
 }

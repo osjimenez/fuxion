@@ -42,8 +42,8 @@ public class TypeDiscriminatorTetst : BaseTest<TypeDiscriminatorTetst>
 		Assert.Equal(Helpers.TypeDiscriminatorIds.Document, dis.Id);
 		Assert.Equal(Helpers.TypeDiscriminatorIds.Document, dis.Name);
 		Assert.Equal(TypeDiscriminator.TypeDiscriminatorId, dis.TypeKey);
-		Assert.Equal(fac.DiscriminatorTypeName,             dis.TypeName);
-		Assert.Equal(2,                                     dis.Inclusions.Count());
+		Assert.Equal(fac.DiscriminatorTypeName, dis.TypeName);
+		Assert.Equal(2, dis.Inclusions.Count());
 		Assert.Single(dis.Exclusions);
 	}
 	[Fact(DisplayName = "TypeDiscriminator - Equality")]
@@ -213,11 +213,11 @@ public class TypeDiscriminatorTetst : BaseTest<TypeDiscriminatorTetst>
 		fac.Register(typeof(LocationDvo<>));
 		fac.Register(typeof(CityDvo));
 		fac.Register(typeof(CountryDvo));
-		var dvo  = fac.FromId(TypeDiscriminatorIds.City);
+		var dvo = fac.FromId(TypeDiscriminatorIds.City);
 		var dvo2 = fac.FromId(TypeDiscriminatorIds.Location);
 		var dvo3 = fac.FromType(typeof(LocationDvo<>));
-		Assert.True(dao.Id  == dvo.Id,             $"Type discriminators DAO & DVO must have same Id. Values are '{dao.Id}' and '{dvo.Id}'");
-		Assert.True(dvo2.Id == dvo3.Id,            $"Type discriminators DAO & DVO must have same Id. Values are '{dvo2.Id}' and '{dvo3.Id}'");
+		Assert.True(dao.Id == dvo.Id, $"Type discriminators DAO & DVO must have same Id. Values are '{dao.Id}' and '{dvo.Id}'");
+		Assert.True(dvo2.Id == dvo3.Id, $"Type discriminators DAO & DVO must have same Id. Values are '{dvo2.Id}' and '{dvo3.Id}'");
 		Assert.True(dvo2.Inclusions.Contains(dvo), "Type discriminator 'Location' must include 'City'");
 	}
 }

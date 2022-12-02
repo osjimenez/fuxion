@@ -1,13 +1,13 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace Fuxion.Identity.Helpers; 
+namespace Fuxion.Identity.Helpers;
 
 public class PasswordProvider : IPasswordProvider
 {
-	public int                   SaltBytesLenght { get; set; } = 8;
-	public int                   HashIterations  { get; set; } = 10137;
-	public PasswordHashAlgorithm Algorithm       { get; set; } = PasswordHashAlgorithm.SHA256;
+	public int SaltBytesLenght { get; set; } = 8;
+	public int HashIterations { get; set; } = 10137;
+	public PasswordHashAlgorithm Algorithm { get; set; } = PasswordHashAlgorithm.SHA256;
 	public void Generate(string password, out byte[] salt, out byte[] hash)
 	{
 		salt = RandomNumberGenerator.GetBytes(SaltBytesLenght);
@@ -15,9 +15,9 @@ public class PasswordProvider : IPasswordProvider
 	}
 	public bool Verify(string password, byte[] hash, byte[] salt)
 	{
-		var saltAndPass                                      = Encoding.UTF8.GetBytes(password).Concat(salt).ToArray();
-		var hashProvider                                     = GetAlgorithm();
-		var computeHash                                      = hashProvider.ComputeHash(saltAndPass);
+		var saltAndPass = Encoding.UTF8.GetBytes(password).Concat(salt).ToArray();
+		var hashProvider = GetAlgorithm();
+		var computeHash = hashProvider.ComputeHash(saltAndPass);
 		for (var i = 0; i < HashIterations; i++) computeHash = hashProvider.ComputeHash(computeHash);
 		return computeHash.SequenceEqual(hash);
 	}
@@ -32,7 +32,7 @@ public class PasswordProvider : IPasswordProvider
 		};
 	internal void Generate(string password, byte[] salt, out byte[] hash)
 	{
-		var saltAndPass  = Encoding.UTF8.GetBytes(password).Concat(salt).ToArray();
+		var saltAndPass = Encoding.UTF8.GetBytes(password).Concat(salt).ToArray();
 		var hashProvider = GetAlgorithm();
 		hash = hashProvider.ComputeHash(saltAndPass);
 		for (var i = 0; i < HashIterations; i++) hash = hashProvider.ComputeHash(hash);
@@ -41,7 +41,7 @@ public class PasswordProvider : IPasswordProvider
 
 public enum PasswordHashAlgorithm
 {
-	SHA1   = 20,
+	SHA1 = 20,
 	SHA256 = 32,
 	SHA384 = 48,
 	SHA512 = 64

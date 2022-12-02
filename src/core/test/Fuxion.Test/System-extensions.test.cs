@@ -26,10 +26,10 @@ public class SystemExtensionsTest : BaseTest<SystemExtensionsTest>
 		public TransformationSource(int integer, string @string)
 		{
 			Integer = integer;
-			String  = @string;
+			String = @string;
 		}
-		public int    Integer { get; }
-		public string String  { get; }
+		public int Integer { get; }
+		public string String { get; }
 	}
 
 	[Fact(DisplayName = "Bytes - FromHexadecimal")]
@@ -48,8 +48,8 @@ public class SystemExtensionsTest : BaseTest<SystemExtensionsTest>
 	[Fact(DisplayName = "System - CloneWithJson")]
 	public void CloneWithJsonTest()
 	{
-		Base b   = new Derived();
-		var  res = b.CloneWithJson();
+		Base b = new Derived();
+		var res = b.CloneWithJson();
 		Output.WriteLine("res.GetType() = " + res.GetType().Name);
 		Assert.Equal(nameof(Derived), res.GetType().Name);
 	}
@@ -86,21 +86,21 @@ public class SystemExtensionsTest : BaseTest<SystemExtensionsTest>
 	{
 		// Long
 		Assert.Equal(26_326_605, 496_088_653L.DivisionByPowerOfTwo(25).Remainder);
-		Assert.Equal(14,         496_088_653L.DivisionByPowerOfTwo(25).Quotient);
+		Assert.Equal(14, 496_088_653L.DivisionByPowerOfTwo(25).Quotient);
 		// Bytes
 		var value = new byte[]
 		{
 			0x4D, 0xB6, 0x91, 0x1D, 0x00, 0x00, 0x00
 		};
 		Assert.Equal(26_326_605, value.DivisionByPowerOfTwo(25).Remainder);
-		Assert.Equal(14,         value.DivisionByPowerOfTwo(25).Quotient);
+		Assert.Equal(14, value.DivisionByPowerOfTwo(25).Quotient);
 	}
 	[Fact(DisplayName = "IsBetween - First")]
 	public void IsBetween()
 	{
-		Assert.True(3.IsBetween(2,  4)); // With margin
-		Assert.True(3.IsBetween(3,  4)); // Low limited
-		Assert.True(3.IsBetween(3,  3)); // High limited
+		Assert.True(3.IsBetween(2, 4)); // With margin
+		Assert.True(3.IsBetween(3, 4)); // Low limited
+		Assert.True(3.IsBetween(3, 3)); // High limited
 		Assert.False(3.IsBetween(1, 2)); // Low out of range
 		Assert.False(3.IsBetween(4, 5)); // High out of range
 	}
@@ -136,7 +136,7 @@ public class SystemExtensionsTest : BaseTest<SystemExtensionsTest>
 	[Fact(DisplayName = "String - ContainsWithComparison")]
 	public void StringContainsWithComparison()
 	{
-		Assert.True("abc".Contains("ABC",  StringComparison.InvariantCultureIgnoreCase));
+		Assert.True("abc".Contains("ABC", StringComparison.InvariantCultureIgnoreCase));
 		Assert.False("abc".Contains("ABC", StringComparison.InvariantCulture));
 	}
 	[Fact(DisplayName = "String - SearchTextInElements")]
@@ -155,15 +155,15 @@ public class SystemExtensionsTest : BaseTest<SystemExtensionsTest>
 		{
 			"this is ", "my t", "ex", "t for you and more te", "xt"
 		}.SearchTextInElements("tExt", StringComparison.InvariantCultureIgnoreCase);
-		Assert.Equal(2,  res.Count);
-		Assert.Equal(1,  res[0].Start.ItemIndex);
-		Assert.Equal(3,  res[0].Start.PositionIndex);
-		Assert.Equal(3,  res[0].End.ItemIndex);
-		Assert.Equal(0,  res[0].End.PositionIndex);
-		Assert.Equal(3,  res[1].Start.ItemIndex);
+		Assert.Equal(2, res.Count);
+		Assert.Equal(1, res[0].Start.ItemIndex);
+		Assert.Equal(3, res[0].Start.PositionIndex);
+		Assert.Equal(3, res[0].End.ItemIndex);
+		Assert.Equal(0, res[0].End.PositionIndex);
+		Assert.Equal(3, res[1].Start.ItemIndex);
 		Assert.Equal(19, res[1].Start.PositionIndex);
-		Assert.Equal(4,  res[1].End.ItemIndex);
-		Assert.Equal(1,  res[1].End.PositionIndex);
+		Assert.Equal(4, res[1].End.ItemIndex);
+		Assert.Equal(1, res[1].End.PositionIndex);
 		res = new[]
 		{
 			"text"
@@ -196,28 +196,28 @@ public class SystemExtensionsTest : BaseTest<SystemExtensionsTest>
 	public void StringToByteArrayFromHexadecimal()
 	{
 		var value = "FD2EAC14000000".ToByteArrayFromHexadecimal();
-		Assert.Equal("FD2EAC14000000",       value.ToHexadecimal());
+		Assert.Equal("FD2EAC14000000", value.ToHexadecimal());
 		Assert.Equal("FD:2E:AC:14:00:00:00", value.ToHexadecimal(':'));
-		Assert.Equal("00000014AC2EFD",       value.ToHexadecimal(asBigEndian: true));
+		Assert.Equal("00000014AC2EFD", value.ToHexadecimal(asBigEndian: true));
 	}
 	[Fact(DisplayName = "TimeSpan - ToTimeString")]
 	public void TimeSpan_ToTimeString()
 	{
 		var res = TimeSpan.Parse("1.18:53:58.1234567").ToTimeString();
-		Assert.Contains($"1 {Strings.day}",            res);
-		Assert.Contains($"18 {Strings.hours}",         res);
-		Assert.Contains($"53 {Strings.minutes}",       res);
-		Assert.Contains($"58 {Strings.seconds}",       res);
+		Assert.Contains($"1 {Strings.day}", res);
+		Assert.Contains($"18 {Strings.hours}", res);
+		Assert.Contains($"53 {Strings.minutes}", res);
+		Assert.Contains($"58 {Strings.seconds}", res);
 		Assert.Contains($"123 {Strings.milliseconds}", res);
 		res = TimeSpan.Parse("1.18:53:58.1234567").ToTimeString(3);
-		Assert.Contains($"1 {Strings.day}",      res);
-		Assert.Contains($"18 {Strings.hours}",   res);
+		Assert.Contains($"1 {Strings.day}", res);
+		Assert.Contains($"18 {Strings.hours}", res);
 		Assert.Contains($"53 {Strings.minutes}", res);
-		Assert.DoesNotContain($"58 {Strings.seconds}",       res);
+		Assert.DoesNotContain($"58 {Strings.seconds}", res);
 		Assert.DoesNotContain($"123 {Strings.milliseconds}", res);
 		res = TimeSpan.Parse("0.18:53:58.1234567").ToTimeString(3);
 		Assert.DoesNotContain($"0 {Strings.day}", res);
-		Assert.Contains($"18 {Strings.hours}",   res);
+		Assert.Contains($"18 {Strings.hours}", res);
 		Assert.Contains($"53 {Strings.minutes}", res);
 		Assert.Contains($"58 {Strings.seconds}", res);
 		Assert.DoesNotContain($"123 {Strings.milliseconds}", res);
@@ -226,16 +226,16 @@ public class SystemExtensionsTest : BaseTest<SystemExtensionsTest>
 
 		// Only letters
 		res = TimeSpan.Parse("1.18:53:58.1234567").ToTimeString(onlyLetters: true);
-		Assert.Contains("1 d",    res);
-		Assert.Contains("18 h",   res);
-		Assert.Contains("53 m",   res);
-		Assert.Contains("58 s",   res);
-		Assert.Contains("123 ms", res);
-		res = TimeSpan.Parse("1.18:53:58.1234567").ToTimeString(3, true);
-		Assert.Contains("1 d",  res);
+		Assert.Contains("1 d", res);
 		Assert.Contains("18 h", res);
 		Assert.Contains("53 m", res);
-		Assert.DoesNotContain("58 s",   res);
+		Assert.Contains("58 s", res);
+		Assert.Contains("123 ms", res);
+		res = TimeSpan.Parse("1.18:53:58.1234567").ToTimeString(3, true);
+		Assert.Contains("1 d", res);
+		Assert.Contains("18 h", res);
+		Assert.Contains("53 m", res);
+		Assert.DoesNotContain("58 s", res);
 		Assert.DoesNotContain("123 ms", res);
 		res = TimeSpan.Parse("0.18:53:58.1234567").ToTimeString(3, true);
 		Assert.DoesNotContain("0 d", res);

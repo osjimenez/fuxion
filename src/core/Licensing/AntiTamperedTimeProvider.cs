@@ -27,17 +27,17 @@ public class AntiTamperedTimeProvider : ITimeProvider
 		ReliableTimeProvider = reliableTimeProvider;
 		AntiBackTimeProvider = antiBackTimeProvider;
 	}
-	public ILogger?             Logger               { get; set; }
-	public ITimeProvider        ReliableTimeProvider { get; set; }
+	public ILogger? Logger { get; set; }
+	public ITimeProvider ReliableTimeProvider { get; set; }
 	public AntiBackTimeProvider AntiBackTimeProvider { get; set; }
-	public DateTime             Now()                => GetUtc().ToLocalTime();
-	public DateTimeOffset       NowOffsetted()       => GetUtc().ToLocalTime();
-	public DateTime             UtcNow()             => GetUtc();
+	public DateTime Now() => GetUtc().ToLocalTime();
+	public DateTimeOffset NowOffsetted() => GetUtc().ToLocalTime();
+	public DateTime UtcNow() => GetUtc();
 	//TODO - Define a margin to move time and review possible tamper scenarios
 	DateTime GetUtc()
 	{
-		DateTime?  antiBack  = null;
-		DateTime?  reliable  = null;
+		DateTime? antiBack = null;
+		DateTime? reliable = null;
 		Exception? exception = null;
 		try
 		{

@@ -5,12 +5,12 @@ namespace Fuxion.Shell;
 public interface ICompositeDisposable : IDisposable
 {
 	CompositeDisposable CompositeDisposable { get; }
-	bool                Disposed            { get; set; }
-	void IDisposable.   Dispose()           => Dispose(true);
+	bool Disposed { get; set; }
+	void IDisposable.Dispose() => Dispose(true);
 #if !DEBUG
 			GC.SuppressFinalize(this);
 #endif
-	protected virtual void Dispose(bool disposing)
+	protected void Dispose(bool disposing)
 	{
 		if (!Disposed)
 			if (disposing)
@@ -23,6 +23,6 @@ public interface ICompositeDisposable : IDisposable
 
 public static class ICompositeDisposableExtensions
 {
-	public static void WhileNotDisposed(this ICompositeDisposable me, Action<CompositeDisposable> block)               => block(me.CompositeDisposable);
-	public static void DisposeWith(this      Task<IDisposable>    me, CompositeDisposable         compositeDisposable) => me.ContinueWith(t => t.Result.DisposeWith(compositeDisposable));
+	public static void WhileNotDisposed(this ICompositeDisposable me, Action<CompositeDisposable> block) => block(me.CompositeDisposable);
+	public static void DisposeWith(this Task<IDisposable> me, CompositeDisposable compositeDisposable) => me.ContinueWith(t => t.Result.DisposeWith(compositeDisposable));
 }

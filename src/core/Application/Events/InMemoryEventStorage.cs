@@ -24,7 +24,7 @@ public class InMemoryEventStorage : IEventStorage
 			});
 		}
 	}
-	readonly Locker<string>?                       dumpFilePath;
+	readonly Locker<string>? dumpFilePath;
 	readonly Locker<Dictionary<Guid, List<Event>>> events = new(new());
 	public Task<IQueryable<Event>> GetEventsAsync(Guid aggregateId, int start, int count) =>
 		events.ReadAsync(str =>

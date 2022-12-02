@@ -11,9 +11,9 @@ public static class SnapshotFactoryFeatureExtensions
 	{
 		var agg = me.Create(snapshot.AggregateId);
 		snapshot.Hydrate(agg);
-		agg.EventSourcing().CurrentVersion       = snapshot.Version;
+		agg.EventSourcing().CurrentVersion = snapshot.Version;
 		agg.EventSourcing().LastCommittedVersion = snapshot.Version;
-		agg.EventSourcing().SnapshotVersion      = snapshot.Version;
+		agg.EventSourcing().SnapshotVersion = snapshot.Version;
 		return agg;
 	}
 }

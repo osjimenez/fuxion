@@ -40,16 +40,16 @@ public class IdentityManagerTest
 
 	#region Login
 	[Theory]
-	[InlineData("Username and password null, must fail",  scenarios, null,    null,    false)]
-	[InlineData("Password null, must fail",               scenarios, "root",  null,    false)]
-	[InlineData("Username null, must fail",               scenarios, null,    "root",  false)]
-	[InlineData("Username and password empty, must fail", scenarios, "",      "",      false)]
-	[InlineData("Password empty, must fail",              scenarios, "root",  "",      false)]
-	[InlineData("Username empty, must fail",              scenarios, "",      "root",  false)]
+	[InlineData("Username and password null, must fail", scenarios, null, null, false)]
+	[InlineData("Password null, must fail", scenarios, "root", null, false)]
+	[InlineData("Username null, must fail", scenarios, null, "root", false)]
+	[InlineData("Username and password empty, must fail", scenarios, "", "", false)]
+	[InlineData("Password empty, must fail", scenarios, "root", "", false)]
+	[InlineData("Username empty, must fail", scenarios, "", "root", false)]
 	[InlineData("Username and password wrong, must fail", scenarios, "wrong", "wrong", false)]
-	[InlineData("Password wrong, must fail",              scenarios, "root",  "wrong", false)]
-	[InlineData("Username wrong, must fail",              scenarios, "wrong", "root",  false)]
-	[InlineData("Must be success",                        scenarios, "root",  "root",  true)]
+	[InlineData("Password wrong, must fail", scenarios, "root", "wrong", false)]
+	[InlineData("Username wrong, must fail", scenarios, "wrong", "root", false)]
+	[InlineData("Must be success", scenarios, "root", "root", true)]
 	public void Login(string _, string scenarios, string username, string password, bool expected)
 	{
 		//foreach (var scenario in scenarios.Split('·'))
@@ -151,9 +151,9 @@ public class IdentityManagerTest
 		var functions = functionsIds.Select(id => GetById(id)).ToArray();
 		//var rep = Factory.Get<IIdentityTestRepository>();
 		Assert.True(IM.CheckCredentials(username, password), $"Login fail unexpected: username<{username}> password<{password}>");
-		var                  strArgs = $"\r\nscenario<{scenarios}>\r\nusername<{username}>";
-		var                  dbSet   = typeof(IIdentityTestRepository).GetMethod("GetByType")?.MakeGenericMethod(type).Invoke(IM.Repository, null);
-		IEnumerable<object>? res     = null;
+		var strArgs = $"\r\nscenario<{scenarios}>\r\nusername<{username}>";
+		var dbSet = typeof(IIdentityTestRepository).GetMethod("GetByType")?.MakeGenericMethod(type).Invoke(IM.Repository, null);
+		IEnumerable<object>? res = null;
 		if (dbSet is IQueryable)
 			res = (IQueryable<object>)(typeof(System_Extensions).GetMethods()
 																				 .Where(m => m.Name == "AuthorizedTo" && m.GetParameters().First().ParameterType.GetGenericTypeDefinition() == typeof(IQueryable<>)).First()

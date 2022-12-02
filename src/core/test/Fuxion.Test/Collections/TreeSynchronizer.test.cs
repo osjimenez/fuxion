@@ -22,11 +22,11 @@ public class MockDto
 {
 	public MockDto(int id, string name)
 	{
-		Id   = id;
+		Id = id;
 		Name = name;
 	}
-	public int                           Id       { get; set; }
-	public int?                          ParentId { get; set; }
-	public string                        Name     { get; set; }
+	public int Id { get; set; }
+	public int? ParentId { get; set; }
+	public string Name { get; set; }
 	public ObservableCollection<MockDto> Children { get; set; } = new();
 }

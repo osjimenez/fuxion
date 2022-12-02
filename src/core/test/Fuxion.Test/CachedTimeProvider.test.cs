@@ -2,7 +2,7 @@
 
 public class CachedTimeProviderTest : BaseTest<CachedTimeProviderTest>
 {
-	public CachedTimeProviderTest(ITestOutputHelper output) :base(output) { }
+	public CachedTimeProviderTest(ITestOutputHelper output) : base(output) { }
 	[Fact(DisplayName = "CachedTimeProvider - CacheTest")]
 	public void CachedTimeProvider_CacheTest()
 	{

@@ -36,7 +36,7 @@ public class TaskManagerTest : BaseTest<TaskManagerTest>
 				bits[3] ? "SEQUEN" : "PARALL", // 3
 				bits[4] ? "LAST  " : "ALL   ", // 4
 				bits[5] ? "CANCEL" : "NO_CAN", // 5
-				bits[6] ? "NAMED " : "NO_NAM"  // 6
+				bits[6] ? "NAMED " : "NO_NAM" // 6
 			};
 			//TODO - Test not work on CI
 			//var strings = new[] {
@@ -66,16 +66,16 @@ public class TaskManagerTest : BaseTest<TaskManagerTest>
 	{
 		#region Variables
 		// Convert parameters to bool
-		var @void           = r  == "VOID  ";
-		var sync            = c  == "SYNC  ";
-		var create          = m  == "CREATE";
-		var sequentially    = p  == "SEQUEN";
-		var onlyLast        = o  == "LAST  ";
-		var cancel          = n  == "CANCEL";
-		var named           = na == "NAMED ";
-		var runDelay        = 5;
+		var @void = r == "VOID  ";
+		var sync = c == "SYNC  ";
+		var create = m == "CREATE";
+		var sequentially = p == "SEQUEN";
+		var onlyLast = o == "LAST  ";
+		var cancel = n == "CANCEL";
+		var named = na == "NAMED ";
+		var runDelay = 5;
 		var cancelledResult = "Canceled";
-		var doneResult      = "Done";
+		var doneResult = "Done";
 		using (Printer.Indent("Test constants"))
 		{
 			Printer.WriteLine($"{nameof(runDelay)}: {runDelay}");
@@ -93,10 +93,10 @@ public class TaskManagerTest : BaseTest<TaskManagerTest>
 			Printer.WriteLine($"{nameof(named)}: {named}");
 			Printer.WriteLine($"{nameof(parNum)}: {parNum}");
 		}
-		AutoResetEvent are       = new(true);
-		object         seqLocker = new();
-		var            seq       = "";
-		var            results   = new (bool WasCancelled, string? Result)[3];
+		AutoResetEvent are = new(true);
+		object seqLocker = new();
+		var seq = "";
+		var results = new (bool WasCancelled, string? Result)[3];
 
 		#region Methods
 		void AddToSeq(string val)
@@ -118,17 +118,17 @@ public class TaskManagerTest : BaseTest<TaskManagerTest>
 		MethodInfo GetMethod()
 		{
 			var mets = typeof(TaskManager).GetMethods().ToList();
-			mets = mets.Where(me => me.Name                          == (create ? nameof(TaskManager.Create) : nameof(TaskManager.StartNew))).ToList();
-			mets = mets.Where(me => me.GetParameters().Count()       == 3 + parNum + (create ? 0 : 1)).ToList();
+			mets = mets.Where(me => me.Name == (create ? nameof(TaskManager.Create) : nameof(TaskManager.StartNew))).ToList();
+			mets = mets.Where(me => me.GetParameters().Count() == 3 + parNum + (create ? 0 : 1)).ToList();
 			mets = mets.Where(me => me.GetGenericArguments().Count() == (@void ? parNum : parNum + 1)).ToList();
 			mets = mets.Where(me => me.GetParameters().First().ParameterType.Name.StartsWith(@void && sync ? "Action" : "Func")).ToList();
 			mets = mets.Where(me => me.GetParameters().First().ParameterType.GetGenericArguments().Count() == (!sync ? parNum + 1 : @void ? parNum : parNum + 1)).ToList();
-			mets = mets.Where(me => @void && parNum == 0 || sync  && !typeof(Task).IsAssignableFrom(me.GetParameters().First().ParameterType.GetGenericArguments().Last())
+			mets = mets.Where(me => @void && parNum == 0 || sync && !typeof(Task).IsAssignableFrom(me.GetParameters().First().ParameterType.GetGenericArguments().Last())
 																		|| !sync && typeof(Task).IsAssignableFrom(me.GetParameters().First().ParameterType.GetGenericArguments().Last())).ToList();
 			var met = mets.Single();
 			if (met.IsGenericMethod)
 			{
-				var args                          = met.GetGenericArguments().Select(a => typeof(int)).ToArray();
+				var args = met.GetGenericArguments().Select(a => typeof(int)).ToArray();
 				if (!@void) args[args.Length - 1] = typeof(string);
 				met = met.MakeGenericMethod(args);
 			}
@@ -213,13 +213,13 @@ public class TaskManagerTest : BaseTest<TaskManagerTest>
 					{
 						0 => new Action(() => Void_Sync()),
 						1 => new Action<int>(s => Void_Sync()),
-						2 => new Action<int, int>((s1,                                    s2) => Void_Sync()),
-						3 => new Action<int, int, int>((s1,                               s2, s3) => Void_Sync()),
-						4 => new Action<int, int, int, int>((s1,                          s2, s3, s4) => Void_Sync()),
-						5 => new Action<int, int, int, int, int>((s1,                     s2, s3, s4, s5) => Void_Sync()),
-						6 => new Action<int, int, int, int, int, int>((s1,                s2, s3, s4, s5, s6) => Void_Sync()),
-						7 => new Action<int, int, int, int, int, int, int>((s1,           s2, s3, s4, s5, s6, s7) => Void_Sync()),
-						8 => new Action<int, int, int, int, int, int, int, int>((s1,      s2, s3, s4, s5, s6, s7, s8) => Void_Sync()),
+						2 => new Action<int, int>((s1, s2) => Void_Sync()),
+						3 => new Action<int, int, int>((s1, s2, s3) => Void_Sync()),
+						4 => new Action<int, int, int, int>((s1, s2, s3, s4) => Void_Sync()),
+						5 => new Action<int, int, int, int, int>((s1, s2, s3, s4, s5) => Void_Sync()),
+						6 => new Action<int, int, int, int, int, int>((s1, s2, s3, s4, s5, s6) => Void_Sync()),
+						7 => new Action<int, int, int, int, int, int, int>((s1, s2, s3, s4, s5, s6, s7) => Void_Sync()),
+						8 => new Action<int, int, int, int, int, int, int, int>((s1, s2, s3, s4, s5, s6, s7, s8) => Void_Sync()),
 						9 => new Action<int, int, int, int, int, int, int, int, int>((s1, s2, s3, s4, s5, s6, s7, s8, s9) => Void_Sync()),
 						_ => throw new InvalidProgramException()
 					};
@@ -228,13 +228,13 @@ public class TaskManagerTest : BaseTest<TaskManagerTest>
 					{
 						0 => new Func<Task>(() => Void_Async()),
 						1 => new Func<int, Task>(s => Void_Async()),
-						2 => new Func<int, int, Task>((s1,                                    s2) => Void_Async()),
-						3 => new Func<int, int, int, Task>((s1,                               s2, s3) => Void_Async()),
-						4 => new Func<int, int, int, int, Task>((s1,                          s2, s3, s4) => Void_Async()),
-						5 => new Func<int, int, int, int, int, Task>((s1,                     s2, s3, s4, s5) => Void_Async()),
-						6 => new Func<int, int, int, int, int, int, Task>((s1,                s2, s3, s4, s5, s6) => Void_Async()),
-						7 => new Func<int, int, int, int, int, int, int, Task>((s1,           s2, s3, s4, s5, s6, s7) => Void_Async()),
-						8 => new Func<int, int, int, int, int, int, int, int, Task>((s1,      s2, s3, s4, s5, s6, s7, s8) => Void_Async()),
+						2 => new Func<int, int, Task>((s1, s2) => Void_Async()),
+						3 => new Func<int, int, int, Task>((s1, s2, s3) => Void_Async()),
+						4 => new Func<int, int, int, int, Task>((s1, s2, s3, s4) => Void_Async()),
+						5 => new Func<int, int, int, int, int, Task>((s1, s2, s3, s4, s5) => Void_Async()),
+						6 => new Func<int, int, int, int, int, int, Task>((s1, s2, s3, s4, s5, s6) => Void_Async()),
+						7 => new Func<int, int, int, int, int, int, int, Task>((s1, s2, s3, s4, s5, s6, s7) => Void_Async()),
+						8 => new Func<int, int, int, int, int, int, int, int, Task>((s1, s2, s3, s4, s5, s6, s7, s8) => Void_Async()),
 						9 => new Func<int, int, int, int, int, int, int, int, int, Task>((s1, s2, s3, s4, s5, s6, s7, s8, s9) => Void_Async()),
 						_ => throw new InvalidProgramException()
 					};
@@ -243,13 +243,13 @@ public class TaskManagerTest : BaseTest<TaskManagerTest>
 				{
 					0 => new Func<string>(() => Result_Sync()),
 					1 => new Func<int, string>(s => Result_Sync()),
-					2 => new Func<int, int, string>((s1,                                    s2) => Result_Sync()),
-					3 => new Func<int, int, int, string>((s1,                               s2, s3) => Result_Sync()),
-					4 => new Func<int, int, int, int, string>((s1,                          s2, s3, s4) => Result_Sync()),
-					5 => new Func<int, int, int, int, int, string>((s1,                     s2, s3, s4, s5) => Result_Sync()),
-					6 => new Func<int, int, int, int, int, int, string>((s1,                s2, s3, s4, s5, s6) => Result_Sync()),
-					7 => new Func<int, int, int, int, int, int, int, string>((s1,           s2, s3, s4, s5, s6, s7) => Result_Sync()),
-					8 => new Func<int, int, int, int, int, int, int, int, string>((s1,      s2, s3, s4, s5, s6, s7, s8) => Result_Sync()),
+					2 => new Func<int, int, string>((s1, s2) => Result_Sync()),
+					3 => new Func<int, int, int, string>((s1, s2, s3) => Result_Sync()),
+					4 => new Func<int, int, int, int, string>((s1, s2, s3, s4) => Result_Sync()),
+					5 => new Func<int, int, int, int, int, string>((s1, s2, s3, s4, s5) => Result_Sync()),
+					6 => new Func<int, int, int, int, int, int, string>((s1, s2, s3, s4, s5, s6) => Result_Sync()),
+					7 => new Func<int, int, int, int, int, int, int, string>((s1, s2, s3, s4, s5, s6, s7) => Result_Sync()),
+					8 => new Func<int, int, int, int, int, int, int, int, string>((s1, s2, s3, s4, s5, s6, s7, s8) => Result_Sync()),
 					9 => new Func<int, int, int, int, int, int, int, int, int, string>((s1, s2, s3, s4, s5, s6, s7, s8, s9) => Result_Sync()),
 					_ => throw new InvalidProgramException()
 				};
@@ -257,13 +257,13 @@ public class TaskManagerTest : BaseTest<TaskManagerTest>
 			{
 				0 => new Func<Task<string>>(() => Result_Async()),
 				1 => new Func<int, Task<string>>(s => Result_Async()),
-				2 => new Func<int, int, Task<string>>((s1,                                    s2) => Result_Async()),
-				3 => new Func<int, int, int, Task<string>>((s1,                               s2, s3) => Result_Async()),
-				4 => new Func<int, int, int, int, Task<string>>((s1,                          s2, s3, s4) => Result_Async()),
-				5 => new Func<int, int, int, int, int, Task<string>>((s1,                     s2, s3, s4, s5) => Result_Async()),
-				6 => new Func<int, int, int, int, int, int, Task<string>>((s1,                s2, s3, s4, s5, s6) => Result_Async()),
-				7 => new Func<int, int, int, int, int, int, int, Task<string>>((s1,           s2, s3, s4, s5, s6, s7) => Result_Async()),
-				8 => new Func<int, int, int, int, int, int, int, int, Task<string>>((s1,      s2, s3, s4, s5, s6, s7, s8) => Result_Async()),
+				2 => new Func<int, int, Task<string>>((s1, s2) => Result_Async()),
+				3 => new Func<int, int, int, Task<string>>((s1, s2, s3) => Result_Async()),
+				4 => new Func<int, int, int, int, Task<string>>((s1, s2, s3, s4) => Result_Async()),
+				5 => new Func<int, int, int, int, int, Task<string>>((s1, s2, s3, s4, s5) => Result_Async()),
+				6 => new Func<int, int, int, int, int, int, Task<string>>((s1, s2, s3, s4, s5, s6) => Result_Async()),
+				7 => new Func<int, int, int, int, int, int, int, Task<string>>((s1, s2, s3, s4, s5, s6, s7) => Result_Async()),
+				8 => new Func<int, int, int, int, int, int, int, int, Task<string>>((s1, s2, s3, s4, s5, s6, s7, s8) => Result_Async()),
 				9 => new Func<int, int, int, int, int, int, int, int, int, Task<string>>((s1, s2, s3, s4, s5, s6, s7, s8, s9) => Result_Async()),
 				_ => throw new InvalidProgramException()
 			};
@@ -362,8 +362,8 @@ public class TaskManagerTest : BaseTest<TaskManagerTest>
 		Printer.WriteLine("==============");
 		using (Printer.Indent("Run"))
 		{
-			var res       = new Task<(bool WasCancelled, string? Result)>[3];
-			var num       = 1;
+			var res = new Task<(bool WasCancelled, string? Result)>[3];
+			var num = 1;
 			var numLocker = new object();
 			int GetNum()
 			{
@@ -404,7 +404,7 @@ public class TaskManagerTest : BaseTest<TaskManagerTest>
 			results[0] = res[0].Result;
 			results[1] = res[1].Result;
 			results[2] = res[2].Result;
-			seq        = seq.Trim('-');
+			seq = seq.Trim('-');
 			for (var i = 0; i < results.Length; i++) Printer.WriteLine($"Result {i + 1}: WasCanceled<{results[i].WasCancelled}>,Result<{results[i].Result}>");
 			Printer.WriteLine("Sequence: " + seq);
 		}
@@ -420,7 +420,7 @@ public class TaskManagerTest : BaseTest<TaskManagerTest>
 			{
 				seqs.IndexOf($"E{taskThatHadToFinished}"), seqs.IndexOf($"E{taskThatHadToFinished}X")
 			}.Max() < seqs.IndexOf($"S{taskThatHadToStartAfter}");
-		bool WasTaskExecuted(int             task) => seqs.Contains($"S{task}") && (seqs.Contains($"E{task}") || seqs.Contains($"E{task}X"));
+		bool WasTaskExecuted(int task) => seqs.Contains($"S{task}") && (seqs.Contains($"E{task}") || seqs.Contains($"E{task}X"));
 		bool WasTaskExecutedSuccessfully(int task) => seqs.Contains($"S{task}") && seqs.Contains($"E{task}");
 		void AssertIfTaskWasFinishBeforeOtherStart(int taskThatHadToFinished, int taskThatHadToStartAfter)
 		{
@@ -646,7 +646,7 @@ public class TaskManagerTest : BaseTest<TaskManagerTest>
 	[Fact(DisplayName = "TaskManager - Sleep")]
 	public Task TaskManager_Sleep()
 	{
-		var dt   = DateTime.Now;
+		var dt = DateTime.Now;
 		var task = TaskManager.StartNew(() => { TaskManager.Current?.Sleep(TimeSpan.FromMilliseconds(2500)); });
 		return task.ContinueWith(_ => { Assert.True(dt.AddSeconds(2) < DateTime.Now); });
 	}

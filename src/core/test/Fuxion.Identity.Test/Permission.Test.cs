@@ -23,9 +23,9 @@ public class PermissionTest : BaseTest<PermissionTest>
 				//new ScopeDao("","", States.California,propagation)
 			}
 		};
-		var de  = TypeDiscriminator.Empty;
+		var de = TypeDiscriminator.Empty;
 		var dsf = Cities.SanFrancisco;
-		var r   = per.Match(false, Read, de, dsf);
+		var r = per.Match(false, Read, de, dsf);
 		Debug.WriteLine("");
 		Assert.True(new PermissionDao("", "", null!, Edit.Id.ToString() ?? "")
 			{

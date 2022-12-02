@@ -10,11 +10,11 @@ using static LicenseContainer;
 using static LicensingManager;
 
 [Collection("Licensing")]
-public class LicensingManagerTest:BaseTest<LicensingManagerTest>
+public class LicensingManagerTest : BaseTest<LicensingManagerTest>
 {
-	public LicensingManagerTest(ITestOutputHelper output):base(output)
+	public LicensingManagerTest(ITestOutputHelper output) : base(output)
 	{
-		services    = new();
+		services = new();
 		services.AddSingleton<ILicenseProvider>(new LicenseProviderMock());
 		services.AddSingleton<ILicenseStore>(new LicenseStoreMock());
 		services.AddSingleton<IHardwareIdProvider>(new HardwareIdProviderMock());
@@ -25,11 +25,11 @@ public class LicensingManagerTest:BaseTest<LicensingManagerTest>
 	readonly ServiceCollection services;
 	[Theory(DisplayName = "LicensingManager - Validate")]
 #nullable disable
-	[InlineData("Match",              Const.HARDWARE_ID,                        Const.PRODUCT_ID,                         10,  true)]
-	[InlineData("Deactivated",        Const.HARDWARE_ID,                        Const.PRODUCT_ID,                         50,  false)]
-	[InlineData("Expired",            Const.HARDWARE_ID,                        Const.PRODUCT_ID,                         400, false)]
-	[InlineData("Product not match",  Const.HARDWARE_ID,                        "{105B337E-EBCE-48EA-87A7-852E3A699A98}", 10,  false)]
-	[InlineData("Hardware not match", "{AE2C70B9-6622-4341-81A0-10EAA078E7DF}", Const.PRODUCT_ID,                         10,  false)]
+	[InlineData("Match", Const.HARDWARE_ID, Const.PRODUCT_ID, 10, true)]
+	[InlineData("Deactivated", Const.HARDWARE_ID, Const.PRODUCT_ID, 50, false)]
+	[InlineData("Expired", Const.HARDWARE_ID, Const.PRODUCT_ID, 400, false)]
+	[InlineData("Product not match", Const.HARDWARE_ID, "{105B337E-EBCE-48EA-87A7-852E3A699A98}", 10, false)]
+	[InlineData("Hardware not match", "{AE2C70B9-6622-4341-81A0-10EAA078E7DF}", Const.PRODUCT_ID, 10, false)]
 #nullable enable
 	public void Validate(string _, string hardwareId, string productId, int offsetDays, bool expectedValidation)
 	{
@@ -82,10 +82,10 @@ public class LicenseRequestMock : LicenseRequest
 	public LicenseRequestMock(string hardwareId, string productId)
 	{
 		HardwareId = hardwareId;
-		ProductId  = productId;
+		ProductId = productId;
 	}
 	public string HardwareId { get; set; }
-	public string ProductId  { get; set; }
+	public string ProductId { get; set; }
 }
 
 public class HardwareIdProviderMock : IHardwareIdProvider

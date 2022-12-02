@@ -5,14 +5,14 @@ namespace Fuxion;
 public class CachedTimeProvider : ITimeProvider
 {
 	public CachedTimeProvider(ITimeProvider timeProvider) => TimeProvider = timeProvider;
-	readonly Stopwatch    stopwatch = new();
-	DateTime              cachedValue;
-	public ILogger?       Logger             { get; set; }
-	public ITimeProvider  TimeProvider       { get; set; }
-	public TimeSpan       ExpirationInterval { get; set; } = TimeSpan.FromSeconds(5);
-	public DateTime       Now()              => Now(out _);
-	public DateTimeOffset NowOffsetted()     => NowOffsetted(out _);
-	public DateTime       UtcNow()           => UtcNow(out _);
+	readonly Stopwatch stopwatch = new();
+	DateTime cachedValue;
+	public ILogger? Logger { get; set; }
+	public ITimeProvider TimeProvider { get; set; }
+	public TimeSpan ExpirationInterval { get; set; } = TimeSpan.FromSeconds(5);
+	public DateTime Now() => Now(out _);
+	public DateTimeOffset NowOffsetted() => NowOffsetted(out _);
+	public DateTime UtcNow() => UtcNow(out _);
 	DateTime GetUtc(out bool fromCache)
 	{
 		Logger?.LogInformation($"Getting time from {nameof(CachedTimeProvider)} ...");
@@ -33,7 +33,7 @@ public class CachedTimeProvider : ITimeProvider
 		}
 		return cachedValue.Add(stopwatch.Elapsed);
 	}
-	public DateTime       Now(out          bool fromCache) => GetUtc(out fromCache).ToLocalTime();
+	public DateTime Now(out bool fromCache) => GetUtc(out fromCache).ToLocalTime();
 	public DateTimeOffset NowOffsetted(out bool fromCache) => GetUtc(out fromCache).ToLocalTime();
-	public DateTime       UtcNow(out       bool fromCache) => GetUtc(out fromCache);
+	public DateTime UtcNow(out bool fromCache) => GetUtc(out fromCache);
 }

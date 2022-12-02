@@ -3,10 +3,10 @@
 public class LicenseStoreMock : ILicenseStore
 {
 	public LicenseStoreMock() => licenses = (File.ReadAllText("licenses.json").FromJson<LicenseContainer[]>() ?? throw new InvalidOperationException("Error deserializing licenses.json")).ToList();
-	readonly List<LicenseContainer>                         licenses;
+	readonly List<LicenseContainer> licenses;
 	public event EventHandler<EventArgs<LicenseContainer>>? LicenseAdded;
 	public event EventHandler<EventArgs<LicenseContainer>>? LicenseRemoved;
-	public IQueryable<LicenseContainer>                     Query() => licenses.AsQueryable();
+	public IQueryable<LicenseContainer> Query() => licenses.AsQueryable();
 	public void Add(LicenseContainer license)
 	{
 		licenses.Add(license);

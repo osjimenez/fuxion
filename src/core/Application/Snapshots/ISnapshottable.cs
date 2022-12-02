@@ -3,5 +3,5 @@
 public interface ISnapshottable
 {
 	Snapshot TakeSnapshot();
-	void     ApplySnapshot(Snapshot snapshot);
+	void ApplySnapshot(Snapshot snapshot);
 }

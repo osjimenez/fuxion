@@ -16,7 +16,7 @@ public class DockingManager
 	{
 		this.serviceProvider = serviceProvider;
 		using var scope = serviceProvider.CreateScope();
-		logger          = scope.ServiceProvider.GetService<ILogger<DockingManager>>();
+		logger = scope.ServiceProvider.GetService<ILogger<DockingManager>>();
 		panelDescritors = scope.ServiceProvider.GetServices<IPanelDescriptor>().ToList();
 		MessageBus.Current.OnOpenPanel(message => OpenPanel(message.Name, message.Arguments));
 		MessageBus.Current.OnClosePanel(message =>
@@ -40,12 +40,12 @@ public class DockingManager
 		MessageBus.Current.Listen<LoadLayoutMessage>().Subscribe(message => docking?.LoadLayout(message.LayoutFileStream));
 		MessageBus.Current.Listen<SaveLayoutMessage>().Subscribe(message => docking?.SaveLayout(message.LayoutFileStream));
 	}
-	readonly ILogger?                            logger;
-	readonly List<IPanelDescriptor>              panelDescritors;
+	readonly ILogger? logger;
+	readonly List<IPanelDescriptor> panelDescritors;
 	readonly ObservableCollection<PanelInstance> panelInstances = new();
-	readonly IServiceProvider                    serviceProvider;
-	RadDocking?                                  docking;
-	bool                                         locked;
+	readonly IServiceProvider serviceProvider;
+	RadDocking? docking;
+	bool locked;
 	public void AttachDocking(RadDocking docking)
 	{
 		logger?.LogTrace(nameof(AttachDocking));
@@ -195,7 +195,7 @@ public class DockingManager
 
 		//pane.CanUserClose = false;
 		pane.CanUserPin = false;
-		pane.CanFloat   = false;
+		pane.CanFloat = false;
 		pane.IsDockable = false;
 	}
 	void UnlockRadPane(RadPane pane)
@@ -207,7 +207,7 @@ public class DockingManager
 
 		//pane.CanUserClose = false;
 		pane.CanUserPin = true;
-		pane.CanFloat   = true;
+		pane.CanFloat = true;
 		pane.IsDockable = true;
 	}
 	void PositionPanel(RadPane radPane, PanelPosition position)
@@ -249,8 +249,8 @@ public class DockingManager
 	{
 		logger?.LogTrace($"{nameof(CreatePanelInstance)}({nameof(name)}: {name}, {nameof(args)}: {args})");
 		var descriptor = panelDescritors.Single(p => p.Name.Name == name.Name);
-		var scope      = serviceProvider.CreateScope();
-		var view       = scope.ServiceProvider.GetService(descriptor.ViewType);
+		var scope = serviceProvider.CreateScope();
+		var view = scope.ServiceProvider.GetService(descriptor.ViewType);
 		if (!(view is FrameworkElement)) throw new ArgumentException($"The '{nameof(descriptor.ViewType)}' must be '{nameof(FrameworkElement)}'");
 		var radPane = new RadPane
 		{
@@ -286,11 +286,11 @@ class ShellDockingPanesFactory : DockingPanesFactory
 {
 	public ShellDockingPanesFactory(Action<RadDocking, RadPane> addPane, Func<RadDocking, object, RadPane?> getPaneFromItem)
 	{
-		this.addPane         = addPane;
+		this.addPane = addPane;
 		this.getPaneFromItem = getPaneFromItem;
 	}
-	readonly           Action<RadDocking, RadPane>        addPane;
-	readonly           Func<RadDocking, object, RadPane?> getPaneFromItem;
-	protected override void                               AddPane(RadDocking         dock,    RadPane pane) => addPane(dock, pane);
-	protected override RadPane?                           GetPaneFromItem(RadDocking docking, object  item) => getPaneFromItem(docking, item);
+	readonly Action<RadDocking, RadPane> addPane;
+	readonly Func<RadDocking, object, RadPane?> getPaneFromItem;
+	protected override void AddPane(RadDocking dock, RadPane pane) => addPane(dock, pane);
+	protected override RadPane? GetPaneFromItem(RadDocking docking, object item) => getPaneFromItem(docking, item);
 }

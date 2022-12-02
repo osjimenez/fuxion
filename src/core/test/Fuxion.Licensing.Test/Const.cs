@@ -15,5 +15,5 @@ public static class Const
 												+ "<Modulus>xXnL2ppHKz084JHYmmX2TXSlxMnbq6FDRpRe7aLhShr/HD1KgKyhK54N/uigy6fJR8bPUr0mso8XdSgDI/A8Q/62DwPgNq9wc+SuGylO5laoN9MU9fycK0ntGk7rwW7raL+jWe3W68xQLZKptF3mzBjHW15hM+6b9+vllv2dcok=</Modulus>"
 												+ "<Exponent>AQAB</Exponent>" + "</RSAKeyValue>";
 	public const string HARDWARE_ID = nameof(HARDWARE_ID);
-	public const string PRODUCT_ID  = nameof(PRODUCT_ID);
+	public const string PRODUCT_ID = nameof(PRODUCT_ID);
 }

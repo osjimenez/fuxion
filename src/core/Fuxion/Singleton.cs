@@ -17,10 +17,10 @@ public class Singleton
 		{
 			if (type == null) throw new ArgumentNullException("type", "El tipo no puede ser null");
 			Type = type;
-			Key  = key;
+			Key = key;
 		}
-		public Type    Type { get; }
-		public object? Key  { get; }
+		public Type Type { get; }
+		public object? Key { get; }
 		public override int GetHashCode()
 		{
 			if (Key == null) return Type.GetHashCode();
@@ -31,11 +31,11 @@ public class Singleton
 			if (obj is SingletonKey key) return key.Type == Type && (key.Key == null || key.Key != null && key.Key.Equals(Key));
 			return false;
 		}
-		static        bool Compare<T>(T              t1,   T            t2)   => t1 == null && t2 == null || t1 != null && t1.Equals(t2);
-		public static bool operator ==(SingletonKey  key1, SingletonKey key2) => Compare(key1, key2);
-		public static bool operator !=(SingletonKey  key1, SingletonKey key2) => !Compare(key1, key2);
-		public static SingletonKey GetKey<T>(object? key)         => GetKey(typeof(T), key);
-		public static SingletonKey GetKey<T>()                    => GetKey(typeof(T), null);
+		static bool Compare<T>(T t1, T t2) => t1 == null && t2 == null || t1 != null && t1.Equals(t2);
+		public static bool operator ==(SingletonKey key1, SingletonKey key2) => Compare(key1, key2);
+		public static bool operator !=(SingletonKey key1, SingletonKey key2) => !Compare(key1, key2);
+		public static SingletonKey GetKey<T>(object? key) => GetKey(typeof(T), key);
+		public static SingletonKey GetKey<T>() => GetKey(typeof(T), null);
 		public static SingletonKey GetKey(Type type, object? key) => new(type, key);
 	}
 
@@ -43,19 +43,19 @@ public class Singleton
 	{
 		public SubscriptionItem(Type type, SingletonKey key, Delegate action)
 		{
-			Type   = type;
-			Key    = key;
+			Type = type;
+			Key = key;
 			Action = action;
 		}
-		public Type         Type                                                              { get; }
-		public SingletonKey Key                                                               { get; }
-		public Delegate     Action                                                            { get; }
-		public void         Invoke<T>(T previousValue, T actualValue, SingletonAction action) => Action.DynamicInvoke(new SingletonSubscriptionArgs<T>(previousValue, actualValue, action));
+		public Type Type { get; }
+		public SingletonKey Key { get; }
+		public Delegate Action { get; }
+		public void Invoke<T>(T previousValue, T actualValue, SingletonAction action) => Action.DynamicInvoke(new SingletonSubscriptionArgs<T>(previousValue, actualValue, action));
 	}
 
 	#region Singleton patern
-	static          Singleton? _instance;
-	static readonly object     lockObject = new();
+	static Singleton? _instance;
+	static readonly object lockObject = new();
 	static Singleton Instance
 	{
 		get
@@ -71,8 +71,8 @@ public class Singleton
 	#endregion
 
 	#region Add
-	public static void Add<T>() where T : new()             => Add(new T(),        SingletonKey.GetKey<T>());
-	public static void Add<T>(T objectInstance)             => Add(objectInstance, SingletonKey.GetKey<T>());
+	public static void Add<T>() where T : new() => Add(new T(), SingletonKey.GetKey<T>());
+	public static void Add<T>(T objectInstance) => Add(objectInstance, SingletonKey.GetKey<T>());
 	public static void Add<T>(T objectInstance, object key) => Add(objectInstance, SingletonKey.GetKey<T>(key));
 	static void Add<T>(T objectInstance, SingletonKey key)
 	{
@@ -85,8 +85,8 @@ public class Singleton
 		//Instance.objects.Add(key, objectInstance);
 		foreach (var sub in Instance.subscriptions.Where(sub => sub.Type == objectInstance?.GetType() && sub.Key == key)) sub.Invoke(default!, objectInstance, SingletonAction.Add);
 	}
-	public static void AddOrSkip<T>() where T : new()             => AddOrSkip(new T(),        SingletonKey.GetKey<T>());
-	public static void AddOrSkip<T>(T objectInstance)             => AddOrSkip(objectInstance, SingletonKey.GetKey<T>());
+	public static void AddOrSkip<T>() where T : new() => AddOrSkip(new T(), SingletonKey.GetKey<T>());
+	public static void AddOrSkip<T>(T objectInstance) => AddOrSkip(objectInstance, SingletonKey.GetKey<T>());
 	public static void AddOrSkip<T>(T objectInstance, object key) => AddOrSkip(objectInstance, SingletonKey.GetKey<T>(key));
 	static void AddOrSkip<T>(T objectInstance, SingletonKey key)
 	{
@@ -106,7 +106,7 @@ public class Singleton
 	#endregion
 
 	#region Remove
-	public static bool Remove<T>()           => Remove<T>(SingletonKey.GetKey<T>());
+	public static bool Remove<T>() => Remove<T>(SingletonKey.GetKey<T>());
 	public static bool Remove<T>(object key) => Remove<T>(SingletonKey.GetKey<T>(key));
 	static bool Remove<T>(SingletonKey key)
 	{
@@ -122,9 +122,9 @@ public class Singleton
 	#endregion
 
 	#region Contains
-	public static bool Contains<T>()                 => Contains<T>(SingletonKey.GetKey<T>());
-	public static bool Contains<T>(object       key) => Contains<T>(SingletonKey.GetKey<T>(key));
-	static        bool Contains<T>(SingletonKey key) => Instance.objects.Read(_ => _.ContainsKey(key));
+	public static bool Contains<T>() => Contains<T>(SingletonKey.GetKey<T>());
+	public static bool Contains<T>(object key) => Contains<T>(SingletonKey.GetKey<T>(key));
+	static bool Contains<T>(SingletonKey key) => Instance.objects.Read(_ => _.ContainsKey(key));
 	#endregion
 
 	#region Get
@@ -178,7 +178,7 @@ public class Singleton
 	#endregion
 
 	#region Set
-	public static bool Set<T>(T substitute)             => Set(SingletonKey.GetKey<T>(),    substitute);
+	public static bool Set<T>(T substitute) => Set(SingletonKey.GetKey<T>(), substitute);
 	public static bool Set<T>(T substitute, object key) => Set(SingletonKey.GetKey<T>(key), substitute);
 	static bool Set<T>(SingletonKey key, T substitute)
 	{
@@ -210,8 +210,7 @@ public class Singleton
 	//    if (Instance.objects.ContainsKey(key)) changeAction((T)Instance.objects[key]);
 	//}
 	public static void Subscribe<T>(Action<SingletonSubscriptionArgs<T>> changeAction, bool raiseAddIfAlreadyAdded = true) => Subscribe(changeAction, SingletonKey.GetKey<T>(), raiseAddIfAlreadyAdded);
-	public static void Subscribe<T>(Action<SingletonSubscriptionArgs<T>> changeAction, object key, bool raiseAddIfAlreadyAdded = true) =>
-		Subscribe(changeAction, SingletonKey.GetKey<T>(key), raiseAddIfAlreadyAdded);
+	public static void Subscribe<T>(Action<SingletonSubscriptionArgs<T>> changeAction, object key, bool raiseAddIfAlreadyAdded = true) => Subscribe(changeAction, SingletonKey.GetKey<T>(key), raiseAddIfAlreadyAdded);
 	static void Subscribe<T>(Action<SingletonSubscriptionArgs<T>> changeAction, SingletonKey key, bool raiseAddIfAlreadyAdded = true)
 	{
 		Instance.subscriptions.Add(new(typeof(T), key, changeAction));
@@ -235,12 +234,12 @@ public class SingletonSubscriptionArgs<T>
 	internal SingletonSubscriptionArgs(T previousValue, T actualValue, SingletonAction action)
 	{
 		PreviousValue = previousValue;
-		ActualValue   = actualValue;
-		Action        = action;
+		ActualValue = actualValue;
+		Action = action;
 	}
-	public SingletonAction Action        { get; }
-	public T               PreviousValue { get; set; }
-	public T               ActualValue   { get; set; }
+	public SingletonAction Action { get; }
+	public T PreviousValue { get; set; }
+	public T ActualValue { get; set; }
 }
 
 public interface ISingletonConstants

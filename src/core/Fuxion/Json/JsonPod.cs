@@ -12,19 +12,19 @@ public class JsonPod<TPayload, TKey>
 	[JsonConstructor]
 	protected JsonPod()
 	{
-		PayloadKey    = default!;
-		_Payload      = default!;
+		PayloadKey = default!;
+		_Payload = default!;
 		_PayloadValue = null!;
 	}
 	public JsonPod(TPayload payload, TKey key) : this()
 	{
-		PayloadKey   = key;
-		Payload      = payload;
+		PayloadKey = key;
+		Payload = payload;
 		PayloadValue = CreateValue(payload);
 	}
-	private TPayload? _Payload;
-	private JsonValue _PayloadValue;
-	public  TKey      PayloadKey { get; internal set; }
+	TPayload? _Payload;
+	JsonValue _PayloadValue;
+	public TKey PayloadKey { get; internal set; }
 	[JsonPropertyName(nameof(Payload))]
 	protected internal JsonValue PayloadValue
 	{
@@ -47,11 +47,11 @@ public class JsonPod<TPayload, TKey>
 		get => _Payload;
 		private set
 		{
-			_Payload        = value;
+			_Payload = value;
 			PayloadHasValue = true;
 		}
 	}
-	private JsonValue CreateValue(TPayload payload)
+	JsonValue CreateValue(TPayload payload)
 	{
 		var met = typeof(JsonValue).GetMethods(BindingFlags.Static | BindingFlags.Public).Where(m => m.Name == nameof(JsonValue.Create) && m.GetGenericArguments().Any() && m.GetParameters().Count() == 2).FirstOrDefault();
 		if (met is null) throw new InvalidProgramException("The JsonValue.Create<T>() method could not be determined");
@@ -80,7 +80,7 @@ public class JsonPod<TPayload, TKey>
 		return res;
 	}
 	public object? As(Type type) => PayloadValue.Deserialize(type);
-	public bool    Is<T>()       => Is(typeof(T));
+	public bool Is<T>() => Is(typeof(T));
 	public bool Is(Type type)
 	{
 		try

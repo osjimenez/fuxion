@@ -4,12 +4,12 @@ public class AntiBackTimeProvider : ITimeProvider
 {
 	public AntiBackTimeProvider(params StoredTimeProvider[] storedProviders) => providers = storedProviders;
 	readonly StoredTimeProvider[] providers;
-	public   ILogger?             Logger                  { get; set; }
-	public   ITimeProvider        TimeProvider            { get; set; } = new LocalMachinneTimeProvider();
-	public   TimeSpan             MaximumRangeOfDeviation { get; set; } = TimeSpan.FromMinutes(1);
-	public   DateTime             Now()                   => GetUtc().ToLocalTime();
-	public   DateTimeOffset       NowOffsetted()          => GetUtc().ToLocalTime();
-	public   DateTime             UtcNow()                => GetUtc();
+	public ILogger? Logger { get; set; }
+	public ITimeProvider TimeProvider { get; set; } = new LocalMachinneTimeProvider();
+	public TimeSpan MaximumRangeOfDeviation { get; set; } = TimeSpan.FromMinutes(1);
+	public DateTime Now() => GetUtc().ToLocalTime();
+	public DateTimeOffset NowOffsetted() => GetUtc().ToLocalTime();
+	public DateTime UtcNow() => GetUtc();
 	DateTime GetUtc()
 	{
 		var now = TimeProvider.UtcNow();
@@ -23,9 +23,9 @@ public class AntiBackTimeProvider : ITimeProvider
 				return null;
 			}
 		}).DefaultIfEmpty().Min();
-		if (stored                           == null) throw new NoStoredTimeValueException();
+		if (stored == null) throw new NoStoredTimeValueException();
 		if (now.Add(MaximumRangeOfDeviation) < stored) throw new BackTimeException(stored.Value, now);
-		Logger?.LogInformation("now => "    + now);
+		Logger?.LogInformation("now => " + now);
 		Logger?.LogInformation("stored => " + stored);
 		SetValue(now);
 		return now;
@@ -48,10 +48,10 @@ public class BackTimeException : FuxionException
 {
 	public BackTimeException(DateTime storedTime, DateTime currentTime) : base($"Time stored '{storedTime}' is most recent that current time '{currentTime}'")
 	{
-		StoredTime  = storedTime;
+		StoredTime = storedTime;
 		CurrentTime = currentTime;
 	}
-	public DateTime StoredTime  { get; set; }
+	public DateTime StoredTime { get; set; }
 	public DateTime CurrentTime { get; set; }
 }
 

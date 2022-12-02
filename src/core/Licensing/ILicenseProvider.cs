@@ -2,6 +2,6 @@
 
 public interface ILicenseProvider
 {
-	LicenseContainer Request(LicenseRequest   request);
+	LicenseContainer Request(LicenseRequest request);
 	LicenseContainer Refresh(LicenseContainer oldLicense);
 }

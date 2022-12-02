@@ -6,5 +6,5 @@ class EventPublisherDecorator<TAggregate> : IEventPublisher<TAggregate> where TA
 {
 	public EventPublisherDecorator(IEventPublisher publisher) => this.publisher = publisher;
 	readonly IEventPublisher publisher;
-	public   Task            PublishAsync(Event @event) => publisher.PublishAsync(@event);
+	public Task PublishAsync(Event @event) => publisher.PublishAsync(@event);
 }

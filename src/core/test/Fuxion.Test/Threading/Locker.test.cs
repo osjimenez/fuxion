@@ -15,7 +15,7 @@ public class LockerTest : BaseTest<LockerTest>
 	[Fact(DisplayName = "Locker - void ReadAsync()")]
 	public async Task ReadAsync()
 	{
-		var obj  = new Locker<MockForLock>(new(1, "test"));
+		var obj = new Locker<MockForLock>(new(1, "test"));
 		var name = "";
 		await obj.ReadAsync(m => { name = m.Name; });
 		Assert.Equal("test", name);
@@ -23,7 +23,7 @@ public class LockerTest : BaseTest<LockerTest>
 	[Fact(DisplayName = "Locker - void ReadAsync(P1)")]
 	public async Task ReadAsyncP1()
 	{
-		var obj  = new Locker<MockForLock>(new(1, "test"));
+		var obj = new Locker<MockForLock>(new(1, "test"));
 		var name = "";
 		await obj.ReadAsync((l, p) =>
 		{
@@ -35,7 +35,7 @@ public class LockerTest : BaseTest<LockerTest>
 	[Fact(DisplayName = "Locker - string ReadAsync()")]
 	public async Task StringReadAsync()
 	{
-		var obj  = new Locker<MockForLock>(new(1, "test"));
+		var obj = new Locker<MockForLock>(new(1, "test"));
 		var name = await obj.ReadAsync(m => { return m.Name; });
 		Assert.Equal("test", name);
 	}
@@ -63,9 +63,9 @@ public class MockForLock
 {
 	public MockForLock(int id, string name)
 	{
-		Id   = id;
+		Id = id;
 		Name = name;
 	}
-	public int    Id   { get; set; }
+	public int Id { get; set; }
 	public string Name { get; set; }
 }

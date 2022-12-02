@@ -40,7 +40,7 @@ public class JsonPodTest : BaseTest<JsonPodTest>
 		{
 			Assert.NotNull(payload);
 			Assert.Equal("payloadName", payload.Name);
-			Assert.Equal(23,            payload.Age);
+			Assert.Equal(23, payload.Age);
 		}
 		void AssertDerived(PayloadDerived? payload)
 		{
@@ -62,21 +62,21 @@ public class JsonPodTest : BaseTest<JsonPodTest>
 		{
 			Name = "payloadName", Age = 23, Nick = "payloadNick"
 		};
-		var pod  = payload.ToJsonPod("podKey");
+		var pod = payload.ToJsonPod("podKey");
 		var json = pod.ToJson();
 		Output.WriteLine("Serialized json: ");
 		Output.WriteLine(json);
 		Assert.Contains(@"""PayloadKey"": ""podKey""", json);
-		Assert.Contains(@"""Name"": ""payloadName""",  json);
-		Assert.Contains(@"""Age"": 23",                json);
-		Assert.Contains(@"""Nick"": ""payloadNick""",  json);
+		Assert.Contains(@"""Name"": ""payloadName""", json);
+		Assert.Contains(@"""Age"": 23", json);
+		Assert.Contains(@"""Nick"": ""payloadNick""", json);
 	}
 }
 
 public class PayloadBase
 {
 	public string? Name { get; set; }
-	public int     Age  { get; set; }
+	public int Age { get; set; }
 }
 
 public class PayloadDerived : PayloadBase
