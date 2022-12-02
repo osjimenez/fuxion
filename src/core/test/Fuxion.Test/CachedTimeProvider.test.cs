@@ -1,15 +1,14 @@
 ﻿namespace Fuxion.Test;
 
-public class CachedTimeProviderTest
+public class CachedTimeProviderTest : BaseTest<CachedTimeProviderTest>
 {
-	public CachedTimeProviderTest(ITestOutputHelper output) => this.output = output;
-	readonly ITestOutputHelper output;
+	public CachedTimeProviderTest(ITestOutputHelper output) :base(output) { }
 	[Fact(DisplayName = "CachedTimeProvider - CacheTest")]
 	public void CachedTimeProvider_CacheTest()
 	{
 		var ctp = new CachedTimeProvider(new LocalMachinneTimeProvider())
 		{
-			Logger = new XunitLogger(output), ExpirationInterval = TimeSpan.FromSeconds(1)
+			Logger = Logger, ExpirationInterval = TimeSpan.FromSeconds(1)
 		};
 		ctp.UtcNow(out var fromCache);
 		Assert.False(fromCache);
@@ -22,5 +21,5 @@ public class CachedTimeProviderTest
 		Assert.True(fromCache);
 	}
 	[Fact(DisplayName = "CachedTimeProvider - CheckConsistency")]
-	public void CachedTimeProvider_CheckConsistency() => new CachedTimeProvider(new LocalMachinneTimeProvider()).CheckConsistency(output);
+	public void CachedTimeProvider_CheckConsistency() => new CachedTimeProvider(new LocalMachinneTimeProvider()).CheckConsistency(Output);
 }

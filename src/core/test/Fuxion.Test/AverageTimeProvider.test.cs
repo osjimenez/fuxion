@@ -1,9 +1,8 @@
 ﻿namespace Fuxion.Test;
 
-public class AverageTimeProviderTest
+public class AverageTimeProviderTest : BaseTest<AverageTimeProviderTest>
 {
-	public AverageTimeProviderTest(ITestOutputHelper output) => this.output = output;
-	readonly ITestOutputHelper output;
+	public AverageTimeProviderTest(ITestOutputHelper output) :base(output) { }
 	string[] NtpServersAddresses { get; } =
 	{
 		// From NIST - http://tf.nist.gov/tf-cgi/servers.cgi
@@ -46,9 +45,9 @@ public class AverageTimeProviderTest
 				{
 					ServerAddress = add, ServerType = InternetTimeServerType.Web, Timeout = TimeSpan.FromSeconds(15)
 				});
-			p.Logger                    = new XunitLogger(output);
+			p.Logger                    = Logger;
 			p.RandomizedProvidersPerTry = 3;
 			p.MaxFailsPerTry            = 3;
 			return p;
-		}).CheckConsistency(output);
+		}).CheckConsistency(Output);
 }

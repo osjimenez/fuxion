@@ -1,6 +1,6 @@
 ﻿namespace Fuxion.Test;
 
-public class NamedEnumValueTest : BaseTest
+public class NamedEnumValueTest : BaseTest<NamedEnumValueTest>
 {
 	public NamedEnumValueTest(ITestOutputHelper output) : base(output) { }
 	[Fact(DisplayName = "NamedEnumValue - Equality and comparisons")]

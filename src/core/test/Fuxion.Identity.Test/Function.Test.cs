@@ -8,7 +8,7 @@ namespace Fuxion.Identity.Test;
 
 using static Functions;
 
-public class FunctionTest : BaseTest
+public class FunctionTest : BaseTest<FunctionTest>
 {
 	public FunctionTest(ITestOutputHelper output) : base(output) { }
 	[Fact(DisplayName = "Function - Create custom function")]

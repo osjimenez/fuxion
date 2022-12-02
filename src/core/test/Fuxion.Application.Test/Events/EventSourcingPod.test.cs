@@ -6,7 +6,7 @@ using Xunit.Abstractions;
 
 namespace Fuxion.Application.Test.Events;
 
-public class EventSourcingPodTest : BaseTest
+public class EventSourcingPodTest : BaseTest<EventSourcingPodTest>
 {
 	public EventSourcingPodTest(ITestOutputHelper output) : base(output) { }
 	[Fact(DisplayName = "EventSourcingPod - FromJson")]

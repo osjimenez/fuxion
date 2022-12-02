@@ -1,6 +1,6 @@
 ﻿namespace Fuxion.Test.Collections.Generic;
 
-public class IListExtensionsTest : BaseTest
+public class IListExtensionsTest : BaseTest<IListExtensionsTest>
 {
 	public IListExtensionsTest(ITestOutputHelper output) : base(output) { }
 	[Fact(DisplayName = "IListExtensions - RemoveIf")]

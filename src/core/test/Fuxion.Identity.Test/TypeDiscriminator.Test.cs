@@ -16,7 +16,7 @@ static class TypeDiscriminatorFactoryExtensions
 	}
 }
 
-public class TypeDiscriminatorTetst : BaseTest
+public class TypeDiscriminatorTetst : BaseTest<TypeDiscriminatorTetst>
 {
 	public TypeDiscriminatorTetst(ITestOutputHelper output) : base(output) { }
 	[Fact(DisplayName = "TypeDiscriminator - Allow more than one type by discriminator")]

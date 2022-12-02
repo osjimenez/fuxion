@@ -8,7 +8,7 @@ namespace Fuxion.Identity.Test;
 
 using static Functions;
 
-public class PermissionTest : BaseTest
+public class PermissionTest : BaseTest<PermissionTest>
 {
 	public PermissionTest(ITestOutputHelper helper) : base(helper) => Context.Initialize();
 	[Fact(DisplayName = "Permission - Match")]

@@ -3,7 +3,7 @@ using Fuxion.Collections;
 
 namespace Fuxion.Test.Collections;
 
-public class TreeSynchronizerTest : BaseTest
+public class TreeSynchronizerTest : BaseTest<TreeSynchronizerTest>
 {
 	public TreeSynchronizerTest(ITestOutputHelper output) : base(output) { }
 	[Fact(DisplayName = nameof(TreeSynchronizer<MockDto, int>) + " - First")]

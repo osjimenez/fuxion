@@ -2,7 +2,7 @@
 
 namespace Fuxion.Test.Json;
 
-public class JsonPodTest : BaseTest
+public class JsonPodTest : BaseTest<JsonPodTest>
 {
 	public JsonPodTest(ITestOutputHelper output) : base(output) => Printer.WriteLineAction = m => output.WriteLine(m);
 	[Fact(DisplayName = "JsonPod - CastWithPayload")]

@@ -1,6 +1,6 @@
 ﻿namespace Fuxion.Test.Collections.Generic;
 
-public class IEnumerableExtensionsTest : BaseTest
+public class IEnumerableExtensionsTest : BaseTest<IEnumerableExtensionsTest>
 {
 	public IEnumerableExtensionsTest(ITestOutputHelper output) : base(output) { }
 	[Fact(DisplayName = "IEnumerableExtensions - IsNullOrEmpty")]

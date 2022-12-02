@@ -5,7 +5,7 @@ using Xunit.Abstractions;
 
 namespace Fuxion.Identity.Test;
 
-public class ScopeTest : BaseTest
+public class ScopeTest : BaseTest<ScopeTest>
 {
 	public ScopeTest(ITestOutputHelper helper) : base(helper) { }
 	[Fact(DisplayName = "Scope - Null discriminator validation")]

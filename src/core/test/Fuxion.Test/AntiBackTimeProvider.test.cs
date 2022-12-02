@@ -1,6 +1,6 @@
 ﻿namespace Fuxion.Test;
 
-public class AntiBackTimeProviderTest : BaseTest
+public class AntiBackTimeProviderTest : BaseTest<AntiBackTimeProviderTest>
 {
 	public AntiBackTimeProviderTest(ITestOutputHelper output) : base(output) => this.output = output;
 	readonly ITestOutputHelper output;
@@ -14,7 +14,7 @@ public class AntiBackTimeProviderTest : BaseTest
 			return s;
 		}))
 		{
-			TimeProvider = mock, Logger = new XunitLogger(output)
+			TimeProvider = mock, Logger = Logger
 		};
 		mock.SetOffset(TimeSpan.FromDays(-1));
 		Assert.Throws<BackTimeException>(() => abtp.UtcNow());

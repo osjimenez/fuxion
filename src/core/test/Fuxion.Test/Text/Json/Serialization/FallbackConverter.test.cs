@@ -1,6 +1,6 @@
 ﻿namespace Fuxion.Test.Text.Json.Serialization;
 
-public class FallbackConverterTest : BaseTest
+public class FallbackConverterTest : BaseTest<FallbackConverterTest>
 {
 	public FallbackConverterTest(ITestOutputHelper output) : base(output) { }
 	[Fact(DisplayName = "FallbackConverter - Serialize")]

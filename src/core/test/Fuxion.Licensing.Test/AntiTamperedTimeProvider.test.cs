@@ -4,7 +4,7 @@ using Xunit.Abstractions;
 
 namespace Fuxion.Licensing.Test;
 
-public class AntiTamperedTimeProviderTest : BaseTest
+public class AntiTamperedTimeProviderTest : BaseTest<AntiTamperedTimeProviderTest>
 {
 	public AntiTamperedTimeProviderTest(ITestOutputHelper output) : base(output) { }
 	string[] WebServersAddresses { get; } =
@@ -18,7 +18,7 @@ public class AntiTamperedTimeProviderTest : BaseTest
 	{
 		var atp = new AverageTimeProvider
 		{
-			Logger = new XunitLogger(Output), MaxFailsPerTry = 1, RandomizedProvidersPerTry = WebServersAddresses.Length
+			Logger = Logger, MaxFailsPerTry = 1, RandomizedProvidersPerTry = WebServersAddresses.Length
 		};
 		foreach (var pro in WebServersAddresses.Select(address => new InternetTimeProvider
 				   {
@@ -31,7 +31,7 @@ public class AntiTamperedTimeProviderTest : BaseTest
 			return s;
 		}))
 		{
-			Logger = new XunitLogger(Output)
+			Logger = Logger
 		}).CheckConsistency(Output);
 	}
 }

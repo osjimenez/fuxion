@@ -5,7 +5,7 @@ using Xunit.Abstractions;
 
 namespace Fuxion.Application.Test.Events;
 
-public class PublicationPodTest : BaseTest
+public class PublicationPodTest : BaseTest<PublicationPodTest>
 {
 	public PublicationPodTest(ITestOutputHelper output) : base(output) => Printer.WriteLineAction = m => output.WriteLine(m);
 	[Fact(DisplayName = "PublicationPodTest - FromJson")]

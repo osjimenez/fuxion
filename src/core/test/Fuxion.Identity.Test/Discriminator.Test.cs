@@ -5,7 +5,7 @@ using Xunit.Abstractions;
 
 namespace Fuxion.Identity.Test;
 
-public class DiscriminatorTest : BaseTest
+public class DiscriminatorTest : BaseTest<DiscriminatorTest>
 {
 	public DiscriminatorTest(ITestOutputHelper helper) : base(helper) { }
 	[Fact(DisplayName = "Discriminator - Compare guid type")]

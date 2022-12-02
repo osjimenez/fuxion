@@ -10,7 +10,7 @@ using Xunit;
 using Xunit.Abstractions;
 using static Fuxion.Identity.Functions;
 
-public class RolTest : BaseTest
+public class RolTest : BaseTest<RolTest>
 {
 	public RolTest(ITestOutputHelper output) : base(output)
 	{

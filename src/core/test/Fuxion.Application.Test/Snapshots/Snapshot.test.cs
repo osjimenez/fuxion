@@ -6,7 +6,7 @@ using Xunit.Abstractions;
 
 namespace Fuxion.Application.Test.Snapshots;
 
-public class SnapshotTest : BaseTest
+public class SnapshotTest : BaseTest<SnapshotTest>
 {
 	public SnapshotTest(ITestOutputHelper output) : base(output) { }
 	[Fact(DisplayName = "Snapshot - Serialize")]

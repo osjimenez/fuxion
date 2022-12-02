@@ -5,7 +5,7 @@ using Xunit.Abstractions;
 
 namespace Fuxion.Application.Test.Commands;
 
-public class CommandPodTest : BaseTest
+public class CommandPodTest : BaseTest<CommandPodTest>
 {
 	public CommandPodTest(ITestOutputHelper output) : base(output) { }
 	[Fact(DisplayName = "CommandPodTest - FromJson")]

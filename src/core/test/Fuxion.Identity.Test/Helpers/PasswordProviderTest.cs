@@ -5,7 +5,7 @@ using Xunit.Abstractions;
 
 namespace Fuxion.Identity.Test.Helpers;
 
-public class PasswordProviderTest : BaseTest
+public class PasswordProviderTest : BaseTest<PasswordProviderTest>
 {
 	public PasswordProviderTest(ITestOutputHelper output) : base(output) { }
 	[Fact(DisplayName = "PasswordProvider - Generate")]

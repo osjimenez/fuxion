@@ -2,7 +2,7 @@
 
 namespace Fuxion.Test;
 
-public class SystemExtensionsTest : BaseTest
+public class SystemExtensionsTest : BaseTest<SystemExtensionsTest>
 {
 	public SystemExtensionsTest(ITestOutputHelper output) : base(output) { }
 	void GenerateException() => throw new NotImplementedException("Test method for testing");

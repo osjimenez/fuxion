@@ -2,7 +2,7 @@
 
 namespace Fuxion.Test.Threading;
 
-public class LockerTest : BaseTest
+public class LockerTest : BaseTest<LockerTest>
 {
 	public LockerTest(ITestOutputHelper testOutputHelper) : base(testOutputHelper) { }
 	[Fact(DisplayName = "Locker - Nested Write()")]

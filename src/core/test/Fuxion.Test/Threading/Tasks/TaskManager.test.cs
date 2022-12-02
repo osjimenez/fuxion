@@ -5,7 +5,7 @@ using Fuxion.Threading.Tasks;
 
 namespace Fuxion.Test.Threading.Tasks;
 
-public class TaskManagerTest : BaseTest
+public class TaskManagerTest : BaseTest<TaskManagerTest>
 {
 	public TaskManagerTest(ITestOutputHelper output) : base(output) =>
 		Printer.WriteLineAction = m =>
