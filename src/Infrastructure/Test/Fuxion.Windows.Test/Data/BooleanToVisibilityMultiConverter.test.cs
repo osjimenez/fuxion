@@ -7,7 +7,7 @@ using Xunit.Abstractions;
 
 namespace Fuxion.Windows.Test.Data;
 
-public class BooleanToVisibilityMultiConverterTest : BaseTest
+public class BooleanToVisibilityMultiConverterTest : BaseTest<BooleanToVisibilityMultiConverterTest>
 {
 	public BooleanToVisibilityMultiConverterTest(ITestOutputHelper output) : base(output) { }
 	[Fact(DisplayName = "BooleanToVisibilityMultiConverter - AllFalse")]

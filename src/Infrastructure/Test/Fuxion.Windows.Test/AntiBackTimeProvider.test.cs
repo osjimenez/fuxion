@@ -4,17 +4,16 @@ using Xunit.Abstractions;
 
 namespace Fuxion.Windows.Test;
 
-public class RegistryStoredTimeProviderTest : BaseTest
+public class RegistryStoredTimeProviderTest : BaseTest<RegistryStoredTimeProviderTest>
 {
-	public RegistryStoredTimeProviderTest(ITestOutputHelper output) : base(output) => this.output = output;
-	readonly ITestOutputHelper output;
+	public RegistryStoredTimeProviderTest(ITestOutputHelper output) : base(output) { }
 	[Fact(DisplayName = "RegistryStoredTimeProvider - CheckConsistency")]
 	public void RegistryStorageTimeProvider_CheckConsistency() =>
 		new AntiBackTimeProvider(new RegistryStoredTimeProvider().Transform(s =>
 		{
 			s.SaveUtcTime(DateTime.UtcNow);
 			return s;
-		})).CheckConsistency(output);
+		})).CheckConsistency(Output);
 }
 
 public class MockStorageTimeProvider : StoredTimeProvider

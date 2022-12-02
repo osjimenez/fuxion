@@ -6,7 +6,7 @@ using Xunit.Abstractions;
 
 namespace Fuxion.Windows.Test.Data;
 
-public class StringToCapitalizedStringConverterTest : BaseTest
+public class StringToCapitalizedStringConverterTest : BaseTest<StringToCapitalizedStringConverterTest>
 {
 	public StringToCapitalizedStringConverterTest(ITestOutputHelper output) : base(output) { }
 	readonly string[] testCases =

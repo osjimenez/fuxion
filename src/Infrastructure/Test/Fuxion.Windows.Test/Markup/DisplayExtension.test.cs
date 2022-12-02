@@ -10,7 +10,7 @@ using Xunit.Abstractions;
 
 namespace Fuxion.Windows.Test.Markup;
 
-public class DisplayExtensionTest : BaseTest
+public class DisplayExtensionTest : BaseTest<DisplayExtensionTest>
 {
 	public DisplayExtensionTest(ITestOutputHelper output) : base(output) { }
 	static Task StartSTATask(Action action)

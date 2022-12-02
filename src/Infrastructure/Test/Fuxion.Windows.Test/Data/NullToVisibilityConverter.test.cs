@@ -8,7 +8,7 @@ using Xunit.Abstractions;
 
 namespace Fuxion.Windows.Test.Data;
 
-public class NullToVisibilityConverterTest : BaseTest
+public class NullToVisibilityConverterTest : BaseTest<NullToVisibilityConverterTest>
 {
 	public NullToVisibilityConverterTest(ITestOutputHelper output) : base(output) { }
 	[Fact(DisplayName = "NullToVisibilityConverter - Enum value")]

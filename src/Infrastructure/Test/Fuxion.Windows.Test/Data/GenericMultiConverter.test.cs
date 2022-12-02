@@ -8,7 +8,7 @@ using Xunit.Abstractions;
 
 namespace Fuxion.Windows.Test.Data;
 
-public class GenericMultiConverterTest : BaseTest
+public class GenericMultiConverterTest : BaseTest<GenericMultiConverterTest>
 {
 	public GenericMultiConverterTest(ITestOutputHelper output) : base(output) { }
 	[Fact(DisplayName = "GenericMultiConverterTest - UnsetValues")]

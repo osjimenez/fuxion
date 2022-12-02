@@ -8,7 +8,7 @@ using Xunit.Abstractions;
 
 namespace Fuxion.Windows.Test.Data;
 
-public class EnumToNamedEnumValueConverterTest : BaseTest
+public class EnumToNamedEnumValueConverterTest : BaseTest<EnumToNamedEnumValueConverterTest>
 {
 	public EnumToNamedEnumValueConverterTest(ITestOutputHelper output) : base(output) { }
 	[Fact(DisplayName = "EnumToNamedEnumValueConverter - Display value")]

@@ -5,13 +5,13 @@ using Xunit.Abstractions;
 
 namespace Fuxion.Windows.Test.Data;
 
-public class ConverterTest : BaseTest
+public class ConverterTest : BaseTest<ConverterTest>
 {
 	public ConverterTest(ITestOutputHelper output) : base(output) { }
 	protected void Convert() { }
 }
 
-public class TimeSpanToLongConverterTest : BaseTest
+public class TimeSpanToLongConverterTest : BaseTest<TimeSpanToLongConverterTest>
 {
 	public TimeSpanToLongConverterTest(ITestOutputHelper output) : base(output) { }
 	[Fact(DisplayName = "TimeSpanToLongConverter - ConvertToSeconds")]

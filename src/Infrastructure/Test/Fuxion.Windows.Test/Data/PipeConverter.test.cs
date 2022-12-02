@@ -7,7 +7,7 @@ using Xunit.Abstractions;
 
 namespace Fuxion.Windows.Test.Data;
 
-public class PipeConverterTest : BaseTest
+public class PipeConverterTest : BaseTest<PipeConverterTest>
 {
 	public PipeConverterTest(ITestOutputHelper output) : base(output) { }
 	[Fact(DisplayName = "PipeConverter - First")]

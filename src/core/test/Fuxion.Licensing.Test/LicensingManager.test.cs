@@ -1,4 +1,5 @@
 ﻿using Fuxion.Licensing.Test.Mocks;
+using Fuxion.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 using Xunit.Abstractions;
@@ -9,11 +10,10 @@ using static LicenseContainer;
 using static LicensingManager;
 
 [Collection("Licensing")]
-public class LicensingManagerTest
+public class LicensingManagerTest:BaseTest<LicensingManagerTest>
 {
-	public LicensingManagerTest(ITestOutputHelper output)
+	public LicensingManagerTest(ITestOutputHelper output):base(output)
 	{
-		this.output = output;
 		services    = new();
 		services.AddSingleton<ILicenseProvider>(new LicenseProviderMock());
 		services.AddSingleton<ILicenseStore>(new LicenseStoreMock());
@@ -23,7 +23,6 @@ public class LicensingManagerTest
 		services.AddTransient<LicensingManager>();
 	}
 	readonly ServiceCollection services;
-	readonly ITestOutputHelper output;
 	[Theory(DisplayName = "LicensingManager - Validate")]
 #nullable disable
 	[InlineData("Match",              Const.HARDWARE_ID,                        Const.PRODUCT_ID,                         10,  true)]
@@ -62,8 +61,8 @@ public class LicensingManagerTest
 	{
 		var pro = services.BuildServiceProvider();
 		var lic = pro.GetRequiredService<LicensingManager>().GetProvider().Request(new LicenseRequestMock(Const.HARDWARE_ID, Const.PRODUCT_ID));
-		output.WriteLine("Created license:");
-		output.WriteLine(new[]
+		Output.WriteLine("Created license:");
+		Output.WriteLine(new[]
 		{
 			lic
 		}.ToJson());
@@ -72,9 +71,9 @@ public class LicensingManagerTest
 	public void Licensing_GenerateKey()
 	{
 		GenerateKey(out var fullKey, out var publicKey);
-		output.WriteLine("Full key:\r\n" + fullKey);
-		output.WriteLine("");
-		output.WriteLine("Public key:\r\n" + publicKey);
+		Output.WriteLine("Full key:\r\n" + fullKey);
+		Output.WriteLine("");
+		Output.WriteLine("Public key:\r\n" + publicKey);
 	}
 }
 

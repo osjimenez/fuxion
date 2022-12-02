@@ -1,4 +1,5 @@
 ﻿using Fuxion.Licensing.Test.Mocks;
+using Fuxion.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 using Xunit.Abstractions;
@@ -6,11 +7,10 @@ using Xunit.Abstractions;
 namespace Fuxion.Licensing.Test;
 
 [Collection("Licensing")]
-public class LicenseStoreTest
+public class LicenseStoreTest:BaseTest<LicenseStoreTest>
 {
-	public LicenseStoreTest(ITestOutputHelper output)
+	public LicenseStoreTest(ITestOutputHelper output):base(output)
 	{
-		this.output = output;
 		services    = new();
 		services.AddSingleton<ILicenseProvider>(new LicenseProviderMock());
 		services.AddSingleton<ILicenseStore>(new LicenseStoreMock());
@@ -19,7 +19,6 @@ public class LicenseStoreTest
 		services.AddSingleton(Singleton.Get<ITimeProvider>());
 		services.AddTransient<LicensingManager>();
 	}
-	readonly ITestOutputHelper output;
 	readonly ServiceCollection services;
 	[Theory(DisplayName = "LicenseStore - OnlyValidLicenses")]
 #nullable disable
@@ -41,11 +40,11 @@ public class LicenseStoreTest
 		var lic = man.GetProvider().Request(new LicenseRequestMock(hardwareId, productId));
 		man.Store.Add(lic);
 		var tp = (MockTimeProvider)pro.GetRequiredService<ITimeProvider>();
-		output.WriteLine($"Current offset is '{tp.Offset}'");
+		Output.WriteLine($"Current offset is '{tp.Offset}'");
 		tp.SetOffset(TimeSpan.FromDays(offsetDays));
-		output.WriteLine($"After set offset is '{tp.Offset}'");
+		Output.WriteLine($"After set offset is '{tp.Offset}'");
 		Assert.True(man.Store.Query().OnlyValidOfType<LicenseMock>(Const.PUBLIC_KEY).Count() == (expectedValidation ? 1 : 0));
 		tp.SetOffset(TimeSpan.Zero);
-		output.WriteLine($"After reset offset is '{tp.Offset}'");
+		Output.WriteLine($"After reset offset is '{tp.Offset}'");
 	}
 }

@@ -6,7 +6,7 @@ using Xunit.Abstractions;
 
 namespace Fuxion.Windows.Test.Data;
 
-public class BooleanToBooleanMultiConverterTest : BaseTest
+public class BooleanToBooleanMultiConverterTest : BaseTest<BooleanToBooleanMultiConverterTest>
 {
 	public BooleanToBooleanMultiConverterTest(ITestOutputHelper output) : base(output) { }
 	[Fact(DisplayName = "BooleanToBooleanMultiConverter - AllFalse")]

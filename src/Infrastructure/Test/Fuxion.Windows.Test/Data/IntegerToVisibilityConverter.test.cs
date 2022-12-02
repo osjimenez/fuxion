@@ -8,7 +8,7 @@ using Xunit.Abstractions;
 
 namespace Fuxion.Windows.Test.Data;
 
-public class IntegerToVisibilityConverterTest : BaseTest
+public class IntegerToVisibilityConverterTest : BaseTest<IntegerToVisibilityConverterTest>
 {
 	public IntegerToVisibilityConverterTest(ITestOutputHelper output) : base(output) { }
 	[Fact(DisplayName = "IntegerToVisibilityConverter - Convert")]

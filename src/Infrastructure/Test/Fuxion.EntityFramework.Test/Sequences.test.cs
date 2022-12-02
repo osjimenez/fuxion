@@ -9,7 +9,7 @@ using Xunit.Abstractions;
 namespace Fuxion.EntityFramework.Test;
 
 [Collection("Sequences")]
-public class Sequences : BaseTest, IDisposable
+public class Sequences : BaseTest<Sequences>, IDisposable
 {
 	public Sequences(ITestOutputHelper output) : base(output)
 	{

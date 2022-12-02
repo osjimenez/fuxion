@@ -2,8 +2,7 @@
 
 public class AntiBackTimeProviderTest : BaseTest<AntiBackTimeProviderTest>
 {
-	public AntiBackTimeProviderTest(ITestOutputHelper output) : base(output) => this.output = output;
-	readonly ITestOutputHelper output;
+	public AntiBackTimeProviderTest(ITestOutputHelper output) : base(output) {}
 	[Fact(DisplayName = "AntiBackTimeProvider - BackTimeException")]
 	public void AntiBackTimeProvider_BackTimeException()
 	{
@@ -25,7 +24,7 @@ public class AntiBackTimeProviderTest : BaseTest<AntiBackTimeProviderTest>
 		{
 			s.SaveUtcTime(DateTime.UtcNow);
 			return s;
-		})).CheckConsistency(output);
+		})).CheckConsistency(Output);
 }
 
 public class MockStorageTimeProvider : StoredTimeProvider

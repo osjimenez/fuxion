@@ -1,15 +1,14 @@
 ﻿using Fuxion.Licensing.Test.Mocks;
+using Fuxion.Testing;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace Fuxion.Licensing.Test;
 
 [Collection("Licensing")]
-public class LicenseContainerTest
+public class LicenseContainerTest:BaseTest<LicenseContainerTest>
 {
-	public LicenseContainerTest(ITestOutputHelper output) =>
-		this.output = output; //Container con = new Container();//con.RegisterInstance<ILicenseProvider>(new LicenseProviderMock());//con.RegisterInstance<ILicenseStore>(new LicenseStoreMock());//con.RegisterInstance<IHardwareIdProvider>(new HardwareIdProviderMock());//con.RegisterInstance<ITimeProvider>(new MockTimeProvider());//con.Register<LicensingManager>();//Factory.AddInjector(new SimpleInjectorFactoryInjector(con));
-	readonly ITestOutputHelper output;
+	public LicenseContainerTest(ITestOutputHelper output) :base(output){}
 	[Fact(DisplayName = "LicenseContainer - Comment")]
 	public void LicenseContainer_Comment()
 	{
@@ -20,13 +19,13 @@ public class LicenseContainerTest
 		lic.SetProductId(productId);
 		var con = LicenseContainer.Sign(lic, Const.FULL_KEY);
 		con.Comment = "Original comment";
-		output.WriteLine("Original ToJson:");
-		output.WriteLine(con.ToJson());
+		Output.WriteLine("Original ToJson:");
+		Output.WriteLine(con.ToJson());
 		Assert.True(con.VerifySignature(Const.PUBLIC_KEY));
 		con.Comment = "Change comment";
 		Assert.True(con.VerifySignature(Const.PUBLIC_KEY));
-		output.WriteLine("Changed ToJson:");
-		output.WriteLine(con.ToJson());
+		Output.WriteLine("Changed ToJson:");
+		Output.WriteLine(con.ToJson());
 	}
 	[Fact(DisplayName = "LicenseContainer - Serialization")]
 	public void LicenseContainer_Serialization()
@@ -37,13 +36,13 @@ public class LicenseContainerTest
 		lic.SetHarwareId(hardwareId);
 		lic.SetProductId(productId);
 		var con = new LicenseContainer("signature", lic);
-		output.WriteLine("ToJson:");
+		Output.WriteLine("ToJson:");
 		var json = con.ToJson();
-		output.WriteLine(json);
-		output.WriteLine("FromJson:");
+		Output.WriteLine(json);
+		Output.WriteLine("FromJson:");
 		var con2  = json.FromJson<LicenseContainer>()!;
 		var json2 = con2.ToJson();
-		output.WriteLine(json2);
+		Output.WriteLine(json2);
 		Assert.Equal(json, json2);
 		Assert.True(con2.Is<LicenseMock>());
 		var lic2 = con2.As<LicenseMock>()!;
@@ -53,12 +52,12 @@ public class LicenseContainerTest
 
 		//Assert.Equal(con2.LicenseAs<LicenseMock>(), lic);
 		var time = new Random((int)DateTime.Now.Ticks).Next(500, 1500);
-		output.WriteLine("Time: " + time);
+		Output.WriteLine("Time: " + time);
 		Thread.Sleep(time);
-		output.WriteLine("FromJson timed:");
+		Output.WriteLine("FromJson timed:");
 		var con3  = json.FromJson<LicenseContainer>()!;
 		var json3 = con3.ToJson();
-		output.WriteLine(json3);
+		Output.WriteLine(json3);
 		Assert.Equal(json,  json3);
 		Assert.Equal(json2, json3);
 		Assert.True(con3.Is<LicenseMock>());
@@ -78,10 +77,10 @@ public class LicenseContainerTest
 		lic.SetHarwareId(hardwareId);
 		lic.SetProductId(productId);
 		var con = LicenseContainer.Sign(lic, Const.FULL_KEY);
-		output.WriteLine("ToJson:");
-		output.WriteLine(con.ToJson());
-		output.WriteLine("License.ToJson:");
-		output.WriteLine(con.RawLicense.ToJson());
+		Output.WriteLine("ToJson:");
+		Output.WriteLine(con.ToJson());
+		Output.WriteLine("License.ToJson:");
+		Output.WriteLine(con.RawLicense.ToJson());
 		Assert.True(con.VerifySignature(Const.PUBLIC_KEY));
 	}
 }

@@ -5,10 +5,9 @@ using Xunit.Abstractions;
 
 namespace Fuxion.Windows.Test.Security;
 
-public class HardwareIdTest : BaseTest
+public class HardwareIdTest : BaseTest<HardwareIdTest>
 {
-	public HardwareIdTest(ITestOutputHelper output) : base(output) => this.output = output;
-	readonly ITestOutputHelper output;
+	public HardwareIdTest(ITestOutputHelper output) : base(output) { }
 	[Fact(DisplayName = "HardwareId - Printable version of ids")]
 	public void PrintableVersion()
 	{
@@ -21,10 +20,10 @@ public class HardwareIdTest : BaseTest
 		var video       = HardwareId.Video;
 		void Print(Guid value, string name)
 		{
-			output.WriteLine($"{name} = {value}");
-			output.WriteLine($"{name}.GetHashCode() = {value.GetHashCode()}");
-			output.WriteLine($"(uint){name}.GetHashCode() = {(uint)value.GetHashCode()}");
-			output.WriteLine("===============================");
+			Output.WriteLine($"{name} = {value}");
+			Output.WriteLine($"{name}.GetHashCode() = {value.GetHashCode()}");
+			Output.WriteLine($"(uint){name}.GetHashCode() = {(uint)value.GetHashCode()}");
+			Output.WriteLine("===============================");
 		}
 		Print(bios,        "BIOS");
 		Print(cpu,         "CPU");
