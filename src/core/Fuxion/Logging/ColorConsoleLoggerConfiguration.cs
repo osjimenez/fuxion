@@ -68,4 +68,3 @@ public class ColorConsoleLoggerConfiguration
 		[LogLevel.None] = () => ConsoleColor.Black
 	};
 }
-

@@ -6,7 +6,7 @@ using Telerik.Windows.Controls;
 namespace Fuxion.Shell.Views;
 
 #nullable disable
-public partial class ShellWindow : ReactiveWindow<ShellWindowViewModel>
+public partial class ShellWindow
 #nullable enable
 {
 	public ShellWindow(ShellWindowViewModel viewModel, MenuManager menuManager, DockingManager dockingManager)

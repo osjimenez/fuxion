@@ -4,6 +4,7 @@ public static class Extensions
 {
 	public static IEnumerable<T> TakeRandomly<T>(this IEnumerable<T> me, int count, Random? ran = null, bool canRepeat = false)
 	{
+		// TODO Implements canRepeat behavior
 		if (ran == null) ran = new((int)DateTime.Now.Ticks);
 		var list = me.ToList();
 		if (!canRepeat && count > list.Count) throw new("'count' cannot be higher than number of elements if 'canRepeat' is false");
