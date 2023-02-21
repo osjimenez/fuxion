@@ -2,20 +2,23 @@
 
 public static class Extensions
 {
-	public static IEnumerable<T> TakeRandomly<T>(this IEnumerable<T> me, int count, Random? ran = null, bool canRepeat = false)
+	public static List<T> TakeRandomly<T>(this IEnumerable<T> me, int count, Random? ran = null)//, bool canRepeat = false)
 	{
-		// TODO Implements canRepeat behavior
-		if (ran == null) ran = new((int)DateTime.Now.Ticks);
+		if (ran == null) ran = new(Guid.NewGuid().GetHashCode());
 		var list = me.ToList();
-		if (!canRepeat && count > list.Count) throw new("'count' cannot be higher than number of elements if 'canRepeat' is false");
+		// TODO Implements canRepeat behavior
+		//if (!canRepeat && count > list.Count) throw new("'count' cannot be higher than number of elements if 'canRepeat' is false");
+		if (count > list.Count) throw new("'count' cannot be higher than number of elements");
 		var used = new List<int>();
+		List<T> res = new();
 		for (var i = 0; i < count; i++)
 		{
-			var actual = ran.Next(0, list.Count - 1);
+			var actual = ran.Next(0, list.Count);
 			while (used.Contains(actual)) actual = ran.Next(0, list.Count);
 			used.Add(actual);
-			yield return list[actual];
+			res.Add(list[actual]);
 		}
+		return res;
 	}
 	public static bool IsNullOrEmpty<T>(this IEnumerable<T> me) => me == null || !me.Any();
 	// TODO - Eliminado
@@ -118,5 +121,29 @@ public static class Extensions
 		outputConsole?.Invoke("Result values:");
 		foreach (var i in res) outputConsole?.Invoke("  - " + i);
 		return res;
+	}
+	public static IEnumerable<(double Percentage, int Rounded,double Exact)> DistributeAsPercentages(this IEnumerable<double> percentages, int amountOfItems)
+	{
+		if (percentages.Count() > amountOfItems) throw new InvalidDataException($"{nameof(percentages)}.Count ({percentages.Count()}) must be less than {nameof(amountOfItems)} ({amountOfItems})");
+		if (percentages.Sum() != 100) throw new InvalidProgramException($"Percentajes must sum 100, but sum {percentages.Sum()}");
+		var ordered = percentages.OrderBy(_ => _);
+		var quantities = ordered.Select(value => new
+		{
+			Percentage = value,
+			Rounded = (int)Math.Floor(amountOfItems * (value / 100d)),
+			Exact = amountOfItems * (value / 100d)
+		}).ToList();
+		quantities = quantities.Select(_ => _ with { Rounded = _.Rounded == 0
+			? 1
+			: _.Rounded }).ToList();
+		while (quantities.Sum(_ => _.Rounded) > amountOfItems)
+		{
+			var quantity = quantities.MaxBy(_ => _.Rounded);
+			if (quantity is null) throw new InvalidProgramException($"{nameof(quantity)} cannot be null");
+			var index = quantities.IndexOf(quantity);
+			quantities.Remove(quantity);
+			quantities.Insert(index, quantity with { Rounded = quantity.Rounded - 1 });
+		}
+		return quantities.Select(_ => (_.Percentage, _.Rounded, _.Exact));
 	}
 }

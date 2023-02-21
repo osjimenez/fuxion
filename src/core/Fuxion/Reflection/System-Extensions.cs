@@ -102,4 +102,22 @@ public static class MemberInfoExtensions
 		}
 		return res.ToString();
 	}
+	// TODO Check when folder is null or empty
+	public static Stream? GetResourceStream(this Assembly assembly, string folder, string fileName)
+	{
+		if (assembly.FullName is null) throw new InvalidOperationException("assembly.FullName is null");
+		var resourceName = assembly.FullName.Split(',')[0] + "." + folder.Replace("\\", ".").Replace("/", ".") + "." + fileName;
+		return new List<string>(assembly.GetManifestResourceNames())
+			.Contains(resourceName)
+			? assembly.GetManifestResourceStream(resourceName)
+			: null;
+	}
+	// TODO Check when folder is null or empty
+	public static string? GetResourceAsString(this Assembly assembly, string folder, string fileName)
+	{
+		var stream = GetResourceStream(assembly, folder, fileName);
+		return stream is null
+			? null
+			: new StreamReader(stream).ReadToEnd();
+	}
 }

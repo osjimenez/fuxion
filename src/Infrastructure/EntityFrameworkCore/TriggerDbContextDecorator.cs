@@ -6,17 +6,17 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Fuxion.EntityFrameworkCore;
 
-public class TriggerDbContextDecorator<TDbContext> : IDisposable, IAsyncDisposable where TDbContext : DbContext
+public class TriggerDbContextDecorator<TContext> : IDisposable, IAsyncDisposable where TContext : DbContext
 {
-	readonly IEnumerable<IAfterSaveTrigger<TDbContext>> _afterSaveTriggers;
-	readonly IEnumerable<IBeforeSaveTrigger<TDbContext>> _beforeSaveTriggers;
-	public TriggerDbContextDecorator(TDbContext context, IEnumerable<IBeforeSaveTrigger<TDbContext>> beforeSaveTriggers, IEnumerable<IAfterSaveTrigger<TDbContext>> afterSaveTriggers)
+	readonly IEnumerable<IAfterSaveTrigger<TContext>> _afterSaveTriggers;
+	readonly IEnumerable<IBeforeSaveTrigger<TContext>> _beforeSaveTriggers;
+	public TriggerDbContextDecorator(TContext context, IEnumerable<IBeforeSaveTrigger<TContext>> beforeSaveTriggers, IEnumerable<IAfterSaveTrigger<TContext>> afterSaveTriggers)
 	{
 		Context = context;
 		_beforeSaveTriggers = beforeSaveTriggers;
 		_afterSaveTriggers = afterSaveTriggers;
 	}
-	public TDbContext Context { get; }
+	public TContext Context { get; }
 	public DatabaseFacade Database => Context.Database;
 	public IModel Model => Context.Model;
 	public ChangeTracker ChangeTracker => Context.ChangeTracker;
