@@ -14,21 +14,17 @@ public static class ShellDIExtensions
 		me.Services.AddSingleton<DockingManager>();
 		me.Services.AddSingleton<ShellWindowViewModel>();
 		me.Services.AddSingleton<ShellWindow>();
-		me.AddToPreRegistrationList(serviceProvider =>
-		{
+		me.AddToPreRegistrationList(serviceProvider => {
 			foreach (var module in serviceProvider.GetServices<IModule>()) module.PreRegister(me.Services);
 		});
-		me.AddToRegistrationList(serviceProvider =>
-		{
+		me.AddToRegistrationList(serviceProvider => {
 			foreach (var dic in serviceProvider.GetServices<ShellResourceDictionary>()) Application.Current.Resources.MergedDictionaries.Add(dic);
 			foreach (var module in serviceProvider.GetServices<IModule>()) module.Register(me.Services);
 		});
 		var shellBuilder = new ShellBuilder(me);
-		me.AddToAutoActivateList<ShellWindow>(serviceProvider =>
-		{
+		me.AddToAutoActivateList<ShellWindow>(serviceProvider => {
 			foreach (var module in serviceProvider.GetServices<IModule>()) module.Initialize(serviceProvider);
-		}, (_, win) =>
-		{
+		}, (_, win) => {
 			shellBuilder.ShellWindow = win;
 			if (shellBuilder.ShowWindow) win.Show();
 		});

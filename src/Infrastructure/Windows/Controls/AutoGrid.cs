@@ -7,8 +7,7 @@ namespace Fuxion.Windows.Controls;
 public class AutoGrid : Grid
 {
 	public static readonly DependencyProperty RowHeightProperty = DependencyProperty.Register(nameof(RowHeight), typeof(GridLength), typeof(AutoGrid), new FrameworkPropertyMetadata(default(GridLength),
-		FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange, (d, e) =>
-		{
+		FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange, (d, e) => {
 			if (d is AutoGrid ag) ag.PerformLayout(true);
 		}));
 	bool mustRelayout = true;
@@ -29,8 +28,7 @@ public class AutoGrid : Grid
 			RowDefinitions.Clear();
 			if (ColumnDefinitions.Count == 0) return;
 			for (var i = 0; i < System.Math.Ceiling((decimal)Children.Count / ColumnDefinitions.Count); i++)
-				RowDefinitions.Add(new()
-				{
+				RowDefinitions.Add(new() {
 					Height = RowHeight
 				});
 			foreach (UIElement? child in Children)
@@ -67,18 +65,15 @@ public class AutoColumnDefinition : ColumnDefinition
 {
 	public static readonly DependencyProperty HorizontalContentAlignmentProperty = DependencyProperty.Register(nameof(HorizontalContentAlignment), typeof(HorizontalAlignment),
 		typeof(AutoColumnDefinition), new FrameworkPropertyMetadata(HorizontalAlignment.Stretch, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange,
-			(d, e) =>
-			{
+			(d, e) => {
 				if (d is AutoColumnDefinition acd && acd.Parent is AutoGrid ag) ag.PerformLayout(true);
 			}));
 	public static readonly DependencyProperty VerticalContentAlignmentProperty = DependencyProperty.Register(nameof(VerticalContentAlignment), typeof(VerticalAlignment), typeof(AutoColumnDefinition),
-		new FrameworkPropertyMetadata(VerticalAlignment.Stretch, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange, (d, e) =>
-		{
+		new FrameworkPropertyMetadata(VerticalAlignment.Stretch, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange, (d, e) => {
 			if (d is AutoColumnDefinition acd && acd.Parent is AutoGrid ag) ag.PerformLayout(true);
 		}));
 	public static readonly DependencyProperty ContentMarginProperty = DependencyProperty.Register(nameof(ContentMargin), typeof(Thickness), typeof(AutoColumnDefinition), new FrameworkPropertyMetadata(
-		default(Thickness), FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange, (d, e) =>
-		{
+		default(Thickness), FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange, (d, e) => {
 			if (d is AutoColumnDefinition acd && acd.Parent is AutoGrid ag) ag.PerformLayout(true);
 		}));
 	[Category("Layout")]

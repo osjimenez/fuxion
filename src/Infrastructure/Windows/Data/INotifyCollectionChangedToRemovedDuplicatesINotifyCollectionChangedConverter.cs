@@ -11,8 +11,7 @@ public class INotifyCollectionChangedToRemovedDuplicatesINotifyCollectionChanged
 		if (source == null) return null;
 		if (!(source is IEnumerable<object>)) throw new NotSupportedException($"The source must be '{nameof(IEnumerable<object>)}'.");
 		var res = new ObservableCollection<object>(((IEnumerable<object>)source).Distinct());
-		source.CollectionChanged += (s, e) =>
-		{
+		source.CollectionChanged += (s, e) => {
 			if (e.NewItems != null)
 				foreach (var item in e.NewItems)
 					if (item != null && !res.Contains(item))

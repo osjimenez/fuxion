@@ -15,8 +15,7 @@ public class AverageTimeProvider : ITimeProvider
 	public DateTime GetUtc()
 	{
 		Logger?.LogInformation($"Get UTC time using {RandomizedProvidersPerTry} randomized servers with a maximum of {MaxFailsPerTry} fails.");
-		var res = TaskManager.StartNew(() =>
-		{
+		var res = TaskManager.StartNew(() => {
 			if (Providers.Count(p => p.IsRandomized) < RandomizedProvidersPerTry) throw new($"At least {RandomizedProvidersPerTry} providers must be added");
 			var ents = Providers.TakeRandomly(RandomizedProvidersPerTry, ran).ToList();
 			Logger?.LogDebug($@"Selected servers: {ents.Aggregate("", (a, c) => a + "\r\n - " + c.Provider)}");

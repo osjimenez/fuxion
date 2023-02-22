@@ -16,8 +16,7 @@ public class ColorConsoleLogger : ILogger
 		if (_config.EventId == 0 || _config.EventId == eventId.Id)
 		{
 			var message = formatter(state, exception);
-			var foreground = state switch
-			{
+			var foreground = state switch {
 				ColorConsoleState s => s.ForegroundColor,
 				_                   => _config.LogLevels[logLevel]()
 			};

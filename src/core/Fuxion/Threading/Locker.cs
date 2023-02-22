@@ -111,13 +111,11 @@ public class Locker<TObjectLocked> : IDisposable
 
 	#region Async delegates
 	Task DelegateReadAsync(Delegate del, params object?[] pars) =>
-		TaskManager.StartNew((d, ps) =>
-		{
+		TaskManager.StartNew((d, ps) => {
 			_ReaderWriterLockSlim.EnterReadLock();
 			try
 			{
-				var p = new object?[]
-				{
+				var p = new object?[] {
 					objectLocked
 				}.ToList();
 				p.AddRange(ps);
@@ -132,13 +130,11 @@ public class Locker<TObjectLocked> : IDisposable
 			}
 		}, del, pars);
 	Task<TResult> DelegateReadAsync<TResult>(Delegate del, params object?[] pars) where TResult : notnull =>
-		TaskManager.StartNew<Delegate, object?[], TResult>((d, ps) =>
-		{
+		TaskManager.StartNew<Delegate, object?[], TResult>((d, ps) => {
 			_ReaderWriterLockSlim.EnterReadLock();
 			try
 			{
-				var p = new object?[]
-				{
+				var p = new object?[] {
 					objectLocked
 				}.ToList();
 				p.AddRange(ps);
@@ -155,13 +151,11 @@ public class Locker<TObjectLocked> : IDisposable
 			}
 		}, del, pars);
 	Task<TResult?> DelegateReadNullableAsync<TResult>(Delegate del, params object?[] pars) =>
-		TaskManager.StartNew<Delegate, object?[], TResult?>((d, ps) =>
-		{
+		TaskManager.StartNew<Delegate, object?[], TResult?>((d, ps) => {
 			_ReaderWriterLockSlim.EnterReadLock();
 			try
 			{
-				var p = new object?[]
-				{
+				var p = new object?[] {
 					objectLocked
 				}.ToList();
 				p.AddRange(ps);
@@ -177,13 +171,11 @@ public class Locker<TObjectLocked> : IDisposable
 			}
 		}, del, pars);
 	Task DelegateWriteAsync(Delegate del, params object?[] pars) =>
-		TaskManager.StartNew((d, ps) =>
-		{
+		TaskManager.StartNew((d, ps) => {
 			_ReaderWriterLockSlim.EnterWriteLock();
 			try
 			{
-				var p = new object?[]
-				{
+				var p = new object?[] {
 					objectLocked
 				}.ToList();
 				p.AddRange(ps);
@@ -198,13 +190,11 @@ public class Locker<TObjectLocked> : IDisposable
 			}
 		}, del, pars);
 	Task<TResult> DelegateWriteAsync<TResult>(Delegate del, params object?[] pars) =>
-		TaskManager.StartNew((d, ps) =>
-		{
+		TaskManager.StartNew((d, ps) => {
 			_ReaderWriterLockSlim.EnterWriteLock();
 			try
 			{
-				var p = new object?[]
-				{
+				var p = new object?[] {
 					objectLocked
 				}.ToList();
 				p.AddRange(ps);

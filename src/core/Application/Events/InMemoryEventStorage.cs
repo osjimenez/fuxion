@@ -11,8 +11,7 @@ public class InMemoryEventStorage : IEventStorage
 		if (dumpFilePath != null)
 		{
 			this.dumpFilePath = new(dumpFilePath);
-			this.dumpFilePath.Read(path =>
-			{
+			this.dumpFilePath.Read(path => {
 				if (File.Exists(path))
 				{
 					var dic = File.ReadAllText(path).FromJson<Dictionary<Guid, List<EventSourcingPod>>>();
@@ -27,8 +26,7 @@ public class InMemoryEventStorage : IEventStorage
 	readonly Locker<string>? dumpFilePath;
 	readonly Locker<Dictionary<Guid, List<Event>>> events = new(new());
 	public Task<IQueryable<Event>> GetEventsAsync(Guid aggregateId, int start, int count) =>
-		events.ReadAsync(str =>
-		{
+		events.ReadAsync(str => {
 			// There is no event for this aggregate
 			if (!str.ContainsKey(aggregateId)) return new List<Event>().AsQueryable();
 
@@ -40,8 +38,7 @@ public class InMemoryEventStorage : IEventStorage
 	public async Task CommitAsync(Guid aggregateId, IEnumerable<Event> events)
 	{
 		if (events.Any())
-			await this.events.WriteAsync(str =>
-			{
+			await this.events.WriteAsync(str => {
 				if (str.ContainsKey(aggregateId) == false)
 					str.Add(aggregateId, events.ToList());
 				else

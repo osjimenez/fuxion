@@ -9,8 +9,7 @@ public class RegistryStoredTimeProviderTest : BaseTest<RegistryStoredTimeProvide
 	public RegistryStoredTimeProviderTest(ITestOutputHelper output) : base(output) { }
 	[Fact(DisplayName = "RegistryStoredTimeProvider - CheckConsistency")]
 	public void RegistryStorageTimeProvider_CheckConsistency() =>
-		new AntiBackTimeProvider(new RegistryStoredTimeProvider().Transform(s =>
-		{
+		new AntiBackTimeProvider(new RegistryStoredTimeProvider().Transform(s => {
 			s.SaveUtcTime(DateTime.UtcNow);
 			return s;
 		})).CheckConsistency(Output);

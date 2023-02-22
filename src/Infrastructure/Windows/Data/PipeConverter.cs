@@ -48,8 +48,7 @@ public class PipeConverter : IValueConverter
 	public object? GetConverterParameter(IValueConverter converter, object? parameter)
 	{
 		if (ParameterMode == PipeConverterParameterMode.AllSame || parameter == null) return parameter;
-		var pars = parameter?.ToString()?.Split(new[]
-		{
+		var pars = parameter?.ToString()?.Split(new[] {
 			ParameterSeparator
 		}, StringSplitOptions.None) ?? new string[]
 			{ };

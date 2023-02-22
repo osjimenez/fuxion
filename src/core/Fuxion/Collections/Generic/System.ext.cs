@@ -2,7 +2,7 @@
 
 public static class Extensions
 {
-	public static List<T> TakeRandomly<T>(this IEnumerable<T> me, int count, Random? ran = null)//, bool canRepeat = false)
+	public static List<T> TakeRandomly<T>(this IEnumerable<T> me, int count, Random? ran = null) //, bool canRepeat = false)
 	{
 		if (ran == null) ran = new(Guid.NewGuid().GetHashCode());
 		var list = me.ToList();
@@ -67,8 +67,7 @@ public static class Extensions
 		// Qk = k (N/4)
 		// q1 = 1 (N/4)
 		// q2 = 2 (N/4)
-		var getQuartileFunction = new Func<int, double>(q =>
-		{
+		var getQuartileFunction = new Func<int, double>(q => {
 			outputConsole?.Invoke("Calculating Q" + q);
 			var exactPosition = q * ((double)l.Count / 4);
 			outputConsole?.Invoke($"   {nameof(exactPosition)} = {exactPosition}");
@@ -122,20 +121,21 @@ public static class Extensions
 		foreach (var i in res) outputConsole?.Invoke("  - " + i);
 		return res;
 	}
-	public static IEnumerable<(double Percentage, int Rounded,double Exact)> DistributeAsPercentages(this IEnumerable<double> percentages, int amountOfItems)
+	public static IEnumerable<(double Percentage, int Rounded, double Exact)> DistributeAsPercentages(this IEnumerable<double> percentages, int amountOfItems)
 	{
 		if (percentages.Count() > amountOfItems) throw new InvalidDataException($"{nameof(percentages)}.Count ({percentages.Count()}) must be less than {nameof(amountOfItems)} ({amountOfItems})");
 		if (percentages.Sum() != 100) throw new InvalidProgramException($"Percentajes must sum 100, but sum {percentages.Sum()}");
 		var ordered = percentages.OrderBy(_ => _);
-		var quantities = ordered.Select(value => new
-		{
+		var quantities = ordered.Select(value => new {
 			Percentage = value,
 			Rounded = (int)Math.Floor(amountOfItems * (value / 100d)),
 			Exact = amountOfItems * (value / 100d)
 		}).ToList();
-		quantities = quantities.Select(_ => _ with { Rounded = _.Rounded == 0
-			? 1
-			: _.Rounded }).ToList();
+		quantities = quantities.Select(_ => _ with {
+			Rounded = _.Rounded == 0
+				? 1
+				: _.Rounded
+		}).ToList();
 		while (quantities.Sum(_ => _.Rounded) > amountOfItems)
 		{
 			var quantity = quantities.MaxBy(_ => _.Rounded);

@@ -12,10 +12,10 @@ namespace Fuxion.Application.Repositories;
 public class EventSourcingRepository<TAggregate> : IRepository<TAggregate> where TAggregate : Aggregate, new()
 {
 	public EventSourcingRepository(IEventStorage<TAggregate> eventStorage,
-											 ISnapshotStorage<TAggregate> snapshotStorage,
-											 IEventDispatcher eventDispatcher,
-											 TypeKeyDirectory typeKeyDirectory,
-											 Factory<TAggregate> aggregateFactory)
+		ISnapshotStorage<TAggregate> snapshotStorage,
+		IEventDispatcher eventDispatcher,
+		TypeKeyDirectory typeKeyDirectory,
+		Factory<TAggregate> aggregateFactory)
 	{
 		this.eventStorage = eventStorage;
 		this.snapshotStorage = snapshotStorage;

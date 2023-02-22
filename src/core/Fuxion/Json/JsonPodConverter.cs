@@ -23,21 +23,19 @@ public class JsonPodConverter<TPod, TPayload, TKey> : JsonConverter<TPod> where 
 			if (propertyName == nameof(JsonPod<string, string>.Payload))
 			{
 				var rawProp = pod.GetType().GetProperty(nameof(JsonPod<string, string>.PayloadValue), BindingFlags.NonPublic | BindingFlags.Instance)
-								  ?? throw new InvalidProgramException($"'{nameof(JsonPod<string, string>.PayloadValue)}' property could not be obtained from pod object");
+					?? throw new InvalidProgramException($"'{nameof(JsonPod<string, string>.PayloadValue)}' property could not be obtained from pod object");
 				var jsonValue = ele.GetRawText().FromJson<JsonValue>(options: options);
 				rawProp.SetValue(pod, jsonValue);
 				try
 				{
-					var val = ele.Deserialize(prop.PropertyType, new JsonSerializerOptions
-					{
+					var val = ele.Deserialize(prop.PropertyType, new JsonSerializerOptions {
 						TypeInfoResolver = new PrivateConstructorContractResolver()
 					});
 					pod.SetPrivatePropertyValue(prop.Name, val);
 				} catch { }
 			} else
 			{
-				var val = ele.Deserialize(prop.PropertyType, new JsonSerializerOptions
-				{
+				var val = ele.Deserialize(prop.PropertyType, new JsonSerializerOptions {
 					TypeInfoResolver = new PrivateConstructorContractResolver()
 				});
 				pod.SetPrivatePropertyValue(prop.Name, val);

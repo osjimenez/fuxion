@@ -6,8 +6,7 @@ public class IListExtensionsTest : BaseTest<IListExtensionsTest>
 	[Fact(DisplayName = "IListExtensions - RemoveIf")]
 	public void RemoveIf()
 	{
-		var col = new[]
-		{
+		var col = new[] {
 			new Mock(1, "One"), new Mock(1, "Two")
 		}.ToList();
 		// Remove do not remove the propper element because both are the same id and Remove use Equals overrided for detemine the element to remove
@@ -15,8 +14,7 @@ public class IListExtensionsTest : BaseTest<IListExtensionsTest>
 		// Only element with name "Two" is in collection
 		Assert.Single(col);
 		Assert.Contains(col, m => m.Name == "Two");
-		col = new[]
-		{
+		col = new[] {
 			new Mock(1, "One"), new Mock(1, "Two")
 		}.ToList();
 		col.RemoveIf(m => m.Name == "Two");

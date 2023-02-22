@@ -19,8 +19,8 @@ public class EventsAggregateFeature : IAggregateFeature
 		var aggregateType = aggregate.GetType();
 		aggregateEventHandlerCache.AddOrUpdate(aggregateType,
 			type => type.GetRuntimeMethods()
-							.Where(m => m.ReturnType == typeof(void) && m.GetCustomAttribute<AggregateEventHandlerAttribute>(true) != null && m.GetParameters().Count() == 1
-											&& typeof(Event).IsAssignableFrom(m.GetParameters().First().ParameterType)).ToDictionary(m => m.GetParameters().First().ParameterType), (_, __) => __);
+				.Where(m => m.ReturnType == typeof(void) && m.GetCustomAttribute<AggregateEventHandlerAttribute>(true) != null && m.GetParameters().Count() == 1
+					&& typeof(Event).IsAssignableFrom(m.GetParameters().First().ParameterType)).ToDictionary(m => m.GetParameters().First().ParameterType), (_, __) => __);
 		eventHandlerCache = aggregateEventHandlerCache[aggregateType].ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 	}
 	public event EventHandler<EventArgs<Event>>? Applying;
@@ -46,8 +46,7 @@ public class EventsAggregateFeature : IAggregateFeature
 	internal void Handle(Event @event)
 	{
 		if (eventHandlerCache.ContainsKey(@event.GetType()))
-			eventHandlerCache[@event.GetType()].Invoke(aggregate, new object[]
-			{
+			eventHandlerCache[@event.GetType()].Invoke(aggregate, new object[] {
 				@event
 			});
 		else

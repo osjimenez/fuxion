@@ -9,13 +9,12 @@ public static class RolExtensions
 			case PrintMode.OneLine:      break;
 			case PrintMode.PropertyList: break;
 			case PrintMode.Table:
-				var nameLength = me.Select(s => s.Name.ToString().Length).Union(new[]
-				{
+				var nameLength = me.Select(s => s.Name.ToString().Length).Union(new[] {
 					"NAME".Length
 				}).Max();
-				Printer.WriteLine("┌" + "".PadRight(nameLength, '─')     + "┐");
+				Printer.WriteLine("┌" + "".PadRight(nameLength, '─') + "┐");
 				Printer.WriteLine("│" + "NAME".PadRight(nameLength, ' ') + "│");
-				Printer.WriteLine("├" + "".PadRight(nameLength, '─')     + "┤");
+				Printer.WriteLine("├" + "".PadRight(nameLength, '─') + "┤");
 				foreach (var rol in me) Printer.WriteLine("│" + rol.Name.PadRight(nameLength, ' ') + "│");
 				Printer.WriteLine("└" + "".PadRight(nameLength, '─') + "┘");
 				break;
@@ -24,7 +23,7 @@ public static class RolExtensions
 
 	#region Fluent
 	#region IRol
-	public static IRolCan Can(this       IRol me, params IFunction[] functions) => new _RolCan(me, functions, false);
+	public static IRolCan Can(this IRol me, params IFunction[] functions) => new _RolCan(me, functions, false);
 	public static IRolCan EnsureCan(this IRol me, params IFunction[] functions) => new _RolCan(me, functions, true);
 	public static bool IsRoot(this IRol me)
 	{
@@ -88,8 +87,7 @@ public static class RolExtensions
 	public static bool Instance<T>(this IRolCan me, T value)
 	{
 		using (var res = Printer.CallResult<bool>())
-			return res.Value = me.AllInstances(new[]
-			{
+			return res.Value = me.AllInstances(new[] {
 				value
 			});
 	}
@@ -124,21 +122,21 @@ public interface IRolCan { }
 
 interface IInternalRolCan : IRolCan
 {
-	IRol        Rol                    { get; }
-	IFunction[] Functions              { get; }
-	bool        ThrowExceptionIfCannot { get; }
+	IRol Rol { get; }
+	IFunction[] Functions { get; }
+	bool ThrowExceptionIfCannot { get; }
 }
 
 class _RolCan : IInternalRolCan
 {
 	public _RolCan(IRol rol, IFunction[] functions, bool throwExceptionIfCannot)
 	{
-		Rol                    = rol;
-		Functions              = functions;
+		Rol = rol;
+		Functions = functions;
 		ThrowExceptionIfCannot = throwExceptionIfCannot;
 	}
-	public IRol        Rol                    { get; set; }
-	public IFunction[] Functions              { get; set; }
-	public bool        ThrowExceptionIfCannot { get; set; }
+	public IRol Rol { get; set; }
+	public IFunction[] Functions { get; set; }
+	public bool ThrowExceptionIfCannot { get; set; }
 }
 #endregion

@@ -7,12 +7,12 @@ namespace Fuxion.EntityFrameworkCore;
 
 public abstract class DbContextRepository<TContext, TAggregate> : IRepository<TAggregate> where TContext : DbContext where TAggregate : Aggregate, new()
 {
-	readonly List<TAggregate> attached = new();
 	public DbContextRepository(TContext context, IEventDispatcher eventDispatcher)
 	{
 		Context = context;
 		EventDispatcher = eventDispatcher;
 	}
+	readonly List<TAggregate> attached = new();
 	protected TContext Context { get; }
 	protected IEventDispatcher EventDispatcher { get; }
 	async Task<TAggregate> IRepository<TAggregate>.GetAsync(Guid aggregateId)

@@ -76,8 +76,7 @@ public class Singleton
 	public static void Add<T>(T objectInstance, object key) => Add(objectInstance, SingletonKey.GetKey<T>(key));
 	static void Add<T>(T objectInstance, SingletonKey key)
 	{
-		Instance.objects.Write(_ =>
-		{
+		Instance.objects.Write(_ => {
 			if (_.ContainsKey(key)) throw new ArgumentException("No se puede agregar el objeto porque la combinación clave/tipo esta en uso");
 			_.Add(key, objectInstance);
 		});
@@ -90,8 +89,7 @@ public class Singleton
 	public static void AddOrSkip<T>(T objectInstance, object key) => AddOrSkip(objectInstance, SingletonKey.GetKey<T>(key));
 	static void AddOrSkip<T>(T objectInstance, SingletonKey key)
 	{
-		var added = Instance.objects.Write(_ =>
-		{
+		var added = Instance.objects.Write(_ => {
 			if (!_.ContainsKey(key))
 			{
 				_.Add(key, objectInstance);
@@ -110,8 +108,7 @@ public class Singleton
 	public static bool Remove<T>(object key) => Remove<T>(SingletonKey.GetKey<T>(key));
 	static bool Remove<T>(SingletonKey key)
 	{
-		var (value, result) = Instance.objects.Write(_ =>
-		{
+		var (value, result) = Instance.objects.Write(_ => {
 			if (!_.ContainsKey(key)) return (null, false);
 			return (_[key], _.Remove(key));
 		});
@@ -137,8 +134,7 @@ public class Singleton
 		return default!;
 	}
 	static object? Get(SingletonKey key, Type requestedType) =>
-		Instance.objects.ReadUpgradeable(_ =>
-		{
+		Instance.objects.ReadUpgradeable(_ => {
 			if (_.ContainsKey(key)) return _[key];
 			var att = requestedType.GetCustomAttribute<DefaultSingletonInstanceAttribute>(true, false);
 			if (att != null)
@@ -163,8 +159,7 @@ public class Singleton
 	static object? Find(SingletonKey key, Type requestedType)
 		//=> Instance.objects.Read(_ => _.ContainsKey(key) ? _[key] : null);
 		=>
-			Instance.objects.ReadUpgradeable(_ =>
-			{
+			Instance.objects.ReadUpgradeable(_ => {
 				if (_.ContainsKey(key)) return _[key];
 				var att = requestedType.GetCustomAttribute<DefaultSingletonInstanceAttribute>(true, false);
 				if (att != null)
@@ -182,8 +177,7 @@ public class Singleton
 	public static bool Set<T>(T substitute, object key) => Set(SingletonKey.GetKey<T>(key), substitute);
 	static bool Set<T>(SingletonKey key, T substitute)
 	{
-		var (previous, setted) = Instance.objects.Write(_ =>
-		{
+		var (previous, setted) = Instance.objects.Write(_ => {
 			if (_.ContainsKey(key))
 			{
 				var previous = (T)_[key]!;
@@ -215,8 +209,7 @@ public class Singleton
 	static void Subscribe<T>(Action<SingletonSubscriptionArgs<T>> changeAction, SingletonKey key, bool raiseAddIfAlreadyAdded = true)
 	{
 		Instance.subscriptions.Add(new(typeof(T), key, changeAction));
-		Instance.objects.Read(_ =>
-		{
+		Instance.objects.Read(_ => {
 			if (raiseAddIfAlreadyAdded && _.ContainsKey(key)) changeAction(new(default!, (T)_[key]!, SingletonAction.Add));
 		});
 	}

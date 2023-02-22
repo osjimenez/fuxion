@@ -7,12 +7,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Remove="ScreenCapture\ScreenCaptureWindow.xaml" />
+		<None Remove="ScreenCapture\ScreenCaptureWindow.xaml"/>
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\core\Drawing\Fuxion.Drawing.csproj" />
-		<ProjectReference Include="..\..\Infrastructure\Windows\Fuxion.Windows.csproj" />
+		<ProjectReference Include="..\..\core\Drawing\Fuxion.Drawing.csproj"/>
+		<ProjectReference Include="..\..\Infrastructure\Windows\Fuxion.Windows.csproj"/>
 	</ItemGroup>
 
 	<ItemGroup>

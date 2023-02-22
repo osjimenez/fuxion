@@ -8,8 +8,7 @@ namespace Fuxion.Test.Threading.Tasks;
 public class TaskManagerTest : BaseTest<TaskManagerTest>
 {
 	public TaskManagerTest(ITestOutputHelper output) : base(output) =>
-		Printer.WriteLineAction = m =>
-		{
+		Printer.WriteLineAction = m => {
 			try
 			{
 				//var message = $"{(Task.CurrentId != null ? $"({Task.CurrentId.Value}) " : "")}{m}";
@@ -23,13 +22,11 @@ public class TaskManagerTest : BaseTest<TaskManagerTest>
 		var list = new List<object[]>();
 		for (var i = 0; i < System.Math.Pow(2, 7); i++)
 		{
-			var b = new BitArray(new[]
-			{
+			var b = new BitArray(new[] {
 				i
 			});
 			var bits = b.Cast<bool>().Take(7).ToList();
-			var strings = new[]
-			{
+			var strings = new[] {
 				bits[0] ? "VOID  " : "RESULT", // 0
 				bits[1] ? "SYNC  " : "ASYNC ", // 1
 				bits[2] ? "CREATE" : "START ", // 2
@@ -105,8 +102,7 @@ public class TaskManagerTest : BaseTest<TaskManagerTest>
 		}
 		object?[] GenerateParameters(Delegate del, ConcurrencyProfile pro)
 		{
-			var res = new List<object?>
-			{
+			var res = new List<object?> {
 				del
 			};
 			for (var i = 0; i < parNum; i++) res.Add(i);
@@ -124,7 +120,7 @@ public class TaskManagerTest : BaseTest<TaskManagerTest>
 			mets = mets.Where(me => me.GetParameters().First().ParameterType.Name.StartsWith(@void && sync ? "Action" : "Func")).ToList();
 			mets = mets.Where(me => me.GetParameters().First().ParameterType.GetGenericArguments().Count() == (!sync ? parNum + 1 : @void ? parNum : parNum + 1)).ToList();
 			mets = mets.Where(me => @void && parNum == 0 || sync && !typeof(Task).IsAssignableFrom(me.GetParameters().First().ParameterType.GetGenericArguments().Last())
-																		|| !sync && typeof(Task).IsAssignableFrom(me.GetParameters().First().ParameterType.GetGenericArguments().Last())).ToList();
+				|| !sync && typeof(Task).IsAssignableFrom(me.GetParameters().First().ParameterType.GetGenericArguments().Last())).ToList();
 			var met = mets.Single();
 			if (met.IsGenericMethod)
 			{
@@ -209,8 +205,7 @@ public class TaskManagerTest : BaseTest<TaskManagerTest>
 			}
 			if (@void)
 				if (sync)
-					return parNum switch
-					{
+					return parNum switch {
 						0 => new Action(() => Void_Sync()),
 						1 => new Action<int>(s => Void_Sync()),
 						2 => new Action<int, int>((s1, s2) => Void_Sync()),
@@ -224,8 +219,7 @@ public class TaskManagerTest : BaseTest<TaskManagerTest>
 						_ => throw new InvalidProgramException()
 					};
 				else
-					return parNum switch
-					{
+					return parNum switch {
 						0 => new Func<Task>(() => Void_Async()),
 						1 => new Func<int, Task>(s => Void_Async()),
 						2 => new Func<int, int, Task>((s1, s2) => Void_Async()),
@@ -239,8 +233,7 @@ public class TaskManagerTest : BaseTest<TaskManagerTest>
 						_ => throw new InvalidProgramException()
 					};
 			if (sync)
-				return parNum switch
-				{
+				return parNum switch {
 					0 => new Func<string>(() => Result_Sync()),
 					1 => new Func<int, string>(s => Result_Sync()),
 					2 => new Func<int, int, string>((s1, s2) => Result_Sync()),
@@ -253,8 +246,7 @@ public class TaskManagerTest : BaseTest<TaskManagerTest>
 					9 => new Func<int, int, int, int, int, int, int, int, int, string>((s1, s2, s3, s4, s5, s6, s7, s8, s9) => Result_Sync()),
 					_ => throw new InvalidProgramException()
 				};
-			return parNum switch
-			{
+			return parNum switch {
 				0 => new Func<Task<string>>(() => Result_Async()),
 				1 => new Func<int, Task<string>>(s => Result_Async()),
 				2 => new Func<int, int, Task<string>>((s1, s2) => Result_Async()),
@@ -269,8 +261,7 @@ public class TaskManagerTest : BaseTest<TaskManagerTest>
 			};
 		}
 		ConcurrencyProfile GetConcurrencyProfile(int order) =>
-			new()
-			{
+			new() {
 				Name = named ? order % 2 == 0 ? "even" : "odd" : "", Sequentially = sequentially, ExecuteOnlyLast = onlyLast, CancelPrevious = cancel
 			};
 		Task Action_Sync(int order)
@@ -320,7 +311,7 @@ public class TaskManagerTest : BaseTest<TaskManagerTest>
 				if (create)
 				{
 					var task = (Task<string?>?)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order)))
-								  ?? throw new InvalidProgramException("Method cannot return null");
+						?? throw new InvalidProgramException("Method cannot return null");
 					task.Start();
 					return task;
 				} else
@@ -341,7 +332,7 @@ public class TaskManagerTest : BaseTest<TaskManagerTest>
 				if (create)
 				{
 					var task = (Task<string?>?)GetMethod().Invoke(null, GenerateParameters(GetDelegate(order), GetConcurrencyProfile(order)))
-								  ?? throw new InvalidProgramException("Method cannot return null");
+						?? throw new InvalidProgramException("Method cannot return null");
 					task.Start();
 					return task;
 				} else
@@ -370,8 +361,7 @@ public class TaskManagerTest : BaseTest<TaskManagerTest>
 				lock (numLocker) return num++;
 			}
 			for (var i = 0; i < 3; i++)
-				res[i] = Task.Run(async () =>
-				{
+				res[i] = Task.Run(async () => {
 					are.WaitOne();
 					var currentNum = GetNum();
 					Printer.WriteLine($"Test Run {currentNum}");
@@ -416,8 +406,7 @@ public class TaskManagerTest : BaseTest<TaskManagerTest>
 
 		#region Methods
 		bool WasTaskFinishBeforeOtherStart(int taskThatHadToFinished, int taskThatHadToStartAfter) =>
-			new[]
-			{
+			new[] {
 				seqs.IndexOf($"E{taskThatHadToFinished}"), seqs.IndexOf($"E{taskThatHadToFinished}X")
 			}.Max() < seqs.IndexOf($"S{taskThatHadToStartAfter}");
 		bool WasTaskExecuted(int task) => seqs.Contains($"S{task}") && (seqs.Contains($"E{task}") || seqs.Contains($"E{task}X"));
@@ -655,8 +644,7 @@ public class TaskManagerTest : BaseTest<TaskManagerTest>
 	{
 		var dt = DateTime.Now;
 		Printer.WriteLine("Inicio en " + dt.ToString("HH:mm:ss.fff"));
-		var task = TaskManager.StartNew(() =>
-		{
+		var task = TaskManager.StartNew(() => {
 			//task.Sleep(TimeSpan.FromMilliseconds(2500), TimeSpan.FromMilliseconds(500));
 			TaskManager.Current?.Sleep(TimeSpan.FromMilliseconds(2500));
 		});

@@ -17,21 +17,17 @@ public static class Functions
 	{
 		if (function.Inclusions != null)
 			foreach (var inc in function.Inclusions)
-				((Function)dic[inc.Id]).Exclusions = new[]
-				{
+				((Function)dic[inc.Id]).Exclusions = new[] {
 					function
-				}.Transform(o =>
-				{
+				}.Transform(o => {
 					if (dic[inc.Id].Exclusions != null) o = o.Union(dic[inc.Id].Exclusions).Where(_ => _ != null).ToArray();
 					return o;
 				});
 		if (function.Exclusions != null)
 			foreach (var exc in function.Exclusions)
-				((Function)dic[exc.Id]).Inclusions = new[]
-				{
+				((Function)dic[exc.Id]).Inclusions = new[] {
 					function
-				}.Transform(o =>
-				{
+				}.Transform(o => {
 					if (dic[exc.Id].Inclusions != null) o = o.Union(dic[exc.Id].Inclusions).Where(_ => _ != null).ToArray();
 					return o;
 				});
@@ -56,16 +52,14 @@ public static class Functions
 		{
 			if (fun.Inclusions?.Contains(function) ?? false)
 			{
-				((Function)fun).Inclusions = fun.Inclusions.Except(new[]
-				{
+				((Function)fun).Inclusions = fun.Inclusions.Except(new[] {
 					function
 				}).ToArray();
 				graph.Remove(function);
 			}
 			if (fun.Exclusions?.Contains(function) ?? false)
 			{
-				((Function)fun).Exclusions = fun.Exclusions.Except(new[]
-				{
+				((Function)fun).Exclusions = fun.Exclusions.Except(new[] {
 					function
 				}).ToArray();
 				graph.Remove(function);
@@ -96,7 +90,7 @@ public static class Functions
 	class Function<T> : Function, IFunction<T>
 	{
 		public Function(T id, IEnumerable<IFunction>? inclusions = null, IEnumerable<IFunction>? exclusions = null) : base(id?.ToString()
-																																								 ?? throw new ArgumentException("'id' cannot be null", nameof(id)))
+			?? throw new ArgumentException("'id' cannot be null", nameof(id)))
 		{
 			Id = id ?? throw new ArgumentException("'id' cannot be null", nameof(id));
 			Inclusions = inclusions ?? new List<IFunction>();
@@ -123,24 +117,19 @@ public static class Functions
 	static void CreatePredefinedFunctions()
 	{
 		Read = AddCustom(CreateCustom(READ));
-		Edit = AddCustom(CreateCustom(EDIT, new[]
-		{
+		Edit = AddCustom(CreateCustom(EDIT, new[] {
 			Read
 		}));
-		Create = AddCustom(CreateCustom(CREATE, new[]
-		{
+		Create = AddCustom(CreateCustom(CREATE, new[] {
 			Edit
 		}));
-		Delete = AddCustom(CreateCustom(DELETE, new[]
-		{
+		Delete = AddCustom(CreateCustom(DELETE, new[] {
 			Edit
 		}));
-		Manage = AddCustom(CreateCustom(MANAGE, new[]
-		{
+		Manage = AddCustom(CreateCustom(MANAGE, new[] {
 			Create, Delete
 		}));
-		Admin = AddCustom(CreateCustom(ADMIN, new[]
-		{
+		Admin = AddCustom(CreateCustom(ADMIN, new[] {
 			Manage
 		}));
 	}

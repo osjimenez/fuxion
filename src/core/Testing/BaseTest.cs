@@ -9,16 +9,14 @@ public abstract class BaseTest<TBaseTest> where TBaseTest : BaseTest<TBaseTest>
 	public BaseTest(ITestOutputHelper output)
 	{
 		Output = output;
-		Printer.WriteLineAction = m =>
-		{
+		Printer.WriteLineAction = m => {
 			try
 			{
 				output.WriteLine(m);
 				Debug.WriteLine(m);
 			} catch { }
 		};
-		var serviceCollection = new ServiceCollection().AddLogging(o =>
-		{
+		var serviceCollection = new ServiceCollection().AddLogging(o => {
 			o.AddProvider(new XUnitLoggerProvider(output));
 			OnLoggingBuild(o);
 		});

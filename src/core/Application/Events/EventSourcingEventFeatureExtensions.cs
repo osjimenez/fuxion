@@ -8,8 +8,7 @@ public static class EventSourcingEventFeatureExtensions
 	public static bool HasEventSourcing(this Event me) => me.HasFeature<EventSourcingEventFeature>();
 	public static EventSourcingEventFeature EventSourcing(this Event me) => me.GetFeature<EventSourcingEventFeature>();
 	public static void AddEventSourcing(this Event me, int targetVersion, Guid correlationId, DateTime eventCommittedTimestamp, int classVersion) =>
-		me.AddFeature<EventSourcingEventFeature>(esef =>
-		{
+		me.AddFeature<EventSourcingEventFeature>(esef => {
 			esef.TargetVersion = targetVersion;
 			esef.CorrelationId = correlationId;
 			esef.EventCommittedTimestamp = eventCommittedTimestamp;

@@ -16,11 +16,11 @@ namespace Fuxion.RabbitMQ;
 public class RabbitMQEventBus : IEventPublisher, IEventSubscriber
 {
 	public RabbitMQEventBus(IServiceProvider serviceProvider,
-									IRabbitMQPersistentConnection persistentConnection,
-									TypeKeyDirectory typeKeyDirectory,
-									string exchangeName,
-									string queueName,
-									int retryCount)
+		IRabbitMQPersistentConnection persistentConnection,
+		TypeKeyDirectory typeKeyDirectory,
+		string exchangeName,
+		string queueName,
+		int retryCount)
 	{
 		this.serviceProvider = serviceProvider;
 		this.persistentConnection = persistentConnection ?? throw new ArgumentNullException(nameof(persistentConnection));
@@ -42,11 +42,11 @@ public class RabbitMQEventBus : IEventPublisher, IEventSubscriber
 		//TODO - Es aqui donde se debe poner la feature de publicacion ?? no lo sé
 		@event.AddPublication(DateTime.UtcNow);
 		if (!persistentConnection.IsConnected) persistentConnection.TryConnect();
-		var policy = Policy.Handle<BrokerUnreachableException>().Or<SocketException>().WaitAndRetryAsync(retryCount, retryAttempt => TimeSpan.FromSeconds(System.Math.Pow(2, retryAttempt)), (ex, time) =>
-		{
-			Debug.WriteLine(ex.ToString());
-			//_logger.LogWarning(ex.ToString());
-		});
+		var policy = Policy.Handle<BrokerUnreachableException>().Or<SocketException>().WaitAndRetryAsync(retryCount, retryAttempt => TimeSpan.FromSeconds(System.Math.Pow(2, retryAttempt)),
+			(ex, time) => {
+				Debug.WriteLine(ex.ToString());
+				//_logger.LogWarning(ex.ToString());
+			});
 		using (var channel = persistentConnection.CreateModel())
 		{
 			//var eventTypeId = @event.IntegrationEventTypeKey;
@@ -56,8 +56,7 @@ public class RabbitMQEventBus : IEventPublisher, IEventSubscriber
 			//var message = JsonConvert.SerializeObject(eventPod);
 			var message = eventPod.ToJson();
 			var body = Encoding.UTF8.GetBytes(message);
-			await policy.ExecuteAsync(() =>
-			{
+			await policy.ExecuteAsync(() => {
 				var properties = channel.CreateBasicProperties();
 				properties.DeliveryMode = 2; // persistent
 				channel.BasicPublish(exchangeName, eventPod.PayloadKey, true, properties, body);
@@ -74,8 +73,7 @@ public class RabbitMQEventBus : IEventPublisher, IEventSubscriber
 		channel.ExchangeDeclare(exchangeName, "direct");
 		channel.QueueDeclare(queueName, true, false, false, null);
 		var consumer = new EventingBasicConsumer(channel);
-		consumer.Received += async (model, ea) =>
-		{
+		consumer.Received += async (model, ea) => {
 			//var integrationEventTypeId = ea.RoutingKey;
 			var message = Encoding.UTF8.GetString(ea.Body.ToArray());
 			var pod = message.FromJson<PublicationPod>(true);
@@ -87,8 +85,7 @@ public class RabbitMQEventBus : IEventPublisher, IEventSubscriber
 			channel.BasicAck(ea.DeliveryTag, false);
 		};
 		channel.BasicConsume(queueName, false, consumer);
-		channel.CallbackException += (sender, ea) =>
-		{
+		channel.CallbackException += (sender, ea) => {
 			_consumerChannel.Dispose();
 			_consumerChannel = CreateConsumerChannel();
 		};
@@ -102,8 +99,7 @@ public class RabbitMQEventBus : IEventPublisher, IEventSubscriber
 		IEventHandler<Event> c;
 		foreach (var handler in handlers)
 		{
-			var res = handler?.GetType().GetMethod(nameof(c.HandleAsync))?.Invoke(handler, new object[]
-			{
+			var res = handler?.GetType().GetMethod(nameof(c.HandleAsync))?.Invoke(handler, new object[] {
 				@event
 			});
 			if (res is not null) await (Task)res;

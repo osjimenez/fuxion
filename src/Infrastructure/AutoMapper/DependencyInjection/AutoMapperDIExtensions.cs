@@ -7,10 +7,8 @@ public static class AutoMapperDIExtensions
 	public static IAutoMapperBuilder AddAutoMapper(this IServiceCollection services)
 	{
 		// Configuration
-		services.AddSingleton(sp =>
-		{
-			return new MapperConfiguration(cfg =>
-			{
+		services.AddSingleton(sp => {
+			return new MapperConfiguration(cfg => {
 				//add your profiles (either resolve from container or however else you acquire them)
 				foreach (var profile in sp.GetServices<Profile>()) cfg.AddProfile(profile);
 			});

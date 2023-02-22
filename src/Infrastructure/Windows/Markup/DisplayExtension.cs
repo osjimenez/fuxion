@@ -23,8 +23,7 @@ public class DisplayExtension : MarkupExtension
 		}
 		var pros = bindExpression.Split('.');
 		for (var i = pros.Length - 1; i >= 0; i--)
-			chain.Add(new(pros[i], pro =>
-			{
+			chain.Add(new(pros[i], pro => {
 				var att = pro?.GetCustomAttribute<DisplayAttribute>(true, false);
 				var nonAttributeValue = pro?.Name;
 				if (nonAttributeValue != null) nonAttributeValue = NonAttrributePrefix + nonAttributeValue + NonAttrributeSufix;
@@ -51,8 +50,7 @@ public class DisplayExtension : MarkupExtension
 						break;
 				}
 				return attRes ?? nonAttributeValue;
-			})
-			{
+			}) {
 				printer = Printer, NextLink = i == pros.Length - 1 ? null : chain.FirstOrDefault(l => l.PropertyName == pros[i + 1])
 			});
 		chain.Reverse();
@@ -80,8 +78,7 @@ public class DisplayExtension : MarkupExtension
 			if (provider.TargetObject is FrameworkElement element)
 			{
 				first.TargetObject = element;
-				element.DataContextChanged += (s, e) =>
-				{
+				element.DataContextChanged += (s, e) => {
 					Printer?.WriteLine("DataContextChanged: " + e.NewValue);
 					first.DataContext = e.NewValue;
 					first.SetValue();
@@ -90,8 +87,7 @@ public class DisplayExtension : MarkupExtension
 			} else if (provider.TargetObject is FrameworkContentElement contentElement)
 			{
 				first.TargetObject = contentElement;
-				contentElement.DataContextChanged += (s, e) =>
-				{
+				contentElement.DataContextChanged += (s, e) => {
 					Printer?.WriteLine("DataContextChanged: " + e.NewValue);
 					first.DataContext = e.NewValue;
 					first.SetValue();

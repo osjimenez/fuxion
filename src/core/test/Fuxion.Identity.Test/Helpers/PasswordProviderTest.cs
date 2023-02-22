@@ -12,8 +12,7 @@ public class PasswordProviderTest : BaseTest<PasswordProviderTest>
 	public void Generate()
 	{
 		var pwd = "123";
-		var gen = new PasswordProvider
-		{
+		var gen = new PasswordProvider {
 			SaltBytesLenght = 3, Algorithm = PasswordHashAlgorithm.SHA1
 		};
 		Output.WriteLine("Algorithm: " + gen.Algorithm);
@@ -58,8 +57,7 @@ public class PasswordProviderTest : BaseTest<PasswordProviderTest>
 	public void HashIteration()
 	{
 		var pwd = "123";
-		var gen = new PasswordProvider
-		{
+		var gen = new PasswordProvider {
 			HashIterations = 10
 		};
 		gen.Generate(pwd, out var salt, out var hash1);

@@ -13,7 +13,7 @@ public class TrackingQueryVisitor : DefaultExpressionVisitor
 		{
 			var binding = expression.Bind();
 			return binding.Filter(binding.VariableType.Variable(binding.VariableName).Property(column).NotEqual(DbExpression.FromBoolean(true))
-												  .Or(binding.VariableType.Variable(binding.VariableName).Property(column).IsNull()));
+				.Or(binding.VariableType.Variable(binding.VariableName).Property(column).IsNull()));
 		}
 		return base.Visit(expression);
 	}

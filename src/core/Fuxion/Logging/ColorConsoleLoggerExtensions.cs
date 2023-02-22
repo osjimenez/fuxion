@@ -25,24 +25,21 @@ public static class ColorConsoleLoggerExtensions
 	}
 	public static void WhiteLine(this ILogger logger, params object[] args) => logger.LogCritical(string.Empty, args);
 	public static void LogOk(this ILogger logger, EventId eventId, Exception? exception, string message, params object[] args) =>
-		logger.Log(LogLevel.Information, eventId, new ColorConsoleState
-		{
+		logger.Log(LogLevel.Information, eventId, new ColorConsoleState {
 			ForegroundColor = OkColor, Message = message, Arguments = args
 		}, exception, (state, _) => state.Message);
 	public static void LogOk(this ILogger logger, EventId eventId, string message, params object[] args) => LogOk(logger, eventId, default, message, args);
 	public static void LogOk(this ILogger logger, Exception exception, string message, params object[] args) => LogOk(logger, default, exception, message, args);
 	public static void LogOk(this ILogger logger, string message, params object[] args) => LogOk(logger, default, default, message, args);
 	public static void LogNotice(this ILogger logger, EventId eventId, Exception? exception, string message, params object[] args) =>
-		logger.Log(LogLevel.Information, eventId, new ColorConsoleState
-		{
+		logger.Log(LogLevel.Information, eventId, new ColorConsoleState {
 			ForegroundColor = NoticeColor, Message = message, Arguments = args
 		}, exception, (state, _) => state.Message);
 	public static void LogNotice(this ILogger logger, EventId eventId, string message, params object[] args) => LogNotice(logger, eventId, default, message, args);
 	public static void LogNotice(this ILogger logger, Exception exception, string message, params object[] args) => LogNotice(logger, default, exception, message, args);
 	public static void LogNotice(this ILogger logger, string message, params object[] args) => LogNotice(logger, default, default, message, args);
 	public static void LogHighlight(this ILogger logger, EventId eventId, Exception? exception, string message, params object[] args) =>
-		logger.Log(LogLevel.Information, eventId, new ColorConsoleState
-		{
+		logger.Log(LogLevel.Information, eventId, new ColorConsoleState {
 			ForegroundColor = HighlightColor, Message = message, Arguments = args
 		}, exception, (state, _) => state.Message);
 	public static void LogHighlight(this ILogger logger, EventId eventId, string message, params object[] args) => LogHighlight(logger, eventId, default, message, args);

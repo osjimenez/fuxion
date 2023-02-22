@@ -6,39 +6,39 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Using Include="Xunit" />
-		<Using Include="Xunit.Abstractions" />
-		<Using Include="Fuxion.Testing" />
-		<Using Include="Microsoft.Extensions.Logging" />
+		<Using Include="Xunit"/>
+		<Using Include="Xunit.Abstractions"/>
+		<Using Include="Fuxion.Testing"/>
+		<Using Include="Microsoft.Extensions.Logging"/>
 	</ItemGroup>
 
 	<ItemGroup>
-		<Compile Remove="FakesAssemblies\**" />
-		<Compile Remove="Properties\**" />
-		<EmbeddedResource Remove="FakesAssemblies\**" />
-		<EmbeddedResource Remove="Properties\**" />
-		<None Remove="FakesAssemblies\**" />
-		<None Remove="Properties\**" />
+		<Compile Remove="FakesAssemblies\**"/>
+		<Compile Remove="Properties\**"/>
+		<EmbeddedResource Remove="FakesAssemblies\**"/>
+		<EmbeddedResource Remove="Properties\**"/>
+		<None Remove="FakesAssemblies\**"/>
+		<None Remove="Properties\**"/>
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
-		<PackageReference Include="Microsoft.QualityTools.Testing.Fakes" Version="16.11.230815" />
-		<PackageReference Include="Moq" Version="4.18.4" />
-		<PackageReference Include="Pose" Version="1.2.1" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0"/>
+		<PackageReference Include="Microsoft.QualityTools.Testing.Fakes" Version="16.11.230815"/>
+		<PackageReference Include="Moq" Version="4.18.4"/>
+		<PackageReference Include="Pose" Version="1.2.1"/>
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\Fuxion\Fuxion.csproj" />
-		<ProjectReference Include="..\..\Testing\Fuxion.Testing.csproj" />
+		<ProjectReference Include="..\..\Fuxion\Fuxion.csproj"/>
+		<ProjectReference Include="..\..\Testing\Fuxion.Testing.csproj"/>
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
+		<Content Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest"/>
 	</ItemGroup>
 
 	<ItemGroup>
-		<AdditionalDesignTimeBuildInput Remove="FakesAssemblies\**" />
+		<AdditionalDesignTimeBuildInput Remove="FakesAssemblies\**"/>
 	</ItemGroup>
 
 </Project>

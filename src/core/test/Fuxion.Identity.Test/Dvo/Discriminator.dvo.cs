@@ -43,8 +43,7 @@ public class StateDvo : LocationDvo<StateDvo>
 	public IList<CityDvo> Cities { get; set; } = new List<CityDvo>();
 	public CountryDvo Country { get; set; }
 	protected override IEnumerable<IDiscriminator<string, string>> GetExclusions() =>
-		new[]
-		{
+		new[] {
 			Country
 		};
 	protected override IEnumerable<IDiscriminator<string, string>> GetInclusions() => Cities;
@@ -56,8 +55,7 @@ public class CityDvo : LocationDvo<CityDvo>
 	public CityDvo(string id, string name, StateDvo state) : base(id, name) => State = state;
 	public StateDvo State { get; set; }
 	protected override IEnumerable<IDiscriminator<string, string>> GetExclusions() =>
-		new[]
-		{
+		new[] {
 			State
 		};
 }
@@ -71,8 +69,7 @@ public class CategoryDvo : DiscriminatorDvo<CategoryDvo>
 	protected sealed override string GetTypeId() => "CAT";
 	protected sealed override string GetTypeName() => nameof(CategoryDvo);
 	protected override IEnumerable<IDiscriminator<string, string>> GetExclusions() =>
-		new[]
-		{
+		new[] {
 			Parent
 		}.RemoveNulls();
 	protected override IEnumerable<IDiscriminator<string, string>> GetInclusions() => Children;

@@ -25,24 +25,21 @@ public static class IScope_Extensions
 			case PrintMode.OneLine:      break;
 			case PrintMode.PropertyList: break;
 			case PrintMode.Table:
-				var typeLength = new[]
-				{
+				var typeLength = new[] {
 					"TYPE".Length
 				}.Concat(me.Select(p => p.Discriminator.TypeName.Length)).Max();
-				var nameLength = new[]
-				{
+				var nameLength = new[] {
 					"NAME".Length
 				}.Concat(me.Select(p => p.Discriminator.Name?.Length ?? 0)).Max();
-				var propagationLength = new[]
-				{
+				var propagationLength = new[] {
 					"PROPAGATION".Length
 				}.Concat(me.Select(p => p.Propagation.ToString().Length)).Max();
-				Printer.WriteLine("┌" + "".PadRight(typeLength, '─')     + "┬" + "".PadRight(nameLength, '─')     + "┬" + "".PadRight(propagationLength, '─')            + "┐");
+				Printer.WriteLine("┌" + "".PadRight(typeLength, '─') + "┬" + "".PadRight(nameLength, '─') + "┬" + "".PadRight(propagationLength, '─') + "┐");
 				Printer.WriteLine("│" + "TYPE".PadRight(typeLength, ' ') + "│" + "NAME".PadRight(nameLength, ' ') + "│" + "PROPAGATION".PadRight(propagationLength, ' ') + "│");
-				Printer.WriteLine("├" + "".PadRight(typeLength, '─')     + "┼" + "".PadRight(nameLength, '─')     + "┼" + "".PadRight(propagationLength, '─')            + "┤");
+				Printer.WriteLine("├" + "".PadRight(typeLength, '─') + "┼" + "".PadRight(nameLength, '─') + "┼" + "".PadRight(propagationLength, '─') + "┤");
 				foreach (var sco in me)
 					Printer.WriteLine("│" + sco.Discriminator.TypeName.PadRight(typeLength, ' ') + "│" + sco.Discriminator.Name?.PadRight(nameLength, ' ') + "│"
-											+ sco.Propagation.ToString().PadRight(propagationLength, ' ') + "│");
+						+ sco.Propagation.ToString().PadRight(propagationLength, ' ') + "│");
 				Printer.WriteLine("└" + "".PadRight(typeLength, '─') + "┴" + "".PadRight(nameLength, '─') + "┴" + "".PadRight(propagationLength, '─') + "┘");
 				break;
 		}

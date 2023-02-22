@@ -17,8 +17,7 @@ public class TimeSpanToStringConverterTest : BaseTest<TimeSpanToStringConverterT
 	[Fact(DisplayName = "TimeSpanToStringConverter - PerElement")]
 	public void TimeSpanToStringConverter_PerElements()
 	{
-		var con = new TimeSpanToStringConverter
-		{
+		var con = new TimeSpanToStringConverter {
 			Mode = TimeSpanToStringMode.PerElements
 		};
 		var res = con.Convert(TimeSpan.Parse("1.18:53:58.1234567"), CultureInfo.CurrentCulture);

@@ -16,6 +16,6 @@ public abstract class ColumnAnnotationAttribute : Attribute
 		if (trackAttributes == null) trackAttributes = convention.GetType().Assembly.GetTypes().Where(t => typeof(ColumnAnnotationAttribute).IsAssignableFrom(t));
 		foreach (var attType in trackAttributes)
 			convention.Properties().Having(p => p.CustomAttributes.SingleOrDefault(att => att.AttributeType.IsAssignableFrom(attType)))
-						 .Configure((config, att) => config.HasColumnAnnotation((attType.FullName ?? "").Replace('.', '_'), ""));
+				.Configure((config, att) => config.HasColumnAnnotation((attType.FullName ?? "").Replace('.', '_'), ""));
 	}
 }

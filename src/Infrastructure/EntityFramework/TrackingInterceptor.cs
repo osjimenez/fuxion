@@ -89,8 +89,8 @@ public class TrackingInterceptor : IDbCommandTreeInterceptor
 				var clauses = updateCommand.SetClauses.ToList();
 				var traceDeleteionsClause = clauses.FirstOrDefault(c =>
 					((DbSetClause)c).Property is DbConstantExpression && ((DbConstantExpression)((DbSetClause)c).Property).Value is int
-																					  && (int)((DbConstantExpression)((DbSetClause)c).Property).Value == 137 && ((DbSetClause)c).Value is DbConstantExpression
-																					  && ((DbConstantExpression)((DbSetClause)c).Value).Value is int && (int)((DbConstantExpression)((DbSetClause)c).Value).Value == 137);
+					&& (int)((DbConstantExpression)((DbSetClause)c).Property).Value == 137 && ((DbSetClause)c).Value is DbConstantExpression
+					&& ((DbConstantExpression)((DbSetClause)c).Value).Value is int && (int)((DbConstantExpression)((DbSetClause)c).Value).Value == 137);
 				if (traceDeleteionsClause != null)
 					//This command is derived from a deletion operation
 					clauses.Remove(traceDeleteionsClause);

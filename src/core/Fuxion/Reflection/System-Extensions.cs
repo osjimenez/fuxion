@@ -18,9 +18,9 @@ public static class MemberInfoExtensions
 	/// <param name="exceptionIfMoreThanOne">true to throw <see cref="AttributeMoreThanOneException" /> if custom attribute found more than once.</param>
 	/// <returns></returns>
 	public static TAttribute? GetCustomAttribute<TAttribute>(this MemberInfo me,
-																				bool inherit = true,
-																				[DoesNotReturnIf(true)] bool exceptionIfNotFound = false,
-																				[DoesNotReturnIf(true)] bool exceptionIfMoreThanOne = false) where TAttribute : Attribute
+		bool inherit = true,
+		[DoesNotReturnIf(true)] bool exceptionIfNotFound = false,
+		[DoesNotReturnIf(true)] bool exceptionIfMoreThanOne = false) where TAttribute : Attribute
 	{
 		var objAtts = me.GetCustomAttributes(typeof(TAttribute), inherit);
 		var atts = objAtts?.Cast<TAttribute>();
@@ -35,14 +35,14 @@ public static class MemberInfoExtensions
 		return att != null;
 	}
 	public static string GetSignature(this MethodBase method,
-												 bool includeAccessModifiers = false,
-												 bool includeReturn = false,
-												 bool includeDeclaringType = true,
-												 bool useFullNames = false,
-												 bool includeParameters = true,
-												 bool includeParametersNames = false,
-												 Func<bool, bool, MethodBase, object?, string>? parametersFunction = null,
-												 object? parametersFunctionArguments = null)
+		bool includeAccessModifiers = false,
+		bool includeReturn = false,
+		bool includeDeclaringType = true,
+		bool useFullNames = false,
+		bool includeParameters = true,
+		bool includeParametersNames = false,
+		Func<bool, bool, MethodBase, object?, string>? parametersFunction = null,
+		object? parametersFunctionArguments = null)
 	{
 		var res = new StringBuilder();
 		// Access modifiers

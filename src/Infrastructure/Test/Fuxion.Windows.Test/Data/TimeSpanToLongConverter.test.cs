@@ -17,8 +17,7 @@ public class TimeSpanToLongConverterTest : BaseTest<TimeSpanToLongConverterTest>
 	[Fact(DisplayName = "TimeSpanToLongConverter - ConvertToSeconds")]
 	public void ConvertToSeconds()
 	{
-		var conv = new TimeSpanToLongConverter
-		{
+		var conv = new TimeSpanToLongConverter {
 			Value = TimeSpanToLongValue.Seconds
 		};
 

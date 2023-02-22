@@ -21,8 +21,7 @@ public class MenuManager
 				menu.Items.Add(m2);
 			} else
 			{
-				var item = new RadMenuItem
-				{
+				var item = new RadMenuItem {
 					Header = m.Header
 				};
 				item.Click += (_, __) => m.OnClick();

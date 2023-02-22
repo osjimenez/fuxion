@@ -57,8 +57,7 @@ public class ColorConsoleLoggerConfiguration
 		set => ConsoleTools.MessageSufix = value;
 	}
 	public bool UseLock { get; set; }
-	public Dictionary<LogLevel, Func<ConsoleColor>> LogLevels { get; set; } = new()
-	{
+	public Dictionary<LogLevel, Func<ConsoleColor>> LogLevels { get; set; } = new() {
 		[LogLevel.Critical] = () => CriticalColor,
 		[LogLevel.Error] = () => ErrorColor,
 		[LogLevel.Warning] = () => WarnColor,

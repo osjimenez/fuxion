@@ -3,8 +3,7 @@
 public class AverageTimeProviderTest : BaseTest<AverageTimeProviderTest>
 {
 	public AverageTimeProviderTest(ITestOutputHelper output) : base(output) { }
-	string[] NtpServersAddresses { get; } =
-	{
+	string[] NtpServersAddresses { get; } = {
 		// From NIST - http://tf.nist.gov/tf-cgi/servers.cgi
 		"time-a.nist.gov", "time-b.nist.gov", "time-c.nist.gov", "time-d.nist.gov", "nist1-macon.macon.ga.us", "wolfnisttime.com", "nist.netservicesgroup.com", "nisttime.carsoncity.k12.mi.us",
 		"nist1-lnk.binary.net", "wwv.nist.gov", "time-a.timefreq.bldrdoc.gov", "time-b.timefreq.bldrdoc.gov", "time-c.timefreq.bldrdoc.gov", "time.nist.gov", "utcnist.colorado.edu",
@@ -25,19 +24,16 @@ public class AverageTimeProviderTest : BaseTest<AverageTimeProviderTest>
 		// From POOL.ORG - http://www.pool.ntp.org/zone/europe
 		"0.europe.pool.ntp.org", "1.europe.pool.ntp.org", "2.europe.pool.ntp.org", "3.europe.pool.ntp.org", "es.pool.ntp.org"
 	};
-	string[] WebServersAddresses { get; } =
-	{
+	string[] WebServersAddresses { get; } = {
 		"https://www.google.com", "https://www.google.es", "https://www.youtube.com",
 		// "https://www.microsoft.com",
 		"https://www.yahoo.com", "https://www.amazon.com", "https://www.facebook.com", "https://www.twitter.com"
 	};
 	[Fact(DisplayName = "AverageTimeProvider - CheckConsistency")]
 	public void AverageTimeProvider_CheckConsistency() =>
-		new AverageTimeProvider().Transform(p =>
-		{
+		new AverageTimeProvider().Transform(p => {
 			foreach (var add in WebServersAddresses)
-				p.AddProvider(new InternetTimeProvider
-				{
+				p.AddProvider(new InternetTimeProvider {
 					ServerAddress = add, ServerType = InternetTimeServerType.Web, Timeout = TimeSpan.FromSeconds(15)
 				});
 			p.Logger = Logger;

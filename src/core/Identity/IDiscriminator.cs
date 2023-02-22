@@ -39,8 +39,7 @@ public class Discriminator : IDiscriminator
 		throw new ArgumentException($"The type '{type.Name}' isn't adorned with Discriminator attribute");
 	}
 	internal static IDiscriminator ForId(Type type, object id) =>
-		((Discriminator)Empty(type)).Transform(d =>
-		{
+		((Discriminator)Empty(type)).Transform(d => {
 			d.Id = id;
 			d.Name = id?.ToString();
 		});
@@ -57,20 +56,16 @@ public static class DiscriminatorExtensions
 			case PrintMode.OneLine:      break;
 			case PrintMode.PropertyList: break;
 			case PrintMode.Table:
-				var maxTypeId = me.Select(s => s.TypeKey.ToString()?.Length ?? 0).Union(new[]
-				{
+				var maxTypeId = me.Select(s => s.TypeKey.ToString()?.Length ?? 0).Union(new[] {
 					"TYPE_ID".Length
 				}).Max();
-				var maxTypeName = me.Select(s => s.TypeName.Length).Union(new[]
-				{
+				var maxTypeName = me.Select(s => s.TypeName.Length).Union(new[] {
 					"TYPE_NAME".Length
 				}).Max();
-				var maxId = me.Select(s => s.Id?.ToString()?.Length ?? 0).Union(new[]
-				{
+				var maxId = me.Select(s => s.Id?.ToString()?.Length ?? 0).Union(new[] {
 					"ID".Length, "null".Length
 				}).Max();
-				var maxName = me.Select(s => s.Name?.Length).RemoveNulls().Union(new[]
-				{
+				var maxName = me.Select(s => s.Name?.Length).RemoveNulls().Union(new[] {
 					"NAME".Length, "null".Length
 				}).Max();
 				Printer.WriteLine("┌" + "".PadRight(maxTypeId, '─') + "┬" + "".PadRight(maxTypeName, '─') + "┬" + "".PadRight(maxId, '─') + "┬" + "".PadRight(maxName, '─') + "┐");
@@ -78,7 +73,7 @@ public static class DiscriminatorExtensions
 				Printer.WriteLine("├" + "".PadRight(maxTypeId, '─') + "┼" + "".PadRight(maxTypeName, '─') + "┼" + "".PadRight(maxId, '─') + "┼" + "".PadRight(maxName, '─') + "┤");
 				foreach (var sco in me)
 					Printer.WriteLine("│" + (sco.TypeKey.ToString() ?? "").PadRight(maxTypeId, ' ') + "│" + sco.TypeName.PadRight(maxTypeName, ' ') + "│"
-											+ (sco.Id?.ToString() ?? "null").PadRight(maxId, ' ') + "│" + (sco.Name ?? "null").PadRight(maxName, ' ') + "│");
+						+ (sco.Id?.ToString() ?? "null").PadRight(maxId, ' ') + "│" + (sco.Name ?? "null").PadRight(maxName, ' ') + "│");
 				Printer.WriteLine("└" + "".PadRight(maxTypeId, '─') + "┴" + "".PadRight(maxTypeName, '─') + "┴" + "".PadRight(maxId, '─') + "┴" + "".PadRight(maxName, '─') + "┘");
 				break;
 		}

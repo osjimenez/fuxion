@@ -21,8 +21,8 @@ public class TypeKeyDirectory
 	public void RegisterAssembly(Assembly assembly, Func<(Type Type, TypeKeyAttribute? Attribute), bool>? predicate = null, bool registerByFullNameIfNotFound = false)
 	{
 		var query = assembly.GetTypes().Where(t => t.HasCustomAttribute<TypeKeyAttribute>(false) || registerByFullNameIfNotFound)
-								  // NULLABLE - I check before that custom attribute exist
-								  .Select(t => (Type: t, Attribute: t.GetCustomAttribute<TypeKeyAttribute>()));
+			// NULLABLE - I check before that custom attribute exist
+			.Select(t => (Type: t, Attribute: t.GetCustomAttribute<TypeKeyAttribute>()));
 		if (predicate != null) query = query.Where(predicate);
 		foreach (var tup in query) Register(tup.Type, registerByFullNameIfNotFound);
 	}

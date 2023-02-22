@@ -9,8 +9,7 @@ namespace Fuxion.Windows.Test.Data;
 public class StringToCapitalizedStringConverterTest : BaseTest<StringToCapitalizedStringConverterTest>
 {
 	public StringToCapitalizedStringConverterTest(ITestOutputHelper output) : base(output) { }
-	readonly string[] testCases =
-	{
+	readonly string[] testCases = {
 		"test string", "test String", "test StRing", "test stRing", "TEST STRING"
 	};
 	[Fact(DisplayName = "StringToCapitalizedStringConverter - ToCamelCase")]
@@ -18,8 +17,7 @@ public class StringToCapitalizedStringConverterTest : BaseTest<StringToCapitaliz
 	{
 		foreach (var @case in testCases)
 		{
-			var res = new StringToCapitalizedStringConverter
-			{
+			var res = new StringToCapitalizedStringConverter {
 				Capitalization = StringCapitalization.ToCamelCase
 			}.Convert(@case, CultureInfo.CurrentCulture);
 			Assert.Equal("testString", res);
@@ -30,8 +28,7 @@ public class StringToCapitalizedStringConverterTest : BaseTest<StringToCapitaliz
 	{
 		foreach (var @case in testCases)
 		{
-			var res = new StringToCapitalizedStringConverter
-			{
+			var res = new StringToCapitalizedStringConverter {
 				Capitalization = StringCapitalization.ToLower
 			}.Convert(@case, CultureInfo.CurrentCulture);
 			Assert.Equal("test string", res);
@@ -42,8 +39,7 @@ public class StringToCapitalizedStringConverterTest : BaseTest<StringToCapitaliz
 	{
 		foreach (var @case in testCases)
 		{
-			var res = new StringToCapitalizedStringConverter
-			{
+			var res = new StringToCapitalizedStringConverter {
 				Capitalization = StringCapitalization.ToPascalCase
 			}.Convert(@case, CultureInfo.CurrentCulture);
 			Assert.Equal("TestString", res);
@@ -54,8 +50,7 @@ public class StringToCapitalizedStringConverterTest : BaseTest<StringToCapitaliz
 	{
 		foreach (var @case in testCases)
 		{
-			var res = new StringToCapitalizedStringConverter
-			{
+			var res = new StringToCapitalizedStringConverter {
 				Capitalization = StringCapitalization.ToTitleCase
 			}.Convert(@case, CultureInfo.CurrentCulture);
 			Assert.Equal("Test String", res);
@@ -66,8 +61,7 @@ public class StringToCapitalizedStringConverterTest : BaseTest<StringToCapitaliz
 	{
 		foreach (var @case in testCases)
 		{
-			var res = new StringToCapitalizedStringConverter
-			{
+			var res = new StringToCapitalizedStringConverter {
 				Capitalization = StringCapitalization.ToUpper
 			}.Convert(@case, CultureInfo.CurrentCulture);
 			Assert.Equal("TEST STRING", res);

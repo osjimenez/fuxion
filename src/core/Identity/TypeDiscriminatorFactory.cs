@@ -11,13 +11,11 @@ public class TypeDiscriminatorFactory
 	bool initialized;
 	public string DiscriminatorTypeName { get; set; } = TypeDiscriminator.TypeDiscriminatorId;
 	public bool AllowMoreThanOneTypeByDiscriminator { get; set; }
-	public Func<Type, TypeDiscriminatedAttribute?, string> GetIdFunction { get; set; } = (type, att) =>
-	{
+	public Func<Type, TypeDiscriminatedAttribute?, string> GetIdFunction { get; set; } = (type, att) => {
 		if (att != null && !string.IsNullOrWhiteSpace(att.Id)) return att.Id;
 		return type.GetSignature(true);
 	};
-	public Func<Type, TypeDiscriminatedAttribute?, string> GetNameFunction { get; set; } = (type, att) =>
-	{
+	public Func<Type, TypeDiscriminatedAttribute?, string> GetNameFunction { get; set; } = (type, att) => {
 		if (att != null && !string.IsNullOrWhiteSpace(att.Name)) return att.Name;
 		return type.Name;
 	};
@@ -35,12 +33,11 @@ public class TypeDiscriminatorFactory
 		// No creo las entradas virtuales que han sido indicadas en un tipo pero no hay contra-parte
 		// De esta forma, puedo NO cargar todos los tipos de un arbol y no tener errores con los tipos virtuales
 		foreach (var id in entries.SelectMany(e => e.Types).SelectMany(t => new string[]
-						   { }.Concat(t.Attribute?.ExplicitInclusions ?? Enumerable.Empty<string>()).Concat(t.Attribute?.AdditionalInclusions ?? Enumerable.Empty<string>())
-							   .Concat(t.Attribute?.AvoidedInclusions ?? Enumerable.Empty<string>())).Intersect(entries.SelectMany(e => e.Types).SelectMany(t => new string[]
-						   { }.Concat(t.Attribute?.ExplicitExclusions ?? Enumerable.Empty<string>()).Concat(t.Attribute?.AdditionalExclusions ?? Enumerable.Empty<string>())
-							   .Concat(t.Attribute?.AvoidedExclusions ?? Enumerable.Empty<string>()))).Where(id => !entries.Contains(id)).ToList())
-			entries.Add(new(new(TypeDiscriminator.TypeDiscriminatorId, DiscriminatorTypeName)
-			{
+					{ }.Concat(t.Attribute?.ExplicitInclusions ?? Enumerable.Empty<string>()).Concat(t.Attribute?.AdditionalInclusions ?? Enumerable.Empty<string>())
+				.Concat(t.Attribute?.AvoidedInclusions ?? Enumerable.Empty<string>())).Intersect(entries.SelectMany(e => e.Types).SelectMany(t => new string[]
+					{ }.Concat(t.Attribute?.ExplicitExclusions ?? Enumerable.Empty<string>()).Concat(t.Attribute?.AdditionalExclusions ?? Enumerable.Empty<string>())
+				.Concat(t.Attribute?.AvoidedExclusions ?? Enumerable.Empty<string>()))).Where(id => !entries.Contains(id)).ToList())
+			entries.Add(new(new(TypeDiscriminator.TypeDiscriminatorId, DiscriminatorTypeName) {
 				Id = id, Name = GetVirtualNameFunction(id)
 			}));
 		// Coloco los tipos base y derivados de cada tipo
@@ -52,8 +49,7 @@ public class TypeDiscriminatorFactory
 				if (parent?.GenericTypeArguments.Length > 0) parent = parent.GetTypeInfo().GetGenericTypeDefinition();
 				type.BaseType = allTypes.FirstOrDefault(t => t.Type == parent);
 				type.DeepBaseType = type.BaseType;
-				type.DerivedTypes = allTypes.Where(t =>
-				{
+				type.DerivedTypes = allTypes.Where(t => {
 					if (t.Type.GetTypeInfo().BaseType?.GenericTypeArguments.Length > 0) return type.Type == t.Type.GetTypeInfo().BaseType?.GetGenericTypeDefinition();
 					return t.Type.GetTypeInfo().BaseType == type.Type;
 				}).ToList();
@@ -129,14 +125,14 @@ public class TypeDiscriminatorFactory
 				{
 					// Inclusions
 					foreach (var avo in Search(ent.Types.SelectMany(t => t.Attribute?.AvoidedInclusions ?? new string[]
-								   { })))
+						{ })))
 					{
 						Debug.WriteLine($"Inclusion {avo.Id} avoided from {ent.Id}");
 						ent.Discriminator.Inclusions.RemoveAll(d => d.Id == avo.Id);
 					}
 					// Exclusions
 					foreach (var avo in Search(ent.Types.SelectMany(t => t.Attribute?.AvoidedExclusions ?? new string[]
-								   { })))
+						{ })))
 					{
 						Debug.WriteLine($"Exclusion {avo.Id} avoided from {ent.Id}");
 						ent.Discriminator.Exclusions.RemoveAll(d => d.Id == avo.Id);
@@ -172,28 +168,28 @@ public class TypeDiscriminatorFactory
 			{
 				if (att.AdditionalExclusions != null)
 					errors.Add(new($"The type discriminator '{ent.Discriminator.Name}' define '{nameof(att.DisableMode)}' property "
-										+ $"but define '{nameof(att.AdditionalExclusions)}' parameter too, this is invalid configuration"));
+						+ $"but define '{nameof(att.AdditionalExclusions)}' parameter too, this is invalid configuration"));
 				if (att.AdditionalInclusions != null)
 					errors.Add(new($"The type discriminator '{ent.Discriminator.Name}' define '{nameof(att.DisableMode)}' property "
-										+ $"but define '{nameof(att.AdditionalInclusions)}' parameter too, this is invalid configuration"));
+						+ $"but define '{nameof(att.AdditionalInclusions)}' parameter too, this is invalid configuration"));
 				if (att.AvoidedExclusions != null)
 					errors.Add(new($"The type discriminator '{ent.Discriminator.Name}' define '{nameof(att.DisableMode)}' property "
-										+ $"but define '{nameof(att.AvoidedExclusions)}' parameter too, this is invalid configuration"));
+						+ $"but define '{nameof(att.AvoidedExclusions)}' parameter too, this is invalid configuration"));
 				if (att.AvoidedInclusions != null)
 					errors.Add(new($"The type discriminator '{ent.Discriminator.Name}' define '{nameof(att.DisableMode)}' property "
-										+ $"but define '{nameof(att.AvoidedInclusions)}' parameter too, this is invalid configuration"));
+						+ $"but define '{nameof(att.AvoidedInclusions)}' parameter too, this is invalid configuration"));
 				if (att.ExplicitExclusions != null)
 					errors.Add(new($"The type discriminator '{ent.Discriminator.Name}' define '{nameof(att.DisableMode)}' property "
-										+ $"but define '{nameof(att.ExplicitExclusions)}' parameter too, this is invalid configuration"));
+						+ $"but define '{nameof(att.ExplicitExclusions)}' parameter too, this is invalid configuration"));
 				if (att.ExplicitInclusions != null)
 					errors.Add(new($"The type discriminator '{ent.Discriminator.Name}' define '{nameof(att.DisableMode)}' property "
-										+ $"but define '{nameof(att.ExplicitInclusions)}' parameter too, this is invalid configuration"));
+						+ $"but define '{nameof(att.ExplicitInclusions)}' parameter too, this is invalid configuration"));
 				if (att.Id != null)
 					errors.Add(new($"The type discriminator '{ent.Discriminator.Name}' define '{nameof(att.DisableMode)}' property "
-										+ $"but define '{nameof(att.Id)}' parameter too, this is invalid configuration"));
+						+ $"but define '{nameof(att.Id)}' parameter too, this is invalid configuration"));
 				if (att.Name != null)
 					errors.Add(new($"The type discriminator '{ent.Discriminator.Name}' define '{nameof(att.DisableMode)}' property "
-										+ $"but define '{nameof(att.Name)}' parameter too, this is invalid configuration"));
+						+ $"but define '{nameof(att.Name)}' parameter too, this is invalid configuration"));
 			}
 		}
 		if (throwException & errors.Count > 0) throw new TypeDiscriminatorRegistrationValidationException($"Validation of type discriminators registrations has '{errors.Count}' errors", errors);
@@ -220,10 +216,10 @@ public class TypeDiscriminatorFactory
 
 			// Comprobar que todos los tipos incluidos y excluidos explicitamente con el atributo estan en la lista
 			foreach (var id in ent.Types?.SelectMany(t => t.Attribute?.ExplicitInclusions ?? new string[]
-						   { }).Where(id => !entries.Select(e => e.Id).Contains(id)) ?? Enumerable.Empty<string>())
+					{ }).Where(id => !entries.Select(e => e.Id).Contains(id)) ?? Enumerable.Empty<string>())
 				errors.Add(new($"The type discriminator '{ent.Discriminator.Name}' include the type discriminator '{id}', but '{id}' is not registered"));
 			foreach (var id in ent.Types?.SelectMany(t => t.Attribute?.ExplicitExclusions ?? new string[]
-						   { }).Where(id => !entries.Select(e => e.Id).Contains(id)) ?? Enumerable.Empty<string>())
+					{ }).Where(id => !entries.Select(e => e.Id).Contains(id)) ?? Enumerable.Empty<string>())
 				errors.Add(new($"The type discriminator '{ent.Discriminator.Name}' exclude the type discriminator '{id}', but '{id}' is not registered"));
 		}
 		if (throwException && errors.Count > 0) throw new TypeDiscriminatorRegistrationValidationException($"Validation of type discriminators registrations has '{errors.Count}' errors", errors);
@@ -241,13 +237,11 @@ public class TypeDiscriminatorFactory
 		foreach (var type in types)
 		{
 			var att = type.GetTypeInfo().GetCustomAttribute<TypeDiscriminatedAttribute>(false, false, true);
-			var ent = new Entry(new(TypeDiscriminator.TypeDiscriminatorId, DiscriminatorTypeName)
-			{
+			var ent = new Entry(new(TypeDiscriminator.TypeDiscriminatorId, DiscriminatorTypeName) {
 				Id = GetIdFunction(type, att), Name = GetNameFunction(type, att)
 			});
 			var typ = new EntryType(ent, type, att);
-			ent.Types = new[]
-			{
+			ent.Types = new[] {
 				typ
 			}.ToList();
 			var existent = entries.FirstOrDefault(e => e.Discriminator.Id == ent.Discriminator.Id);

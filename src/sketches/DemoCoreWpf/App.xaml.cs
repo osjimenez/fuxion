@@ -1,15 +1,14 @@
-﻿using DemoCoreWpf.ScreenCapture;
-using System.Windows;
+﻿using System.Windows;
+using DemoCoreWpf.ScreenCapture;
 
-namespace DemoCoreWpf
+namespace DemoCoreWpf;
+
+public partial class App : Application
 {
-	public partial class App : Application
+	protected override void OnStartup(StartupEventArgs e)
 	{
-		protected override void OnStartup(StartupEventArgs e)
-		{
-			//var win = new ValidationWindow();
-			var win = new ScreenCaptureWindow();
-			win.Show();
-		}
+		//var win = new ValidationWindow();
+		var win = new ScreenCaptureWindow();
+		win.Show();
 	}
 }

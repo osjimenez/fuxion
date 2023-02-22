@@ -35,8 +35,7 @@ public class SystemExtensionsTest : BaseTest<SystemExtensionsTest>
 	[Fact(DisplayName = "Bytes - FromHexadecimal")]
 	public void BytesFromHexadecimal()
 	{
-		var value = new byte[]
-		{
+		var value = new byte[] {
 			0xFD, 0x2E, 0xAC, 0x14, 0x00, 0x00, 0x00
 		};
 		Assert.Equal("FD2EAC14000000", value.ToHexadecimal());
@@ -88,8 +87,7 @@ public class SystemExtensionsTest : BaseTest<SystemExtensionsTest>
 		Assert.Equal(26_326_605, 496_088_653L.DivisionByPowerOfTwo(25).Remainder);
 		Assert.Equal(14, 496_088_653L.DivisionByPowerOfTwo(25).Quotient);
 		// Bytes
-		var value = new byte[]
-		{
+		var value = new byte[] {
 			0x4D, 0xB6, 0x91, 0x1D, 0x00, 0x00, 0x00
 		};
 		Assert.Equal(26_326_605, value.DivisionByPowerOfTwo(25).Remainder);
@@ -142,8 +140,7 @@ public class SystemExtensionsTest : BaseTest<SystemExtensionsTest>
 	[Fact(DisplayName = "String - SearchTextInElements")]
 	public void StringSearchTextInElements()
 	{
-		var res = new[]
-		{
+		var res = new[] {
 			"this is ", "my t", "ex", "t for you"
 		}.SearchTextInElements("tExt", StringComparison.InvariantCultureIgnoreCase);
 		Assert.Single(res);
@@ -151,8 +148,7 @@ public class SystemExtensionsTest : BaseTest<SystemExtensionsTest>
 		Assert.Equal(3, res[0].Start.PositionIndex);
 		Assert.Equal(3, res[0].End.ItemIndex);
 		Assert.Equal(0, res[0].End.PositionIndex);
-		res = new[]
-		{
+		res = new[] {
 			"this is ", "my t", "ex", "t for you and more te", "xt"
 		}.SearchTextInElements("tExt", StringComparison.InvariantCultureIgnoreCase);
 		Assert.Equal(2, res.Count);
@@ -164,8 +160,7 @@ public class SystemExtensionsTest : BaseTest<SystemExtensionsTest>
 		Assert.Equal(19, res[1].Start.PositionIndex);
 		Assert.Equal(4, res[1].End.ItemIndex);
 		Assert.Equal(1, res[1].End.PositionIndex);
-		res = new[]
-		{
+		res = new[] {
 			"text"
 		}.SearchTextInElements("tExt", StringComparison.InvariantCultureIgnoreCase);
 		Assert.Single(res);
@@ -173,8 +168,7 @@ public class SystemExtensionsTest : BaseTest<SystemExtensionsTest>
 		Assert.Equal(0, res[0].Start.PositionIndex);
 		Assert.Equal(0, res[0].End.ItemIndex);
 		Assert.Equal(3, res[0].End.PositionIndex);
-		res = new[]
-		{
+		res = new[] {
 			"more text"
 		}.SearchTextInElements("tExt", StringComparison.InvariantCultureIgnoreCase);
 		Assert.Single(res);
@@ -182,8 +176,7 @@ public class SystemExtensionsTest : BaseTest<SystemExtensionsTest>
 		Assert.Equal(5, res[0].Start.PositionIndex);
 		Assert.Equal(0, res[0].End.ItemIndex);
 		Assert.Equal(8, res[0].End.PositionIndex);
-		res = new[]
-		{
+		res = new[] {
 			"more text more"
 		}.SearchTextInElements("tExt", StringComparison.InvariantCultureIgnoreCase);
 		Assert.Single(res);

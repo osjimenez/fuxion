@@ -62,8 +62,7 @@ public class LicensingManagerTest : BaseTest<LicensingManagerTest>
 		var pro = services.BuildServiceProvider();
 		var lic = pro.GetRequiredService<LicensingManager>().GetProvider().Request(new LicenseRequestMock(Const.HARDWARE_ID, Const.PRODUCT_ID));
 		Output.WriteLine("Created license:");
-		Output.WriteLine(new[]
-		{
+		Output.WriteLine(new[] {
 			lic
 		}.ToJson());
 	}

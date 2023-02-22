@@ -41,8 +41,7 @@ abstract class TaskManagerEntry : ITaskManagerEntry
 		set
 		{
 			_Task = value;
-			_Task.ContinueWith(t =>
-			{
+			_Task.ContinueWith(t => {
 				var toLog = "La tarea finalizó con " + t.Exception?.InnerExceptions.Count + " errores.";
 				Exception? ex = t.Exception;
 				if (t.Exception?.InnerExceptions.Count == 1)

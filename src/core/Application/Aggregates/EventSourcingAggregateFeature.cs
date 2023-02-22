@@ -21,12 +21,10 @@ public class EventSourcingAggregateFeature : IAggregateFeature
 	{
 		this.aggregate = aggregate;
 		if (!aggregate.HasEvents()) throw new AggregateFeatureNotFoundException($"{nameof(EventSourcingAggregateFeature)} requires {nameof(EventsAggregateFeature)}");
-		aggregate.Events().Applying += (s, e) =>
-		{
+		aggregate.Events().Applying += (s, e) => {
 			if (!e.Value.HasEventSourcing()) e.Value.AddEventSourcing(CurrentVersion, Guid.NewGuid(), DateTime.UtcNow, 0);
 		};
-		aggregate.Events().Validated += (s, e) =>
-		{
+		aggregate.Events().Validated += (s, e) => {
 			if (CurrentVersion != e.Value.EventSourcing().TargetVersion)
 				throw new AggregateStateMismatchException($"Aggregate '{aggregate.GetType().Name}' has version '{CurrentVersion}' and event has target version '{e.Value.EventSourcing().TargetVersion}'");
 		};

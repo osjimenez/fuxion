@@ -5,8 +5,7 @@ namespace Fuxion.Identity.Test.Dao;
 using static Helpers.TypeDiscriminatorIds;
 
 [Table(nameof(FileDao))]
-[TypeDiscriminated(File, AvoidedInclusions = new[]
-{
+[TypeDiscriminated(File, AvoidedInclusions = new[] {
 	Media
 })]
 public abstract class FileDao : BaseDao
@@ -15,11 +14,9 @@ public abstract class FileDao : BaseDao
 }
 
 [Table(nameof(DocumentDao))]
-[TypeDiscriminated(Document, AdditionalInclusions = new[]
-{
+[TypeDiscriminated(Document, AdditionalInclusions = new[] {
 	OfficeDocument
-}, AvoidedInclusions = new[]
-{
+}, AvoidedInclusions = new[] {
 	WordDocument, ExcelDocument
 })]
 public abstract class DocumentDao : FileDao
@@ -35,8 +32,7 @@ public class PdfDocumentDao : DocumentDao
 }
 
 [Table(nameof(ExcelDocumentDao))]
-[TypeDiscriminated(ExcelDocument, ExplicitExclusions = new[]
-{
+[TypeDiscriminated(ExcelDocument, ExplicitExclusions = new[] {
 	OfficeDocument
 })]
 public class ExcelDocumentDao : DocumentDao
@@ -45,8 +41,7 @@ public class ExcelDocumentDao : DocumentDao
 }
 
 [Table(nameof(WordDocumentDao))]
-[TypeDiscriminated(WordDocument, ExplicitExclusions = new[]
-{
+[TypeDiscriminated(WordDocument, ExplicitExclusions = new[] {
 	OfficeDocument
 })]
 public class WordDocumentDao : DocumentDao
@@ -58,8 +53,7 @@ public class WordDocumentDao : DocumentDao
 }
 
 [Table(nameof(MediaDao))]
-[TypeDiscriminated(Media, ExplicitExclusions = new[]
-{
+[TypeDiscriminated(Media, ExplicitExclusions = new[] {
 	Base
 })]
 public abstract class MediaDao : FileDao

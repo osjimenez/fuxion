@@ -2,8 +2,7 @@
 
 using static Helpers.TypeDiscriminatorIds;
 
-[TypeDiscriminated(File, AvoidedInclusions = new[]
-{
+[TypeDiscriminated(File, AvoidedInclusions = new[] {
 	Media
 })]
 public abstract class FileDvo<TFile> : BaseDvo<TFile> where TFile : FileDvo<TFile>
@@ -11,11 +10,9 @@ public abstract class FileDvo<TFile> : BaseDvo<TFile> where TFile : FileDvo<TFil
 	public FileDvo(string id, string name) : base(id, name) { }
 }
 
-[TypeDiscriminated(Document, AdditionalInclusions = new[]
-{
+[TypeDiscriminated(Document, AdditionalInclusions = new[] {
 	OfficeDocument
-}, AvoidedInclusions = new[]
-{
+}, AvoidedInclusions = new[] {
 	WordDocument, ExcelDocument
 })]
 public abstract class DocumentDvo<TDocument> : FileDvo<TDocument> where TDocument : DocumentDvo<TDocument>
@@ -29,8 +26,7 @@ public class PdfDocumentDvo : DocumentDvo<PdfDocumentDvo>
 	public PdfDocumentDvo(string id, string name) : base(id, name) { }
 }
 
-[TypeDiscriminated(ExcelDocument, ExplicitExclusions = new[]
-{
+[TypeDiscriminated(ExcelDocument, ExplicitExclusions = new[] {
 	OfficeDocument
 })]
 public class ExcelDocumentDvo : DocumentDvo<ExcelDocumentDvo>
@@ -38,8 +34,7 @@ public class ExcelDocumentDvo : DocumentDvo<ExcelDocumentDvo>
 	public ExcelDocumentDvo(string id, string name) : base(id, name) { }
 }
 
-[TypeDiscriminated(WordDocument, ExplicitExclusions = new[]
-{
+[TypeDiscriminated(WordDocument, ExplicitExclusions = new[] {
 	OfficeDocument
 })]
 public class WordDocumentDvo : DocumentDvo<WordDocumentDvo>
@@ -47,8 +42,7 @@ public class WordDocumentDvo : DocumentDvo<WordDocumentDvo>
 	public WordDocumentDvo(string id, string name) : base(id, name) { }
 }
 
-[TypeDiscriminated(Media, ExplicitExclusions = new[]
-{
+[TypeDiscriminated(Media, ExplicitExclusions = new[] {
 	Base
 })]
 public abstract class MediaDvo<TMedia> : FileDvo<TMedia> where TMedia : MediaDvo<TMedia>

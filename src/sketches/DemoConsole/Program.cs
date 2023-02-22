@@ -1,14 +1,8 @@
-﻿namespace DemoConsole;
-
-using Fuxion;
-using Fuxion.Json;
+﻿using System.Text.Json.Serialization;
 using Fuxion.Licensing;
-using Fuxion.Logging;
-using Fuxion.Reflection;
-using Fuxion.Web;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using Xunit;
+
+namespace DemoConsole;
 
 public class Program
 {
@@ -23,7 +17,6 @@ public class Program
 		Console.WriteLine("ToJson:");
 		var json = con.ToJson();
 		Console.WriteLine(json);
-
 		Console.WriteLine("FromJson:");
 		var con2 = json.FromJson<LicenseContainer>()!;
 		var json2 = con2.ToJson();
@@ -36,7 +29,6 @@ public class Program
 		Assert.Equal(lic.ProductId.Key, lic2.ProductId.Key);
 
 		//Assert.Equal(con2.LicenseAs<LicenseMock>(), lic);
-
 		var time = new Random((int)DateTime.Now.Ticks).Next(500, 1500);
 		Console.WriteLine("Time: " + time);
 		Thread.Sleep(time);
@@ -44,7 +36,6 @@ public class Program
 		var con3 = json.FromJson<LicenseContainer>()!;
 		var json3 = con3.ToJson();
 		Console.WriteLine(json3);
-
 		Assert.Equal(json, json3);
 		Assert.Equal(json2, json3);
 		Assert.True(con3.Is<LicenseMock>());
@@ -55,16 +46,16 @@ public class Program
 
 		//Assert.Equal(con3.LicenseAs<LicenseMock>(), lic);
 	}
-
 }
+
 public class LicenseMock : License
 {
 	public LicenseMock()
 	{
-		ExpirationUtcTime = new TimeLimitLicenseConstraint(DateTime.UtcNow.AddYears(1));
-		DeactivationUtcTime = new TimeLimitLicenseConstraint(DateTime.UtcNow.AddMonths(1));
-		HardwareId = new KeyModelLicenseConstraint(null);
-		ProductId = new KeyModelLicenseConstraint(null);
+		ExpirationUtcTime = new(DateTime.UtcNow.AddYears(1));
+		DeactivationUtcTime = new(DateTime.UtcNow.AddMonths(1));
+		HardwareId = new(null);
+		ProductId = new(null);
 	}
 	[JsonConstructor]
 	public LicenseMock(KeyModelLicenseConstraint hardwareId, KeyModelLicenseConstraint productId, TimeLimitLicenseConstraint deactivationUtcTime, TimeLimitLicenseConstraint expirationUtcTime) : this()
@@ -74,8 +65,8 @@ public class LicenseMock : License
 		ExpirationUtcTime = expirationUtcTime;
 		DeactivationUtcTime = deactivationUtcTime;
 	}
-	public TimeLimitLicenseConstraint DeactivationUtcTime { get; private set; }
-	public TimeLimitLicenseConstraint ExpirationUtcTime { get; private set; }
+	public TimeLimitLicenseConstraint DeactivationUtcTime { get; }
+	public TimeLimitLicenseConstraint ExpirationUtcTime { get; }
 	[JsonInclude]
 	public KeyModelLicenseConstraint HardwareId { get; private set; }
 	[JsonInclude]
@@ -89,13 +80,15 @@ public class LicenseMock : License
 		res = res && ExpirationUtcTime.Validate(out validationMessage);
 		return res;
 	}
-	internal void SetHarwareId(string hardwareId) => HardwareId = new KeyModelLicenseConstraint(hardwareId);
-	internal void SetProductId(string productId) => ProductId = new KeyModelLicenseConstraint(productId);
+	internal void SetHarwareId(string hardwareId) => HardwareId = new(hardwareId);
+	internal void SetProductId(string productId) => ProductId = new(productId);
 }
+
 public static class Const
 {
 	public const string FULL_KEY = "<RSAKeyValue>" +
-		"<Modulus>xXnL2ppHKz084JHYmmX2TXSlxMnbq6FDRpRe7aLhShr/HD1KgKyhK54N/uigy6fJR8bPUr0mso8XdSgDI/A8Q/62DwPgNq9wc+SuGylO5laoN9MU9fycK0ntGk7rwW7raL+jWe3W68xQLZKptF3mzBjHW15hM+6b9+vllv2dcok=</Modulus>" +
+		"<Modulus>xXnL2ppHKz084JHYmmX2TXSlxMnbq6FDRpRe7aLhShr/HD1KgKyhK54N/uigy6fJR8bPUr0mso8XdSgDI/A8Q/62DwPgNq9wc+SuGylO5laoN9MU9fycK0ntGk7rwW7raL+jWe3W68xQLZKptF3mzBjHW15hM+6b9+vllv2dcok=</Modulus>"
+		+
 		"<Exponent>AQAB</Exponent>" +
 		"<P>4DwUd5X3rmvqnK0SkG0asYsjgNFj0bYaXu6heJnd9zknuPGVl/fP2jOtoyghT/CdXCgfd0gpjMpsEvBFYu3a/w==</P>" +
 		"<Q>4XNMWZVQhE84lAWA/t8qCUs8ZtgxlQsqXyb3Z9XxWeT8NMAclVpJQRaOX/qo8GImhSQTdBN8Mt1o3WB0yPFadw==</Q>" +
@@ -103,11 +96,12 @@ public static class Const
 		"<DQ>aydu2YFDdK9ml8wJ5JnTE/nDaqpE3q8g43rUynCANxbD3JqWu1HfUWVUJEAx/ZbY8h0Ude4w8MgVaGrI9xznvw==</DQ>" +
 		"<InverseQ>Nhubp4i7E11cf8LsuMRm9jyoHtRloScQP2r9uvmilrRlb2MFKN9/DQbzJa1yIRVETS8M/F/DwnkB6fnBG/9rmg==</InverseQ>" +
 		"<D>ZQhNbchlBRBNpy+3PDdSbopxjV8hTowxGVkrwDUHQpzRTKdnCLJJu0EgM/zc15U+e8SRqekwdUaUX9Ja2PY+Pj1uv40d2K5hLasH03bORdSs5eWCiGXjGvUNCyF1tIfez4kCNCthSVJckhw2kG0VoaaREj7W5snLCmLg5KFCzYk=</D>" +
-	"</RSAKeyValue>";
+		"</RSAKeyValue>";
 	public const string PUBLIC_KEY = "<RSAKeyValue>" +
-		"<Modulus>xXnL2ppHKz084JHYmmX2TXSlxMnbq6FDRpRe7aLhShr/HD1KgKyhK54N/uigy6fJR8bPUr0mso8XdSgDI/A8Q/62DwPgNq9wc+SuGylO5laoN9MU9fycK0ntGk7rwW7raL+jWe3W68xQLZKptF3mzBjHW15hM+6b9+vllv2dcok=</Modulus>" +
+		"<Modulus>xXnL2ppHKz084JHYmmX2TXSlxMnbq6FDRpRe7aLhShr/HD1KgKyhK54N/uigy6fJR8bPUr0mso8XdSgDI/A8Q/62DwPgNq9wc+SuGylO5laoN9MU9fycK0ntGk7rwW7raL+jWe3W68xQLZKptF3mzBjHW15hM+6b9+vllv2dcok=</Modulus>"
+		+
 		"<Exponent>AQAB</Exponent>" +
-	"</RSAKeyValue>";
+		"</RSAKeyValue>";
 	public const string HARDWARE_ID = nameof(HARDWARE_ID);
 	public const string PRODUCT_ID = nameof(PRODUCT_ID);
 }

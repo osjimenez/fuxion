@@ -54,12 +54,11 @@ public class JsonPod<TPayload, TKey>
 	JsonValue CreateValue(TPayload payload)
 	{
 		var met = typeof(JsonValue).GetMethods(BindingFlags.Static | BindingFlags.Public)
-											.Where(m => m.Name == nameof(JsonValue.Create) && m.GetGenericArguments().Any() && m.GetParameters().Count() == 2).FirstOrDefault();
+			.Where(m => m.Name == nameof(JsonValue.Create) && m.GetGenericArguments().Any() && m.GetParameters().Count() == 2).FirstOrDefault();
 		if (met is null) throw new InvalidProgramException("The JsonValue.Create<T>() method could not be determined");
 		if (payload is null) throw new ArgumentNullException("payload could not be null");
 		var met2 = met.MakeGenericMethod(payload.GetType());
-		var res = met2.Invoke(null, new object?[]
-		{
+		var res = met2.Invoke(null, new object?[] {
 			payload, null
 		});
 		if (res is null) throw new InvalidProgramException("The JsonValue could not be created");

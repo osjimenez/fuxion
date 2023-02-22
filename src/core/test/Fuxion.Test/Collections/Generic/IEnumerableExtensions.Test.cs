@@ -6,8 +6,7 @@ public class IEnumerableExtensionsTest : BaseTest<IEnumerableExtensionsTest>
 	[Fact(DisplayName = "IEnumerableExtensions - IsNullOrEmpty")]
 	public void IsNullOrEmpty()
 	{
-		var col = new[]
-		{
+		var col = new[] {
 			"uno", "dos"
 		};
 		Assert.False(col.IsNullOrEmpty(), "Collection is not null or empty");
@@ -20,8 +19,7 @@ public class IEnumerableExtensionsTest : BaseTest<IEnumerableExtensionsTest>
 	[Fact(DisplayName = "IEnumerableExtensions - RemoveNulls")]
 	public void RemoveNulls()
 	{
-		var col = new[]
-		{
+		var col = new[] {
 			"uno", "dos", null
 		};
 		col = col.RemoveNulls();
@@ -30,8 +28,7 @@ public class IEnumerableExtensionsTest : BaseTest<IEnumerableExtensionsTest>
 	[Fact(DisplayName = "IEnumerableExtensions - RemoveOutliers")]
 	public void RemoveOutliersTest()
 	{
-		var list = new[]
-		{
+		var list = new[] {
 			165, 165, 166, 167, 168, 169, 170, 170, 171, 172, 172, 174, 175, 176, 177, 178, 181
 		};
 		//var list = new int[] { 41, 50, 29, 33, 40, 42, 53, 35, 28, 39, 37, 43, 34, 31, 44, 57, 32, 45, 46, 48};

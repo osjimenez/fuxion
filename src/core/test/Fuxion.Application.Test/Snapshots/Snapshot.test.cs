@@ -32,4 +32,3 @@ public class TestSnapshot : Snapshot<TestAggregate>
 }
 
 public class TestAggregate : Aggregate { }
-

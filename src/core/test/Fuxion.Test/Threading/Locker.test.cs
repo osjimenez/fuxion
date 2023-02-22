@@ -25,8 +25,7 @@ public class LockerTest : BaseTest<LockerTest>
 	{
 		var obj = new Locker<MockForLock>(new(1, "test"));
 		var name = "";
-		await obj.ReadAsync((l, p) =>
-		{
+		await obj.ReadAsync((l, p) => {
 			name = l.Name;
 			Assert.Equal(1, p);
 		}, 1);
@@ -43,8 +42,7 @@ public class LockerTest : BaseTest<LockerTest>
 	public async Task StringReadAsyncP1()
 	{
 		var obj = new Locker<MockForLock>(new(1, "test"));
-		var name = await obj.ReadAsync((l, p) =>
-		{
+		var name = await obj.ReadAsync((l, p) => {
 			Assert.Equal(1, p);
 			return l.Name;
 		}, 1);

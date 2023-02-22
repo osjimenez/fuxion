@@ -8,14 +8,14 @@ namespace Fuxion.EntityFrameworkCore;
 
 public class TriggerDbContextDecorator<TContext> : IDisposable, IAsyncDisposable where TContext : DbContext
 {
-	readonly IEnumerable<IAfterSaveTrigger<TContext>> _afterSaveTriggers;
-	readonly IEnumerable<IBeforeSaveTrigger<TContext>> _beforeSaveTriggers;
 	public TriggerDbContextDecorator(TContext context, IEnumerable<IBeforeSaveTrigger<TContext>> beforeSaveTriggers, IEnumerable<IAfterSaveTrigger<TContext>> afterSaveTriggers)
 	{
 		Context = context;
 		_beforeSaveTriggers = beforeSaveTriggers;
 		_afterSaveTriggers = afterSaveTriggers;
 	}
+	readonly IEnumerable<IAfterSaveTrigger<TContext>> _afterSaveTriggers;
+	readonly IEnumerable<IBeforeSaveTrigger<TContext>> _beforeSaveTriggers;
 	public TContext Context { get; }
 	public DatabaseFacade Database => Context.Database;
 	public IModel Model => Context.Model;

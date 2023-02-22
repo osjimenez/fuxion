@@ -17,14 +17,12 @@ public partial class UnhandledExceptionWindow : Window, INotifyPropertyChanged
 		// Create commands
 		IgnoreCommand = new(() => Close(), () => Buttons.HasFlag(UnhandledExceptionWindowButtons.CloseWindow));
 		CloseConsoleCommand = new(() => Application.Current.Shutdown(), () => Buttons.HasFlag(UnhandledExceptionWindowButtons.CloseWindow));
-		RestartApplicationCommand = new(() =>
-		{
+		RestartApplicationCommand = new(() => {
 			Process.Start(Application.ResourceAssembly.Location);
 			Application.Current.Shutdown();
 		}, () => Buttons.HasFlag(UnhandledExceptionWindowButtons.RestartApplication));
 		ShowDetailsCommand = new(() => ShowDetails = !ShowDetails, () => CanShowDetails);
-		SendReportCommand = new(async () =>
-		{
+		SendReportCommand = new(async () => {
 			try
 			{
 				SendingReport = true;
@@ -107,8 +105,7 @@ public partial class UnhandledExceptionWindow : Window, INotifyPropertyChanged
 	public GenericCommand IgnoreCommand { get; }
 	public GenericCommand CloseConsoleCommand { get; }
 	public GenericCommand RestartApplicationCommand { get; }
-	public FlowDocument Document { get; set; } = new()
-	{
+	public FlowDocument Document { get; set; } = new() {
 		TextAlignment = TextAlignment.Left, PagePadding = new(10), FontFamily = new("Segoe UI")
 	};
 	public event PropertyChangedEventHandler? PropertyChanged;

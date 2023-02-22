@@ -22,8 +22,7 @@ public class PasswordProvider : IPasswordProvider
 		return computeHash.SequenceEqual(hash);
 	}
 	HashAlgorithm GetAlgorithm() =>
-		Algorithm switch
-		{
+		Algorithm switch {
 			PasswordHashAlgorithm.SHA1   => SHA1.Create(),
 			PasswordHashAlgorithm.SHA256 => SHA256.Create(),
 			PasswordHashAlgorithm.SHA384 => SHA384.Create(),

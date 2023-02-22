@@ -13,8 +13,7 @@ public class AntiBackTimeProvider : ITimeProvider
 	DateTime GetUtc()
 	{
 		var now = TimeProvider.UtcNow();
-		var stored = providers.Select(s =>
-		{
+		var stored = providers.Select(s => {
 			try
 			{
 				return (DateTime?)s.UtcNow();

@@ -38,12 +38,10 @@ public class JsonFileLicenseStore : ILicenseStore
 		foreach (var type in knownLicenseTypes)
 			if (license.Is(type))
 				licenseType = type;
-		listLocker.Write(licenses =>
-		{
-			foreach (var l in (licenseType == null ? Enumerable.Empty<LicenseContainer>() : licenses.AsQueryable().OfType(licenseType)).Except(new[]
-					   {
-						   license
-					   }).ToList())
+		listLocker.Write(licenses => {
+			foreach (var l in (licenseType == null ? Enumerable.Empty<LicenseContainer>() : licenses.AsQueryable().OfType(licenseType)).Except(new[] {
+					license
+				}).ToList())
 				licenses.Remove(l);
 			licenses.Add(license);
 			pathLocker.Write(path => File.WriteAllText(path, licenses.ToJson()));
@@ -51,8 +49,7 @@ public class JsonFileLicenseStore : ILicenseStore
 		});
 	}
 	public bool Remove(LicenseContainer license) =>
-		listLocker.Write(licenses =>
-		{
+		listLocker.Write(licenses => {
 			var res = licenses.Remove(license);
 			pathLocker.Write(path => File.WriteAllText(path, licenses.ToJson()));
 			LicenseRemoved?.Invoke(this, new(license));

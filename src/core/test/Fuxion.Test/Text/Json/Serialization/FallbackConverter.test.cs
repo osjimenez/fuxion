@@ -10,8 +10,7 @@ public class FallbackConverterTest : BaseTest<FallbackConverterTest>
 		{
 			try
 			{
-				Task.Run(() =>
-				{
+				Task.Run(() => {
 					InvalidProgramException ipex = new("InvalidProgramException message");
 					throw ipex;
 				}).Wait();

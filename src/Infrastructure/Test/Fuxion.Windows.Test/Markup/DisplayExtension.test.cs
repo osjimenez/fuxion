@@ -16,8 +16,7 @@ public class DisplayExtensionTest : BaseTest<DisplayExtensionTest>
 	static Task StartSTATask(Action action)
 	{
 		var tcs = new TaskCompletionSource<object>();
-		var thread = new Thread(() =>
-		{
+		var thread = new Thread(() => {
 			try
 			{
 				action();
@@ -33,8 +32,7 @@ public class DisplayExtensionTest : BaseTest<DisplayExtensionTest>
 	}
 	T RegisterFrameworkElement<T>(object property, string bindPath) where T : FrameworkElement, new()
 	{
-		var ext = new DisplayExtension(bindPath)
-		{
+		var ext = new DisplayExtension(bindPath) {
 			Printer = Printer.Default
 		};
 		var element = new T();
@@ -45,8 +43,7 @@ public class DisplayExtensionTest : BaseTest<DisplayExtensionTest>
 	}
 	T RegisterFrameworkContentElement<T>(object property, string bindPath) where T : FrameworkContentElement, new()
 	{
-		var ext = new DisplayExtension(bindPath)
-		{
+		var ext = new DisplayExtension(bindPath) {
 			Printer = Printer.Default
 		};
 		var element = new T();
@@ -57,8 +54,7 @@ public class DisplayExtensionTest : BaseTest<DisplayExtensionTest>
 	}
 	[Fact(DisplayName = "DisplayExtension - Different values")]
 	public async Task DifferentValues() =>
-		await StartSTATask(() =>
-		{
+		await StartSTATask(() => {
 			var textBlock = RegisterFrameworkElement<TextBlock>(TextBox.TextProperty, "[Name]Dto");
 			var expectedValue = ViewModelMock.DtoDisplayName;
 			textBlock.DataContext = new ViewModelMock();
@@ -96,8 +92,7 @@ public class DisplayExtensionTest : BaseTest<DisplayExtensionTest>
 		});
 	[Fact(DisplayName = "DisplayExtension - Direct property")]
 	public async Task DirectProperty() =>
-		await StartSTATask(() =>
-		{
+		await StartSTATask(() => {
 			var textBlock = RegisterFrameworkElement<TextBlock>(TextBox.TextProperty, "Dto");
 			var expectedValue = ViewModelMock.DtoDisplayName;
 			Assert.NotEqual(expectedValue, textBlock.Text);
@@ -106,8 +101,7 @@ public class DisplayExtensionTest : BaseTest<DisplayExtensionTest>
 		});
 	[Fact(DisplayName = "DisplayExtension - Direct property FrameworkContentElement")]
 	public async Task DirectPropertyFrameworkContentElement() =>
-		await StartSTATask(() =>
-		{
+		await StartSTATask(() => {
 			var contentElement = RegisterFrameworkContentElement<FrameworkContentElement>(FrameworkContentElement.TagProperty, "Dto");
 			var expectedValue = ViewModelMock.DtoDisplayName;
 			Assert.NotEqual(expectedValue, contentElement.Tag);
@@ -116,10 +110,8 @@ public class DisplayExtensionTest : BaseTest<DisplayExtensionTest>
 		});
 	[Fact(DisplayName = "DisplayExtension - Create chain")]
 	public async Task DisplayExtension_CreateChain() =>
-		await StartSTATask(() =>
-		{
-			var ext = new DisplayExtension("Dto.SubDto.Value")
-			{
+		await StartSTATask(() => {
+			var ext = new DisplayExtension("Dto.SubDto.Value") {
 				Printer = Printer.Default
 			};
 			var dtoLink = ext.chain.First();
@@ -140,8 +132,7 @@ public class DisplayExtensionTest : BaseTest<DisplayExtensionTest>
 		});
 	[Fact(DisplayName = "DisplayExtension - Four level property")]
 	public async Task FourLevelProperty() =>
-		await StartSTATask(() =>
-		{
+		await StartSTATask(() => {
 			var textBlock = RegisterFrameworkElement<TextBlock>(TextBox.TextProperty, "Dto.Dto2.Dto3.Value");
 			var expectedValue = Dto3Mock.ValueDisplayName;
 			Assert.NotEqual(expectedValue, textBlock.Text);
@@ -161,8 +152,7 @@ public class DisplayExtensionTest : BaseTest<DisplayExtensionTest>
 		});
 	[Fact(DisplayName = "DisplayExtension - Three level property")]
 	public async Task ThreeLevelProperty() =>
-		await StartSTATask(() =>
-		{
+		await StartSTATask(() => {
 			var textBlock = RegisterFrameworkElement<TextBlock>(TextBox.TextProperty, "Dto.Dto2.Dto3");
 			var expectedValue = Dto2Mock.Dto3DisplayName;
 			Assert.NotEqual(expectedValue, textBlock.Text);
@@ -179,18 +169,15 @@ public class DisplayExtensionTest : BaseTest<DisplayExtensionTest>
 		});
 	[Fact(DisplayName = "DisplayExtension - Three level property without Display")]
 	public async Task ThreeLevelPropertyWithoutDisplay() =>
-		await StartSTATask(() =>
-		{
+		await StartSTATask(() => {
 			DisplayExtension.NonAttrributePrefix = "prefix:";
 			DisplayExtension.NonAttrributeSufix = ":sufix";
 			var textBlock = RegisterFrameworkElement<TextBlock>(TextBox.TextProperty, "Dto.Dto2.Dto3WithoutDisplayAttribute");
 			var expectedValue = DisplayExtension.NonAttrributePrefix + "Dto3WithoutDisplayAttribute" + DisplayExtension.NonAttrributeSufix;
 			Assert.NotEqual(expectedValue, textBlock.Text);
 			Assert.Equal("", textBlock.Text);
-			var viewModel = new ViewModelMock
-			{
-				Dto = new()
-				{
+			var viewModel = new ViewModelMock {
+				Dto = new() {
 					Dto2 = new()
 				}
 			};
@@ -199,8 +186,7 @@ public class DisplayExtensionTest : BaseTest<DisplayExtensionTest>
 		});
 	[Fact(DisplayName = "DisplayExtension - Two level property")]
 	public async Task TwoLevelProperty() =>
-		await StartSTATask(() =>
-		{
+		await StartSTATask(() => {
 			var textBlock = RegisterFrameworkElement<TextBlock>(TextBox.TextProperty, "Dto.Dto2");
 			var expectedValue = DtoMock.Dto2DisplayName;
 			Assert.NotEqual(expectedValue, textBlock.Text);

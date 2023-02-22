@@ -26,11 +26,10 @@ public class LicenseContainer
 	JsonValue CreateRaw(License license)
 	{
 		var met = typeof(JsonValue).GetMethods(BindingFlags.Static | BindingFlags.Public)
-											.Where(m => m.Name == nameof(JsonValue.Create) && m.GetGenericArguments().Any() && m.GetParameters().Count() == 2).FirstOrDefault();
+			.Where(m => m.Name == nameof(JsonValue.Create) && m.GetGenericArguments().Any() && m.GetParameters().Count() == 2).FirstOrDefault();
 		if (met is null) throw new InvalidProgramException("The JsonValue.Create<T>() method could not be determined");
 		var met2 = met.MakeGenericMethod(license.GetType());
-		var res = met2.Invoke(null, new object?[]
-		{
+		var res = met2.Invoke(null, new object?[] {
 			license, null
 		});
 		if (res is null) throw new InvalidProgramException("The JsonValue could not be created");

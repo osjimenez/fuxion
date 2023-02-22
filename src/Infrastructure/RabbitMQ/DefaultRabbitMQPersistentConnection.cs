@@ -47,11 +47,11 @@ public class DefaultRabbitMQPersistentConnection : IRabbitMQPersistentConnection
 		//_logger.LogInformation("RabbitMQ Client is trying to connect");
 		lock (sync_root)
 		{
-			var policy = Policy.Handle<SocketException>().Or<BrokerUnreachableException>().WaitAndRetry(_retryCount, retryAttempt => TimeSpan.FromSeconds(System.Math.Pow(2, retryAttempt)), (ex, time) =>
-			{
-				Debug.WriteLine(ex.ToString());
-				//_logger.LogWarning(ex.ToString());
-			});
+			var policy = Policy.Handle<SocketException>().Or<BrokerUnreachableException>().WaitAndRetry(_retryCount, retryAttempt => TimeSpan.FromSeconds(System.Math.Pow(2, retryAttempt)),
+				(ex, time) => {
+					Debug.WriteLine(ex.ToString());
+					//_logger.LogWarning(ex.ToString());
+				});
 			policy.Execute(() => { _connection = _connectionFactory.CreateConnection(); });
 			if (IsConnected)
 			{

@@ -10,8 +10,7 @@ public abstract class Factory<TAggregate> where TAggregate : Aggregate, new()
 	internal IEnumerable<IFactoryFeature<TAggregate>> Features { get; }
 	public TAggregate Create(Guid id)
 	{
-		var agg = new TAggregate
-		{
+		var agg = new TAggregate {
 			Id = id
 		};
 		foreach (var feature in Features) feature.Create(agg);

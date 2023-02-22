@@ -58,12 +58,10 @@ public class IdentityManagerTest
 	{
 		var r1 = IM.GetCurrent()?.Can(Read).Type<DocumentDao>();
 		IM.GetCurrent()?.EnsureCan(Read).Type<DocumentDao>();
-		var r2 = IM.GetCurrent()?.Can(Read).AllInstances(new DocumentDao?[]
-		{
+		var r2 = IM.GetCurrent()?.Can(Read).AllInstances(new DocumentDao?[] {
 			null, null, null, null, null, null
 		});
-		IM.GetCurrent()?.EnsureCan(Read).AnyInstances(new DocumentDao?[]
-		{
+		IM.GetCurrent()?.EnsureCan(Read).AnyInstances(new DocumentDao?[] {
 			null, null, null, null, null, null
 		});
 		// Login

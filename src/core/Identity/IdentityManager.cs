@@ -5,8 +5,8 @@ namespace Fuxion.Identity;
 public class IdentityManager
 {
 	public IdentityManager(IPasswordProvider passwordProvider,
-								  ICurrentUserNameProvider currentUserNameProvider,
-								  IKeyValueRepository<string, IIdentity> repository) //, IPrincipalProvider principalProvider)
+		ICurrentUserNameProvider currentUserNameProvider,
+		IKeyValueRepository<string, IIdentity> repository) //, IPrincipalProvider principalProvider)
 	{
 		PasswordProvider = passwordProvider;
 		CurrentUserNameProvider = currentUserNameProvider;

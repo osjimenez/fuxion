@@ -82,8 +82,7 @@ public class StateDao : LocationDao
 	[DiscriminatedBy(typeof(CountryDao))]
 	public string CountryId { get; set; }
 	protected override IEnumerable<LocationDao> GetLocationExclusions() =>
-		new[]
-		{
+		new[] {
 			Country
 		}.RemoveNulls();
 	protected override IEnumerable<LocationDao> GetLocationInclusions() => Cities.Cast<LocationDao>().ToList();
@@ -117,8 +116,7 @@ public class CityDao : LocationDao
 	[DiscriminatedBy(typeof(StateDao))]
 	public string StateId { get; set; }
 	protected override IEnumerable<LocationDao> GetLocationExclusions() =>
-		new[]
-		{
+		new[] {
 			State
 		}.RemoveNulls();
 	protected override IEnumerable<LocationDao> GetLocationInclusions() =>
@@ -146,8 +144,7 @@ public class CategoryDao : DiscriminatorDao
 	protected sealed override string GetTypeName() => nameof(CategoryDao);
 	protected override IEnumerable<DiscriminatorDao> GetInclusions() => Children;
 	protected override IEnumerable<DiscriminatorDao> GetExclusions() =>
-		new[]
-		{
+		new[] {
 			Parent
 		}.RemoveNulls();
 }

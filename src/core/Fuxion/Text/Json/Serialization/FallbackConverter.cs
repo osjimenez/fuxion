@@ -11,12 +11,10 @@ public abstract class PropertyFallbackResolver
 	protected void FallbackWriteRaw(object value, Utf8JsonWriter writer, JsonSerializerOptions options, List<PropertyFallbackResolver> resolvers)
 	{
 		var converterType = typeof(FallbackConverter<>).MakeGenericType(value.GetType());
-		var converter = Activator.CreateInstance(converterType, new object?[]
-		{
+		var converter = Activator.CreateInstance(converterType, new object?[] {
 			resolvers.ToArray()
 		});
-		converterType.GetMethod(nameof(FallbackConverter<object>.FallbackWriteRaw))?.Invoke(converter, new[]
-		{
+		converterType.GetMethod(nameof(FallbackConverter<object>.FallbackWriteRaw))?.Invoke(converter, new[] {
 			value, writer, options, resolvers
 		});
 	}
@@ -128,8 +126,7 @@ public class FallbackConverter<T> : JsonConverter<T>
 		{
 			JsonSerializerOptions opt = new(options);
 			var converterType = typeof(FallbackConverter<>).MakeGenericType(value.GetType());
-			var converter = Activator.CreateInstance(converterType, new object?[]
-			{
+			var converter = Activator.CreateInstance(converterType, new object?[] {
 				resolvers.ToArray()
 			});
 			if (converter is null) throw new InvalidProgramException($"Program couldn't create IgnoreErrorsConverter<{value.GetType().Name}>");

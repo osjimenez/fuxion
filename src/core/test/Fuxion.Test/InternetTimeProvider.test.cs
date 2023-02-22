@@ -7,8 +7,7 @@ public class InternetTimeProviderTest : BaseTest<InternetTimeProviderTest>
 	public void InternetTimeProvider_NTP_CheckConsistency() => new InternetTimeProvider().CheckConsistency(Output);
 	[Fact(DisplayName = "InternetTimeProvider - WEB - CheckConsistency")]
 	public void InternetTimeProvider_WEB_CheckConsistency() =>
-		new InternetTimeProvider
-		{
+		new InternetTimeProvider {
 			ServerType = InternetTimeServerType.Web, ServerAddress = "https://google.com"
 		}.CheckConsistency(Output);
 }

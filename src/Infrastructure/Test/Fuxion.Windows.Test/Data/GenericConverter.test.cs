@@ -14,8 +14,7 @@ public class GenericConverterTest : BaseTest<GenericConverterTest>
 	[Fact(DisplayName = "GenericConverterTest - UnsetValues")]
 	public void GenericMultiConverterTest_UnsetValues()
 	{
-		var c = new BooleanToVisibilityConverter
-		{
+		var c = new BooleanToVisibilityConverter {
 			TrueValue = Visibility.Hidden
 		};
 		var res = new Func<Visibility>(() => (Visibility)((IValueConverter)c).Convert(DependencyProperty.UnsetValue, typeof(bool), null, CultureInfo.CurrentCulture));

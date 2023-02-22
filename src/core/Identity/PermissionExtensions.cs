@@ -13,8 +13,7 @@ public static class PermissionExtensions
 			using (Printer.Indent("Input parameters"))
 			{
 				Printer.WriteLine("Permission:");
-				new[]
-				{
+				new[] {
 					me
 				}.Print(PrintMode.Table);
 				Printer.WriteLine($"'{nameof(forFilter)}': " + forFilter);
@@ -22,8 +21,7 @@ public static class PermissionExtensions
 				if (typeDiscriminator != null)
 				{
 					Printer.WriteLine($"'{nameof(typeDiscriminator)}':");
-					new[]
-					{
+					new[] {
 						typeDiscriminator
 					}.Print(PrintMode.Table);
 				} else
@@ -60,8 +58,7 @@ public static class PermissionExtensions
 			using (Printer.Indent("Input parameters"))
 			{
 				Printer.WriteLine("Permission:");
-				new[]
-				{
+				new[] {
 					me
 				}.Print(PrintMode.Table);
 				Printer.WriteLine($"Function: {function.Name}");
@@ -95,8 +92,7 @@ public static class PermissionExtensions
 			using (Printer.Indent("Input parameters"))
 			{
 				Printer.WriteLine("Permission:");
-				new[]
-				{
+				new[] {
 					me
 				}.Print(PrintMode.Table);
 				Printer.WriteLine($"'{nameof(forFilter)}': " + forFilter);
@@ -105,8 +101,7 @@ public static class PermissionExtensions
 				else
 				{
 					Printer.WriteLine($"'{nameof(typeDiscriminator)}':");
-					new[]
-					{
+					new[] {
 						typeDiscriminator
 					}.Print(PrintMode.Table);
 				}
@@ -134,9 +129,9 @@ public static class PermissionExtensions
 						Printer.WriteLine(
 							$"The {nameof(typeDiscriminator)} '{typeDiscriminator}' and permission scope '{scopeOfTypeOfTypeDiscriminator}' have same type '{typeDiscriminator.TypeKey}', continue");
 						var scopeDiscriminatorRelatedWithTargetDiscriminator = scopeOfTypeOfTypeDiscriminator?.Discriminator.GetAllRelated(scopeOfTypeOfTypeDiscriminator.Propagation)
-																																		 .FirstOrDefault(rel =>
-																																			 Comparer.AreEquals(typeDiscriminator.TypeKey, rel.TypeKey)
-																																			 && Comparer.AreEquals(typeDiscriminator.Id,   rel.Id));
+							.FirstOrDefault(rel =>
+								Comparer.AreEquals(typeDiscriminator.TypeKey, rel.TypeKey)
+								&& Comparer.AreEquals(typeDiscriminator.Id, rel.Id));
 						if (scopeDiscriminatorRelatedWithTargetDiscriminator != null)
 						{
 							Printer.WriteLine(
@@ -160,11 +155,10 @@ public static class PermissionExtensions
 				}
 				using (Printer.Indent("Checking discriminators:"))
 					// Compruebo el resto de discriminadores
-					return discriminators.All(dis =>
-					{
+					return discriminators.All(dis => {
 						var scopeOfTypeOfDiscriminator = me.Scopes.FirstOrDefault(s => Comparer.AreEquals(s.Discriminator.TypeKey, dis.TypeKey));
 						var scopeDiscriminatorRelatedWithDiscriminator = scopeOfTypeOfDiscriminator?.Discriminator.GetAllRelated(scopeOfTypeOfDiscriminator.Propagation)
-																															.FirstOrDefault(rel => Comparer.AreEquals(dis.TypeKey, rel.TypeKey) && Comparer.AreEquals(dis.Id, rel.Id));
+							.FirstOrDefault(rel => Comparer.AreEquals(dis.TypeKey, rel.TypeKey) && Comparer.AreEquals(dis.Id, rel.Id));
 						if (scopeOfTypeOfDiscriminator != null)
 						{
 							Printer.WriteLine($"The discriminator '{dis}' and permission scope '{scopeOfTypeOfDiscriminator}' have same type '{dis.TypeKey}'");
@@ -212,58 +206,51 @@ public static class PermissionExtensions
 		{
 			case PrintMode.OneLine:
 				foreach (var per in me)
-					Printer.WriteLine(per.Function.Name.PadRight(8, ' ')                                                    + " , v:" + per.Value + "".PadRight(per.Value ? 1 : 0, ' ') + " , ss:["
-											+ per.Scopes.Aggregate("", (str, actual) => str + actual + ",", str => str.Trim(',')) + "]");
+					Printer.WriteLine(per.Function.Name.PadRight(8, ' ') + " , v:" + per.Value + "".PadRight(per.Value ? 1 : 0, ' ') + " , ss:["
+						+ per.Scopes.Aggregate("", (str, actual) => str + actual + ",", str => str.Trim(',')) + "]");
 				break;
 			case PrintMode.PropertyList: break;
 			case PrintMode.Table:
-				string GetValue(IPermission            permission) => permission.Value.ToString();
-				string GetFunction(IPermission         permission) => permission?.Function?.ToString()         ?? "null";
-				string GetDiscriminatorTypeId(IScope   scope)      => scope.Discriminator?.TypeKey?.ToString() ?? "null";
-				string GetDiscriminatorTypeName(IScope scope)      => scope.Discriminator?.TypeName            ?? "null";
-				string GetDiscriminatorId(IScope       scope)      => scope.Discriminator?.Id?.ToString()      ?? "null";
-				string GetDiscriminatorName(IScope     scope)      => scope.Discriminator?.Name                ?? "null";
-				string GetScopePropagation(IScope      scope)      => scope?.Propagation.ToString()            ?? "null";
-				var maxValue = me.Select(p => GetValue(p).Length).Union(new[]
-				{
+				string GetValue(IPermission permission) => permission.Value.ToString();
+				string GetFunction(IPermission permission) => permission?.Function?.ToString() ?? "null";
+				string GetDiscriminatorTypeId(IScope scope) => scope.Discriminator?.TypeKey?.ToString() ?? "null";
+				string GetDiscriminatorTypeName(IScope scope) => scope.Discriminator?.TypeName ?? "null";
+				string GetDiscriminatorId(IScope scope) => scope.Discriminator?.Id?.ToString() ?? "null";
+				string GetDiscriminatorName(IScope scope) => scope.Discriminator?.Name ?? "null";
+				string GetScopePropagation(IScope scope) => scope?.Propagation.ToString() ?? "null";
+				var maxValue = me.Select(p => GetValue(p).Length).Union(new[] {
 					"VALUE".Length
 				}).Max();
-				var maxFunction = me.Select(p => GetFunction(p).Length).Union(new[]
-				{
+				var maxFunction = me.Select(p => GetFunction(p).Length).Union(new[] {
 					"FUNCTION".Length
 				}).Max();
-				var maxDiscriminatorTypeId = me.SelectMany(p => p.Scopes.Select(s => GetDiscriminatorTypeId(s).Length)).Union(new[]
-				{
+				var maxDiscriminatorTypeId = me.SelectMany(p => p.Scopes.Select(s => GetDiscriminatorTypeId(s).Length)).Union(new[] {
 					"TYPE_ID".Length
 				}).Max();
-				var maxDiscriminatorTypeName = me.SelectMany(p => p.Scopes.Select(s => GetDiscriminatorTypeName(s).Length)).Union(new[]
-				{
+				var maxDiscriminatorTypeName = me.SelectMany(p => p.Scopes.Select(s => GetDiscriminatorTypeName(s).Length)).Union(new[] {
 					"TYPE_NAME".Length
 				}).Max();
-				var maxDiscriminatorId = me.SelectMany(p => p.Scopes.Select(s => GetDiscriminatorId(s).Length)).Union(new[]
-				{
+				var maxDiscriminatorId = me.SelectMany(p => p.Scopes.Select(s => GetDiscriminatorId(s).Length)).Union(new[] {
 					"ID".Length
 				}).Max();
-				var maxDiscriminatorName = me.SelectMany(p => p.Scopes.Select(s => GetDiscriminatorName(s).Length)).Union(new[]
-				{
+				var maxDiscriminatorName = me.SelectMany(p => p.Scopes.Select(s => GetDiscriminatorName(s).Length)).Union(new[] {
 					"NAME".Length
 				}).Max();
-				var maxScopePropagation = me.SelectMany(p => p.Scopes.Select(s => GetScopePropagation(s).Length)).Union(new[]
-				{
+				var maxScopePropagation = me.SelectMany(p => p.Scopes.Select(s => GetScopePropagation(s).Length)).Union(new[] {
 					"PROPAGATION".Length
 				}).Max();
 
 				// Headers
 				Printer.WriteLine("┌" + "".PadRight(maxValue, '─') + "┬" + "".PadRight(maxFunction, '─') + "╥" + "".PadRight(maxDiscriminatorTypeId, '─') + "┬" + "".PadRight(maxDiscriminatorTypeName, '─')
-										+ "┬" + "".PadRight(maxDiscriminatorId, '─') + "┬" + "".PadRight(maxDiscriminatorName, '─') + "┬" + "".PadRight(maxScopePropagation, '─') + "┐");
+					+ "┬" + "".PadRight(maxDiscriminatorId, '─') + "┬" + "".PadRight(maxDiscriminatorName, '─') + "┬" + "".PadRight(maxScopePropagation, '─') + "┐");
 				if (me.Any())
 				{
 					Printer.WriteLine("│" + "VALUE".PadRight(maxValue, ' ') + "│" + "FUNCTION".PadRight(maxFunction, ' ') + "║" + "TYPE_ID".PadRight(maxDiscriminatorTypeId, ' ') + "│"
-											+ "TYPE_NAME".PadRight(maxDiscriminatorTypeName, ' ') + "│" + "ID".PadRight(maxDiscriminatorId, ' ') + "│" + "NAME".PadRight(maxDiscriminatorName, ' ') + "│"
-											+ "PROPAGATION".PadRight(maxScopePropagation, ' ') + "│");
-					Printer.WriteLine("├" + "".PadRight(maxValue,             '─') + "┼" + "".PadRight(maxFunction,        '─') + "╫" + "".PadRight(maxDiscriminatorTypeId, '─') + "┼"
-											+ "".PadRight(maxDiscriminatorTypeName, '─') + "┼" + "".PadRight(maxDiscriminatorId, '─') + "┼" + "".PadRight(maxDiscriminatorName,   '─') + "┼"
-											+ "".PadRight(maxScopePropagation,      '─') + "┤");
+						+ "TYPE_NAME".PadRight(maxDiscriminatorTypeName, ' ') + "│" + "ID".PadRight(maxDiscriminatorId, ' ') + "│" + "NAME".PadRight(maxDiscriminatorName, ' ') + "│"
+						+ "PROPAGATION".PadRight(maxScopePropagation, ' ') + "│");
+					Printer.WriteLine("├" + "".PadRight(maxValue, '─') + "┼" + "".PadRight(maxFunction, '─') + "╫" + "".PadRight(maxDiscriminatorTypeId, '─') + "┼"
+						+ "".PadRight(maxDiscriminatorTypeName, '─') + "┼" + "".PadRight(maxDiscriminatorId, '─') + "┼" + "".PadRight(maxDiscriminatorName, '─') + "┼"
+						+ "".PadRight(maxScopePropagation, '─') + "┤");
 				}
 
 				// Body
@@ -272,19 +259,19 @@ public static class PermissionExtensions
 					var list = per.Scopes.ToList();
 					if (list.Count == 0)
 						Printer.WriteLine("│" + GetValue(per).PadRight(maxValue, ' ') + "│" + GetFunction(per).PadRight(maxFunction, ' ') + "║" + "".PadRight(maxDiscriminatorTypeId, ' ') + "│"
-												+ "".PadRight(maxDiscriminatorTypeName, ' ') + "│" + "".PadRight(maxDiscriminatorId, ' ') + "│" + "".PadRight(maxDiscriminatorName, ' ') + "│"
-												+ "".PadRight(maxScopePropagation, ' ') + "│");
+							+ "".PadRight(maxDiscriminatorTypeName, ' ') + "│" + "".PadRight(maxDiscriminatorId, ' ') + "│" + "".PadRight(maxDiscriminatorName, ' ') + "│"
+							+ "".PadRight(maxScopePropagation, ' ') + "│");
 					else
 						for (var i = 0; i < list.Count; i++)
 							Printer.WriteLine("│" + (i == 0 ? GetValue(per) : "").PadRight(maxValue, ' ') + "│" + (i == 0 ? GetFunction(per) : "").PadRight(maxFunction, ' ') + "║"
-													+ GetDiscriminatorTypeId(list[i]).PadRight(maxDiscriminatorTypeId, ' ') + "│" + GetDiscriminatorTypeName(list[i]).PadRight(maxDiscriminatorTypeName, ' ') + "│"
-													+ GetDiscriminatorId(list[i]).PadRight(maxDiscriminatorId, ' ') + "│" + GetDiscriminatorName(list[i]).PadRight(maxDiscriminatorName, ' ') + "│"
-													+ GetScopePropagation(list[i]).PadRight(maxScopePropagation, ' ') + "│");
+								+ GetDiscriminatorTypeId(list[i]).PadRight(maxDiscriminatorTypeId, ' ') + "│" + GetDiscriminatorTypeName(list[i]).PadRight(maxDiscriminatorTypeName, ' ') + "│"
+								+ GetDiscriminatorId(list[i]).PadRight(maxDiscriminatorId, ' ') + "│" + GetDiscriminatorName(list[i]).PadRight(maxDiscriminatorName, ' ') + "│"
+								+ GetScopePropagation(list[i]).PadRight(maxScopePropagation, ' ') + "│");
 				}
 
 				// Footer
 				Printer.WriteLine("└" + "".PadRight(maxValue, '─') + "┴" + "".PadRight(maxFunction, '─') + "╨" + "".PadRight(maxDiscriminatorTypeId, '─') + "┴" + "".PadRight(maxDiscriminatorTypeName, '─')
-										+ "┴" + "".PadRight(maxDiscriminatorId, '─') + "┴" + "".PadRight(maxDiscriminatorName, '─') + "┴" + "".PadRight(maxScopePropagation, '─') + "┘");
+					+ "┴" + "".PadRight(maxDiscriminatorId, '─') + "┴" + "".PadRight(maxDiscriminatorName, '─') + "┴" + "".PadRight(maxScopePropagation, '─') + "┘");
 				break;
 		}
 	}

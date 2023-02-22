@@ -10,8 +10,7 @@ public class DeactivatableObservableCollectionTest
 	{
 		var step = 0;
 		var col = new DeactivatableObservableCollection<string>();
-		col.CollectionChanged += (s, e) =>
-		{
+		col.CollectionChanged += (s, e) => {
 			switch (step)
 			{
 				case 0:
@@ -30,23 +29,19 @@ public class DeactivatableObservableCollectionTest
 			step++;
 		};
 		col.Add("Oscar");
-		col.Add(new[]
-		{
+		col.Add(new[] {
 			"Oscar", "Asier"
 		});
 	}
 	[Fact(DisplayName = "DeactivatableObservableCollection - Clear")]
 	public void DeactivatableObservableCollection_Clear()
 	{
-		var col = new DeactivatableObservableCollection<string>
-		{
-			new[]
-			{
+		var col = new DeactivatableObservableCollection<string> {
+			new[] {
 				"Oscar", "Asier"
 			}
 		};
-		col.CollectionChanged += (s, e) =>
-		{
+		col.CollectionChanged += (s, e) => {
 			Assert.True(e.Action == NotifyCollectionChangedAction.Reset);
 			Assert.Null(e.NewItems);
 			Assert.Null(e.OldItems);
@@ -57,12 +52,10 @@ public class DeactivatableObservableCollectionTest
 	public void DeactivatableObservableCollection_Remove()
 	{
 		var step = 0;
-		var col = new DeactivatableObservableCollection<string>
-		{
+		var col = new DeactivatableObservableCollection<string> {
 			"Oscar"
 		};
-		col.CollectionChanged += (s, e) =>
-		{
+		col.CollectionChanged += (s, e) => {
 			switch (step)
 			{
 				case 0:
@@ -81,12 +74,10 @@ public class DeactivatableObservableCollectionTest
 			step++;
 		};
 		col.Remove("Oscar");
-		col.Add(new[]
-		{
+		col.Add(new[] {
 			"Oscar", "Asier"
 		}, false);
-		col.Remove(new[]
-		{
+		col.Remove(new[] {
 			"Oscar", "Asier"
 		});
 	}
@@ -94,12 +85,10 @@ public class DeactivatableObservableCollectionTest
 	public void DeactivatableObservableCollection_Replace()
 	{
 		var step = 0;
-		var col = new DeactivatableObservableCollection<string>
-		{
+		var col = new DeactivatableObservableCollection<string> {
 			"Oscar", "Asier"
 		};
-		col.CollectionChanged += (s, e) =>
-		{
+		col.CollectionChanged += (s, e) => {
 			switch (step)
 			{
 				case 0:
@@ -126,11 +115,9 @@ public class DeactivatableObservableCollectionTest
 			step++;
 		};
 		col[0] = "Oscar2";
-		col.Replace(new[]
-		{
+		col.Replace(new[] {
 			"Oscar2", "Asier"
-		}, new[]
-		{
+		}, new[] {
 			"Oscar3", "Asier3"
 		}, true);
 	}

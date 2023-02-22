@@ -39,8 +39,7 @@ public class StateDto : LocationDto
 	public IList<CityDto> Cities { get; set; } = new List<CityDto>();
 	public CountryDto Country { get; set; }
 	protected override IEnumerable<LocationDto> GetLocationExclusions() =>
-		new[]
-		{
+		new[] {
 			Country
 		};
 	protected override IEnumerable<LocationDto> GetLocationInclusions() => Cities.Cast<LocationDto>().ToList();
@@ -63,8 +62,7 @@ public class CityDto : LocationDto
 	public CityDto(string id, string name, StateDto state) : base(id, name) => State = state;
 	public StateDto State { get; set; }
 	protected override IEnumerable<LocationDto> GetLocationExclusions() =>
-		new[]
-		{
+		new[] {
 			State
 		};
 	protected override IEnumerable<LocationDto> GetLocationInclusions() =>
@@ -82,8 +80,7 @@ public class CategoryDto : DiscriminatorDto
 	protected sealed override string GetTypeName() => nameof(CategoryDto);
 	protected override IEnumerable<DiscriminatorDto> GetInclusions() => Children;
 	protected override IEnumerable<DiscriminatorDto> GetExclusions() =>
-		new[]
-		{
+		new[] {
 			Parent
 		}.RemoveNulls();
 }

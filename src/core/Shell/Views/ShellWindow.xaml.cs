@@ -12,8 +12,7 @@ public partial class ShellWindow
 	public ShellWindow(ShellWindowViewModel viewModel, MenuManager menuManager, DockingManager dockingManager)
 	{
 		InitializeComponent();
-		Docking.PreviewMouseDown += (_, e) =>
-		{
+		Docking.PreviewMouseDown += (_, e) => {
 			if (e.ChangedButton == MouseButton.Middle && e.ButtonState == MouseButtonState.Pressed && e.Source is RadPane pane)
 			{
 				MessageBus.Current.ClosePanel(pane);
@@ -21,8 +20,7 @@ public partial class ShellWindow
 				e.Handled = true;
 			}
 		};
-		Docking.MouseDown += (_, e) =>
-		{
+		Docking.MouseDown += (_, e) => {
 			//if (e.ChangedButton == MouseButton.Middle && e.ButtonState == MouseButtonState.Pressed && e.OriginalSource is FrameworkElement element)
 			if (e.ChangedButton == MouseButton.Middle && e.ButtonState == MouseButtonState.Pressed && e.Source is RadPane pane)
 			{

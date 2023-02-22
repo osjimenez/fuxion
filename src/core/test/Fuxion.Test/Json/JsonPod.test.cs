@@ -8,8 +8,7 @@ public class JsonPodTest : BaseTest<JsonPodTest>
 	[Fact(DisplayName = "JsonPod - CastWithPayload")]
 	public void CastWithPayload()
 	{
-		var payload = new PayloadDerived
-		{
+		var payload = new PayloadDerived {
 			Name = "payloadName", Age = 23, Nick = "payloadNick"
 		};
 		var basePod = new JsonPod<PayloadBase, string>(payload, "podKey");
@@ -58,8 +57,7 @@ public class JsonPodTest : BaseTest<JsonPodTest>
 	[Fact(DisplayName = "JsonPod - ToJson")]
 	public void ToJson()
 	{
-		var payload = new PayloadDerived
-		{
+		var payload = new PayloadDerived {
 			Name = "payloadName", Age = 23, Nick = "payloadNick"
 		};
 		var pod = payload.ToJsonPod("podKey");

@@ -14,8 +14,7 @@ public class IntegerToVisibilityConverterTest : BaseTest<IntegerToVisibilityConv
 	[Fact(DisplayName = "IntegerToVisibilityConverter - Convert")]
 	public void IntegerToVisibilityConverter_Convert()
 	{
-		var converter = new IntegerToVisibilityConverter
-		{
+		var converter = new IntegerToVisibilityConverter {
 			VisibleValuesCommaSeparated = "1 ,2,3", CollapsedValuesCommaSeparated = "3, 4,5", HiddenValuesCommaSeparated = "5, 6 ,7"
 		};
 		var res = ((IValueConverter)converter).Convert(1, typeof(EnumTest?), null, CultureInfo.CurrentCulture);

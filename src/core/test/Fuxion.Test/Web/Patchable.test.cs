@@ -36,8 +36,7 @@ public class PatchableTest
 	[Fact(DisplayName = "Patchable - List")]
 	public void List()
 	{
-		var toPatch = new ToPatch
-		{
+		var toPatch = new ToPatch {
 			Integer = 123, String = "TEST"
 		};
 		dynamic dyn = new Patchable<ToPatch>();
@@ -52,8 +51,7 @@ public class PatchableTest
 		// Create a Patchable
 		dynamic dyn = new Patchable<ToPatch>();
 		// Set non existing property
-		Assert.Throws<RuntimeBinderException>(() =>
-		{
+		Assert.Throws<RuntimeBinderException>(() => {
 			dyn.Integer = 123;
 			dyn.DerivedInteger = 123;
 		});
@@ -70,8 +68,7 @@ public class PatchableTest
 		// Get non existing property
 		var delta = (Patchable<ToPatch>)dyn;
 		int? res, derivedRed;
-		Assert.Throws<RuntimeBinderException>(() =>
-		{
+		Assert.Throws<RuntimeBinderException>(() => {
 			res = delta.Get<int>("Integer");
 			derivedRed = delta.Get<int>("DerivedInteger");
 		});
@@ -85,8 +82,7 @@ public class PatchableTest
 	[Fact(DisplayName = "Patchable - Patch")]
 	public void Patch()
 	{
-		var toPatch = new ToPatch
-		{
+		var toPatch = new ToPatch {
 			Integer = 123, String = "TEST"
 		};
 		dynamic dyn = new Patchable<ToPatch>();

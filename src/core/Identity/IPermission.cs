@@ -30,6 +30,6 @@ public class PermissionEqualityComparer : IEqualityComparer<IPermission>
 		var per2 = (IPermission)obj2;
 		// Use 'Equals' to compare the ids
 		return funCom.Equals(per1.Function, per2.Function) && per1.Scopes.All(s => per2.Scopes.Any(s2 => scoCom.Equals(s, s2))) && per2.Scopes.All(s => per1.Scopes.Any(s2 => scoCom.Equals(s, s2)))
-				 && per1.Value == per2.Value;
+			&& per1.Value == per2.Value;
 	}
 }

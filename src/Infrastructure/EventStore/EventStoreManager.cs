@@ -22,8 +22,7 @@ public class EventStoreStorage : IEventStorage, ISnapshotStorage
 	#region IEventStorage
 	public async Task CommitAsync(Guid aggregateId, IEnumerable<Event> events)
 	{
-		var res = await client.AppendToStreamAsync(aggregateId.ToString(), StreamState.Any, events.Select(e =>
-		{
+		var res = await client.AppendToStreamAsync(aggregateId.ToString(), StreamState.Any, events.Select(e => {
 			var pod = e.ToEventSourcingPod();
 			return new EventData(Uuid.NewUuid(), pod.PayloadKey, JsonSerializer.SerializeToUtf8Bytes(pod));
 		}).ToArray());
@@ -61,8 +60,7 @@ public class EventStoreStorage : IEventStorage, ISnapshotStorage
 		if (state == ReadState.Ok)
 		{
 			var stream = await res.ToListAsync();
-			return stream.Select(e =>
-			{
+			return stream.Select(e => {
 				var pod = Encoding.Default.GetString(e.Event.Data.ToArray()).FromJson<JsonPod<Snapshot, string>>(true);
 				return (Snapshot?)pod.As(typeKeyDirectory[pod.PayloadKey]);
 			}).LastOrDefault();
@@ -71,8 +69,7 @@ public class EventStoreStorage : IEventStorage, ISnapshotStorage
 	}
 	public async Task SaveSnapshotAsync(Snapshot snapshot)
 	{
-		var res = await client.AppendToStreamAsync($"{snapshot.GetType().GetTypeKey()}@{snapshot.AggregateId.ToString()}", StreamState.Any, new[]
-		{
+		var res = await client.AppendToStreamAsync($"{snapshot.GetType().GetTypeKey()}@{snapshot.AggregateId.ToString()}", StreamState.Any, new[] {
 			new EventData(Uuid.NewUuid(), snapshot.GetType().GetTypeKey(), JsonSerializer.SerializeToUtf8Bytes(new JsonPod<Snapshot, string>(snapshot, snapshot.GetType().GetTypeKey())))
 		});
 	}

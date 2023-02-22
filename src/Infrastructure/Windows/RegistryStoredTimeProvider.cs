@@ -6,8 +6,7 @@ namespace Fuxion.Windows;
 
 public class RegistryStoredTimeProvider : StoredTimeProvider
 {
-	static readonly byte[] entropy =
-	{
+	static readonly byte[] entropy = {
 		9, 8, 7, 6, 5
 	};
 	public string Key { get; set; } = @"Software\Fuxion\RegistryStorageTimeProvider";

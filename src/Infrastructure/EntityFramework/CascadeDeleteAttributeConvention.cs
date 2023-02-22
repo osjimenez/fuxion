@@ -16,26 +16,22 @@ public class CascadeDeleteConvention : IConceptualModelConvention<AssociationTyp
 			throw new InvalidProgramException("Assembly 'System.Data.Entity.ModelConfiguration.Configuration.Properties.Navigation.NavigationPropertyConfiguration' cannot be loaded");
 		var isSelfRefencingMethod = associationTypeExtensionsType.GetMethod("IsSelfReferencing", BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static);
 		if (isSelfRefencingMethod == null) throw new InvalidProgramException("Method 'IsSelfReferencing' cannot be found");
-		IsSelfReferencing = associationType => (bool)(isSelfRefencingMethod.Invoke(null, new object[]
-		{
+		IsSelfReferencing = associationType => (bool)(isSelfRefencingMethod.Invoke(null, new object[] {
 			associationType
 		}) ?? false);
 		var isRequiredToManyMethod = associationTypeExtensionsType.GetMethod("IsRequiredToMany", BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static);
 		if (isRequiredToManyMethod == null) throw new InvalidProgramException("Method 'IsRequiredToMany' cannot be found");
-		IsRequiredToMany = associationType => (bool)(isRequiredToManyMethod.Invoke(null, new object[]
-		{
+		IsRequiredToMany = associationType => (bool)(isRequiredToManyMethod.Invoke(null, new object[] {
 			associationType
 		}) ?? false);
 		var isManyToRequiredMethod = associationTypeExtensionsType.GetMethod("IsManyToRequired", BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static);
 		if (isManyToRequiredMethod == null) throw new InvalidProgramException("Method 'IsManyToRequired' cannot be found");
-		IsManyToRequired = associationType => (bool)(isManyToRequiredMethod.Invoke(null, new object[]
-		{
+		IsManyToRequired = associationType => (bool)(isManyToRequiredMethod.Invoke(null, new object[] {
 			associationType
 		}) ?? false);
 		var getConfigurationMethod = associationTypeExtensionsType.GetMethod("GetConfiguration", BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static);
 		if (getConfigurationMethod == null) throw new InvalidProgramException("Method 'GetConfiguration' cannot be found");
-		GetConfiguration = associationType => getConfigurationMethod.Invoke(null, new object[]
-		{
+		GetConfiguration = associationType => getConfigurationMethod.Invoke(null, new object[] {
 			associationType
 		});
 		var deleteActionProperty = navigationPropertyConfigurationType.GetProperty("DeleteAction", BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);

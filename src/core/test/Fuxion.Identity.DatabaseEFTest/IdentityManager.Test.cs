@@ -14,8 +14,7 @@ public class IdentityManagerTest
 	public IdentityManagerTest(ITestOutputHelper output)
 	{
 		Context.Initialize();
-		Printer.WriteLineAction = m =>
-		{
+		Printer.WriteLineAction = m => {
 			Debug.WriteLine(m);
 			output.WriteLine(m);
 		};
@@ -69,8 +68,7 @@ public class IdentityManagerTest
 
 	#region Check
 	[Theory]
-	[InlineData("Root can create and delete documents", scenarios, "root", "root", new[]
-	{
+	[InlineData("Root can create and delete documents", scenarios, "root", "root", new[] {
 		"CREATE", "DELETE"
 	}, typeof(DocumentDao), "Verify that 'root' user can 'Create' and 'Delete' entities of type 'Document'", true)]
 	//[InlineData(new object[] {
@@ -80,8 +78,7 @@ public class IdentityManagerTest
 	//    new[] { typeof(Document), typeof(Circle) },
 	//    "Verify that 'root' user can 'Create' and 'Delete' entities of type 'Document' and 'Circle'",
 	//    true })]
-	[InlineData("Root can create documents", scenarios, "root", "root", new[]
-	{
+	[InlineData("Root can create documents", scenarios, "root", "root", new[] {
 		"CREATE"
 	}, typeof(DocumentDao), "Verify that 'California seller' user can NOT 'Create' entities of type 'Document'", true)]
 	public void Check(string _, string scenarios, string username, string password, string[] functionsIds, Type type, string message, bool expected)
@@ -156,18 +153,16 @@ public class IdentityManagerTest
 		IEnumerable<object>? res = null;
 		if (dbSet is IQueryable)
 			res = (IQueryable<object>)(typeof(System_Extensions).GetMethods()
-																				 .Where(m => m.Name == "AuthorizedTo" && m.GetParameters().First().ParameterType.GetGenericTypeDefinition() == typeof(IQueryable<>)).First()
-																				 .MakeGenericMethod(type).Invoke(null, new[]
-																				 {
-																					 dbSet, functions
-																				 }) ?? new List<object>());
+				.Where(m => m.Name == "AuthorizedTo" && m.GetParameters().First().ParameterType.GetGenericTypeDefinition() == typeof(IQueryable<>)).First()
+				.MakeGenericMethod(type).Invoke(null, new[] {
+					dbSet, functions
+				}) ?? new List<object>());
 		else
 			res = (IEnumerable<object>)(typeof(System_Extensions).GetMethods()
-																				  .Where(m => m.Name == "AuthorizedTo" && m.GetParameters().First().ParameterType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
-																				  .First().MakeGenericMethod(type).Invoke(null, new[]
-																				  {
-																					  dbSet, functions
-																				  }) ?? new List<object>());
+				.Where(m => m.Name == "AuthorizedTo" && m.GetParameters().First().ParameterType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+				.First().MakeGenericMethod(type).Invoke(null, new[] {
+					dbSet, functions
+				}) ?? new List<object>());
 		var list = res.ToList().Cast<BaseDao>();
 		if (allowOtherResults)
 			Assert.True(list.Any(e => expectedIds.Contains(e.Id)), $"Some expected ids '{expectedIds.Aggregate("", (a, c) => a + c + "·")}' not found");

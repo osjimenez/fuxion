@@ -19,8 +19,7 @@ public class InternetTimeProvider : ITimeProvider
 	public DateTimeOffset NowOffsetted() => GetUtc().ToLocalTime();
 	public DateTime UtcNow() => GetUtc();
 	DateTime GetUtc() =>
-		ServerType switch
-		{
+		ServerType switch {
 			InternetTimeServerType.Ntp => FromNtp(),
 			InternetTimeServerType.Web => FromWeb(),
 			{ }                        => throw new ArgumentException("ServerType value not supported")

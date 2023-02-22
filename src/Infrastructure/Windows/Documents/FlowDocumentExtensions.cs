@@ -24,8 +24,7 @@ public static class FlowDocumentExtensions
 		var res = new List<Block>();
 		var objType = obj?.GetType() ?? type;
 		return IsBasicType(objType)
-			? new Paragraph().Transform(p =>
-			{
+			? new Paragraph().Transform(p => {
 				//p.Inlines.Add(new Bold(new Run("●")));
 				p.Inlines.Add(new Bold(new Run($"  ●  {name} = ")));
 				var valStr = obj?.ToString();
@@ -46,12 +45,10 @@ class CollapsibleSection : Section
 		if (isEnumerable)
 			foreach (var item in (obj as IEnumerable)!)
 				enumerableCount++;
-		var button = new ToggleButton
-		{
+		var button = new ToggleButton {
 			Margin = new(1, 0, 1, 0)
 		};
-		button.Click += (s, e) =>
-		{
+		button.Click += (s, e) => {
 			try
 			{
 				var but = (s as ToggleButton)!;
@@ -63,8 +60,7 @@ class CollapsibleSection : Section
 						var counter = 0;
 						foreach (var item in (obj as IEnumerable)!)
 						{
-							var list = new List
-							{
+							var list = new List {
 								MarkerStyle = TextMarkerStyle.None
 							};
 							if (item != null) list.ListItems.Add(new ListItem().Transform(i => i.Blocks.Add(item.ProcessProperty($"{name} [{counter++}]", item.GetType()))));
@@ -72,8 +68,7 @@ class CollapsibleSection : Section
 						}
 					} else
 					{
-						var list = new List
-						{
+						var list = new List {
 							MarkerStyle = TextMarkerStyle.None
 						};
 						if (obj != null)
@@ -106,8 +101,7 @@ class CollapsibleSection : Section
 			}
 		};
 		button.Content = obj != null ? "▼" : "◊"; // "■"; // "●";
-		var inlineContainer = new InlineUIContainer(button)
-		{
+		var inlineContainer = new InlineUIContainer(button) {
 			BaselineAlignment = BaselineAlignment.Center, Cursor = Cursors.Hand
 		};
 		var header = new Paragraph();

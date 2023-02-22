@@ -10,8 +10,7 @@ public static class Extensions
 		entry?.Cancel();
 	}
 	public static void CancelAndWait(this Task task, TimeSpan timeout = default, bool throwExceptionIfNotRunning = true) =>
-		new[]
-		{
+		new[] {
 			task
 		}.CancelAndWait(timeout, throwExceptionIfNotRunning);
 	public static void CancelAndWait(this IEnumerable<Task> me, TimeSpan timeout = default, bool throwExceptionIfNotRunning = true)

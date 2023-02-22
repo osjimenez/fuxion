@@ -5,8 +5,7 @@ namespace Fuxion.Identity.Test.Dao;
 using static Helpers.TypeDiscriminatorIds;
 
 [DebuggerDisplay("{" + nameof(Name) + "}")]
-[TypeDiscriminated(Base, AdditionalInclusions = new[]
-{
+[TypeDiscriminated(Base, AdditionalInclusions = new[] {
 	Media
 })]
 public abstract class BaseDao

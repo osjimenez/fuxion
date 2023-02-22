@@ -21,8 +21,7 @@ public class PatchableJsonConverter<T> : JsonConverter<Patchable<T>> where T : c
 			var prop = typeof(T).GetRuntimeProperty(propertyName);
 			if (prop is null) throw new InvalidProgramException($"The property '{propertyName}' is not present in type '{typeof(T)}'");
 			var ele = JsonDocument.ParseValue(ref reader).RootElement;
-			var val = ele.Deserialize(prop.PropertyType, new JsonSerializerOptions
-			{
+			var val = ele.Deserialize(prop.PropertyType, new JsonSerializerOptions {
 				TypeInfoResolver = new PrivateConstructorContractResolver()
 			});
 			patchable.dic.Add(propertyName, (prop, val));

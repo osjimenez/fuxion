@@ -6,8 +6,7 @@ public class CachedTimeProviderTest : BaseTest<CachedTimeProviderTest>
 	[Fact(DisplayName = "CachedTimeProvider - CacheTest")]
 	public void CachedTimeProvider_CacheTest()
 	{
-		var ctp = new CachedTimeProvider(new LocalMachinneTimeProvider())
-		{
+		var ctp = new CachedTimeProvider(new LocalMachinneTimeProvider()) {
 			Logger = Logger, ExpirationInterval = TimeSpan.FromSeconds(1)
 		};
 		ctp.UtcNow(out var fromCache);

@@ -19,21 +19,18 @@ public class DockingManager
 		logger = scope.ServiceProvider.GetService<ILogger<DockingManager>>();
 		panelDescritors = scope.ServiceProvider.GetServices<IPanelDescriptor>().ToList();
 		MessageBus.Current.OnOpenPanel(message => OpenPanel(message.Name, message.Arguments));
-		MessageBus.Current.OnClosePanel(message =>
-		{
+		MessageBus.Current.OnClosePanel(message => {
 			if (message.Pane != null)
 				CloseRadPane(message.Pane);
 			else if (message.Name != null) ClosePanel(message.Name.Value);
 		});
 		MessageBus.Current.OnCloseAllPanelsWithKey(message => CloseAllPanelsWithKey(message.Key));
 		MessageBus.Current.OnCloseAllPanels(_ => CloseAllPanels());
-		MessageBus.Current.Listen<LockMessage>().Subscribe(message =>
-		{
+		MessageBus.Current.Listen<LockMessage>().Subscribe(message => {
 			locked = true;
 			foreach (var panelInstance in panelInstances) LockRadPane(panelInstance.RadPane);
 		});
-		MessageBus.Current.Listen<UnlockMessage>().Subscribe(message =>
-		{
+		MessageBus.Current.Listen<UnlockMessage>().Subscribe(message => {
 			locked = false;
 			foreach (var panelInstance in panelInstances) UnlockRadPane(panelInstance.RadPane);
 		});
@@ -53,12 +50,10 @@ public class DockingManager
 		this.docking = docking;
 		void AttachPane(PanelPosition state)
 		{
-			var split = new RadSplitContainer
-			{
+			var split = new RadSplitContainer {
 				InitialPosition = (DockState)(int)state
 			};
-			var pane = new RadPaneGroup
-			{
+			var pane = new RadPaneGroup {
 				Tag = state
 			};
 			RadDocking.SetSerializationTag(pane, state.ToString());
@@ -70,15 +65,13 @@ public class DockingManager
 		AttachPane(PanelPosition.DockedLeft);
 		AttachPane(PanelPosition.DockedRight);
 		var sp = new RadSplitContainer();
-		var gr = new RadPaneGroup
-		{
+		var gr = new RadPaneGroup {
 			Tag = PanelPosition.Document, TabStripPlacement = Dock.Left
 		};
 		RadDocking.SetSerializationTag(gr, PanelPosition.Document.ToString());
 		sp.Items.Add(gr);
 		docking.DocumentHost = sp;
-		docking.DockingPanesFactory = new ShellDockingPanesFactory((dock, radPane) =>
-		{
+		docking.DockingPanesFactory = new ShellDockingPanesFactory((dock, radPane) => {
 			logger?.LogTrace($"{nameof(docking)}.{nameof(docking.DockingPanesFactory)}.AddPane");
 			IPanelDescriptor descriptor;
 			if (radPane.Content is IPanel panel)
@@ -89,8 +82,7 @@ public class DockingManager
 				throw new NotSupportedException($"The '{nameof(RadPane)}.{nameof(radPane.Content)}' must be '{nameof(IPanel)}' or '{nameof(IPanelView)}'");
 			PositionPanel(radPane, descriptor.DefaultPosition);
 		}, (dock, item) => item is RadPane radPane ? radPane : null);
-		docking.ElementLoading += (_, e) =>
-		{
+		docking.ElementLoading += (_, e) => {
 			logger?.LogTrace($"{nameof(docking)}.{nameof(docking.ElementLoading)} - {nameof(e.AffectedElementSerializationTag)}: {e.AffectedElementSerializationTag}");
 			try
 			{
@@ -109,8 +101,7 @@ public class DockingManager
 				logger?.LogError(ex, $"ERROR loading '{e.AffectedElementSerializationTag}'");
 			}
 		};
-		docking.ElementLoaded += (_, e) =>
-		{
+		docking.ElementLoaded += (_, e) => {
 			logger?.LogTrace($"{nameof(docking)}.{nameof(docking.ElementLoaded)} - {nameof(e.AffectedElementSerializationTag)}: {e.AffectedElementSerializationTag}");
 			if (e.AffectedElement is RadPane radPane)
 			{
@@ -121,23 +112,19 @@ public class DockingManager
 					panel = vi.Panel;
 				else
 					throw new NotSupportedException($"Must be '{nameof(IPanel)}' or '{nameof(IPanelView)}'");
-				radPane.SetBinding(RadPane.TitleProperty, new Binding(nameof(panel.Title))
-				{
+				radPane.SetBinding(RadPane.TitleProperty, new Binding(nameof(panel.Title)) {
 					Source = panel
 				});
-				radPane.SetBinding(HeaderedContentControl.HeaderProperty, new Binding(nameof(panel.Header))
-				{
+				radPane.SetBinding(HeaderedContentControl.HeaderProperty, new Binding(nameof(panel.Header)) {
 					Source = panel
 				});
 			}
 		};
-		docking.ElementLayoutSaving += (_, e) =>
-		{
+		docking.ElementLayoutSaving += (_, e) => {
 			logger?.LogTrace($"{nameof(docking)}.{nameof(docking.ElementLayoutSaving)} - {nameof(e.AffectedElementSerializationTag)}: {e.AffectedElementSerializationTag}");
 			if (e.ElementProperties.ContainsKey(RadPane.IsHiddenProperty.Name) && e.ElementProperties[RadPane.IsHiddenProperty.Name] == "True") e.Cancel = true;
 		};
-		docking.Close += (s, e) =>
-		{
+		docking.Close += (s, e) => {
 			logger?.LogTrace($"{nameof(docking)}.{nameof(docking.Close)}");
 			foreach (var radPane in e.Panes)
 			{
@@ -252,8 +239,7 @@ public class DockingManager
 		var scope = serviceProvider.CreateScope();
 		var view = scope.ServiceProvider.GetService(descriptor.ViewType);
 		if (!(view is FrameworkElement)) throw new ArgumentException($"The '{nameof(descriptor.ViewType)}' must be '{nameof(FrameworkElement)}'");
-		var radPane = new RadPane
-		{
+		var radPane = new RadPane {
 			Content = view, IsPinned = descriptor.IsPinned
 		};
 		IPanel panel;
@@ -268,12 +254,10 @@ public class DockingManager
 				? new GenericPanelDescriptor(name.ToString(), descriptor.ViewType, descriptor.DefaultPosition, descriptor.RemoveOnHide, descriptor.IsPinned)
 				: descriptor, panel, (FrameworkElement)view, radPane, scope);
 		panelInstances.Add(panelInstance);
-		radPane.SetBinding(RadPane.TitleProperty, new Binding(nameof(panel.Title))
-		{
+		radPane.SetBinding(RadPane.TitleProperty, new Binding(nameof(panel.Title)) {
 			Source = panel
 		});
-		radPane.SetBinding(HeaderedContentControl.HeaderProperty, new Binding(nameof(panel.Header))
-		{
+		radPane.SetBinding(HeaderedContentControl.HeaderProperty, new Binding(nameof(panel.Header)) {
 			Source = panel
 		});
 		RadDocking.SetSerializationTag(radPane, name.ToString());

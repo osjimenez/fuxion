@@ -39,26 +39,21 @@ public static class Context
 		Cities.Alcorcon = new(nameof(Cities.Alcorcon), nameof(Cities.Alcorcon), States.Madrid);
 
 		// Initialize countries
-		Countries.Usa.States = new[]
-		{
+		Countries.Usa.States = new[] {
 			States.California, States.NewYork
 		};
-		Countries.Spain.States = new[]
-		{
+		Countries.Spain.States = new[] {
 			States.Madrid
 		};
 
 		// Initialize states
-		States.California.Cities = new[]
-		{
+		States.California.Cities = new[] {
 			Cities.SanFrancisco, Cities.Berkeley
 		};
-		States.NewYork.Cities = new[]
-		{
+		States.NewYork.Cities = new[] {
 			Cities.NewYork, Cities.Buffalo
 		};
-		States.Madrid.Cities = new[]
-		{
+		States.Madrid.Cities = new[] {
 			Cities.Madrid, Cities.Alcorcon
 		};
 	}
@@ -71,8 +66,7 @@ public static class Context
 		Categories.Purchases = new(nameof(Categories.Purchases), nameof(Categories.Purchases));
 
 		// Initialize categories
-		Categories.Sales.Children = new[]
-		{
+		Categories.Sales.Children = new[] {
 			Categories.Commercial, Categories.Marketing
 		};
 		Categories.Commercial.Parent = Categories.Sales;
@@ -96,14 +90,11 @@ public static class Context
 		Identities.FilmManager = new(nameof(Identities.FilmManager), nameof(Identities.FilmManager), nameof(Identities.FilmManager), hash, salt);
 
 		// Initialize identities
-		Identities.Root.Groups = new[]
-		{
+		Identities.Root.Groups = new[] {
 			Groups.Admins
 		};
-		Identities.Root.Permissions = new[]
-		{
-			new PermissionDao("", "", Identities.Root, Admin.Id.ToString() ?? "")
-			{
+		Identities.Root.Permissions = new[] {
+			new PermissionDao("", "", Identities.Root, Admin.Id.ToString() ?? "") {
 				Value = true
 			}
 		};
@@ -181,8 +172,7 @@ public static class Tags
 public static class Groups
 {
 	public static IEnumerable<GroupDao> All =>
-		new[]
-		{
+		new[] {
 			Admins
 		};
 	public static GroupDao Admins { get; set; }
@@ -193,8 +183,7 @@ public static class Groups
 public static class Identities
 {
 	public static IEnumerable<IdentityDao> All =>
-		new[]
-		{
+		new[] {
 			Root, Customer, FilmManager
 		};
 	public static IdentityDao Root { get; set; }
@@ -216,8 +205,7 @@ public static class Persons
 public static class Documents
 {
 	public static IEnumerable<DocumentDao> All =>
-		new[]
-		{
+		new[] {
 			Word1
 		};
 	public static WordDocumentDao Word1 { get; set; }
@@ -228,8 +216,7 @@ public static class Documents
 public static class Packages
 {
 	public static IEnumerable<PackageDao> All =>
-		new[]
-		{
+		new[] {
 			Package1
 		};
 	public static PackageDao Package1 { get; set; }
@@ -249,8 +236,7 @@ public static class Songs
 public static class Albums
 {
 	public static IEnumerable<AlbumDao> All =>
-		new[]
-		{
+		new[] {
 			Album1
 		};
 	public static AlbumDao Album1 { get; set; }

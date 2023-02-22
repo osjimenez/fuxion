@@ -22,8 +22,7 @@ public class TypeDiscriminatorTetst : BaseTest<TypeDiscriminatorTetst>
 	[Fact(DisplayName = "TypeDiscriminator - Allow more than one type by discriminator")]
 	public void AllowMoreThanOneTypeByDiscriminator()
 	{
-		var fac = new TypeDiscriminatorFactory
-		{
+		var fac = new TypeDiscriminatorFactory {
 			AllowMoreThanOneTypeByDiscriminator = true
 		};
 		fac.RegisterTree(typeof(BaseDvo<>), typeof(BaseDvo<>).Assembly.DefinedTypes.ToArray());
@@ -33,8 +32,7 @@ public class TypeDiscriminatorTetst : BaseTest<TypeDiscriminatorTetst>
 	[Fact(DisplayName = "TypeDiscriminator - Create")]
 	public void Create()
 	{
-		var fac = new TypeDiscriminatorFactory
-		{
+		var fac = new TypeDiscriminatorFactory {
 			GetIdFunction = (type, att) => att?.Id ?? type.Name, GetNameFunction = (type, att) => att?.Name ?? type.Name.ToUpper()
 		};
 		fac.RegisterTree<BaseDao>(typeof(BaseDao).Assembly.DefinedTypes.ToArray());
@@ -49,8 +47,7 @@ public class TypeDiscriminatorTetst : BaseTest<TypeDiscriminatorTetst>
 	[Fact(DisplayName = "TypeDiscriminator - Equality")]
 	public void Equality()
 	{
-		var fac = new TypeDiscriminatorFactory
-		{
+		var fac = new TypeDiscriminatorFactory {
 			AllowMoreThanOneTypeByDiscriminator = true
 		};
 		// Register from Base
@@ -61,8 +58,7 @@ public class TypeDiscriminatorTetst : BaseTest<TypeDiscriminatorTetst>
 		Assert.True(d1 == d2);
 		Assert.Equal(d1, d2);
 		Assert.Same(d1, d2);
-		var d1c = new[]
-		{
+		var d1c = new[] {
 			d1
 		};
 		Assert.Contains(d2, d1c);
@@ -70,8 +66,7 @@ public class TypeDiscriminatorTetst : BaseTest<TypeDiscriminatorTetst>
 	[Fact(DisplayName = "TypeDiscriminator - Many classes, same discriminators")]
 	public void ManyClassesSameDiscriminators()
 	{
-		var fac = new TypeDiscriminatorFactory
-		{
+		var fac = new TypeDiscriminatorFactory {
 			AllowMoreThanOneTypeByDiscriminator = true
 		};
 		// Register from Base
@@ -99,8 +94,7 @@ public class TypeDiscriminatorTetst : BaseTest<TypeDiscriminatorTetst>
 	public void NotAllowTwoSameIds()
 	{
 		var fac = new TypeDiscriminatorFactory();
-		Assert.Throws<Exception>(() =>
-		{
+		Assert.Throws<Exception>(() => {
 			fac.Register(typeof(BaseDao));
 			fac.Register(typeof(BaseDto));
 		});
@@ -154,8 +148,7 @@ public class TypeDiscriminatorTetst : BaseTest<TypeDiscriminatorTetst>
 	[Fact(DisplayName = "TypeDiscriminator - Register - Only File")]
 	public void RegisterOnlyttttFile()
 	{
-		var fac = new TypeDiscriminatorFactory
-		{
+		var fac = new TypeDiscriminatorFactory {
 			AllowMoreThanOneTypeByDiscriminator = true
 		};
 		// Register from generic type BaseDvo<>
@@ -183,8 +176,7 @@ public class TypeDiscriminatorTetst : BaseTest<TypeDiscriminatorTetst>
 	[Fact(DisplayName = "TypeDiscriminator - Register - Two trees in parallel")]
 	public void RegisterTwoTrees()
 	{
-		var fac = new TypeDiscriminatorFactory
-		{
+		var fac = new TypeDiscriminatorFactory {
 			AllowMoreThanOneTypeByDiscriminator = true
 		};
 		// Register from Base

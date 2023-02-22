@@ -33,10 +33,9 @@ public class EnsureNoDuplicatesAttribute : ValidationAttribute
 		{
 			if (list.Count < 2) return true;
 			for (var i = 1; i < list.Count; i++)
-				if ((bool?)method?.Invoke(null, new[]
-					 {
-						 list[i - 1], list[i]
-					 }) ?? false)
+				if ((bool?)method?.Invoke(null, new[] {
+						list[i - 1], list[i]
+					}) ?? false)
 				{
 					lastDuplicateValue = list[i]?.ToString();
 					return false;

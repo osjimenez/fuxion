@@ -16,10 +16,9 @@ public class EventDispatcher : IEventDispatcher
 		{
 			var met = handler.GetType().GetMethod(nameof(c.HandleAsync));
 			if (met == null) throw new InvalidProgramException($"'{nameof(c.HandleAsync)}' method not found");
-			if (met.Invoke(handler, new object[]
-				 {
-					 @event
-				 }) is Task task)
+			if (met.Invoke(handler, new object[] {
+					@event
+				}) is Task task)
 				await task;
 			else
 				throw new InvalidProgramException($"'{nameof(c.HandleAsync)}' method not return a task");

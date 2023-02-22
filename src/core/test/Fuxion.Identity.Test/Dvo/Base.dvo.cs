@@ -7,8 +7,7 @@ using static Helpers.TypeDiscriminatorIds;
 public interface IBaseDvo<TNotifier> where TNotifier : IBaseDvo<TNotifier> { }
 
 [DebuggerDisplay("{" + nameof(Name) + "}")]
-[TypeDiscriminated(Base, AdditionalInclusions = new[]
-{
+[TypeDiscriminated(Base, AdditionalInclusions = new[] {
 	Media
 })]
 public abstract class BaseDvo<TNotifier> : IBaseDvo<TNotifier> where TNotifier : BaseDvo<TNotifier>

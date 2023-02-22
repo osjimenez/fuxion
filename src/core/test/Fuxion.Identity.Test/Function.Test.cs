@@ -15,11 +15,9 @@ public class FunctionTest : BaseTest<FunctionTest>
 	public void CustomFunction()
 	{
 		//Reset();
-		var cus = CreateCustom("Custom", new[]
-		{
+		var cus = CreateCustom("Custom", new[] {
 			Read
-		}, new[]
-		{
+		}, new[] {
 			Edit
 		});
 		AddCustom(cus);
@@ -48,11 +46,9 @@ public class FunctionTest : BaseTest<FunctionTest>
 		//graph.AddEdge(Read, CustomCycle);
 		//Assert.True(graph.HasCycles());
 		//Assert.True(false, "Graph is not used yet in Functions class");
-		Assert.Throws<GraphCyclicException>(() => AddCustom(CreateCustom("CUSTOM", new[]
-		{
+		Assert.Throws<GraphCyclicException>(() => AddCustom(CreateCustom("CUSTOM", new[] {
 			Edit
-		}, new[]
-		{
+		}, new[] {
 			Read
 		})));
 		foreach (var fun in GetAll())
@@ -70,11 +66,9 @@ public class FunctionTest : BaseTest<FunctionTest>
 		{
 			funcs = GetAll();
 			//Reset();
-			var intFunction = AddCustom(CreateCustom(1, new[]
-			{
+			var intFunction = AddCustom(CreateCustom(1, new[] {
 				Read
-			}, new[]
-			{
+			}, new[] {
 				Manage
 			}));
 			Reset();
@@ -92,11 +86,9 @@ public class FunctionTest : BaseTest<FunctionTest>
 		Assert.Equal(5, Read.GetAllExclusions().Count());
 		Assert.Single(Edit.GetAllInclusions());
 		Assert.Equal(4, Edit.GetAllExclusions().Count());
-		var Custom = AddCustom(CreateCustom("CUSTOM", new[]
-		{
+		var Custom = AddCustom(CreateCustom("CUSTOM", new[] {
 			Read
-		}, new[]
-		{
+		}, new[] {
 			Manage
 		}));
 		Assert.Single(Custom.GetAllInclusions());

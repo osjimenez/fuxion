@@ -17,8 +17,7 @@ public class Printer
 	{
 		if (key == null) return Default;
 		if (factories.ContainsKey(key)) return factories[key];
-		return factories[key] = new()
-		{
+		return factories[key] = new() {
 			Key = key
 		};
 	}
@@ -26,8 +25,7 @@ public class Printer
 	{
 		var res = new StringBuilder();
 		var def = WriteLineAction;
-		WriteLineAction = m =>
-		{
+		WriteLineAction = m => {
 			res.AppendLine(m);
 			def(m);
 		};
@@ -68,10 +66,10 @@ public class Printer
 	[DebuggerHidden]
 	public static void WriteLine(string message) => Default.WriteLine(message);
 	public static CallResultArg<T> CallResult<T>(string callMessage = "CALL {0}:",
-																string resultMessage = "RESULT {0}: {1}",
-																char verticalConnectorChar = '│',
-																char resultConnectorChar = '●',
-																[CallerMemberName] string? caller = null) where T : notnull =>
+		string resultMessage = "RESULT {0}: {1}",
+		char verticalConnectorChar = '│',
+		char resultConnectorChar = '●',
+		[CallerMemberName] string? caller = null) where T : notnull =>
 		Default.CallResult<T>(callMessage, resultMessage, verticalConnectorChar, resultConnectorChar, caller);
 	[DebuggerHidden]
 	public static IDisposable Indent(char? verticalConnectorChar = null) => Default.Indent(verticalConnectorChar);
@@ -154,10 +152,10 @@ class PrinterInstance : IPrinter
 	}
 	[DebuggerHidden]
 	public CallResultArg<T> CallResult<T>(string callMessage = "CALL {0}:",
-													  string resultMessage = "RESULT {0}: {1}",
-													  char verticalConnectorChar = '│',
-													  char resultConnectorChar = '●',
-													  [CallerMemberName] string? caller = null) where T : notnull
+		string resultMessage = "RESULT {0}: {1}",
+		char verticalConnectorChar = '│',
+		char resultConnectorChar = '●',
+		[CallerMemberName] string? caller = null) where T : notnull
 	{
 		var dis = Printer.Indent(string.Format(callMessage, caller), verticalConnectorChar);
 		var res = new CallResultArg<T>(default!, _ => dis.Dispose(), resultMessage, resultConnectorChar, caller);
@@ -171,13 +169,11 @@ class PrinterInstance : IPrinter
 		var o = new object();
 		var currentIndentationLevel = IndentationLevel;
 		if (verticalConnectorChar is not null)
-			verticalConnectorLevels.Write(dic =>
-			{
+			verticalConnectorLevels.Write(dic => {
 				if (!dic.ContainsKey(currentIndentationLevel)) dic.Add(currentIndentationLevel, verticalConnectorChar!.Value);
 			});
 		IndentationLevel++;
-		return o.AsDisposable(_ =>
-		{
+		return o.AsDisposable(_ => {
 			if (IndentationLevel > 0) IndentationLevel--;
 			verticalConnectorLevels.Write(dic => dic.Remove(currentIndentationLevel));
 		});

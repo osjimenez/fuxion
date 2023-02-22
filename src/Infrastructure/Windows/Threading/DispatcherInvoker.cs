@@ -22,8 +22,7 @@ public class DispatcherInvoker : IInvoker
 				: Task.FromResult((TResult)r);
 		}
 		if (!dispatcher.HasShutdownStarted)
-			return dispatcher.InvokeAsync(() =>
-			{
+			return dispatcher.InvokeAsync(() => {
 				var r = method.DynamicInvoke(args);
 				return r == null
 					? throw new InvalidOperationException() //default

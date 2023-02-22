@@ -91,12 +91,10 @@ static class IdentityExtensions
 						r = grantPermissions.Count > 0 && deniedPermissions.Count == 0;
 					else
 						r = forAll
-							? discriminators.All(dis =>
-							{
+							? discriminators.All(dis => {
 								return grantPermissions.Count > 0 && deniedPermissions.Count == 0; // || grantPermissions.Count == 0;
 							})
-							: discriminators.Any(dis =>
-							{
+							: discriminators.Any(dis => {
 								//var pers = me.Rol.SearchPermissions(fun, dis);
 								//return !pers.Any(p => !p.Value && p.Scopes.Any(s => dis.TypeId == s.Discriminator.TypeId)) && pers.Any(p => p.Value);
 								return !pers.Any(p => !p.Value && p.Match(false, fun, typeDiscriminator, discriminators)) && pers.Any(p => p.Value);
@@ -119,10 +117,9 @@ static class IdentityExtensions
 	{
 		using (var res = Printer.CallResult<IEnumerable<(PropertyInfo PropertyInfo, Type PropertyType, Type DiscriminatorType, object DiscriminatorTypeId)>>())
 		{
-			res.OnPrintResult = r =>
-			{
+			res.OnPrintResult = r => {
 				foreach (var p in r)
-					Printer.WriteLine($"Property '{p.PropertyInfo.Name}' of type '{p.PropertyType.Name}' is discriminated by '{p.DiscriminatorTypeId.ToString()}' of type '{p.DiscriminatorType.Name}'");
+					Printer.WriteLine($"Property '{p.PropertyInfo.Name}' of type '{p.PropertyType.Name}' is discriminated by '{p.DiscriminatorTypeId}' of type '{p.DiscriminatorType.Name}'");
 			};
 			return res.Value = me.GetRuntimeProperties().Where(p => p.GetCustomAttribute<DiscriminatedByAttribute>(true, false) != null).Select(p =>
 				(PropertyInfo: p, p.PropertyType, DiscriminatorType: p.GetCustomAttribute<DiscriminatedByAttribute>(true, true).Type,
@@ -130,8 +127,7 @@ static class IdentityExtensions
 		}
 	}
 	internal static IEnumerable<IDiscriminator> GetDiscriminatorsOfDiscriminatedProperties(this Type me, object? value = null) =>
-		me.GetDiscriminatedProperties().Select(p =>
-		{
+		me.GetDiscriminatedProperties().Select(p => {
 			object? val = null;
 			if (value != null) val = p.PropertyInfo.GetValue(value);
 			if (val == null) return Discriminator.Empty(p.DiscriminatorType);
@@ -154,28 +150,24 @@ static class IdentityExtensions
 			{
 				var foreignDiscriminators = Enumerable.Empty<IDiscriminator>();
 				if (sco.Propagation.HasFlag(ScopePropagation.ToMe))
-					foreignDiscriminators = foreignDiscriminators.Union(new[]
-					{
+					foreignDiscriminators = foreignDiscriminators.Union(new[] {
 						sco.Discriminator
 					});
 				if (sco.Propagation.HasFlag(ScopePropagation.ToInclusions)) foreignDiscriminators = foreignDiscriminators.Union(sco.Discriminator.GetAllInclusions().Select(d => d));
 				if (sco.Propagation.HasFlag(ScopePropagation.ToExclusions)) foreignDiscriminators = foreignDiscriminators.Union(sco.Discriminator.GetAllExclusions().Select(d => d));
-				if (GetOfTypeMethod(disType).Invoke(null, new object[]
-					 {
-						 foreignDiscriminators
-					 }) is not IEnumerable<IDiscriminator> foreignDiscriminatorssOfType)
+				if (GetOfTypeMethod(disType).Invoke(null, new object[] {
+						foreignDiscriminators
+					}) is not IEnumerable<IDiscriminator> foreignDiscriminatorssOfType)
 					return null;
 				//var foreignDiscriminatorssOfType = (IEnumerable<IDiscriminator>)GetOfTypeMethod(disType).Invoke(null, new object[] { foreignDiscriminators });
 				// Si no hay claves externas del tipo de esta propiedad, continuo con la siguiente propiedad
 				if (!foreignDiscriminatorssOfType.Any()) return null;
 				var foreignKeys = foreignDiscriminatorssOfType.Select(d => d.Id);
-				var foreignKeysCasted = GetCastMethod(proInfo.PropertyType).Invoke(null, new object[]
-				{
+				var foreignKeysCasted = GetCastMethod(proInfo.PropertyType).Invoke(null, new object[] {
 					foreignKeys
 				});
 				if (foreignKeysCasted == null) return null;
-				var foreignKeysListed = GetToListMethod(proInfo.PropertyType).Invoke(null, new[]
-				{
+				var foreignKeysListed = GetToListMethod(proInfo.PropertyType).Invoke(null, new[] {
 					foreignKeysCasted
 				});
 				if (foreignKeysListed == null) return null;
@@ -272,16 +264,14 @@ static class IdentityExtensions
 			using (Printer.Indent("Input parameters:"))
 			{
 				Printer.WriteLine("Rol:");
-				new[]
-				{
+				new[] {
 					me
 				}.Print(PrintMode.Table);
 				Printer.WriteLine("Functions:");
 				functions.Print(PrintMode.Table);
 				Printer.WriteLine("Type: " + typeof(TEntity).Name);
 			}
-			res.OnPrintResult = r =>
-			{
+			res.OnPrintResult = r => {
 				Printer.WriteLine("Expression:");
 				PrintExpression(r.Body);
 				Printer.WriteLine("");
@@ -297,13 +287,11 @@ static class IdentityExtensions
 			var pers = functions.SelectMany(fun => me.SearchPermissions(
 				true, fun, Singleton.Get<TypeDiscriminatorFactory>().FromType<TEntity>(true), typeof(TEntity).GetDiscriminatorsOfDiscriminatedProperties().ToArray())).Distinct().ToList();
 			Expression<Func<TEntity, bool>>? denyPersExp = null;
-			Printer.Foreach("Deny permissions:", pers.Where(p => !p.Value), per =>
-			{
+			Printer.Foreach("Deny permissions:", pers.Where(p => !p.Value), per => {
 				Expression<Func<TEntity, bool>>? perExp = null;
 				using (Printer.Indent($"Permission: {per.ToOneLineString()}"))
 				{
-					Printer.Foreach("Scopes:", per.Scopes, sco =>
-					{
+					Printer.Foreach("Scopes:", per.Scopes, sco => {
 						using (Printer.Indent($"Scope: {sco.ToOneLineString()}"))
 							// Recorro las propiedades que son del tipo de este discriminador
 							foreach (var pro in props.Where(p => AreEquals(p.DiscriminatorTypeId, sco.Discriminator.TypeKey)).ToList())
@@ -328,13 +316,11 @@ static class IdentityExtensions
 				}
 			});
 			Expression<Func<TEntity, bool>>? grantPersExp = null;
-			Printer.Foreach("Grant permissions:", pers.Where(p => p.Value), per =>
-			{
+			Printer.Foreach("Grant permissions:", pers.Where(p => p.Value), per => {
 				using (Printer.Indent($"Permission: {per.ToOneLineString()}"))
 				{
 					Expression<Func<TEntity, bool>>? perExp = null;
-					Printer.Foreach("Scopes:", per.Scopes, sco =>
-					{
+					Printer.Foreach("Scopes:", per.Scopes, sco => {
 						using (Printer.Indent($"Scope: {sco.ToOneLineString()}"))
 							// Recorro las propiedades que son del tipo de este discriminador
 							foreach (var pro in props.Where(p => AreEquals(p.DiscriminatorTypeId, sco.Discriminator.TypeKey)).ToList())

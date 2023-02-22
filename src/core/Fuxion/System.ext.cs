@@ -62,14 +62,12 @@ public static class Extensions
 
 	#region Json
 	public static string ToJson(this object? me, JsonSerializerOptions? options = null) =>
-		JsonSerializer.Serialize(me, me?.GetType() ?? typeof(object), options ?? new JsonSerializerOptions
-		{
+		JsonSerializer.Serialize(me, me?.GetType() ?? typeof(object), options ?? new JsonSerializerOptions {
 			WriteIndented = true
 		});
 	public static string ToJson(this Exception me, JsonSerializerOptions? options = null)
 	{
-		options ??= new()
-		{
+		options ??= new() {
 			WriteIndented = true
 		};
 		if (!options.Converters.Any(c => c.GetType().IsSubclassOfRawGeneric(typeof(FallbackConverter<>))))
@@ -81,8 +79,7 @@ public static class Extensions
 	public static object? FromJson(this string me, Type type, [DoesNotReturnIf(true)] bool exceptionIfNull = false, JsonSerializerOptions? options = null, bool usePrivateConstructor = true)
 	{
 		if (usePrivateConstructor)
-			options ??= new()
-			{
+			options ??= new() {
 				TypeInfoResolver = new PrivateConstructorContractResolver()
 			};
 		var res = JsonSerializer.Deserialize(me, type, options);
@@ -169,8 +166,7 @@ public static class Extensions
 	public static bool IsSubclassOfRawGeneric(this Type me, Type generic) => GetSubclassOfRawGeneric(me, generic) != null;
 	public static Type? GetSubclassOfRawGeneric(this Type me, Type generic)
 	{
-		Queue<Type> toProcess = new(new[]
-		{
+		Queue<Type> toProcess = new(new[] {
 			me
 		});
 		while (toProcess.Count > 0)
@@ -235,8 +231,7 @@ public static class Extensions
 		var t = obj.GetType();
 		var prop = t.GetProperty(propName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 		if (prop is null) throw new ArgumentOutOfRangeException(nameof(propName), string.Format("Property {0} was not found in Type {1}", propName, obj.GetType().FullName));
-		prop.DeclaringType?.InvokeMember(propName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.SetProperty | BindingFlags.Instance, Type.DefaultBinder, obj, new[]
-		{
+		prop.DeclaringType?.InvokeMember(propName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.SetProperty | BindingFlags.Instance, Type.DefaultBinder, obj, new[] {
 			val
 		});
 	}
@@ -310,8 +305,7 @@ public static class Extensions
 		return res;
 	}
 	public static string[] SplitInLines(this string me, bool removeEmptyLines = false, bool trimEachLine = false) =>
-		me.Split(new[]
-		{
+		me.Split(new[] {
 			"\r\n", "\r", "\n"
 		}, removeEmptyLines ? StringSplitOptions.RemoveEmptyEntries : StringSplitOptions.None);
 	/// <summary>
