@@ -41,7 +41,8 @@ jobs:
 #      run: dotnet test --configuration Release --no-restore --verbosity minimal src/Fuxion-pack.sln
 
     - name: Create packages
-      run: dotnet pack --configuration Release --no-build --output nupkgs --no-build -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} src/Fuxion-pack.sln
+#      run: dotnet pack --configuration Release --no-build --output nupkgs --no-build -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} src/Fuxion-pack.sln
+      run: dotnet pack --configuration Release --no-build -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} src/Fuxion-pack.sln
 
     - name: Publish to GitHub Packages
       if: github.ref != 'refs/heads/main'
