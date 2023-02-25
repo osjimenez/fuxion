@@ -6,7 +6,30 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Fuxion.EntityFrameworkCore;
 
-public class TriggerDbContextDecorator<TContext> : IDisposable, IAsyncDisposable where TContext : DbContext
+public interface ITriggerDbContextDecorator
+{
+	DbContext Context { get; }
+	int SaveChangesTriggered();
+	Task<int> SaveChangesTriggeredAsync(CancellationToken cancellationToken = default);
+	DbSet<TEntity> Set<TEntity>() where TEntity : class;
+	EntityEntry<TEntity> Add<TEntity>(TEntity entity) where TEntity : class;
+	ValueTask<EntityEntry<TEntity>> AddAsync<TEntity>(TEntity entity) where TEntity : class;
+	void AddRange(params object[] entities);
+	Task AddRangeAsync(params object[] entities);
+	EntityEntry<TEntity> Attach<TEntity>(TEntity entity) where TEntity : class;
+	void AttachRange(params object[] entities);
+	TEntity? Find<TEntity>(params object?[]? keyValues) where TEntity : class;
+	object? Find(Type entityType, params object?[]? keyValues);
+	ValueTask<TEntity?> FindAsync<TEntity>(Type entityType, params object?[]? keyValues) where TEntity : class;
+	ValueTask<object?> FindAsync(Type entityType, params object?[]? keyValues);
+	EntityEntry<TEntity> Update<TEntity>(TEntity entity) where TEntity : class;
+	void UpdateRange(params object[] entities);
+	EntityEntry<TEntity> Remove<TEntity>(TEntity entity) where TEntity : class;
+	void RemoveRange(params object[] entities);
+	EntityEntry<TEntity> Entry<TEntity>(TEntity entity) where TEntity : class;
+	IQueryable<TResult> RemoveRange<TResult>(Expression<Func<IQueryable<TResult>>> expression);
+}
+public class TriggerDbContextDecorator<TContext> : ITriggerDbContextDecorator, IDisposable, IAsyncDisposable where TContext : DbContext
 {
 	public TriggerDbContextDecorator(TContext context, IEnumerable<IBeforeSaveTrigger<TContext>> beforeSaveTriggers, IEnumerable<IAfterSaveTrigger<TContext>> afterSaveTriggers)
 	{
@@ -16,6 +39,7 @@ public class TriggerDbContextDecorator<TContext> : IDisposable, IAsyncDisposable
 	}
 	readonly IEnumerable<IAfterSaveTrigger<TContext>> _afterSaveTriggers;
 	readonly IEnumerable<IBeforeSaveTrigger<TContext>> _beforeSaveTriggers;
+	DbContext ITriggerDbContextDecorator.Context => Context;
 	public TContext Context { get; }
 	public DatabaseFacade Database => Context.Database;
 	public IModel Model => Context.Model;
