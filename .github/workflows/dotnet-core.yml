@@ -37,6 +37,16 @@ jobs:
       run: dotnet restore -p:RestoreUseSkipNonexistentTargets=false src/Core/Fuxion/Fuxion.csproj
     - name: Dependencies - Fuxion.Domain
       run: dotnet restore -p:RestoreUseSkipNonexistentTargets=false src/Core/Domain/Fuxion.Domain.csproj
+    - name: Dependencies - Fuxion.Application
+      run: dotnet restore -p:RestoreUseSkipNonexistentTargets=false src/Core/Application/Fuxion.Application.csproj
+    - name: Dependencies - Fuxion.Drawing
+      run: dotnet restore -p:RestoreUseSkipNonexistentTargets=false src/Core/Drawing/Fuxion.Drawing.csproj
+    - name: Dependencies - Fuxion.Licensing
+      run: dotnet restore -p:RestoreUseSkipNonexistentTargets=false src/Core/Licensing/Fuxion.Licensing.csproj
+    - name: Dependencies - Fuxion.AspNetCore
+      run: dotnet restore -p:RestoreUseSkipNonexistentTargets=false src/Infrastructure/AspNetCore/Fuxion.AspNetCore.csproj
+    - name: Dependencies - Fuxion.Windows
+      run: dotnet restore -p:RestoreUseSkipNonexistentTargets=false src/Infrastructure/Windows/Fuxion.Windows.csproj
 
 #    - name: Build
 #      run: dotnet build --configuration Release --no-restore -p:Version=${{ steps.gitversion.outputs.semVer }} src/Fuxion.sln
@@ -44,10 +54,29 @@ jobs:
       run: dotnet build --configuration Release --no-restore -p:Version=${{ steps.gitversion.outputs.semVer }} src/Core/Fuxion/Fuxion.csproj
     - name: Build - Fuxion.Domain
       run: dotnet build --configuration Release --no-restore -p:Version=${{ steps.gitversion.outputs.semVer }} src/Core/Domain/Fuxion.Domain.csproj
+    - name: Build - Fuxion.Application
+      run: dotnet build --configuration Release --no-restore -p:Version=${{ steps.gitversion.outputs.semVer }} src/Core/Application/Fuxion.Application.csproj
+    - name: Build - Fuxion.Drawing
+      run: dotnet build --configuration Release --no-restore -p:Version=${{ steps.gitversion.outputs.semVer }} src/Core/Drawing/Fuxion.Drawing.csproj
+    - name: Build - Fuxion.Licensing
+      run: dotnet build --configuration Release --no-restore -p:Version=${{ steps.gitversion.outputs.semVer }} src/Core/Licensing/Fuxion.Licensing.csproj
+    - name: Build - Fuxion.AspNetCore
+      run: dotnet build --configuration Release --no-restore -p:Version=${{ steps.gitversion.outputs.semVer }} src/Infrastructure/AspNetCore/Fuxion.AspNetCore.csproj
+    - name: Build - Fuxion.Windows
+      run: dotnet build --configuration Release --no-restore -p:Version=${{ steps.gitversion.outputs.semVer }} src/Infrastructure/Windows/Fuxion.Windows.csproj
 
 #    - name: Run tests
 #      run: dotnet test --configuration Release --no-restore --verbosity minimal src/Fuxion.sln
+#    - name: Test - Fuxion
 #      run: dotnet test --configuration Release --no-restore --verbosity minimal src/Core.test/Fuxion/Fuxion.Test.csproj
+    - name: Test - Fuxion.Domain
+      run: dotnet test --configuration Release --no-restore --verbosity minimal src/Core.test/Domain/Fuxion.Domain.Test.csproj
+    - name: Test - Fuxion.Application
+      run: dotnet test --configuration Release --no-restore --verbosity minimal src/Core.test/Application/Fuxion.Application.Test.csproj
+    - name: Test - Fuxion.Licensing
+      run: dotnet test --configuration Release --no-restore --verbosity minimal src/Core.test/Licensing/Fuxion.Licensing.Test.csproj
+    - name: Test - Fuxion.Windows
+      run: dotnet test --configuration Release --no-restore --verbosity minimal src/Infrastructure.test/Windows/Fuxion.Windows.Test.csproj
 
 #    - name: Create packages
 #      run: dotnet pack --configuration Release --no-build -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} src/Fuxion.sln
@@ -55,6 +84,16 @@ jobs:
       run: dotnet pack --configuration Release --no-build --output nupkgs -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} src/Core/Fuxion/Fuxion.csproj
     - name: Create package - Fuxion.Domain
       run: dotnet pack --configuration Release --no-build --output nupkgs -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} src/Core/Domain/Fuxion.Domain.csproj
+    - name: Create package - Fuxion.Application
+      run: dotnet pack --configuration Release --no-build --output nupkgs -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} src/Core/Application/Fuxion.Application.csproj
+    - name: Create package - Fuxion.Drawing
+      run: dotnet pack --configuration Release --no-build --output nupkgs -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} src/Core/Drawing/Fuxion.Drawing.csproj
+    - name: Create package - Fuxion.Licensing
+      run: dotnet pack --configuration Release --no-build --output nupkgs -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} src/Core/Licensing/Fuxion.Licensing.csproj
+    - name: Create package - Fuxion.AspNetCore
+      run: dotnet pack --configuration Release --no-build --output nupkgs -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} src/Infrastructure/AspNetCore/Fuxion.AspNetCore.csproj
+    - name: Create package - Fuxion.Windows
+      run: dotnet pack --configuration Release --no-build --output nupkgs -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} src/Infrastructure/Windows/Fuxion.Windows.csproj
 
     - name: Publish to GitHub Packages
       if: github.ref != 'refs/heads/main'
