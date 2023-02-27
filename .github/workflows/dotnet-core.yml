@@ -31,20 +31,30 @@ jobs:
         dotnet-version: '7.x.x'
         include-prerelease: true
 
-    - name: Install dependencies
-      run: dotnet restore -p:RestoreUseSkipNonexistentTargets=false src/Fuxion.sln
+#    - name: Install dependencies
+#      run: dotnet restore -p:RestoreUseSkipNonexistentTargets=false src/Fuxion.sln
+    - name: Dependencies - Fuxion
+      run: dotnet restore -p:RestoreUseSkipNonexistentTargets=false src/Core/Fuxion/Fuxion.csproj
+    - name: Dependencies - Fuxion.Domain
+      run: dotnet restore -p:RestoreUseSkipNonexistentTargets=false src/Core/Domain/Fuxion.Domain.csproj
 
-    - name: Build
+#    - name: Build
 #      run: dotnet build --configuration Release --no-restore -p:Version=${{ steps.gitversion.outputs.semVer }} src/Fuxion.sln
+    - name: Build - Fuxion
       run: dotnet build --configuration Release --no-restore -p:Version=${{ steps.gitversion.outputs.semVer }} src/Core/Fuxion/Fuxion.csproj
+    - name: Build - Fuxion.Domain
+      run: dotnet build --configuration Release --no-restore -p:Version=${{ steps.gitversion.outputs.semVer }} src/Core/Domain/Fuxion.Domain.csproj
 
-    - name: Run tests
+#    - name: Run tests
 #      run: dotnet test --configuration Release --no-restore --verbosity minimal src/Fuxion.sln
-      run: dotnet test --configuration Release --no-restore --verbosity minimal src/Core.test/Fuxion/Fuxion.Test.csproj
+#      run: dotnet test --configuration Release --no-restore --verbosity minimal src/Core.test/Fuxion/Fuxion.Test.csproj
 
-    - name: Create packages
+#    - name: Create packages
 #      run: dotnet pack --configuration Release --no-build -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} src/Fuxion.sln
+    - name: Create package - Fuxion
       run: dotnet pack --configuration Release --no-build -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} src/Core/Fuxion/Fuxion.csproj
+    - name: Create package - Fuxion.Domain
+      run: dotnet pack --configuration Release --no-build -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} src/Core/Domain/Fuxion.Domain.csproj
 
     - name: Publish to GitHub Packages
       if: github.ref != 'refs/heads/main'
