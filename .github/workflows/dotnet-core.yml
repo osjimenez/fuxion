@@ -45,8 +45,24 @@ jobs:
       run: dotnet restore -p:RestoreUseSkipNonexistentTargets=false src/Core/Licensing/Fuxion.Licensing.csproj
     - name: Dependencies - Fuxion.AspNetCore
       run: dotnet restore -p:RestoreUseSkipNonexistentTargets=false src/Infrastructure/AspNetCore/Fuxion.AspNetCore.csproj
+    - name: Dependencies - Fuxion.AutoMapper
+      run: dotnet restore -p:RestoreUseSkipNonexistentTargets=false src/Infrastructure/AutoMapper/Fuxion.AutoMapper.csproj
+    - name: Dependencies - Fuxion.EntityFrameworkCore
+      run: dotnet restore -p:RestoreUseSkipNonexistentTargets=false src/Infrastructure/EntityFrameworkCore/Fuxion.EntityFrameworkCore.csproj
+    - name: Dependencies - Fuxion.EntityFrameworkCore.InMemory
+      run: dotnet restore -p:RestoreUseSkipNonexistentTargets=false src/Infrastructure/EntityFrameworkCore.InMemory/Fuxion.EntityFrameworkCore.InMemory.csproj
+    - name: Dependencies - Fuxion.EntityFrameworkCore.SqlServer
+      run: dotnet restore -p:RestoreUseSkipNonexistentTargets=false src/Infrastructure/EntityFrameworkCore.SqlServer/Fuxion.EntityFrameworkCore.SqlServer.csproj
+    - name: Dependencies - Fuxion.MassTransit
+      run: dotnet restore -p:RestoreUseSkipNonexistentTargets=false src/Infrastructure/MassTransit/Fuxion.MassTransit.csproj
+    - name: Dependencies - Fuxion.Orleans
+      run: dotnet restore -p:RestoreUseSkipNonexistentTargets=false src/Infrastructure/Orleans/Fuxion.Orleans.csproj
+    - name: Dependencies - Fuxion.RabbitMQ
+      run: dotnet restore -p:RestoreUseSkipNonexistentTargets=false src/Infrastructure/RabbitMQ/Fuxion.RabbitMQ.csproj
     - name: Dependencies - Fuxion.Windows
       run: dotnet restore -p:RestoreUseSkipNonexistentTargets=false src/Infrastructure/Windows/Fuxion.Windows.csproj
+    - name: Dependencies - Fuxion.Windows.Controls
+      run: dotnet restore -p:RestoreUseSkipNonexistentTargets=false src/Infrastructure/Windows.Controls/Fuxion.Windows.Controls.csproj
 
 #    - name: Build
 #      run: dotnet build --configuration Release --no-restore -p:Version=${{ steps.gitversion.outputs.semVer }} src/Fuxion.sln
@@ -62,8 +78,24 @@ jobs:
       run: dotnet build --configuration Release --no-restore -p:Version=${{ steps.gitversion.outputs.semVer }} src/Core/Licensing/Fuxion.Licensing.csproj
     - name: Build - Fuxion.AspNetCore
       run: dotnet build --configuration Release --no-restore -p:Version=${{ steps.gitversion.outputs.semVer }} src/Infrastructure/AspNetCore/Fuxion.AspNetCore.csproj
+    - name: Build - Fuxion.AutoMapper
+      run: dotnet build --configuration Release --no-restore -p:Version=${{ steps.gitversion.outputs.semVer }} src/Infrastructure/AutoMapper/Fuxion.AutoMapper.csproj
+    - name: Build - Fuxion.EntityFrameworkCore
+      run: dotnet build --configuration Release --no-restore -p:Version=${{ steps.gitversion.outputs.semVer }} src/Infrastructure/EntityFrameworkCore/Fuxion.EntityFrameworkCore.csproj
+    - name: Build - Fuxion.EntityFrameworkCore.InMemory
+      run: dotnet build --configuration Release --no-restore -p:Version=${{ steps.gitversion.outputs.semVer }} src/Infrastructure/EntityFrameworkCore.InMemory/Fuxion.EntityFrameworkCore.InMemory.csproj
+    - name: Build - Fuxion.EntityFrameworkCore.SqlServer
+      run: dotnet build --configuration Release --no-restore -p:Version=${{ steps.gitversion.outputs.semVer }} src/Infrastructure/EntityFrameworkCore.SqlServer/Fuxion.EntityFrameworkCore.SqlServer.csproj
+    - name: Build - Fuxion.MassTransit
+      run: dotnet build --configuration Release --no-restore -p:Version=${{ steps.gitversion.outputs.semVer }} src/Infrastructure/MassTransit/Fuxion.MassTransit.csproj
+    - name: Build - Fuxion.Orleans
+      run: dotnet build --configuration Release --no-restore -p:Version=${{ steps.gitversion.outputs.semVer }} src/Infrastructure/Orleans/Fuxion.Orleans.csproj
+    - name: Build - Fuxion.RabbitMQ
+      run: dotnet build --configuration Release --no-restore -p:Version=${{ steps.gitversion.outputs.semVer }} src/Infrastructure/RabbitMQ/Fuxion.RabbitMQ.csproj
     - name: Build - Fuxion.Windows
       run: dotnet build --configuration Release --no-restore -p:Version=${{ steps.gitversion.outputs.semVer }} src/Infrastructure/Windows/Fuxion.Windows.csproj
+    - name: Build - Fuxion.Windows.Controls
+      run: dotnet build --configuration Release --no-restore -p:Version=${{ steps.gitversion.outputs.semVer }} src/Infrastructure/Windows.Controls/Fuxion.Windows.Controls.csproj
 
 #    - name: Run tests
 #      run: dotnet test --configuration Release --no-restore --verbosity minimal src/Fuxion.sln
@@ -92,8 +124,24 @@ jobs:
       run: dotnet pack --configuration Release --no-build --output nupkgs -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} src/Core/Licensing/Fuxion.Licensing.csproj
     - name: Create package - Fuxion.AspNetCore
       run: dotnet pack --configuration Release --no-build --output nupkgs -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} src/Infrastructure/AspNetCore/Fuxion.AspNetCore.csproj
+    - name: Create package - Fuxion.AutoMapper
+      run: dotnet pack --configuration Release --no-build --output nupkgs -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} src/Infrastructure/AutoMapper/Fuxion.AutoMapper.csproj
+    - name: Create package - Fuxion.EntityFrameworkCore
+      run: dotnet pack --configuration Release --no-build --output nupkgs -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} src/Infrastructure/EntityFrameworkCore/Fuxion.EntityFrameworkCore.csproj
+    - name: Create package - Fuxion.EntityFrameworkCore.InMemory
+      run: dotnet pack --configuration Release --no-build --output nupkgs -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} src/Infrastructure/EntityFrameworkCore.InMemory/Fuxion.EntityFrameworkCore.InMemory.csproj
+    - name: Create package - Fuxion.EntityFrameworkCore.SqlServer
+      run: dotnet pack --configuration Release --no-build --output nupkgs -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} src/Infrastructure/EntityFrameworkCore.SqlServer/Fuxion.EntityFrameworkCore.SqlServer.csproj
+    - name: Create package - Fuxion.MassTransit
+      run: dotnet pack --configuration Release --no-build --output nupkgs -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} src/Infrastructure/MassTransit/Fuxion.MassTransit.csproj
+    - name: Create package - Fuxion.Orleans
+      run: dotnet pack --configuration Release --no-build --output nupkgs -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} src/Infrastructure/Orleans/Fuxion.Orleans.csproj
+    - name: Create package - Fuxion.RabbitMQ
+      run: dotnet pack --configuration Release --no-build --output nupkgs -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} src/Infrastructure/RabbitMQ/Fuxion.RabbitMQ.csproj
     - name: Create package - Fuxion.Windows
       run: dotnet pack --configuration Release --no-build --output nupkgs -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} src/Infrastructure/Windows/Fuxion.Windows.csproj
+    - name: Create package - Fuxion.Windows.Controls
+      run: dotnet pack --configuration Release --no-build --output nupkgs -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} src/Infrastructure/Windows.Controls/Fuxion.Windows.Controls.csproj
 
     - name: Publish to GitHub Packages
       if: github.ref != 'refs/heads/main'
