@@ -2,7 +2,6 @@
 
 	<PropertyGroup>
 		<TargetFramework>net7.0</TargetFramework>
-
 		<Title>Fuxion Identity</Title>
 		<PackageId>Fuxion.Identity</PackageId>
 		<Description>Fuxion Identity</Description>

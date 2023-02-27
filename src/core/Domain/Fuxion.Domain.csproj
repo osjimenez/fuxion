@@ -2,7 +2,6 @@
 
 	<PropertyGroup>
 		<TargetFramework>net7.0</TargetFramework>
-
 		<Title>Fuxion Domain</Title>
 		<PackageId>Fuxion.Domain</PackageId>
 		<Description>Fuxion library for DDD</Description>

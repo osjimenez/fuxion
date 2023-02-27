@@ -32,17 +32,17 @@ jobs:
         include-prerelease: true
 
     - name: Install dependencies
-      run: dotnet restore -p:RestoreUseSkipNonexistentTargets=false src/Fuxion-pack.sln
+      run: dotnet restore -p:RestoreUseSkipNonexistentTargets=false src/Fuxion.sln
 
     - name: Build
-      run: dotnet build --configuration Release --no-restore -p:Version=${{ steps.gitversion.outputs.semVer }} src/Fuxion-pack.sln
+      run: dotnet build --configuration Release --no-restore -p:Version=${{ steps.gitversion.outputs.semVer }} src/Fuxion.sln
 
 #    - name: Run tests
-#      run: dotnet test --configuration Release --no-restore --verbosity minimal src/Fuxion-pack.sln
+#      run: dotnet test --configuration Release --no-restore --verbosity minimal src/Fuxion.sln
 
     - name: Create packages
-#      run: dotnet pack --configuration Release --no-build --output nupkgs --no-build -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} src/Fuxion-pack.sln
-      run: dotnet pack --configuration Release --no-build -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} src/Fuxion-pack.sln
+#      run: dotnet pack --configuration Release --no-build --output nupkgs --no-build -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} src/Fuxion.sln
+      run: dotnet pack --configuration Release --no-build -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} src/Fuxion.sln
 
     - name: Publish to GitHub Packages
       if: github.ref != 'refs/heads/main'
