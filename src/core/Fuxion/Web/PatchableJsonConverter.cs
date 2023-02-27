@@ -24,14 +24,14 @@ public class PatchableJsonConverter<T> : JsonConverter<Patchable<T>> where T : c
 			var val = ele.Deserialize(prop.PropertyType, new JsonSerializerOptions {
 				TypeInfoResolver = new PrivateConstructorContractResolver()
 			});
-			patchable.dic.Add(propertyName, (prop, val));
+			patchable.Properties.Add(propertyName, (prop, val));
 		}
 		return patchable;
 	}
 	public override void Write(Utf8JsonWriter writer, Patchable<T> value, JsonSerializerOptions options)
 	{
 		writer.WriteStartObject();
-		foreach (var pvk in value.dic)
+		foreach (var pvk in value.Properties)
 		{
 			writer.WritePropertyName(pvk.Key);
 			writer.WriteRawValue(pvk.Value.Value.ToJson(options));

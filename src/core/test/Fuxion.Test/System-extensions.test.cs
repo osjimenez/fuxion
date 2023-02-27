@@ -277,6 +277,21 @@ public class SystemExtensionsTest : BaseTest<SystemExtensionsTest>
 		Assert.False(typeof(MockEnum).IsNullableValue<MockEnum>());
 		Assert.True(typeof(MockEnum?).IsNullableValue<MockEnum>());
 	}
+	[Fact(DisplayName = "Range - Custom integer enumerator")]
+	public void CustomIntEnumerator()
+	{
+		Logger.LogInformation($"Enumerate with range:");
+		foreach (var i in 0..10) Logger.LogInformation($"\t{i}");
+		Assert.Throws<NotSupportedException>(() => {
+			foreach (var i in 5..) Logger.LogInformation($"\t{i}");
+		});
+
+		Logger.LogInformation($"Enumerate with int:");
+		foreach (var i in 10) Logger.LogInformation($"\t{i}");
+		Assert.Throws<ArgumentException>("number", () => {
+			foreach (var i in -10) Logger.LogInformation($"\t{i}");
+		});
+	}
 }
 
 public struct MockStruct { }

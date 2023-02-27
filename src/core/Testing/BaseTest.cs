@@ -29,4 +29,9 @@ public abstract class BaseTest<TBaseTest> where TBaseTest : BaseTest<TBaseTest>
 	protected internal ILogger<TBaseTest> Logger { get; }
 	protected virtual void OnLoggingBuild(ILoggingBuilder loggingBuilder) { }
 	protected virtual void OnConfigureServices(IServiceCollection serviceCollection) { }
+	protected async Task Scoped<T>(Func<T, Task> action) where T : notnull
+	{
+		await using var scope = ServiceProvider.CreateAsyncScope();
+		await action(scope.ServiceProvider.GetRequiredService<T>());
+	}
 }

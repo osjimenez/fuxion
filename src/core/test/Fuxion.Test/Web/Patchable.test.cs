@@ -1,15 +1,16 @@
-﻿using Fuxion.Web;
+﻿using System.Linq.Expressions;
+using Fuxion.Web;
 using Microsoft.CSharp.RuntimeBinder;
 
 namespace Fuxion.Test.Web;
 
-public class PatchableTest
+public class PatchableTest : BaseTest<PatchableTest>
 {
+	public PatchableTest(ITestOutputHelper output):base(output){}
 	[Fact(DisplayName = "Patchable - Cast")]
 	public void Cast()
 	{
 		dynamic dyn = new Patchable<ToPatch>();
-		//dyn.Id = Guid.Parse("{7F27735C-FDE1-4141-985A-214502599C63}");
 		dyn.Id = "{7F27735C-FDE1-4141-985A-214502599C63}";
 		var delta = dyn as Patchable<ToPatch>;
 		var id = delta?.Get<Guid>("Id");
@@ -87,13 +88,32 @@ public class PatchableTest
 		};
 		dynamic dyn = new Patchable<ToPatch>();
 		dyn.Integer = 111;
-
+		
 		// Serialize and deserialize to simulate network service passthrough
 		var ser = ((Patchable<ToPatch>)dyn).ToJson().FromJson<Patchable<ToPatch>>();
 		Assert.NotNull(ser);
 		ser.Patch(toPatch);
 		Assert.Equal(111, toPatch.Integer);
 	}
+	[Fact(DisplayName = "Patchable - From dynamic")]
+	public void FromDynamic()
+	{
+		var pat = Patchable<ToPatch>.FromDynamic(c => {
+			c.Integer = 123;
+			c.String = "TEST";
+		});
+		Logger.LogInformation($"JSON:\r\n{pat.ToJson()}");
+	}
+	[Fact(DisplayName = "Patchable - From object (anonymous types)")]
+	public void FromObject()
+	{
+		var pat = Patchable<ToPatch>.FromObject(() => new {
+			Integer = 123,
+			String = "TEST"
+		});
+		Logger.LogInformation($"JSON:\r\n{pat.ToJson()}");
+	}
+	
 }
 
 public class ToPatch

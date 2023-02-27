@@ -191,7 +191,7 @@ public static class Extensions
 	/// <returns>PropertyValue</returns>
 	public static T? GetPrivatePropertyValue<T>(this object obj, string propName)
 	{
-		if (obj == null) throw new ArgumentNullException(nameof(obj));
+		if (obj == null) throw new ArgumentNullException(nameof(obj)); 
 		var pi = obj.GetType().GetProperty(propName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 		if (pi == null) throw new ArgumentOutOfRangeException(nameof(propName), string.Format("Property {0} was not found in Type {1}", propName, obj.GetType().FullName));
 		return (T?)pi.GetValue(obj, null);
@@ -326,18 +326,15 @@ public static class Extensions
 	/// <example>"hel".WithEnding("llo") returns "hello", which is the result of "hel" + "lo".</example>
 	public static string WithEnding(this string str, string ending)
 	{
-		if (str == null) return ending;
-		var result = str;
-
 		// Right() is 1-indexed, so include these cases
 		// * Append no characters
 		// * Append up to N characters, where N is ending length
 		for (var i = 0; i <= ending.Length; i++)
 		{
-			var tmp = result + ending.Right(i);
+			var tmp = str + ending.Right(i);
 			if (tmp.EndsWith(ending)) return tmp;
 		}
-		return result;
+		return str;
 	}
 	/// <summary>Gets the rightmost <paramref name="length" /> characters from a string.</summary>
 	/// <param name="value">The string to retrieve the substring from.</param>
@@ -345,8 +342,8 @@ public static class Extensions
 	/// <returns>The substring.</returns>
 	public static string Right(this string value, int length)
 	{
-		if (value == null) throw new ArgumentNullException("value");
-		if (length < 0) throw new ArgumentOutOfRangeException("length", length, "Length is less than zero");
+		if (value == null) throw new ArgumentNullException(nameof(value));
+		if (length < 0) throw new ArgumentOutOfRangeException(nameof(length), length, "Length is less than zero");
 		return length < value.Length ? value.Substring(value.Length - length) : value;
 	}
 	public static string RandomString(this string me, int length, Random? ran = null)
@@ -359,7 +356,7 @@ public static class Extensions
 	public static string ToTitleCase(this string me, CultureInfo? culture = null) => (culture ?? CultureInfo.CurrentCulture).TextInfo.ToTitleCase(me.ToLower());
 	public static string ToCamelCase(this string me, CultureInfo? culture = null) => me.ToTitleCase(culture).Replace(" ", "").Transform(s => s.Substring(0, 1).ToLower() + s.Substring(1, s.Length - 1));
 	public static string ToPascalCase(this string me, CultureInfo? culture = null) => me.ToTitleCase(culture).Replace(" ", "");
-	public static bool Contains(this string source, string value, StringComparison comparisonType) => source != null && value != null && source?.IndexOf(value, comparisonType) >= 0;
+	public static bool Contains(this string source, string value, StringComparison comparisonType) => source?.IndexOf(value, comparisonType) >= 0;
 	public static IEnumerable<int> AllIndexesOf(this string me, string value, StringComparison comparisonType)
 	{
 		if (string.IsNullOrEmpty(value)) throw new ArgumentException("The string to find may not be empty", "value");
@@ -456,7 +453,7 @@ public static class Extensions
 		if (ts.Milliseconds > 0)
 		{
 			res += $"{ts.Milliseconds} {(onlyLetters ? "ms" : ts.Milliseconds > 1 ? Strings.milliseconds : Strings.millisecond)}{(onlyLetters ? "" : ",")} ";
-			count++;
+			//count++;
 		}
 		return res.Trim(',', ' ');
 	}
@@ -474,10 +471,10 @@ public static class Extensions
 		for (var i = 0; i < list.Count; i++) temp += list[i].Ticks / (double)list.Count;
 		return new(new((long)temp));
 	}
-	static readonly DateTime startTime = new(1970, 1, 1);
+	static readonly DateTime StartTime = new(1970, 1, 1);
 	public static long ToEpoch(this DateTime dt, bool failIfPrior1970 = false)
 	{
-		var res = (long)(dt - startTime).TotalSeconds;
+		var res = (long)(dt - StartTime).TotalSeconds;
 		if (res < 0)
 			if (failIfPrior1970)
 				throw new InvalidDataException("DateTime cannot be prior 1/1/1970 to be converted to EPOCH date");
@@ -485,7 +482,31 @@ public static class Extensions
 				return 0;
 		return res;
 	}
-	public static DateTime ToEpochDateTime(this long me) => startTime.AddSeconds(me);
-	public static DateTime ToEpochDateTime(this double me) => startTime.AddSeconds(me);
+	public static DateTime ToEpochDateTime(this long me) => StartTime.AddSeconds(me);
+	public static DateTime ToEpochDateTime(this double me) => StartTime.AddSeconds(me);
 	#endregion
+
+	#region Range
+	public static CustomIntEnumerator GetEnumerator(this Range range) => new(range);
+	public static CustomIntEnumerator GetEnumerator(this int number) => number <= 0
+		? throw new ArgumentException($"{nameof(number)} must be a positive value greater than 0", nameof(number))
+		: new(new(0, number));
+	#endregion
+}
+
+public struct CustomIntEnumerator
+{
+	readonly int _end;
+	public CustomIntEnumerator(Range range)
+	{
+		if (range.End.IsFromEnd) throw new NotSupportedException($"You must specify a end for the range");
+		Current = range.Start.Value - 1;
+		_end = range.End.Value;
+	}
+	public int Current { get; private set; }
+	public bool MoveNext()
+	{
+		Current++;
+		return Current <= _end;
+	}
 }
