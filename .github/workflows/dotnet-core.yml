@@ -52,9 +52,9 @@ jobs:
 #    - name: Create packages
 #      run: dotnet pack --configuration Release --no-build -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} src/Fuxion.sln
     - name: Create package - Fuxion
-      run: dotnet pack --configuration Release --no-build -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} src/Core/Fuxion/Fuxion.csproj
+      run: dotnet pack --configuration Release --no-build --output nupkgs -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} src/Core/Fuxion/Fuxion.csproj
     - name: Create package - Fuxion.Domain
-      run: dotnet pack --configuration Release --no-build -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} src/Core/Domain/Fuxion.Domain.csproj
+      run: dotnet pack --configuration Release --no-build --output nupkgs -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} src/Core/Domain/Fuxion.Domain.csproj
 
     - name: Publish to GitHub Packages
       if: github.ref != 'refs/heads/main'
