@@ -4,16 +4,26 @@ namespace Fuxion.Reflection;
 
 public class TypeKeyDirectory
 {
-	readonly Dictionary<string, Type> dic = new();
-	public Type this[string key]
+	readonly Dictionary<TypeKey, Type> _keyToTypeDictionary = new();
+	readonly Dictionary<Type, TypeKey> _typeToKeyDictionary = new();
+	public Type this[TypeKey key]
 	{
 		get
 		{
-			if (!dic.ContainsKey(key)) throw new TypeKeyNotFoundInDirectoryException($"Key '{key}' not found in '{nameof(TypeKeyDirectory)}'");
-			return dic[key];
+			if (!_keyToTypeDictionary.ContainsKey(key)) throw new TypeKeyNotFoundInDirectoryException($"Key '{key}' not found in '{nameof(TypeKeyDirectory)}'");
+			return _keyToTypeDictionary[key];
 		}
 	}
-	public bool ContainsKey(string key) => dic.ContainsKey(key);
+	public TypeKey this[Type type]
+	{
+		get
+		{
+			if (!_typeToKeyDictionary.ContainsKey(type)) throw new TypeKeyNotFoundInDirectoryException($"Type '{type}' not found in '{nameof(TypeKeyDirectory)}'");
+			return _typeToKeyDictionary[type];
+		}
+	}
+	public bool ContainsKey(TypeKey key) => _keyToTypeDictionary.ContainsKey(key);
+	public bool ContainsKey(Type type) => _typeToKeyDictionary.ContainsKey(type);
 	public void RegisterAssemblyOf(Type type, Func<(Type Type, TypeKeyAttribute? Attribute), bool>? predicate = null, bool registerByFullNameIfNotFound = false) =>
 		RegisterAssembly(type.Assembly, predicate, registerByFullNameIfNotFound);
 	public void RegisterAssemblyOf<T>(Func<(Type Type, TypeKeyAttribute? Attribute), bool>? predicate = null, bool registerByFullNameIfNotFound = false) =>
@@ -29,8 +39,9 @@ public class TypeKeyDirectory
 	public void Register<T>(bool registerByFullNameIfNotFound = false) => Register(typeof(T), registerByFullNameIfNotFound);
 	public void Register(Type type, bool registerByFullNameIfNotFound = false)
 	{
-		var key = type.GetTypeKey(returnFullNameIfNotFound: registerByFullNameIfNotFound);
-		if (key == null) throw new ArgumentException($"The type '{type.Name}' isn't decorated with '{nameof(TypeKeyAttribute)}' attribute");
-		dic.Add(key, type);
+		var key = type.GetTypeKey(processFullNameIfNotFound: registerByFullNameIfNotFound)
+			?? throw new ArgumentException($"The type '{type.Name}' isn't decorated with '{nameof(TypeKeyAttribute)}' attribute");
+		_keyToTypeDictionary.Add(key, type);
+		_typeToKeyDictionary.Add(type, key);
 	}
 }

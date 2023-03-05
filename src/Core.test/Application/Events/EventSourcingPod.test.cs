@@ -21,7 +21,7 @@ public class EventSourcingPodTest : BaseTest<EventSourcingPodTest>
 			"CorrelationId": "68d9e3a4-558d-47c7-a058-38c599a6b116",
 			"EventCommittedTimestamp": "2022-09-28T14:12:12.8459732Z",
 			"ClassVersion": 11,
-			"PayloadKey": "{{nameof(BaseEvent)}}",
+			"Discriminator": "Fuxion/Application/Test/Events/BaseEvent",
 			"Payload": {
 				"Name": "mockName",
 				"Age": 0,
@@ -32,8 +32,8 @@ public class EventSourcingPodTest : BaseTest<EventSourcingPodTest>
 		var pod = json.FromJson<EventSourcingPod>();
 		Output.WriteLine(json);
 		Assert.NotNull(pod);
-		Output.WriteLine(pod.PayloadKey);
-		Assert.Equal(nameof(BaseEvent), pod.PayloadKey);
+		Output.WriteLine(pod.Discriminator.ToString());
+		Assert.Equal(new[] { nameof(Fuxion), nameof(Application), nameof(Test), nameof(Events), nameof(BaseEvent) }, pod.Discriminator);
 		Assert.Equal(10, pod.TargetVersion);
 		Assert.False(pod.PayloadHasValue);
 		Assert.Null(pod.Payload);
@@ -57,7 +57,7 @@ public class EventSourcingPodTest : BaseTest<EventSourcingPodTest>
 		var json = pod.ToJson();
 		Output.WriteLine("Serialized json:");
 		Output.WriteLine(json);
-		Assert.Contains($@"""PayloadKey"": ""{nameof(BaseEvent)}""", json);
+		Assert.Contains($@"""Discriminator"": ""Fuxion/Application/Test/Events/BaseEvent""", json);
 		Assert.Contains(@"""TargetVersion"": 10", json);
 		Assert.Contains($@"""AggregateId"": ""{id}""", json);
 		Assert.Contains(@"""Name"": ""mockName""", json);

@@ -57,12 +57,12 @@ public static class ShellDIExtensions
 	{
 		me.AddTransient<TPanelView>();
 		me.AddTransient<TPanel>();
-		me.AddSingleton<IPanelDescriptor>(sp => new GenericPanelDescriptor(typeof(TPanel).GetTypeKey(), typeof(TPanelView), defaultPosition, removeOnHide, isPinned));
+		me.AddSingleton<IPanelDescriptor>(sp => new GenericPanelDescriptor(typeof(TPanel).GetTypeKey().ToString(), typeof(TPanelView), defaultPosition, removeOnHide, isPinned));
 	}
 	public static void AddPanel<TPanel>(this IServiceCollection me, PanelPosition defaultPosition = PanelPosition.Document, bool removeOnHide = true, bool isPinned = true) where TPanel : class, IPanel
 	{
 		me.AddTransient<TPanel>();
-		me.AddSingleton<IPanelDescriptor>(sp => new GenericPanelDescriptor(typeof(TPanel).GetTypeKey(), typeof(TPanel), defaultPosition, removeOnHide, isPinned));
+		me.AddSingleton<IPanelDescriptor>(sp => new GenericPanelDescriptor(typeof(TPanel).GetTypeKey().ToString(), typeof(TPanel), defaultPosition, removeOnHide, isPinned));
 	}
 }
 

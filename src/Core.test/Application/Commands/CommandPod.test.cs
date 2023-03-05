@@ -16,7 +16,7 @@ public class CommandPodTest : BaseTest<CommandPodTest>
 		var id = Guid.Parse("52d307a2-39ba-47e2-b73f-2faf0727d44e");
 		var json = $$"""
 		{
-			"PayloadKey": "{{nameof(BaseCommand)}}",
+			"Discriminator": "Fuxion/Application/Test/Commands/BaseCommand",
 			"Payload": {
 				"Name": "mockName",
 				"Id": "52d307a2-39ba-47e2-b73f-2faf0727d44e"
@@ -26,8 +26,9 @@ public class CommandPodTest : BaseTest<CommandPodTest>
 		var pod = json.FromJson<CommandPod>();
 		Output.WriteLine(json);
 		Assert.NotNull(pod);
-		Output.WriteLine(pod.PayloadKey);
-		Assert.Equal(nameof(BaseCommand), pod.PayloadKey);
+		Output.WriteLine(pod.Discriminator.ToString());
+
+		Assert.Equal(new [] { nameof(Fuxion),nameof(Application),nameof(Test),nameof(Commands), nameof(BaseCommand) }, pod.Discriminator);
 		Assert.False(pod.PayloadHasValue);
 		Assert.Null(pod.Payload);
 		var com = pod.WithTypeKeyDirectory(tkd);
@@ -47,7 +48,7 @@ public class CommandPodTest : BaseTest<CommandPodTest>
 		var json = pod.ToJson();
 		Output.WriteLine("Serialized json:");
 		Output.WriteLine(json);
-		Assert.Contains($@"""PayloadKey"": ""{nameof(BaseCommand)}""", json);
+		Assert.Contains($@"""Discriminator"": ""Fuxion/Application/Test/Commands/BaseCommand"",", json);
 		Assert.Contains($@"""Id"": ""{id}""", json);
 		Assert.Contains(@"""Name"": ""mockName""", json);
 	}

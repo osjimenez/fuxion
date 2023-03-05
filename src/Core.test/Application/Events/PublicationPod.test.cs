@@ -17,7 +17,7 @@ public class PublicationPodTest : BaseTest<PublicationPodTest>
 				"CorrelationId": "0260aeb2-7f6b-4f32-93e9-7202f7c14fdb",
 				"EventCommittedTimestamp": "2022-09-27T11:24:24.0008666+02:00",
 				"ClassVersion": 1,
-				"PayloadKey": "{{nameof(DerivedEvent)}}",
+				"Discriminator": "Fuxion/Application/Test/Events/DerivedEvent",
 				"Payload": {
 					"Nick": "payloadNick",
 					"Name": "payloadName",
@@ -44,7 +44,7 @@ public class PublicationPodTest : BaseTest<PublicationPodTest>
 			AssertBase(payload);
 			Assert.Equal("payloadNick", payload.Nick);
 		}
-		Assert.Equal(typeof(DerivedEvent).GetTypeKey(), pod.PayloadKey);
+		Assert.Equal(typeof(DerivedEvent).GetTypeKey(), pod.Discriminator);
 		AssertBase(pod.AsEvent<BaseEvent>());
 		AssertDerived(pod.AsEvent<DerivedEvent>());
 	}
@@ -57,7 +57,7 @@ public class PublicationPodTest : BaseTest<PublicationPodTest>
 		var json = pod.ToJson();
 		Output.WriteLine("Serialized json: ");
 		Output.WriteLine(json);
-		Assert.Contains($@"""PayloadKey"": ""{nameof(DerivedEvent)}""", json);
+		Assert.Contains($@"""Discriminator"": ""Fuxion/Application/Test/Events/DerivedEvent""", json);
 		Assert.Contains(@"""Name"": ""payloadName""", json);
 		Assert.Contains(@"""Age"": 23", json);
 		Assert.Contains(@"""Nick"": ""payloadNick""", json);

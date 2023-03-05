@@ -3,10 +3,9 @@
 [AttributeUsage(AttributeTargets.Class, Inherited = false)]
 public class TypeKeyAttribute : Attribute
 {
-	public TypeKeyAttribute(string typeKey)
+	public TypeKeyAttribute(params string[] keyChain)
 	{
-		if (string.IsNullOrWhiteSpace(typeKey)) throw new ArgumentException($"The key for attribute '{nameof(TypeKeyAttribute)}' cannot be null, empty or white spaces string", nameof(typeKey));
-		TypeKey = typeKey;
+		KeyChain = keyChain;
 	}
-	public string TypeKey { get; }
+	public TypeKey KeyChain { get; }
 }

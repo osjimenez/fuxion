@@ -3,35 +3,54 @@ using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
+using Microsoft.Extensions.Options;
 
 namespace Fuxion.Json;
 
 [JsonConverter(typeof(JsonPodConverterFactory))]
-public class JsonPod<TPayload, TKey>
+public class JsonPod<TDiscriminator, TPayload> : JsonPod<TDiscriminator, TPayload, TDiscriminator>
+	where TPayload : notnull
+	where TDiscriminator : notnull
+{
+	[JsonConstructor]
+	protected JsonPod(){}
+	internal JsonPod(TDiscriminator discriminator, JsonValue payloadValue) : base(discriminator, payloadValue) { }
+	public JsonPod(TDiscriminator discriminator, TPayload payload) : base(discriminator, payload) { }
+}
+
+[JsonConverter(typeof(JsonPodConverterFactory))]
+public class JsonPod<TDiscriminator, TPayload, THeaderDiscriminator>
+	where TPayload : notnull
+	where TDiscriminator : notnull
+	where THeaderDiscriminator : notnull
 {
 	[JsonConstructor]
 	protected JsonPod()
 	{
-		PayloadKey = default!;
-		_Payload = default!;
-		_PayloadValue = null!;
+		Discriminator = default!;
+		_payloadValue = default!;
 	}
-	public JsonPod(TPayload payload, TKey key) : this()
+	internal JsonPod(TDiscriminator discriminator, JsonValue payloadValue) : this()
 	{
-		PayloadKey = key;
+		Discriminator = discriminator;
+		PayloadValue = payloadValue;
+	}
+	public JsonPod(TDiscriminator discriminator, TPayload payload) : this()
+	{
+		Discriminator = discriminator;
 		Payload = payload;
 		PayloadValue = CreateValue(payload);
 	}
-	TPayload? _Payload;
-	JsonValue _PayloadValue;
-	public TKey PayloadKey { get; internal set; }
+	TPayload? _payload;
+	JsonValue _payloadValue;
+	public TDiscriminator Discriminator { get; internal set; }
 	[JsonPropertyName(nameof(Payload))]
 	protected internal JsonValue PayloadValue
 	{
-		get => _PayloadValue;
+		get => _payloadValue;
 		set
 		{
-			_PayloadValue = value;
+			_payloadValue = value;
 			if (Payload == null && PayloadValue != null)
 				try
 				{
@@ -44,40 +63,41 @@ public class JsonPod<TPayload, TKey>
 	[JsonIgnore]
 	public TPayload? Payload
 	{
-		get => _Payload;
+		get => _payload;
 		private set
 		{
-			_Payload = value;
+			_payload = value;
 			PayloadHasValue = true;
 		}
 	}
-	JsonValue CreateValue(TPayload payload)
+	public JsonPodCollection<THeaderDiscriminator> Headers { get; private set; } = new();
+	static JsonValue CreateValue(TPayload payload)
 	{
-		var met = typeof(JsonValue).GetMethods(BindingFlags.Static | BindingFlags.Public)
-			.Where(m => m.Name == nameof(JsonValue.Create) && m.GetGenericArguments().Any() && m.GetParameters().Count() == 2).FirstOrDefault();
-		if (met is null) throw new InvalidProgramException("The JsonValue.Create<T>() method could not be determined");
-		if (payload is null) throw new ArgumentNullException("payload could not be null");
-		var met2 = met.MakeGenericMethod(payload.GetType());
-		var res = met2.Invoke(null, new object?[] {
-			payload, null
-		});
-		if (res is null) throw new InvalidProgramException("The JsonValue could not be created");
-		return (JsonValue)res;
+		if (payload is null) throw new ArgumentNullException(nameof(payload), $"'{nameof(payload)}' could not be null");
+		var met = (typeof(JsonValue)
+				.GetMethods(BindingFlags.Static | BindingFlags.Public).FirstOrDefault(m => m.Name == nameof(JsonValue.Create) && m.GetGenericArguments().Any() && m.GetParameters().Length == 2)
+			?? throw new InvalidProgramException($"The '{nameof(JsonValue)}.{nameof(JsonValue.Create)}<T>()' method could not be determined"))
+			.MakeGenericMethod(payload.GetType());
+		return (JsonValue)(met.Invoke(null, new object?[] {
+				payload, null
+			})
+			?? throw new InvalidProgramException($"The '{nameof(JsonValue)}' could not be created with '{met.GetSignature()}' method."));
 	}
-	public static implicit operator TPayload?(JsonPod<TPayload, TKey> pod) => pod.Payload;
-	public JsonPod<T, TKey>? CastWithPayload<T>()
+	public static implicit operator TPayload?(JsonPod<TDiscriminator, TPayload, THeaderDiscriminator> pod) => pod.Payload;
+	public JsonPod<TDiscriminator, T>? CastWithPayload<T>()
+		where T : notnull
 	{
 		if (PayloadValue == null) return null;
 		var res = PayloadValue.Deserialize<T>();
 		if (res == null) return null;
-		return new(res, PayloadKey);
+		return new(Discriminator, res);
 	}
 	public T? As<T>()
+		where T : notnull
 	{
 		if (PayloadValue == null) return default;
 		var res = PayloadValue.Deserialize<T>();
-		if (res == null) return default;
-		return res;
+		return res ?? default;
 	}
 	public object? As(Type type) => PayloadValue.Deserialize(type);
 	public bool Is<T>() => Is(typeof(T));

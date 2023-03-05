@@ -7,11 +7,11 @@ using Fuxion.Reflection;
 namespace Fuxion.Application.Events;
 
 [JsonConverter(typeof(EventSourcingPodConverter))]
-public class EventSourcingPod : JsonPod<Event, string>
+public class EventSourcingPod : JsonPod<TypeKey, Event>
 {
 	[JsonConstructor]
 	protected EventSourcingPod() { }
-	internal EventSourcingPod(Event @event) : base(@event, @event.GetType().GetTypeKey())
+	internal EventSourcingPod(Event @event) : base(@event.GetType().GetTypeKey(), @event)
 	{
 		if (!@event.HasEventSourcing()) throw new EventFeatureNotFoundException($"'{nameof(EventSourcingPod)}' require '{nameof(EventSourcingEventFeature)}'");
 		var es = @event.EventSourcing();
@@ -30,5 +30,5 @@ public class EventSourcingPod : JsonPod<Event, string>
 	public int ClassVersion { get; private set; }
 	public T? AsEvent<T>() where T : Event => As<T>().Transform(evt => evt?.AddEventSourcing(TargetVersion, CorrelationId, EventCommittedTimestamp, ClassVersion));
 	public Event? AsEvent(Type type) => ((Event?)As(type)).Transform(evt => evt?.AddEventSourcing(TargetVersion, CorrelationId, EventCommittedTimestamp, ClassVersion));
-	public Event? WithTypeKeyDirectory(TypeKeyDirectory typeKeyDirectory) => AsEvent(typeKeyDirectory[PayloadKey]);
+	public Event? WithTypeKeyDirectory(TypeKeyDirectory typeKeyDirectory) => AsEvent(typeKeyDirectory[Discriminator]);
 }

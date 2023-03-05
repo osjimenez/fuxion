@@ -59,7 +59,7 @@ public class RabbitMQEventBus : IEventPublisher, IEventSubscriber
 			await policy.ExecuteAsync(() => {
 				var properties = channel.CreateBasicProperties();
 				properties.DeliveryMode = 2; // persistent
-				channel.BasicPublish(exchangeName, eventPod.PayloadKey, true, properties, body);
+				channel.BasicPublish(exchangeName, eventPod.Discriminator.ToString(), true, properties, body);
 				return Task.CompletedTask;
 			});
 		}
@@ -78,7 +78,7 @@ public class RabbitMQEventBus : IEventPublisher, IEventSubscriber
 			var message = Encoding.UTF8.GetString(ea.Body.ToArray());
 			var pod = message.FromJson<PublicationPod>(true);
 			var @event = pod.WithTypeKeyDirectory(typeKeyDirectory);
-			if (@event == null) throw new InvalidCastException($"Event with key '{pod.PayloadKey}' is not registered in '{nameof(TypeKeyDirectory)}'");
+			if (@event == null) throw new InvalidCastException($"Event with discriminator '{pod.Discriminator}' is not registered in '{nameof(TypeKeyDirectory)}'");
 			await ProcessEvent(@event);
 			//await ProcessEvent(integrationEventTypeId, message);
 			//await ProcessEvent(message.FromJson<IEvent>());
@@ -106,9 +106,9 @@ public class RabbitMQEventBus : IEventPublisher, IEventSubscriber
 		}
 	}
 	public void Subscribe(Type type) => Subscribe(type.GetTypeKey());
-	void Subscribe(string eventTypeKey)
+	void Subscribe(TypeKey eventTypeKey)
 	{
 		if (!persistentConnection.IsConnected && !persistentConnection.TryConnect()) throw new RabbitMQConnectionException("Cannot connect to Rabbit MQ");
-		using (var channel = persistentConnection.CreateModel()) channel.QueueBind(queueName, exchangeName, eventTypeKey);
+		using (var channel = persistentConnection.CreateModel()) channel.QueueBind(queueName, exchangeName, eventTypeKey.ToString());
 	}
 }

@@ -20,7 +20,7 @@ public static class MemberInfoExtensions
 	public static TAttribute? GetCustomAttribute<TAttribute>(this MemberInfo me,
 		bool inherit = true,
 		[DoesNotReturnIf(true)] bool exceptionIfNotFound = false,
-		[DoesNotReturnIf(true)] bool exceptionIfMoreThanOne = false) where TAttribute : Attribute
+		bool exceptionIfMoreThanOne = false) where TAttribute : Attribute
 	{
 		var objAtts = me.GetCustomAttributes(typeof(TAttribute), inherit);
 		var atts = objAtts?.Cast<TAttribute>();

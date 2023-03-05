@@ -9,18 +9,17 @@ public class CommandController : ControllerBase
 {
 	public CommandController(ICommandDispatcher commandDispatcher, TypeKeyDirectory typeKeyDirectory)
 	{
-		this.commandDispatcher = commandDispatcher;
-		this.typeKeyDirectory = typeKeyDirectory;
+		_commandDispatcher = commandDispatcher;
+		_typeKeyDirectory = typeKeyDirectory;
 	}
-	readonly ICommandDispatcher commandDispatcher;
-	readonly TypeKeyDirectory typeKeyDirectory;
+	readonly ICommandDispatcher _commandDispatcher;
+	readonly TypeKeyDirectory _typeKeyDirectory;
 	[HttpPost]
 	public async Task<IActionResult> Post([FromBody] CommandPod pod)
 	{
-		if (!typeKeyDirectory.ContainsKey(pod.PayloadKey)) return BadRequest($"Command '{pod.PayloadKey}' is not expected");
-		var com = pod.WithTypeKeyDirectory(typeKeyDirectory);
-		if (com == null) throw new InvalidCastException($"Command with key '{pod.PayloadKey}' is not registered in '{nameof(TypeKeyDirectory)}'");
-		await commandDispatcher.DispatchAsync(com);
+		var com = pod.WithTypeKeyDirectory(_typeKeyDirectory)
+			?? throw new InvalidCastException($"Command with discriminator '{pod.Discriminator}' is not registered in '{nameof(TypeKeyDirectory)}'");
+		await _commandDispatcher.DispatchAsync(com);
 		return Ok();
 	}
 }

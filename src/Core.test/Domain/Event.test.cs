@@ -7,11 +7,12 @@ public class EventTest
 	[Fact(DisplayName = "Event - Serialization")]
 	public void Serialization()
 	{
-		var eventJson = @"
+		var eventJson = """
 			{
-				""Name"": ""P1"",
-				""AggregateId"": ""99c8a592-b2bd-4845-92dd-d4ba857c13a7""
-			}";
+				"Name: "P1",
+				"AggregateId": "99c8a592-b2bd-4845-92dd-d4ba857c13a7"
+			}
+			""";
 		var @event = eventJson.FromJson<MockEvent>();
 		Assert.NotNull(@event);
 		Assert.NotEqual(Guid.Empty, @event.AggregateId);

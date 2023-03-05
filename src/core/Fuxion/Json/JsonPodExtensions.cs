@@ -2,6 +2,12 @@
 
 public static class JsonPodExtensions
 {
-	public static JsonPod<TPayload, TKey> ToJsonPod<TPayload, TKey>(this TPayload me, TKey key) where TPayload : class => new(me, key);
-	public static JsonPod<TPayload, TKey>? FromJsonPod<TPayload, TKey>(this string me) where TPayload : class => me.FromJson<JsonPod<TPayload, TKey>>();
+	public static JsonPod<TDiscriminator, TPayload> ToJsonPod<TDiscriminator, TPayload>(this TPayload me, TDiscriminator key) 
+		where TPayload : notnull
+		where TDiscriminator : notnull
+		=> new(key, me);
+	public static JsonPod<TDiscriminator, TPayload>? FromJsonPod<TDiscriminator, TPayload>(this string me) 
+		where TPayload : notnull
+		where TDiscriminator : notnull
+		=> me.FromJson<JsonPod<TDiscriminator, TPayload>>();
 }
