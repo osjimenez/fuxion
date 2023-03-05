@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net7.0</TargetFramework>
+		<TargetFramework>net8.0</TargetFramework>
 		<Title>Fuxion Asp.Net Core</Title>
 		<PackageId>Fuxion.AspNetCore</PackageId>
 		<Description>Fuxion library for Asp.Net Core.</Description>

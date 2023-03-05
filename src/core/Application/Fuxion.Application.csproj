@@ -1,27 +1,27 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net7.0</TargetFramework>
+		<TargetFramework>net8.0</TargetFramework>
 		<Title>Fuxion Application</Title>
 		<PackageId>Fuxion.Application</PackageId>
 		<Description>Fuxion library for DDD</Description>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Import Include="Microsoft.Extensions.Logging"/>
+		<Import Include="Microsoft.Extensions.Logging" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Include="icon.png" Pack="true" PackagePath="\"/>
+		<None Include="icon.png" Pack="true" PackagePath="\" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0"/>
-		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All"/>
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0-preview.1.23110.8" />
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Domain\Fuxion.Domain.csproj"/>
+		<ProjectReference Include="..\Domain\Fuxion.Domain.csproj" />
 	</ItemGroup>
 
 </Project>
