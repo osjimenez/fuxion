@@ -1,10 +1,10 @@
-﻿using Fuxion.Threading.Tasks;
+﻿using System.Security.Cryptography;
+using Fuxion.Threading.Tasks;
 
 namespace Fuxion;
 
 public class AverageTimeProvider : ITimeProvider
 {
-	readonly Random ran = new((int)DateTime.Now.Ticks);
 	public ILogger? Logger { get; set; }
 	List<Entry> Providers { get; } = new();
 	public int RandomizedProvidersPerTry { get; set; } = 5;
@@ -17,7 +17,7 @@ public class AverageTimeProvider : ITimeProvider
 		Logger?.LogInformation($"Get UTC time using {RandomizedProvidersPerTry} randomized servers with a maximum of {MaxFailsPerTry} fails.");
 		var res = TaskManager.StartNew(() => {
 			if (Providers.Count(p => p.IsRandomized) < RandomizedProvidersPerTry) throw new($"At least {RandomizedProvidersPerTry} providers must be added");
-			var ents = Providers.TakeRandomly(RandomizedProvidersPerTry, ran).ToList();
+			var ents = Providers.TakeRandomly(RandomizedProvidersPerTry).ToList();
 			Logger?.LogDebug($@"Selected servers: {ents.Aggregate("", (a, c) => a + "\r\n - " + c.Provider)}");
 			foreach (var en in ents) en.Task = TaskManager.StartNew(p => p.Provider.UtcNow(), en);
 			foreach (var en in ents)

@@ -1,10 +1,11 @@
-﻿namespace System.Collections.Generic;
+﻿using System.Security.Cryptography;
+
+namespace System.Collections.Generic;
 
 public static class Extensions
 {
-	public static List<T> TakeRandomly<T>(this IEnumerable<T> me, int count, Random? ran = null) //, bool canRepeat = false)
+	public static List<T> TakeRandomly<T>(this IEnumerable<T> me, int count)
 	{
-		if (ran == null) ran = new(Guid.NewGuid().GetHashCode());
 		var list = me.ToList();
 		// TODO Implements canRepeat behavior
 		//if (!canRepeat && count > list.Count) throw new("'count' cannot be higher than number of elements if 'canRepeat' is false");
@@ -13,8 +14,8 @@ public static class Extensions
 		List<T> res = new();
 		for (var i = 0; i < count; i++)
 		{
-			var actual = ran.Next(0, list.Count);
-			while (used.Contains(actual)) actual = ran.Next(0, list.Count);
+			var actual = RandomNumberGenerator.GetInt32(0,list.Count);
+			while (used.Contains(actual)) actual = RandomNumberGenerator.GetInt32(0,list.Count);
 			used.Add(actual);
 			res.Add(list[actual]);
 		}

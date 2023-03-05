@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
 using System.Runtime.Serialization;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -349,6 +350,7 @@ public static class Extensions
 	public static string RandomString(this string me, int length, Random? ran = null)
 	{
 		const string defaultStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+		return RandomNumberGenerator.GetString((string.IsNullOrWhiteSpace(me) ? defaultStr : me).AsSpan(), length);
 		if (ran == null) ran = new((int)DateTime.Now.Ticks);
 		var str = string.IsNullOrWhiteSpace(me) ? defaultStr : me;
 		return new(Enumerable.Repeat(str, length).Select(s => s[ran!.Next(s.Length)]).ToArray());

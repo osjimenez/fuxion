@@ -131,6 +131,13 @@ public class SystemExtensionsTest : BaseTest<SystemExtensionsTest>
 		Assert.Equal(8, 2L.Pow(3));
 		Assert.Equal(8, 2D.Pow(3));
 	}
+	[Fact(DisplayName = "String - RandomString")]
+	public void StringRandomString()
+	{
+		Output.WriteLine($"{"".RandomString(10)}");
+		Output.WriteLine($"{"".RandomString(10)}");
+		Output.WriteLine($"{"".RandomString(10)}");
+	}
 	[Fact(DisplayName = "String - ContainsWithComparison")]
 	public void StringContainsWithComparison()
 	{
