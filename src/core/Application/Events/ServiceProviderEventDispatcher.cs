@@ -11,17 +11,16 @@ public class ServiceProviderEventDispatcher : IEventDispatcher
 	public async Task DispatchAsync(Event @event)
 	{
 		var handlers = (IEnumerable)serviceProvider.GetServices(typeof(IEventHandler<>).MakeGenericType(@event.GetType()));
-		IEventHandler<Event> c;
 		foreach (var handler in handlers)
 		{
-			var met = handler.GetType().GetMethod(nameof(c.HandleAsync));
-			if (met == null) throw new InvalidProgramException($"'{nameof(c.HandleAsync)}' method not found");
-			if (met.Invoke(handler, new object[] {
+			var met = handler.GetType().GetMethod(nameof(IEventHandler<Event>.HandleAsync))
+						 ?? throw new InvalidProgramException($"'{nameof(IEventHandler<Event>.HandleAsync)}' method not found");
+				if (met.Invoke(handler, new object[] {
 					@event
 				}) is Task task)
 				await task;
 			else
-				throw new InvalidProgramException($"'{nameof(c.HandleAsync)}' method not return a task");
+				throw new InvalidProgramException($"'{nameof(IEventHandler<Event>.HandleAsync)}' method not return a task");
 		}
 	}
 }
