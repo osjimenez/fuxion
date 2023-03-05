@@ -37,7 +37,7 @@ public class EventSourcingPodTest : BaseTest<EventSourcingPodTest>
 		Assert.Equal(10, pod.TargetVersion);
 		Assert.False(pod.PayloadHasValue);
 		Assert.Null(pod.Payload);
-		var evt = pod.WithTypeKeyDirectory(tkd);
+		var evt = pod.WithTypeKeyResolver(tkd);
 		Assert.Equal(id, evt?.AggregateId);
 		Assert.IsType<BaseEvent>(evt);
 		var mevt = (BaseEvent?)evt;

@@ -31,7 +31,7 @@ public class CommandPodTest : BaseTest<CommandPodTest>
 		Assert.Equal(new [] { nameof(Fuxion),nameof(Application),nameof(Test),nameof(Commands), nameof(BaseCommand) }, pod.Discriminator);
 		Assert.False(pod.PayloadHasValue);
 		Assert.Null(pod.Payload);
-		var com = pod.WithTypeKeyDirectory(tkd);
+		var com = pod.WithTypeKeyResolver(tkd);
 		Assert.Equal(id, com?.Id);
 		Assert.IsType<BaseCommand>(com);
 		var mevt = (BaseCommand?)com;
