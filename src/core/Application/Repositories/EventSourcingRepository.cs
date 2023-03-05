@@ -20,7 +20,6 @@ public class EventSourcingRepository<TAggregate> : IRepository<TAggregate> where
 		this.eventStorage = eventStorage;
 		this.snapshotStorage = snapshotStorage;
 		this.eventDispatcher = eventDispatcher;
-		this.typeKeyDirectory = typeKeyDirectory;
 		this.aggregateFactory = aggregateFactory;
 	}
 	readonly Factory<TAggregate> aggregateFactory;
@@ -28,7 +27,6 @@ public class EventSourcingRepository<TAggregate> : IRepository<TAggregate> where
 	readonly IEventStorage<TAggregate> eventStorage;
 	readonly ISnapshotStorage<TAggregate> snapshotStorage;
 	readonly Dictionary<Guid, Aggregate> trackedAggregates = new();
-	readonly TypeKeyDirectory typeKeyDirectory;
 	public ILogger? Logger { get; set; }
 	public void Dispose() { }
 	public virtual async Task<TAggregate> GetAsync(Guid aggregateId)

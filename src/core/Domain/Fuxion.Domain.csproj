@@ -8,19 +8,19 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Include="icon.png" Pack="true" PackagePath="\"/>
+		<None Include="icon.png" Pack="true" PackagePath="\" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Compile Update="Properties\AssemblyInfo.cs"/>
+		<Compile Update="Properties\AssemblyInfo.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All"/>
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Fuxion\Fuxion.csproj"/>
+		<ProjectReference Include="..\Fuxion\Fuxion.csproj" />
 	</ItemGroup>
 
 </Project>

@@ -2,7 +2,7 @@
 
 namespace Fuxion.Reflection;
 
-public class TypeKeyDirectory
+public class TypeKeyDirectory : ITypeKeyResolver
 {
 	readonly Dictionary<TypeKey, Type> _keyToTypeDictionary = new();
 	readonly Dictionary<Type, TypeKey> _typeToKeyDictionary = new();

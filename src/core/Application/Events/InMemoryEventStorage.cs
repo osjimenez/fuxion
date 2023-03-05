@@ -6,7 +6,7 @@ namespace Fuxion.Application.Events;
 
 public class InMemoryEventStorage : IEventStorage
 {
-	public InMemoryEventStorage(TypeKeyDirectory typeKeyDirectory, string? dumpFilePath = null)
+	public InMemoryEventStorage(ITypeKeyResolver typeKeyResolver, string? dumpFilePath = null)
 	{
 		if (dumpFilePath != null)
 		{
@@ -18,7 +18,7 @@ public class InMemoryEventStorage : IEventStorage
 					if (dic == null) throw new FileLoadException($"File '{path}' cannot be deserializer for '{nameof(InMemoryEventStorage)}'");
 					events.WriteObject(dic.Select(k => (k.Key,
 						//Value: k.Value.Select<EventSourcingPod, Event>((EventSourcingPod v) => v.WithTypeKeyDirectory(typeKeyDirectory)).RemoveNulls().ToList<Event>()
-						Value: k.Value.Select(v => v.WithTypeKeyDirectory(typeKeyDirectory)).RemoveNulls().ToList())).ToDictionary(a => a.Key, a => a.Value));
+						Value: k.Value.Select(v => v.WithTypeKeyResolver(typeKeyResolver)).RemoveNulls().ToList())).ToDictionary(a => a.Key, a => a.Value));
 				}
 			});
 		}

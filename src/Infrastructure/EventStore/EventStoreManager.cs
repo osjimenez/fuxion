@@ -11,13 +11,13 @@ namespace Fuxion.EventStore;
 
 public class EventStoreStorage : IEventStorage, ISnapshotStorage
 {
-	public EventStoreStorage(EventStoreClient client, TypeKeyDirectory typeKeyDirectory)
+	public EventStoreStorage(EventStoreClient client, ITypeKeyResolver typeKeyResolver)
 	{
 		this.client = client;
-		this.typeKeyDirectory = typeKeyDirectory;
+		this.typeKeyResolver = typeKeyResolver;
 	}
 	readonly EventStoreClient client;
-	readonly TypeKeyDirectory typeKeyDirectory;
+	readonly ITypeKeyResolver typeKeyResolver;
 
 	#region IEventStorage
 	public async Task CommitAsync(Guid aggregateId, IEnumerable<Event> events)
@@ -38,7 +38,7 @@ public class EventStoreStorage : IEventStorage, ISnapshotStorage
 		if (state == ReadState.Ok)
 		{
 			var stream = await res.ToListAsync();
-			return stream.Select(e => Encoding.Default.GetString(e.Event.Data.ToArray()).FromJson<EventSourcingPod>(true).WithTypeKeyDirectory(typeKeyDirectory)).RemoveNulls().AsQueryable();
+			return stream.Select(e => Encoding.Default.GetString(e.Event.Data.ToArray()).FromJson<EventSourcingPod>(true).WithTypeKeyResolver(typeKeyResolver)).RemoveNulls().AsQueryable();
 		}
 		return Array.Empty<Event>().AsQueryable();
 	}
@@ -49,7 +49,7 @@ public class EventStoreStorage : IEventStorage, ISnapshotStorage
 		if (state == ReadState.Ok)
 		{
 			var stream = await res.ToListAsync();
-			return stream.Select(e => Encoding.Default.GetString(e.Event.Data.ToArray()).FromJson<EventSourcingPod>(true).WithTypeKeyDirectory(typeKeyDirectory)).LastOrDefault();
+			return stream.Select(e => Encoding.Default.GetString(e.Event.Data.ToArray()).FromJson<EventSourcingPod>(true).WithTypeKeyResolver(typeKeyResolver)).LastOrDefault();
 		}
 		return null;
 	}
@@ -65,7 +65,7 @@ public class EventStoreStorage : IEventStorage, ISnapshotStorage
 			var stream = await res.ToListAsync();
 			return stream.Select(e => {
 				var pod = Encoding.Default.GetString(e.Event.Data.ToArray()).FromJson<JsonPod<TypeKey, Snapshot>>(true);
-				return (Snapshot?)pod.As(typeKeyDirectory[pod.Discriminator]);
+				return (Snapshot?)pod.As(typeKeyResolver[pod.Discriminator]);
 			}).LastOrDefault();
 		}
 		return null;

@@ -1,8 +1,8 @@
 using System.Windows.Markup;
 
 [assembly: XmlnsPrefix("fuxion", "fuxion")]
-[assembly: XmlnsDefinition("fuxion", "Fuxion.Telerik.Wpf")]
-[assembly: XmlnsDefinition("fuxion", "Fuxion.Telerik.Wpf.Views")]
+[assembly: XmlnsDefinition("fuxion", "Fuxion.Telerik_.Wpf")]
+[assembly: XmlnsDefinition("fuxion", "Fuxion.Telerik_.Wpf.Views")]
 
 // TODO Pending to change namespace Fuxion.Telerik_.Wpf to Fuxion.Telerik.Wpf
 // for now, I have a collision in XAML

@@ -18,7 +18,7 @@ public static class EventStoreDIExtensions
 		var settings = EventStoreClientSettings.Create(connectionString);
 		var client = new EventStoreClient(settings);
 		me.Services.AddSingleton(client);
-		builder = sp => new(sp.GetRequiredService<EventStoreClient>(), sp.GetRequiredService<TypeKeyDirectory>());
+		builder = sp => new(sp.GetRequiredService<EventStoreClient>(), sp.GetRequiredService<ITypeKeyResolver>());
 		me.Services.AddSingleton(builder);
 		return me;
 	}

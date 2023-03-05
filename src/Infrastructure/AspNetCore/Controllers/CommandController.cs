@@ -7,17 +7,17 @@ namespace Fuxion.AspNetCore.Controllers;
 [Route("api/[controller]")]
 public class CommandController : ControllerBase
 {
-	public CommandController(ICommandDispatcher commandDispatcher, TypeKeyDirectory typeKeyDirectory)
+	readonly ICommandDispatcher _commandDispatcher;
+	readonly ITypeKeyResolver typeKeyResolver;
+	public CommandController(ICommandDispatcher commandDispatcher, ITypeKeyResolver typeKeyResolver)
 	{
 		_commandDispatcher = commandDispatcher;
-		_typeKeyDirectory = typeKeyDirectory;
+		this.typeKeyResolver = typeKeyResolver;
 	}
-	readonly ICommandDispatcher _commandDispatcher;
-	readonly TypeKeyDirectory _typeKeyDirectory;
 	[HttpPost]
 	public async Task<IActionResult> Post([FromBody] CommandPod pod)
 	{
-		var com = pod.WithTypeKeyDirectory(_typeKeyDirectory)
+		var com = pod.WithTypeKeyResolver(typeKeyResolver)
 			?? throw new InvalidCastException($"Command with discriminator '{pod.Discriminator}' is not registered in '{nameof(TypeKeyDirectory)}'");
 		await _commandDispatcher.DispatchAsync(com);
 		return Ok();

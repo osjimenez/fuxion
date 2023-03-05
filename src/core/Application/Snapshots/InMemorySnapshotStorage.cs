@@ -6,7 +6,7 @@ namespace Fuxion.Application.Snapshots;
 
 public class InMemorySnapshotStorage : ISnapshotStorage
 {
-	public InMemorySnapshotStorage(TypeKeyDirectory typeKeyDirectory, string? dumpFilePath = null)
+	public InMemorySnapshotStorage(ITypeKeyResolver typeKeyResolver, string? dumpFilePath = null)
 	{
 		if (dumpFilePath != null)
 		{
@@ -16,7 +16,7 @@ public class InMemorySnapshotStorage : ISnapshotStorage
 				{
 					var dic = File.ReadAllText(path).FromJson<Dictionary<TypeKey, List<JsonPod<TypeKey, Snapshot>>>>();
 					if (dic == null) throw new FileLoadException($"File '{path}' cannot be deserializer for '{nameof(InMemorySnapshotStorage)}'");
-					snapshots.WriteObject(dic.Select(k => (k.Key, Value: k.Value.Select(v => (Snapshot?)v.As(typeKeyDirectory[k.Key])).RemoveNulls().ToDictionary(s => s.AggregateId)))
+					snapshots.WriteObject(dic.Select(k => (k.Key, Value: k.Value.Select(v => (Snapshot?)v.As(typeKeyResolver[k.Key])).RemoveNulls().ToDictionary(s => s.AggregateId)))
 						.ToDictionary(a => a.Key, a => a.Value));
 				}
 			});

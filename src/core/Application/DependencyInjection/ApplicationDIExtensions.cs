@@ -14,7 +14,7 @@ public static class ApplicationDIExtensions
 	public static IServiceCollection AddFuxion(this IServiceCollection me, Action<IFuxionBuilder> builderAction)
 	{
 		var typeKeyDirectory = new TypeKeyDirectory();
-		me.AddSingleton(typeKeyDirectory);
+		me.AddSingleton<ITypeKeyResolver>(typeKeyDirectory);
 		var builder = new FuxionBuilder(me, typeKeyDirectory);
 		builderAction(builder);
 		foreach (var action in builder.PreRegistrationsList)
@@ -38,13 +38,13 @@ public static class ApplicationDIExtensions
 	}
 	public static IFuxionBuilder InMemoryEventStorage(this IFuxionBuilder me, out Func<IServiceProvider, InMemoryEventStorage> builder, string? dumpFilePath = null)
 	{
-		builder = sp => new(sp.GetRequiredService<TypeKeyDirectory>(), dumpFilePath);
+		builder = sp => new(sp.GetRequiredService<ITypeKeyResolver>(), dumpFilePath);
 		me.Services.AddSingleton(builder);
 		return me;
 	}
 	public static IFuxionBuilder InMemorySnapshotStorage(this IFuxionBuilder me, out Func<IServiceProvider, InMemorySnapshotStorage> builder, string? dumpFilePath = null)
 	{
-		builder = sp => new(sp.GetRequiredService<TypeKeyDirectory>(), dumpFilePath);
+		builder = sp => new(sp.GetRequiredService<ITypeKeyResolver>(), dumpFilePath);
 		me.Services.AddSingleton(builder);
 		return me;
 	}
@@ -99,7 +99,7 @@ public static class ApplicationDIExtensions
 	}
 	public static IFuxionBuilder Events(this IFuxionBuilder me, Action<IEventsBuilder> builderAction)
 	{
-		me.Services.AddScoped<IEventDispatcher, EventDispatcher>();
+		me.Services.AddScoped<IEventDispatcher, ServiceProviderEventDispatcher>();
 		builderAction(new EventsBuilder(me));
 		return me;
 	}
@@ -130,8 +130,9 @@ public static class ApplicationDIExtensions
 	}
 	public static IFuxionBuilder Commands(this IFuxionBuilder me, Action<ICommandsBuilder> builderAction)
 	{
-		me.Services.AddScoped<ICommandDispatcher, CommandDispatcher>();
-		builderAction(new CommandsBuilder(me));
+		me.Services.AddScoped<ICommandDispatcher, ServiceProviderCommandDispatcher>();
+		CommandsBuilder commandsBuilder = new(me);
+		builderAction(commandsBuilder);
 		return me;
 	}
 	public static ICommandsBuilder HandlersFromAssemblyOf<T>(this ICommandsBuilder me)
@@ -157,13 +158,13 @@ public interface IFuxionBuilder
 
 class FuxionBuilder : IFuxionBuilder
 {
+	public List<Action<IServiceProvider>> PreRegistrationsList = new();
+	public List<Action<IServiceProvider>> RegistrationsList = new();
 	public FuxionBuilder(IServiceCollection services, TypeKeyDirectory typeKeyDirectory)
 	{
 		Services = services;
 		TypeKeyDirectory = typeKeyDirectory;
 	}
-	public List<Action<IServiceProvider>> PreRegistrationsList = new();
-	public List<Action<IServiceProvider>> RegistrationsList = new();
 	public List<(Type Type, Action<IServiceProvider>? PreAction, Action<IServiceProvider, object>? PostAction)> AutoActivateList { get; } = new();
 	public IServiceCollection Services { get; }
 	public TypeKeyDirectory TypeKeyDirectory { get; }
@@ -187,10 +188,13 @@ class EventsBuilder : IEventsBuilder
 public interface ICommandsBuilder
 {
 	IFuxionBuilder FuxionBuilder { get; }
+	ICommandDispatcher CommandDispatcher { get; }
 }
 
 class CommandsBuilder : ICommandsBuilder
 {
 	public CommandsBuilder(IFuxionBuilder fuxionBuilder) => FuxionBuilder = fuxionBuilder;
 	public IFuxionBuilder FuxionBuilder { get; }
+	//TODO - Remove default!
+	public ICommandDispatcher CommandDispatcher { get; } = default!;
 }

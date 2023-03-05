@@ -4,9 +4,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Fuxion.Application.Events;
 
-public class EventDispatcher : IEventDispatcher
+public class ServiceProviderEventDispatcher : IEventDispatcher
 {
-	public EventDispatcher(IServiceProvider serviceProvider) => this.serviceProvider = serviceProvider;
+	public ServiceProviderEventDispatcher(IServiceProvider serviceProvider) => this.serviceProvider = serviceProvider;
 	readonly IServiceProvider serviceProvider;
 	public async Task DispatchAsync(Event @event)
 	{

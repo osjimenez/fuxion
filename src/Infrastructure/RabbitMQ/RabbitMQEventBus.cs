@@ -17,14 +17,14 @@ public class RabbitMQEventBus : IEventPublisher, IEventSubscriber
 {
 	public RabbitMQEventBus(IServiceProvider serviceProvider,
 		IRabbitMQPersistentConnection persistentConnection,
-		TypeKeyDirectory typeKeyDirectory,
+		ITypeKeyResolver typeKeyResolver,
 		string exchangeName,
 		string queueName,
 		int retryCount)
 	{
 		this.serviceProvider = serviceProvider;
 		this.persistentConnection = persistentConnection ?? throw new ArgumentNullException(nameof(persistentConnection));
-		this.typeKeyDirectory = typeKeyDirectory;
+		_typeKeyResolver = typeKeyResolver;
 		this.exchangeName = exchangeName;
 		this.queueName = queueName;
 		this.retryCount = retryCount;
@@ -35,7 +35,7 @@ public class RabbitMQEventBus : IEventPublisher, IEventSubscriber
 	readonly string queueName;
 	readonly int retryCount;
 	readonly IServiceProvider serviceProvider;
-	readonly TypeKeyDirectory typeKeyDirectory;
+	readonly ITypeKeyResolver _typeKeyResolver;
 	IModel _consumerChannel;
 	public async Task PublishAsync(Event @event)
 	{
@@ -77,7 +77,7 @@ public class RabbitMQEventBus : IEventPublisher, IEventSubscriber
 			//var integrationEventTypeId = ea.RoutingKey;
 			var message = Encoding.UTF8.GetString(ea.Body.ToArray());
 			var pod = message.FromJson<PublicationPod>(true);
-			var @event = pod.WithTypeKeyDirectory(typeKeyDirectory);
+			var @event  = pod.WithTypeKeyResolver(_typeKeyResolver);
 			if (@event == null) throw new InvalidCastException($"Event with discriminator '{pod.Discriminator}' is not registered in '{nameof(TypeKeyDirectory)}'");
 			await ProcessEvent(@event);
 			//await ProcessEvent(integrationEventTypeId, message);
