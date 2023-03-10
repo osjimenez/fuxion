@@ -2,7 +2,7 @@
 
 namespace Fuxion.Application.Events;
 
-class EventPublisherDecorator<TAggregate> : IEventPublisher<TAggregate> where TAggregate : Aggregate
+class EventPublisherDecorator<TAggregate> : IEventPublisher<TAggregate> where TAggregate : IAggregate, new()
 {
 	public EventPublisherDecorator(IEventPublisher publisher) => this.publisher = publisher;
 	readonly IEventPublisher publisher;

@@ -218,12 +218,12 @@ public static class Extensions
 		return (T?)fi.GetValue(obj);
 	}
 	/// <summary>
-	///    Sets a _private_ Property Value from a given Object. Uses Reflection.
+	///    Sets a private Property value from a given object. Uses Reflection.
 	///    Throws a ArgumentOutOfRangeException if the Property is not found.
 	/// </summary>
 	/// <typeparam name="T">Type of the Property</typeparam>
-	/// <param name="obj">Object from where the Property Value is set</param>
-	/// <param name="propName">Propertyname as string.</param>
+	/// <param name="obj">Object from where the Property value is set</param>
+	/// <param name="propName">Property name as string.</param>
 	/// <param name="val">Value to set.</param>
 	/// <returns>PropertyValue</returns>
 	public static void SetPrivatePropertyValue(this object obj, string propName, object? val)
@@ -236,13 +236,13 @@ public static class Extensions
 		});
 	}
 	/// <summary>
-	///    Set a private Property Value on a given Object. Uses Reflection.
+	///    Set a private Field value on a given Object. Uses Reflection.
 	/// </summary>
-	/// <typeparam name="T">Type of the Property</typeparam>
-	/// <param name="obj">Object from where the Property Value is returned</param>
-	/// <param name="propName">Propertyname as string.</param>
-	/// <param name="val">the value to set</param>
-	/// <exception cref="ArgumentOutOfRangeException">if the Property is not found</exception>
+	/// <typeparam name="T">Type of the Field</typeparam>
+	/// <param name="obj">Object from where the Field value is returned</param>
+	/// <param name="propName">Field name as string.</param>
+	/// <param name="val">The value to set</param>
+	/// <exception cref="ArgumentOutOfRangeException">If the Field is not found</exception>
 	public static void SetPrivateFieldValue(this object obj, string propName, object? val)
 	{
 		if (obj == null) throw new ArgumentNullException(nameof(obj));

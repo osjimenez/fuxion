@@ -1,8 +1,14 @@
-﻿using Fuxion.Domain.Events;
+﻿using Fuxion.Reflection;
 
 namespace Fuxion.Domain;
 
-public abstract record Event(Guid AggregateId)
+[TypeKey(nameof(Fuxion), nameof(Domain), nameof(Event))]
+public abstract record Event(Guid AggregateId) : IFeaturizable<Event>
 {
-	internal List<IEventFeature> Features { get; } = new();
+	IFeatureCollection<Event> IFeaturizable<Event>.Features { get; } = new FeatureCollection<Event>();
+}
+
+public static class EventExtensions
+{
+	public static IFeaturizable<Event> Features(this Event me) => me.Features<Event>();
 }

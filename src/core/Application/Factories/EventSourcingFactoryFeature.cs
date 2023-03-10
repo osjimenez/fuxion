@@ -3,7 +3,8 @@ using Fuxion.Domain;
 
 namespace Fuxion.Application.Factories;
 
-public class EventSourcingFactoryFeature<TAggregate> : IFactoryFeature<TAggregate> where TAggregate : Aggregate
+public class EventSourcingFactoryFeature<TAggregate> : IFactoryFeature<TAggregate> where TAggregate : IAggregate, new()
 {
-	public void Create(TAggregate agg) => agg.AttachEventSourcing();
+	Factory<TAggregate>? IFactoryFeature<TAggregate>.Factory { get; set; }
+	public void Initialize(TAggregate agg) => agg.Add<EventSourcingAggregateFeature>();
 }

@@ -3,18 +3,18 @@ using System.Reflection;
 
 namespace Fuxion.Domain.Aggregates;
 
-public class EventsAggregateFeature : IAggregateFeature
+public class EventsAggregateFeature : IFeature<IAggregate>
 {
 	static readonly ConcurrentDictionary<Type, Dictionary<Type, MethodInfo>> aggregateEventHandlerCache = new();
 
 	// Pending events
 	readonly ConcurrentStack<Event> pendingEvents = new();
-	Aggregate? aggregate;
+	IAggregate? _aggregate;
 	// Event handlers
 	Dictionary<Type, MethodInfo> eventHandlerCache = new();
-	public void OnAttach(Aggregate aggregate)
+	public void OnAttach(IAggregate aggregate)
 	{
-		this.aggregate = aggregate;
+		_aggregate = aggregate;
 		// Setup internal event handlers
 		var aggregateType = aggregate.GetType();
 		aggregateEventHandlerCache.AddOrUpdate(aggregateType,
@@ -29,7 +29,7 @@ public class EventsAggregateFeature : IAggregateFeature
 	public event EventHandler<EventArgs<Event>>? Pendent;
 
 	// Events appling
-	internal void ApplyEvent(Event @event)
+	public void ApplyEvent(Event @event)
 	{
 		Applying?.Invoke(this, new(@event));
 		Validate(@event);
@@ -41,18 +41,18 @@ public class EventsAggregateFeature : IAggregateFeature
 	}
 	internal void Validate(Event @event)
 	{
-		if (aggregate?.Id != @event.AggregateId) throw new AggregateStateMismatchException($"Aggregate Id is '{aggregate?.Id}' and event.AggregateId is '{@event.AggregateId}'");
+		if (_aggregate?.Id != @event.AggregateId) throw new AggregateStateMismatchException($"Aggregate Id is '{_aggregate?.Id}' and event.AggregateId is '{@event.AggregateId}'");
 	}
 	internal void Handle(Event @event)
 	{
 		if (eventHandlerCache.ContainsKey(@event.GetType()))
-			eventHandlerCache[@event.GetType()].Invoke(aggregate, new object[] {
+			eventHandlerCache[@event.GetType()].Invoke(_aggregate, new object[] {
 				@event
 			});
 		else
 			throw new AggregateApplyEventMethodMissingException($"No event handler specified for '{@event.GetType()}' on '{GetType()}'");
 	}
-	internal bool HasPendingEvents() => !pendingEvents.IsEmpty;
-	internal IEnumerable<Event> GetPendingEvents() => pendingEvents.ToArray();
-	internal void ClearPendingEvents() => pendingEvents.Clear();
+	public bool HasPendingEvents() => !pendingEvents.IsEmpty;
+	public IEnumerable<Event> GetPendingEvents() => pendingEvents.ToArray();
+	public void ClearPendingEvents() => pendingEvents.Clear();
 }

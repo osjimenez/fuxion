@@ -1,4 +1,6 @@
 ﻿using Fuxion.Application.Commands;
+using Fuxion.Domain;
+using Fuxion.Json;
 using Fuxion.Reflection;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,7 +17,7 @@ public class CommandController : ControllerBase
 		this.typeKeyResolver = typeKeyResolver;
 	}
 	[HttpPost]
-	public async Task<IActionResult> Post([FromBody] CommandPod pod)
+	public async Task<IActionResult> Post([FromBody] TypeKeyPod<Command> pod)
 	{
 		var com = pod.WithTypeKeyResolver(typeKeyResolver)
 			?? throw new InvalidCastException($"Command with discriminator '{pod.Discriminator}' is not registered in '{nameof(TypeKeyDirectory)}'");

@@ -1,5 +1,7 @@
-﻿using Fuxion.Application.Events;
-using Fuxion.Domain.Events;
+﻿using System.Text.Json;
+using Fuxion.Application.Events;
+using Fuxion.Domain;
+using Fuxion.Json;
 using Fuxion.Reflection;
 using Fuxion.Testing;
 using Xunit.Abstractions;
@@ -12,49 +14,83 @@ public class EventSourcingPodTest : BaseTest<EventSourcingPodTest>
 	[Fact(DisplayName = "EventSourcingPod - FromJson")]
 	public void FromJson()
 	{
-		var tkd = new TypeKeyDirectory();
-		tkd.Register<BaseEvent>();
-		var id = Guid.Parse("52d307a2-39ba-47e2-b73f-2faf0727d44e");
+		var tkr = new TypeKeyDirectory();
+		tkr.Register<BaseEvent>();
+		tkr.Register<EventSourcingEventFeature>();
+		var id = Guid.Parse("197c7b29-ee75-424f-ba9c-bfdcc2d150ea");
 		var json = $$"""
-		{
-			"TargetVersion": 10,
-			"CorrelationId": "68d9e3a4-558d-47c7-a058-38c599a6b116",
-			"EventCommittedTimestamp": "2022-09-28T14:12:12.8459732Z",
-			"ClassVersion": 11,
-			"Discriminator": "Fuxion/Application/Test/Events/BaseEvent",
-			"Payload": {
-				"Name": "mockName",
-				"Age": 0,
-				"AggregateId": "52d307a2-39ba-47e2-b73f-2faf0727d44e"
+			{
+				"Discriminator": "Fuxion/Application/Test/Events/BaseEvent",
+				"Headers": [
+					{
+						"Discriminator": "Fuxion/Application/Events/EventSourcingEventFeature",
+						"Payload": {
+							"TargetVersion": 10,
+							"CorrelationId": "f749c151-e079-4a12-a64e-0e41229b6b15",
+							"EventCommittedTimestamp": "2023-03-07T14:19:26.5402172Z",
+							"ClassVersion": 10,
+							"IsReplay": false
+						}
+					}
+				],
+				"Payload": {
+					"Name": "mockName",
+					"Age": 10,
+					"AggregateId": "197c7b29-ee75-424f-ba9c-bfdcc2d150ea"
+				}
 			}
-		}
 		""";
-		var pod = json.FromJson<EventSourcingPod>();
+		JsonSerializerOptions options = new();
+		options.Converters.Add(new FeaturizablePodConverterFactory(tkr));
+		var pod = json.FromJson<FeaturizablePod<BaseEvent>>(options:options);
+		// var pod = json.FromJson<EventSourcingPod>();
 		Output.WriteLine(json);
 		Assert.NotNull(pod);
 		Output.WriteLine(pod.Discriminator.ToString());
 		Assert.Equal(new[] { nameof(Fuxion), nameof(Application), nameof(Test), nameof(Events), nameof(BaseEvent) }, pod.Discriminator);
-		Assert.Equal(10, pod.TargetVersion);
-		Assert.False(pod.PayloadHasValue);
-		Assert.Null(pod.Payload);
-		var evt = pod.WithTypeKeyResolver(tkd);
-		Assert.Equal(id, evt?.AggregateId);
+		var esHeader = pod.Headers.GetPod<EventSourcingEventFeature>();
+		Assert.NotNull(esHeader?.Payload);
+		Assert.Equal(10, esHeader.Payload.TargetVersion);
+		// Assert.Equal(10, pod.TargetVersion);
+		//Assert.False(pod.PayloadHasValue);
+		//Assert.Null(pod.Payload);
+		
+		// var evt = (BaseEvent?)pod.WithTypeKeyResolver(tkr, options);
+		var evt = pod.Payload;
+		
+		Assert.NotNull(evt);
+		Assert.Equal(id, evt.AggregateId);
 		Assert.IsType<BaseEvent>(evt);
-		var mevt = (BaseEvent?)evt;
-		Assert.Equal("mockName", mevt?.Name);
-		Assert.Equal(10, mevt?.EventSourcing().TargetVersion);
+		var esFeature = evt.Features().Get<EventSourcingEventFeature>();
+		Assert.Equal("mockName", evt.Name);
+		Assert.Equal(10, esFeature.TargetVersion);
+		// Assert.Equal(10, mevt?.EventSourcing().TargetVersion);
 	}
 	[Fact(DisplayName = "EventSourcingPod - ToJson")]
 	public void ToJson()
 	{
+		var tkr = new TypeKeyDirectory();
+		tkr.Register<BaseEvent>();
+		tkr.Register<EventSourcingEventFeature>();
 		var id = Guid.NewGuid();
 		var evt = new BaseEvent(id, "mockName", 10);
-		Assert.Throws<EventFeatureNotFoundException>(() => new EventSourcingPod(evt));
-		evt.AddEventSourcing(10, Guid.NewGuid(), DateTime.UtcNow, 11);
-		var pod = evt.ToEventSourcingPod();
+		// Assert.Throws<FeatureNotFoundException>(() => new EventSourcingPod(evt));
+		evt.Features().Add<EventSourcingEventFeature>(e =>
+		{
+			e.TargetVersion = 10;
+			e.CorrelationId = Guid.NewGuid();
+			e.EventCommittedTimestamp = DateTime.UtcNow;
+			e.ClassVersion = 10;
+		});
+		// evt.AddEventSourcing(10, Guid.NewGuid(), DateTime.UtcNow, 11);
+		var pod = new FeaturizablePod<BaseEvent>(evt);
+		// var pod = evt.ToEventSourcingPod();
 		Assert.True(pod.PayloadHasValue);
 		Assert.IsType<BaseEvent>(pod.Payload);
-		var json = pod.ToJson();
+		JsonSerializerOptions options = new();
+		options.WriteIndented = true;
+		options.Converters.Add(new FeaturizablePodConverterFactory(tkr));
+		var json = pod.ToJson(options);
 		Output.WriteLine("Serialized json:");
 		Output.WriteLine(json);
 		Assert.Contains($@"""Discriminator"": ""Fuxion/Application/Test/Events/BaseEvent""", json);

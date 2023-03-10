@@ -9,4 +9,4 @@ public interface IEventStorage
 	Task CommitAsync(Guid aggregateId, IEnumerable<Event> events);
 }
 
-public interface IEventStorage<TAggregate> : IEventStorage where TAggregate : Aggregate { }
+public interface IEventStorage<TAggregate> : IEventStorage where TAggregate : IAggregate { }

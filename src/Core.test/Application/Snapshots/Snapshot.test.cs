@@ -12,11 +12,13 @@ public class SnapshotTest : BaseTest<SnapshotTest>
 	[Fact(DisplayName = "Snapshot - Serialize")]
 	public void Serialize()
 	{
-		var snapshot = new TestSnapshot();
-		snapshot.AggregateId = Guid.NewGuid();
-		snapshot.Version = 101;
-		snapshot.Id = Guid.NewGuid();
-		snapshot.Name = "Test";
+		var snapshot = new TestSnapshot
+		{
+			AggregateId = Guid.NewGuid(),
+			Version = 101,
+			Id = Guid.NewGuid(),
+			Name = "Test"
+		};
 		var json = snapshot.ToJson();
 		Output.WriteLine(json);
 	}
@@ -31,4 +33,8 @@ public class TestSnapshot : Snapshot<TestAggregate>
 	protected internal override void Load(TestAggregate aggregate) => throw new NotImplementedException();
 }
 
-public class TestAggregate : Aggregate { }
+public class TestAggregate : IAggregate
+{
+	public Guid Id { get; init; }
+	IFeatureCollection<IAggregate> IFeaturizable<IAggregate>.Features { get; } = IFeatureCollection<IAggregate>.Create();
+}

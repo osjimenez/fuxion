@@ -1,8 +1,8 @@
-﻿using Fuxion.Domain.Events;
+﻿using Fuxion.Domain;
 
 namespace Fuxion.Application.Events;
 
-public class PublicationEventFeature : IEventFeature
+public class PublicationEventFeature : IFeature<Event>
 {
 	public DateTime Timestamp { get; internal set; }
 }

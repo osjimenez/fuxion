@@ -2,7 +2,7 @@
 
 namespace Fuxion.Application.Events;
 
-class EventStorageDecorator<TAggregate> : IEventStorage<TAggregate> where TAggregate : Aggregate
+class EventStorageDecorator<TAggregate> : IEventStorage<TAggregate> where TAggregate : IAggregate
 {
 	public EventStorageDecorator(IEventStorage storage) => this.storage = storage;
 	readonly IEventStorage storage;

@@ -1,4 +1,5 @@
 ﻿using Fuxion.Domain;
+using Fuxion.Json;
 using Fuxion.Reflection;
 using Fuxion.Threading;
 
@@ -14,11 +15,11 @@ public class InMemoryEventStorage : IEventStorage
 			this.dumpFilePath.Read(path => {
 				if (File.Exists(path))
 				{
-					var dic = File.ReadAllText(path).FromJson<Dictionary<Guid, List<EventSourcingPod>>>();
+					var dic = File.ReadAllText(path).FromJson<Dictionary<Guid, List<JsonPod<TypeKey, Event>>>>();
 					if (dic == null) throw new FileLoadException($"File '{path}' cannot be deserializer for '{nameof(InMemoryEventStorage)}'");
 					events.WriteObject(dic.Select(k => (k.Key,
 						//Value: k.Value.Select<EventSourcingPod, Event>((EventSourcingPod v) => v.WithTypeKeyDirectory(typeKeyDirectory)).RemoveNulls().ToList<Event>()
-						Value: k.Value.Select(v => v.WithTypeKeyResolver(typeKeyResolver)).RemoveNulls().ToList())).ToDictionary(a => a.Key, a => a.Value));
+						Value: k.Value.Select(v => (Event?)v.As(typeKeyResolver[v.Discriminator])).RemoveNulls().ToList())).ToDictionary(a => a.Key, a => a.Value));
 				}
 			});
 		}
@@ -45,6 +46,14 @@ public class InMemoryEventStorage : IEventStorage
 					str[aggregateId].AddRange(events);
 			});
 		if (dumpFilePath != null)
-			await dumpFilePath.WriteAsync(path => { this.events.Read(str => File.WriteAllText(path, str.ToDictionary(k => k.Key, k => k.Value.Select(e => e.ToEventSourcingPod())).ToJson())); });
+			await dumpFilePath.WriteAsync(path =>
+			{
+				this.events.Read(str 
+					=> File.WriteAllText(path, 
+						str.ToDictionary(
+							k => k.Key, 
+							k => k.Value.Select(e => new JsonPod<TypeKey, Event>(e.GetType().GetTypeKey(), e))).ToJson()));
+				//k => k.Value.Select(e => e.ToEventSourcingPod())).ToJson()));
+			});
 	}
 }

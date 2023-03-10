@@ -49,7 +49,7 @@ public static class ApplicationDIExtensions
 		return me;
 	}
 	public static IFuxionBuilder Aggregate<TAggregate, TAggregateFactory>(this IFuxionBuilder me, Func<IServiceProvider, IEventPublisher>? eventPublisher = null)
-		where TAggregate : Aggregate, new() where TAggregateFactory : Factory<TAggregate>
+		where TAggregate : IAggregate, new() where TAggregateFactory : Factory<TAggregate>
 	{
 		me.Services.AddScoped<TAggregateFactory>();
 		me.Services.AddScoped<Factory<TAggregate>>(sp => sp.GetRequiredService<TAggregateFactory>());
@@ -64,7 +64,7 @@ public static class ApplicationDIExtensions
 	}
 	public static IFuxionBuilder Aggregate<TAggregate, TAggregateFactory>(this IFuxionBuilder me,
 		Func<IServiceProvider, IEventStorage> eventStorage,
-		Func<IServiceProvider, IEventPublisher>? eventPublisher = null) where TAggregate : Aggregate, new()
+		Func<IServiceProvider, IEventPublisher>? eventPublisher = null) where TAggregate : IAggregate, new()
 		where TAggregateFactory : Factory<TAggregate>
 	{
 		Aggregate<TAggregate, TAggregateFactory>(me, eventPublisher);
@@ -78,7 +78,7 @@ public static class ApplicationDIExtensions
 		Func<IServiceProvider, IEventStorage> eventStorage,
 		Func<IServiceProvider, ISnapshotStorage> snapshotStorage,
 		int snapshotFrecuency = 3,
-		Func<IServiceProvider, IEventPublisher>? eventPublisher = null) where TAggregate : Aggregate, new()
+		Func<IServiceProvider, IEventPublisher>? eventPublisher = null) where TAggregate : IAggregate, new()
 		where TAggregateFactory : Factory<TAggregate>
 		where TSnapshot : Snapshot<TAggregate>
 	{
@@ -90,7 +90,7 @@ public static class ApplicationDIExtensions
 		return me;
 	}
 	public static IFuxionBuilder Aggregate<TAggregate, TAggregateFactory, TAggregateRepository>(this IFuxionBuilder me, Func<IServiceProvider, IEventPublisher>? eventPublisher = null)
-		where TAggregate : Aggregate, new() where TAggregateFactory : Factory<TAggregate> where TAggregateRepository : class, IRepository<TAggregate>
+		where TAggregate : IAggregate, new() where TAggregateFactory : Factory<TAggregate> where TAggregateRepository : class, IRepository<TAggregate>
 	{
 		Aggregate<TAggregate, TAggregateFactory>(me, eventPublisher);
 		me.Services.AddScoped<TAggregateRepository>();

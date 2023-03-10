@@ -98,7 +98,7 @@ public class JsonPodTest : BaseTest<JsonPodTest>
 		Output.WriteLine($"JSON POD:\r\n{pod.ToJson()}");
 		Assert.NotNull(pod);
 		Assert.True(pod.Headers.Has("header1"));
-		var pod3 = pod.Headers.Get<string>("header3");
+		var pod3 = pod.Headers.GetPod<string>("header3");
 		Assert.NotNull(pod3);
 		Assert.True(pod3.Headers.Has("header3.3"));
 	}
@@ -136,6 +136,30 @@ public class JsonPodTest : BaseTest<JsonPodTest>
 	{
 		JsonPod<string, string> pod = new("discriminator", "payload");
 		Assert.Equal("payload", pod);
+	}
+	[Fact(DisplayName = "Header edition")]
+	public void HeaderEdition()
+	{
+		JsonPod<string, string> pod = new("discriminator", "payload");
+		pod.Headers.Add("h",new PayloadBase
+		{
+			Name = "value1"
+		});
+		var val = pod.Headers.GetPayload<PayloadBase>("h");
+		Assert.NotNull(val);
+		Output.WriteLine($"Original value: {val.Name}");
+		val.Name = "value2";
+		var val2 = pod.Headers.GetPayload<PayloadBase>("h");
+		Assert.NotNull(val2);
+		Output.WriteLine($"Edited value: {val2.Name}");
+		Assert.NotEqual("value2", val2.Name);
+		Assert.Throws<ArgumentException>(() => pod.Headers.Add("h", val2)); // Fails because I can't add it if already exist
+		Assert.Throws<KeyNotFoundException>(() => pod.Headers.Replace("h1", val2)); // Fails because I can't replace it if the discriminator does not exist
+		pod.Headers.Replace("h", val);
+		var val3 = pod.Headers.GetPayload<PayloadBase>("h");
+		Assert.NotNull(val3);
+		Output.WriteLine($"Replaced value: {val3.Name}");
+		Assert.Equal("value2", val3.Name);
 	}
 }
 
