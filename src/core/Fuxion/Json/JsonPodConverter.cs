@@ -5,16 +5,8 @@ using System.Text.Json.Serialization;
 
 namespace Fuxion.Json;
 
-// public class JsonPodConverter<TPod, TDiscriminator, TPayload> : JsonPodConverter<TPod, TDiscriminator, TPayload, TDiscriminator>
-// 	where TPod : JsonPod<TDiscriminator, TPayload, TDiscriminator>
-// 	// where TPayload : notnull
-// 	where TDiscriminator : notnull 
-// { }
-
 public class JsonPodConverter<TPod, TDiscriminator, TPayload> : JsonConverter<TPod> 
-	// where TCollection : JsonPodCollection<TDiscriminator>
 	where TPod : JsonPod<TDiscriminator, TPayload>
-	// where TPayload : notnull
 	where TDiscriminator : notnull
 {
 	public override TPod? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)

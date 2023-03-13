@@ -1,8 +1,7 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.IO.Compression;
-using System.Text;
+﻿using System.IO.Compression;
+using Fuxion.Json;
 
-namespace Fuxion.Json;
+namespace Fuxion.IO.Compression;
 
 public class ZipPod<TDiscriminator> : IPod<TDiscriminator, byte[], byte[]>//, ZipPodCollection<TDiscriminator>>
 	where TDiscriminator : notnull
