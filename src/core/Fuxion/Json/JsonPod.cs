@@ -74,7 +74,6 @@ public class JsonPod<TDiscriminator, TPayload> : IPod<TDiscriminator, TPayload, 
 			?? throw new InvalidProgramException($"The '{nameof(JsonValue)}' could not be created with '{met.GetSignature()}' method."));
 	}
 	public static implicit operator TPayload?(JsonPod<TDiscriminator, TPayload> pod) => pod.Payload;
-	// public static implicit operator string(JsonPod<TDiscriminator, TPayload> pod) => pod.PayloadValue.ToString();
 	public JsonPod<TDiscriminator, T>? CastWithPayload<T>()
 		where T : notnull
 	{
@@ -84,8 +83,6 @@ public class JsonPod<TDiscriminator, TPayload> : IPod<TDiscriminator, TPayload, 
 		return new(Discriminator, res);
 	}
 	public T? As<T>()
-		//where T : notnull
-		//where T : default
 	{
 		if (PayloadValue == null) return default;
 		var res = PayloadValue.Deserialize<T>();

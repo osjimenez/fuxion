@@ -1,38 +1,66 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.IO.Compression;
+using System.Text;
 
 namespace Fuxion.Json;
 
 public class ZipPod<TDiscriminator> : IPod<TDiscriminator, byte[], byte[]>//, ZipPodCollection<TDiscriminator>>
 	where TDiscriminator : notnull
 {
-	public ZipPod(TDiscriminator discriminator, byte[] payload)
+	ZipPod(TDiscriminator discriminator)
 	{
 		Discriminator = discriminator;
-		_payload = payload;
-		// PayloadValue = CreateValue(payload);
+		CompressedData = default!;
+		UncompressedData = default!;
 	}
-	byte[] _payload;
-	// public ZipPodCollection<TDiscriminator> Headers { get; } = new();
+	public static ZipPod<TDiscriminator> CreateToCompress(TDiscriminator discriminator, byte[] dataToCompress)
+	{
+		var pod = new ZipPod<TDiscriminator>(discriminator);
+		pod.UncompressedData = dataToCompress;
+		pod.CompressedData = Compress(dataToCompress);
+		return pod;
+	}
+	public static ZipPod<TDiscriminator> CreateToDecompress(TDiscriminator discriminator, byte[] dataToDecompress)
+	{
+		var pod = new ZipPod<TDiscriminator>(discriminator);
+		pod.UncompressedData = Decompress(dataToDecompress);
+		pod.CompressedData = dataToDecompress;
+		return pod;
+	}
+	byte[] CompressedData { get; set; }
+	byte[] UncompressedData { get; set; }
 	public TDiscriminator Discriminator { get; }
-	public byte[] Outside() => _payload;
-	public byte[] Inside() => _payload;
-	public T? As<T>() => throw new NotImplementedException();
-	public bool TryAs<T>([NotNullWhen(true)] out T? payload) => throw new NotImplementedException();
-	public bool Is<T>() => throw new NotImplementedException();
-	public static implicit operator byte[](ZipPod<TDiscriminator> pod) => pod.Outside();
+	public byte[] Outside() => UncompressedData;
+	public byte[] Inside() => CompressedData;
+	// public static void Save(Stream source, Stream destination) {
+	// 	byte[] bytes = new byte[4096];
+	//
+	// 	int count;
+	//
+	// 	while ((count = source.Read(bytes, 0, bytes.Length)) != 0) {
+	// 		destination.Write(bytes, 0, count);
+	// 	}
+	// }
+	static byte[] Compress(byte[] bytes)
+	{
+		using var msi = new MemoryStream(bytes);
+		using var memoryStream = new MemoryStream();
+		using (var gZipStream = new GZipStream(memoryStream, CompressionMode.Compress))
+		{
+			msi.CopyTo(gZipStream);
+			// Save(msi, gZipStream);
+		}
+		return memoryStream.ToArray();
+	}
+	static byte[] Decompress(byte[] bytes)
+	{
+		using var msi = new MemoryStream(bytes);
+		using var memoryStream = new MemoryStream();
+		using (var gZipStream = new GZipStream(msi, CompressionMode.Decompress))
+		{
+			gZipStream.CopyTo(memoryStream);
+			// Save(gZipStream, memoryStream);
+		}
+		return memoryStream.ToArray();
+	}
 }
-// public class ZipPodCollection<TDiscriminator>: IPodCollection<TDiscriminator, IPod<TDiscriminator,object, byte[], ZipPodCollection<TDiscriminator>>>
-// 	where TDiscriminator : notnull
-// {
-// 	IPodCollection<TDiscriminator, IPod<TDiscriminator, object, byte[], ZipPodCollection<TDiscriminator>>> podCollectionImplementation;
-// 	void IPodCollection<TDiscriminator, IPod<TDiscriminator, object, byte[], ZipPodCollection<TDiscriminator>>>.AddByOutside<TPayload>(TDiscriminator discriminator, TPayload payload) => podCollectionImplementation.AddByOutside(discriminator, payload);
-// 	void IPodCollection<TDiscriminator, IPod<TDiscriminator, object, byte[], ZipPodCollection<TDiscriminator>>>.AddByOutside<TPayload>(IPod<TDiscriminator, object, byte[], ZipPodCollection<TDiscriminator>> pod) => podCollectionImplementation.AddByOutside<TPayload>(pod);
-// 	void IPodCollection<TDiscriminator, IPod<TDiscriminator, object, byte[], ZipPodCollection<TDiscriminator>>>.Replace<TPayload>(TDiscriminator discriminator, TPayload payload) => podCollectionImplementation.Replace(discriminator, payload);
-// 	bool IPodCollection<TDiscriminator, IPod<TDiscriminator, object, byte[], ZipPodCollection<TDiscriminator>>>.Has(TDiscriminator discriminator) => podCollectionImplementation.Has(discriminator);
-// 	IPod<TDiscriminator, object, byte[], ZipPodCollection<TDiscriminator>>? IPodCollection<TDiscriminator, IPod<TDiscriminator, object, byte[], ZipPodCollection<TDiscriminator>>>.GetPod<TPayload>(TDiscriminator discriminator) => podCollectionImplementation.GetPod<TPayload>(discriminator);
-// 	bool IPodCollection<TDiscriminator, IPod<TDiscriminator, object, byte[], ZipPodCollection<TDiscriminator>>>.TryGetPod<TPayload>(TDiscriminator discriminator, out IPod<TDiscriminator, object, byte[], ZipPodCollection<TDiscriminator>>? pod) => podCollectionImplementation.TryGetPod<TPayload>(discriminator, out pod);
-// 	TPayload? IPodCollection<TDiscriminator, IPod<TDiscriminator, object, byte[], ZipPodCollection<TDiscriminator>>>.GetPayload<TPayload>(TDiscriminator discriminator) where TPayload : default => podCollectionImplementation.GetPayload<TPayload>(discriminator);
-// 	bool IPodCollection<TDiscriminator, IPod<TDiscriminator, object, byte[], ZipPodCollection<TDiscriminator>>>.TryGetPayload<TPayload>(TDiscriminator discriminator, out TPayload? payload) where TPayload : default => podCollectionImplementation.TryGetPayload(discriminator, out payload);
-// 	IPod<TDiscriminator, object, byte[], ZipPodCollection<TDiscriminator>> IPodCollection<TDiscriminator, IPod<TDiscriminator, object, byte[], ZipPodCollection<TDiscriminator>>>.this[TDiscriminator discriminator] => podCollectionImplementation[discriminator];
-// 	IEnumerator<IPod<TDiscriminator, object, byte[], ZipPodCollection<TDiscriminator>>> IEnumerable<IPod<TDiscriminator, object, byte[], ZipPodCollection<TDiscriminator>>>.GetEnumerator() => podCollectionImplementation.GetEnumerator();
-// }

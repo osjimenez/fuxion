@@ -118,14 +118,12 @@ namespace Fuxion.Test.Json;
 		Assert.Contains(@"""Nick"": ""payloadNick""", json);
 		Assert.DoesNotContain(@"""Headers"": ", json);
 		
-		pod.Headers.Add("header1Payload".ToPod("header1").Pod);
-		pod.Headers.Add("header2Payload".ToPod("header2").Pod);
-		// pod.Headers.AddByOutside("header1","header1Payload");
-		// pod.Headers.AddByOutside("header2","header2Payload");
+		pod.Headers.Add("header1Payload".ToPod("header1").Json().Pod);
+		pod.Headers.Add("header2Payload".ToPod("header2").Json().Pod);
 		PodBase pod3 = new("header3", payload);
-		pod3.Headers.Add("header3.3Payload".ToPod("header3.3").Pod);
+		pod3.Headers.Add("header3.3Payload".ToPod("header3.3").Json().Pod);
 		pod.Headers.Add(pod3);
-		Assert.Throws<ArgumentException>(() => pod.Headers.Add("".ToPod("header1").Pod));
+		Assert.Throws<ArgumentException>(() => pod.Headers.Add("".ToPod("header1").Json().Pod));
 		json = pod.ToJson();
 		Output.WriteLine("Serialized json (with headers):");
 		Output.WriteLine(json);
@@ -145,24 +143,20 @@ namespace Fuxion.Test.Json;
 		pod.Headers.Add(new PayloadBase
 		{
 			Name = "value1"
-		}.ToPod("h").Pod);
-		// pod.Headers.AddByOutside("h",new PayloadBase
-		// {
-		// 	Name = "value1"
-		// });
-		var val = pod.Headers["h"].Outside();
-		// var val = pod.Headers.GetPayload<PayloadBase>("h");
+		}.ToPod("h").Json().Pod);
+		var val = pod.Headers["h"].As<PayloadBase>();
 		Assert.NotNull(val);
 		Output.WriteLine($"Original value: {val.Name}");
 		val.Name = "value2";
-		var val2 = pod.Headers.GetPayload<PayloadBase>("h");
+		var val2 = pod.Headers["h"].As<PayloadBase>();
 		Assert.NotNull(val2);
 		Output.WriteLine($"Edited value: {val2.Name}");
 		Assert.NotEqual("value2", val2.Name);
-		Assert.Throws<ArgumentException>(() => pod.Headers.AddByOutside("h", val2)); // Fails because I can't add it if already exist
-		Assert.Throws<KeyNotFoundException>(() => pod.Headers.Replace("h1", val2)); // Fails because I can't replace it if the discriminator does not exist
-		pod.Headers.Replace("h", val);
-		var val3 = pod.Headers.GetPayload<PayloadBase>("h");
+		Assert.Throws<ArgumentException>(() => pod.Headers.Add(val2.ToPod("h").Pod)); // Fails because I can't add it if already exist
+		Assert.False(pod.Headers.Remove("h1"));
+		pod.Headers.Remove("h");
+		pod.Headers.Add(val.ToPod("h").Json().Pod);
+		var val3 = pod.Headers["h"].As<PayloadBase>();
 		Assert.NotNull(val3);
 		Output.WriteLine($"Replaced value: {val3.Name}");
 		Assert.Equal("value2", val3.Name);
