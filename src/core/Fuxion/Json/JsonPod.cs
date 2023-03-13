@@ -8,32 +8,9 @@ using Microsoft.Extensions.Options;
 
 namespace Fuxion.Json;
 
-//public abstract class Pod<TDiscriminator, TPayload>:Pod<TDiscriminator, TPayload, TDiscriminator>{}
-// public abstract class Pod<TDiscriminator, TPayload, THeaderDiscriminator> : IPod<TDiscriminator, TPayload, THeaderDiscriminator>
-// {
-// 	public abstract PodCollection<THeaderDiscriminator> Headers { get; }
-// 	public abstract TDiscriminator Discriminator { get; internal set; }
-// 	public abstract TPayload? Payload { get; protected set; }
-// 	public abstract T? As<T>();
-// 	public abstract bool Is<T>();
-// }
-
-// [JsonConverter(typeof(JsonPodConverterFactory))]
-// public class JsonPod<TDiscriminator, TPayload> : JsonPod<TDiscriminator, TPayload, TDiscriminator>
-// 	// where TPayload : notnull
-// 	where TDiscriminator : notnull
-// {
-// 	[JsonConstructor]
-// 	protected JsonPod(){}
-// 	internal JsonPod(TDiscriminator discriminator, JsonValue payloadValue) : base(discriminator, payloadValue) { }
-// 	public JsonPod(TDiscriminator discriminator, TPayload payload) : base(discriminator, payload) { }
-// }
-
 [JsonConverter(typeof(JsonPodConverterFactory))]
-public class JsonPod<TDiscriminator, TPayload> : IPod<TDiscriminator, TPayload, JsonPodCollection<TDiscriminator>>
-	// where TPayload : notnull
+public class JsonPod<TDiscriminator, TPayload> : IPod<TDiscriminator, TPayload, JsonValue, JsonPodCollection<TDiscriminator>>
 	where TDiscriminator : notnull
-	// where THeaderDiscriminator : notnull
 {
 	[JsonConstructor]
 	protected JsonPod()
@@ -69,6 +46,8 @@ public class JsonPod<TDiscriminator, TPayload> : IPod<TDiscriminator, TPayload, 
 				} catch { }
 		}
 	}
+	JsonValue IPod<TDiscriminator, TPayload, JsonValue>.Inside() => PayloadValue;
+	TPayload IPod<TDiscriminator, TPayload, JsonValue>.Outside() => Payload ?? throw new ArgumentException($"Payload is null");
 	[JsonIgnore]
 	public bool PayloadHasValue { get; private set; }
 	[JsonIgnore]
@@ -81,16 +60,10 @@ public class JsonPod<TDiscriminator, TPayload> : IPod<TDiscriminator, TPayload, 
 			PayloadHasValue = true;
 		}
 	}
-	// IPodCollection<THeaderDiscriminator, IPod<THeaderDiscriminator, object, THeaderDiscriminator>> IPod<TDiscriminator, TPayload, THeaderDiscriminator>.Headers 
-	// 	=> new JsonPodCollection<THeaderDiscriminator>(Headers.Select(_=>_.CastWithPayload<object>()).ToArray());
-	//[JsonIgnore]
-	// IPodCollection<THeaderDiscriminator, JsonPod<THeaderDiscriminator, object, THeaderDiscriminator>> IPod<TDiscriminator, TPayload, THeaderDiscriminator>.Headers => Headers;
 	public JsonPodCollection<TDiscriminator> Headers { get; private set; } = new();
-	// [JsonPropertyName(nameof(Headers))]
-	// public JsonPodCollection<THeaderDiscriminator> JsonHeaders { get; private set; } = new();
 	static JsonValue CreateValue(TPayload payload)
 	{
-		if (payload is null) throw new ArgumentNullException(nameof(payload), $"'{nameof(payload)}' could not be null");
+		if (payload is null) throw new ArgumentNullException(nameof(payload), $@"'{nameof(payload)}' could not be null");
 		var met = (typeof(JsonValue)
 				.GetMethods(BindingFlags.Static | BindingFlags.Public).FirstOrDefault(m => m.Name == nameof(JsonValue.Create) && m.GetGenericArguments().Any() && m.GetParameters().Length == 2)
 			?? throw new InvalidProgramException($"The '{nameof(JsonValue)}.{nameof(JsonValue.Create)}<T>()' method could not be determined"))
@@ -101,6 +74,7 @@ public class JsonPod<TDiscriminator, TPayload> : IPod<TDiscriminator, TPayload, 
 			?? throw new InvalidProgramException($"The '{nameof(JsonValue)}' could not be created with '{met.GetSignature()}' method."));
 	}
 	public static implicit operator TPayload?(JsonPod<TDiscriminator, TPayload> pod) => pod.Payload;
+	public static implicit operator string(JsonPod<TDiscriminator, TPayload> pod) => pod.PayloadValue.ToString();
 	public JsonPod<TDiscriminator, T>? CastWithPayload<T>()
 		where T : notnull
 	{
