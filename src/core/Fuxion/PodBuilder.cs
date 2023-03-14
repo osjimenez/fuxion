@@ -4,11 +4,11 @@ public interface IPodBuilder<out TPod>
 {
 	TPod Pod { get; }
 }
-class PodBuilder<TDiscriminator, TOutside, TInside, TPod>:IPodBuilder<TPod>
-	where TDiscriminator : notnull
+
+class PodBuilder<TDiscriminator, TOutside, TInside, TPod> : IPodBuilder<TPod> where TDiscriminator : notnull
 	where TOutside : notnull
 	where TInside : notnull
-	where TPod : IPod<TDiscriminator, TOutside,TInside>
+	where TPod : IPod<TDiscriminator, TOutside, TInside>
 {
 	public PodBuilder(TPod pod)
 	{

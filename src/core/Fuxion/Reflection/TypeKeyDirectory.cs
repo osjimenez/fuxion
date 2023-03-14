@@ -10,7 +10,7 @@ public class TypeKeyDirectory : ITypeKeyResolver
 	{
 		get
 		{
-			if (!_keyToTypeDictionary.ContainsKey(key)) throw new TypeKeyNotFoundInDirectoryException($"Key '{key}' not found in '{nameof(TypeKeyDirectory)}'");
+			if (!_keyToTypeDictionary.ContainsKey(key)) throw new TypeKeyNotFoundException($"Key '{key}' not found in '{nameof(TypeKeyDirectory)}'");
 			return _keyToTypeDictionary[key];
 		}
 	}
@@ -18,7 +18,7 @@ public class TypeKeyDirectory : ITypeKeyResolver
 	{
 		get
 		{
-			if (!_typeToKeyDictionary.ContainsKey(type)) throw new TypeKeyNotFoundInDirectoryException($"Type '{type}' not found in '{nameof(TypeKeyDirectory)}'");
+			if (!_typeToKeyDictionary.ContainsKey(type)) throw new TypeKeyNotFoundException($"Type '{type}' not found in '{nameof(TypeKeyDirectory)}'");
 			return _typeToKeyDictionary[type];
 		}
 	}

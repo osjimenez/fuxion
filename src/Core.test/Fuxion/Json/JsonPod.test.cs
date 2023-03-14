@@ -108,7 +108,7 @@ namespace Fuxion.Test.Json;
 		PayloadBase payload = new PayloadDerived {
 			Name = "payloadName", Age = 23, Nick = "payloadNick"
 		};
-		var pod = payload.ToPod<string, PayloadBase>("podKey").Json().Pod;
+		var pod = payload.BuildPod<string, PayloadBase>("podKey").ToJson().Pod;
 		var json = pod.ToJson();
 		Output.WriteLine("Serialized json:");
 		Output.WriteLine(json);
@@ -118,12 +118,12 @@ namespace Fuxion.Test.Json;
 		Assert.Contains(@"""Nick"": ""payloadNick""", json);
 		Assert.DoesNotContain(@"""Headers"": ", json);
 		
-		pod.Headers.Add("header1Payload".ToPod("header1").Json().Pod);
-		pod.Headers.Add("header2Payload".ToPod("header2").Json().Pod);
+		pod.Headers.Add("header1Payload".BuildPod("header1").ToJson().Pod);
+		pod.Headers.Add("header2Payload".BuildPod("header2").ToJson().Pod);
 		PodBase pod3 = new("header3", payload);
-		pod3.Headers.Add("header3.3Payload".ToPod("header3.3").Json().Pod);
+		pod3.Headers.Add("header3.3Payload".BuildPod("header3.3").ToJson().Pod);
 		pod.Headers.Add(pod3);
-		Assert.Throws<ArgumentException>(() => pod.Headers.Add("".ToPod("header1").Json().Pod));
+		Assert.Throws<ArgumentException>(() => pod.Headers.Add("".BuildPod("header1").ToJson().Pod));
 		json = pod.ToJson();
 		Output.WriteLine("Serialized json (with headers):");
 		Output.WriteLine(json);
@@ -143,7 +143,7 @@ namespace Fuxion.Test.Json;
 		pod.Headers.Add(new PayloadBase
 		{
 			Name = "value1"
-		}.ToPod("h").Json().Pod);
+		}.BuildPod("h").ToJson().Pod);
 		var val = pod.Headers["h"].As<PayloadBase>();
 		Assert.NotNull(val);
 		Output.WriteLine($"Original value: {val.Name}");
@@ -152,10 +152,10 @@ namespace Fuxion.Test.Json;
 		Assert.NotNull(val2);
 		Output.WriteLine($"Edited value: {val2.Name}");
 		Assert.NotEqual("value2", val2.Name);
-		Assert.Throws<ArgumentException>(() => pod.Headers.Add(val2.ToPod("h").Pod)); // Fails because I can't add it if already exist
+		Assert.Throws<ArgumentException>(() => pod.Headers.Add(val2.BuildPod("h").Pod)); // Fails because I can't add it if already exist
 		Assert.False(pod.Headers.Remove("h1"));
 		pod.Headers.Remove("h");
-		pod.Headers.Add(val.ToPod("h").Json().Pod);
+		pod.Headers.Add(val.BuildPod("h").ToJson().Pod);
 		var val3 = pod.Headers["h"].As<PayloadBase>();
 		Assert.NotNull(val3);
 		Output.WriteLine($"Replaced value: {val3.Name}");
