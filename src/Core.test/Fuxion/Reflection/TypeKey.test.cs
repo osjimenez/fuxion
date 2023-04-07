@@ -1,3 +1,5 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Fuxion.Reflection;
 
 namespace Fuxion.Test.Reflection;
@@ -27,7 +29,7 @@ public class TypeKeyTest : BaseTest<TypeKeyTest>
 		Output.WriteLine($"Chain:\n\t{tk.KeyChain.Aggregate((a,c)=>$"{a}\n\t{c}")}");
 		Assert.Equal("folder1",tk.KeyChain[0]);
 		Assert.Equal("folder2",tk.KeyChain[1]);
-		
+
 		tk = "\"http://domain.com/folder1/folder2\"".FromJson<TypeKey>();
 		Assert.NotNull(tk);
 		Output.WriteLine($"Chain:\n\t{tk.KeyChain.Aggregate((a,c)=>$"{a}\n\t{c}")}");
@@ -77,7 +79,7 @@ public class TypeKeyTest : BaseTest<TypeKeyTest>
 }
 [TypeKey("http://fuxion.dev",nameof(One))]
 public class One { }
-[TypeKey(nameof(Two))]
+[TypeKey(nameof(Two))] 
 public class Two : One{}
 public class Three : Two{}
 [TypeKey(nameof(Four))]

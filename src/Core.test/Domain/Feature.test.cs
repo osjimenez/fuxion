@@ -44,7 +44,7 @@ public class MockUser : IAggregate, IFeaturizable<MockUser>
 	}
 	public bool Attached { get; set; }
 	//IFeatureCollection<IAggregate> IFeaturizable<IAggregate>.Features => ((IFeaturizable<MockUser>)this).Features;
-	IFeatureCollection<IAggregate> IFeaturizable<IAggregate>.Features => IFeatureCollection<IAggregate>.Create();
+	IFeatureCollection<IAggregate> IFeaturizable<IAggregate>.Features { get; } = IFeatureCollection<IAggregate>.Create();
 	// IFeatureCollection<MockUser> IFeaturizable<MockUser>.Features { get; } = IFeatureCollection<MockUser>.Create();
 	IFeatureCollection<MockUser> IFeaturizable<MockUser>.Features => ((IFeaturizable<IAggregate>)this).Features;
 	public Guid Id { get; init; }

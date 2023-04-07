@@ -21,7 +21,7 @@ public class AggregateTest
 	}
 }
 
-public record TestedEvent : Event
+public record TestedEvent : Fuxion.Domain.Event
 {
 	public TestedEvent(Guid aggregateId) : base(aggregateId) { }
 }
@@ -33,4 +33,20 @@ public class MockAggregate : IAggregate
 
 	public Guid Id { get; init; }
 	IFeatureCollection<IAggregate> IFeaturizable<IAggregate>.Features { get; } = IFeatureCollection<IAggregate>.Create();
+}
+
+public class User : IAggregate
+{
+	
+	public IFeatureCollection<IAggregate> Features { get; } = IFeatureCollection<IAggregate>.Create();
+	public Guid Id { get; init; }
+	public DateTime BirthdayDate { get; private set; }
+	
+	public void ChangeName(string newName){}
+	public void ChangeBirthdayDate(DateTime newBirthdayDate){}
+}
+
+public class ValidationUserFeature
+{
+	
 }

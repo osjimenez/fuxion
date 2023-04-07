@@ -48,7 +48,8 @@ public class EventSourcingPodTest : BaseTest<EventSourcingPodTest>
 		Assert.NotNull(pod);
 		Output.WriteLine(pod.Discriminator.ToString());
 		Assert.Equal(new[] { nameof(Fuxion), nameof(Application), nameof(Test), nameof(Events), nameof(BaseEvent) }, pod.Discriminator);
-		var esHeader = pod.Headers.GetPod<EventSourcingEventFeature>();
+		var esHeader = pod.Headers[typeof(EventSourcingEventFeature).GetTypeKey()].CastWithPayload<EventSourcingEventFeature>();
+		// var esHeader = pod.Headers.GetPod<EventSourcingEventFeature>();
 		Assert.NotNull(esHeader?.Payload);
 		Assert.Equal(10, esHeader.Payload.TargetVersion);
 		// Assert.Equal(10, pod.TargetVersion);
