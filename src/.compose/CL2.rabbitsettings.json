@@ -1,0 +1,6 @@
+{
+  "Rabbit": {
+    "Host": "CL2-BUS",
+    "Port": 5672
+  }
+}

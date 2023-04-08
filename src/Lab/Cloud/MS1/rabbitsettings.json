@@ -1,0 +1,6 @@
+{
+  "Rabbit": {
+    "Host": "localhost",
+    "Port": 5672
+  }
+}
