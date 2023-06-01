@@ -2,7 +2,6 @@
 
 namespace Fuxion;
 
-
 public interface ICrossPod<out TDiscriminator, out TOutside, out TInside>
 {
 	TDiscriminator Discriminator { get; }
