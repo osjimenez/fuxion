@@ -5,13 +5,13 @@ using Fuxion.Reflection;
 namespace Fuxion.Json;
 
 // [JsonConverter(typeof(TypeKeyPodConverterFactory))]
-public class TypeKeyPod<TPayload> : JsonPod<TypeKey, TPayload>
-	where TPayload : notnull
-{
-	[JsonConstructor]
-	protected TypeKeyPod() { }
-	public TypeKeyPod(TPayload payload) : base(payload.GetType().GetTypeKey(), payload) { }
-}
+// public class TypeKeyPod<TPayload> : JsonPod<TypeKey, TPayload>
+// 	where TPayload : notnull
+// {
+// 	[JsonConstructor]
+// 	protected TypeKeyPod() { }
+// 	public TypeKeyPod(TPayload payload) : base(payload.GetType().GetTypeKey(), payload) { }
+// }
 // public class TypeKeyPodJsonConverter<TPayload> : JsonPodConverter<TypeKeyPod<TPayload>, TypeKey, TPayload> where TPayload : notnull 
 // { }
 // public class TypeKeyPodConverterFactory : JsonConverterFactory
@@ -24,6 +24,30 @@ public class TypeKeyPod<TPayload> : JsonPod<TypeKey, TPayload>
 // 		return (JsonConverter)(Activator.CreateInstance(converterType) ?? throw new InvalidCastException($"'{converterType.GetSignature()}' can not be created"));
 // 	}
 // }
+
+
+public class TypeKeyPod<TPayload> : BypassPod<TypeKey, TPayload>
+{
+	public TypeKeyPod(TypeKey discriminator, TPayload @object) : base(discriminator, @object) { }
+}
+
+// public class TypeKeyPodCollection : IPodCollection<TypeKey, TypeKeyPod2<object>>
+// {
+// 	readonly Dictionary<TypeKey, IPod<TypeKey, object, object>> dic = new();
+// 	public bool Has(TypeKey discriminator) => dic.ContainsKey(discriminator);
+// 	public TypeKeyPod2<object> this[TypeKey discriminator] => new(discriminator, dic[discriminator].Outside());
+// 	public void Add(IPod<TypeKey, object, object> pod) => dic.Add(pod.Discriminator, pod);
+// 	public bool Remove(TypeKey discriminator) => dic.Remove(discriminator);
+// 	public IEnumerator<BypassPod<TypeKey>> GetEnumerator() => dic.Values.Select(_ => new BypassPod<TypeKey>(_.Discriminator, _.Outside())).GetEnumerator();
+// }
+
+
+
+
+
+
+
+
 //
 //
 //

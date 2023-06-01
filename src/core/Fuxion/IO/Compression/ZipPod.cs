@@ -1,9 +1,8 @@
 ﻿using System.IO.Compression;
-using Fuxion.Json;
 
 namespace Fuxion.IO.Compression;
 
-public class ZipPod<TDiscriminator> : IPod<TDiscriminator, byte[], byte[]>//, ZipPodCollection<TDiscriminator>>
+public class ZipPod<TDiscriminator> : ICrossPod<TDiscriminator, byte[], byte[]>//, ZipPodCollection<TDiscriminator>>
 	where TDiscriminator : notnull
 {
 	ZipPod(TDiscriminator discriminator)
@@ -12,34 +11,21 @@ public class ZipPod<TDiscriminator> : IPod<TDiscriminator, byte[], byte[]>//, Zi
 		CompressedData = default!;
 		UncompressedData = default!;
 	}
-	public static ZipPod<TDiscriminator> CreateToCompress(TDiscriminator discriminator, byte[] dataToCompress)
-	{
-		var pod = new ZipPod<TDiscriminator>(discriminator);
-		pod.UncompressedData = dataToCompress;
-		pod.CompressedData = Compress(dataToCompress);
-		return pod;
-	}
-	public static ZipPod<TDiscriminator> CreateToDecompress(TDiscriminator discriminator, byte[] dataToDecompress)
-	{
-		var pod = new ZipPod<TDiscriminator>(discriminator);
-		pod.UncompressedData = Decompress(dataToDecompress);
-		pod.CompressedData = dataToDecompress;
-		return pod;
-	}
+	public static ZipPod<TDiscriminator> CreateToCompress(TDiscriminator discriminator, byte[] dataToCompress) =>
+		new(discriminator)
+		{
+			UncompressedData = dataToCompress, CompressedData = Compress(dataToCompress)
+		};
+	public static ZipPod<TDiscriminator> CreateToDecompress(TDiscriminator discriminator, byte[] dataToDecompress) =>
+		new(discriminator)
+		{
+			UncompressedData = Decompress(dataToDecompress), CompressedData = dataToDecompress
+		};
 	byte[] CompressedData { get; set; }
 	byte[] UncompressedData { get; set; }
 	public TDiscriminator Discriminator { get; }
 	public byte[] Outside() => UncompressedData;
 	public byte[] Inside() => CompressedData;
-	// public static void Save(Stream source, Stream destination) {
-	// 	byte[] bytes = new byte[4096];
-	//
-	// 	int count;
-	//
-	// 	while ((count = source.Read(bytes, 0, bytes.Length)) != 0) {
-	// 		destination.Write(bytes, 0, count);
-	// 	}
-	// }
 	static byte[] Compress(byte[] bytes)
 	{
 		using var msi = new MemoryStream(bytes);
@@ -47,7 +33,6 @@ public class ZipPod<TDiscriminator> : IPod<TDiscriminator, byte[], byte[]>//, Zi
 		using (var gZipStream = new GZipStream(memoryStream, CompressionMode.Compress))
 		{
 			msi.CopyTo(gZipStream);
-			// Save(msi, gZipStream);
 		}
 		return memoryStream.ToArray();
 	}
@@ -58,7 +43,6 @@ public class ZipPod<TDiscriminator> : IPod<TDiscriminator, byte[], byte[]>//, Zi
 		using (var gZipStream = new GZipStream(msi, CompressionMode.Decompress))
 		{
 			gZipStream.CopyTo(memoryStream);
-			// Save(gZipStream, memoryStream);
 		}
 		return memoryStream.ToArray();
 	}

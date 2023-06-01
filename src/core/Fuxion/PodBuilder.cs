@@ -8,7 +8,7 @@ public interface IPodBuilder<out TPod>
 class PodBuilder<TDiscriminator, TOutside, TInside, TPod> : IPodBuilder<TPod> where TDiscriminator : notnull
 	where TOutside : notnull
 	where TInside : notnull
-	where TPod : IPod<TDiscriminator, TOutside, TInside>
+	where TPod : ICrossPod<TDiscriminator, TOutside, TInside>
 {
 	public PodBuilder(TPod pod)
 	{

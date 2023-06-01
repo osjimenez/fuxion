@@ -9,7 +9,7 @@ using Microsoft.Extensions.Options;
 namespace Fuxion.Json;
 
 [JsonConverter(typeof(JsonPodConverterFactory))]
-public class JsonPod<TDiscriminator, TPayload> : IPod<TDiscriminator, TPayload, JsonValue, JsonPodCollection<TDiscriminator>>
+public class JsonPod<TDiscriminator, TPayload> : ICrossPod<TDiscriminator, TPayload, JsonValue, JsonPodCollection<TDiscriminator>>
 	where TDiscriminator : notnull
 {
 	[JsonConstructor]
@@ -46,8 +46,8 @@ public class JsonPod<TDiscriminator, TPayload> : IPod<TDiscriminator, TPayload, 
 				} catch { }
 		}
 	}
-	JsonValue IPod<TDiscriminator, TPayload, JsonValue>.Inside() => PayloadValue;
-	TPayload IPod<TDiscriminator, TPayload, JsonValue>.Outside() => Payload ?? throw new ArgumentException($"Payload is null");
+	JsonValue ICrossPod<TDiscriminator, TPayload, JsonValue>.Inside() => PayloadValue;
+	TPayload ICrossPod<TDiscriminator, TPayload, JsonValue>.Outside() => Payload ?? throw new ArgumentException($"Payload is null");
 	[JsonIgnore]
 	public bool PayloadHasValue { get; private set; }
 	[JsonIgnore]

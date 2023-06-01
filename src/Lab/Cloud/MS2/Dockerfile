@@ -7,6 +7,8 @@ FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
 COPY ["Lab/Cloud/MS2/Fuxion.Lab.Cloud.MS2.csproj", "Lab/Cloud/MS2/"]
 COPY ["Lab/Common/Fuxion.Lab.Common.csproj", "Lab/Common/"]
+COPY ["core/Domain/Fuxion.Domain.csproj", "core/Domain/"]
+COPY ["core/Fuxion/Fuxion.csproj", "core/Fuxion/"]
 RUN dotnet restore "Lab/Cloud/MS2/Fuxion.Lab.Cloud.MS2.csproj"
 COPY . .
 WORKDIR "/src/Lab/Cloud/MS2"

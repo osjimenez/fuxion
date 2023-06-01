@@ -125,55 +125,55 @@ public class FeatureNotFoundException : FuxionException
 {
 	public FeatureNotFoundException(string message) : base(message) { }
 }
-
-// [JsonConverter(typeof(FeaturizablePodConverterFactory))]
-public class FeaturizablePod<TFeaturizable> : TypeKeyPod<TFeaturizable> where TFeaturizable : IFeaturizable<TFeaturizable>
-{
-	[JsonConstructor]
-	protected FeaturizablePod() { }
-	public FeaturizablePod(TFeaturizable payload) : base(payload)
-	{
-		// foreach (var feature in payload.Features().All<IFeature<TFeaturizable>>())
-		// 	Headers.Add<IFeature<TFeaturizable>>(feature);
-	}
-}
-
-public class FeaturizablePodJsonConverter<TFeaturizable> : JsonPodConverter<FeaturizablePod<TFeaturizable>, TypeKey, TFeaturizable> 
-	where TFeaturizable : IFeaturizable<TFeaturizable>
-{
-	ITypeKeyResolver _typeKeyResolver;
-	public FeaturizablePodJsonConverter(ITypeKeyResolver typeKeyResolver) => _typeKeyResolver = typeKeyResolver;
-	public override FeaturizablePod<TFeaturizable>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-	{
-		var pod = base.Read(ref reader, typeToConvert, options);
-		if (pod is null) return pod;
-		if (pod.Payload is null) return pod;
-		foreach (var header in pod.Headers)
-		{
-			var obj = pod.As(_typeKeyResolver[pod.Discriminator]);
-			//var obj = value.Deserialize(_typeKeyResolver[key], options);
-			if (obj is null) continue;
-			pod.Payload.Features().Add(_typeKeyResolver[pod.Discriminator]);
-			// pod.Payload.Features().Add(_typeKeyResolver[key]);
-		}
-		return pod;
-	}
-}
-public class FeaturizablePodConverterFactory : JsonConverterFactory
-{
-	ITypeKeyResolver _typeKeyResolver;
-	public FeaturizablePodConverterFactory(ITypeKeyResolver typeKeyResolver)
-	{
-		_typeKeyResolver = typeKeyResolver;
-	}
-	public override bool CanConvert(Type typeToConvert) => typeToConvert.IsSubclassOfRawGeneric(typeof(FeaturizablePod<>));
-	public override JsonConverter? CreateConverter(Type typeToConvert, JsonSerializerOptions options)
-	{
-		var types = typeToConvert.GetGenericArguments();
-		var converterType = typeof(FeaturizablePodJsonConverter<>).MakeGenericType(types);
-		return (JsonConverter)(Activator.CreateInstance(converterType, new object[]
-		{
-			_typeKeyResolver
-		}) ?? throw new InvalidCastException($"'{converterType.GetSignature()}' can not be created"));
-	}
-}
+//
+// // [JsonConverter(typeof(FeaturizablePodConverterFactory))]
+// public class FeaturizablePod<TFeaturizable> : TypeKeyPod<TFeaturizable> where TFeaturizable : IFeaturizable<TFeaturizable>
+// {
+// 	[JsonConstructor]
+// 	protected FeaturizablePod() { }
+// 	public FeaturizablePod(TFeaturizable payload) : base(payload)
+// 	{
+// 		// foreach (var feature in payload.Features().All<IFeature<TFeaturizable>>())
+// 		// 	Headers.Add<IFeature<TFeaturizable>>(feature);
+// 	}
+// }
+//
+// public class FeaturizablePodJsonConverter<TFeaturizable> : JsonPodConverter<FeaturizablePod<TFeaturizable>, TypeKey, TFeaturizable> 
+// 	where TFeaturizable : IFeaturizable<TFeaturizable>
+// {
+// 	ITypeKeyResolver _typeKeyResolver;
+// 	public FeaturizablePodJsonConverter(ITypeKeyResolver typeKeyResolver) => _typeKeyResolver = typeKeyResolver;
+// 	public override FeaturizablePod<TFeaturizable>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+// 	{
+// 		var pod = base.Read(ref reader, typeToConvert, options);
+// 		if (pod is null) return pod;
+// 		if (pod.Payload is null) return pod;
+// 		foreach (var header in pod.Headers)
+// 		{
+// 			var obj = pod.As(_typeKeyResolver[pod.Discriminator]);
+// 			//var obj = value.Deserialize(_typeKeyResolver[key], options);
+// 			if (obj is null) continue;
+// 			pod.Payload.Features().Add(_typeKeyResolver[pod.Discriminator]);
+// 			// pod.Payload.Features().Add(_typeKeyResolver[key]);
+// 		}
+// 		return pod;
+// 	}
+// }
+// public class FeaturizablePodConverterFactory : JsonConverterFactory
+// {
+// 	ITypeKeyResolver _typeKeyResolver;
+// 	public FeaturizablePodConverterFactory(ITypeKeyResolver typeKeyResolver)
+// 	{
+// 		_typeKeyResolver = typeKeyResolver;
+// 	}
+// 	public override bool CanConvert(Type typeToConvert) => typeToConvert.IsSubclassOfRawGeneric(typeof(FeaturizablePod<>));
+// 	public override JsonConverter? CreateConverter(Type typeToConvert, JsonSerializerOptions options)
+// 	{
+// 		var types = typeToConvert.GetGenericArguments();
+// 		var converterType = typeof(FeaturizablePodJsonConverter<>).MakeGenericType(types);
+// 		return (JsonConverter)(Activator.CreateInstance(converterType, new object[]
+// 		{
+// 			_typeKeyResolver
+// 		}) ?? throw new InvalidCastException($"'{converterType.GetSignature()}' can not be created"));
+// 	}
+// }

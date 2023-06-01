@@ -25,7 +25,7 @@ public class RabbitHostedService : IHostedService
 		Console.WriteLine("============= CREATING CONSUMER CHANNEL ===============================");
 		if (!_persistentConnection.IsConnected) _persistentConnection.TryConnect();
 		var channel = _persistentConnection.CreateModel();
-		channel.ExchangeDeclare("test-exchange", "direct");
+		channel.ExchangeDeclare("test-exchange", ExchangeType.Direct);
 		channel.QueueDeclare(_queueName, true, false, false, null);
 		var consumer = new EventingBasicConsumer(channel);
 		consumer.Received += async (model, ea) => {
@@ -69,7 +69,7 @@ public class RabbitHostedService : IHostedService
 				Console.WriteLine(ex.ToString());
 			});
 		using var channel = persistentConnection.CreateModel();
-		channel.ExchangeDeclare("test-exchange", "direct");
+		channel.ExchangeDeclare("test-exchange", ExchangeType.Direct);
 		var body = Encoding.UTF8.GetBytes(message);
 		await policy.ExecuteAsync(() => {
 			var properties = channel.CreateBasicProperties();

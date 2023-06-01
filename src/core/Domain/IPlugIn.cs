@@ -1,4 +1,4 @@
-﻿namespace Fuxion.Domain;
+﻿namespace Fuxion.Domain.Plugin;
 
 public interface IPlugIn
 {

@@ -484,6 +484,7 @@ public static class Extensions
 	}
 	public static DateTime ToEpochDateTime(this long me) => StartTime.AddSeconds(me);
 	public static DateTime ToEpochDateTime(this double me) => StartTime.AddSeconds(me);
+	public static TimeSpan Seconds(this int me) => TimeSpan.FromSeconds(me);
 	#endregion
 
 	#region Range

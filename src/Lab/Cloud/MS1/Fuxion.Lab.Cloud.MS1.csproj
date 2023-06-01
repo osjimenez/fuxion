@@ -17,13 +17,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Content Include="..\..\..\.dockerignore">
-	    <Link>.dockerignore</Link>
-	  </Content>
+	  <ProjectReference Include="..\..\Common\Fuxion.Lab.Common.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\Common\Fuxion.Lab.Common.csproj" />
+	  <Content Include="..\..\..\.dockerignore">
+	    <Link>.dockerignore</Link>
+	  </Content>
 	</ItemGroup>
 
 </Project>

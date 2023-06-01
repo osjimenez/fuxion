@@ -17,7 +17,7 @@ public class JsonPodCollection<TDiscriminator> : IPodCollection<TDiscriminator, 
 	public JsonPod<TDiscriminator, object> this[TDiscriminator discriminator] =>
 		InternalDictionary[discriminator].ToString().FromJson<JsonPod<TDiscriminator, object>>() 
 		?? throw new ArgumentException($"'{nameof(JsonValue)}' for discriminator '{discriminator}' couldn't be deserialized as '{typeof(JsonPod<TDiscriminator, object>).GetSignature()}'");
-	public void Add(IPod<TDiscriminator, object, object> pod)
+	public void Add(ICrossPod<TDiscriminator, object, object> pod)
 	{
 		if(pod.GetType().IsSubclassOfRawGeneric(typeof(JsonPod<,>)))
 			InternalDictionary.Add(pod.Discriminator, new JsonPod<TDiscriminator, object>(pod.Discriminator, pod).PayloadValue);

@@ -1,5 +1,5 @@
 {
-  "Rabbit": {
+  "Mqtt": {
     "Host": "localhost",
     "Port": 1883
   }

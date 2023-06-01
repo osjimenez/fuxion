@@ -357,6 +357,24 @@ public class Property<T> : IObservable<T>
 	public static implicit operator Property<T>(T value) => new (value);
 	public IDisposable Subscribe(IObserver<T> observer) => _subject.Subscribe(observer);
 }
+// public class NodeProperty<T> : IObservable<T>
+// {
+// 	NodeProperty(T defaultValue) 
+// 	{
+// 		// _subject = new(defaultValue);
+// 		_node.Producer.Produce(defaultValue);
+// 	}
+// 	INode _node;
+// 	// protected readonly BehaviorSubject<T> _subject;
+// 	public T Value
+// 	{
+// 		get => _subject.Value;
+// 		set => _subject.OnNext(value);
+// 	}
+// 	public static implicit operator T(NodeProperty<T> pro) => pro.Value;
+// 	public static implicit operator NodeProperty<T>(T value) => new (value);
+// 	public IDisposable Subscribe(IObserver<T> observer) => _subject.Subscribe(observer);
+// }
 
 public record PropertyChangedEvent<T>(string PropertyName, T NewValue);
 public record Event();
