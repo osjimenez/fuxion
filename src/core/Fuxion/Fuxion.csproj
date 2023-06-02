@@ -25,8 +25,8 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="8.0.0-preview.1.23110.8" />
-		<PackageReference Include="System.Text.Json" Version="8.0.0-preview.1.23110.8" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="8.0.0-preview.4.23259.5" />
+		<PackageReference Include="System.Text.Json" Version="8.0.0-preview.4.23259.5" />
 	</ItemGroup>
 
 </Project>

@@ -1,11 +1,18 @@
-﻿using Fuxion.Domain.Aggregates;
-using Fuxion.Domain.Events;
+﻿namespace Fuxion.Domain;
 
-namespace Fuxion.Domain;
+// public abstract class Aggregate
+// {
+// 	public Guid Id { get; internal set; }
+// 	internal List<IAggregateFeature> Features { get; set; } = new();
+// 	protected void ApplyEvent(Event @event) => this.Events().ApplyEvent(@event);
+// }
 
-public abstract class Aggregate
+public interface IAggregate : IFeaturizable<IAggregate>
 {
-	public Guid Id { get; internal set; }
-	internal List<IAggregateFeature> Features { get; set; } = new();
-	protected void ApplyEvent(Event @event) => this.Events().ApplyEvent(@event);
+	Guid Id { get; init; }
+}
+
+public static class IAggregateExtensions
+{
+	public static IFeaturizable<IAggregate> Features(this IAggregate me) => me.Features<IAggregate>();
 }

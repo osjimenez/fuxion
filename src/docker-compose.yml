@@ -1,0 +1,225 @@
+name: "fuxion-lab"
+services:
+#   CL1-MS1:
+#      image: fuxion.lab.cloud.ms1
+#      build:
+#         context: .
+#         dockerfile: Lab/Cloud/MS1/Dockerfile
+#      volumes:
+#         - ./.compose/CL1.rabbitsettings.json:/app/rabbitsettings.json
+#         - ./.compose/CL1.mqttsettings.json:/app/mqttsettings.json
+#   #      deploy:
+#   #         mode: replicated
+#   #         replicas: 2
+#      networks:
+#         CL1:
+#
+#   CL1-MS2:
+#      image: fuxion.lab.cloud.ms2
+#      build:
+#         context: .
+#         dockerfile: Lab/Cloud/MS2/Dockerfile
+#      volumes:
+#         - ./.compose/CL1.rabbitsettings.json:/app/rabbitsettings.json
+#         - ./.compose/CL1.mqttsettings.json:/app/mqttsettings.json
+#   #      deploy:
+#   #         mode: replicated
+#   #         replicas: 2
+#      networks:
+#         CL1:
+            
+#   CL1-GATE:
+#      image: fuxion.lab.cloud.gate
+#      build:
+#         context: .
+#         dockerfile: Lab/Cloud/GATE/Dockerfile
+#      networks:
+#         CL1:
+
+   # https://medium.com/@vinodkrane/microservices-scaling-and-load-balancing-using-docker-compose-78bf8dc04da9
+#   CL1-BAL:
+#      image: nginx:latest
+#      volumes:
+#         - ./.compose/CL1-BAL.conf:/etc/nginx/nginx.conf:ro
+#      depends_on:
+#         - CL1-MS1
+#         - CL1-MS2
+#      ports:
+#         - 10100:10100
+#         - 10101:10101
+#      networks:
+#         CL1:
+   # Certificado SSL con nginx
+   # https://mindsers.blog/post/https-using-nginx-certbot-docker/
+
+   CL1-BUS:
+      image: rabbitmq:management-alpine
+      ports:
+         - 5672:5672
+         - 15672:15672
+      volumes:
+         - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+         - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+      networks:
+         CL1:
+
+   CL1-MQTT:
+      image: emqx:5.0.20
+      ports:
+         - 1883:1883
+         - 8083:8083
+         - 8084:8084
+         - 8883:8883
+         - 18083:18083
+      networks:
+         CL1:
+   # Cluster EMQX
+   # https://www.emqx.io/docs/en/v5.0/deploy/install-docker.html#use-docker-compose-to-build-an-emqx-cluster
+
+#   CL2-MS1:
+#      image: fuxion.lab.cloud.ms1
+#      build:
+#         context: .
+#         dockerfile: Lab/Cloud/MS1/Dockerfile
+#      volumes:
+#         - ./.compose/CL2.rabbitsettings.json:/app/rabbitsettings.json
+#         - ./.compose/CL2.mqttsettings.json:/app/mqttsettings.json
+#      #      deploy:
+#      #         mode: replicated
+#      #         replicas: 2
+#      networks:
+#         CL2:
+#
+#   CL2-MS2:
+#      image: fuxion.lab.cloud.ms2
+#      build:
+#         context: .
+#         dockerfile: Lab/Cloud/MS2/Dockerfile
+#      volumes:
+#         - ./.compose/CL2.rabbitsettings.json:/app/rabbitsettings.json
+#         - ./.compose/CL2.mqttsettings.json:/app/mqttsettings.json
+#      #      deploy:
+#      #         mode: replicated
+#      #         replicas: 2
+#      networks:
+#         CL2:
+   
+#   CL2-GATE:
+#      image: fuxion.lab.cloud.gate
+#      build:
+#         context: .
+#         dockerfile: Lab/Cloud/GATE/Dockerfile
+#      networks:
+#         CL2:
+
+   # https://medium.com/@vinodkrane/microservices-scaling-and-load-balancing-using-docker-compose-78bf8dc04da9
+#   CL2-BAL:
+#      image: nginx:latest
+#      volumes:
+#         - ./.compose/CL2-BAL.conf:/etc/nginx/nginx.conf:ro
+#      depends_on:
+#         - CL2-MS1
+#         - CL2-MS2
+#      ports:
+#         - 10200:10200
+#         - 10201:10201
+#      networks:
+#         CL2:
+   # Certificado SSL con nginx
+   # https://mindsers.blog/post/https-using-nginx-certbot-docker/
+
+#   CL2-BUS:
+#      image: rabbitmq:management-alpine
+##      ports:
+##         - 5672:5672
+##         - 15672:15672
+#      volumes:
+#         - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+#         - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+#      networks:
+#         CL2:
+#
+#   CL2-MQTT:
+#      image: emqx:5.0.20
+##      ports:
+##         - 1883:1883
+##         - 8083:8083
+##         - 8084:8084
+##         - 8883:8883
+##         - 18083:18083
+#      networks:
+#         CL2:
+   # Cluster EMQX
+   # https://www.emqx.io/docs/en/v5.0/deploy/install-docker.html#use-docker-compose-to-build-an-emqx-cluster
+
+#   OP11-A1:
+#      image: fuxion.lab.onpremise.a1
+#      build:
+#         context: .
+#         dockerfile: Lab/OnPremise/A1/Dockerfile
+#      networks:
+#         OP11:
+#   
+#   OP11-A2:
+#      image: fuxion.lab.onpremise.a2
+#      build:
+#         context: .
+#         dockerfile: Lab/OnPremise/A2/Dockerfile
+#      networks:
+#         OP11:
+#
+#   OP12-A1:
+#      image: fuxion.lab.onpremise.a1
+#      build:
+#         context: .
+#         dockerfile: Lab/OnPremise/A1/Dockerfile
+#      networks:
+#         OP12:
+#   
+#   OP12-A2:
+#      image: fuxion.lab.onpremise.a2
+#      build:
+#         context: .
+#         dockerfile: Lab/OnPremise/A2/Dockerfile
+#      networks:
+#         OP12:
+#
+#   OP21-A1:
+#      image: fuxion.lab.onpremise.a1
+#      build:
+#         context: .
+#         dockerfile: Lab/OnPremise/A1/Dockerfile
+#      networks:
+#         OP21:
+#   
+#   OP21-A2:
+#      image: fuxion.lab.onpremise.a2
+#      build:
+#         context: .
+#         dockerfile: Lab/OnPremise/A2/Dockerfile
+#      networks:
+#         OP21:
+#
+#   OP22-A1:
+#      image: fuxion.lab.onpremise.a1
+#      build:
+#         context: .
+#         dockerfile: Lab/OnPremise/A1/Dockerfile
+#      networks:
+#         OP22:
+#   
+#   OP22-A2:
+#      image: fuxion.lab.onpremise.a2
+#      build:
+#         context: .
+#         dockerfile: Lab/OnPremise/A2/Dockerfile
+#      networks:
+#         OP22:
+
+networks:
+   CL1:
+   CL2:
+   OP11:
+   OP12:
+   OP21:
+   OP22:

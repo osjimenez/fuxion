@@ -8,17 +8,17 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Include="icon.png" Pack="true" PackagePath="\"/>
+		<None Include="icon.png" Pack="true" PackagePath="\" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Polly" Version="7.2.3"/>
-		<PackageReference Include="RabbitMQ.Client" Version="6.4.0"/>
-		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All"/>
+		<PackageReference Include="Polly" Version="7.2.3" />
+		<PackageReference Include="RabbitMQ.Client" Version="6.5.0" />
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\core\Application\Fuxion.Application.csproj"/>
+		<ProjectReference Include="..\..\core\Application\Fuxion.Application.csproj" />
 	</ItemGroup>
 
 </Project>

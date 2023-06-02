@@ -4,17 +4,15 @@ using Fuxion.Application.Factories;
 using Fuxion.Application.Snapshots;
 using Fuxion.Domain;
 using Fuxion.Domain.Aggregates;
-using Fuxion.Domain.Events;
-using Fuxion.Reflection;
 
 namespace Fuxion.Application.Repositories;
 
-public class EventSourcingRepository<TAggregate> : IRepository<TAggregate> where TAggregate : Aggregate, new()
+public class EventSourcingRepository<TAggregate> : IRepository<TAggregate> where TAggregate : IAggregate, new()
 {
-	public EventSourcingRepository(IEventStorage<TAggregate> eventStorage,
+	public EventSourcingRepository(
+		IEventStorage<TAggregate> eventStorage,
 		ISnapshotStorage<TAggregate> snapshotStorage,
 		IEventDispatcher eventDispatcher,
-		TypeKeyDirectory typeKeyDirectory,
 		Factory<TAggregate> aggregateFactory)
 	{
 		this.eventStorage = eventStorage;
@@ -26,26 +24,26 @@ public class EventSourcingRepository<TAggregate> : IRepository<TAggregate> where
 	readonly IEventDispatcher eventDispatcher;
 	readonly IEventStorage<TAggregate> eventStorage;
 	readonly ISnapshotStorage<TAggregate> snapshotStorage;
-	readonly Dictionary<Guid, Aggregate> trackedAggregates = new();
+	readonly Dictionary<Guid, IAggregate> trackedAggregates = new();
 	public ILogger? Logger { get; set; }
 	public void Dispose() { }
 	public virtual async Task<TAggregate> GetAsync(Guid aggregateId)
 	{
-		TAggregate? aggregate = null;
+		TAggregate? aggregate = default;
 		var startEvent = 0;
-		if (aggregateFactory.IsSnapshottable())
+		if(aggregateFactory.Features().TryGet(out SnapshotFactoryFeature<TAggregate>? feature))
 		{
-			var snapshot = await snapshotStorage.GetSnapshotAsync(aggregateFactory.GetSnapshotType(), aggregateId);
+			var snapshot = await snapshotStorage.GetSnapshotAsync(feature.Type, aggregateId);
 			if (snapshot != null)
 			{
-				aggregate = aggregateFactory.FromSnapshot((Snapshot<TAggregate>)snapshot);
+				aggregate = feature.FromSnapshot((Snapshot<TAggregate>)snapshot);
 				startEvent = snapshot.Version;
 			}
 		}
 		var events = (await eventStorage.GetEventsAsync(aggregateId, startEvent, int.MaxValue)).ToList();
 		if (aggregate == null && !events.Any()) throw new AggregateNotFoundException($"Aggregate with id '{aggregateId}' not found in repository");
 		aggregate ??= aggregateFactory.Create(aggregateId);
-		aggregate.Hydrate(events);
+		aggregate.Features().Get<EventSourcingAggregateFeature>().Hydrate(events);
 		AddToTracking(aggregate);
 		return aggregate;
 	}
@@ -60,35 +58,53 @@ public class EventSourcingRepository<TAggregate> : IRepository<TAggregate> where
 		{
 			foreach (var aggregate in trackedAggregates.Values)
 			{
-				if (!aggregate.HasEventSourcing())
-					throw new AggregateFeatureNotFoundException(
-						$"Aggregate '{aggregate.GetType().Name}:{aggregate.Id}' must has '{nameof(EventSourcingAggregateFeature)}' to uses '{nameof(EventSourcingRepository<TAggregate>)}'.");
-				var expectedVersion = aggregate.GetLastCommittedVersion();
+				var feature = aggregate.Features().Get<EventSourcingAggregateFeature>();
+				// if (!aggregate.HasEventSourcing())
+				// 	throw new FeatureNotFoundException(
+				// 		$"Aggregate '{aggregate.GetType().Name}:{aggregate.Id}' must has '{nameof(EventSourcingAggregateFeature)}' to uses '{nameof(EventSourcingRepository<TAggregate>)}'.");
+				var expectedVersion = feature.LastCommittedVersion;
+				// var expectedVersion = aggregate.GetLastCommittedVersion();
 				var lastEvent = await eventStorage.GetLastEventAsync(aggregate.Id);
-				if (lastEvent != null && expectedVersion == 0)
-					throw new AggregateCreationException($"Aggregate '{aggregate.Id}' can't be created as it already exists with version {lastEvent.EventSourcing().TargetVersion + 1}");
-				if (lastEvent != null && lastEvent.EventSourcing().TargetVersion + 1 != expectedVersion)
-					throw new ConcurrencyException($"Aggregate '{aggregate.Id}' has been modified externally and has an updated state. Can't commit changes.");
-				var changesToCommit = aggregate.GetPendingEvents();
+				if (lastEvent is not null)
+				{
+					var evtFeature = lastEvent.Features().Get<EventSourcingEventFeature>();
+					if(expectedVersion == 0)
+						throw new AggregateCreationException($"Aggregate '{aggregate.Id}' can't be created as it already exists with version {evtFeature.TargetVersion + 1}");
+					if (evtFeature.TargetVersion + 1 != expectedVersion)
+						throw new ConcurrencyException($"Aggregate '{aggregate.Id}' has been modified externally and has an updated state. Can't commit changes.");
+				}
+				// if (lastEvent != null && expectedVersion == 0)
+				// 	throw new AggregateCreationException($"Aggregate '{aggregate.Id}' can't be created as it already exists with version {lastEvent.EventSourcing().TargetVersion + 1}");
+				// if (lastEvent != null && lastEvent.EventSourcing().TargetVersion + 1 != expectedVersion)
+				// 	throw new ConcurrencyException($"Aggregate '{aggregate.Id}' has been modified externally and has an updated state. Can't commit changes.");
+				var changesToCommit = aggregate.Features().Get<EventsAggregateFeature>().GetPendingEvents();
+				//var changesToCommit = aggregate.GetPendingEvents();
 
 				//perform pre commit actions
-				foreach (var e in changesToCommit) e.EventSourcing().EventCommittedTimestamp = DateTime.UtcNow;
+				foreach (var e in changesToCommit) e.Features().Get<EventSourcingEventFeature>().EventCommittedTimestamp = DateTime.UtcNow;
 
 				//CommitAsync events to storage provider
 				await eventStorage.CommitAsync(aggregate.Id, changesToCommit);
-				aggregate.EventSourcing().LastCommittedVersion = aggregate.GetCurrentVersion();
+				feature.LastCommittedVersion = feature.CurrentVersion;
 
 				// If the Aggregate is snapshottable
-				if (aggregate.IsSnapshottable())
-					if (aggregate.GetCurrentVersion() - aggregate.GetSnapshotVersion() > aggregate.GetSnapshotFrequency())
+				if (feature.IsSnapshottable)
+					if (feature.CurrentVersion - feature.SnapshotVersion > feature.SnapshotFrequency)
 					{
-						await snapshotStorage.SaveSnapshotAsync(aggregate.GetSnapshot());
-						aggregate.EventSourcing().SnapshotVersion = aggregate.GetCurrentVersion();
+						await snapshotStorage.SaveSnapshotAsync(feature.GetSnapshot());
+						feature.SnapshotVersion = feature.CurrentVersion;
 					}
+				// if (aggregate.IsSnapshottable())
+				// 	if (aggregate.GetCurrentVersion() - aggregate.GetSnapshotVersion() > aggregate.GetSnapshotFrequency())
+				// 	{
+				// 		await snapshotStorage.SaveSnapshotAsync(aggregate.GetSnapshot());
+				// 		aggregate.EventSourcing().SnapshotVersion = aggregate.GetCurrentVersion();
+				// 	}
 
 				// Dispatch events asynchronously
 				foreach (var e in changesToCommit) await eventDispatcher.DispatchAsync(e);
-				aggregate.ClearPendingEvents();
+				aggregate.Features().Get<EventsAggregateFeature>().ClearPendingEvents();
+				// aggregate.ClearPendingEvents();
 			}
 			trackedAggregates.Clear();
 		} catch (Exception ex)
@@ -102,6 +118,7 @@ public class EventSourcingRepository<TAggregate> : IRepository<TAggregate> where
 	{
 		if (!IsTracked(aggregate.Id))
 			trackedAggregates.Add(aggregate.Id, aggregate);
-		else if (trackedAggregates[aggregate.Id] != aggregate) throw new ConcurrencyException("Aggregate can't be added because it's already tracked.");
+		else throw new ConcurrencyException("Aggregate can't be added because it's already tracked.");
+		//else if (trackedAggregates[aggregate.Id] != aggregate) throw new ConcurrencyException("Aggregate can't be added because it's already tracked.");
 	}
 }

@@ -1,0 +1,8 @@
+{
+  "Rabbit": {
+    "Host": "CL2-BUS",
+    "Port": 5672,
+    "Exchange": "fuxion-lab-exchange",
+    "QueuePrefix": "fuxion-lab-"
+  }
+}

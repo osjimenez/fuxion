@@ -8,4 +8,4 @@ public interface ISnapshotStorage
 	Task SaveSnapshotAsync(Snapshot snapshot);
 }
 
-public interface ISnapshotStorage<TAggregate> : ISnapshotStorage where TAggregate : Aggregate { }
+public interface ISnapshotStorage<TAggregate> : ISnapshotStorage where TAggregate : IAggregate { }

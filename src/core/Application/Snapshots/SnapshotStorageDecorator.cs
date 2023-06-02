@@ -2,7 +2,7 @@
 
 namespace Fuxion.Application.Snapshots;
 
-class SnapshotStorageDecorator<TAggregate> : ISnapshotStorage<TAggregate> where TAggregate : Aggregate, new()
+class SnapshotStorageDecorator<TAggregate> : ISnapshotStorage<TAggregate> where TAggregate : IAggregate, new()
 {
 	public SnapshotStorageDecorator(ISnapshotStorage storage) => this.storage = storage;
 	readonly ISnapshotStorage storage;

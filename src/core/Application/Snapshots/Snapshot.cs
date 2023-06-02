@@ -12,5 +12,5 @@ public abstract class Snapshot
 	public Guid AggregateId { get; internal set; }
 	[JsonInclude]
 	public int Version { get; internal set; }
-	internal abstract void Load(Aggregate aggregate);
+	internal abstract void Load(IAggregate aggregate);
 }

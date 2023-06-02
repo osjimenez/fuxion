@@ -5,16 +5,9 @@ using System.Text.Json.Serialization;
 
 namespace Fuxion.Json;
 
-public class JsonPodConverter<TPod, TDiscriminator, TPayload> : JsonPodConverter<TPod, TDiscriminator, TPayload, TDiscriminator>
-	where TPod : JsonPod<TDiscriminator, TPayload, TDiscriminator>
-	where TPayload : notnull
-	where TDiscriminator : notnull { }
-
-public class JsonPodConverter<TPod, TDiscriminator, TPayload, THeadersDiscriminator> : JsonConverter<TPod> 
-	where TPod : JsonPod<TDiscriminator, TPayload, THeadersDiscriminator>
-	where TPayload : notnull
+public class JsonPodConverter<TPod, TDiscriminator, TPayload> : JsonConverter<TPod> 
+	where TPod : JsonPod<TDiscriminator, TPayload>
 	where TDiscriminator : notnull
-	where THeadersDiscriminator : notnull
 {
 	public override TPod? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{
@@ -64,8 +57,8 @@ public class JsonPodConverter<TPod, TDiscriminator, TPayload, THeadersDiscrimina
 		{
 			if (prop.Name == nameof(JsonPod<string, string>.Headers))
 			{
-				if (prop.GetValue(value) is not JsonPodCollection<THeadersDiscriminator> headers)
-					throw new InvalidProgramException($"Property '{prop.Name}' of type '{prop.DeclaringType?.Name}' must be of Type '{nameof(JsonPodCollection<THeadersDiscriminator>)}'");
+				if (prop.GetValue(value) is not JsonPodCollection<TDiscriminator> headers)
+					throw new InvalidProgramException($"Property '{prop.Name}' of type '{prop.DeclaringType?.Name}' must be of Type '{nameof(JsonPodCollection<TDiscriminator>)}'");
 				if (headers.Count <= 0) continue;
 			}
 			writer.WritePropertyName(prop.GetCustomAttribute<JsonPropertyNameAttribute>()?.Name ?? prop.Name);

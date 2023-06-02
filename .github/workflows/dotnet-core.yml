@@ -3,7 +3,8 @@ name: .NET Core
 on: 
   push:
     branches-ignore:
-      - 'module/**' 
+      - 'module/**'
+      - 'feature/**'
 
 jobs:
   build:

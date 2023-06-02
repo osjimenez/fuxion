@@ -1,11 +1,11 @@
 ﻿using Fuxion.Application;
 using Fuxion.Domain;
-using Fuxion.Domain.Events;
+using Fuxion.Domain.Aggregates;
 using Microsoft.EntityFrameworkCore;
 
 namespace Fuxion.EntityFrameworkCore;
 
-public abstract class DbContextRepository<TContext, TAggregate> : IRepository<TAggregate> where TContext : DbContext where TAggregate : Aggregate, new()
+public abstract class DbContextRepository<TContext, TAggregate> : IRepository<TAggregate> where TContext : DbContext where TAggregate : IAggregate, new()
 {
 	public DbContextRepository(TContext context, IEventDispatcher eventDispatcher)
 	{
@@ -28,7 +28,7 @@ public abstract class DbContextRepository<TContext, TAggregate> : IRepository<TA
 	}
 	async Task IRepository<TAggregate>.CommitAsync()
 	{
-		var changesToCommit = attached.SelectMany(a => a.GetPendingEvents());
+		var changesToCommit = attached.SelectMany(a => a.Features().Get<EventsAggregateFeature>().GetPendingEvents());
 		await Context.SaveChangesAsync();
 
 		// Dispatch events asynchronously
