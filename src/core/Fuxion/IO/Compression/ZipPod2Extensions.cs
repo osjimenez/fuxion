@@ -16,5 +16,5 @@ public static class ZipPod2Extensions
 	public static IPodBuilder2<IPod2<TDiscriminator, string>> FromUtf8<TDiscriminator>(this IPodBuilder2<ZipPod2<TDiscriminator>> me) where TDiscriminator : notnull =>
 		new PodBuilder2<TDiscriminator, string, IPod2<TDiscriminator, string>>(
 			// TODO Remove nullable Payload!
-			new BypassPod2<TDiscriminator, string>(me.Pod.Discriminator, Encoding.UTF8.GetString(me.Pod.Payload!)));
+			new Pod2<TDiscriminator, string>(me.Pod.Discriminator, Encoding.UTF8.GetString(me.Pod.Payload!)));
 }

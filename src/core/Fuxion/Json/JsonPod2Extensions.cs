@@ -14,7 +14,7 @@ public static class JsonPod2Extensions
 	public static IPodBuilder2<IPod2<TDiscriminator, byte[]>> ToUtf8<TDiscriminator, T>(this IPodBuilder2<JsonPod2<TDiscriminator, T>> me)
 		where TDiscriminator : notnull 
 		where T : notnull =>
-		new PodBuilder2<TDiscriminator, byte[], IPod2<TDiscriminator, byte[]>>(new BypassPod2<TDiscriminator, byte[]>(me.Pod.Discriminator, Encoding.UTF8.GetBytes(me.Pod.ToJson())));
+		new PodBuilder2<TDiscriminator, byte[], IPod2<TDiscriminator, byte[]>>(new Pod2<TDiscriminator, byte[]>(me.Pod.Discriminator, Encoding.UTF8.GetBytes(me.Pod.ToJson())));
 
 	public static JsonPod2<TDiscriminator, object> FromJsonPod2<TDiscriminator>(this string me) where TDiscriminator : notnull =>
 		me.FromJson<JsonPod2<TDiscriminator, object>>()
@@ -37,7 +37,7 @@ public static class JsonPod2Extensions
 	}
 
 	public static IPodBuilder2<IPod2<TDiscriminator, byte[]>> FromBytes<TDiscriminator, T>(this IPodBuilder2<JsonPod2<TDiscriminator, T>> me) where TDiscriminator : notnull =>
-		new PodBuilder2<TDiscriminator, byte[], IPod2<TDiscriminator, byte[]>>(new BypassPod2<TDiscriminator, byte[]>(me.Pod.Discriminator,
+		new PodBuilder2<TDiscriminator, byte[], IPod2<TDiscriminator, byte[]>>(new Pod2<TDiscriminator, byte[]>(me.Pod.Discriminator,
 			me.Pod.As<byte[]>() ?? throw new ArgumentException($"'{me.GetType().GetSignature()}' payload couldn't be deserialized as '{typeof(byte[]).GetSignature()}'")));
 	
 }

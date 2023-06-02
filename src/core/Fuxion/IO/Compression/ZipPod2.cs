@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace Fuxion.IO.Compression;
 
-public class ZipPod2<TDiscriminator> : IRawPod2<TDiscriminator, byte[], byte[], BypassPodCollection2<TDiscriminator>>
+public class ZipPod2<TDiscriminator> : IPod2<TDiscriminator, byte[], PodCollection2<TDiscriminator>>
 	where TDiscriminator : notnull
 {
 	ZipPod2(TDiscriminator discriminator)
@@ -26,11 +26,11 @@ public class ZipPod2<TDiscriminator> : IRawPod2<TDiscriminator, byte[], byte[], 
 	byte[] UncompressedData { get; set; }
 	public TDiscriminator Discriminator { get; }
 	public byte[] Payload => UncompressedData;
-	[JsonIgnore]
-	public byte[] Raw => CompressedData;
+	// [JsonIgnore]
+	// public byte[] Raw => CompressedData;
 	// public byte[] Outside() => UncompressedData;
 	// public byte[] Inside() => CompressedData;
-	public BypassPodCollection2<TDiscriminator> Headers { get; } = new();
+	public PodCollection2<TDiscriminator> Headers { get; } = new();
 	static byte[] Compress(byte[] bytes)
 	{
 		using var msi = new MemoryStream(bytes);

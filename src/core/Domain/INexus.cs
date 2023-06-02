@@ -14,7 +14,7 @@ public interface INexus : IInitializable
 	string NodeType { get; }
 	string DeployId { get; set; }
 	Guid InstanceId { get; }
-	// TypeId - Identificador del tipo de nodo. Microservicio de Salto, Agente de Vaelsys, etc.
+	// NodeType - Identificador del tipo de nodo. Microservicio de Salto, Agente de Vaelsys, etc.
 	// DeployId - Identificador de despliegue, OnPremise Molinero, Cloud Europa, Cloud Mexico, etc. 
 	// InstanceId - Identificador de la instancia. Será lo mismo para los agentes, pero no para las clouds donde tenemos varias instanacias de un mismo servicio.
 	
@@ -85,6 +85,7 @@ public class DefaultNexus : INexus
 
 public class RouteDirectory
 {
+	Dictionary<Type, IEnumerable<IPublisher<object>>> publishers = new();
 	public void AddPublisher<TMessage>(IPublisher<TMessage> publisher)
 		where TMessage : notnull
 	{
@@ -102,7 +103,6 @@ public class RouteDirectory
 			new BypassPublisher<object>(info, message => publishFunc((TMessage)message))
 		});
 	}
-	Dictionary<Type, IEnumerable<IPublisher<object>>> publishers = new();
 	public IEnumerable<IPublisher<TMessage>> GetPublishers<TMessage>()
 		where TMessage : notnull
 	{
@@ -202,6 +202,26 @@ public class ObservableSubscriberDecorator<TMessage> : ISubscriber<TMessage>
 	}
 }
 
+public class ObservableNexusDecorator
+{
+	public ObservableNexusDecorator(INexus nexus)
+	{
+		_nexus = nexus;
+		_nexus.OnReceive(msg => subject.OnNext(msg));
+	}
+	INexus _nexus;
+	// public Task<IDisposable> OnReceive(Action<object> onMessageReceived) => _nexus.OnReceive(onMessageReceived);
+	Subject<object> subject = new();
+	public IObservable<object> Observe()
+	{
+		return subject;
+	}
+}
+
+public static class ObservableNexusExtensions
+{
+	public static IObservable<object> Observe(this INexus nexus) => new ObservableNexusDecorator(nexus).Observe();
+}
 
 // public interface IObservableSubscriber : ISubscriber
 // {

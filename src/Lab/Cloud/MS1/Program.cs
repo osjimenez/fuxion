@@ -1,3 +1,4 @@
+using System.Reactive.Linq;
 using System.Text;
 using Fuxion.Domain;
 using Fuxion.Json;
@@ -87,6 +88,18 @@ var app = builder.Build();
 	{
 		Console.WriteLine("Message received:\r\n" + msg);
 	});
+	nexus.Observe()
+		.Buffer(2)
+		.Subscribe(list =>
+		{
+			foreach(var msg in list)
+				Console.WriteLine("Message observed from nexus extensions:\r\n" + msg);
+		});
+	new ObservableNexusDecorator(nexus).Observe()
+		.Subscribe(msg =>
+		{
+			Console.WriteLine("Message observed from nexus:\r\n" + msg);
+		});
 }
 // MAPS
 app.MapGet("/instance", () => $"MS1 - Instance = {StaticInstance.Id}");
