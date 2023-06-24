@@ -57,7 +57,7 @@ public class LicenseContainer
 	public static LicenseContainer Sign(License license, string key)
 	{
 		license.SignatureUtcTime = DateTime.UtcNow;
-		var originalData = Encoding.Unicode.GetBytes(license.ToJson());
+		var originalData = Encoding.Unicode.GetBytes(license.SerializeToJson());
 		byte[] signedData;
 		var pro = new RSACryptoServiceProvider();
 		FromXmlString(pro, key);
@@ -68,7 +68,7 @@ public class LicenseContainer
 	{
 		var pro = new RSACryptoServiceProvider();
 		FromXmlString(pro, key);
-		return pro.VerifyData(Encoding.Unicode.GetBytes(RawLicense.ToJson()), SHA1.Create(), Convert.FromBase64String(Signature));
+		return pro.VerifyData(Encoding.Unicode.GetBytes(RawLicense.SerializeToJson()), SHA1.Create(), Convert.FromBase64String(Signature));
 	}
 	//TODO - Must be done in framework when solved issue https://github.com/dotnet/corefx/pull/37593
 	static void FromXmlString(RSACryptoServiceProvider rsa, string xmlString)

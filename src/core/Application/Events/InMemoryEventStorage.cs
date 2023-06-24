@@ -15,7 +15,7 @@ public class InMemoryEventStorage : IEventStorage
 			this.dumpFilePath.Read(path => {
 				if (File.Exists(path))
 				{
-					var dic = File.ReadAllText(path).FromJson<Dictionary<Guid, List<JsonPod<TypeKey, Event>>>>();
+					var dic = File.ReadAllText(path).DeserializeFromJson<Dictionary<Guid, List<JsonPod<TypeKey, Event>>>>();
 					if (dic == null) throw new FileLoadException($"File '{path}' cannot be deserializer for '{nameof(InMemoryEventStorage)}'");
 					events.WriteObject(dic.Select(k => (k.Key,
 						//Value: k.Value.Select<EventSourcingPod, Event>((EventSourcingPod v) => v.WithTypeKeyDirectory(typeKeyDirectory)).RemoveNulls().ToList<Event>()
@@ -52,7 +52,7 @@ public class InMemoryEventStorage : IEventStorage
 					=> File.WriteAllText(path, 
 						str.ToDictionary(
 							k => k.Key, 
-							k => k.Value.Select(e => new JsonPod<TypeKey, Event>(e.GetType().GetTypeKey(), e))).ToJson()));
+							k => k.Value.Select(e => new JsonPod<TypeKey, Event>(e.GetType().GetTypeKey(), e))).SerializeToJson()));
 				//k => k.Value.Select(e => e.ToEventSourcingPod())).ToJson()));
 			});
 	}

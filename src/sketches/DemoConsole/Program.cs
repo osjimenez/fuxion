@@ -15,11 +15,11 @@ public class Program
 		lic.SetProductId(productId);
 		var con = new LicenseContainer("signature", lic);
 		Console.WriteLine("ToJson:");
-		var json = con.ToJson();
+		var json = con.SerializeToJson();
 		Console.WriteLine(json);
 		Console.WriteLine("FromJson:");
-		var con2 = json.FromJson<LicenseContainer>()!;
-		var json2 = con2.ToJson();
+		var con2 = json.DeserializeFromJson<LicenseContainer>()!;
+		var json2 = con2.SerializeToJson();
 		Console.WriteLine(json2);
 		Assert.Equal(json, json2);
 		Assert.True(con2.Is<LicenseMock>());
@@ -33,8 +33,8 @@ public class Program
 		Console.WriteLine("Time: " + time);
 		Thread.Sleep(time);
 		Console.WriteLine("FromJson timed:");
-		var con3 = json.FromJson<LicenseContainer>()!;
-		var json3 = con3.ToJson();
+		var con3 = json.DeserializeFromJson<LicenseContainer>()!;
+		var json3 = con3.SerializeToJson();
 		Console.WriteLine(json3);
 		Assert.Equal(json, json3);
 		Assert.Equal(json2, json3);

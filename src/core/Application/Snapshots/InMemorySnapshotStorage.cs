@@ -14,7 +14,7 @@ public class InMemorySnapshotStorage : ISnapshotStorage
 			this.dumpFilePath.Read(path => {
 				if (File.Exists(path))
 				{
-					var dic = File.ReadAllText(path).FromJson<Dictionary<TypeKey, List<JsonPod<TypeKey, Snapshot>>>>();
+					var dic = File.ReadAllText(path).DeserializeFromJson<Dictionary<TypeKey, List<JsonPod<TypeKey, Snapshot>>>>();
 					if (dic == null) throw new FileLoadException($"File '{path}' cannot be deserializer for '{nameof(InMemorySnapshotStorage)}'");
 					snapshots.WriteObject(dic.Select(k => (k.Key, Value: k.Value.Select(v => (Snapshot?)v.As(typeKeyResolver[k.Key])).RemoveNulls().ToDictionary(s => s.AggregateId)))
 						.ToDictionary(a => a.Key, a => a.Value));
@@ -39,7 +39,7 @@ public class InMemorySnapshotStorage : ISnapshotStorage
 		if (dumpFilePath != null)
 			await dumpFilePath.WriteAsync(path => {
 				snapshots.Read(str => File.WriteAllText(path,
-					str.ToDictionary(k => k.Value.First().Value.GetType().GetTypeKey(), k => k.Value.Select(e => new JsonPod<TypeKey, Snapshot>(e.Value.GetType().GetTypeKey(), e.Value))).ToJson()));
+					str.ToDictionary(k => k.Value.First().Value.GetType().GetTypeKey(), k => k.Value.Select(e => new JsonPod<TypeKey, Snapshot>(e.Value.GetType().GetTypeKey(), e.Value))).SerializeToJson()));
 			});
 	}
 }

@@ -17,7 +17,7 @@ public class JsonPodCollectionConverter<TDiscriminator> : JsonConverter<JsonPodC
 			var ele = JsonDocument.ParseValue(ref reader).RootElement;
 			var pro = ele.GetProperty(nameof(JsonPod<int, int>.Discriminator));
 			var dis = (TDiscriminator)(pro.Deserialize(typeof(TDiscriminator), options) ?? throw new JsonException($"Property '{nameof(JsonPod<int, int>.Discriminator)}' with kind '{pro.ValueKind}' could not be deserialized"));
-			var jsonValue = ele.GetRawText().FromJson<JsonValue>(options: options) ?? throw new JsonException($"'{nameof(JsonValue)}' could not be deserialized from raw text");
+			var jsonValue = ele.GetRawText().DeserializeFromJson<JsonValue>(options: options) ?? throw new JsonException($"'{nameof(JsonValue)}' could not be deserialized from raw text");
 			res.InternalDictionary.Add(dis,jsonValue);
 			reader.Read();
 		}

@@ -44,14 +44,14 @@ public class JsonFileLicenseStore : ILicenseStore
 				}).ToList())
 				licenses.Remove(l);
 			licenses.Add(license);
-			pathLocker.Write(path => File.WriteAllText(path, licenses.ToJson()));
+			pathLocker.Write(path => File.WriteAllText(path, licenses.SerializeToJson()));
 			LicenseAdded?.Invoke(this, new(license));
 		});
 	}
 	public bool Remove(LicenseContainer license) =>
 		listLocker.Write(licenses => {
 			var res = licenses.Remove(license);
-			pathLocker.Write(path => File.WriteAllText(path, licenses.ToJson()));
+			pathLocker.Write(path => File.WriteAllText(path, licenses.SerializeToJson()));
 			LicenseRemoved?.Invoke(this, new(license));
 			return res;
 		});
@@ -60,7 +60,7 @@ public class JsonFileLicenseStore : ILicenseStore
 		listLocker.Write(l => l.Clear());
 		if (File.Exists(pathLocker.Read(path => path)))
 			listLocker.Write(
-				l => l.AddRange(pathLocker.Read(path => File.ReadAllText(path)).FromJson<LicenseContainer[]>() ?? throw new InvalidOperationException("Error deserializing LicenseContainer")));
+				l => l.AddRange(pathLocker.Read(path => File.ReadAllText(path)).DeserializeFromJson<LicenseContainer[]>() ?? throw new InvalidOperationException("Error deserializing LicenseContainer")));
 
 		//listLocker.Write(l => l.AddRange(JsonConvert.DeserializeObject<LicenseContainer[]>(
 		//		pathLocker.Read(path => File.ReadAllText(path))
