@@ -19,7 +19,7 @@ public class SnapshotTest : BaseTest<SnapshotTest>
 			Id = Guid.NewGuid(),
 			Name = "Test"
 		};
-		var json = snapshot.ToJson();
+		var json = snapshot.SerializeToJson();
 		Output.WriteLine(json);
 	}
 }

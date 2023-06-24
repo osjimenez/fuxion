@@ -90,7 +90,7 @@ public class PatchableTest : BaseTest<PatchableTest>
 		dyn.Integer = 111;
 		
 		// Serialize and deserialize to simulate network service passthrough
-		var ser = ((Patchable<ToPatch>)dyn).ToJson().FromJson<Patchable<ToPatch>>();
+		var ser = ((Patchable<ToPatch>)dyn).SerializeToJson().DeserializeFromJson<Patchable<ToPatch>>();
 		Assert.NotNull(ser);
 		ser.Patch(toPatch);
 		Assert.Equal(111, toPatch.Integer);
@@ -102,7 +102,7 @@ public class PatchableTest : BaseTest<PatchableTest>
 			c.Integer = 123;
 			c.String = "TEST";
 		});
-		Logger.LogInformation($"JSON:\r\n{pat.ToJson()}");
+		Logger.LogInformation($"JSON:\r\n{pat.SerializeToJson()}");
 	}
 	[Fact(DisplayName = "Patchable - From object (anonymous types)")]
 	public void FromObject()
@@ -111,7 +111,7 @@ public class PatchableTest : BaseTest<PatchableTest>
 			Integer = 123,
 			String = "TEST"
 		});
-		Logger.LogInformation($"JSON:\r\n{pat.ToJson()}");
+		Logger.LogInformation($"JSON:\r\n{pat.SerializeToJson()}");
 	}
 	
 }

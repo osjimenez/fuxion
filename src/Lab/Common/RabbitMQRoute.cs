@@ -27,12 +27,12 @@ public class RabbitMQRouteAdapter : RouteAdapter<RabbitMQSend, RabbitMQReceive,T
 		return new()
 		{
 			RoutingKey = ((RabbitMQSend)message.Headers[typeof(RabbitMQSend).GetTypeKey()].Outside()).RoutingKey,
-			Body = Encoding.UTF8.GetBytes(message.ToJson())
+			Body = Encoding.UTF8.GetBytes(message.SerializeToJson())
 		};
 	}
 	protected override TypeKeyPod<IMessage> ReceiveConverter(RabbitMQReceive message)
 		=> Encoding.UTF8.GetString(message.Body.ToArray())
-			.FromJson<TypeKeyPod<IMessage>>() ?? throw new SerializationException($"Deserialization was null");
+			.DeserializeFromJson<TypeKeyPod<IMessage>>() ?? throw new SerializationException($"Deserialization was null");
 }
 
 public class RabbitMQPublisher : IPublisher<RabbitMQSend>

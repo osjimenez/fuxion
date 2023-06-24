@@ -12,11 +12,11 @@ public class TypeKeyTest : BaseTest<TypeKeyTest>
 	{
 		TypeKey tk = new("http://domain", "folder1", "folder2");
 		Output.WriteLine($"To string: {tk}");
-		Output.WriteLine($"To json: {tk.ToJson()}");
+		Output.WriteLine($"To json: {tk.SerializeToJson()}");
 		
 		tk = new("https://domain", "folder1", "folder2");
 		Output.WriteLine($"To string: {tk}");
-		Output.WriteLine($"To json: {tk.ToJson()}");
+		Output.WriteLine($"To json: {tk.SerializeToJson()}");
 
 		Assert.Throws<TypeKeyException>(() => new TypeKey("/"));
 		Assert.Throws<TypeKeyException>(() => new TypeKey("\\"));
@@ -24,25 +24,25 @@ public class TypeKeyTest : BaseTest<TypeKeyTest>
 	[Fact(DisplayName = "Deserialize TypeKey")]
 	public void Deserialize()
 	{
-		var tk = "\"folder1/folder2\"".FromJson<TypeKey>();
+		var tk = "\"folder1/folder2\"".DeserializeFromJson<TypeKey>();
 		Assert.NotNull(tk);
 		Output.WriteLine($"Chain:\n\t{tk.KeyChain.Aggregate((a,c)=>$"{a}\n\t{c}")}");
 		Assert.Equal("folder1",tk.KeyChain[0]);
 		Assert.Equal("folder2",tk.KeyChain[1]);
 
-		tk = "\"http://domain.com/folder1/folder2\"".FromJson<TypeKey>();
+		tk = "\"http://domain.com/folder1/folder2\"".DeserializeFromJson<TypeKey>();
 		Assert.NotNull(tk);
 		Output.WriteLine($"Chain:\n\t{tk.KeyChain.Aggregate((a,c)=>$"{a}\n\t{c}")}");
 		Assert.Equal("http://domain.com",tk.KeyChain[0]);
 		Assert.Equal("folder1",tk.KeyChain[1]);
 		Assert.Equal("folder2",tk.KeyChain[2]);
 		
-		tk = "\"https://domain/folder1/folder2\"".FromJson<TypeKey>();
+		tk = "\"https://domain/folder1/folder2\"".DeserializeFromJson<TypeKey>();
 		Assert.NotNull(tk);
 		Output.WriteLine($"Chain:\n\t{tk.KeyChain.Aggregate((a,c)=>$"{a}\n\t{c}")}");
 		
-		Output.WriteLine($"Throws => {Assert.Throws<TypeKeyException>(() => "\"scheme://domain/folder1/folder2\"".FromJson<TypeKey>()).Message}");
-		Output.WriteLine($"Throws => {Assert.Throws<TypeKeyException>(() => "\"https://domain/folder1/folder2?one=123&two=456\"".FromJson<TypeKey>()).Message}");
+		Output.WriteLine($"Throws => {Assert.Throws<TypeKeyException>(() => "\"scheme://domain/folder1/folder2\"".DeserializeFromJson<TypeKey>()).Message}");
+		Output.WriteLine($"Throws => {Assert.Throws<TypeKeyException>(() => "\"https://domain/folder1/folder2?one=123&two=456\"".DeserializeFromJson<TypeKey>()).Message}");
 	}
 	[Fact(DisplayName = "Process full name")]
 	public void ProcessFullName()

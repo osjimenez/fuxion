@@ -13,10 +13,10 @@ public static class JsonPodExtensions
 	public static IPodBuilder<ICrossPod<TDiscriminator, byte[], byte[]>> ToUtf8<TDiscriminator, T>(this IPodBuilder<JsonPod<TDiscriminator, T>> me)
 		where TDiscriminator : notnull 
 		where T : notnull =>
-		new PodBuilder<TDiscriminator, byte[], byte[], ICrossPod<TDiscriminator, byte[], byte[]>>(new BypassPod<TDiscriminator, byte[], byte[]>(me.Pod.Discriminator, Encoding.UTF8.GetBytes(me.Pod.ToJson())));
+		new PodBuilder<TDiscriminator, byte[], byte[], ICrossPod<TDiscriminator, byte[], byte[]>>(new BypassPod<TDiscriminator, byte[], byte[]>(me.Pod.Discriminator, Encoding.UTF8.GetBytes(me.Pod.SerializeToJson())));
 
 	public static JsonPod<TDiscriminator, object> FromJsonPod<TDiscriminator>(this string me) where TDiscriminator : notnull =>
-		me.FromJson<JsonPod<TDiscriminator, object>>()
+		me.DeserializeFromJson<JsonPod<TDiscriminator, object>>()
 		?? throw new FormatException($"The string couldn't be deserialized as '{typeof(JsonPod<TDiscriminator, object>).GetSignature()}'");
 	
 	/// <summary>

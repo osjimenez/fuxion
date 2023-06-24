@@ -5,7 +5,7 @@ namespace Fuxion.Test;
 public class SystemExtensionsTest : BaseTest<SystemExtensionsTest>
 {
 	public SystemExtensionsTest(ITestOutputHelper output) : base(output) { }
-	void GenerateException() => throw new NotImplementedException("Test method for testing");
+	void GenerateException() => throw new NotImplementedException("Fuxion.Test method for testing");
 	void GenerateExceptionWithInner()
 	{
 		try
@@ -13,7 +13,7 @@ public class SystemExtensionsTest : BaseTest<SystemExtensionsTest>
 			GenerateException();
 		} catch (Exception ex)
 		{
-			throw new NotImplementedException("Test method for testing", ex);
+			throw new NotImplementedException("Fuxion.Test method for testing", ex);
 		}
 	}
 
@@ -61,7 +61,7 @@ public class SystemExtensionsTest : BaseTest<SystemExtensionsTest>
 			GenerateException();
 		} catch (Exception ex)
 		{
-			var json = ex.ToJson();
+			var json = ex.SerializeToJson();
 			Output.WriteLine(json);
 		} finally
 		{
@@ -73,7 +73,7 @@ public class SystemExtensionsTest : BaseTest<SystemExtensionsTest>
 			GenerateExceptionWithInner();
 		} catch (Exception ex)
 		{
-			var json = ex.ToJson();
+			var json = ex.SerializeToJson();
 			Output.WriteLine(json);
 		} finally
 		{

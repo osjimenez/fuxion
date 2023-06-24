@@ -52,15 +52,17 @@ builder.Services.AddSingleton<INexus>(sp =>
 	nexus.RouteDirectory.AddPublisher<TestMessage>(new(""), message => rabbitPublisher.Publish(new()
 	{
 		RoutingKey = "fuxion-lab-CL1-MS1",
-		Body = Encoding.UTF8.GetBytes(message.ToJson())
+		Body = Encoding.UTF8.GetBytes(message.SerializeToJson())
 	}));
 	var rabbitSubscriber = sp.GetRequiredService<RabbitMQSubscriber>();
-	nexus.RouteDirectory.AddSubscriber(rabbitSubscriber);
-	new ObservableSubscriberDecorator<object>(rabbitSubscriber).Observe(_ => true)
+	// nexus.RouteDirectory.AddSubscriber(rabbitSubscriber);
+	var decoObs = new ObservableSubscriberDecorator<object>(rabbitSubscriber);
+	decoObs.Observe(_ => true)
 		.Subscribe(msg =>
 		{
 			Console.WriteLine("Message observed:\r\n" + msg);
 		});
+	nexus.RouteDirectory.AddSubscriber(decoObs);
 	// rabbitSubscriber.OnReceive(msg =>
 	// {
 	// 	Console.WriteLine("Received ...");
@@ -88,14 +90,14 @@ var app = builder.Build();
 	{
 		Console.WriteLine("Message received:\r\n" + msg);
 	});
-	nexus.Observe()
+	nexus.Observe(obj => true)
 		.Buffer(2)
 		.Subscribe(list =>
 		{
 			foreach(var msg in list)
 				Console.WriteLine("Message observed from nexus extensions:\r\n" + msg);
 		});
-	new ObservableNexusDecorator(nexus).Observe()
+	new ObservableNexusDecorator(nexus).Observe(obj => true)
 		.Subscribe(msg =>
 		{
 			Console.WriteLine("Message observed from nexus:\r\n" + msg);

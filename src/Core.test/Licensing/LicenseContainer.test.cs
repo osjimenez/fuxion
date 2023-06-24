@@ -19,12 +19,12 @@ public class LicenseContainerTest : BaseTest<LicenseContainerTest>
 		var con = LicenseContainer.Sign(lic, Const.FULL_KEY);
 		con.Comment = "Original comment";
 		Output.WriteLine("Original ToJson:");
-		Output.WriteLine(con.ToJson());
+		Output.WriteLine(con.SerializeToJson());
 		Assert.True(con.VerifySignature(Const.PUBLIC_KEY));
 		con.Comment = "Change comment";
 		Assert.True(con.VerifySignature(Const.PUBLIC_KEY));
 		Output.WriteLine("Changed ToJson:");
-		Output.WriteLine(con.ToJson());
+		Output.WriteLine(con.SerializeToJson());
 	}
 	[Fact(DisplayName = "LicenseContainer - Serialization")]
 	public void LicenseContainer_Serialization()
@@ -36,11 +36,11 @@ public class LicenseContainerTest : BaseTest<LicenseContainerTest>
 		lic.SetProductId(productId);
 		var con = new LicenseContainer("signature", lic);
 		Output.WriteLine("ToJson:");
-		var json = con.ToJson();
+		var json = con.SerializeToJson();
 		Output.WriteLine(json);
 		Output.WriteLine("FromJson:");
-		var con2 = json.FromJson<LicenseContainer>()!;
-		var json2 = con2.ToJson();
+		var con2 = json.DeserializeFromJson<LicenseContainer>()!;
+		var json2 = con2.SerializeToJson();
 		Output.WriteLine(json2);
 		Assert.Equal(json, json2);
 		Assert.True(con2.Is<LicenseMock>());
@@ -54,8 +54,8 @@ public class LicenseContainerTest : BaseTest<LicenseContainerTest>
 		Output.WriteLine("Time: " + time);
 		Thread.Sleep(time);
 		Output.WriteLine("FromJson timed:");
-		var con3 = json.FromJson<LicenseContainer>()!;
-		var json3 = con3.ToJson();
+		var con3 = json.DeserializeFromJson<LicenseContainer>()!;
+		var json3 = con3.SerializeToJson();
 		Output.WriteLine(json3);
 		Assert.Equal(json, json3);
 		Assert.Equal(json2, json3);
@@ -77,9 +77,9 @@ public class LicenseContainerTest : BaseTest<LicenseContainerTest>
 		lic.SetProductId(productId);
 		var con = LicenseContainer.Sign(lic, Const.FULL_KEY);
 		Output.WriteLine("ToJson:");
-		Output.WriteLine(con.ToJson());
+		Output.WriteLine(con.SerializeToJson());
 		Output.WriteLine("License.ToJson:");
-		Output.WriteLine(con.RawLicense.ToJson());
+		Output.WriteLine(con.RawLicense.SerializeToJson());
 		Assert.True(con.VerifySignature(Const.PUBLIC_KEY));
 	}
 }

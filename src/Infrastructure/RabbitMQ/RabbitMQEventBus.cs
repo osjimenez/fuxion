@@ -76,7 +76,7 @@ public class RabbitMQEventBus : IEventPublisher, IEventSubscriber
 		consumer.Received += async (model, ea) => {
 			//var integrationEventTypeId = ea.RoutingKey;
 			var message = Encoding.UTF8.GetString(ea.Body.ToArray());
-			var pod = message.FromJson<PublicationPod>(true);
+			var pod = message.DeserializeFromJson<PublicationPod>(true);
 			var @event  = pod.WithTypeKeyResolver(_typeKeyResolver);
 			if (@event == null) throw new InvalidCastException($"Event with discriminator '{pod.Discriminator}' is not registered in '{nameof(TypeKeyDirectory)}'");
 			await ProcessEvent(@event);

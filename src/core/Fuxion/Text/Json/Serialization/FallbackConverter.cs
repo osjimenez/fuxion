@@ -52,7 +52,7 @@ public class CollectionPropertyFallbackResolver : PropertyFallbackResolver
 		var writeComma = false;
 		foreach (var item in collection)
 		{
-			if (writeComma) writer.WriteRawValue(",");
+			if (writeComma) writer.WriteRawValue($",");
 			writeComma = true;
 			FallbackWriteRaw(item, writer, options, resolvers);
 		}
@@ -96,7 +96,7 @@ public class FallbackConverter<T> : JsonConverter<T>
 			if (con is not null) opt.Converters.Remove(con);
 			//foreach (var conv in options.Converters.Where(_ => _ is not FallbackConverter<T>))
 			//	opt.Converters.Add(conv);
-			var json = value.ToJson(opt);
+			var json = value.SerializeToJson(options:opt);
 			writer.WriteRawValue(json);
 			Printer.WriteLine(" = OK");
 		} catch
@@ -132,7 +132,7 @@ public class FallbackConverter<T> : JsonConverter<T>
 			if (converter is null) throw new InvalidProgramException($"Program couldn't create IgnoreErrorsConverter<{value.GetType().Name}>");
 			opt.Converters.Add((JsonConverter)converter);
 			using var d = Printer.Indent($"Write RAW with {converterType.GetSignature()}", '·');
-			var json = value.ToJson(opt);
+			var json = value.SerializeToJson(options:opt);
 			writer.WriteRawValue(json);
 		} catch (Exception ex)
 		{

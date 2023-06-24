@@ -63,7 +63,7 @@ public class LicensingManagerTest : BaseTest<LicensingManagerTest>
 		Output.WriteLine("Created license:");
 		Output.WriteLine(new[] {
 			lic
-		}.ToJson());
+		}.SerializeToJson());
 	}
 	[Fact(DisplayName = "LicensingManager - License generation")]
 	public void Licensing_GenerateKey()

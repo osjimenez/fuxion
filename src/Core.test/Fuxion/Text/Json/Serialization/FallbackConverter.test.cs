@@ -21,7 +21,7 @@ public class FallbackConverterTest : BaseTest<FallbackConverterTest>
 			}
 		} catch (Exception ex)
 		{
-			var res = ex.ToJson();
+			var res = ex.SerializeToJson();
 			Output.WriteLine("Exception serialized JSON:");
 			Output.WriteLine(res);
 		}

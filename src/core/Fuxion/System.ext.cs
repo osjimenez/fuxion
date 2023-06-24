@@ -62,20 +62,32 @@ public static class Extensions
 	#endregion
 
 	#region Json
-	public static string ToJson(this object? me, JsonSerializerOptions? options = null) =>
-		JsonSerializer.Serialize(me, me?.GetType() ?? typeof(object), options ?? new JsonSerializerOptions {
-			WriteIndented = true
-		});
-	public static string ToJson(this Exception me, JsonSerializerOptions? options = null)
+	public static string SerializeToJson(this object? me, bool? indented = null, JsonSerializerOptions? options = null)
 	{
-		options ??= new() {
-			WriteIndented = true
-		};
+		if (options is not null && indented is not null) 
+			options.WriteIndented = indented.Value;
+		if (options is null && indented is not null)
+			options = new()
+			{
+				WriteIndented = indented.Value
+			};
+		return JsonSerializer.Serialize(me, me?.GetType() ?? typeof(object), options);
+	}
+	public static string SerializeToJson(this Exception me, bool? indented = null, JsonSerializerOptions? options = null)
+	{
+		if (options is not null && indented is not null) 
+			options.WriteIndented = indented.Value;
+		if (options is null && indented is not null)
+			options = new()
+			{
+				WriteIndented = indented.Value
+			};
+		options ??= new();
 		if (!options.Converters.Any(c => c.GetType().IsSubclassOfRawGeneric(typeof(FallbackConverter<>))))
 			options.Converters.Add(new FallbackConverter<Exception>(new MultilineStringToCollectionPropertyFallbackResolver()));
 		return JsonSerializer.Serialize(me, options);
 	}
-	public static T? FromJson<T>(this string me, [DoesNotReturnIf(true)] bool exceptionIfNull = false, JsonSerializerOptions? options = null, bool usePrivateConstructor = true) =>
+	public static T? DeserializeFromJson<T>(this string me, [DoesNotReturnIf(true)] bool exceptionIfNull = false, JsonSerializerOptions? options = null, bool usePrivateConstructor = true) =>
 		(T?)FromJson(me, typeof(T), exceptionIfNull, options, usePrivateConstructor);
 	public static object? FromJson(this string me, Type type, [DoesNotReturnIf(true)] bool exceptionIfNull = false, JsonSerializerOptions? options = null, bool usePrivateConstructor = true)
 	{
@@ -87,7 +99,7 @@ public static class Extensions
 		if (exceptionIfNull && res is null) throw new SerializationException($"The string cannot be deserialized as '{type.Name}':\r\n{me}");
 		return res;
 	}
-	public static T CloneWithJson<T>(this T me) => (T)(FromJson(me?.ToJson() ?? throw new InvalidDataException(), me?.GetType() ?? throw new InvalidDataException()) ?? default!);
+	public static T CloneWithJson<T>(this T me) => (T)(FromJson(me?.SerializeToJson() ?? throw new InvalidDataException(), me?.GetType() ?? throw new InvalidDataException()) ?? default!);
 	#endregion
 
 	#region Transform
@@ -218,6 +230,7 @@ public static class Extensions
 		if (fi == null) throw new ArgumentOutOfRangeException(nameof(propName), string.Format("Field {0} was not found in Type {1}", propName, obj.GetType().FullName));
 		return (T?)fi.GetValue(obj);
 	}
+	
 	/// <summary>
 	///    Sets a private Property value from a given object. Uses Reflection.
 	///    Throws a ArgumentOutOfRangeException if the Property is not found.
@@ -230,9 +243,9 @@ public static class Extensions
 	public static void SetPrivatePropertyValue(this object obj, string propName, object? val)
 	{
 		var t = obj.GetType();
-		var prop = t.GetProperty(propName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+		var prop = t.GetProperty(propName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
 		if (prop is null) throw new ArgumentOutOfRangeException(nameof(propName), string.Format("Property {0} was not found in Type {1}", propName, obj.GetType().FullName));
-		prop.DeclaringType?.InvokeMember(propName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.SetProperty | BindingFlags.Instance, Type.DefaultBinder, obj, new[] {
+		prop.DeclaringType?.InvokeMember(propName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.FlattenHierarchy, Type.DefaultBinder, obj, new[] {
 			val
 		});
 	}
@@ -293,6 +306,14 @@ public static class Extensions
 				bytes[i / 2] = Convert.ToByte(me.Substring(i, 2), 16);
 		if (isBigEndian) bytes = bytes.Reverse().ToArray();
 		return bytes;
+	}
+	public static string ToBase64String(this byte[] me)
+	{
+		return Convert.ToBase64String(me);
+	}
+	public static byte[] FromBase64String(this string me)
+	{
+		return Convert.FromBase64String(me);
 	}
 	#endregion
 

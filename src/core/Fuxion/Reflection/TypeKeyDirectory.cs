@@ -5,7 +5,7 @@ namespace Fuxion.Reflection;
 public class TypeKeyDirectory : ITypeKeyResolver
 {
 	readonly Dictionary<TypeKey, Type> _keyToTypeDictionary = new();
-	readonly Dictionary<Type, TypeKey> _typeToKeyDictionary = new();
+	readonly Dictionary<Type, TypeKey> _typeToKeyDictionary = new(ReferenceEqualityComparer.Instance);
 	public Type this[TypeKey key]
 	{
 		get

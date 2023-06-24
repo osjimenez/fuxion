@@ -14,21 +14,21 @@ public class ZipPodTest : BaseTest<ZipPodTest>
 			Name = "payloadName", Age = 23, Nick = "payloadNick"
 		};
 		var first = pay.BuildPod("pay");
-		Output.WriteLine($"first:\r\n{first.Pod.ToJson()}");
+		Output.WriteLine($"first:\r\n{first.Pod.SerializeToJson()}");
 		var json1 = first.ToJson();
 		json1.Pod.Headers.Add("header1Payload".BuildPod("header1").ToJson().Pod);
 		json1.Pod.Headers.Add("header2Payload".BuildPod("header2").ToJson().Pod);
 		PodBase pod3 = new("header3", pay);
 		pod3.Headers.Add("header3.3Payload".BuildPod("header3.3").ToJson().Pod);
 		json1.Pod.Headers.Add(pod3);
-		Output.WriteLine($"json1:\r\n{json1.Pod.ToJson()}");
+		Output.WriteLine($"json1:\r\n{json1.Pod.SerializeToJson()}");
 		var utf = json1.ToUtf8();
 		var utfPod = utf.Pod;
-		Output.WriteLine($"utf:\r\n{utf.Pod.ToJson()}");
+		Output.WriteLine($"utf:\r\n{utf.Pod.SerializeToJson()}");
 		var zip = utf.ToZip("zip");
-		Output.WriteLine($"zip:\r\n{zip.Pod.ToJson()}");
+		Output.WriteLine($"zip:\r\n{zip.Pod.SerializeToJson()}");
 		var json2 = zip.ToJson();
-		Output.WriteLine($"json2:\r\n{json2.Pod.ToJson()}");
+		Output.WriteLine($"json2:\r\n{json2.Pod.SerializeToJson()}");
 
 		// Same as fluent
 		var pod = pay.BuildPod("pay").ToJson().ToUtf8().ToZip("zip").ToJson().Pod;
@@ -43,15 +43,15 @@ public class ZipPodTest : BaseTest<ZipPodTest>
 			}
 			""";
 		var json1 = json.FromJsonPod<string>().BuildPod();
-		Output.WriteLine($"json1:\r\n{json1.Pod.ToJson()}");
+		Output.WriteLine($"json1:\r\n{json1.Pod.SerializeToJson()}");
 		var bytes = json1.FromBytes();
-		Output.WriteLine($"bytes:\r\n{bytes.Pod.ToJson()}");
+		Output.WriteLine($"bytes:\r\n{bytes.Pod.SerializeToJson()}");
 		var unzip = bytes.FromZip();
-		Output.WriteLine($"unzip:\r\n{unzip.Pod.ToJson()}");
+		Output.WriteLine($"unzip:\r\n{unzip.Pod.SerializeToJson()}");
 		var utf = unzip.FromUtf8();
-		Output.WriteLine($"utf:\r\n{utf.Pod.ToJson()}");
+		Output.WriteLine($"utf:\r\n{utf.Pod.SerializeToJson()}");
 		var json2 = utf.FromJson();
-		Output.WriteLine($"json2:\r\n{json2.Pod.ToJson()}");
+		Output.WriteLine($"json2:\r\n{json2.Pod.SerializeToJson()}");
 		var pod = json2.Pod;
 
 		var payPod = pod.CastWithPayload<PayloadBase>();

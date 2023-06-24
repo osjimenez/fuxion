@@ -1,23 +1,46 @@
-﻿using System.Text;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Runtime.Serialization;
+using System.Text;
 using System.Text.Json.Nodes;
 
 namespace Fuxion.Json;
 
 public static class JsonPod2Extensions
 {
+	public static IPodBuilder2<JsonNodePod2<TDiscriminator>> ToJsonNode<TDiscriminator, T>(this IPodBuilder2<IPod2<TDiscriminator, T>> me, TDiscriminator discriminator)
+		where TDiscriminator : notnull
+		where T : notnull =>
+		new PodBuilder2<TDiscriminator, JsonNode, JsonNodePod2<TDiscriminator>>(new (discriminator, me.Pod));
+	public static IPodBuilder2<IPod2<TDiscriminator, byte[]>> ToUtf8Bytes<TDiscriminator>(this IPodBuilder2<IPod2<TDiscriminator, string>> me, TDiscriminator discriminator)
+		where TDiscriminator : notnull
+		=> new PodBuilder2<TDiscriminator, byte[], IPod2<TDiscriminator, byte[]>>(new Pod2<TDiscriminator, byte[]>(discriminator, Encoding.UTF8.GetBytes(me.Pod.Payload)));
+	public static IPodBuilder2<JsonNodePod2<TDiscriminator>> FromJsonNode<TDiscriminator>(this IPodBuilder2<IPod2<TDiscriminator, string>> me)
+		where TDiscriminator : notnull
+		=> new PodBuilder2<TDiscriminator, JsonNode, JsonNodePod2<TDiscriminator>>(me.Pod.Payload.DeserializeFromJson<JsonNodePod2<TDiscriminator>>()
+			?? throw new SerializationException($"string couldn't be deserialized"));
+
+
+
+
+
+
+
+
+
 	public static IPodBuilder2<JsonPod2<TDiscriminator, T>> ToJson<TDiscriminator, T>(this IPodBuilder2<IPod2<TDiscriminator, T>> me)
 		where TDiscriminator : notnull
 		where T : notnull =>
-		// TODO Remove nullabel Payload!
-		new PodBuilder2<TDiscriminator, T, JsonPod2<TDiscriminator, T>>(new (me.Pod.Discriminator, me.Pod.Payload!));
+		new PodBuilder2<TDiscriminator, T, JsonPod2<TDiscriminator, T>>(new (me.Pod));
+	
+
 	
 	public static IPodBuilder2<IPod2<TDiscriminator, byte[]>> ToUtf8<TDiscriminator, T>(this IPodBuilder2<JsonPod2<TDiscriminator, T>> me)
 		where TDiscriminator : notnull 
 		where T : notnull =>
-		new PodBuilder2<TDiscriminator, byte[], IPod2<TDiscriminator, byte[]>>(new Pod2<TDiscriminator, byte[]>(me.Pod.Discriminator, Encoding.UTF8.GetBytes(me.Pod.ToJson())));
+		new PodBuilder2<TDiscriminator, byte[], IPod2<TDiscriminator, byte[]>>(new Pod2<TDiscriminator, byte[]>(me.Pod.Discriminator, Encoding.UTF8.GetBytes(me.Pod.SerializeToJson())));
 
 	public static JsonPod2<TDiscriminator, object> FromJsonPod2<TDiscriminator>(this string me) where TDiscriminator : notnull =>
-		me.FromJson<JsonPod2<TDiscriminator, object>>()
+		me.DeserializeFromJson<JsonPod2<TDiscriminator, object>>()
 		?? throw new FormatException($"The string couldn't be deserialized as '{typeof(JsonPod2<TDiscriminator, object>).GetSignature()}'");
 	
 	/// <summary>

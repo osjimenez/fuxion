@@ -38,7 +38,7 @@ public class EventStoreStorage : IEventStorage, ISnapshotStorage
 		if (state == ReadState.Ok)
 		{
 			var stream = await res.ToListAsync();
-			return stream.Select(e => Encoding.Default.GetString(e.Event.Data.ToArray()).FromJson<EventSourcingPod>(true).WithTypeKeyResolver(typeKeyResolver)).RemoveNulls().AsQueryable();
+			return stream.Select(e => Encoding.Default.GetString(e.Event.Data.ToArray()).DeserializeFromJson<EventSourcingPod>(true).WithTypeKeyResolver(typeKeyResolver)).RemoveNulls().AsQueryable();
 		}
 		return Array.Empty<Event>().AsQueryable();
 	}
@@ -49,7 +49,7 @@ public class EventStoreStorage : IEventStorage, ISnapshotStorage
 		if (state == ReadState.Ok)
 		{
 			var stream = await res.ToListAsync();
-			return stream.Select(e => Encoding.Default.GetString(e.Event.Data.ToArray()).FromJson<EventSourcingPod>(true).WithTypeKeyResolver(typeKeyResolver)).LastOrDefault();
+			return stream.Select(e => Encoding.Default.GetString(e.Event.Data.ToArray()).DeserializeFromJson<EventSourcingPod>(true).WithTypeKeyResolver(typeKeyResolver)).LastOrDefault();
 		}
 		return null;
 	}
@@ -64,7 +64,7 @@ public class EventStoreStorage : IEventStorage, ISnapshotStorage
 		{
 			var stream = await res.ToListAsync();
 			return stream.Select(e => {
-				var pod = Encoding.Default.GetString(e.Event.Data.ToArray()).FromJson<JsonPod<TypeKey, Snapshot>>(true);
+				var pod = Encoding.Default.GetString(e.Event.Data.ToArray()).DeserializeFromJson<JsonPod<TypeKey, Snapshot>>(true);
 				return (Snapshot?)pod.As(typeKeyResolver[pod.Discriminator]);
 			}).LastOrDefault();
 		}

@@ -13,7 +13,7 @@ public class EventTest
 				"AggregateId": "99c8a592-b2bd-4845-92dd-d4ba857c13a7"
 			}
 			""";
-		var @event = eventJson.FromJson<MockEvent>();
+		var @event = eventJson.DeserializeFromJson<MockEvent>();
 		Assert.NotNull(@event);
 		Assert.NotEqual(Guid.Empty, @event.AggregateId);
 	}

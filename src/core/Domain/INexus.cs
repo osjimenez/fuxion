@@ -1,8 +1,10 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq.Expressions;
+using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Security.Cryptography.X509Certificates;
+using System.Text;
 using System.Threading.Tasks.Sources;
 using Fuxion.Json;
 using Fuxion.Reflection;
@@ -125,7 +127,10 @@ public class RouteDirectory
 	{
 		subscribers.Add(new BypassSubscriber<object>(subscriber.Initialize, subscriber.Attach, action =>
 		{
-			return subscriber.OnReceive(msg => action(msg));
+			return subscriber.OnReceive(msg =>
+			{
+				action(msg);
+			});
 		}));
 	}
 	public async Task<IDisposable> OnReceive(Action<object> onMessageReceived)
@@ -204,9 +209,9 @@ public class ObservableSubscriberDecorator<TMessage> : ISubscriber<TMessage>
 	public void Attach(INexus nexus) => _innerSubscriber.Attach(nexus);
 	public Task<IDisposable> OnReceive(Action<TMessage> onMessageReceived) => _innerSubscriber.OnReceive(onMessageReceived);
 	Subject<TMessage> subject = new();
-	public IObservable<TMessage> Observe(Expression<Func<TMessage, bool>> predicate)
+	public IObservable<TMessage> Observe(Func<TMessage, bool> predicate)
 	{
-		return subject;
+		return subject.Where(predicate);
 	}
 }
 
@@ -220,15 +225,15 @@ public class ObservableNexusDecorator
 	INexus _nexus;
 	// public Task<IDisposable> OnReceive(Action<object> onMessageReceived) => _nexus.OnReceive(onMessageReceived);
 	Subject<object> subject = new();
-	public IObservable<object> Observe()
+	public IObservable<object> Observe(Func<object, bool> predicate)
 	{
-		return subject;
+		return subject.Where(predicate);
 	}
 }
 
 public static class ObservableNexusExtensions
 {
-	public static IObservable<object> Observe(this INexus nexus) => new ObservableNexusDecorator(nexus).Observe();
+	public static IObservable<object> Observe(this INexus nexus, Func<object, bool> predicate) => new ObservableNexusDecorator(nexus).Observe(predicate);
 }
 
 // public interface IObservableSubscriber : ISubscriber
