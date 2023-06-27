@@ -156,7 +156,7 @@ namespace Fuxion.Test.Json;
 									}
 									""";
 		var bytes = base64.FromBase64String();
-		var builder = bytes.BuildPod2("")
+		var builder = bytes.BuildPod2()
 			.FromUtf8Bytes("json")
 			.FromJsonNode();
 		// var builder = json.BuildPod2("")
@@ -278,7 +278,7 @@ namespace Fuxion.Test.Json;
 			Nick = "Nick",
 			Age = 12,
 			Birthdate = DateOnly.Parse("12/12/2012")
-		}.BuildJsonNodePod2(headerDiscriminator).Pod);
+		}.BuildPod2().ToJsonNode(headerDiscriminator).Pod);
 		if (pod[headerDiscriminator] is JsonNodePod2<string> valJ)
 		{
 			var val = valJ.As<TestPayload2>();
@@ -291,13 +291,13 @@ namespace Fuxion.Test.Json;
 				Assert.NotNull(val2);
 				Output.WriteLine($"Edited value: {val2.Name}");
 				Assert.NotEqual("value2", val2.Name);
-				Assert.Throws<ArgumentException>(() => pod.Add(val2.BuildPod2(headerDiscriminator)
+				Assert.Throws<ArgumentException>(() => pod.Add(val2.BuildPod2().ToPod(headerDiscriminator)
 					.Pod)); // Fails because I can't add it if already exist
 			} else
 				Assert.Fail("");
 			Assert.False(pod.Remove($"{headerDiscriminator}1"));
 			Assert.True(pod.Remove(headerDiscriminator));
-			pod.Add(val.BuildJsonNodePod2(headerDiscriminator)
+			pod.Add(val.BuildPod2().ToJsonNode(headerDiscriminator)
 				.Pod);
 			if (pod[headerDiscriminator] is JsonNodePod2<string> val3J)
 			{

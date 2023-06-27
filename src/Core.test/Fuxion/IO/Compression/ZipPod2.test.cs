@@ -13,7 +13,7 @@ public class ZipPod2Test : BaseTest<ZipPod2Test>
 		TestPayload2 pay = new TestPayloadDerived2 {
 			Name = "payloadName", Age = 23, Nick = "payloadNick", Birthdate = DateOnly.Parse("12/12/2012")
 		};
-		var first = pay.BuildPod2("pay").Transform(_ =>
+		var first = pay.BuildPod2().ToPod("").Transform(_ =>
 		{
 			// _.Pod.Add("header1Payload".BuildPod2("header1").Pod);
 			// _.Pod.Add("header2Payload".BuildPod2("header2").Pod);

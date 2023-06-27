@@ -7,21 +7,18 @@ namespace Fuxion;
 
 public static class PodBuilder2Extensions
 {
-	public static IPodBuilder2<ICollectionPod2<TDiscriminator, T>> BuildPod2<TDiscriminator, T>(this T me, TDiscriminator discriminator) 
-		where TDiscriminator : notnull 
+	public static IPodPreBuilder2<T> BuildPod2<T>(this T me) 
 		where T : notnull =>
-		new PodBuilder2<TDiscriminator, T, ICollectionPod2<TDiscriminator, T>>(new Pod2<TDiscriminator, T>(discriminator, me));
-	// public static IPodBuilder2<IPod2<TDiscriminator, T>> BuildPod2<TDiscriminator, T>(this IPod2<TDiscriminator, T> me) 
+		new PodPreBuilder2<T>(me);
+	// public static IPodBuilder2<ICollectionPod2<TDiscriminator, T>> BuildPod2<TDiscriminator, T>(this T me, TDiscriminator discriminator) 
 	// 	where TDiscriminator : notnull 
 	// 	where T : notnull =>
-	// 	new PodBuilder2<TDiscriminator, T, IPod2<TDiscriminator, T>>(me);
-	// public static IPodBuilder2<TPod> BuildPod2<TDiscriminator, TPayload, TPod>(this TPod me) 
-	// 	where TDiscriminator : notnull 
-	// 	where TPayload : notnull 
-	// 	where TPod : IPod2<TDiscriminator, TPayload> =>
-	// 	new PodBuilder2<TDiscriminator, TPayload, TPod>(me);
+	// 	new PodBuilder2<TDiscriminator, T, ICollectionPod2<TDiscriminator, T>>(new Pod2<TDiscriminator, T>(discriminator, me));
+	public static IPodBuilder2<Pod2<TDiscriminator, TPayload>> ToPod<TDiscriminator, TPayload>(this IPodPreBuilder2<TPayload> me, TDiscriminator discriminator)
+		where TDiscriminator : notnull
+		where TPayload : notnull
+		=> new PodBuilder2<TDiscriminator, TPayload, Pod2<TDiscriminator, TPayload>>(new(discriminator, me.Payload));
 	public static IPodBuilder2<TPod> RebuildPod2<TPod>(this TPod me) 
-
 		where TPod : IPod2<object, object> =>
 		new PodBuilder2<object, object, TPod>(me);
 	public static IPodBuilder2<TPod> AddHeader<TDiscriminator, TPod>(this IPodBuilder2<TPod> me, IPod2<TDiscriminator, object> header)
