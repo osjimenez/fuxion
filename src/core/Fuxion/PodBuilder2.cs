@@ -10,6 +10,7 @@ public interface IPodBuilderPod2<out TPod>
 {
 	TPod Pod { get; }
 }
+
 public interface IPodBuilder2<out TPod>
 {
 	TPod Pod { get; }
