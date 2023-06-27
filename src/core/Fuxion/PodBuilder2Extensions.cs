@@ -20,7 +20,7 @@ public static class PodBuilder2Extensions
 	// 	where TPayload : notnull 
 	// 	where TPod : IPod2<TDiscriminator, TPayload> =>
 	// 	new PodBuilder2<TDiscriminator, TPayload, TPod>(me);
-	public static IPodBuilder2<TPod> BuildPod2<TPod>(this TPod me) 
+	public static IPodBuilder2<TPod> RebuildPod2<TPod>(this TPod me) 
 
 		where TPod : IPod2<object, object> =>
 		new PodBuilder2<object, object, TPod>(me);

@@ -307,10 +307,7 @@ public static class Extensions
 		if (isBigEndian) bytes = bytes.Reverse().ToArray();
 		return bytes;
 	}
-	public static string ToBase64String(this byte[] me)
-	{
-		return Convert.ToBase64String(me);
-	}
+	public static string ToBase64String(this byte[] me) => Convert.ToBase64String(me);
 	public static byte[] FromBase64String(this string me)
 	{
 		return Convert.FromBase64String(me);

@@ -7,6 +7,10 @@ namespace Fuxion.Json;
 
 public static class JsonPod2Extensions
 {
+	public static IPodBuilder2<JsonNodePod2<TDiscriminator>> BuildJsonNodePod2<TDiscriminator, T>(this T me, TDiscriminator discriminator) 
+		where TDiscriminator : notnull 
+		where T : notnull =>
+		new PodBuilder2<TDiscriminator, JsonNode, JsonNodePod2<TDiscriminator>>(new JsonNodePod2<TDiscriminator>(discriminator, me));
 	public static IPodBuilder2<JsonNodePod2<TDiscriminator>> ToJsonNode<TDiscriminator, T>(this IPodBuilder2<IPod2<TDiscriminator, T>> me, TDiscriminator discriminator)
 		where TDiscriminator : notnull
 		where T : notnull =>
@@ -14,6 +18,9 @@ public static class JsonPod2Extensions
 	public static IPodBuilder2<IPod2<TDiscriminator, byte[]>> ToUtf8Bytes<TDiscriminator>(this IPodBuilder2<IPod2<TDiscriminator, string>> me, TDiscriminator discriminator)
 		where TDiscriminator : notnull
 		=> new PodBuilder2<TDiscriminator, byte[], IPod2<TDiscriminator, byte[]>>(new Pod2<TDiscriminator, byte[]>(discriminator, Encoding.UTF8.GetBytes(me.Pod.Payload)));
+	public static IPodBuilder2<IPod2<TDiscriminator, string>> FromUtf8Bytes<TDiscriminator>(this IPodBuilder2<IPod2<TDiscriminator, byte[]>> me, TDiscriminator discriminator)
+		where TDiscriminator : notnull
+		=> new PodBuilder2<TDiscriminator, string, IPod2<TDiscriminator, string>>(new Pod2<TDiscriminator, string>(discriminator, Encoding.UTF8.GetString(me.Pod.Payload)));
 	public static IPodBuilder2<JsonNodePod2<TDiscriminator>> FromJsonNode<TDiscriminator>(this IPodBuilder2<IPod2<TDiscriminator, string>> me)
 		where TDiscriminator : notnull
 		=> new PodBuilder2<TDiscriminator, JsonNode, JsonNodePod2<TDiscriminator>>(me.Pod.Payload.DeserializeFromJson<JsonNodePod2<TDiscriminator>>()

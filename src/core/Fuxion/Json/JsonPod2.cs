@@ -44,9 +44,14 @@ public class JsonNodePod2<TDiscriminator>(TDiscriminator discriminator, object v
 	}
 	public bool TryAs<T>([NotNullWhen(true)] out T? payload)
 	{
-		var res = As<T>();
-		payload = res;
-		return res is not null;
+		try
+		{
+			var res = As<T>();
+			payload = res;
+			return res is not null;
+		} catch { }
+		payload = default;
+		return false;
 	}
 }
 [JsonConverter(typeof(JsonPod2ConverterFactory))]

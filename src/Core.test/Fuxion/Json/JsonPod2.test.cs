@@ -116,6 +116,8 @@ namespace Fuxion.Test.Json;
 	[Fact(DisplayName = "JsonPod - FromJson new")]
 	public void FromJsonNew()
 	{
+		const string base64 =
+			@"eyJfX2Rpc2NyaW1pbmF0b3IiOiJ0ZXN0UG9kIiwiX19wYXlsb2FkIjp7IkNsYXNzLWN1c3RvbSI6ImNsYXNzIiwiX19kaXNjcmltaW5hdG9yIjoidGVzdFBheWxvYWQiLCJfX3BheWxvYWQiOnsiTmljayI6InBheWxvYWQuTmljayIsIkJpcnRoZGF0ZS1jdXN0b20iOiIyMDEyLTEyLTEyIiwiTmFtZSI6InBheWxvYWQuTmFtZSIsIkFnZS1jdXN0b20iOjIzfSwiX19pdGVtcyI6W3siX19kaXNjcmltaW5hdG9yIjoic3RyaW5nLmhlYWRlciIsIl9fcGF5bG9hZCI6InN0cmluZ1BheWxvYWQifSx7IkNsYXNzLWN1c3RvbSI6bnVsbCwiX19kaXNjcmltaW5hdG9yIjoidGVzdFBvZC5oZWFkZXIiLCJfX3BheWxvYWQiOnsiTmljayI6InRlc3RQb2QuaGVhZGVyLnBheWxvYWQuTmljayIsIkJpcnRoZGF0ZS1jdXN0b20iOiIyMDEyLTEyLTEyIiwiTmFtZSI6InRlc3RQb2QuaGVhZGVyLnBheWxvYWQuTmFtZSIsIkFnZS1jdXN0b20iOjE1fX0seyJfX2Rpc2NyaW1pbmF0b3IiOiJyZWNvcmQuaGVhZGVyIiwiX19wYXlsb2FkIjp7Ik5hbWUiOiJyZWNvcmQuaGVhZGVyLk5hbWUifX1dfX0=";
 		const string json = $$"""
 									{
 									  "{{DISCRIMINATOR_LABEL}}": "testPod",
@@ -153,22 +155,26 @@ namespace Fuxion.Test.Json;
 									  }
 									}
 									""";
-		
-		var builder = json.BuildPod2("")
+		var bytes = base64.FromBase64String();
+		var builder = bytes.BuildPod2("")
+			.FromUtf8Bytes("json")
 			.FromJsonNode();
+		// var builder = json.BuildPod2("")
+		// 	.FromJsonNode();
 		var pod = builder.Pod;
 		Assert.NotNull(pod);
 		Assert.Equal("testPod", pod.Discriminator);
-		JsonSerializerOptions options = new();
-		options.Converters.Add(new JsonPodNode2ConverterFactory());
 		if (pod.TryAs<Pod2<string,TestPayloadDerived2>>(out var pod2))
 		{
 			Assert.Equal("payload.Nick",pod2.Payload.Nick);
-		}
+		} else Assert.Fail("Fail on TryAs");
 		var testPod = pod.As<TestPod2>();
 		Assert.NotNull(testPod);
-
-		
+		if (testPod["record.header"] is JsonNodePod2<string> pod3)
+		{
+			var pay = pod3.As<TestRecordPayload>();
+			Assert.NotNull(pay);
+		} else Assert.Fail("h1 isn't JsonNodePod");
 	}
 
 	[Fact(DisplayName = "JsonPod - ToJson")]
@@ -218,7 +224,7 @@ namespace Fuxion.Test.Json;
 			{
 				Class = "class"
 			};
-			var builder = testPod.BuildPod2()
+			var builder = testPod.RebuildPod2()
 				.AddHeader("string.header","stringPayload")
 				.AddHeader(new TestPod2("testPod.header",new TestPayloadDerived2()
 				{
@@ -257,45 +263,43 @@ namespace Fuxion.Test.Json;
 	[Fact(DisplayName = "Implicit operator")]
 	public void ImplicitOperator()
 	{
-		JsonPod2<string, string> pod = new("discriminator", "payload");
+		// JsonPod2<string, string> pod = new("discriminator", "payload");
+		Pod2<string, string> pod = new("discriminator", "payload");
 		Assert.Equal("payload", pod);
 	}
 	[Fact(DisplayName = "Header edition")]
 	public void HeaderEdition()
 	{
-		JsonPod2<string, string> pod = new("discriminator", "payload");
+		const string headerDiscriminator = "testPayloadPod";
+		Pod2<string, string> pod = new("discriminator", "payload");
 		pod.Add(new TestPayloadDerived2
 		{
 			Name = "value1",
 			Nick = "Nick",
 			Age = 12,
 			Birthdate = DateOnly.Parse("12/12/2012")
-		}.BuildPod2("h").ToJson().Pod);
-		var valH = pod["h"];
-		if (valH is JsonPod2<string, object> valJ)
+		}.BuildJsonNodePod2(headerDiscriminator).Pod);
+		if (pod[headerDiscriminator] is JsonNodePod2<string> valJ)
 		{
 			var val = valJ.As<TestPayload2>();
 			Assert.NotNull(val);
 			Output.WriteLine($"Original value: {val.Name}");
 			val.Name = "value2";
-			var val2H = pod["h"];
-			if (val2H is JsonPod2<string, object> val2J)
+			if (pod[headerDiscriminator] is JsonNodePod2<string> val2J)
 			{
 				var val2 = val2J.As<TestPayload2>();
 				Assert.NotNull(val2);
 				Output.WriteLine($"Edited value: {val2.Name}");
 				Assert.NotEqual("value2", val2.Name);
-				Assert.Throws<ArgumentException>(() => pod.Add(val2.BuildPod2("h")
+				Assert.Throws<ArgumentException>(() => pod.Add(val2.BuildPod2(headerDiscriminator)
 					.Pod)); // Fails because I can't add it if already exist
 			} else
 				Assert.Fail("");
-			Assert.False(pod.Remove("h1"));
-			Assert.True(pod.Remove("h"));
-			pod.Add(val.BuildPod2("h")
-				.ToJson()
+			Assert.False(pod.Remove($"{headerDiscriminator}1"));
+			Assert.True(pod.Remove(headerDiscriminator));
+			pod.Add(val.BuildJsonNodePod2(headerDiscriminator)
 				.Pod);
-			var val3H = pod["h"];
-			if (val3H is JsonPod2<string, object> val3J)
+			if (pod[headerDiscriminator] is JsonNodePod2<string> val3J)
 			{
 				var val3 = val3J
 					.As<TestPayload2>();
