@@ -1,8 +1,4 @@
-﻿using System.Text.Json;
-using System.Text.Json.Serialization;
-using Fuxion.Reflection;
-
-namespace Fuxion.Json;
+﻿namespace Fuxion.Reflection;
 
 // [JsonConverter(typeof(TypeKeyPodConverterFactory))]
 // public class TypeKeyPod<TPayload> : JsonPod<TypeKey, TPayload>
@@ -26,10 +22,7 @@ namespace Fuxion.Json;
 // }
 
 
-public class TypeKeyPod<TPayload> : BypassPod<TypeKey, TPayload>
-{
-	public TypeKeyPod(TypeKey discriminator, TPayload @object) : base(discriminator, @object) { }
-}
+public class TypeKeyPod<TPayload>(TypeKey discriminator, TPayload @object) : Pod<TypeKey, TPayload>(discriminator, @object);
 
 // public class TypeKeyPodCollection : IPodCollection<TypeKey, TypeKeyPod2<object>>
 // {

@@ -1,188 +1,211 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Text;
+using System.Text.Json.Serialization;
 using Fuxion.Json;
+using Fuxion.Text.Json;
+using static Fuxion.Text.Json.IPodConverter<Fuxion.Text.Json.JsonNodePod<string>, string, string>;
 
 namespace Fuxion.Test.Json;
 
- public class JsonPodTest : BaseTest<JsonPodTest>
- {
+public class JsonPodTest : BaseTest<JsonPodTest>
+{
 	public JsonPodTest(ITestOutputHelper output) : base(output) => Printer.WriteLineAction = output.WriteLine;
-	[Fact(DisplayName = "JsonPod - CastWithPayload")]
-	public void CastWithPayload()
-	{
-		var payload = new PayloadDerived {
-			Name = "payloadName", Age = 23, Nick = "payloadNick"
-		};
-		var basePod = new JsonPod<string, PayloadBase>("podKey", payload);
-		var derived = basePod.CastWithPayload<PayloadDerived>();
-		Assert.NotNull(derived);
-		Assert.NotNull(derived.Payload);
-		Assert.Equal("payloadName", derived.Payload.Name);
-	}
 	[Fact(DisplayName = "JsonPod - FromJson")]
 	public void FromJson()
 	{
-		var json = """
-			{
-				"Discriminator": "podKey",
-				"Payload": {
-					"Name": "payloadName",
-					"Age": 23,
-					"Nick": "payloadNick"
-				}
-			}
-			""";
-		Output.WriteLine("Initial json: ");
-		Output.WriteLine(json);
-		var pod = json.DeserializeFromJson<JsonPod<string, PayloadBase>>();
+		const string base64 =
+			@"eyJfX2Rpc2NyaW1pbmF0b3IiOiJ0ZXN0UG9kIiwiX19wYXlsb2FkIjp7IkNsYXNzLWN1c3RvbSI6ImNsYXNzIiwiX19kaXNjcmltaW5hdG9yIjoidGVzdFBheWxvYWQiLCJfX3BheWxvYWQiOnsiTmljayI6InBheWxvYWQuTmljayIsIkJpcnRoZGF0ZS1jdXN0b20iOiIyMDEyLTEyLTEyIiwiTmFtZSI6InBheWxvYWQuTmFtZSIsIkFnZS1jdXN0b20iOjIzfSwiX19pdGVtcyI6W3siX19kaXNjcmltaW5hdG9yIjoic3RyaW5nLmhlYWRlciIsIl9fcGF5bG9hZCI6InN0cmluZ1BheWxvYWQifSx7IkNsYXNzLWN1c3RvbSI6bnVsbCwiX19kaXNjcmltaW5hdG9yIjoidGVzdFBvZC5oZWFkZXIiLCJfX3BheWxvYWQiOnsiTmljayI6InRlc3RQb2QuaGVhZGVyLnBheWxvYWQuTmljayIsIkJpcnRoZGF0ZS1jdXN0b20iOiIyMDEyLTEyLTEyIiwiTmFtZSI6InRlc3RQb2QuaGVhZGVyLnBheWxvYWQuTmFtZSIsIkFnZS1jdXN0b20iOjE1fX0seyJfX2Rpc2NyaW1pbmF0b3IiOiJyZWNvcmQuaGVhZGVyIiwiX19wYXlsb2FkIjp7Ik5hbWUiOiJyZWNvcmQuaGVhZGVyLk5hbWUifX1dfX0=";
+		const string json = $$"""
+									{
+									  "{{DISCRIMINATOR_LABEL}}": "testPod",
+									  "{{PAYLOAD_LABEL}}": {
+									    "Class-custom": "class",
+									    "{{DISCRIMINATOR_LABEL}}": "testPayload",
+									    "{{PAYLOAD_LABEL}}": {
+									      "Nick": "payload.Nick",
+									      "Birthdate-custom": "2012-12-12",
+									      "Name": "payload.Name",
+									      "Age-custom": 23
+									    },
+									    "{{ITEMS_LABEL}}": [
+									      {
+									        "{{DISCRIMINATOR_LABEL}}": "string.header",
+									        "{{PAYLOAD_LABEL}}": "stringPayload"
+									      },
+									      {
+									        "Class-custom": null,
+									        "{{DISCRIMINATOR_LABEL}}": "testPod.header",
+									        "{{PAYLOAD_LABEL}}": {
+									          "Nick": "testPod.header.payload.Nick",
+									          "Birthdate-custom": "2012-12-12",
+									          "Name": "testPod.header.payload.Name",
+									          "Age-custom": 15
+									        }
+									      },
+									      {
+									        "{{DISCRIMINATOR_LABEL}}": "record.header",
+									        "{{PAYLOAD_LABEL}}": {
+									          "Name": "record.header.Name"
+									        }
+									      }
+									    ]
+									  }
+									}
+									""";
+		var bytes = base64.FromBase64String();
+		var builder = bytes.BuildPod()
+			.FromUtf8Bytes("json")
+			.FromJsonNode();
+		var pod = builder.Pod;
 		Assert.NotNull(pod);
-		Output.WriteLine("pod.PayloadValue: ");
-		Output.WriteLine(pod.PayloadValue.ToString());
-		void AssertBase(PayloadBase? payload)
+		Assert.Equal("testPod", pod.Discriminator);
+		if (pod.TryAs<Pod<string, TestPayloadDerived>>(out var pod2))
+			Assert.Equal("payload.Nick", pod2.Payload.Nick);
+		else
+			Assert.Fail("Fail on TryAs");
+		var testPod = pod.As<TestPod>();
+		Assert.NotNull(testPod);
+		if (testPod["record.header"] is JsonNodePod<string> pod3)
 		{
-			Assert.NotNull(payload);
-			Assert.Equal("payloadName", payload.Name);
-			Assert.Equal(23, payload.Age);
-		}
-		void AssertDerived(PayloadDerived? payload)
-		{
-			Assert.NotNull(payload);
-			AssertBase(payload);
-			Assert.Equal("payloadNick", payload.Nick);
-		}
-		Assert.Equal("podKey", pod.Discriminator);
-		AssertBase(pod);
-		Assert.Throws<InvalidCastException>(() => AssertDerived((PayloadDerived?)pod));
-		var derived = pod.CastWithPayload<PayloadDerived>();
-		Assert.NotNull(derived);
-		AssertDerived(derived);
-		
-		var jsonWithHeaders = """
-			{
-				"Class": "podKey",
-				"Discriminator": "podKey",
-				"Headers": [
-					{
-						"Discriminator": "header1",
-						"Payload": "header1Payload"
-					},
-					{
-						"Discriminator": "header2",
-						"Payload": "header2Payload"
-					},
-					{
-						"Class": "header3",
-						"Discriminator": "header3",
-						"Headers": [
-							{
-								"Discriminator": "header3.3",
-								"Payload": "header3.3Payload"
-							}
-						],
-						"Payload": {
-							"Nick": "payloadNick",
-							"Name": "payloadName",
-							"Age": 23
-						}
-					}
-				],
-				"Payload": {
-					"Nick": "payloadNick",
-					"Name": "payloadName",
-					"Age": 23
-				}
-			}
-			""";
-		Output.WriteLine("Initial json (with headers): ");
-		Output.WriteLine(jsonWithHeaders);
-		pod = jsonWithHeaders.DeserializeFromJson<JsonPod<string, PayloadBase>>();
-		Output.WriteLine($"JSON POD:\r\n{pod.SerializeToJson()}");
-		Assert.NotNull(pod);
-		Assert.True(pod.Headers.Has("header1"));
-		var pod3 = pod.Headers["header3"];
-		Assert.NotNull(pod3);
-		Assert.True(pod3.Headers.Has("header3.3"));
-	}
-	[Fact(DisplayName = "JsonPod - ToJson")]
-	public void ToJson()
-	{
-		PayloadBase payload = new PayloadDerived {
-			Name = "payloadName", Age = 23, Nick = "payloadNick"
-		};
-		var pod = payload.BuildPod<string, PayloadBase>("podKey").ToJson().Pod;
-		var json = pod.SerializeToJson();
-		Output.WriteLine("Serialized json:");
-		Output.WriteLine(json);
-		Assert.Contains(@"""Discriminator"": ""podKey""", json);
-		Assert.Contains(@"""Name"": ""payloadName""", json);
-		Assert.Contains(@"""Age"": 23", json);
-		Assert.Contains(@"""Nick"": ""payloadNick""", json);
-		Assert.DoesNotContain(@"""Headers"": ", json);
-		
-		pod.Headers.Add("header1Payload".BuildPod("header1").ToJson().Pod);
-		pod.Headers.Add("header2Payload".BuildPod("header2").ToJson().Pod);
-		PodBase pod3 = new("header3", payload);
-		pod3.Headers.Add("header3.3Payload".BuildPod("header3.3").ToJson().Pod);
-		pod.Headers.Add(pod3);
-		Assert.Throws<ArgumentException>(() => pod.Headers.Add("".BuildPod("header1").ToJson().Pod));
-		json = pod.SerializeToJson();
-		Output.WriteLine("Serialized json (with headers):");
-		Output.WriteLine(json);
-		Assert.Contains(@"""Headers"": ", json);
-		
-	}
-	[Fact(DisplayName = "Implicit operator")]
-	public void ImplicitOperator()
-	{
-		JsonPod<string, string> pod = new("discriminator", "payload");
-		Assert.Equal("payload", pod);
+			var pay = pod3.As<TestRecordPayload>();
+			Assert.NotNull(pay);
+		} else
+			Assert.Fail("h1 isn't JsonNodePod");
 	}
 	[Fact(DisplayName = "Header edition")]
 	public void HeaderEdition()
 	{
-		JsonPod<string, string> pod = new("discriminator", "payload");
-		pod.Headers.Add(new PayloadBase
+		const string headerDiscriminator = "testPayloadPod";
+		Pod<string, string> pod = new("discriminator", "payload");
+		pod.Add(new TestPayloadDerived
+			{
+				Name = "value1",
+				Nick = "Nick",
+				Age = 12,
+				Birthdate = DateOnly.Parse("12/12/2012")
+			}.BuildPod()
+			.ToJsonNode(headerDiscriminator)
+			.Pod);
+		if (pod[headerDiscriminator] is JsonNodePod<string> valJ)
 		{
-			Name = "value1"
-		}.BuildPod("h").ToJson().Pod);
-		var val = pod.Headers["h"].As<PayloadBase>();
-		Assert.NotNull(val);
-		Output.WriteLine($"Original value: {val.Name}");
-		val.Name = "value2";
-		var val2 = pod.Headers["h"].As<PayloadBase>();
-		Assert.NotNull(val2);
-		Output.WriteLine($"Edited value: {val2.Name}");
-		Assert.NotEqual("value2", val2.Name);
-		Assert.Throws<ArgumentException>(() => pod.Headers.Add(val2.BuildPod("h").Pod)); // Fails because I can't add it if already exist
-		Assert.False(pod.Headers.Remove("h1"));
-		pod.Headers.Remove("h");
-		pod.Headers.Add(val.BuildPod("h").ToJson().Pod);
-		var val3 = pod.Headers["h"].As<PayloadBase>();
-		Assert.NotNull(val3);
-		Output.WriteLine($"Replaced value: {val3.Name}");
-		Assert.Equal("value2", val3.Name);
+			var val = valJ.As<TestPayload>();
+			Assert.NotNull(val);
+			Output.WriteLine($"Original value: {val.Name}");
+			val.Name = "value2";
+			if (pod[headerDiscriminator] is JsonNodePod<string> val2J)
+			{
+				var val2 = val2J.As<TestPayload>();
+				Assert.NotNull(val2);
+				Output.WriteLine($"Edited value: {val2.Name}");
+				Assert.NotEqual("value2", val2.Name);
+				Assert.Throws<ArgumentException>(() => pod.Add(val2.BuildPod()
+					.ToPod(headerDiscriminator)
+					.Pod)); // Fails because I can't add it if already exist
+			} else
+				Assert.Fail("");
+			Assert.False(pod.Remove($"{headerDiscriminator}1"));
+			Assert.True(pod.Remove(headerDiscriminator));
+			pod.Add(val.BuildPod()
+				.ToJsonNode(headerDiscriminator)
+				.Pod);
+			if (pod[headerDiscriminator] is JsonNodePod<string> val3J)
+			{
+				var val3 = val3J.As<TestPayload>();
+				Assert.NotNull(val3);
+				Output.WriteLine($"Replaced value: {val3.Name}");
+				Assert.Equal("value2", val3.Name);
+			} else
+				Assert.Fail("");
+		} else
+			Assert.Fail("");
 	}
- }
-
-public class PodBaseJsonConverter : JsonPodConverter<PodBase, string, PayloadBase> { }
-[JsonConverter(typeof(PodBaseJsonConverter))]
-public class PodBase : JsonPod<string, PayloadBase>
-{
-	[JsonConstructor]
-	protected PodBase() { }
-	internal PodBase(string discriminator, PayloadBase payload) : base(discriminator, payload)
+	[Fact(DisplayName = "Implicit operator")]
+	public void ImplicitOperator()
 	{
-		Class = discriminator;
+		Pod<string, string> pod = new("discriminator", "payload");
+		Assert.Equal("payload", pod);
 	}
+	[Fact(DisplayName = "JsonPod - ToJson")]
+	public void ToJson()
+	{
+		TestPayload payload = new TestPayloadDerived
+		{
+			Name = "payload.Name",
+			Age = 23,
+			Nick = "payload.Nick",
+			Birthdate = DateOnly.Parse("12/12/2012")
+		};
+		Output.WriteLine("=================== MANUAL");
+		{
+			TestPod testPod = new("testPayload", payload)
+			{
+				new Pod<string, object>("string.header", "stringPayload"),
+				new TestPod("testPod.header", new TestPayloadDerived
+				{
+					Name = "testPod.header.payload.Name",
+					Age = 15,
+					Nick = "testPod.header.payload.Nick",
+					Birthdate = DateOnly.Parse("12/12/2012")
+				})
+			};
+			testPod.Class = "class";
+			testPod.Add("record.header", new TestRecordPayload("record.header.Name"));
+			// Create JsonNode pod
+			JsonNodePod<string> jsonPod = new("testPod", testPod);
+			// Create Utf8 pod
+			Pod<string, byte[]> utf8Pod = new("utf8", Encoding.UTF8.GetBytes(jsonPod));
+			// Create formatted json string
+			var json = jsonPod.SerializeToJson(true);
+			Output.WriteLine($"json:\r\n{json}");
+			Output.WriteLine($"utf8:\r\n{utf8Pod.Payload.ToBase64String()}");
+			// Assertion
+			Assert.Contains($@"""{DISCRIMINATOR_LABEL}"": ""testPayload""", json);
+			Assert.Contains($@"""{DISCRIMINATOR_LABEL}"": ""string.header""", json);
+			Assert.Contains($@"""{DISCRIMINATOR_LABEL}"": ""testPod.header""", json);
+			Assert.Contains($@"""{DISCRIMINATOR_LABEL}"": ""record.header""", json);
+		}
+		Output.WriteLine("=================== BUILDER");
+		{
+			TestPod testPod = new("testPayload", payload)
+			{
+				Class = "class"
+			};
+			var builder = testPod.RebuildPod()
+				.AddHeader("string.header", "stringPayload")
+				.AddHeader(new TestPod("testPod.header", new TestPayloadDerived
+				{
+					Name = "testPod.header.payload.Name",
+					Age = 15,
+					Nick = "testPod.header.payload.Nick",
+					Birthdate = DateOnly.Parse("12/12/2012")
+				}))
+				.AddHeader("record.header", new TestRecordPayload("record.header.Name"));
+			Output.WriteLine($"json:\r\n{builder.ToJsonNode("json").Pod.SerializeToJson(true)}");
+			Output.WriteLine($"utf8:\r\n{builder.ToJsonNode("json").ToUtf8Bytes("utf8").Pod.Payload.ToBase64String()}");
+		}
+	}
+}
+
+public class TestPod(string discriminator, TestPayload payload) : Pod<string, TestPayload>(discriminator, payload)
+{
+	public TestPod() : this(null!, null!) { }
+	[JsonPropertyName("Class-custom")]
 	public string? Class { get; set; }
 }
 
-public class PayloadBase
+[JsonPolymorphic]
+[JsonDerivedType(typeof(TestPayloadDerived), "Derived")]
+public class TestPayload
 {
 	public string? Name { get; set; }
-	public int Age { get; set; }
+	[JsonPropertyName("Age-custom")]
+	public required int Age { get; init; }
 }
 
-public class PayloadDerived : PayloadBase
+public class TestPayloadDerived : TestPayload
 {
-	public string? Nick { get; set; }
+	public required string Nick { get; set; }
+	[JsonPropertyName("Birthdate-custom")]
+	public DateOnly Birthdate { get; set; }
 }
+
+public record TestRecordPayload(string Name);

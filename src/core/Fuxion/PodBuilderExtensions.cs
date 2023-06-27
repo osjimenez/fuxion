@@ -1,14 +1,28 @@
-﻿using System.ComponentModel.Design;
-using System.Numerics;
-using System.Text;
-using System.Text.Json.Nodes;
+﻿namespace Fuxion;
 
-namespace Fuxion;
-
-public static class PodBuilderExtensions
+public static class PodBuilder2Extensions
 {
-	public static IPodBuilder<ICrossPod<TDiscriminator, T, T>> BuildPod<TDiscriminator, T>(this T me, TDiscriminator discriminator) 
-		where TDiscriminator : notnull 
-		where T : notnull =>
-		new PodBuilder<TDiscriminator, T, T, ICrossPod<TDiscriminator, T, T>>(new BypassPod<TDiscriminator, T, T>(discriminator, me));
+	public static IPodPreBuilder<T> BuildPod<T>(this T me)
+		where T : notnull
+		=> new PodPreBuilder<T>(me);
+	public static IPodBuilder<Pod<TDiscriminator, TPayload>> ToPod<TDiscriminator, TPayload>(this IPodPreBuilder<TPayload> me, TDiscriminator discriminator)
+		where TDiscriminator : notnull
+		where TPayload : notnull
+		=> new PodBuilder<TDiscriminator, TPayload, Pod<TDiscriminator, TPayload>>(new(discriminator, me.Payload));
+	public static IPodBuilder<TPod> RebuildPod<TPod>(this TPod me)
+		where TPod : IPod<object, object>
+		=> new PodBuilder<object, object, TPod>(me);
+	public static IPodBuilder<TPod> AddHeader<TDiscriminator, TPod>(this IPodBuilder<TPod> me, IPod<TDiscriminator, object> header)
+		where TPod : ICollectionPod<TDiscriminator, object>
+	{
+		me.Pod.Add(header);
+		return me;
+	}
+	public static IPodBuilder<TPod> AddHeader<TDiscriminator, TPod>(this IPodBuilder<TPod> me, TDiscriminator discriminator, object payload)
+		where TDiscriminator : notnull
+		where TPod : ICollectionPod<TDiscriminator, object>
+	{
+		me.Pod.Add(new Pod<TDiscriminator, object>(discriminator, payload));
+		return me;
+	}
 }

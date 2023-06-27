@@ -2,48 +2,26 @@
 
 namespace Fuxion.IO.Compression;
 
-public class ZipPod<TDiscriminator> : ICrossPod<TDiscriminator, byte[], byte[]>//, ZipPodCollection<TDiscriminator>>
+public class ZipPod<TDiscriminator>(TDiscriminator discriminator, byte[] dataToCompress) : Pod<TDiscriminator, byte[]>(discriminator, Compress(dataToCompress))
 	where TDiscriminator : notnull
 {
-	ZipPod(TDiscriminator discriminator)
-	{
-		Discriminator = discriminator;
-		CompressedData = default!;
-		UncompressedData = default!;
-	}
-	public static ZipPod<TDiscriminator> CreateToCompress(TDiscriminator discriminator, byte[] dataToCompress) =>
-		new(discriminator)
-		{
-			UncompressedData = dataToCompress, CompressedData = Compress(dataToCompress)
-		};
-	public static ZipPod<TDiscriminator> CreateToDecompress(TDiscriminator discriminator, byte[] dataToDecompress) =>
-		new(discriminator)
-		{
-			UncompressedData = Decompress(dataToDecompress), CompressedData = dataToDecompress
-		};
-	byte[] CompressedData { get; set; }
-	byte[] UncompressedData { get; set; }
-	public TDiscriminator Discriminator { get; }
-	public byte[] Outside() => UncompressedData;
-	public byte[] Inside() => CompressedData;
 	static byte[] Compress(byte[] bytes)
 	{
 		using var msi = new MemoryStream(bytes);
 		using var memoryStream = new MemoryStream();
-		using (var gZipStream = new GZipStream(memoryStream, CompressionMode.Compress))
-		{
-			msi.CopyTo(gZipStream);
-		}
+		using (var gZipStream = new GZipStream(memoryStream, CompressionMode.Compress)) msi.CopyTo(gZipStream);
 		return memoryStream.ToArray();
 	}
+}
+
+public class UnzipPod2<TDiscriminator>(TDiscriminator discriminator, byte[] dataToDecompress) : Pod<TDiscriminator, byte[]>(discriminator, Decompress(dataToDecompress))
+	where TDiscriminator : notnull
+{
 	static byte[] Decompress(byte[] bytes)
 	{
 		using var msi = new MemoryStream(bytes);
 		using var memoryStream = new MemoryStream();
-		using (var gZipStream = new GZipStream(msi, CompressionMode.Decompress))
-		{
-			gZipStream.CopyTo(memoryStream);
-		}
+		using (var gZipStream = new GZipStream(msi, CompressionMode.Decompress)) gZipStream.CopyTo(memoryStream);
 		return memoryStream.ToArray();
 	}
 }

@@ -1,18 +1,25 @@
 ﻿namespace Fuxion;
 
+public interface IPodPreBuilder<out TPayload>
+{
+	TPayload Payload { get; }
+}
+
 public interface IPodBuilder<out TPod>
 {
 	TPod Pod { get; }
 }
 
-class PodBuilder<TDiscriminator, TOutside, TInside, TPod> : IPodBuilder<TPod> where TDiscriminator : notnull
-	where TOutside : notnull
-	where TInside : notnull
-	where TPod : ICrossPod<TDiscriminator, TOutside, TInside>
+class PodPreBuilder<TPayload>(TPayload payload) : IPodPreBuilder<TPayload>
+	where TPayload : notnull
 {
-	public PodBuilder(TPod pod)
-	{
-		Pod = pod;
-	}
-	public TPod Pod { get; }
+	public TPayload Payload { get; } = payload;
+}
+
+class PodBuilder<TDiscriminator, TPayload, TPod>(TPod pod) : IPodBuilder<TPod>
+	where TDiscriminator : notnull
+	where TPayload : notnull
+	where TPod : IPod<TDiscriminator, TPayload>
+{
+	public TPod Pod { get; } = pod;
 }
