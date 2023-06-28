@@ -35,6 +35,8 @@ jobs:
         with:
           source: ./docs/
           destination: ./_site
+          title: Fuxion documentation
+          logo: /img/icon.png
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
 
