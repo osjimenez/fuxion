@@ -31,4 +31,8 @@
 
 
 
+	<ItemGroup>
+	  <Folder Include="Text\Json\Nodes\" />
+	</ItemGroup>
+
 </Project>

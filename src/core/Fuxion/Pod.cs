@@ -1,7 +1,10 @@
 using System.Collections;
+using System.Text.Json.Serialization;
+using Fuxion.Text.Json;
 
 namespace Fuxion;
 
+[JsonConverter(typeof(IPodConverterFactory))]
 public interface IPod<out TDiscriminator, out TPayload>
 {
 	TDiscriminator Discriminator { get; }

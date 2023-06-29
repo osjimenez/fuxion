@@ -1,4 +1,6 @@
-namespace System.Text.Json.Nodes;
+using System.Text.Json.Nodes;
+
+namespace Fuxion.Text.Json;
 
 public static class JsonNodeExtensions
 {

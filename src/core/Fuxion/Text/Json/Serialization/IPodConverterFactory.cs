@@ -4,7 +4,7 @@ using PodType = Fuxion.IPod<string, string>;
 
 namespace Fuxion.Text.Json;
 
-public class JsonPodNodeConverterFactory : JsonConverterFactory
+public class IPodConverterFactory : JsonConverterFactory
 {
 	public override bool CanConvert(Type typeToConvert) => typeToConvert.IsSubclassOfRawGeneric(typeof(IPod<,>));
 	public override JsonConverter? CreateConverter(Type typeToConvert, JsonSerializerOptions options)

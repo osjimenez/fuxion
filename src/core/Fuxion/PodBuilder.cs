@@ -3,6 +3,7 @@
 public interface IPodPreBuilder<out TPayload>
 {
 	TPayload Payload { get; }
+	
 }
 
 public interface IPodBuilder<out TPod>
@@ -14,6 +15,10 @@ class PodPreBuilder<TPayload>(TPayload payload) : IPodPreBuilder<TPayload>
 	where TPayload : notnull
 {
 	public TPayload Payload { get; } = payload;
+	public void AddHeader<TDiscriminator>(IPod<TDiscriminator, object> pod)
+	{
+		
+	}
 }
 
 class PodBuilder<TDiscriminator, TPayload, TPod>(TPod pod) : IPodBuilder<TPod>

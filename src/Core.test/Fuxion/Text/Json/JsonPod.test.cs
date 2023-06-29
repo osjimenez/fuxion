@@ -1,10 +1,9 @@
 ﻿using System.Text;
 using System.Text.Json.Serialization;
-using Fuxion.Json;
 using Fuxion.Text.Json;
 using static Fuxion.Text.Json.IPodConverter<Fuxion.Text.Json.JsonNodePod<string>, string, string>;
 
-namespace Fuxion.Test.Json;
+namespace Fuxion.Test.Text.Json;
 
 public class JsonPodTest : BaseTest<JsonPodTest>
 {
@@ -69,7 +68,7 @@ public class JsonPodTest : BaseTest<JsonPodTest>
 			var pay = pod3.As<TestRecordPayload>();
 			Assert.NotNull(pay);
 		} else
-			Assert.Fail("h1 isn't JsonNodePod");
+			Assert.Fail("'record.header' isn't JsonNodePod<string>");
 	}
 	[Fact(DisplayName = "Header edition")]
 	public void HeaderEdition()

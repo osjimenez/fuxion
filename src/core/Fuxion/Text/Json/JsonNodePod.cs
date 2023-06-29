@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 
 namespace Fuxion.Text.Json;
 
-[JsonConverter(typeof(JsonPodNodeConverterFactory))]
+[JsonConverter(typeof(IPodConverterFactory))]
 public class JsonNodePod<TDiscriminator>(TDiscriminator discriminator, object value) : IPod<TDiscriminator, JsonNode>, IPod<TDiscriminator, string>
 	where TDiscriminator : notnull
 {
@@ -22,7 +22,7 @@ public class JsonNodePod<TDiscriminator>(TDiscriminator discriminator, object va
 		// TODO ver si podemos mejorar este tratamiento de nullable
 		if (payload is null) return null!;
 		JsonSerializerOptions options = new();
-		options.Converters.Add(new JsonPodNodeConverterFactory());
+		options.Converters.Add(new IPodConverterFactory());
 		var node = JsonSerializer.SerializeToNode(payload, options) ?? throw new SerializationException("Serialization returns null");
 		return node;
 	}
@@ -31,7 +31,7 @@ public class JsonNodePod<TDiscriminator>(TDiscriminator discriminator, object va
 	public T? As<T>()
 	{
 		JsonSerializerOptions options = new();
-		options.Converters.Add(new JsonPodNodeConverterFactory());
+		options.Converters.Add(new IPodConverterFactory());
 		var res = Payload.Deserialize<T>(options);
 		return res ?? default;
 	}
