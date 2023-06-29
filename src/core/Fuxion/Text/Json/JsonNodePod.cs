@@ -7,7 +7,7 @@ using System.Text.Json.Serialization;
 namespace Fuxion.Text.Json;
 
 [JsonConverter(typeof(IPodConverterFactory))]
-public class JsonNodePod<TDiscriminator>(TDiscriminator discriminator, object value) : IPod<TDiscriminator, JsonNode>, IPod<TDiscriminator, string>
+public class JsonNodePod<TDiscriminator>(TDiscriminator discriminator, object payload) : IPod<TDiscriminator, JsonNode>, IPod<TDiscriminator, string>
 	where TDiscriminator : notnull
 {
 	// ATTENTION: This constructor cannot be removed, it is needed for deserialization
@@ -15,7 +15,7 @@ public class JsonNodePod<TDiscriminator>(TDiscriminator discriminator, object va
 	// ATTENTION: The init setter cannot be removed, it is needed for deserialization
 	public TDiscriminator Discriminator { get; init; } = discriminator;
 	// ATTENTION: The init setter cannot be removed, it is needed for deserialization
-	public JsonNode Payload { get; init; } = CreateValue(value);
+	public JsonNode Payload { get; init; } = CreateValue(payload);
 	string IPod<TDiscriminator, string>.Payload => this;
 	static JsonNode CreateValue(object payload)
 	{

@@ -369,9 +369,6 @@ public static class Extensions
 	{
 		const string defaultStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 		return RandomNumberGenerator.GetString((string.IsNullOrWhiteSpace(me) ? defaultStr : me).AsSpan(), length);
-		if (ran == null) ran = new((int)DateTime.Now.Ticks);
-		var str = string.IsNullOrWhiteSpace(me) ? defaultStr : me;
-		return new(Enumerable.Repeat(str, length).Select(s => s[ran!.Next(s.Length)]).ToArray());
 	}
 	public static string ToTitleCase(this string me, CultureInfo? culture = null) => (culture ?? CultureInfo.CurrentCulture).TextInfo.ToTitleCase(me.ToLower());
 	public static string ToCamelCase(this string me, CultureInfo? culture = null) => me.ToTitleCase(culture).Replace(" ", "").Transform(s => s.Substring(0, 1).ToLower() + s.Substring(1, s.Length - 1));

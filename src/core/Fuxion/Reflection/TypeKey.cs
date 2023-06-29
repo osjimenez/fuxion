@@ -26,6 +26,7 @@ public class TypeKey
 	}
 	public override bool Equals(object? obj) => obj is TypeKey tk && tk.GetHashCode() == GetHashCode();
 	public override string ToString() => KeyChain.Aggregate((c, a) => $"{c}/{a}".Trim('/'));
+	public static implicit operator TypeKey(string key) => new(key);
 	public static implicit operator TypeKey(string[] keyChain) => new(keyChain);
 	public static implicit operator string(TypeKey key) => key.ToString();
 }

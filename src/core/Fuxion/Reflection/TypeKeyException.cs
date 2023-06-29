@@ -1,6 +1,3 @@
 namespace Fuxion.Reflection;
 
-public class TypeKeyException : FuxionException
-{
-	public TypeKeyException(string message) : base(message) { }
-}
+public class TypeKeyException(string message) : FuxionException(message);

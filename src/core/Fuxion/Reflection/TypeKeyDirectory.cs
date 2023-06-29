@@ -31,7 +31,6 @@ public class TypeKeyDirectory : ITypeKeyResolver
 	public void RegisterAssembly(Assembly assembly, Func<(Type Type, TypeKeyAttribute? Attribute), bool>? predicate = null, bool registerByFullNameIfNotFound = false)
 	{
 		var query = assembly.GetTypes().Where(t => t.HasCustomAttribute<TypeKeyAttribute>(false) || registerByFullNameIfNotFound)
-			// NULLABLE - I check before that custom attribute exist
 			.Select(t => (Type: t, Attribute: t.GetCustomAttribute<TypeKeyAttribute>()));
 		if (predicate != null) query = query.Where(predicate);
 		foreach (var tup in query) Register(tup.Type, registerByFullNameIfNotFound);
@@ -41,6 +40,11 @@ public class TypeKeyDirectory : ITypeKeyResolver
 	{
 		var key = type.GetTypeKey(processFullNameIfNotFound: registerByFullNameIfNotFound)
 			?? throw new ArgumentException($"The type '{type.Name}' isn't decorated with '{nameof(TypeKeyAttribute)}' attribute");
+		Register(type, key);
+	}
+	public void Register<T>(TypeKey key) => Register(typeof(T), key);
+	public void Register(Type type, TypeKey key)
+	{
 		_keyToTypeDictionary.Add(key, type);
 		_typeToKeyDictionary.Add(type, key);
 	}

@@ -8,7 +8,66 @@ namespace Fuxion.Test.Text.Json;
 public class JsonPodTest : BaseTest<JsonPodTest>
 {
 	public JsonPodTest(ITestOutputHelper output) : base(output) => Printer.WriteLineAction = output.WriteLine;
-	[Fact(DisplayName = "JsonPod - FromJson")]
+	[Fact(DisplayName = "ToJson")]
+	public void ToJson()
+	{
+		TestPayload payload = new TestPayloadDerived
+		{
+			Name = "payload.Name",
+			Age = 23,
+			Nick = "payload.Nick",
+			Birthdate = DateOnly.Parse("12/12/2012")
+		};
+		Output.WriteLine("=================== MANUAL");
+		{
+			TestPod testPod = new("testPayload", payload)
+			{
+				new Pod<string, object>("string.header", "stringPayload"),
+				new TestPod("testPod.header", new TestPayloadDerived
+				{
+					Name = "testPod.header.payload.Name",
+					Age = 15,
+					Nick = "testPod.header.payload.Nick",
+					Birthdate = DateOnly.Parse("12/12/2012")
+				})
+			};
+			testPod.Class = "class";
+			testPod.Add("record.header", new TestRecordPayload("record.header.Name"));
+			// Create JsonNode pod
+			JsonNodePod<string> jsonPod = new("testPod", testPod);
+			// Create Utf8 pod
+			Pod<string, byte[]> utf8Pod = new("utf8", Encoding.UTF8.GetBytes(jsonPod));
+			// Create formatted json string
+			var json = jsonPod.SerializeToJson(true);
+			Output.WriteLine($"json:\r\n{json}");
+			Output.WriteLine($"utf8:\r\n{utf8Pod.Payload.ToBase64String()}");
+			// Assertion
+			Assert.Contains($@"""{DISCRIMINATOR_LABEL}"": ""testPayload""", json);
+			Assert.Contains($@"""{DISCRIMINATOR_LABEL}"": ""string.header""", json);
+			Assert.Contains($@"""{DISCRIMINATOR_LABEL}"": ""testPod.header""", json);
+			Assert.Contains($@"""{DISCRIMINATOR_LABEL}"": ""record.header""", json);
+		}
+		Output.WriteLine("=================== BUILDER");
+		{
+			TestPod testPod = new("testPayload", payload)
+			{
+				Class = "class"
+			};
+			var builder = testPod.RebuildPod()
+				.AddHeader("string.header", "stringPayload")
+				.AddHeader(new TestPod("testPod.header", new TestPayloadDerived
+				{
+					Name = "testPod.header.payload.Name",
+					Age = 15,
+					Nick = "testPod.header.payload.Nick",
+					Birthdate = DateOnly.Parse("12/12/2012")
+				}))
+				.AddHeader("record.header", new TestRecordPayload("record.header.Name"));
+			Output.WriteLine($"json:\r\n{builder.ToJsonNode("json").Pod.SerializeToJson(true)}");
+			Output.WriteLine($"utf8:\r\n{builder.ToJsonNode("json").ToUtf8Bytes("utf8").Pod.Payload.ToBase64String()}");
+		}
+	}
+	[Fact(DisplayName = "FromJson")]
 	public void FromJson()
 	{
 		const string base64 =
@@ -122,65 +181,6 @@ public class JsonPodTest : BaseTest<JsonPodTest>
 	{
 		Pod<string, string> pod = new("discriminator", "payload");
 		Assert.Equal("payload", pod);
-	}
-	[Fact(DisplayName = "JsonPod - ToJson")]
-	public void ToJson()
-	{
-		TestPayload payload = new TestPayloadDerived
-		{
-			Name = "payload.Name",
-			Age = 23,
-			Nick = "payload.Nick",
-			Birthdate = DateOnly.Parse("12/12/2012")
-		};
-		Output.WriteLine("=================== MANUAL");
-		{
-			TestPod testPod = new("testPayload", payload)
-			{
-				new Pod<string, object>("string.header", "stringPayload"),
-				new TestPod("testPod.header", new TestPayloadDerived
-				{
-					Name = "testPod.header.payload.Name",
-					Age = 15,
-					Nick = "testPod.header.payload.Nick",
-					Birthdate = DateOnly.Parse("12/12/2012")
-				})
-			};
-			testPod.Class = "class";
-			testPod.Add("record.header", new TestRecordPayload("record.header.Name"));
-			// Create JsonNode pod
-			JsonNodePod<string> jsonPod = new("testPod", testPod);
-			// Create Utf8 pod
-			Pod<string, byte[]> utf8Pod = new("utf8", Encoding.UTF8.GetBytes(jsonPod));
-			// Create formatted json string
-			var json = jsonPod.SerializeToJson(true);
-			Output.WriteLine($"json:\r\n{json}");
-			Output.WriteLine($"utf8:\r\n{utf8Pod.Payload.ToBase64String()}");
-			// Assertion
-			Assert.Contains($@"""{DISCRIMINATOR_LABEL}"": ""testPayload""", json);
-			Assert.Contains($@"""{DISCRIMINATOR_LABEL}"": ""string.header""", json);
-			Assert.Contains($@"""{DISCRIMINATOR_LABEL}"": ""testPod.header""", json);
-			Assert.Contains($@"""{DISCRIMINATOR_LABEL}"": ""record.header""", json);
-		}
-		Output.WriteLine("=================== BUILDER");
-		{
-			TestPod testPod = new("testPayload", payload)
-			{
-				Class = "class"
-			};
-			var builder = testPod.RebuildPod()
-				.AddHeader("string.header", "stringPayload")
-				.AddHeader(new TestPod("testPod.header", new TestPayloadDerived
-				{
-					Name = "testPod.header.payload.Name",
-					Age = 15,
-					Nick = "testPod.header.payload.Nick",
-					Birthdate = DateOnly.Parse("12/12/2012")
-				}))
-				.AddHeader("record.header", new TestRecordPayload("record.header.Name"));
-			Output.WriteLine($"json:\r\n{builder.ToJsonNode("json").Pod.SerializeToJson(true)}");
-			Output.WriteLine($"utf8:\r\n{builder.ToJsonNode("json").ToUtf8Bytes("utf8").Pod.Payload.ToBase64String()}");
-		}
 	}
 }
 

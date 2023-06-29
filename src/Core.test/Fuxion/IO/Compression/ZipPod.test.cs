@@ -9,10 +9,14 @@ public class ZipPodTest(ITestOutputHelper output) : BaseTest<ZipPodTest>(output)
 	[Fact(DisplayName = "Zip")]
 	public void Zip()
 	{
-		TestPayload pay = new TestPayloadDerived {
-			Name = "payloadName", Age = 23, Nick = "payloadNick", Birthdate = DateOnly.Parse("12/12/2012")
+		TestPayload payload = new TestPayloadDerived
+		{
+			Name = "payloadName",
+			Age = 23,
+			Nick = "payloadNick",
+			Birthdate = DateOnly.Parse("12/12/2012")
 		};
-		var first = pay.BuildPod()
+		var builder = payload.BuildPod()
 			.ToPod("testPayload")
 			.AddHeader("header.string", "payload.string")
 			.AddHeader("header.testPod", new TestPod
@@ -22,14 +26,14 @@ public class ZipPodTest(ITestOutputHelper output) : BaseTest<ZipPodTest>(output)
 			{
 				p.Add("header.string", "payload.string");
 			}));
-		var json = first.ToJsonNode("json");
+		var json = builder.ToJsonNode("json");
 		Output.WriteLine($"json:\r\n{json.Pod.Payload.ToJsonString(true)}");
 		var utf = json.ToUtf8Bytes("utf");
 		Output.WriteLine($"utf:\r\n{utf.Pod.Payload.ToBase64String()}");
 		var zip = utf.ToZip("zip");
 		Output.WriteLine($"zip:\r\n{zip.Pod.Payload.ToBase64String()}");
 		// Same as fluent
-		var bytes = pay.BuildPod().ToJsonNode("json").ToUtf8Bytes("utf").ToZip("zip").Pod.Payload;
+		var bytes = payload.BuildPod().ToJsonNode("json").ToUtf8Bytes("utf").ToZip("zip").Pod.Payload;
 	}
 	[Fact(DisplayName = "Unzip")]
 	public void Unzip()

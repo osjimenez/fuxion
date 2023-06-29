@@ -1,12 +1,9 @@
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using Fuxion.Reflection;
 
 namespace Fuxion.Test.Reflection;
 
-public class TypeKeyTest : BaseTest<TypeKeyTest>
+public class TypeKeyTest(ITestOutputHelper output) : BaseTest<TypeKeyTest>(output)
 {
-	public TypeKeyTest(ITestOutputHelper output):base(output){}
 	[Fact(DisplayName = "Serialize TypeKey")]
 	public void Serialize()
 	{
