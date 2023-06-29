@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using System.Text.Json.Serialization;
 using Fuxion.Text.Json;
-using static Fuxion.Text.Json.IPodConverter<Fuxion.Text.Json.JsonNodePod<string>, string, string>;
+using static Fuxion.Text.Json.IPodConverter<Fuxion.Text.Json.JsonNodePod<string>, string, System.Text.Json.Nodes.JsonNode>;
 
 namespace Fuxion.Test.Text.Json;
 
@@ -36,9 +36,9 @@ public class JsonPodTest : BaseTest<JsonPodTest>
 			// Create JsonNode pod
 			JsonNodePod<string> jsonPod = new("testPod", testPod);
 			// Create Utf8 pod
-			Pod<string, byte[]> utf8Pod = new("utf8", Encoding.UTF8.GetBytes(jsonPod));
+			Pod<string, byte[]> utf8Pod = new("utf8", Encoding.UTF8.GetBytes(jsonPod.Payload.ToJsonString()));
 			// Create formatted json string
-			var json = jsonPod.SerializeToJson(true);
+			var json = jsonPod.Payload.ToJsonString(true);
 			Output.WriteLine($"json:\r\n{json}");
 			Output.WriteLine($"utf8:\r\n{utf8Pod.Payload.ToBase64String()}");
 			// Assertion
@@ -53,7 +53,7 @@ public class JsonPodTest : BaseTest<JsonPodTest>
 			{
 				Class = "class"
 			};
-			var builder = testPod.RebuildPod()
+			var builder = testPod.RebuildPod<string, TestPayload, TestPod>()
 				.AddHeader("string.header", "stringPayload")
 				.AddHeader(new TestPod("testPod.header", new TestPayloadDerived
 				{
@@ -63,7 +63,7 @@ public class JsonPodTest : BaseTest<JsonPodTest>
 					Birthdate = DateOnly.Parse("12/12/2012")
 				}))
 				.AddHeader("record.header", new TestRecordPayload("record.header.Name"));
-			Output.WriteLine($"json:\r\n{builder.ToJsonNode("json").Pod.SerializeToJson(true)}");
+			Output.WriteLine($"json:\r\n{builder.ToJsonNode("json").Pod.Payload.ToJsonString(true)}");
 			Output.WriteLine($"utf8:\r\n{builder.ToJsonNode("json").ToUtf8Bytes("utf8").Pod.Payload.ToBase64String()}");
 		}
 	}

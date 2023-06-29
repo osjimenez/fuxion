@@ -4,16 +4,16 @@ namespace Fuxion.IO.Compression;
 
 public static class ZipPodExtensions
 {
-	public static IPodBuilder<ZipPod<TDiscriminator>> ToZip<TDiscriminator>(this IPodBuilder<IPod<TDiscriminator, byte[]>> me, TDiscriminator discriminator)
+	public static IPodBuilder<TDiscriminator,byte[], ZipPod<TDiscriminator>> ToZip<TDiscriminator>(this IPodBuilder<TDiscriminator, byte[], IPod<TDiscriminator, byte[]>> me, TDiscriminator discriminator)
 		where TDiscriminator : notnull
-		=> new PodBuilder<TDiscriminator, object, ZipPod<TDiscriminator>>(new(discriminator, me.Pod.Payload));
-	public static IPodBuilder<UnzipPod2<TDiscriminator>> FromZip<TDiscriminator>(this IPodBuilder<IPod<TDiscriminator, byte[]>> me)
+		=> new PodBuilder<TDiscriminator, byte[], ZipPod<TDiscriminator>>(new(discriminator, me.Pod.Payload));
+	public static IPodBuilder<TDiscriminator,byte[], UnzipPod2<TDiscriminator>> FromZip<TDiscriminator>(this IPodBuilder<TDiscriminator, byte[],IPod<TDiscriminator, byte[]>> me)
 		where TDiscriminator : notnull
-		=> new PodBuilder<TDiscriminator, object, UnzipPod2<TDiscriminator>>(new(me.Pod.Discriminator, me.Pod.Payload));
-	public static IPodBuilder<UnzipPod2<TDiscriminator>> FromZip<TDiscriminator>(this IPodPreBuilder<byte[]> me, TDiscriminator discriminator)
+		=> new PodBuilder<TDiscriminator, byte[], UnzipPod2<TDiscriminator>>(new(me.Pod.Discriminator, me.Pod.Payload));
+	public static IPodBuilder<TDiscriminator,byte[], UnzipPod2<TDiscriminator>> FromZip<TDiscriminator>(this IPodPreBuilder<byte[]> me, TDiscriminator discriminator)
 		where TDiscriminator : notnull
-		=> new PodBuilder<TDiscriminator, object, UnzipPod2<TDiscriminator>>(new(discriminator, me.Payload));
-	public static IPodBuilder<IPod<TDiscriminator, string>> FromUtf8Bytes<TDiscriminator>(this IPodBuilder<UnzipPod2<TDiscriminator>> me)
+		=> new PodBuilder<TDiscriminator, byte[], UnzipPod2<TDiscriminator>>(new(discriminator, me.Payload));
+	public static IPodBuilder<TDiscriminator,string,IPod<TDiscriminator, string>> FromUtf8Bytes<TDiscriminator>(this IPodBuilder<TDiscriminator, byte[],UnzipPod2<TDiscriminator>> me)
 		where TDiscriminator : notnull
 		=> new PodBuilder<TDiscriminator, string, IPod<TDiscriminator, string>>(new Pod<TDiscriminator, string>(me.Pod.Discriminator, Encoding.UTF8.GetString(me.Pod.Payload)));
 }

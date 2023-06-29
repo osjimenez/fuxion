@@ -4,7 +4,8 @@ public interface ITypeKeyPodPreBuilder<out TPayload> : IPodPreBuilder<TPayload>
 {
 	ITypeKeyResolver Resolver { get; }
 }
-public interface ITypeKeyPodBuilder<out TPod> : IPodBuilder<TPod>
+public interface ITypeKeyPodBuilder<out TPayload, out TPod> : IPodBuilder<TypeKey, TPayload, TPod>
+	where TPod : IPod<TypeKey, TPayload>
 {
 	ITypeKeyResolver Resolver { get; }
 }
@@ -14,7 +15,7 @@ class TypeKeyPodPreBuilder<TPayload>(ITypeKeyResolver resolver,TPayload payload)
 	public TPayload Payload { get; } = payload;
 	public ITypeKeyResolver Resolver { get; } = resolver;
 }
-class TypeKeyPodBuilder<TPayload, TPod>(ITypeKeyResolver resolver, TPod pod) : ITypeKeyPodBuilder<TPod>
+class TypeKeyPodBuilder<TPayload, TPod>(ITypeKeyResolver resolver, TPod pod) : ITypeKeyPodBuilder<TPayload, TPod>
 	where TPayload : notnull
 	where TPod : IPod<TypeKey, TPayload>
 {

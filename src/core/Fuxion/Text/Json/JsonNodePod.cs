@@ -3,11 +3,12 @@ using System.Runtime.Serialization;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
+using Fuxion.Reflection;
+using Fuxion.Text.Json.Serialization;
 
 namespace Fuxion.Text.Json;
 
-[JsonConverter(typeof(IPodConverterFactory))]
-public class JsonNodePod<TDiscriminator>(TDiscriminator discriminator, object payload) : IPod<TDiscriminator, JsonNode>, IPod<TDiscriminator, string>
+public class JsonNodePod<TDiscriminator>(TDiscriminator discriminator, object payload, ITypeKeyResolver? resolver = null) : IPod<TDiscriminator, JsonNode>//, IPod<TDiscriminator, string>
 	where TDiscriminator : notnull
 {
 	// ATTENTION: This constructor cannot be removed, it is needed for deserialization
@@ -15,19 +16,19 @@ public class JsonNodePod<TDiscriminator>(TDiscriminator discriminator, object pa
 	// ATTENTION: The init setter cannot be removed, it is needed for deserialization
 	public TDiscriminator Discriminator { get; init; } = discriminator;
 	// ATTENTION: The init setter cannot be removed, it is needed for deserialization
-	public JsonNode Payload { get; init; } = CreateValue(payload);
-	string IPod<TDiscriminator, string>.Payload => this;
-	static JsonNode CreateValue(object payload)
+	public JsonNode Payload { get; init; } = CreateValue(payload, resolver);
+	// string IPod<TDiscriminator, string>.Payload => this;
+	static JsonNode CreateValue(object payload, ITypeKeyResolver? resolver)
 	{
 		// TODO ver si podemos mejorar este tratamiento de nullable
 		if (payload is null) return null!;
 		JsonSerializerOptions options = new();
-		options.Converters.Add(new IPodConverterFactory());
+		options.Converters.Add(new IPodConverterFactory(resolver));
 		var node = JsonSerializer.SerializeToNode(payload, options) ?? throw new SerializationException("Serialization returns null");
 		return node;
 	}
-	public override string ToString() => this.SerializeToJson();
-	public static implicit operator string(JsonNodePod<TDiscriminator> pod) => pod.SerializeToJson();
+	// public override string ToString() => this.SerializeToJson();
+	// public static implicit operator string(JsonNodePod<TDiscriminator> pod) => pod.SerializeToJson();
 	public T? As<T>()
 	{
 		JsonSerializerOptions options = new();

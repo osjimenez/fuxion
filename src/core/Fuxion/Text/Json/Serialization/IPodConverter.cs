@@ -4,11 +4,12 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using Fuxion.Json;
+using Fuxion.Reflection;
 using PodType = Fuxion.IPod<string, string>;
 
 namespace Fuxion.Text.Json;
 
-public class IPodConverter<TPod, TDiscriminator, TPayload> : JsonConverter<TPod>
+public class IPodConverter<TPod, TDiscriminator, TPayload>(ITypeKeyResolver? resolver = null) : JsonConverter<TPod>
 	where TPod : IPod<TDiscriminator, TPayload>
 	where TDiscriminator : notnull
 {
@@ -42,57 +43,110 @@ public class IPodConverter<TPod, TDiscriminator, TPayload> : JsonConverter<TPod>
 			?? throw new InvalidProgramException($"Could not be created instance of type '{typeof(TPod).GetSignature()}' using its private constructor");
 		var pod = (TPod)ins;
 		if (reader.TokenType != JsonTokenType.StartObject) throw new JsonException("The reader expected JsonTokenType.StartObject");
-		while (reader.Read())
+		var jsonObject = JsonObject.Create(JsonDocument.ParseValue(ref reader).RootElement)
+			?? throw new SerializationException($"Couldn't be created JsonObject");
+		
+		// DISCRIMINATOR
+		var disNode = jsonObject
+			.FirstOrDefault(pair => pair.Key == DISCRIMINATOR_LABEL).Value
+			?? throw new SerializationException($"Discriminator couldn't be obtained from label '{DISCRIMINATOR_LABEL}'");
+		var disProp = pod.GetType()
+				.GetProperty(nameof(IPod<string, string>.Discriminator), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+			?? throw new InvalidProgramException($"'{nameof(IPod<string, string>.Discriminator)}' property could not be obtained from pod '{pod.GetType().Name}'");
+		TDiscriminator? disValue;
+		var payloadType = typeof(TPayload);
+		if (resolver is not null && typeof(TypeKey).IsAssignableFrom(typeof(TDiscriminator)))
 		{
-			if (reader.TokenType == JsonTokenType.EndObject) return pod;
-			if (reader.TokenType != JsonTokenType.PropertyName) throw new JsonException($"The reader expected '{JsonTokenType.PropertyName}', but is '{reader.TokenType}'");
-			var propertyName = reader.GetString() ?? throw new InvalidProgramException("Current property name could not be read from Utf8JsonReader.");
-			var prop = SearchProperty(pod, propertyName);
-			var ele = JsonDocument.ParseValue(ref reader)
-				.RootElement;
-			if (prop == null)
-				switch (propertyName)
-				{
-					case DISCRIMINATOR_LABEL:
-					{
-						var disProp = pod.GetType()
-								.GetProperty(nameof(IPod<string, string>.Discriminator), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
-							?? throw new InvalidProgramException($"'{nameof(IPod<string, string>.Discriminator)}' property could not be obtained from pod '{pod.GetType().Name}'");
-						var disValue = ele.GetRawText()
-							.DeserializeFromJson<TDiscriminator>(options: options);
-						pod.SetPrivatePropertyValue(disProp.Name, disValue);
-						break;
-					}
-					case PAYLOAD_LABEL:
-					{
-						var payProp = pod.GetType()
-								.GetProperty(nameof(IPod<string, string>.Payload), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
-							?? throw new InvalidProgramException($"'{nameof(IPod<string, string>.Payload)}' property could not be obtained from pod '{pod.GetType().Name}'");
-						var payValue = ele.GetRawText()
-							.DeserializeFromJson<TPayload>(options: options);
-						pod.SetPrivatePropertyValue(payProp.Name, payValue);
-						break;
-					}
-					case ITEMS_LABEL:
-					{
-						if (pod is not ICollectionPod<TDiscriminator, TPayload> col) throw new SerializationException($"{ITEMS_LABEL} is present but pod '{pod.GetType().Name}' is not a collection pod");
-						foreach (var ele2 in ele.EnumerateArray())
-						{
-							var headerPod = (JsonNodePod<TDiscriminator>?)ele2.Deserialize(typeof(JsonNodePod<TDiscriminator>), options) ?? throw new SerializationException("Cannot be deserialize header");
-							col.Add(headerPod);
-						}
-						break;
-					}
-				}
-			else
+			var tk = disNode.Deserialize<TypeKey>(options)
+				?? throw new SerializationException($"Couldn't be obtained TypeKey from discriminator");
+			payloadType = resolver[tk];
+		}
+		pod.SetPrivatePropertyValue(disProp.Name, disNode.Deserialize<TDiscriminator>(options));
+		
+		// PAYLOAD
+		var payNode = jsonObject
+				.FirstOrDefault(pair => pair.Key == PAYLOAD_LABEL).Value
+			?? throw new SerializationException($"Payload couldn't be obtained from label '{PAYLOAD_LABEL}'");
+		var payProp = pod.GetType()
+				.GetProperty(nameof(IPod<string, string>.Payload), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+			?? throw new InvalidProgramException($"'{nameof(IPod<string, string>.Payload)}' property could not be obtained from pod '{pod.GetType().Name}'");
+		// var payValue = ele.GetRawText()
+		// 	.DeserializeFromJson<TPayload>(options: options);
+		var payValue = payNode.Deserialize(payloadType, options);
+		pod.SetPrivatePropertyValue(payProp.Name, payValue);
+		
+		// ITEMS
+		var iteNode = jsonObject.FirstOrDefault(pair => pair.Key == ITEMS_LABEL).Value;
+		if (iteNode is not null)
+		{
+			if (pod is not ICollectionPod<TDiscriminator, TPayload> col) throw new SerializationException($"{ITEMS_LABEL} is present but pod '{pod.GetType().Name}' is not a collection pod");
+			foreach (var node in iteNode.AsArray())
 			{
-				var val = ele.Deserialize(prop.PropertyType, new JsonSerializerOptions
+				if (node is not null && resolver is not null)
 				{
-					TypeInfoResolver = new PrivateConstructorContractResolver()
-				});
-				pod.SetPrivatePropertyValue(prop.Name, val);
+					var headerPod = (IPod<TDiscriminator, object>?)node.Deserialize(typeof(TypeKeyPod<object>), options)?? throw new SerializationException("Cannot be deserialize header");
+					col.Add(headerPod);
+				} else
+				{
+					var headerPod = (JsonNodePod<TDiscriminator>?)node.Deserialize(typeof(JsonNodePod<TDiscriminator>), options) ?? throw new SerializationException("Cannot be deserialize header");
+					col.Add(headerPod);
+				}
 			}
 		}
+
+
+
+		// while (reader.Read())
+		// {
+		// 	if (reader.TokenType == JsonTokenType.EndObject) return pod;
+		// 	if (reader.TokenType != JsonTokenType.PropertyName) throw new JsonException($"The reader expected '{JsonTokenType.PropertyName}', but is '{reader.TokenType}'");
+		// 	var propertyName = reader.GetString() ?? throw new InvalidProgramException("Current property name could not be read from Utf8JsonReader.");
+		// 	var prop = SearchProperty(pod, propertyName);
+		// 	var ele = JsonDocument.ParseValue(ref reader)
+		// 		.RootElement;
+		// 	if (prop == null)
+		// 		switch (propertyName)
+		// 		{
+		// 			// case DISCRIMINATOR_LABEL:
+		// 			// {
+		// 			// 	var disProp = pod.GetType()
+		// 			// 			.GetProperty(nameof(IPod<string, string>.Discriminator), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+		// 			// 		?? throw new InvalidProgramException($"'{nameof(IPod<string, string>.Discriminator)}' property could not be obtained from pod '{pod.GetType().Name}'");
+		// 			// 	var disValue = ele.GetRawText()
+		// 			// 		.DeserializeFromJson<TDiscriminator>(options: options);
+		// 			// 	pod.SetPrivatePropertyValue(disProp.Name, disValue);
+		// 			// 	break;
+		// 			// }
+		// 			// case PAYLOAD_LABEL:
+		// 			// {
+		// 			// 	var payProp = pod.GetType()
+		// 			// 			.GetProperty(nameof(IPod<string, string>.Payload), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+		// 			// 		?? throw new InvalidProgramException($"'{nameof(IPod<string, string>.Payload)}' property could not be obtained from pod '{pod.GetType().Name}'");
+		// 			// 	var payValue = ele.GetRawText()
+		// 			// 		.DeserializeFromJson<TPayload>(options: options);
+		// 			// 	pod.SetPrivatePropertyValue(payProp.Name, payValue);
+		// 			// 	break;
+		// 			// }
+		// 			// case ITEMS_LABEL:
+		// 			// {
+		// 			// 	if (pod is not ICollectionPod<TDiscriminator, TPayload> col) throw new SerializationException($"{ITEMS_LABEL} is present but pod '{pod.GetType().Name}' is not a collection pod");
+		// 			// 	foreach (var ele2 in ele.EnumerateArray())
+		// 			// 	{
+		// 			// 		var headerPod = (JsonNodePod<TDiscriminator>?)ele2.Deserialize(typeof(JsonNodePod<TDiscriminator>), options) ?? throw new SerializationException("Cannot be deserialize header");
+		// 			// 		col.Add(headerPod);
+		// 			// 	}
+		// 			// 	break;
+		// 			// }
+		// 		}
+		// 	else
+		// 	{
+		// 		var val = ele.Deserialize(prop.PropertyType, new JsonSerializerOptions
+		// 		{
+		// 			TypeInfoResolver = new PrivateConstructorContractResolver()
+		// 		});
+		// 		pod.SetPrivatePropertyValue(prop.Name, val);
+		// 	}
+		// }
 		return pod;
 	}
 	public override void Write(Utf8JsonWriter writer, TPod value, JsonSerializerOptions options)
