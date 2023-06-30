@@ -13,7 +13,7 @@ public class TypeKeyPodTest : BaseTest<TypeKeyPodTest>
 	{
 		TypeKeyDirectory dir = new();
 		dir.Register<JsonNode>("json");
-		dir.Register<byte[]>("bytes");
+		dir.Register<byte[]>("byte[]");
 		dir.Register<int>("integer");
 		dir.Register<string>("string");
 		dir.Register<TestPayload>("testPayload");
@@ -52,25 +52,22 @@ public class TypeKeyPodTest : BaseTest<TypeKeyPodTest>
 	public void FromJson()
 	{
 		var base64 = "eyJfX2Rpc2NyaW1pbmF0b3IiOiJ0ZXN0UGF5bG9hZC9kZXJpdmVkIiwiX19wYXlsb2FkIjp7Ik5pY2siOiJwYXlsb2FkTmljayIsIkJpcnRoZGF0ZS1jdXN0b20iOiIyMDEyLTEyLTEyIiwiTmFtZSI6InBheWxvYWROYW1lIiwiQWdlLWN1c3RvbSI6MjN9LCJfX2l0ZW1zIjpbeyJfX2Rpc2NyaW1pbmF0b3IiOiJpbnRlZ2VyIiwiX19wYXlsb2FkIjoxMjM0fSx7Il9fZGlzY3JpbWluYXRvciI6InRlc3RQYXlsb2FkL2Rlcml2ZWQiLCJfX3BheWxvYWQiOnsiTmljayI6ImhlYWRlci5uaWNrIiwiQmlydGhkYXRlLWN1c3RvbSI6IjIwMTItMTItMTIiLCJOYW1lIjoiaGVhZGVyLm5hbWUiLCJBZ2UtY3VzdG9tIjoxMn19LHsiX19kaXNjcmltaW5hdG9yIjoic3RyaW5nIiwiX19wYXlsb2FkIjoiaGVhZGVyLnBheWxvYWQifV19";
-		ITypeKeyPodPreBuilder<byte[]> builder = base64.FromBase64String()
-			.BuildTypeKeyPod(resolver);
-		Assert.NotNull(builder);
-			var b2 = builder
+		var builder = base64.FromBase64String()
+			.BuildTypeKeyPod(resolver)
 			.FromUtf8Bytes()
 			.FromJsonNode();
-		// var pod2 = b2.Pod.Ass<Pod<TypeKey, TestPayload>>(resolver);
-		var pod2 = b2.Pod;
-		Assert.NotNull(pod2);
-		Assert.True(pod2[new[]
+		var pod = builder.Pod;
+		Assert.NotNull(pod);
+		Assert.True(pod[new[]
 		{
 			"testPayload", "derived"
 		}].Payload is TestPayload);
-		Assert.True(pod2[new[]
+		Assert.True(pod[new[]
 		{
 			"testPayload", "derived"
 		}].Payload is TestPayloadDerived);
-		Assert.True(pod2["integer"].Payload is int);
-		Assert.True(pod2["string"].Payload is string);
-		Output.WriteLine($"json:\r\n{b2.Pod.BuildPod().ToJsonNode(resolver).Pod.Payload.ToJsonString(true)}");
+		Assert.True(pod["integer"].Payload is int);
+		Assert.True(pod["string"].Payload is string);
+		Output.WriteLine($"json:\r\n{pod.BuildPod().ToJsonNode(resolver).Pod.Payload.ToJsonString(true)}");
 	}
 }

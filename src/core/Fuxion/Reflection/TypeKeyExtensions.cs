@@ -33,7 +33,8 @@ public static class TypeKeyExtensions
 					type = type.BaseType;
 				}
 			}
-			if (failType is not null && baseType is not null) throw new TypeKeyException($"The type '{failType.GetSignature()}' is not adorned with '{nameof(TypeKeyAttribute)}' but type '{baseType.GetSignature()}' is, the inheritance chain is broken");
+			if (failType is not null && baseType is not null) 
+				throw new TypeKeyException($"The type '{failType.GetSignature()}' is not adorned with '{nameof(TypeKeyAttribute)}' but type '{baseType.GetSignature()}' is, the inheritance chain is broken");
 		}
 		keyChain.Reverse();
 		var current =
@@ -44,6 +45,6 @@ public static class TypeKeyExtensions
 					: (TypeKey?)null
 				: null)
 			?? throw new TypeKeyException($"Couldn't be possible obtain TypeKey for type '{me.GetSignature()}'");
-		return new(keyChain.SelectMany(_ => _).Concat(current.KeyChain).ToArray());
+		return new(keyChain.SelectMany(key => key).Concat(current.KeyChain).ToArray());
 	}
 }
