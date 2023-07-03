@@ -87,19 +87,19 @@ public class TypeKeyTest(ITestOutputHelper output) : BaseTest<TypeKeyTest>(outpu
 	}
 }
 [TestTypeKey(TestTypeKeyClass.Test, nameof(One))]
-public class One { }
+file class One { }
 [TypeKey(nameof(Two))]
-public class Two : One{}
-public class Three : Two{}
+file class Two : One{}
+file class Three : Two{}
 [TypeKey(nameof(Four))]
-public class Four : Three{}
+file class Four : Three{}
 
-public enum TestTypeKeyClass
+file enum TestTypeKeyClass
 {
 	Test
 }
 // This is a sample of TypeKeyAttribute extension with custom way to create keyChain
-public class TestTypeKeyAttribute(TestTypeKeyClass @class, params string[] keyChain) : TypeKeyAttribute(GetChain(@class, keyChain))
+file class TestTypeKeyAttribute(TestTypeKeyClass @class, params string[] keyChain) : TypeKeyAttribute(GetChain(@class, keyChain))
 {
 	public const string TestUrl = "http://fuxion.dev";
 	static string[] GetChain(TestTypeKeyClass @class, IEnumerable<string> keyChain)

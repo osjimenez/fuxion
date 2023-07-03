@@ -7,6 +7,8 @@ namespace System.Reflection;
 
 public static class MemberInfoExtensions
 {
+	// TODO GetCustomAttribute is now in framework but not with same parameters and behavior
+	
 	/// <summary>
 	///    Retrieves a custom attribute of a specified type that is applied to a specified
 	///    member, and optionally inspects the ancestors of that member.
@@ -23,17 +25,16 @@ public static class MemberInfoExtensions
 		bool exceptionIfMoreThanOne = false) where TAttribute : Attribute
 	{
 		var objAtts = me.GetCustomAttributes(typeof(TAttribute), inherit);
-		var atts = objAtts?.Cast<TAttribute>();
-		if (exceptionIfMoreThanOne && atts != null && atts.Count() > 1) throw new AttributeMoreThanOneException(me, typeof(TAttribute));
+		var atts = objAtts?.Cast<TAttribute>().ToArray();
+		if (exceptionIfMoreThanOne && atts is { Length: > 1 }) throw new AttributeMoreThanOneException(me, typeof(TAttribute));
 		var att = atts?.FirstOrDefault();
 		if (exceptionIfNotFound && att == null) throw new AttributeNotFoundException(me, typeof(TAttribute));
 		return att;
 	}
-	public static bool HasCustomAttribute<TAttribute>(this MemberInfo member, bool inherit = true, [DoesNotReturnIf(true)] bool exceptionIfMoreThanOne = true) where TAttribute : Attribute
-	{
-		var att = member.GetCustomAttribute<TAttribute>(inherit, false, exceptionIfMoreThanOne);
-		return att != null;
-	}
+	public static bool HasCustomAttribute<TAttribute>(this MemberInfo member, bool inherit = true, [DoesNotReturnIf(true)] bool exceptionIfMoreThanOne = true)
+		where TAttribute : Attribute
+		=> member.GetCustomAttribute<TAttribute>(inherit, false, exceptionIfMoreThanOne) is not null;
+	
 	public static string GetSignature(this MethodBase method,
 		bool includeAccessModifiers = false,
 		bool includeReturn = false,

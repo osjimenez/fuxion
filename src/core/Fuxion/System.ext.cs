@@ -141,7 +141,7 @@ public static class Extensions
 		return false;
 	}
 	public static bool IsNullableValue<T>(this Type me) where T : struct => me.IsGenericType && me.GetGenericTypeDefinition() == typeof(Nullable<>) && me.GetGenericArguments()[0] == typeof(T);
-	public static bool IsNullableEnum(this Type me, bool valueTypesAreNotNullables = true) =>
+	public static bool IsNullableEnum(this Type me) =>
 		me.IsGenericType && me.GetGenericTypeDefinition() == typeof(Nullable<>) && me.GetGenericArguments()[0].IsEnum;
 	public static object? GetDefaultValue(this Type me) => me.GetTypeInfo().IsValueType && Nullable.GetUnderlyingType(me) == null ? Activator.CreateInstance(me) : null;
 	public static string GetFullNameWithAssemblyName(this Type me) => $"{me.AssemblyQualifiedName?.Split(',').Take(2).Aggregate("", (a, n) => a + ", " + n, a => a.Trim(' ', ','))}";
@@ -151,20 +151,17 @@ public static class Extensions
 		if (nullableType != null) return nullableType.GetSignature(useFullNames) + "?";
 		var typeName = useFullNames && !string.IsNullOrWhiteSpace(type.FullName) ? type.FullName : type.Name;
 		if (!type.GetTypeInfo().IsGenericType)
-			switch (type.Name)
+			return type.Name switch
 			{
-				case "String":  return "string";
-				case "Int32":   return "int";
-				case "Int64":   return "long";
-				case "Decimal": return "decimal";
-				case "Object":  return "object";
-				case "Void":    return "void";
-				default:
-				{
-					return typeName;
-				}
-			}
-		StringBuilder sb = new(typeName.Substring(0, typeName.IndexOf('`')));
+				"String" => "string",
+				"Int32" => "int",
+				"Int64" => "long",
+				"Decimal" => "decimal",
+				"Object" => "object",
+				"Void" => "void",
+				var _ => typeName
+			};
+		StringBuilder sb = new(typeName[..typeName.IndexOf('`')]);
 		sb.Append('<');
 		var first = true;
 		foreach (var t in type.GenericTypeArguments)

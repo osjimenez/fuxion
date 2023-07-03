@@ -15,7 +15,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
-		<PackageReference Include="ReactiveUI.WPF" Version="18.4.44" />
+		<PackageReference Include="ReactiveUI.WPF" Version="19.2.1" />
 	</ItemGroup>
 
 	<ItemGroup>

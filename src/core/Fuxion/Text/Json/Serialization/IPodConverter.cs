@@ -53,7 +53,6 @@ public class IPodConverter<TPod, TDiscriminator, TPayload>(ITypeKeyResolver? res
 		var disProp = pod.GetType()
 				.GetProperty(nameof(IPod<string, string>.Discriminator), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
 			?? throw new InvalidProgramException($"'{nameof(IPod<string, string>.Discriminator)}' property could not be obtained from pod '{pod.GetType().Name}'");
-		TDiscriminator? disValue;
 		var payloadType = typeof(TPayload);
 		if (resolver is not null && typeof(TypeKey).IsAssignableFrom(typeof(TDiscriminator)))
 		{
@@ -70,8 +69,6 @@ public class IPodConverter<TPod, TDiscriminator, TPayload>(ITypeKeyResolver? res
 		var payProp = pod.GetType()
 				.GetProperty(nameof(IPod<string, string>.Payload), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
 			?? throw new InvalidProgramException($"'{nameof(IPod<string, string>.Payload)}' property could not be obtained from pod '{pod.GetType().Name}'");
-		// var payValue = ele.GetRawText()
-		// 	.DeserializeFromJson<TPayload>(options: options);
 		var payValue = payNode.Deserialize(payloadType, options);
 		pod.SetPrivatePropertyValue(payProp.Name, payValue);
 		
@@ -93,60 +90,6 @@ public class IPodConverter<TPod, TDiscriminator, TPayload>(ITypeKeyResolver? res
 				}
 			}
 		}
-
-
-
-		// while (reader.Read())
-		// {
-		// 	if (reader.TokenType == JsonTokenType.EndObject) return pod;
-		// 	if (reader.TokenType != JsonTokenType.PropertyName) throw new JsonException($"The reader expected '{JsonTokenType.PropertyName}', but is '{reader.TokenType}'");
-		// 	var propertyName = reader.GetString() ?? throw new InvalidProgramException("Current property name could not be read from Utf8JsonReader.");
-		// 	var prop = SearchProperty(pod, propertyName);
-		// 	var ele = JsonDocument.ParseValue(ref reader)
-		// 		.RootElement;
-		// 	if (prop == null)
-		// 		switch (propertyName)
-		// 		{
-		// 			// case DISCRIMINATOR_LABEL:
-		// 			// {
-		// 			// 	var disProp = pod.GetType()
-		// 			// 			.GetProperty(nameof(IPod<string, string>.Discriminator), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
-		// 			// 		?? throw new InvalidProgramException($"'{nameof(IPod<string, string>.Discriminator)}' property could not be obtained from pod '{pod.GetType().Name}'");
-		// 			// 	var disValue = ele.GetRawText()
-		// 			// 		.DeserializeFromJson<TDiscriminator>(options: options);
-		// 			// 	pod.SetPrivatePropertyValue(disProp.Name, disValue);
-		// 			// 	break;
-		// 			// }
-		// 			// case PAYLOAD_LABEL:
-		// 			// {
-		// 			// 	var payProp = pod.GetType()
-		// 			// 			.GetProperty(nameof(IPod<string, string>.Payload), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
-		// 			// 		?? throw new InvalidProgramException($"'{nameof(IPod<string, string>.Payload)}' property could not be obtained from pod '{pod.GetType().Name}'");
-		// 			// 	var payValue = ele.GetRawText()
-		// 			// 		.DeserializeFromJson<TPayload>(options: options);
-		// 			// 	pod.SetPrivatePropertyValue(payProp.Name, payValue);
-		// 			// 	break;
-		// 			// }
-		// 			// case ITEMS_LABEL:
-		// 			// {
-		// 			// 	if (pod is not ICollectionPod<TDiscriminator, TPayload> col) throw new SerializationException($"{ITEMS_LABEL} is present but pod '{pod.GetType().Name}' is not a collection pod");
-		// 			// 	foreach (var ele2 in ele.EnumerateArray())
-		// 			// 	{
-		// 			// 		var headerPod = (JsonNodePod<TDiscriminator>?)ele2.Deserialize(typeof(JsonNodePod<TDiscriminator>), options) ?? throw new SerializationException("Cannot be deserialize header");
-		// 			// 		col.Add(headerPod);
-		// 			// 	}
-		// 			// 	break;
-		// 			// }
-		// 		}
-		// 	else
-		// 	{
-		// 		var val = ele.Deserialize(prop.PropertyType, new JsonSerializerOptions
-		// 		{
-		// 			TypeInfoResolver = new PrivateConstructorContractResolver()
-		// 		});
-		// 		pod.SetPrivatePropertyValue(prop.Name, val);
-		// 	}
-		// }
 		return pod;
 	}
 	public override void Write(Utf8JsonWriter writer, TPod value, JsonSerializerOptions options)

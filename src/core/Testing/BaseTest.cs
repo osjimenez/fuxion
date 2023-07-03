@@ -1,5 +1,7 @@
 ﻿using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using Microsoft.Extensions.DependencyInjection;
+using Xunit;
 using Xunit.Abstractions;
 
 namespace Fuxion.Testing;
@@ -23,6 +25,23 @@ public abstract class BaseTest<TBaseTest> where TBaseTest : BaseTest<TBaseTest>
 		OnConfigureServices(serviceCollection);
 		ServiceProvider = serviceCollection.BuildServiceProvider();
 		Logger = ServiceProvider.GetRequiredService<ILogger<TBaseTest>>();
+	}
+	protected void PrintVariable(object? value, [CallerArgumentExpression(nameof(value))] string? name = null) 
+		=> Output.WriteLine($"{name} = {value}");
+	protected void IsTrue(bool? value, [CallerArgumentExpression(nameof(value))] string? name = null)
+	{
+		Assert.True(value);
+		PrintVariable(value, name);
+	}
+	protected void IsFalse(bool value, [CallerArgumentExpression(nameof(value))] string? name = null)
+	{
+		Assert.False(value);
+		PrintVariable(value, name);
+	}
+	protected void Throws<TException>(Action testCode, [CallerArgumentExpression(nameof(testCode))] string? name = null)
+		where TException: Exception
+	{
+		PrintVariable("Throws => " + Assert.Throws<TException>(testCode).Message, name);
 	}
 	protected internal ITestOutputHelper Output { get; }
 	protected internal IServiceProvider ServiceProvider { get; }
