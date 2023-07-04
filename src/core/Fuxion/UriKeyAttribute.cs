@@ -1,4 +1,4 @@
-namespace Fuxion.Reflection;
+namespace Fuxion;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, Inherited = false)]
 public class UriKeyAttribute(string key, bool isSealed = true) : Attribute

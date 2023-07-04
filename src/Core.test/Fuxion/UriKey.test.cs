@@ -1,8 +1,8 @@
 using Fuxion.Reflection;
 
-namespace Fuxion.Test.Reflection;
+namespace Fuxion.Test;
 
-public class UriKeyTest(ITestOutputHelper output) : BaseTest<TypeKeyTest>(output)
+public class UriKeyTest(ITestOutputHelper output) : BaseTest<UriKeyTest>(output)
 {
 	[Fact]
 	public void SerializeToJson()

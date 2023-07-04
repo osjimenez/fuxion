@@ -5,7 +5,7 @@ using System.Text.Json.Nodes;
 using Fuxion.Text.Json;
 using Fuxion.Text.Json.Serialization;
 
-namespace Fuxion.Reflection;
+namespace Fuxion;
 
 public static class UriKeyPodExtensions
 {
@@ -24,11 +24,11 @@ public static class UriKeyPodExtensions
 	public static IUriKeyPodBuilder<JsonNode, JsonNodePod<UriKey>> ToJsonNode<TPayload>(this IUriKeyPodBuilder<TPayload, IPod<UriKey, TPayload>> me)
 		where TPayload : notnull
 		=> new UriKeyPodBuilder<JsonNode, JsonNodePod<UriKey>>(me.Resolver, new(me.Resolver[typeof(JsonNode)], me.Pod, me.Resolver));
-	public static IUriKeyPodBuilder<object, UriKeyPod<object>> FromJsonNode(this IUriKeyPodBuilder<string,IPod<UriKey, string>> me)
+	public static IUriKeyPodBuilder<object, IUriKeyPod<object>> FromJsonNode(this IUriKeyPodBuilder<string,IPod<UriKey, string>> me)
 	{
 		JsonSerializerOptions options = new();
 		options.Converters.Add(new IPodConverterFactory(me.Resolver));
-		return new UriKeyPodBuilder<object, UriKeyPod<object>>(me.Resolver, me.Pod.Payload.DeserializeFromJson<UriKeyPod<object>>(options: options)
+		return new UriKeyPodBuilder<object, IUriKeyPod<object>>(me.Resolver, me.Pod.Payload.DeserializeFromJson<UriKeyPod<object>>(options: options)
 			?? throw new SerializationException("string couldn't be deserialized"));
 	}
 	
@@ -38,11 +38,4 @@ public static class UriKeyPodExtensions
 		=> new UriKeyPodBuilder<byte[], IUriKeyPod<byte[]>>(me.Resolver, new UriKeyPod<byte[]>(me.Resolver[typeof(byte[])], Encoding.UTF8.GetBytes(me.Pod.Payload.ToJsonString())));
 	public static IUriKeyPodBuilder<string, IUriKeyPod<string>> FromUtf8Bytes(this IUriKeyPodPreBuilder<byte[]> me)
 		=> new UriKeyPodBuilder<string, IUriKeyPod<string>>(me.Resolver, new UriKeyPod<string>(me.Resolver[typeof(string)], Encoding.UTF8.GetString(me.Payload)));
-	public static T? Ass<T>(this JsonNodePod<UriKey> me, IUriKeyResolver resolver)
-	{
-		JsonSerializerOptions options = new();
-		options.Converters.Add(new IPodConverterFactory(resolver));
-		var res = me.Payload.Deserialize<T>(options);
-		return res ?? default;
-	}
 }

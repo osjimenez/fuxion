@@ -6,7 +6,7 @@ public class CachedTimeProviderTest : BaseTest<CachedTimeProviderTest>
 	[Fact(DisplayName = "CachedTimeProvider - CacheTest")]
 	public void CachedTimeProvider_CacheTest()
 	{
-		var ctp = new CachedTimeProvider(new LocalMachinneTimeProvider()) {
+		var ctp = new CachedTimeProvider(new LocalMachineTimeProvider()) {
 			Logger = Logger, ExpirationInterval = TimeSpan.FromSeconds(1)
 		};
 		ctp.UtcNow(out var fromCache);
@@ -20,5 +20,5 @@ public class CachedTimeProviderTest : BaseTest<CachedTimeProviderTest>
 		Assert.True(fromCache);
 	}
 	[Fact(DisplayName = "CachedTimeProvider - CheckConsistency")]
-	public void CachedTimeProvider_CheckConsistency() => new CachedTimeProvider(new LocalMachinneTimeProvider()).CheckConsistency(Output);
+	public void CachedTimeProvider_CheckConsistency() => new CachedTimeProvider(new LocalMachineTimeProvider()).CheckConsistency(Output);
 }

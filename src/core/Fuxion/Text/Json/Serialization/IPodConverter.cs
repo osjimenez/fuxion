@@ -46,8 +46,8 @@ public class IPodConverter<TPod, TDiscriminator, TPayload>(IUriKeyResolver? reso
 		var jsonObject = JsonObject.Create(JsonDocument.ParseValue(ref reader).RootElement)
 			?? throw new SerializationException($"Couldn't be created JsonObject");
 
-		if (typeToConvert.IsSubclassOfRawGeneric(typeof(UriKeyPod<>)))
-			typeToConvert.GetProperty(nameof(UriKeyPod<string>.Resolver))?.SetValue(pod, resolver);
+		if (typeToConvert.IsSubclassOfRawGeneric(typeof(IUriKeyPod<>)))
+			typeToConvert.GetProperty(nameof(IUriKeyPod<string>.Resolver))?.SetValue(pod, resolver);
 		
 		// DISCRIMINATOR
 		var disNode = jsonObject

@@ -21,9 +21,6 @@
 			<Generator>PublicResXFileCodeGenerator</Generator>
 			<LastGenOutput>Strings.Designer.cs</LastGenOutput>
 		</EmbeddedResource>
-		<Compile Update="Reflection\TypeKeyPodBuilder.cs">
-			<DependentUpon>TypeKeyPod.cs</DependentUpon>
-		</Compile>
 		<Compile Update="PodBuilder.cs">
 			<DependentUpon>Pod.cs</DependentUpon>
 		</Compile>
@@ -36,8 +33,26 @@
 		<Compile Update="SemanticVersionIdentifierCollection.cs">
 		  <DependentUpon>SemanticVersion.cs</DependentUpon>
 		</Compile>
-		<Compile Update="Reflection\UriKeyException.cs">
-		  <DependentUpon>UriKey.cs</DependentUpon>
+		<Compile Update="AntiBackTimeProvider.cs">
+		  <DependentUpon>ITimeProvider.cs</DependentUpon>
+		</Compile>
+		<Compile Update="AverageTimeProvider.cs">
+		  <DependentUpon>ITimeProvider.cs</DependentUpon>
+		</Compile>
+		<Compile Update="CachedTimeProvider.cs">
+		  <DependentUpon>ITimeProvider.cs</DependentUpon>
+		</Compile>
+		<Compile Update="FileSystemStorageTimeProvider.cs">
+		  <DependentUpon>ITimeProvider.cs</DependentUpon>
+		</Compile>
+		<Compile Update="InternetTimeProvider.cs">
+		  <DependentUpon>ITimeProvider.cs</DependentUpon>
+		</Compile>
+		<Compile Update="LocalMachineTimeProvider.cs">
+		  <DependentUpon>ITimeProvider.cs</DependentUpon>
+		</Compile>
+		<Compile Update="StoredTimeProvider.cs">
+		  <DependentUpon>ITimeProvider.cs</DependentUpon>
 		</Compile>
 	</ItemGroup>
 

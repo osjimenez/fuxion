@@ -1,9 +1,8 @@
-using System.Runtime.CompilerServices;
 using System.Web;
 
-namespace Fuxion.Test.Reflection;
+namespace Fuxion.Test;
 
-public class UriTest(ITestOutputHelper output) : BaseTest<TypeKeyTest>(output)
+public class UriTest(ITestOutputHelper output) : BaseTest<UriKeyTest>(output)
 {
 	void PrintUri(Uri uri)
 	{

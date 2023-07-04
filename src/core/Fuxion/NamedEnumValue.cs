@@ -1,16 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 
 namespace Fuxion;
 
-public struct NamedEnumValue : IEquatable<Enum>
+public struct NamedEnumValue(Enum value) : IEquatable<Enum>
 {
-	public NamedEnumValue(Enum value)
-	{
-		Value = value;
-		Name = value?.GetType().GetField(value?.ToString() ?? "")?.GetCustomAttributes(false).OfType<DisplayAttribute>().FirstOrDefault()?.GetName() ?? value?.ToString() ?? "";
-	}
-	public string Name { get; }
-	public Enum Value { get; }
+	public string Name { get; } = value.GetType()
+		.GetField(value.ToString())
+		?.GetCustomAttribute<DisplayAttribute>(false)
+		?.GetName() ?? value.ToString();
+	public Enum Value { get; } = value;
 	public override string ToString() => Name;
 	public static implicit operator NamedEnumValue(Enum @enum) => new(@enum);
 	public static implicit operator Enum(NamedEnumValue value) => value.Value;

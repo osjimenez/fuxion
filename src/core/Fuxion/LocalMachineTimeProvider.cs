@@ -1,6 +1,6 @@
 ﻿namespace Fuxion;
 
-public class LocalMachinneTimeProvider : ITimeProvider
+public class LocalMachineTimeProvider : ITimeProvider
 {
 	public DateTime Now() => DateTime.Now;
 	public DateTimeOffset NowOffsetted() => DateTimeOffset.Now;

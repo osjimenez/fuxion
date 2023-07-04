@@ -1,6 +1,6 @@
 ﻿namespace Fuxion;
 
-[DefaultSingletonInstance(typeof(LocalMachinneTimeProvider))]
+[DefaultSingletonInstance(typeof(LocalMachineTimeProvider))]
 public interface ITimeProvider
 {
 	DateTime Now();

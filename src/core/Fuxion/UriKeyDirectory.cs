@@ -1,6 +1,6 @@
 using System.Reflection;
 
-namespace Fuxion.Reflection;
+namespace Fuxion;
 
 public interface IUriKeyResolver
 {
@@ -18,7 +18,7 @@ public class UriKeyDirectory : IUriKeyResolver
 		get
 		{
 			if (_keyToTypeDictionary.TryGetValue(key, out var value)) return value;
-			throw new TypeKeyNotFoundException($"Key '{key}' not found in '{nameof(UriKeyDirectory)}'");
+			throw new UriKeyNotFoundException($"Key '{key}' not found in '{nameof(UriKeyDirectory)}'");
 		}
 	}
 	public UriKey this[Type type]
@@ -26,7 +26,7 @@ public class UriKeyDirectory : IUriKeyResolver
 		get
 		{
 			if (_typeToKeyDictionary.TryGetValue(type, out var value)) return value;
-			throw new TypeKeyNotFoundException($"Type '{type}' not found in '{nameof(UriKeyDirectory)}'");
+			throw new UriKeyNotFoundException($"Type '{type}' not found in '{nameof(UriKeyDirectory)}'");
 		}
 	}
 	public bool ContainsKey(UriKey key) => _keyToTypeDictionary.ContainsKey(key);

@@ -1,6 +1,7 @@
 using System.Reflection;
+using Fuxion.Reflection;
 
-namespace Fuxion.Reflection;
+namespace Fuxion;
 
 public static class UriKeyExtensions
 {

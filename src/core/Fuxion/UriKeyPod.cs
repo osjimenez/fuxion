@@ -1,11 +1,13 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 
-namespace Fuxion.Reflection;
+namespace Fuxion;
 
 public interface IUriKeyPod<out TPayload> : ICollectionPod<UriKey, TPayload>
 {
-	
+	IPod<UriKey, object> this[Type type] { get; }
+	IUriKeyResolver? Resolver { get; set; }
+	bool TryGetHeader<T>([MaybeNullWhen(returnValue: false)] out T result, IUriKeyResolver? resolver = null);
 }
 
 public class UriKeyPod<TPayload>(UriKey discriminator, TPayload payload) : Pod<UriKey, TPayload>(discriminator, payload), IUriKeyPod<TPayload>
@@ -17,7 +19,7 @@ public class UriKeyPod<TPayload>(UriKey discriminator, TPayload payload) : Pod<U
 		get
 		{
 			if (HeadersDictionary.TryGetValue(key, out var res)) return res;
-			// TODO Usar un metodo mas exacto/complejo, el primero que pillo no vale, hay que ordenarlos y devolver es mas derivado posible
+			// TODO Usar un metodo mas exacto/complejo, el primero que pillo no vale, hay que ordenarlos y devolver el mas derivado posible
 			var derivedKey = HeadersDictionary.Keys.FirstOrDefault(k => key.Uri.IsBaseOf(k.Uri));
 			if (derivedKey is not null) return HeadersDictionary[derivedKey];
 			return HeadersDictionary[key];
@@ -25,7 +27,7 @@ public class UriKeyPod<TPayload>(UriKey discriminator, TPayload payload) : Pod<U
 	}
 	public IPod<UriKey, object> this[Type type] => this[Resolver?[type] ?? type.GetUriKey()];
 	[JsonIgnore]
-	public IUriKeyResolver? Resolver { get; set; } 
+	public IUriKeyResolver? Resolver { get; set; }
 	public bool TryGetHeader<T>([MaybeNullWhen(returnValue: false)]out T result, IUriKeyResolver? resolver = null)
 	{
 		var uk = Resolver is null 

@@ -1,7 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Fuxion.Reflection;
+namespace Fuxion;
 
 public class UriKeyJsonConverter : JsonConverter<UriKey>
 {

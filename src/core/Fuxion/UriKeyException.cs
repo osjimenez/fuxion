@@ -1,6 +1,7 @@
-namespace Fuxion.Reflection;
+namespace Fuxion;
 
 public abstract class UriKeyException(string message) : FuxionException(message);
+public class UriKeyNotFoundException(string message) : UriKeyException(message);
 public class UriKeyBypassedException(string message) : UriKeyException(message);
 public class UriKeySealedException(string message) : UriKeyException(message);
 public abstract class UriKeyFormatException(string message) : UriKeyException(message);

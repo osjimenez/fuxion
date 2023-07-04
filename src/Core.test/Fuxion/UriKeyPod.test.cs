@@ -1,11 +1,9 @@
-using System.Text.Json;
 using System.Text.Json.Nodes;
-using System.Text.Json.Serialization;
 using Fuxion.Reflection;
 using Fuxion.Test.Text.Json;
 using Fuxion.Text.Json;
 
-namespace Fuxion.Test.Reflection;
+namespace Fuxion.Test;
 
 public class UriKeyPodTest : BaseTest<UriKeyPodTest>
 {

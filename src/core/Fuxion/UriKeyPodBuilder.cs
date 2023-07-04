@@ -1,4 +1,4 @@
-namespace Fuxion.Reflection;
+namespace Fuxion;
 
 public interface IUriKeyPodPreBuilder<out TPayload> : IPodPreBuilder<TPayload>
 {

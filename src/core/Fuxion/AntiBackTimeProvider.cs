@@ -5,7 +5,7 @@ public class AntiBackTimeProvider : ITimeProvider
 	public AntiBackTimeProvider(params StoredTimeProvider[] storedProviders) => providers = storedProviders;
 	readonly StoredTimeProvider[] providers;
 	public ILogger? Logger { get; set; }
-	public ITimeProvider TimeProvider { get; set; } = new LocalMachinneTimeProvider();
+	public ITimeProvider TimeProvider { get; set; } = new LocalMachineTimeProvider();
 	public TimeSpan MaximumRangeOfDeviation { get; set; } = TimeSpan.FromMinutes(1);
 	public DateTime Now() => GetUtc().ToLocalTime();
 	public DateTimeOffset NowOffsetted() => GetUtc().ToLocalTime();

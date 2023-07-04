@@ -3,7 +3,7 @@ using System.Net.Http.Headers;
 using System.Text.Json.Serialization;
 using System.Web;
 
-namespace Fuxion.Reflection;
+namespace Fuxion;
 
 [JsonConverter(typeof(UriKeyJsonConverter))]
 public class UriKey: IEquatable<UriKey>//, IComparable, IComparable<UriKey>
@@ -94,6 +94,10 @@ public class UriKey: IEquatable<UriKey>//, IComparable, IComparable<UriKey>
 	// 	if (ReferenceEquals(this, other)) return 0;
 	// 	if (other is null) return 1;
 	// 	var uriRes = Uri.IsBaseOf(other.Uri) ? 
+	// 		
+	// 		
+	// 		
+	// 		
 	// 	return (IsNumber, other.IsNumber) switch
 	// 	{
 	// 		(true, true) => Nullable.Compare(NumberValue, other.NumberValue),
