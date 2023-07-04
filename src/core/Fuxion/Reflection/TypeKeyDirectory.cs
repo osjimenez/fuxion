@@ -10,16 +10,16 @@ public class TypeKeyDirectory : ITypeKeyResolver
 	{
 		get
 		{
-			if (!_keyToTypeDictionary.ContainsKey(key)) throw new TypeKeyNotFoundException($"Key '{key}' not found in '{nameof(TypeKeyDirectory)}'");
-			return _keyToTypeDictionary[key];
+			if (_keyToTypeDictionary.TryGetValue(key, out var value)) return value;
+			throw new TypeKeyNotFoundException($"Key '{key}' not found in '{nameof(TypeKeyDirectory)}'");
 		}
 	}
 	public TypeKey this[Type type]
 	{
 		get
 		{
-			if (!_typeToKeyDictionary.ContainsKey(type)) throw new TypeKeyNotFoundException($"Type '{type}' not found in '{nameof(TypeKeyDirectory)}'");
-			return _typeToKeyDictionary[type];
+			if (_typeToKeyDictionary.TryGetValue(type, out var value)) return value;
+			throw new TypeKeyNotFoundException($"Type '{type}' not found in '{nameof(TypeKeyDirectory)}'");
 		}
 	}
 	public bool ContainsKey(TypeKey key) => _keyToTypeDictionary.ContainsKey(key);

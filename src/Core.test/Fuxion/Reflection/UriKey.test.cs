@@ -84,20 +84,20 @@ public class UriKeyTest(ITestOutputHelper output) : BaseTest<TypeKeyTest>(output
 		PrintVariable(new UriKeyAttribute("https://fuxion.dev:443/one/two/1.0.0").Uri.ToString());
 		PrintVariable(new UriKeyAttribute("http://fuxion.dev:8000/one/two/1.0.0").Uri.ToString());
 		PrintVariable(new UriKeyAttribute("https://fuxion.dev/one/two/1.0.0?parameter=value").Uri.ToString());
-		Throws<UriKeyException>(() => new UriKeyAttribute("https://fuxion.dev"));
-		Throws<UriKeyException>(() => new UriKeyAttribute("https://fuxion.dev/one/two/1.0.0/"));
-		Throws<UriKeyException>(() => new UriKeyAttribute("https://userInfo@fuxion.dev/one/two/1.0.0"));
-		Throws<UriKeyException>(() => new UriKeyAttribute("https://fuxion.dev/one/two/1.0.0#"));
-		Throws<UriKeyException>(() => new UriKeyAttribute("https://fuxion.dev/one/two/1.0.0#fragment"));
-		Throws<UriKeyException>(() => new UriKeyAttribute("https://fuxion.dev/one/two/1.0.0?__interface=fail"));
+		Throws<UriKeySemanticVersionException>(() => new UriKeyAttribute("https://fuxion.dev"));
+		Throws<UriKeySemanticVersionException>(() => new UriKeyAttribute("https://fuxion.dev/one/two/1.0.0/"));
+		Throws<UriKeyUserInfoException>(() => new UriKeyAttribute("https://userInfo@fuxion.dev/one/two/1.0.0"));
+		Throws<UriKeyFragmentException>(() => new UriKeyAttribute("https://fuxion.dev/one/two/1.0.0#"));
+		Throws<UriKeyFragmentException>(() => new UriKeyAttribute("https://fuxion.dev/one/two/1.0.0#fragment"));
+		Throws<UriKeyParameterException>(() => new UriKeyAttribute("https://fuxion.dev/one/two/1.0.0?__interface=fail"));
 
 		// Relative Uris
 		PrintVariable(new UriKeyAttribute("one/two/1.0.0").Uri.ToString());
 		PrintVariable(new UriKeyAttribute("one/two/1.0.0?parameter=value").Uri.ToString());
-		Throws<UriKeyException>(() => new UriKeyAttribute("one/two"));
-		Throws<UriKeyException>(() => new UriKeyAttribute("/one/two/1.0.0"));
-		Throws<UriKeyException>(() => new UriKeyAttribute("one/two/1.0.0#fragment"));
-		Throws<UriKeyException>(() => new UriKeyAttribute("one/two/1.0.0?__interface=fail"));
+		Throws<UriKeySemanticVersionException>(() => new UriKeyAttribute("one/two"));
+		Throws<UriKeyPathException>(() => new UriKeyAttribute("/one/two/1.0.0"));
+		Throws<UriKeyFragmentException>(() => new UriKeyAttribute("one/two/1.0.0#fragment"));
+		Throws<UriKeyParameterException>(() => new UriKeyAttribute("one/two/1.0.0?__interface=fail"));
 	}
 }
 

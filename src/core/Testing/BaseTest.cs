@@ -41,7 +41,8 @@ public abstract class BaseTest<TBaseTest> where TBaseTest : BaseTest<TBaseTest>
 	protected void Throws<TException>(Action testCode, [CallerArgumentExpression(nameof(testCode))] string? name = null)
 		where TException: Exception
 	{
-		PrintVariable("Throws => " + Assert.Throws<TException>(testCode).Message, name);
+		var ex = Assert.Throws<TException>(testCode);
+		PrintVariable($"Throws '{ex.GetType().Name}' => {ex.Message}", name);
 	}
 	protected internal ITestOutputHelper Output { get; }
 	protected internal IServiceProvider ServiceProvider { get; }

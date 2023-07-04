@@ -36,6 +36,9 @@
 		<Compile Update="SemanticVersionIdentifierCollection.cs">
 		  <DependentUpon>SemanticVersion.cs</DependentUpon>
 		</Compile>
+		<Compile Update="Reflection\UriKeyException.cs">
+		  <DependentUpon>UriKey.cs</DependentUpon>
+		</Compile>
 	</ItemGroup>
 
 	<ItemGroup>
