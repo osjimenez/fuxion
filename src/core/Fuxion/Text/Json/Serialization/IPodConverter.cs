@@ -9,7 +9,7 @@ using PodType = Fuxion.IPod<string, string>;
 
 namespace Fuxion.Text.Json;
 
-public class IPodConverter<TPod, TDiscriminator, TPayload>(ITypeKeyResolver? resolver = null) : JsonConverter<TPod>
+public class IPodConverter<TPod, TDiscriminator, TPayload>(IUriKeyResolver? resolver = null) : JsonConverter<TPod>
 	where TPod : IPod<TDiscriminator, TPayload>
 	where TDiscriminator : notnull
 {
@@ -45,6 +45,9 @@ public class IPodConverter<TPod, TDiscriminator, TPayload>(ITypeKeyResolver? res
 		if (reader.TokenType != JsonTokenType.StartObject) throw new JsonException("The reader expected JsonTokenType.StartObject");
 		var jsonObject = JsonObject.Create(JsonDocument.ParseValue(ref reader).RootElement)
 			?? throw new SerializationException($"Couldn't be created JsonObject");
+
+		if (typeToConvert.IsSubclassOfRawGeneric(typeof(UriKeyPod<>)))
+			typeToConvert.GetProperty(nameof(UriKeyPod<string>.Resolver))?.SetValue(pod, resolver);
 		
 		// DISCRIMINATOR
 		var disNode = jsonObject
@@ -54,10 +57,10 @@ public class IPodConverter<TPod, TDiscriminator, TPayload>(ITypeKeyResolver? res
 				.GetProperty(nameof(IPod<string, string>.Discriminator), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
 			?? throw new InvalidProgramException($"'{nameof(IPod<string, string>.Discriminator)}' property could not be obtained from pod '{pod.GetType().Name}'");
 		var payloadType = typeof(TPayload);
-		if (resolver is not null && typeof(TypeKey).IsAssignableFrom(typeof(TDiscriminator)))
+		if (resolver is not null && typeof(UriKey).IsAssignableFrom(typeof(TDiscriminator)))
 		{
-			var tk = disNode.Deserialize<TypeKey>(options)
-				?? throw new SerializationException($"Couldn't be obtained TypeKey from discriminator");
+			var tk = disNode.Deserialize<UriKey>(options)
+				?? throw new SerializationException($"Couldn't be obtained '{nameof(UriKey)}' from discriminator");
 			payloadType = resolver[tk];
 		}
 		pod.SetPrivatePropertyValue(disProp.Name, disNode.Deserialize<TDiscriminator>(options));
@@ -81,7 +84,7 @@ public class IPodConverter<TPod, TDiscriminator, TPayload>(ITypeKeyResolver? res
 			{
 				if (node is not null && resolver is not null)
 				{
-					var headerPod = (IPod<TDiscriminator, object>?)node.Deserialize(typeof(TypeKeyPod<object>), options)?? throw new SerializationException("Cannot be deserialize header");
+					var headerPod = (IPod<TDiscriminator, object>?)node.Deserialize(typeof(UriKeyPod<object>), options)?? throw new SerializationException("Cannot be deserialize header");
 					col.Add(headerPod);
 				} else
 				{

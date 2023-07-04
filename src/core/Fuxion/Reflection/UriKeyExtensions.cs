@@ -4,7 +4,7 @@ namespace Fuxion.Reflection;
 
 public static class UriKeyExtensions
 {
-	public static UriKey? GetUriKey(this Type me)
+	public static UriKey GetUriKey(this Type me)
 	{
 		List<List<(UriKeyAttribute? Uri, UriKeyBypassAttribute? Bypass, Type Type)?>> keyList = new();
 		List<(UriKeyAttribute? Uri, UriKeyBypassAttribute? Bypass, Type Type)?> uriList = new();

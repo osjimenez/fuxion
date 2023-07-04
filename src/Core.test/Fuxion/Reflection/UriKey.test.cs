@@ -4,6 +4,32 @@ namespace Fuxion.Test.Reflection;
 
 public class UriKeyTest(ITestOutputHelper output) : BaseTest<TypeKeyTest>(output)
 {
+	[Fact]
+	public void SerializeToJson()
+	{
+		PrintVariable(new Uri("https://fuxion.dev/folder/1.0.0").SerializeToJson());
+		PrintVariable(new UriKey("https://fuxion.dev/folder/1.0.0").SerializeToJson());
+		PrintVariable(typeof(Chain9Reset_Echelon1).GetUriKey().SerializeToJson());
+	}
+	[Fact]
+	public void DeserializeFromJson()
+	{
+		PrintVariable("\"https://fuxion.dev/folder/1.0.0\"".DeserializeFromJson<Uri>());
+		PrintVariable("\"https://fuxion.dev/folder/1.0.0\"".DeserializeFromJson<UriKey>());
+		PrintVariable("\"https://chain9reset.com/Chain9Reset_Folder/Chain9Reset_Echelon1_Folder/1.0.0?__base=https%3A%2F%2Fchain9.com%2FChain9_Folder%2FChain9_Echelon1_Folder%2FChain9_Echelon3_Folder%2F1.0.0\"".DeserializeFromJson<UriKey>());
+	}
+	[Fact]
+	public void Dictionary()
+	{
+		Dictionary<UriKey, string> dic = new();
+		UriKey uk1 = new("https://fuxion.dev/folder/1.0.0");
+		UriKey uk2 = new("https://fuxion.dev/folder/1.0.0");
+		
+		dic.Add(uk1,"value");
+		IsTrue(dic.ContainsKey(uk1));
+		IsTrue(uk1.Equals(uk2));
+		IsTrue(dic.ContainsKey(uk2));
+	}
 	[Fact(DisplayName = "Derived types")]
 	public void DerivedTypes()
 	{

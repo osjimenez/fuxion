@@ -24,7 +24,7 @@ public static class JsonNodePodExtensions
 		return new PodBuilder<TDiscriminator, JsonNode, JsonNodePod<TDiscriminator>>(me.Pod.Payload.DeserializeFromJson<JsonNodePod<TDiscriminator>>(options: options)
 			?? throw new SerializationException("string couldn't be deserialized"));
 	}
-	public static IPodBuilder<TDiscriminator, JsonNode, JsonNodePod<TDiscriminator>> FromJson<TDiscriminator>(this IPodPreBuilder<string> me)
+	public static IPodBuilder<TDiscriminator, JsonNode, JsonNodePod<TDiscriminator>> FromJsonNode<TDiscriminator>(this IPodPreBuilder<string> me)
 		where TDiscriminator : notnull
 		=> new PodBuilder<TDiscriminator, JsonNode, JsonNodePod<TDiscriminator>>(me.Payload.DeserializeFromJson<JsonNodePod<TDiscriminator>>()
 			?? throw new SerializationException("string couldn't be deserialized"));

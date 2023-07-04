@@ -23,18 +23,18 @@ public class Pod<TDiscriminator, TPayload>(TDiscriminator discriminator, TPayloa
 {
 	// ATTENTION: This constructor cannot be removed, it is needed for deserialization
 	protected Pod() : this(default!, default!) { }
-	readonly Dictionary<TDiscriminator, IPod<TDiscriminator, object>> dic = new();
+	protected Dictionary<TDiscriminator, IPod<TDiscriminator, object>> HeadersDictionary { get; }= new();
 	// ATTENTION: The private setter cannot be removed, it is needed for deserialization
 	public TDiscriminator Discriminator { get; init; } = discriminator;
 	// ATTENTION: The private setter cannot be removed, it is needed for deserialization
 	public TPayload Payload { get; init; } = payload;
-	public bool Has(TDiscriminator discriminator) => dic.ContainsKey(discriminator);
-	public IPod<TDiscriminator, object> this[TDiscriminator discriminator] => dic[discriminator];
-	public void Add(IPod<TDiscriminator, object> pod) => dic.Add(pod.Discriminator, pod);
-	public bool Remove(TDiscriminator discriminator) => dic.Remove(discriminator);
-	public IEnumerator<IPod<TDiscriminator, object>> GetEnumerator() => dic.Values.GetEnumerator();
+	public bool Has(TDiscriminator discriminator) => HeadersDictionary.ContainsKey(discriminator);
+	public virtual IPod<TDiscriminator, object> this[TDiscriminator discriminator] => HeadersDictionary[discriminator];
+	public void Add(IPod<TDiscriminator, object> pod) => HeadersDictionary.Add(pod.Discriminator, pod);
+	public bool Remove(TDiscriminator discriminator) => HeadersDictionary.Remove(discriminator);
+	public IEnumerator<IPod<TDiscriminator, object>> GetEnumerator() => HeadersDictionary.Values.GetEnumerator();
 	public void Add<THeaderPayload>(TDiscriminator discriminator, THeaderPayload payload)
 		where THeaderPayload : notnull
-		=> dic.Add(discriminator, new Pod<TDiscriminator, object>(discriminator, payload));
+		=> HeadersDictionary.Add(discriminator, new Pod<TDiscriminator, object>(discriminator, payload));
 	public static implicit operator TPayload?(Pod<TDiscriminator, TPayload> pod) => pod.Payload;
 }

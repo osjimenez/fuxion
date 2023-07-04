@@ -5,24 +5,24 @@ public class SemanticVersionIdentifierCollection(SemanticVersionIdentifier[] ide
 	readonly SemanticVersionIdentifier[] identifiers = identifiers;
 	public int Count => identifiers.Length;
 	public override string ToString() => identifiers.Aggregate("", (a, c) => a + "." + c, a => a.Trim('.'));
-	public static bool operator ==(SemanticVersionIdentifierCollection? identifier1, SemanticVersionIdentifierCollection? identifier2)
+	public static bool operator ==(SemanticVersionIdentifierCollection? collection1, SemanticVersionIdentifierCollection? collection2)
 	{
-		if (identifier1 is null) return identifier2 is null;
-		return identifier1.Equals(identifier2);
+		if (collection1 is null) return collection2 is null;
+		return collection1.Equals(collection2);
 	}
-	public static bool operator !=(SemanticVersionIdentifierCollection identifier1, SemanticVersionIdentifierCollection identifier2) => !(identifier1 == identifier2);
-	public static bool operator < (SemanticVersionIdentifierCollection identifier1, SemanticVersionIdentifierCollection identifier2)
+	public static bool operator !=(SemanticVersionIdentifierCollection collection1, SemanticVersionIdentifierCollection collection2) => !(collection1 == collection2);
+	public static bool operator < (SemanticVersionIdentifierCollection collection1, SemanticVersionIdentifierCollection collection2)
 	{
-		ArgumentNullException.ThrowIfNull(identifier1);
-		return identifier1.CompareTo(identifier2) < 0;
+		ArgumentNullException.ThrowIfNull(collection1);
+		return collection1.CompareTo(collection2) < 0;
 	}
-	public static bool operator <=(SemanticVersionIdentifierCollection identifier1, SemanticVersionIdentifierCollection identifier2) => identifier1 == identifier2 || identifier1 < identifier2;
-	public static bool operator > (SemanticVersionIdentifierCollection identifier1, SemanticVersionIdentifierCollection identifier2)
+	public static bool operator <=(SemanticVersionIdentifierCollection collection1, SemanticVersionIdentifierCollection collection2) => collection1 == collection2 || collection1 < collection2;
+	public static bool operator > (SemanticVersionIdentifierCollection collection1, SemanticVersionIdentifierCollection collection2)
 	{
-		ArgumentNullException.ThrowIfNull(identifier1);
-		return identifier2 < identifier1;
+		ArgumentNullException.ThrowIfNull(collection1);
+		return collection2 < collection1;
 	}
-	public static bool operator >=(SemanticVersionIdentifierCollection identifier1, SemanticVersionIdentifierCollection identifier2) => identifier1 == identifier2 || identifier1 > identifier2;
+	public static bool operator >=(SemanticVersionIdentifierCollection collection1, SemanticVersionIdentifierCollection collection2) => collection1 == collection2 || collection1 > collection2;
 	public int CompareTo(SemanticVersionIdentifierCollection? other)
 	{
 		if (ReferenceEquals(this, other)) return 0;

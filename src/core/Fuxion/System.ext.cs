@@ -88,8 +88,8 @@ public static class Extensions
 		return JsonSerializer.Serialize(me, options);
 	}
 	public static T? DeserializeFromJson<T>(this string me, [DoesNotReturnIf(true)] bool exceptionIfNull = false, JsonSerializerOptions? options = null, bool usePrivateConstructor = true) =>
-		(T?)FromJson(me, typeof(T), exceptionIfNull, options, usePrivateConstructor);
-	public static object? FromJson(this string me, Type type, [DoesNotReturnIf(true)] bool exceptionIfNull = false, JsonSerializerOptions? options = null, bool usePrivateConstructor = true)
+		(T?)DeserializeFromJson(me, typeof(T), exceptionIfNull, options, usePrivateConstructor);
+	public static object? DeserializeFromJson(this string me, Type type, [DoesNotReturnIf(true)] bool exceptionIfNull = false, JsonSerializerOptions? options = null, bool usePrivateConstructor = true)
 	{
 		if (usePrivateConstructor)
 			options ??= new() {
@@ -99,7 +99,7 @@ public static class Extensions
 		if (exceptionIfNull && res is null) throw new SerializationException($"The string cannot be deserialized as '{type.Name}':\r\n{me}");
 		return res;
 	}
-	public static T CloneWithJson<T>(this T me) => (T)(FromJson(me?.SerializeToJson() ?? throw new InvalidDataException(), me?.GetType() ?? throw new InvalidDataException()) ?? default!);
+	public static T CloneWithJson<T>(this T me) => (T)(DeserializeFromJson(me?.SerializeToJson() ?? throw new InvalidDataException(), me?.GetType() ?? throw new InvalidDataException()) ?? default!);
 	#endregion
 
 	#region Transform

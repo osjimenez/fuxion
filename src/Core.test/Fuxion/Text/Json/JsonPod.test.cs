@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System.Text.Json.Serialization;
+using Fuxion.Reflection;
 using Fuxion.Text.Json;
 using static Fuxion.Text.Json.IPodConverter<Fuxion.Text.Json.JsonNodePod<string>, string, System.Text.Json.Nodes.JsonNode>;
 
@@ -193,18 +194,19 @@ public class TestPod(string discriminator, TestPayload payload) : Pod<string, Te
 
 [JsonPolymorphic]
 [JsonDerivedType(typeof(TestPayloadDerived), "Derived")]
+[UriKey($"https://fuxion.dev/metadata/test/{nameof(TestPayload)}/1.0.0", false)]
 public class TestPayload
 {
 	public string? Name { get; set; }
 	[JsonPropertyName("Age-custom")]
 	public required int Age { get; init; }
 }
-
+[UriKey($"{nameof(TestPayloadDerived)}/1.0.0")]
 public class TestPayloadDerived : TestPayload
 {
 	public required string Nick { get; set; }
 	[JsonPropertyName("Birthdate-custom")]
 	public DateOnly Birthdate { get; set; }
 }
-
+[UriKey($"https://fuxion.dev/metadata/test/{nameof(TestRecordPayload)}/1.0.0")]
 public record TestRecordPayload(string Name);

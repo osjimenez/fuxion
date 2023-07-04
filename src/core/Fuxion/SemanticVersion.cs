@@ -67,7 +67,7 @@ public partial class SemanticVersion : IComparable, IComparable<SemanticVersion>
 		@"^(?<major>0|[1-9]\d*)\.(?<minor>0|[1-9]\d*)\.(?<patch>0|[1-9]\d*)(?:-(?<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$")]
 	internal static partial Regex SemanticVersionRegex();
 	public override string ToString() => semanticVersion;
-	public static bool TryParse([NotNullWhen(true)] string semanticVersion, out SemanticVersion? result)
+	public static bool TryParse(string semanticVersion, [MaybeNullWhen(returnValue: false)]out SemanticVersion result)
 	{
 		var m = SemanticVersionRegex()
 			.Match(semanticVersion);
@@ -79,24 +79,24 @@ public partial class SemanticVersion : IComparable, IComparable<SemanticVersion>
 		result = null;
 		return false;
 	}
-	public static bool operator ==(SemanticVersion? identifier1, SemanticVersion? identifier2)
+	public static bool operator ==(SemanticVersion? version1, SemanticVersion? version2)
 	{
-		if (identifier1 is null) return identifier2 is null;
-		return identifier1.Equals(identifier2);
+		if (version1 is null) return version2 is null;
+		return version1.Equals(version2);
 	}
-	public static bool operator !=(SemanticVersion identifier1, SemanticVersion identifier2) => !(identifier1 == identifier2);
-	public static bool operator <(SemanticVersion identifier1, SemanticVersion identifier2)
+	public static bool operator !=(SemanticVersion version1, SemanticVersion version2) => !(version1 == version2);
+	public static bool operator <(SemanticVersion version1, SemanticVersion version2)
 	{
-		ArgumentNullException.ThrowIfNull(identifier1);
-		return identifier1.CompareTo(identifier2) < 0;
+		ArgumentNullException.ThrowIfNull(version1);
+		return version1.CompareTo(version2) < 0;
 	}
-	public static bool operator <=(SemanticVersion identifier1, SemanticVersion identifier2) => identifier1 == identifier2 || identifier1 < identifier2;
-	public static bool operator >(SemanticVersion identifier1, SemanticVersion identifier2)
+	public static bool operator <=(SemanticVersion version1, SemanticVersion version2) => version1 == version2 || version1 < version2;
+	public static bool operator >(SemanticVersion version1, SemanticVersion version2)
 	{
-		ArgumentNullException.ThrowIfNull(identifier1);
-		return identifier2 < identifier1;
+		ArgumentNullException.ThrowIfNull(version1);
+		return version2 < version1;
 	}
-	public static bool operator >=(SemanticVersion identifier1, SemanticVersion identifier2) => identifier1 == identifier2 || identifier1 > identifier2;
+	public static bool operator >=(SemanticVersion version1, SemanticVersion version2) => version1 == version2 || version1 > version2;
 	public override bool Equals(object? obj)
 	{
 		var collection = obj as SemanticVersion;

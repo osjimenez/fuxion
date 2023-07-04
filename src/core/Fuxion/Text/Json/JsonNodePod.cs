@@ -8,7 +8,7 @@ using Fuxion.Text.Json.Serialization;
 
 namespace Fuxion.Text.Json;
 
-public class JsonNodePod<TDiscriminator>(TDiscriminator discriminator, object payload, ITypeKeyResolver? resolver = null) : IPod<TDiscriminator, JsonNode>//, IPod<TDiscriminator, string>
+public class JsonNodePod<TDiscriminator>(TDiscriminator discriminator, object payload, IUriKeyResolver? resolver = null) : IPod<TDiscriminator, JsonNode>//, IPod<TDiscriminator, string>
 	where TDiscriminator : notnull
 {
 	// ATTENTION: This constructor cannot be removed, it is needed for deserialization
@@ -18,7 +18,7 @@ public class JsonNodePod<TDiscriminator>(TDiscriminator discriminator, object pa
 	// ATTENTION: The init setter cannot be removed, it is needed for deserialization
 	public JsonNode Payload { get; init; } = CreateValue(payload, resolver);
 	// string IPod<TDiscriminator, string>.Payload => this;
-	static JsonNode CreateValue(object payload, ITypeKeyResolver? resolver)
+	static JsonNode CreateValue(object payload, IUriKeyResolver? resolver)
 	{
 		// TODO ver si podemos mejorar este tratamiento de nullable
 		if (payload is null) return null!;
