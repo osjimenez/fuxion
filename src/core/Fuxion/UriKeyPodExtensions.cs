@@ -12,15 +12,25 @@ public static class UriKeyPodExtensions
 	public static IUriKeyPodPreBuilder<TPayload> BuildUriKeyPod<TPayload>(this TPayload me, IUriKeyResolver resolver)
 		where TPayload : notnull
 		=> new UriKeyPodPreBuilder<TPayload>(resolver, me);
+	public static IUriKeyPodBuilder<TPayload, TPod> RebuildUriKeyPod<TPayload, TPod>(this TPod me)
+		where TPayload : notnull
+		where TPod : IUriKeyPod<TPayload>
+		=> new UriKeyPodBuilder<TPayload, TPod>(me.Resolver ?? throw new UriKeyResolverNotFoundException($"The pod '{me.GetType().GetSignature()}' hasn't '{nameof(me.Resolver)}' and cannot rebuild"), me);
 	public static IUriKeyPodBuilder<TPayload, IUriKeyPod<TPayload>> ToUriKeyPod<TPayload>(this IUriKeyPodPreBuilder<TPayload> me)
 		where TPayload : notnull
-		=> new UriKeyPodBuilder<TPayload, IUriKeyPod<TPayload>>(me.Resolver, new UriKeyPod<TPayload>(me.Resolver[me.Payload.GetType()], me.Payload));
+		=> new UriKeyPodBuilder<TPayload, IUriKeyPod<TPayload>>(me.Resolver, new UriKeyPod<TPayload>(me.Resolver[me.Payload.GetType()], me.Payload)
+		{
+			Resolver = me.Resolver
+		});
 	public static TPodBuilder AddUriKeyHeader<TPodBuilder>(this TPodBuilder me, object payload)
 		where TPodBuilder : IUriKeyPodBuilder<object, ICollectionPod<UriKey, object>>
 	{
 		me.Pod.Add(new UriKeyPod<object>(me.Resolver[payload.GetType()], payload));
 		return me;
 	}
+	// public static IUriKeyPodBuilder<JsonNode, JsonNodePod<UriKey>> ToJsonNode<TPayload>(this IUriKeyPodPreBuilder<TPayload> me)
+	// 	where TPayload : notnull
+	// 	=> new UriKeyPodBuilder<JsonNode, JsonNodePod<UriKey>>(me.Resolver, new(me.Resolver[typeof(JsonNode)], me.Pod, me.Resolver));
 	public static IUriKeyPodBuilder<JsonNode, JsonNodePod<UriKey>> ToJsonNode<TPayload>(this IUriKeyPodBuilder<TPayload, IPod<UriKey, TPayload>> me)
 		where TPayload : notnull
 		=> new UriKeyPodBuilder<JsonNode, JsonNodePod<UriKey>>(me.Resolver, new(me.Resolver[typeof(JsonNode)], me.Pod, me.Resolver));

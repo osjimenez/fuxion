@@ -11,6 +11,9 @@ public interface IUriKeyResolver
 	bool ContainsKey(UriKey key);
 	bool ContainsKey(Type type);
 }
+
+public class UriKeyResolverNotFoundException(string message) : FuxionException(message) { }
+
 public class UriKeyDirectory : IUriKeyResolver
 {
 	public UriKeyDirectory()
@@ -74,7 +77,6 @@ public class UriKeyDirectory : IUriKeyResolver
 			ByteArray();
 			SByte();
 			SByteArray();
-			SByte();
 			Char();
 			CharArray();
 			Decimal();
@@ -103,8 +105,9 @@ public class UriKeyDirectory : IUriKeyResolver
 			ObjectArray();
 			String();
 			StringArray();
-			Dynamic();
-			DynamicArray();
+			// TODO Al parecer colisionan con el object, dice que la clave ya ha sido registrada
+			// Dynamic();
+			// DynamicArray();
 			// Additional types
 			DateTime();
 			DateTimeArray();
@@ -225,7 +228,7 @@ public class UriKeyDirectory : IUriKeyResolver
 		public static UriKey TimeOnlyUriKey { get; } = new(UriKey.FuxionSystemTypesBaseUri + "timeonly/1.0.0");
 		public void TimeOnly() => directory.Register<TimeOnly>(TimeOnlyUriKey);
 		public static UriKey TimeOnlyArrayUriKey { get; } = new(UriKey.FuxionSystemTypesBaseUri + "timeonly[]/1.0.0");
-		public void TimeOnlyArray() => directory.Register<TimeOnly>(TimeOnlyArrayUriKey);
+		public void TimeOnlyArray() => directory.Register<TimeOnly[]>(TimeOnlyArrayUriKey);
 		#endregion
 		#region JsonNode
 		public static UriKey JsonNodeUriKey { get; } = new(UriKey.FuxionSystemTypesBaseUri + "text/json/nodes/jsonnode/1.0.0");

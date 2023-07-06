@@ -11,14 +11,17 @@ public class UriKeyPodTest : BaseTest<UriKeyPodTest>
 	public UriKeyPodTest(ITestOutputHelper output) : base(output)
 	{
 		UriKeyDirectory dir = new();
-		dir.SystemRegister.JsonNode();
-		dir.SystemRegister.ByteArray();
-		dir.SystemRegister.Int();
-		dir.SystemRegister.String();
-		dir.SystemRegister.StringArray();
+		dir.SystemRegister.All();
+		// dir.SystemRegister.JsonNode();
+		// dir.SystemRegister.ByteArray();
+		// dir.SystemRegister.Int();
+		// dir.SystemRegister.String();
+		// dir.SystemRegister.StringArray();
 		dir.Register<TestPayload>();
 		dir.Register<TestPayloadDerived>();
 		dir.Register<TestPayloadReset>();
+		dir.Register<TestMessage>();
+		dir.Register<TestDestination>();
 		resolver = dir;
 	}
 	readonly IUriKeyResolver resolver;
@@ -82,6 +85,19 @@ public class UriKeyPodTest : BaseTest<UriKeyPodTest>
 			Birthdate = DateOnly.Parse("12/12/2012"),
 			Address = "header.address"
 		}),$"'{nameof(TestPayloadReset)}' is base of '{nameof(TestPayloadReset)}'");
+	}
+	[Fact]
+	public void Rebuild()
+	{
+		TestMessage msg = new(1, "test");
+		var pod = msg.BuildUriKeyPod(resolver)
+			.ToUriKeyPod()
+			.AddUriKeyHeader(new TestDestination("fuxion-lab-CL1-MS1"))
+			.Pod;
+		var bytesPod = pod.RebuildUriKeyPod<TestMessage,IUriKeyPod<TestMessage>>()
+			.ToJsonNode()
+			.ToUtf8Bytes()
+			.Pod;
 	}
 	[Fact(DisplayName = "ToJson")]
 	public void ToJson()
@@ -166,4 +182,20 @@ file class TestPayloadDerived : TestPayload
 file class TestPayloadReset : TestPayloadDerived
 {
 	public required string Address { get; set; }
+}
+[UriKey(UriKey.FuxionBaseUri+"lab/test-message/1.0.0")]
+public class TestMessage
+{
+	public TestMessage(int id, string name)
+	{
+		Id = id;
+		Name = name;
+	}
+	public int Id { get; set; }
+	public string Name { get; set; }
+}
+[UriKey(UriKey.FuxionBaseUri+"lab/test-destination/1.0.0")]
+public class TestDestination(string destination)
+{
+	public string Destination { get; } = destination;
 }

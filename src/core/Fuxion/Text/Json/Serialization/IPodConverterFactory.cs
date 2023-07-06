@@ -15,7 +15,7 @@ public class IPodConverterFactory(IUriKeyResolver? resolver = null) : JsonConver
 			?.PropertyType;
 		var payType = typeToConvert.GetProperty(nameof(PodType.Payload))
 			?.PropertyType;
-		if (disType is null || payType is null) throw new ApplicationException($"Cannot determine types for discriminator and payload of type '{typeToConvert.Name}'");
+		if (disType is null || payType is null) throw new ApplicationException($"Cannot determine types for discriminator and payload of type '{typeToConvert.GetSignature()}'");
 		var converterType = typeof(IPodConverter<,,>).MakeGenericType(typeToConvert, disType, payType);
 		return (JsonConverter)(Activator.CreateInstance(converterType, resolver) ?? throw new InvalidCastException($"'{converterType.GetSignature()}' can not be created"));
 	}
