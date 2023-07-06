@@ -2,13 +2,13 @@ using Fuxion.Reflection;
 
 namespace Fuxion.Lab.Common;
 
-[TypeKey("https://fuxion.dev", "routing", "RabbitMQ", "send-route-info")]
+[UriKey(UriKey.FuxionBaseUri + "lab/common/rabbitmqsend")]
 public class RabbitMQSend
 {
 	public ReadOnlyMemory<byte> Body { get; set; }
 	public string RoutingKey { get; set; } = "";
 }
-[TypeKey("https://fuxion.dev", "routing", "RabbitMQ", "receive-route-info")]
+[UriKey(UriKey.FuxionBaseUri + "lab/common/rabbitmqreceive")]
 public class RabbitMQReceive
 {
 	public ReadOnlyMemory<byte> Body { get; set; }

@@ -2,7 +2,7 @@
 
 namespace Fuxion.Domain;
 
-[TypeKey(nameof(Fuxion), nameof(Domain), nameof(Event))]
+[UriKey(UriKey.FuxionBaseUri + "domain/event/1.0.0")]
 public abstract record Event(Guid AggregateId) : IFeaturizable<Event>
 {
 	IFeatureCollection<Event> IFeaturizable<Event>.Features { get; } = new FeatureCollection<Event>();

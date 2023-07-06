@@ -30,11 +30,12 @@ public class Pod<TDiscriminator, TPayload>(TDiscriminator discriminator, TPayloa
 	public TPayload Payload { get; init; } = payload;
 	public bool Has(TDiscriminator discriminator) => HeadersDictionary.ContainsKey(discriminator);
 	public virtual IPod<TDiscriminator, object> this[TDiscriminator discriminator] => HeadersDictionary[discriminator];
-	public void Add(IPod<TDiscriminator, object> pod) => HeadersDictionary.Add(pod.Discriminator, pod);
 	public bool Remove(TDiscriminator discriminator) => HeadersDictionary.Remove(discriminator);
 	public IEnumerator<IPod<TDiscriminator, object>> GetEnumerator() => HeadersDictionary.Values.GetEnumerator();
-	public void Add<THeaderPayload>(TDiscriminator discriminator, THeaderPayload payload)
+	public virtual void Add(IPod<TDiscriminator, object> pod) => HeadersDictionary.Add(pod.Discriminator, pod);
+	public virtual void Add<THeaderPayload>(TDiscriminator discriminator, THeaderPayload payload)
 		where THeaderPayload : notnull
-		=> HeadersDictionary.Add(discriminator, new Pod<TDiscriminator, object>(discriminator, payload));
+		=> Add(new Pod<TDiscriminator, object>(discriminator, payload));
+		//=> HeadersDictionary.Add(discriminator, new Pod<TDiscriminator, object>(discriminator, payload));
 	public static implicit operator TPayload?(Pod<TDiscriminator, TPayload> pod) => pod.Payload;
 }

@@ -1,4 +1,5 @@
-﻿using Fuxion.IO.Compression;
+﻿using System.Text.Json.Serialization;
+using Fuxion.IO.Compression;
 using Fuxion.Test.Text.Json;
 using Fuxion.Text.Json;
 
@@ -65,3 +66,22 @@ public class ZipPodTest(ITestOutputHelper output) : BaseTest<ZipPodTest>(output)
 			.Payload;
 	}
 }
+file class TestPod(string discriminator, TestPayload payload) : Pod<string, TestPayload>(discriminator, payload)
+{
+	public TestPod() : this(null!, null!) { }
+	[JsonPropertyName("Class-custom")]
+	public string? Class { get; set; }
+}
+file class TestPayload
+{
+	public string? Name { get; set; }
+	[JsonPropertyName("Age-custom")]
+	public required int Age { get; init; }
+}
+file class TestPayloadDerived : TestPayload
+{
+	public required string Nick { get; set; }
+	[JsonPropertyName("Birthdate-custom")]
+	public DateOnly Birthdate { get; set; }
+}
+file record TestRecordPayload(string Name);

@@ -185,7 +185,7 @@ public class JsonPodTest : BaseTest<JsonPodTest>
 	}
 }
 
-public class TestPod(string discriminator, TestPayload payload) : Pod<string, TestPayload>(discriminator, payload)
+file class TestPod(string discriminator, TestPayload payload) : Pod<string, TestPayload>(discriminator, payload)
 {
 	public TestPod() : this(null!, null!) { }
 	[JsonPropertyName("Class-custom")]
@@ -194,19 +194,16 @@ public class TestPod(string discriminator, TestPayload payload) : Pod<string, Te
 
 [JsonPolymorphic]
 [JsonDerivedType(typeof(TestPayloadDerived), "Derived")]
-[UriKey($"https://fuxion.dev/metadata/test/{nameof(TestPayload)}/1.0.0", false)]
-public class TestPayload
+file class TestPayload
 {
 	public string? Name { get; set; }
 	[JsonPropertyName("Age-custom")]
 	public required int Age { get; init; }
 }
-[UriKey($"{nameof(TestPayloadDerived)}/1.0.0")]
-public class TestPayloadDerived : TestPayload
+file class TestPayloadDerived : TestPayload
 {
 	public required string Nick { get; set; }
 	[JsonPropertyName("Birthdate-custom")]
 	public DateOnly Birthdate { get; set; }
 }
-[UriKey($"https://fuxion.dev/metadata/test/{nameof(TestRecordPayload)}/1.0.0")]
-public record TestRecordPayload(string Name);
+file record TestRecordPayload(string Name);

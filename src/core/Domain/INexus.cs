@@ -403,11 +403,11 @@ public abstract class RouteAdapter<TSendIn, TReceiveIn, TSendOut, TReceiveOut> :
 	protected abstract TReceiveOut ReceiveConverter(TReceiveIn message);
 }
 
-public class ObjectRouteAdapter<TSendIn, TReceiveIn> : RouteAdapter<TypeKeyPod<IMessage>, TypeKeyPod<IMessage>,object, object>
+public class ObjectRouteAdapter<TSendIn, TReceiveIn> : RouteAdapter<UriKeyPod<IMessage>, UriKeyPod<IMessage>,object, object>
 	where TReceiveIn : class
 {
-	public ObjectRouteAdapter(RouteAdapter<TSendIn, TReceiveIn, TypeKeyPod<IMessage>, TypeKeyPod<IMessage>> adapter)
-		: base(adapter, obj => adapter.Receive((TypeKeyPod<IMessage>)obj)) { }
-	protected override TypeKeyPod<IMessage> SendConverter(object message) => (TypeKeyPod<IMessage>)message;
-	protected override object ReceiveConverter(TypeKeyPod<IMessage> message) => message;
+	public ObjectRouteAdapter(RouteAdapter<TSendIn, TReceiveIn, UriKeyPod<IMessage>, UriKeyPod<IMessage>> adapter)
+		: base(adapter, obj => adapter.Receive((UriKeyPod<IMessage>)obj)) { }
+	protected override UriKeyPod<IMessage> SendConverter(object message) => (UriKeyPod<IMessage>)message;
+	protected override object ReceiveConverter(UriKeyPod<IMessage> message) => message;
 }

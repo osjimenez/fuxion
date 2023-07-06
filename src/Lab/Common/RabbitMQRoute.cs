@@ -18,22 +18,22 @@ using IMessage = Fuxion.Domain.IMessage;
 
 namespace Fuxion.Lab.Common;
 
-public class RabbitMQRouteAdapter : RouteAdapter<RabbitMQSend, RabbitMQReceive,TypeKeyPod<IMessage>, TypeKeyPod<IMessage>>
-{
-	public RabbitMQRouteAdapter(RabbitMQRoute route, Func<TypeKeyPod<IMessage>, Task> receive) : base(route, receive) { }
-	protected override RabbitMQSend SendConverter(TypeKeyPod<IMessage> message)
-	{
-		if (!message.Headers.Has(typeof(RabbitMQSend).GetTypeKey())) throw new TypeKeyNotFoundException($"Header to routing not found");
-		return new()
-		{
-			RoutingKey = ((RabbitMQSend)message.Headers[typeof(RabbitMQSend).GetTypeKey()].Outside()).RoutingKey,
-			Body = Encoding.UTF8.GetBytes(message.SerializeToJson())
-		};
-	}
-	protected override TypeKeyPod<IMessage> ReceiveConverter(RabbitMQReceive message)
-		=> Encoding.UTF8.GetString(message.Body.ToArray())
-			.DeserializeFromJson<TypeKeyPod<IMessage>>() ?? throw new SerializationException($"Deserialization was null");
-}
+// public class RabbitMQRouteAdapter : RouteAdapter<RabbitMQSend, RabbitMQReceive,UriKeyPod<IMessage>, UriKeyPod<IMessage>>
+// {
+// 	public RabbitMQRouteAdapter(RabbitMQRoute route, Func<UriKeyPod<IMessage>, Task> receive) : base(route, receive) { }
+// 	protected override RabbitMQSend SendConverter(UriKeyPod<IMessage> message)
+// 	{
+// 		if (!message.Headers.Has(typeof(RabbitMQSend).GetUriKey())) throw new UriKeyNotFoundException($"Header to routing not found");
+// 		return new()
+// 		{
+// 			RoutingKey = ((RabbitMQSend)message.Headers[typeof(RabbitMQSend).GetUriKey()].Outside()).RoutingKey,
+// 			Body = Encoding.UTF8.GetBytes(message.SerializeToJson())
+// 		};
+// 	}
+// 	protected override UriKeyPod<IMessage> ReceiveConverter(RabbitMQReceive message)
+// 		=> Encoding.UTF8.GetString(message.Body.ToArray())
+// 			.DeserializeFromJson<UriKeyPod<IMessage>>() ?? throw new SerializationException($"Deserialization was null");
+// }
 
 public class RabbitMQPublisher : IPublisher<RabbitMQSend>
 {

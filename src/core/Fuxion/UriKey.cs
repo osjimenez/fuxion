@@ -8,25 +8,28 @@ namespace Fuxion;
 [JsonConverter(typeof(UriKeyJsonConverter))]
 public class UriKey: IEquatable<UriKey>//, IComparable, IComparable<UriKey>
 {
-	public const string INTERFACE_PARAMETER_NAME = "__interface";
-	public const string BASE_PARAMETER_NAME = "__base";
+	public const string InterfaceParameterName = "__interface";
+	public const string BaseParameterNamePrefix = "__base";
+	public const string FuxionBaseUri = "https://meta.fuxion.dev/";
+	public const string FuxionSystemTypesBaseUri = FuxionBaseUri+"system/";
 
 	public UriKey(string key)
 	{
-		(Uri, Version) = ValidateAndNormalizeUri(new(key), false);
+		(Uri, Bases, Version) = ValidateAndNormalizeUri(new(key), false);
 	}
 	public UriKey(Uri uri)
 	{
-		(Uri, Version) = ValidateAndNormalizeUri(uri, false);
+		(Uri, Bases, Version) = ValidateAndNormalizeUri(uri, false);
 	}
 	internal UriKey(Uri uri, bool allowReservedParameters)
 	{
-		(Uri, Version) = ValidateAndNormalizeUri(uri, allowReservedParameters);
+		(Uri, Bases, Version) = ValidateAndNormalizeUri(uri, allowReservedParameters);
 	}
 	
 	public Uri Uri { get; }
+	public Uri[] Bases { get; }
 	public SemanticVersion Version { get; }
-	internal static (Uri Uri, SemanticVersion Version) ValidateAndNormalizeUri(Uri uri, bool allowReservedParameters)
+	internal static (Uri Uri, Uri[] Bases, SemanticVersion Version) ValidateAndNormalizeUri(Uri uri, bool allowReservedParameters)
 	{
 		// If uri is relative, make it absolute only to process it
 		var currentUri = uri;
@@ -54,12 +57,12 @@ public class UriKey: IEquatable<UriKey>//, IComparable, IComparable<UriKey>
 		var pars = HttpUtility.ParseQueryString(currentUri.Query);
 		if (!allowReservedParameters)
 		{
-			if (pars.AllKeys.Any(key => key == INTERFACE_PARAMETER_NAME)) throw new UriKeyParameterException($"Neither parameter in query can be named '{INTERFACE_PARAMETER_NAME}'");
-			if (pars.AllKeys.Any(key => key == BASE_PARAMETER_NAME)) throw new UriKeyParameterException($"Neither parameter in query can be named '{BASE_PARAMETER_NAME}'");
+			if (pars.AllKeys.Any(key => key == InterfaceParameterName)) throw new UriKeyParameterException($"Neither parameter in query can be named '{InterfaceParameterName}'");
+			if (pars.AllKeys.Any(key => key?.StartsWith(BaseParameterNamePrefix) ?? false)) throw new UriKeyParameterException($"Neither parameter in query can be named started with '{BaseParameterNamePrefix}'");
 		}
 
 		// If the source uri is relative, return it
-		if (!uri.IsAbsoluteUri) return (uri, version);
+		if (!uri.IsAbsoluteUri) return (uri, Array.Empty<Uri>(), version);
 		
 		// Use UriBuilder to normalize the uri
 		UriBuilder ub = new(currentUri);
@@ -67,7 +70,19 @@ public class UriKey: IEquatable<UriKey>//, IComparable, IComparable<UriKey>
 		if (ub.Uri.IsDefaultPort) ub.Port = -1;
 		currentUri = ub.Uri;
 		
-		return (currentUri, version);
+		// Extract bases
+		List<Uri> bases = new();
+		for (var i = 1;; i++)
+		{
+			var par = pars[BaseParameterNamePrefix + i];
+			if(par is not null)
+			//if (pars.AllKeys.Contains(BaseParameterNamePrefix + i))
+			{
+				bases.Add(new(System.Uri.UnescapeDataString(par)));
+			} else break;
+		}
+		
+		return (currentUri, bases.ToArray(), version);
 	}
 	public override string ToString() => Uri.ToString();
 	

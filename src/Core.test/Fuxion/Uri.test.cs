@@ -49,42 +49,50 @@ public class UriTest(ITestOutputHelper output) : BaseTest<UriKeyTest>(output)
 		PrintUri(new(@"../one?val=123", UriKind.Relative));
 		PrintUri(new(@"/one/two/?val=123", UriKind.Relative));
 		PrintUri(new(@"one/two/?val=123", UriKind.Relative));
-
-		// Uri u1 = new("http://fuxion.dev/one?val=123");
-		// Uri u11 = new("http://fuxion.dev/one#fra");
-		// Uri u2 = new("http://fuxion.dev/one/two?other=other");
-		// Assert.True(u11.IsBaseOf(u1));
-		// Assert.True(u1.IsBaseOf(u11));
-		// Assert.True(u1.IsBaseOf(u2));
-		// var ur = u1.MakeRelativeUri(u2); // ../one?val=123
-		// Uri u3 = new(u1, ur);
-		// PrintUri(ur);
-		// PrintUri(u3);
+	}
+	[Fact]
+	public void Equality()
+	{
+		// Same uri, obviously are equals
+		IsTrue(new Uri("https://fuxion.dev/one").Equals(new Uri("https://fuxion.dev/one")));
+		// Fragment is ignored
+		IsTrue(new Uri("https://fuxion.dev/one").Equals(new Uri("https://fuxion.dev/one#fragment")));
+		// User info is ignored
+		IsTrue(new Uri("https://userInfo@fuxion.dev/one").Equals(new Uri("https://fuxion.dev/one")));
+		// Default port is ignored
+		IsTrue(new Uri("https://fuxion.dev/one").Equals(new Uri("https://fuxion.dev:443/one")));
+		// Different path not equals
+		IsFalse(new Uri("https://fuxion.dev/one").Equals(new Uri("https://fuxion.dev/one/")));
+		// Different query not equals
+		IsFalse(new Uri("https://fuxion.dev/one").Equals(new Uri("https://fuxion.dev/one?paremeter=value")));
 	}
 	[Fact(DisplayName = "Base of")]
 	public void BaseOf()
 	{
-		var uris = new[]
-		{
-			new Uri("http://fuxion.dev/"),
-			new Uri("http://fuxion.dev/one/#fra"),
-			new Uri("http://fuxion.dev/one/two/"),
-			new Uri("http://fuxion.dev/one/other/")
-		};
-		var ut = new Uri("http://fuxion.dev/one/other/");
-		Output.WriteLine($"Bases of {ut}");
-		foreach (var uri in uris.Where(u => u.IsBaseOf(ut))) Output.WriteLine($"\t{uri}");
-		// Base if change Fragment, Port or Query
-		Assert.True(new Uri("https://fuxion.dev/one/").IsBaseOf(new("https://fuxion.dev/one/#fra")));
-		Assert.True(new Uri("https://fuxion.dev/one/").IsBaseOf(new("https://fuxion.dev:443/one/")));
-		Assert.True(new Uri("https://fuxion.dev/one/").IsBaseOf(new("https://fuxion.dev/one/?query=query")));
-		Assert.True(new Uri("https://fuxion.dev/one/").IsBaseOf(new("https://FUXION.dev/one/")));
+		Uri u1 = new(
+			"https://chain3reset2.com/Chain3Reset2_Folder/1.0.0?__base1=https%3A%2F%2Fchain3reset1.com%2FChain3Reset1_Folder%2FChain3Reset1_Echelon1_Folder%2F1.0.0&__base2=https%3A%2F%2Fchain3.com%2FChain3_Folder%2FChain3_Echelon1_Folder%2F1.0.0");
+		Uri u2 = new(
+			"https://chain3reset2.com/Chain3Reset2_Folder/moreFolders/1.0.0?__base1=https%3A%2F%2Fchain3reset2.com%2FChain3Reset2_Folder%2FChain3Reset2_Echelon1_Folder%2F1.0.0&__base2=https%3A%2F%2Fchain3reset1.com%2FChain3Reset1_Folder%2FChain3Reset1_Echelon1_Folder%2F1.0.0&__base3=https%3A%2F%2Fchain3.com%2FChain3_Folder%2FChain3_Echelon1_Folder%2F1.0.0");
+		IsTrue(u1.IsBaseOf(u2));
+		
+		IsTrue(new Uri("https://fuxion.dev/one").IsBaseOf(new("https://fuxion.dev/one/")));
+		IsTrue(new Uri("https://fuxion.dev/one/").IsBaseOf(new("https://fuxion.dev/one/")));
+		IsTrue(new Uri("https://fuxion.dev/one/").IsBaseOf(new("https://fuxion.dev/one/two")));
+		IsTrue(new Uri("https://fuxion.dev/one/").IsBaseOf(new("https://fuxion.dev/one/two/")));
+		// Base if change Fragment, default Port or Query
+		IsTrue(new Uri("https://fuxion.dev/one/").IsBaseOf(new("https://fuxion.dev/one/#fra")));
+		IsTrue(new Uri("https://fuxion.dev/one/").IsBaseOf(new("https://fuxion.dev:443/one/")));
+		IsTrue(new Uri("https://fuxion.dev/one/").IsBaseOf(new("https://fuxion.dev/one/?query=query")));
+		IsTrue(new Uri("https://fuxion.dev/one/").IsBaseOf(new("https://FUXION.dev/one/")));
 		// TODO Issue when call IsBaseOf and UserInfo differs
 		// https://github.com/dotnet/runtime/issues/88265
 		// Assert.True(new Uri("https://user@domain.com").IsBaseOf(new("https://domain.com")));
 		// Not base if change UserInfo or Scheme
-		Assert.False(new Uri("https://fuxion.dev/one").IsBaseOf(new("https://userInfo@fuxion.dev/one")));
-		Assert.False(new Uri("https://fuxion.dev/one").IsBaseOf(new("http://fuxion.dev/one")));
+		IsFalse(new Uri("https://fuxion.dev/one").IsBaseOf(new("https://userInfo@fuxion.dev/one")));
+		IsFalse(new Uri("https://fuxion.dev/one").IsBaseOf(new("http://fuxion.dev/one")));
+		
+		IsFalse(new Uri("https://fuxion.dev/one/two/").IsBaseOf(new("https://fuxion.dev/one/")));
+		IsFalse(new Uri("https://fuxion.dev/one/").IsBaseOf(new("https://fuxion.dev/one")));
 	}
 	[Fact(DisplayName = "Comparison")]
 	public void Comparison()

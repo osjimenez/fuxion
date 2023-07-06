@@ -3,7 +3,7 @@ using Fuxion.Reflection;
 
 namespace Fuxion.Lab.Common;
 
-[TypeKey("test-message")]
+[UriKey(UriKey.FuxionBaseUri+"lab/test-message/1.0.0")]
 public class TestMessage : IMessage
 {
 	public TestMessage(int id, string name)

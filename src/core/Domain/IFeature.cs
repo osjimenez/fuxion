@@ -20,15 +20,15 @@ public interface IFeature<in TFeaturizable> : IFeature where TFeaturizable : IFe
 public interface IFeaturizable<in TFeaturizable> where TFeaturizable : IFeaturizable<TFeaturizable>
 {
 	IFeatureCollection<TFeaturizable> Features { get; }
-	public bool Has(TypeKey key)
+	public bool Has(UriKey key)
 		=> Features.Has(key);
 	public bool Has<TFeature>()
 		where TFeature : IFeature
 		=> Features.Has<TFeature>();
 	public void Add(Type type)
 	{
-		if (Has(type.GetTypeKey())) throw new FeatureAlreadyExistException($"'{GetType().GetSignature()}' object already has '{type.Name}' feature");
-		var feaObj = Activator.CreateInstance(type);
+		if (Has(type.GetUriKey())) throw new FeatureAlreadyExistException($"'{GetType().GetSignature()}' object already has '{type.Name}' feature");
+		var feaObj = Activator.CreateInstance(type) ?? throw new InvalidProgramException($"Feature cannot be created");
 		// TFeature fea = new();
 		((IFeature<TFeaturizable>)feaObj).OnAttach((TFeaturizable)this);
 		// initializeAction?.Invoke(fea);
@@ -48,7 +48,7 @@ public interface IFeaturizable<in TFeaturizable> where TFeaturizable : IFeaturiz
 	{
 		if (!Has<TFeature>() && exceptionIfNotFound) throw new FeatureNotFoundException($"Feature {typeof(TFeature).GetSignature()} was not found");
 		((IFeature<TFeaturizable>)Features.Get<TFeature>()).OnDetach((TFeaturizable)this);
-		return Features.Remove(typeof(TFeature).GetTypeKey());
+		return Features.Remove(typeof(TFeature).GetUriKey());
 	}
 	public TFeature Get<TFeature>()
 		where TFeature : IFeature
@@ -62,32 +62,32 @@ public interface IFeaturizable<in TFeaturizable> where TFeaturizable : IFeaturiz
 }
 public interface IFeatureCollection<in TFeaturizable> where TFeaturizable : IFeaturizable<TFeaturizable>
 {
-	internal bool Has(TypeKey key);
+	internal bool Has(UriKey key);
 	internal bool Has<TFeature>() where TFeature : IFeature;
 	internal void Add(IFeature feature);
-	internal bool Remove(TypeKey key);
+	internal bool Remove(UriKey key);
 	internal TFeature Get<TFeature>() where TFeature : IFeature;
 	internal bool TryGet<TFeature>([NotNullWhen(true)] out TFeature? feature) where TFeature : IFeature;
-	internal dynamic Get(TypeKey key);
+	internal dynamic Get(UriKey key);
 	internal IEnumerable<TFeature> All<TFeature>() where TFeature : IFeature;
 	public static IFeatureCollection<TFeaturizable> Create() => new FeatureCollection<TFeaturizable>();
 }
 class FeatureCollection<TFeaturizable> : IFeatureCollection<TFeaturizable>
 	where TFeaturizable : IFeaturizable<TFeaturizable>
 {
-	Dictionary<TypeKey, IFeature> Features { get; } = new();
-	public bool Has(TypeKey key)
+	Dictionary<UriKey, IFeature> Features { get; } = new();
+	public bool Has(UriKey key)
 		=> Features.ContainsKey(key);
 	public bool Has<TFeature>()
 		where TFeature : IFeature
-		=> Features.ContainsKey(typeof(TFeature).GetTypeKey());
+		=> Features.ContainsKey(typeof(TFeature).GetUriKey());
 	public void Add(IFeature feature)
-		=> Features.Add(feature.GetType().GetTypeKey(), feature);
-	public bool Remove(TypeKey key) => Features.Remove(key);
+		=> Features.Add(feature.GetType().GetUriKey(), feature);
+	public bool Remove(UriKey key) => Features.Remove(key);
 	public TFeature Get<TFeature>()
 		where TFeature : IFeature
 		=> ((IFeatureCollection<TFeaturizable>)this).Has<TFeature>() 
-			? (TFeature)Features[typeof(TFeature).GetTypeKey()]
+			? (TFeature)Features[typeof(TFeature).GetUriKey()]
 			: throw new FeatureNotFoundException($"Feature of type '{typeof(TFeature).GetSignature()}' not found");
 	
 	public bool TryGet<TFeature>([NotNullWhen(true)] out TFeature? feature)
@@ -95,15 +95,15 @@ class FeatureCollection<TFeaturizable> : IFeatureCollection<TFeaturizable>
 	{
 		if (((IFeatureCollection<TFeaturizable>)this).Has<TFeature>())
 		{
-			feature = (TFeature)Features[typeof(TFeature).GetTypeKey()];
+			feature = (TFeature)Features[typeof(TFeature).GetUriKey()];
 			return true;
 		}
 		feature = default;
 		return false;
 	}
-	public dynamic Get(TypeKey key)
+	public dynamic Get(UriKey key)
 	{
-		if (!Features.ContainsKey(key)) throw new FeatureNotFoundException($"Feature with {nameof(TypeKey)} '{key}' was not found");
+		if (!Features.ContainsKey(key)) throw new FeatureNotFoundException($"Feature with {nameof(UriKey)} '{key}' was not found");
 		var obj = Features[key];
 		return obj;
 	}
