@@ -6,6 +6,12 @@ namespace Fuxion.Test;
 public class UriKeyTest(ITestOutputHelper output) : BaseTest<UriKeyTest>(output)
 {
 	[Fact]
+	public void ConstantExpected()
+	{
+		var value = "";
+		UriKey uk = new(value);
+	}
+	[Fact]
 	public void SerializeToJson()
 	{
 		PrintVariable(new Uri("https://fuxion.dev/folder/1.0.0").SerializeToJson());

@@ -13,7 +13,7 @@ public class UriKey: IEquatable<UriKey>//, IComparable, IComparable<UriKey>
 	public const string FuxionBaseUri = "https://meta.fuxion.dev/";
 	public const string FuxionSystemTypesBaseUri = FuxionBaseUri+"system/";
 
-	public UriKey(string key)
+	public UriKey([ConstantExpected]string key)
 	{
 		(Uri, Bases, Version) = ValidateAndNormalizeUri(new(key), false);
 	}

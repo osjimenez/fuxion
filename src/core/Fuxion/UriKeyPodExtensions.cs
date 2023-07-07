@@ -41,7 +41,21 @@ public static class UriKeyPodExtensions
 		return new UriKeyPodBuilder<object, IUriKeyPod<object>>(me.Resolver, me.Pod.Payload.DeserializeFromJson<UriKeyPod<object>>(options: options)
 			?? throw new SerializationException("string couldn't be deserialized"));
 	}
-	
+	public static IUriKeyPodBuilder<object, IUriKeyPod<object>> FromJsonNode(this IUriKeyPodPreBuilder<string> me)
+	{
+		JsonSerializerOptions options = new();
+		options.Converters.Add(new IPodConverterFactory(me.Resolver));
+		return new UriKeyPodBuilder<object, IUriKeyPod<object>>(me.Resolver, me.Payload.DeserializeFromJson<UriKeyPod<object>>(options: options)
+			?? throw new SerializationException("string couldn't be deserialized"));
+	}
+	public static IUriKeyPodBuilder<object, IUriKeyPod<object>> FromJsonNode(this IUriKeyPodPreBuilder<string> me, out IUriKeyPod<object> pod)
+	{
+		JsonSerializerOptions options = new();
+		options.Converters.Add(new IPodConverterFactory(me.Resolver));
+		var deserializedPod = me.Payload.DeserializeFromJson<UriKeyPod<object>>(options: options) ?? throw new SerializationException("string couldn't be deserialized");
+		pod = deserializedPod;
+		return new UriKeyPodBuilder<object, IUriKeyPod<object>>(me.Resolver, deserializedPod);
+	}
 	public static IUriKeyPodBuilder<byte[], IUriKeyPod<byte[]>> ToUtf8Bytes(this IUriKeyPodBuilder<string, IPod<UriKey, string>> me) 
 		=> new UriKeyPodBuilder<byte[], IUriKeyPod<byte[]>>(me.Resolver, new UriKeyPod<byte[]>(me.Resolver[typeof(byte[])], Encoding.UTF8.GetBytes(me.Pod.Payload)));
 	public static IUriKeyPodBuilder<byte[], IUriKeyPod<byte[]>> ToUtf8Bytes(this IUriKeyPodBuilder<JsonNode, IPod<UriKey, JsonNode>> me) 

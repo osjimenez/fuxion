@@ -2,7 +2,7 @@
 	<PropertyGroup>
 		<LangVersion>preview</LangVersion>
 		<Nullable>enable</Nullable>
-		<WarningsAsErrors>Nullable</WarningsAsErrors>
+		<WarningsAsErrors>Nullable;CA1857</WarningsAsErrors>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<!--<IncludeSymbols>true</IncludeSymbols>-->
 

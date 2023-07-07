@@ -18,16 +18,9 @@ public class UriKeyPod<TPayload>(UriKey discriminator, TPayload payload) : Pod<U
 	{
 		get
 		{
-			// Search the key in the dictionary
-			if (HeadersDictionary.TryGetValue(key, out var res)) return res;
-			// Search all keys which are based on given key
-			var derivedKey = HeadersDictionary.Keys.Where(k => key.Uri.IsBaseOf(k.Uri))
-				// Get the key with longest path
-				.MaxBy(k => k.Uri.AbsolutePath.Length);
-			if (derivedKey is not null) return HeadersDictionary[derivedKey];
-			// Search keys which chains are based on given key
-			derivedKey ??= HeadersDictionary.FirstOrDefault(h => h.Key.Bases.Any(b => key.Uri.IsBaseOf(b))).Key;
-			return derivedKey is not null ? HeadersDictionary[derivedKey] : throw new UriKeyNotFoundException($"Key '{key}' not found in directory");
+			if(TryGetHeaderPod(key, out var pod))
+				return pod;
+			throw new UriKeyNotFoundException($"Key '{key}' not found in directory");
 		}
 	}
 	public override void Add(IPod<UriKey, object> pod)
@@ -51,6 +44,34 @@ public class UriKeyPod<TPayload>(UriKey discriminator, TPayload payload) : Pod<U
 	public IPod<UriKey, object> this[Type type] => this[Resolver?[type] ?? type.GetUriKey()];
 	[JsonIgnore]
 	public IUriKeyResolver? Resolver { get; set; }
+	bool TryGetHeaderPod(UriKey key, [MaybeNullWhen(returnValue: false)]out IPod<UriKey, object> result)
+	{
+		// Search the key in the dictionary
+		if (HeadersDictionary.TryGetValue(key, out var res))
+		{
+			result = res;
+			return true;
+		}
+		// Search all keys which are based on given key
+		var derivedKey = HeadersDictionary.Keys.Where(k => key.Uri.IsBaseOf(k.Uri))
+			// Get the key with longest path
+			.MaxBy(k => k.Uri.AbsolutePath.Length);
+		if (derivedKey is not null)
+		{
+			result = HeadersDictionary[derivedKey]; 
+			return true;
+		}
+		// Search keys which chains are based on given key
+		derivedKey ??= HeadersDictionary.FirstOrDefault(h => h.Key.Bases.Any(b => key.Uri.IsBaseOf(b))).Key;
+		if (derivedKey is not null)
+		{
+			result = HeadersDictionary[derivedKey]; 
+			return true;
+		}
+		result = null;
+		return false;
+		// return derivedKey is not null ? HeadersDictionary[derivedKey] : throw new UriKeyNotFoundException($"Key '{key}' not found in directory");
+	}
 	public bool TryGetHeader<T>([MaybeNullWhen(returnValue: false)]out T result, IUriKeyResolver? resolver = null)
 	{
 		var uk = Resolver is null 
@@ -58,8 +79,7 @@ public class UriKeyPod<TPayload>(UriKey discriminator, TPayload payload) : Pod<U
 				? typeof(T).GetUriKey()
 				: resolver[typeof(T)]
 			: Resolver[typeof(T)];
-		
-		if (this[uk] is { Payload: T payload })
+		if (TryGetHeaderPod(uk, out var pod) && pod.Payload is T payload)
 		{
 			result = payload;
 			return true;

@@ -39,13 +39,6 @@ public interface IInitializable
 	Task Initialize();
 }
 
-public class Wuao(string _o)
-{
-	public void tt()
-	{
-		_o = "";
-	}
-}
 public class DefaultNexus : INexus
 {
 	public DefaultNexus(string deployId)//, IProducer producer, IConsumer consumer, IList<IRoute<object,object>> routes)
@@ -81,11 +74,14 @@ public class DefaultNexus : INexus
 	public async Task Publish<TMessage>(TMessage message)
 		where TMessage : notnull
 	{
-		var publishers = RouteDirectory.GetPublishers<TMessage>();
-		foreach (var publisher in publishers)
+		var wasPublish = false;
+		foreach (var (_, publisher) in RouteDirectory.GetPublishers<TMessage>()
+			.Where(t => t.Filter(message)))
 		{
 			await publisher.Publish(message);
+			wasPublish = true;
 		}
+		if (!wasPublish) throw new InvalidProgramException($"Message didn't send, any publisher match");
 	}
 	public Task<IDisposable> OnReceive(Action<object> onMessageReceived)
 	{
@@ -95,30 +91,58 @@ public class DefaultNexus : INexus
 
 public class RouteDirectory
 {
-	Dictionary<Type, IEnumerable<IPublisher<object>>> publishers = new();
+	Dictionary<Type, List<(Func<object, bool> Filter, IPublisher<object> Publisher)>> publishers = new();
 	public void AddPublisher<TMessage>(IPublisher<TMessage> publisher)
 		where TMessage : notnull
 	{
-		publishers.Add(typeof(TMessage), new[]
-		{
-			// TODO Performance UNBOXING
-			new BypassPublisher<object>(publisher.Info, message => publisher.Publish((TMessage)message))
-		});
+		if (publishers.ContainsKey(typeof(TMessage)))
+			publishers[typeof(TMessage)]
+				.Add((_ => true,
+					// TODO Performance UNBOXING, si TMessage tiene el constraint de 'class' puedo usar 'as' en vez del unboxing
+					// Gano algo de rendimiento?
+					new BypassPublisher<object>(publisher.Info, message => publisher.Publish((TMessage)message))));
+		else
+			publishers.Add(typeof(TMessage), new()
+			{
+				(_ => true,
+					// TODO Performance UNBOXING
+					new BypassPublisher<object>(publisher.Info, message => publisher.Publish((TMessage)message)))
+			});
 	}
 	public void AddPublisher<TMessage>(PublisherInfo info, Func<TMessage, Task> publishFunc)
 	{
-		publishers.Add(typeof(TMessage),new[]
-		{
-			// TODO Performance UNBOXING
-			new BypassPublisher<object>(info, message => publishFunc((TMessage)message))
-		});
+		if (publishers.ContainsKey(typeof(TMessage)))
+			publishers[typeof(TMessage)]
+				.Add((_ => true,
+					// TODO Performance UNBOXING
+					new BypassPublisher<object>(info, message => publishFunc((TMessage)message))));
+		else
+			publishers.Add(typeof(TMessage), new()
+			{
+				(_ => true,
+					// TODO Performance UNBOXING
+					new BypassPublisher<object>(info, message => publishFunc((TMessage)message)))
+			});
 	}
-	public IEnumerable<IPublisher<TMessage>> GetPublishers<TMessage>()
+	public void AddPublisher<TMessage>(PublisherInfo info, Func<TMessage, bool> filter, Func<TMessage, Task> publishFunc)
+	{
+		if (publishers.ContainsKey(typeof(TMessage)))
+			publishers[typeof(TMessage)]
+				// TODO Performance UNBOXING
+				.Add((obj => filter((TMessage)obj), new BypassPublisher<object>(info, message => publishFunc((TMessage)message))));
+		else
+			publishers.Add(typeof(TMessage), new()
+			{
+				// TODO Performance UNBOXING
+				(obj => filter((TMessage)obj), new BypassPublisher<object>(info, message => publishFunc((TMessage)message)))
+			});
+	}
+	public IEnumerable<(Func<object, bool> Filter, IPublisher<TMessage> Publisher)> GetPublishers<TMessage>()
 		where TMessage : notnull
 	{
 		// TODO Check if exist
 		return publishers[typeof(TMessage)]
-			.Select(p => new BypassPublisher<TMessage>(p.Info, m => p.Publish(m)));
+			.Select(t => (t.Filter, (IPublisher<TMessage>)new BypassPublisher<TMessage>(t.Publisher.Info, m => t.Publisher.Publish(m))));
 	}
 
 	List<ISubscriber<object>> subscribers = new();
@@ -261,98 +285,6 @@ public static class ObservableNexusExtensions
 // 	}
 // }
 public interface IMessage { }
-
-// public interface IProducer
-// {
-// 	Task Initialize();
-// 	void Attach(INexus nexus);
-// 	Task Produce<TMessage>(TMessage message)
-// 		where TMessage : notnull;
-// }
-
-// public class DefaultProducer : IProducer
-// {
-// 	INexus? _nexus;
-// 	void IProducer.Attach(INexus nexus)
-// 	{
-// 		_nexus = nexus;
-// 	}
-// 	public Task Initialize() => Task.CompletedTask;
-// 	public async Task Produce<TMessage>(TMessage message)
-// 		where TMessage : notnull
-// 	{
-// 		if (_nexus is null) throw new InvalidStateException($"Producer was not attached in a node");
-// 		var pod = new TypeKeyPod<TMessage>(message);
-// 		RabbitMQRouteInfo rh = new()
-// 		{
-// 			Destination = "fuxion-lab-CL1-MS2"
-// 		};
-// 		pod.Headers.Add(new TypeKeyPod<RabbitMQRouteInfo>(rh));
-// 		await _nexus.Routes.First()
-// 			.Send(pod,rh);
-// 	}
-// 	// public async Task Produce(IMessage message)
-// 	// {
-// 	// 	if (_node is null) throw new InvalidStateException($"Producer was not attached in a node");
-// 	// 	var pod = new TypeKeyPod<IMessage>(message);
-// 	// 	pod.Headers.Add(new TypeKeyPod<RouteHeader>(new()
-// 	// 	{
-// 	// 		Destination = "fuxion-lab-CL1-MS2"
-// 	// 	}));
-// 	// 	await _node.Routes.First()
-// 	// 		.Send(pod);
-// 	// }
-// }
-// public interface IConsumer
-// {
-// 	Task Initialize();
-// 	void Attach(INexus nexus);
-// 	Task Consume<TMessage>(TMessage message);
-// 	IObservable<TMessage> Observe<TMessage>(Expression<Func<TMessage, bool>> predicate);
-// }
-
-// public class DefaultConsumer : IConsumer
-// {
-// 	INexus? _node;
-// 	public Task Initialize() => Task.CompletedTask;
-// 	public void Attach(INexus nexus) => _node = nexus;
-// 	public Task Consume<TMessage>(TMessage message)=> throw new NotImplementedException();
-// 	public IObservable<TMessage> Observe<TMessage>(Expression<Func<TMessage, bool>> predicate) => throw new NotImplementedException();
-// }
-
-// public class a
-// {
-// 	public a()
-// 	{
-// 		Nexus2 n = new(new[]
-// 		{
-// 			new Route2()
-// 		});
-// 	}
-// }
-// public class Nexus2
-// {
-// 	public Nexus2(IList<IRoute2<object, object>> routes)
-// 	{
-// 		
-// 	}
-// }
-//
-// public class Route2 : IRoute2<string, string>
-// {
-// 	public void Attach(INexus nexus) => throw new NotImplementedException();
-// 	public Task Initialize() => throw new NotImplementedException();
-// 	public Task Send(string message) => throw new NotImplementedException();
-// 	public Func<string, Task> Receive { get; set; }
-// }
-// public interface IRoute2<out TSend, out TReceive>
-// {
-// 	void Attach(INexus nexus);
-// 	Task Initialize();
-// 	IValueTaskSource<TSend> gg();
-// 	Task Send(TSend message);
-// 	Func<TReceive, Task> Receive { get; set; }
-// }
 public interface IRoute<in TSend, TReceive>
 {
 	void Attach(INexus nexus);

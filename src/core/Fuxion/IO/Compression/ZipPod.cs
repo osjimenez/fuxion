@@ -14,7 +14,7 @@ public class ZipPod<TDiscriminator>(TDiscriminator discriminator, byte[] dataToC
 	}
 }
 
-public class UnzipPod2<TDiscriminator>(TDiscriminator discriminator, byte[] dataToDecompress) : Pod<TDiscriminator, byte[]>(discriminator, Decompress(dataToDecompress))
+public class UnzipPod<TDiscriminator>(TDiscriminator discriminator, byte[] dataToDecompress) : Pod<TDiscriminator, byte[]>(discriminator, Decompress(dataToDecompress))
 	where TDiscriminator : notnull
 {
 	static byte[] Decompress(byte[] bytes)

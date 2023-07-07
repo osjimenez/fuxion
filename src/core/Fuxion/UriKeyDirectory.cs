@@ -116,6 +116,7 @@ public class UriKeyDirectory : IUriKeyResolver
 			TimeOnly();
 			TimeOnlyArray();
 			JsonNode();
+			JsonObject();
 		}
 		// Built-in types
 		// https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/built-in-types
@@ -233,6 +234,8 @@ public class UriKeyDirectory : IUriKeyResolver
 		#region JsonNode
 		public static UriKey JsonNodeUriKey { get; } = new(UriKey.FuxionSystemTypesBaseUri + "text/json/nodes/jsonnode/1.0.0");
 		public void JsonNode() => directory.Register<JsonNode>(JsonNodeUriKey);
+		public static UriKey JsonObjectUriKey { get; } = new(UriKey.FuxionSystemTypesBaseUri + "text/json/nodes/jsonobject/1.0.0");
+		public void JsonObject() => directory.Register<JsonObject>(JsonObjectUriKey);
 		#endregion
 	}
 	#endregion

@@ -17,31 +17,39 @@ public class Service(IServiceProvider serviceProvider) : IHostedService
 		rabbitSubscriber.Attach(nexus);
 		await rabbitConnection.Initialize();
 		await rabbitSubscriber.Initialize();
-		await nexus.OnReceive(msg =>
-		{
-			Console.WriteLine("Message received:\r\n" + msg);
-		});
-		nexus.Observe(obj => true)
+		// await nexus.OnReceive(msg =>
+		// {
+		// 	Console.WriteLine("Message received:\r\n" + msg);
+		// });
+		// nexus.Observe(obj => true)
+		// 	.OfType<RabbitMQReceive>()
+		// 	.Select(receive => receive.Body.ToArray()
+		// 		.BuildUriKeyPod(resolver)
+		// 		.FromUtf8Bytes()
+		// 		.Pod)
+		// 	.Subscribe(json =>
+		// 	{
+		// 		Console.WriteLine("===========================");
+		// 		Console.WriteLine(json.Payload);
+		// 		Console.WriteLine("===========================");
+		// 	});
+		var dis = nexus.Observe(obj => true)
 			.OfType<RabbitMQReceive>()
-			.Select(receive => receive.Body
-				.ToArray()
+			.Select(receive => receive.Body.ToArray()
 				.BuildUriKeyPod(resolver)
 				.FromUtf8Bytes()
-				.FromJsonNode().Pod
-			)
-			.Buffer(2)
-			.Subscribe(list =>
-			{
-				//Console.WriteLine("Message observed from nexus extensions:\r\n" + Encoding.UTF8.GetString(list.Body.ToArray()));
-				foreach(var msg in list)
-					if (msg.Payload is TestMessage tm)
-						Console.WriteLine("Message observed from nexus extensions:\r\n" + tm.Name);
-			});
-		new ObservableNexusDecorator(nexus).Observe(obj => true)
+				.FromJsonNode()
+				.Pod)
+			// .Buffer(2)
 			.Subscribe(msg =>
 			{
-				Console.WriteLine("Message observed from nexus:\r\n" + msg);
+				if (msg.Payload is TestMessage tm) Console.WriteLine("Message observed from nexus extensions:\r\n" + tm.Name);
 			});
+		// new ObservableNexusDecorator(nexus).Observe(obj => true)
+		// 	.Subscribe(msg =>
+		// 	{
+		// 		Console.WriteLine("Message observed from nexus:\r\n" + msg);
+		// 	});
 	}
 	public Task StopAsync(CancellationToken cancellationToken) => throw new NotImplementedException();
 }
