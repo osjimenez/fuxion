@@ -5,6 +5,8 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 public static class DependencyInjectionExtensions
 {
+	public static IServiceCollection AddDbTrigger<TTrigger>(this IServiceCollection me) 
+		=> AddDbTrigger(me, typeof(TTrigger));
 	public static IServiceCollection AddDbTrigger(this IServiceCollection me, Type type, bool failIfNotImplementTriggersInterfaces = true)
 	{
 		var tBeforeContext = type.GetSubclassOfRawGeneric(typeof(IBeforeSaveTrigger<>))?.GetGenericArguments().First();
