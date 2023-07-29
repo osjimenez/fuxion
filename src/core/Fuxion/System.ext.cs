@@ -54,7 +54,9 @@ public static class Extensions
 	//      }
 
 	#region Disposable
-	public static DisposableEnvelope<T> AsDisposable<T>(this T me, Action<T>? actionOnDispose = null) where T : notnull => new(me, actionOnDispose);
+	public static DisposableEnvelope<T> AsDisposable<T>(this T me, Action<T>? actionOnDispose = null)
+		where T : notnull
+		=> new(me, actionOnDispose);
 	#endregion
 
 	#region IsNullOrDefault
@@ -64,8 +66,7 @@ public static class Extensions
 	#region Json
 	public static string SerializeToJson(this object? me, bool? indented = null, JsonSerializerOptions? options = null)
 	{
-		if (options is not null && indented is not null) 
-			options.WriteIndented = indented.Value;
+		if (options is not null && indented is not null) options.WriteIndented = indented.Value;
 		if (options is null && indented is not null)
 			options = new()
 			{
@@ -75,24 +76,34 @@ public static class Extensions
 	}
 	public static string SerializeToJson(this Exception me, bool? indented = null, JsonSerializerOptions? options = null)
 	{
-		if (options is not null && indented is not null) 
-			options.WriteIndented = indented.Value;
+		if (options is not null && indented is not null) options.WriteIndented = indented.Value;
 		if (options is null && indented is not null)
 			options = new()
 			{
 				WriteIndented = indented.Value
 			};
 		options ??= new();
-		if (!options.Converters.Any(c => c.GetType().IsSubclassOfRawGeneric(typeof(FallbackConverter<>))))
+		if (!options.Converters.Any(c => c.GetType()
+			.IsSubclassOfRawGeneric(typeof(FallbackConverter<>))))
 			options.Converters.Add(new FallbackConverter<Exception>(new MultilineStringToCollectionPropertyFallbackResolver()));
 		return JsonSerializer.Serialize(me, options);
 	}
-	public static T? DeserializeFromJson<T>(this string me, [DoesNotReturnIf(true)] bool exceptionIfNull = false, JsonSerializerOptions? options = null, bool usePrivateConstructor = true) =>
-		(T?)DeserializeFromJson(me, typeof(T), exceptionIfNull, options, usePrivateConstructor);
-	public static object? DeserializeFromJson(this string me, Type type, [DoesNotReturnIf(true)] bool exceptionIfNull = false, JsonSerializerOptions? options = null, bool usePrivateConstructor = true)
+	public static T? DeserializeFromJson<T>(
+		this string me,
+		[DoesNotReturnIf(true)] bool exceptionIfNull = false,
+		JsonSerializerOptions? options = null,
+		bool usePrivateConstructor = true)
+		=> (T?)DeserializeFromJson(me, typeof(T), exceptionIfNull, options, usePrivateConstructor);
+	public static object? DeserializeFromJson(
+		this string me,
+		Type type,
+		[DoesNotReturnIf(true)] bool exceptionIfNull = false,
+		JsonSerializerOptions? options = null,
+		bool usePrivateConstructor = true)
 	{
 		if (usePrivateConstructor)
-			options ??= new() {
+			options ??= new()
+			{
 				TypeInfoResolver = new PrivateConstructorContractResolver()
 			};
 		var res = JsonSerializer.Deserialize(me, type, options);
@@ -136,21 +147,25 @@ public static class Extensions
 	{
 		if (valueTypesAreNotNullables && me == typeof(Enum)) return false;
 		if (me.IsClass || me.IsInterface || me.IsGenericType && me.GetGenericTypeDefinition() == typeof(Nullable<>)) return true;
-		//if (!(valueTypesAreNotNullables && typeof(ValueType).IsAssignableFrom(me)))
-		//	return true;
 		return false;
 	}
-	public static bool IsNullableValue<T>(this Type me) where T : struct => me.IsGenericType && me.GetGenericTypeDefinition() == typeof(Nullable<>) && me.GetGenericArguments()[0] == typeof(T);
-	public static bool IsNullableEnum(this Type me) =>
-		me.IsGenericType && me.GetGenericTypeDefinition() == typeof(Nullable<>) && me.GetGenericArguments()[0].IsEnum;
-	public static object? GetDefaultValue(this Type me) => me.GetTypeInfo().IsValueType && Nullable.GetUnderlyingType(me) == null ? Activator.CreateInstance(me) : null;
+	public static bool IsNullableValue<T>(this Type me)
+		where T : struct
+		=> me.IsGenericType && me.GetGenericTypeDefinition() == typeof(Nullable<>) && me.GetGenericArguments()[0] == typeof(T);
+	public static bool IsNullableEnum(this Type me) => me.IsGenericType && me.GetGenericTypeDefinition() == typeof(Nullable<>) && me.GetGenericArguments()[0].IsEnum;
+	public static object? GetDefaultValue(this Type me)
+		=> me.GetTypeInfo()
+			.IsValueType && Nullable.GetUnderlyingType(me) == null
+			? Activator.CreateInstance(me)
+			: null;
 	public static string GetFullNameWithAssemblyName(this Type me) => $"{me.AssemblyQualifiedName?.Split(',').Take(2).Aggregate("", (a, n) => a + ", " + n, a => a.Trim(' ', ','))}";
 	public static string GetSignature(this Type type, bool useFullNames = false)
 	{
 		var nullableType = Nullable.GetUnderlyingType(type);
 		if (nullableType != null) return nullableType.GetSignature(useFullNames) + "?";
 		var typeName = useFullNames && !string.IsNullOrWhiteSpace(type.FullName) ? type.FullName : type.Name;
-		if (!type.GetTypeInfo().IsGenericType)
+		if (!type.GetTypeInfo()
+			.IsGenericType)
 			return type.Name switch
 			{
 				"String" => "string",
@@ -176,16 +191,25 @@ public static class Extensions
 	public static bool IsSubclassOfRawGeneric(this Type me, Type generic) => GetSubclassOfRawGeneric(me, generic) != null;
 	public static Type? GetSubclassOfRawGeneric(this Type me, Type generic)
 	{
-		Queue<Type> toProcess = new(new[] {
+		Queue<Type> toProcess = new(new[]
+		{
 			me
 		});
 		while (toProcess.Count > 0)
 		{
 			var actual = toProcess.Dequeue();
-			var cur = actual.GetTypeInfo().IsGenericType ? actual.GetGenericTypeDefinition() : actual;
-			if (cur.GetTypeInfo().IsGenericType && generic.GetGenericTypeDefinition() == cur.GetGenericTypeDefinition()) return actual;
-			foreach (var inter in actual.GetTypeInfo().ImplementedInterfaces) toProcess.Enqueue(inter);
-			var baseType = actual.GetTypeInfo().BaseType;
+			var cur = actual.GetTypeInfo()
+				.IsGenericType
+				? actual.GetGenericTypeDefinition()
+				: actual;
+			if (cur.GetTypeInfo()
+					.IsGenericType && generic.GetGenericTypeDefinition() == cur.GetGenericTypeDefinition())
+				return actual;
+			foreach (var inter in actual.GetTypeInfo()
+				.ImplementedInterfaces)
+				toProcess.Enqueue(inter);
+			var baseType = actual.GetTypeInfo()
+				.BaseType;
 			if (baseType != null) toProcess.Enqueue(baseType);
 		}
 		return null;
@@ -201,9 +225,12 @@ public static class Extensions
 	/// <returns>PropertyValue</returns>
 	public static T? GetPrivatePropertyValue<T>(this object obj, string propName)
 	{
-		if (obj == null) throw new ArgumentNullException(nameof(obj)); 
-		var pi = obj.GetType().GetProperty(propName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-		if (pi == null) throw new ArgumentOutOfRangeException(nameof(propName), string.Format("Property {0} was not found in Type {1}", propName, obj.GetType().FullName));
+		if (obj == null) throw new ArgumentNullException(nameof(obj));
+		var pi = obj.GetType()
+			.GetProperty(propName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+		if (pi == null)
+			throw new ArgumentOutOfRangeException(nameof(propName), string.Format("Property {0} was not found in Type {1}", propName, obj.GetType()
+				.FullName));
 		return (T?)pi.GetValue(obj, null);
 	}
 	/// <summary>
@@ -224,10 +251,11 @@ public static class Extensions
 			fi = t.GetField(propName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 			t = t.BaseType;
 		}
-		if (fi == null) throw new ArgumentOutOfRangeException(nameof(propName), string.Format("Field {0} was not found in Type {1}", propName, obj.GetType().FullName));
+		if (fi == null)
+			throw new ArgumentOutOfRangeException(nameof(propName), string.Format("Field {0} was not found in Type {1}", propName, obj.GetType()
+				.FullName));
 		return (T?)fi.GetValue(obj);
 	}
-	
 	/// <summary>
 	///    Sets a private Property value from a given object. Uses Reflection.
 	///    Throws a ArgumentOutOfRangeException if the Property is not found.
@@ -239,12 +267,15 @@ public static class Extensions
 	/// <returns>PropertyValue</returns>
 	public static void SetPrivatePropertyValue(this object obj, string propName, object? val)
 	{
-		var t = obj.GetType();
-		var prop = t.GetProperty(propName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
-		if (prop is null) throw new ArgumentOutOfRangeException(nameof(propName), string.Format("Property {0} was not found in Type {1}", propName, obj.GetType().FullName));
-		prop.DeclaringType?.InvokeMember(propName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.FlattenHierarchy, Type.DefaultBinder, obj, new[] {
-			val
-		});
+		var prop = obj.GetType()
+			.GetProperty(propName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy) ?? throw new ArgumentOutOfRangeException(nameof(propName),
+			string.Format("Property {0} was not found in Type {1}", propName, obj.GetType()
+				.FullName));
+		prop.DeclaringType?.InvokeMember(propName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.FlattenHierarchy, Type.DefaultBinder,
+			obj, new[]
+			{
+				val
+			});
 	}
 	/// <summary>
 	///    Set a private Field value on a given Object. Uses Reflection.
@@ -264,7 +295,9 @@ public static class Extensions
 			fi = t.GetField(propName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 			t = t.BaseType;
 		}
-		if (fi == null) throw new ArgumentOutOfRangeException(nameof(propName), string.Format("Field {0} was not found in Type {1}", propName, obj.GetType().FullName));
+		if (fi == null)
+			throw new ArgumentOutOfRangeException(nameof(propName), string.Format("Field {0} was not found in Type {1}", propName, obj.GetType()
+				.FullName));
 		fi.SetValue(obj, val);
 	}
 	#endregion
@@ -275,8 +308,10 @@ public static class Extensions
 	public static int Pow(this int me, int power) => (int)Math.Pow(me, power);
 	public static (long Quotient, long Remainder) Division(this long me, long dividend) => (me / dividend, me % dividend);
 	public static (long Quotient, long Remainder) DivisionByPowerOfTwo(this long me, ushort numberOfBits) => me.Division(2.Pow(numberOfBits));
-	public static (long Quotient, long Remainder) DivisionByPowerOfTwo(this byte[] me, ushort numberOfBits) =>
-		BitConverter.ToInt64(me.Concat(Enumerable.Repeat((byte)0, 8 - me.Length)).ToArray(), 0).DivisionByPowerOfTwo(numberOfBits);
+	public static (long Quotient, long Remainder) DivisionByPowerOfTwo(this byte[] me, ushort numberOfBits)
+		=> BitConverter.ToInt64(me.Concat(Enumerable.Repeat((byte)0, 8 - me.Length))
+				.ToArray(), 0)
+			.DivisionByPowerOfTwo(numberOfBits);
 	#endregion
 
 	#region Bytes
@@ -284,7 +319,8 @@ public static class Extensions
 	{
 		string hex;
 		if (asBigEndian)
-			hex = BitConverter.ToString(me.Reverse().ToArray());
+			hex = BitConverter.ToString(me.Reverse()
+				.ToArray());
 		else
 			hex = BitConverter.ToString(me);
 		if (separatorChar is not null) return hex.Replace('-', separatorChar.Value);
@@ -301,14 +337,13 @@ public static class Extensions
 		else
 			for (var i = 0; i < NumberChars; i += 2)
 				bytes[i / 2] = Convert.ToByte(me.Substring(i, 2), 16);
-		if (isBigEndian) bytes = bytes.Reverse().ToArray();
+		if (isBigEndian)
+			bytes = bytes.Reverse()
+				.ToArray();
 		return bytes;
 	}
 	public static string ToBase64String(this byte[] me) => Convert.ToBase64String(me);
-	public static byte[] FromBase64String(this string me)
-	{
-		return Convert.FromBase64String(me);
-	}
+	public static byte[] FromBase64String(this string me) => Convert.FromBase64String(me);
 	#endregion
 
 	#region String
@@ -320,8 +355,9 @@ public static class Extensions
 				res += me[i];
 		return res;
 	}
-	public static string[] SplitInLines(this string me, bool removeEmptyLines = false, bool trimEachLine = false) =>
-		me.Split(new[] {
+	public static string[] SplitInLines(this string me, bool removeEmptyLines = false, bool trimEachLine = false)
+		=> me.Split(new[]
+		{
 			"\r\n", "\r", "\n"
 		}, removeEmptyLines ? StringSplitOptions.RemoveEmptyEntries : StringSplitOptions.None);
 	/// <summary>
@@ -331,8 +367,10 @@ public static class Extensions
 	/// </summary>
 	public static bool IsSubPathOf(this string path, string baseDirPath)
 	{
-		var normalizedPath = path.Replace('/', '\\').WithEnding("\\");
-		var normalizedBaseDirPath = baseDirPath.Replace('/', '\\').WithEnding("\\");
+		var normalizedPath = path.Replace('/', '\\')
+			.WithEnding("\\");
+		var normalizedBaseDirPath = baseDirPath.Replace('/', '\\')
+			.WithEnding("\\");
 		return normalizedPath.StartsWith(normalizedBaseDirPath, StringComparison.OrdinalIgnoreCase);
 	}
 	/// <summary>
@@ -362,14 +400,34 @@ public static class Extensions
 		if (length < 0) throw new ArgumentOutOfRangeException(nameof(length), length, "Length is less than zero");
 		return length < value.Length ? value.Substring(value.Length - length) : value;
 	}
-	public static string RandomString(this string me, int length, Random? ran = null)
+	public static string RandomString(
+		this string me,
+		int length
+#if NETSTANDARD2_0 || NET462 || NET6_0 || NET7_0
+		, Random? ran = null
+#endif
+	)
 	{
 		const string defaultStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+#if NETSTANDARD2_0 || NET462 || NET6_0 || NET7_0
+		ran ??= new(Guid.NewGuid().GetHashCode());
+		var str = string.IsNullOrWhiteSpace(me) ? defaultStr : me;
+		return new(Enumerable.Repeat(str, length)
+			.Select(s => s[ran!.Next(s.Length)])
+			.ToArray());
+#else
 		return RandomNumberGenerator.GetString((string.IsNullOrWhiteSpace(me) ? defaultStr : me).AsSpan(), length);
+#endif
 	}
 	public static string ToTitleCase(this string me, CultureInfo? culture = null) => (culture ?? CultureInfo.CurrentCulture).TextInfo.ToTitleCase(me.ToLower());
-	public static string ToCamelCase(this string me, CultureInfo? culture = null) => me.ToTitleCase(culture).Replace(" ", "").Transform(s => s.Substring(0, 1).ToLower() + s.Substring(1, s.Length - 1));
-	public static string ToPascalCase(this string me, CultureInfo? culture = null) => me.ToTitleCase(culture).Replace(" ", "");
+	public static string ToCamelCase(this string me, CultureInfo? culture = null)
+		=> me.ToTitleCase(culture)
+			.Replace(" ", "")
+			.Transform(s => s.Substring(0, 1)
+				.ToLower() + s.Substring(1, s.Length - 1));
+	public static string ToPascalCase(this string me, CultureInfo? culture = null)
+		=> me.ToTitleCase(culture)
+			.Replace(" ", "");
 	public static bool Contains(this string source, string value, StringComparison comparisonType) => source?.IndexOf(value, comparisonType) >= 0;
 	public static IEnumerable<int> AllIndexesOf(this string me, string value, StringComparison comparisonType)
 	{
@@ -464,11 +522,8 @@ public static class Extensions
 			count++;
 		}
 		if (count >= numberOfElements) return res.Trim(',', ' ');
-		if (ts.Milliseconds > 0)
-		{
-			res += $"{ts.Milliseconds} {(onlyLetters ? "ms" : ts.Milliseconds > 1 ? Strings.milliseconds : Strings.millisecond)}{(onlyLetters ? "" : ",")} ";
-			//count++;
-		}
+		if (ts.Milliseconds > 0) res += $"{ts.Milliseconds} {(onlyLetters ? "ms" : ts.Milliseconds > 1 ? Strings.milliseconds : Strings.millisecond)}{(onlyLetters ? "" : ",")} ";
+		//count++;
 		return res.Trim(',', ' ');
 	}
 	public static DateTime AverageDateTime(this IEnumerable<DateTime> me)
@@ -503,9 +558,8 @@ public static class Extensions
 
 	#region Range
 	public static CustomIntEnumerator GetEnumerator(this Range range) => new(range);
-	public static CustomIntEnumerator GetEnumerator(this int number) => number <= 0
-		? throw new ArgumentException($"{nameof(number)} must be a positive value greater than 0", nameof(number))
-		: new(new(0, number));
+	public static CustomIntEnumerator GetEnumerator(this int number)
+		=> number <= 0 ? throw new ArgumentException($"{nameof(number)} must be a positive value greater than 0", nameof(number)) : new(new(0, number));
 	#endregion
 }
 
@@ -514,7 +568,7 @@ public struct CustomIntEnumerator
 	readonly int _end;
 	public CustomIntEnumerator(Range range)
 	{
-		if (range.End.IsFromEnd) throw new NotSupportedException($"You must specify a end for the range");
+		if (range.End.IsFromEnd) throw new NotSupportedException("You must specify a end for the range");
 		Current = range.Start.Value - 1;
 		_end = range.End.Value;
 	}

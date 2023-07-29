@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
 		<Title>Fuxion Entity Framework Core in memory</Title>
 		<PackageId>Fuxion.EntityFrameworkCore.InMemory</PackageId>
 		<Description>Fuxion library with extensions for Entity Framework Core in memory.</Description>
@@ -18,7 +18,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\core\Application\Fuxion.Application.csproj" />
 		<ProjectReference Include="..\EntityFrameworkCore\Fuxion.EntityFrameworkCore.csproj" />
 	</ItemGroup>
 

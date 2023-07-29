@@ -1,4 +1,5 @@
-﻿using Fuxion.Application.Aggregates;
+﻿#if false
+using Fuxion.Application.Aggregates;
 using Fuxion.Application.Events;
 using Fuxion.Application.Factories;
 using Fuxion.Application.Snapshots;
@@ -122,3 +123,4 @@ public class EventSourcingRepository<TAggregate> : IRepository<TAggregate> where
 		//else if (trackedAggregates[aggregate.Id] != aggregate) throw new ConcurrencyException("Aggregate can't be added because it's already tracked.");
 	}
 }
+#endif

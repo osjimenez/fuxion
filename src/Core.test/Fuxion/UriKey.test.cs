@@ -5,7 +5,7 @@ namespace Fuxion.Test;
 
 public class UriKeyTest(ITestOutputHelper output) : BaseTest<UriKeyTest>(output)
 {
-	[Fact]
+	[Fact(Skip = "Debería dar un error en tiempo de compilacion")]
 	public void ConstantExpected()
 	{
 		var value = "";
@@ -43,28 +43,13 @@ public class UriKeyTest(ITestOutputHelper output) : BaseTest<UriKeyTest>(output)
 		void DoType(Type type)
 		{
 			Output.WriteLine("\t" + type.Name);
-			// try
-			// {
-				var tk = type.GetUriKey();
-				Output.WriteLine("\t\t" + tk);
-			// } catch (Exception ex)
-			// {
-			// 	Output.WriteLine($"\t\t{ex.GetType().Name}: {ex.Message}");
-			// }
+			Output.WriteLine("\t\t" + type.GetUriKey());
 		}
 		void DoTypeThrow<TException>(Type type)
 			where TException : Exception
 		{
 			Output.WriteLine("\t" + type.Name);
 			Throws<TException>(() => type.GetUriKey(), "\t\t");
-			// try
-			// {
-			// 	var tk = type.GetUriKey();
-			// 	Output.WriteLine("\t\t" + tk);
-			// } catch (Exception ex)
-			// {
-			// 	Output.WriteLine($"\t\t{ex.GetType().Name}: {ex.Message}");
-			// }
 		}
 		Output.WriteLine("Chain 1 - Show how alone echelon in chain doesn't works");
 		DoTypeThrow<UriKeyInheritanceException>(typeof(Chain1));

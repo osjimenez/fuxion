@@ -16,21 +16,7 @@ public class IPodConverter<TPod, TDiscriminator, TPayload>(IUriKeyResolver? reso
 	public const string ITEMS_LABEL = "__items";
 	public const string PAYLOAD_LABEL = "__payload";
 	public const string DISCRIMINATOR_LABEL = "__discriminator";
-	PropertyInfo? SearchProperty(object target, string propertyName)
-	{
-		var flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
-		var property = target.GetType()
-			.GetProperties(flags)
-			.Where(p => p.GetCustomAttribute<JsonPropertyNameAttribute>() != null)
-			.SingleOrDefault(p => p.GetCustomAttribute<JsonPropertyNameAttribute>()
-				?.Name == propertyName);
-		if (property is not null) return property;
-		property = target.GetType()
-			.GetProperty(propertyName, flags);
-		if (property?.HasCustomAttribute<JsonPropertyNameAttribute>() ?? false) return null;
-		return property;
-	}
-	void CheckTypeReserverProperties(Type type)
+	static void CheckTypeReservedProperties(Type type)
 	{
 		if (type.GetProperty(DISCRIMINATOR_LABEL) is not null) throw new InvalidProgramException($"The pod '{type.Name}' cannot has a property called '{ITEMS_LABEL}', this name is reserved");
 		if (type.GetProperty(PAYLOAD_LABEL) is not null) throw new InvalidProgramException($"The pod '{type.Name}' cannot has a property called '{ITEMS_LABEL}', this name is reserved");
@@ -38,7 +24,7 @@ public class IPodConverter<TPod, TDiscriminator, TPayload>(IUriKeyResolver? reso
 	}
 	public override TPod? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{
-		CheckTypeReserverProperties(typeToConvert);
+		CheckTypeReservedProperties(typeToConvert);
 		var ins = Activator.CreateInstance(typeToConvert, true)
 			?? throw new InvalidProgramException($"Could not be created instance of type '{typeof(TPod).GetSignature()}' using its private constructor");
 		var pod = (TPod)ins;
@@ -64,7 +50,7 @@ public class IPodConverter<TPod, TDiscriminator, TPayload>(IUriKeyResolver? reso
 			payloadType = resolver[tk];
 		}
 		pod.SetPrivatePropertyValue(disProp.Name, disNode.Deserialize<TDiscriminator>(options));
-		
+
 		// PAYLOAD
 		var payNode = jsonObject
 				.FirstOrDefault(pair => pair.Key == PAYLOAD_LABEL).Value
@@ -74,30 +60,28 @@ public class IPodConverter<TPod, TDiscriminator, TPayload>(IUriKeyResolver? reso
 			?? throw new InvalidProgramException($"'{nameof(IPod<string, string>.Payload)}' property could not be obtained from pod '{pod.GetType().Name}'");
 		var payValue = payNode.Deserialize(payloadType, options);
 		pod.SetPrivatePropertyValue(payProp.Name, payValue);
-		
+
 		// ITEMS
 		var iteNode = jsonObject.FirstOrDefault(pair => pair.Key == ITEMS_LABEL).Value;
-		if (iteNode is not null)
+		if (iteNode is null) return pod;
+		if (pod is not ICollectionPod<TDiscriminator, TPayload> col) throw new SerializationException($"{ITEMS_LABEL} is present but pod '{pod.GetType().Name}' is not a collection pod");
+		foreach (var node in iteNode.AsArray())
 		{
-			if (pod is not ICollectionPod<TDiscriminator, TPayload> col) throw new SerializationException($"{ITEMS_LABEL} is present but pod '{pod.GetType().Name}' is not a collection pod");
-			foreach (var node in iteNode.AsArray())
+			if (node is not null && resolver is not null)
 			{
-				if (node is not null && resolver is not null)
-				{
-					var headerPod = (IPod<TDiscriminator, object>?)node.Deserialize(typeof(UriKeyPod<object>), options)?? throw new SerializationException("Cannot be deserialize header");
-					col.Add(headerPod);
-				} else
-				{
-					var headerPod = (JsonNodePod<TDiscriminator>?)node.Deserialize(typeof(JsonNodePod<TDiscriminator>), options) ?? throw new SerializationException("Cannot be deserialize header");
-					col.Add(headerPod);
-				}
+				var headerPod = (IPod<TDiscriminator, object>?)node.Deserialize(typeof(UriKeyPod<object>), options)?? throw new SerializationException("Cannot be deserialize header");
+				col.Add(headerPod);
+			} else
+			{
+				var headerPod = (JsonNodePod<TDiscriminator>?)node.Deserialize(typeof(JsonNodePod<TDiscriminator>), options) ?? throw new SerializationException("Cannot be deserialize header");
+				col.Add(headerPod);
 			}
 		}
 		return pod;
 	}
 	public override void Write(Utf8JsonWriter writer, TPod value, JsonSerializerOptions options)
 	{
-		CheckTypeReserverProperties(value.GetType());
+		CheckTypeReservedProperties(value.GetType());
 		writer.WriteStartObject();
 		foreach (var prop in value.GetType()
 			.GetProperties()

@@ -19,7 +19,13 @@ public class EventTest
 	}
 }
 
-public record MockEvent : Fuxion.Domain.Event
+public
+#if NET462
+	class
+#else
+	record
+#endif
+MockEvent : Fuxion.Domain.Event
 {
 	public MockEvent(Guid AggregateId) : base(AggregateId) { }
 	public string? Name { get; set; }

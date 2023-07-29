@@ -272,9 +272,12 @@ public class ReactiveTest : BaseTest<ReactiveTest>
 		
 		// Lanzo el comando
 	}
-	public record Person(string FirstName, string LastName)
+	public record Person
 	{
-		public string[] PhoneNumbers { get; init; } = Array.Empty<string>();
+		public Person(string firstName, string lastName) => (FirstName, LastName) = (firstName, lastName);
+		public string FirstName { get; set; }
+		public string LastName { get; set; }
+		public string[] PhoneNumbers { get; set; } = Array.Empty<string>();
 	}
 	[Fact]
 	public void BBB()
@@ -376,12 +379,28 @@ public class Property<T> : IObservable<T>
 // 	public IDisposable Subscribe(IObserver<T> observer) => _subject.Subscribe(observer);
 // }
 
-public record PropertyChangedEvent<T>(string PropertyName, T NewValue);
+public record PropertyChangedEvent<T>
+{
+	public PropertyChangedEvent(string propertyName, T newValue) => (PropertyName, NewValue) = (propertyName, newValue);
+	public string PropertyName { get; set; }
+	public T NewValue { get; set; }
+}
 public record Event();
 public record CreatedEvent() : Event;
-public record RenamedEvent(string NewFirstName, string NewLastName): Event;
+
+public record RenamedEvent : Event
+{
+	public RenamedEvent(string newFirstName, string newLastName) => (NewFirstName, NewLastName) = (newFirstName, newLastName);
+	public string NewFirstName { get; set; }
+	public string NewLastName { get; set; }
+}
 public record Command();
-public record RenameCommand(string NewName) : Command;
+
+public record RenameCommand : Command
+{
+	public RenameCommand(string newName) => NewName = newName;
+	public string NewName { get; set; }
+}
 public class MyConsoleObserver<T> : IObserver<T>
 {
 	ITestOutputHelper _output;

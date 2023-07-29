@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿#if false
+using System.Text.Json.Serialization;
 using Fuxion.Domain;
 using Fuxion.Reflection;
 using Fuxion.Testing;
@@ -23,8 +24,7 @@ public class SnapshotTest : BaseTest<SnapshotTest>
 		Output.WriteLine(json);
 	}
 }
-
-[TypeKey(nameof(TestSnapshot))]
+[UriKey(UriKey.FuxionBaseUri + $"test/{nameof(TestSnapshot)}/1.0.0")]
 public class TestSnapshot : Snapshot<TestAggregate>
 {
 	[JsonInclude]
@@ -38,3 +38,4 @@ public class TestAggregate : IAggregate
 	public Guid Id { get; init; }
 	IFeatureCollection<IAggregate> IFeaturizable<IAggregate>.Features { get; } = IFeatureCollection<IAggregate>.Create();
 }
+#endif

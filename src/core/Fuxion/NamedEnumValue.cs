@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace Fuxion;
 
-public struct NamedEnumValue(Enum value) : IEquatable<Enum>
+public readonly struct NamedEnumValue(Enum value) : IEquatable<Enum>
 {
 	public string Name { get; } = value.GetType()
 		.GetField(value.ToString())

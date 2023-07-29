@@ -50,7 +50,7 @@ public class LicenseContainerTest : BaseTest<LicenseContainerTest>
 		Assert.Equal(lic.ProductId.Key, lic2.ProductId.Key);
 
 		//Assert.Equal(con2.LicenseAs<LicenseMock>(), lic);
-		var time = new Random((int)DateTime.Now.Ticks).Next(500, 1500);
+		var time = new Random(Guid.NewGuid().GetHashCode()).Next(500, 1500);
 		Output.WriteLine("Time: " + time);
 		Thread.Sleep(time);
 		Output.WriteLine("FromJson timed:");

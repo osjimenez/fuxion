@@ -1,4 +1,5 @@
-﻿using System.Dynamic;
+﻿#if !NETSTANDARD2_0 && !NET462
+using System.Dynamic;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Fuxion.Domain.Demos;
@@ -59,3 +60,4 @@ public class MyAggregate : IAggregate<MyAggregate>
 	IFeatureCollection<MyAggregate> IFeaturizable<MyAggregate>.Features { get; } = IFeatureCollection<MyAggregate>.Create();
 	public Guid Id { get; init; }
 }
+#endif

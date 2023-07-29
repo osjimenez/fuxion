@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿#if false
+using System.Reflection;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
@@ -35,3 +36,4 @@ public static class EntityFrameworkDIExtensions
 		return me;
 	}
 }
+#endif

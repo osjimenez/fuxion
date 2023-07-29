@@ -1,4 +1,5 @@
-﻿using Fuxion.Application.Events;
+﻿#if false
+using Fuxion.Application.Events;
 using Fuxion.Application.Snapshots;
 using Fuxion.Domain;
 using Fuxion.Domain.Aggregates;
@@ -62,3 +63,4 @@ public class EventSourcingAggregateFeature : IFeature<IAggregate>
 		return snap;
 	}
 }
+#endif

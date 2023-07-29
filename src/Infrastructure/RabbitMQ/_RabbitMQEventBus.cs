@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿#if false
+using System.Diagnostics;
 using System.Net.Sockets;
 using System.Text;
 using Fuxion.Application;
@@ -112,3 +113,4 @@ public class RabbitMQEventBus : IEventPublisher, IEventSubscriber
 		using (var channel = persistentConnection.CreateModel()) channel.QueueBind(queueName, exchangeName, eventTypeKey.ToString());
 	}
 }
+#endif

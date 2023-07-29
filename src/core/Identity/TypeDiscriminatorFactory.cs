@@ -12,11 +12,21 @@ public class TypeDiscriminatorFactory
 	public string DiscriminatorTypeName { get; set; } = TypeDiscriminator.TypeDiscriminatorId;
 	public bool AllowMoreThanOneTypeByDiscriminator { get; set; }
 	public Func<Type, TypeDiscriminatedAttribute?, string> GetIdFunction { get; set; } = (type, att) => {
-		if (att != null && !string.IsNullOrWhiteSpace(att.Id)) return att.Id;
+		if (att != null && !string.IsNullOrWhiteSpace(att.Id)) 
+#if NETSTANDARD2_0 || NET462
+			return att?.Id ?? "";
+#else
+			return att.Id;
+#endif
 		return type.GetSignature(true);
 	};
 	public Func<Type, TypeDiscriminatedAttribute?, string> GetNameFunction { get; set; } = (type, att) => {
-		if (att != null && !string.IsNullOrWhiteSpace(att.Name)) return att.Name;
+		if (att != null && !string.IsNullOrWhiteSpace(att.Name)) 
+#if NETSTANDARD2_0 || NET462
+			return att?.Name ?? "";
+#else
+			return att.Name;
+#endif
 		return type.Name;
 	};
 	public Func<string, string> GetVirtualNameFunction { get; set; } = virtualId => virtualId;

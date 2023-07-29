@@ -4,21 +4,12 @@ using Telerik.Windows.Controls;
 
 namespace Fuxion.Telerik_.Wpf;
 
-class PanelInstance : IDisposable
+class PanelInstance(IPanelDescriptor descriptor, IPanel panel, FrameworkElement view, RadPane radPane, IServiceScope serviceScope) : IDisposable
 {
-	public PanelInstance(IPanelDescriptor descriptor, IPanel panel, FrameworkElement view, RadPane radPane, IServiceScope serviceScope)
-	{
-		this.serviceScope = serviceScope;
-		Descriptor = descriptor;
-		Panel = panel;
-		View = view;
-		RadPane = radPane;
-	}
-	readonly IServiceScope serviceScope;
-	public IPanelDescriptor Descriptor { get; }
-	public IPanel Panel { get; }
-	public FrameworkElement View { get; }
-	public RadPane RadPane { get; }
+	public IPanelDescriptor Descriptor { get; } = descriptor;
+	public IPanel Panel { get; } = panel;
+	public FrameworkElement View { get; } = view;
+	public RadPane RadPane { get; } = radPane;
 	public void Dispose() => serviceScope.Dispose();
 }
 

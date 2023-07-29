@@ -76,7 +76,6 @@ public interface IMessage
 	
 }
 
-
 public record MyMessage(string Name, int Age);
 
 public class MyAggregate

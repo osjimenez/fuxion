@@ -1,4 +1,5 @@
-﻿using Fuxion.Domain;
+﻿#if false
+using Fuxion.Domain;
 using Fuxion.Json;
 using Fuxion.Reflection;
 using Fuxion.Threading;
@@ -57,3 +58,4 @@ public class InMemoryEventStorage : IEventStorage
 			});
 	}
 }
+#endif

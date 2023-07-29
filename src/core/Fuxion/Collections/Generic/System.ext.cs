@@ -14,8 +14,14 @@ public static class Extensions
 		List<T> res = new();
 		for (var i = 0; i < count; i++)
 		{
+#if NETSTANDARD2_0 || NET462
+			var ran = new Random(Guid.NewGuid().GetHashCode());
+			var actual = ran.Next(0, list.Count);
+			while (used.Contains(actual)) actual = ran.Next(0, list.Count);
+#else
 			var actual = RandomNumberGenerator.GetInt32(0,list.Count);
 			while (used.Contains(actual)) actual = RandomNumberGenerator.GetInt32(0,list.Count);
+#endif
 			used.Add(actual);
 			res.Add(list[actual]);
 		}

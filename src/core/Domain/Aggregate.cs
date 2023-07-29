@@ -9,7 +9,7 @@
 
 public interface IAggregate : IFeaturizable<IAggregate>
 {
-	Guid Id { get; init; }
+	Guid Id { get; }
 }
 
 public static class IAggregateExtensions

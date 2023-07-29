@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿#if false
+using System.Text;
 using System.Text.Json;
 using EventStore.Client;
 using Fuxion.Application.Events;
@@ -81,3 +82,4 @@ public class EventStoreStorage : IEventStorage, ISnapshotStorage
 	}
 	#endregion
 }
+#endif

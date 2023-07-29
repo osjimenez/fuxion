@@ -20,8 +20,7 @@ public static class MemberInfoExtensions
 	/// <param name="exceptionIfMoreThanOne">true to throw <see cref="AttributeMoreThanOneException" /> if custom attribute found more than once.</param>
 	/// <returns></returns>
 	public static TAttribute? GetCustomAttribute<TAttribute>(this MemberInfo me,
-		bool inherit = true,
-		[DoesNotReturnIf(true)] bool exceptionIfNotFound = false,
+		bool inherit = true, [DoesNotReturnIf(true)] bool exceptionIfNotFound = false,
 		bool exceptionIfMoreThanOne = false) where TAttribute : Attribute
 	{
 		var objAtts = me.GetCustomAttributes(typeof(TAttribute), inherit);

@@ -1,6 +1,5 @@
 ﻿using System.Text;
 using System.Text.Json.Serialization;
-using Fuxion.Reflection;
 using Fuxion.Text.Json;
 using static Fuxion.Text.Json.IPodConverter<Fuxion.Text.Json.JsonNodePod<string>, string, System.Text.Json.Nodes.JsonNode>;
 
@@ -17,7 +16,11 @@ public class JsonPodTest : BaseTest<JsonPodTest>
 			Name = "payload.Name",
 			Age = 23,
 			Nick = "payload.Nick",
+#if NET462
+			Birthdate = DateTime.Parse("12/12/2012")
+#else
 			Birthdate = DateOnly.Parse("12/12/2012")
+#endif
 		};
 		Output.WriteLine("=================== MANUAL");
 		{
@@ -29,7 +32,11 @@ public class JsonPodTest : BaseTest<JsonPodTest>
 					Name = "testPod.header.payload.Name",
 					Age = 15,
 					Nick = "testPod.header.payload.Nick",
+#if NET462
+					Birthdate = DateTime.Parse("12/12/2012")
+#else
 					Birthdate = DateOnly.Parse("12/12/2012")
+#endif
 				})
 			};
 			testPod.Class = "class";
@@ -61,7 +68,11 @@ public class JsonPodTest : BaseTest<JsonPodTest>
 					Name = "testPod.header.payload.Name",
 					Age = 15,
 					Nick = "testPod.header.payload.Nick",
+#if NET462
+					Birthdate = DateTime.Parse("12/12/2012")
+#else
 					Birthdate = DateOnly.Parse("12/12/2012")
+#endif
 				}))
 				.AddHeader("record.header", new TestRecordPayload("record.header.Name"));
 			Output.WriteLine($"json:\r\n{builder.ToJsonNode("json").Pod.Payload.ToJsonString(true)}");
@@ -118,11 +129,12 @@ public class JsonPodTest : BaseTest<JsonPodTest>
 		Assert.NotNull(pod);
 		Assert.Equal("testPod", pod.Discriminator);
 		if (pod.TryAs<Pod<string, TestPayloadDerived>>(out var pod2))
-			Assert.Equal("payload.Nick", pod2.Payload.Nick);
+			Assert.Equal("payload.Nick", pod2?.Payload.Nick);
 		else
 			Assert.Fail("Fail on TryAs");
 		var testPod = pod.As<TestPod>();
 		Assert.NotNull(testPod);
+		Assert.Equal(23, testPod.Payload.Age);
 		if (testPod["record.header"] is JsonNodePod<string> pod3)
 		{
 			var pay = pod3.As<TestRecordPayload>();
@@ -140,7 +152,11 @@ public class JsonPodTest : BaseTest<JsonPodTest>
 				Name = "value1",
 				Nick = "Nick",
 				Age = 12,
+#if NET462
+				Birthdate = DateTime.Parse("12/12/2012")
+#else
 				Birthdate = DateOnly.Parse("12/12/2012")
+#endif
 			}.BuildPod()
 			.ToJsonNode(headerDiscriminator)
 			.Pod);
@@ -198,12 +214,35 @@ file class TestPayload
 {
 	public string? Name { get; set; }
 	[JsonPropertyName("Age-custom")]
+#if NET462
+	[JsonInclude]
+	public int Age { get; internal set; }
+#elif NET6_0
+	public int Age { get; init; }
+#else
 	public required int Age { get; init; }
+#endif
 }
 file class TestPayloadDerived : TestPayload
 {
+#if NET462 || NET6_0
+	public string Nick { get; set; } = "";
+#else
 	public required string Nick { get; set; }
+#endif
 	[JsonPropertyName("Birthdate-custom")]
+#if NET462
+	public DateTime Birthdate { get; set; }
+#else
 	public DateOnly Birthdate { get; set; }
+#endif
 }
+#if NET462
+file record TestRecordPayload
+{
+	public TestRecordPayload(string name) => Name = name;
+	public string Name { get; private set; }
+}
+#else
 file record TestRecordPayload(string Name);
+#endif

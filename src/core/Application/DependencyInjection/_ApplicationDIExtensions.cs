@@ -1,4 +1,5 @@
-﻿using Fuxion.Application;
+﻿#if false
+using Fuxion.Application;
 using Fuxion.Application.Commands;
 using Fuxion.Application.Events;
 using Fuxion.Application.Factories;
@@ -198,3 +199,4 @@ class CommandsBuilder : ICommandsBuilder
 	//TODO - Remove default!
 	public ICommandDispatcher CommandDispatcher { get; } = default!;
 }
+#endif

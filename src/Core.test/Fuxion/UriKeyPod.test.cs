@@ -40,14 +40,22 @@ public class UriKeyPodTest : BaseTest<UriKeyPodTest>
 			Age = 12,
 			Name = "header.name",
 			Nick = "header.nick",
-			Birthdate = DateOnly.Parse("12/12/2012")
+#if NET462
+			Birthdate = DateTime.Parse("12/12/2012"),
+#else
+			Birthdate = DateOnly.Parse("12/12/2012"),
+#endif
 		}),$"'{nameof(TestPayloadDerived)}' is based on '{nameof(TestPayload)}'");
 		Throws<UriKeyInheritanceException>(() => builder.AddUriKeyHeader(new TestPayloadReset
 		{
 			Age = 12,
 			Name = "header.name",
 			Nick = "header.nick",
+#if NET462
+			Birthdate = DateTime.Parse("12/12/2012"),
+#else
 			Birthdate = DateOnly.Parse("12/12/2012"),
+#endif
 			Address = "header.address"
 		}),$"'{nameof(TestPayloadReset)}' is based on '{nameof(TestPayload)}'");
 		builder = "".BuildUriKeyPod(resolver)
@@ -57,7 +65,11 @@ public class UriKeyPodTest : BaseTest<UriKeyPodTest>
 				Age = 12,
 				Name = "header.name",
 				Nick = "header.nick",
+#if NET462
+				Birthdate = DateTime.Parse("12/12/2012"),
+#else
 				Birthdate = DateOnly.Parse("12/12/2012"),
+#endif
 				Address = "header.address"
 			});
 		Throws<UriKeyInheritanceException>(() => builder.AddUriKeyHeader(new TestPayload
@@ -70,14 +82,22 @@ public class UriKeyPodTest : BaseTest<UriKeyPodTest>
 			Age = 12,
 			Name = "header.name",
 			Nick = "header.nick",
-			Birthdate = DateOnly.Parse("12/12/2012")
+#if NET462
+			Birthdate = DateTime.Parse("12/12/2012"),
+#else
+			Birthdate = DateOnly.Parse("12/12/2012"),
+#endif
 		}),$"'{nameof(TestPayloadDerived)}' is base of '{nameof(TestPayloadReset)}'");
 		Throws<UriKeyInheritanceException>(() => builder.AddUriKeyHeader(new TestPayloadReset
 		{
 			Age = 12,
 			Name = "header.name",
 			Nick = "header.nick",
+#if NET462
+			Birthdate = DateTime.Parse("12/12/2012"),
+#else
 			Birthdate = DateOnly.Parse("12/12/2012"),
+#endif
 			Address = "header.address"
 		}),$"'{nameof(TestPayloadReset)}' is base of '{nameof(TestPayloadReset)}'");
 	}
@@ -102,7 +122,11 @@ public class UriKeyPodTest : BaseTest<UriKeyPodTest>
 			Name = "payloadName",
 			Age = 23,
 			Nick = "payloadNick",
-			Birthdate = DateOnly.Parse("12/12/2012")
+#if NET462
+			Birthdate = DateTime.Parse("12/12/2012"),
+#else
+			Birthdate = DateOnly.Parse("12/12/2012"),
+#endif
 		};
 		var builder = payload.BuildUriKeyPod(resolver)
 			.ToUriKeyPod()
@@ -112,7 +136,11 @@ public class UriKeyPodTest : BaseTest<UriKeyPodTest>
 				Age = 12,
 				Name = "header.name",
 				Nick = "header.nick",
+#if NET462
+				Birthdate = DateTime.Parse("12/12/2012"),
+#else
 				Birthdate = DateOnly.Parse("12/12/2012"),
+#endif
 				Address = "header.address"
 			})
 			.AddUriKeyHeader(new[]
@@ -163,31 +191,49 @@ file class TestPayload
 {
 	public string? Name { get; set; }
 	[JsonPropertyName("Age-custom")]
+#if NET462
+	[JsonInclude]
+	public int Age { get; internal set; }
+#elif NET6_0
+	public int Age { get; init; }
+#else
 	public required int Age { get; init; }
+#endif
 }
 [UriKey($"{nameof(TestPayloadDerived)}/1.0.0")]
 file class TestPayloadDerived : TestPayload
 {
+#if NET462
+	public string Nick { get; set; } = "";
+#elif NET6_0
+	public string Nick { get; set; } = "";
+#else
 	public required string Nick { get; set; }
+#endif
 	[JsonPropertyName("Birthdate-custom")]
+#if NET462
+	public DateTime Birthdate { get; set; }
+#else
 	public DateOnly Birthdate { get; set; }
+#endif
 }
 
 [UriKey($"https://fuxion.dev/metadata/test/{nameof(TestPayloadReset)}/1.0.0", isReset: true)]
 file class TestPayloadReset : TestPayloadDerived
 {
+#if NET462
+	public string Address { get; set; } = "";
+#elif NET6_0
+	public string Address { get; set; } = "";
+#else
 	public required string Address { get; set; }
+#endif
 }
 [UriKey(UriKey.FuxionBaseUri+"lab/test-message/1.0.0")]
-public class TestMessage
+public class TestMessage(int id, string name)
 {
-	public TestMessage(int id, string name)
-	{
-		Id = id;
-		Name = name;
-	}
-	public int Id { get; set; }
-	public string Name { get; set; }
+	public int Id { get; set; } = id;
+	public string Name { get; set; } = name;
 }
 [UriKey(UriKey.FuxionBaseUri+"lab/test-destination/1.0.0")]
 public class TestDestination(string destination)

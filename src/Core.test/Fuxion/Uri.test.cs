@@ -105,25 +105,6 @@ public class UriTest(ITestOutputHelper output) : BaseTest<UriKeyTest>(output)
 		Assert.NotEqual(new("http://fuxion.dev/one"), new Uri("https://fuxion.dev/one"));
 		Assert.NotEqual(new("https://fuxion.dev/one?query=query"), new Uri("https://fuxion.dev/one"));
 	}
-	[Fact(DisplayName = "Normalization")]
-	public void Normalization()
-	{
-		// Normalizar una Uri es quitarle UserInfo, Fragment, Query, Port (si es default) y forzar que el Path acabe con '/'
-		void Normalize(string uri)
-		{
-			Output.WriteLine($"Original   Uri: {uri}");
-			UriBuilder ub = new(uri);
-			ub.UserName = null;
-			ub.Fragment = null;
-			ub.Query = null;
-			if (ub.Uri.IsDefaultPort) ub.Port = -1;
-			ub.Path = ub.Path.EndsWith('/') ? ub.Path : ub.Path + '/';
-			Output.WriteLine($"Normalized Uri: {ub.Uri}");
-		}
-		Normalize("https://userInfo@fuxion.dev/one/two/three/?query=query#fragment");
-		Normalize("https://userInfo@fuxion.dev/one/two/three?query=query#fragment");
-	}
-
 	[Fact(DisplayName = "Query parameters")]
 	public void QueryParameters()
 	{

@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿#if false
+using System.Text.Json.Serialization;
 using Fuxion.Domain;
 using Fuxion.Reflection;
 
@@ -15,3 +16,4 @@ public class EventSourcingEventFeature : IFeature<Event>
 	[JsonInclude]
 	public bool IsReplay { get; internal set; }
 }
+#endif

@@ -6,18 +6,11 @@ using System.Reflection;
 
 namespace Fuxion.EntityFramework;
 
-public class TrackingInterceptor : IDbCommandTreeInterceptor
+public class TrackingInterceptor(ITimeProvider timeProvider, Func<TimeZoneInfo>? getCurrentTimeZoneFunction = null, Func<string>? getCurrentIdentityFunction = null) : IDbCommandTreeInterceptor
 {
-	public TrackingInterceptor(ITimeProvider timeProvider, Func<TimeZoneInfo>? getCurrentTimeZoneFunction = null, Func<string>? getCurrentIdentityFunction = null)
-	{
-		this.timeProvider = timeProvider;
-		this.getCurrentTimeZoneFunction = getCurrentTimeZoneFunction ?? (() => TimeZoneInfo.Local);
-		this.getCurrentIdentityFunction = getCurrentIdentityFunction ?? (() => "<undefined>"); //Thread.CurrentPrincipal.Identity.Name
-	}
 	static TimeSpan _dateTimeAdjustment = TimeSpan.Zero;
-	readonly Func<string> getCurrentIdentityFunction;
-	readonly Func<TimeZoneInfo> getCurrentTimeZoneFunction;
-	readonly ITimeProvider timeProvider;
+	readonly Func<string> getCurrentIdentityFunction = getCurrentIdentityFunction ?? (() => "<undefined>"); //Thread.CurrentPrincipal.Identity.Name
+	readonly Func<TimeZoneInfo> getCurrentTimeZoneFunction = getCurrentTimeZoneFunction ?? (() => TimeZoneInfo.Local);
 	public void TreeCreated(DbCommandTreeInterceptionContext interceptionContext)
 	{
 		if (interceptionContext.Result.DataSpace == DataSpace.SSpace && interceptionContext.DbContexts.All(con => con.GetType().GetCustomAttribute<TrackDisabledAttribute>() == null))

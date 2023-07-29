@@ -7,18 +7,22 @@ public class AntiBackTimeProviderTest : BaseTest<AntiBackTimeProviderTest>
 	public void AntiBackTimeProvider_BackTimeException()
 	{
 		var mock = new MockTimeProvider();
-		var abtp = new AntiBackTimeProvider(new MemoryStoredTimeProvider().Transform(s => {
+		var abtp = new AntiBackTimeProvider(new MemoryStoredTimeProvider().Transform(s =>
+		{
 			s.SaveUtcTime(DateTime.UtcNow);
 			return s;
-		})) {
-			TimeProvider = mock, Logger = Logger
+		}))
+		{
+			TimeProvider = mock,
+			Logger = Logger
 		};
 		mock.SetOffset(TimeSpan.FromDays(-1));
 		Assert.Throws<BackTimeException>(() => abtp.UtcNow());
 	}
 	[Fact(DisplayName = "AntiBackTimeProvider - CheckConsistency")]
-	public void AntiBackTimeProvider_CheckConsistency() =>
-		new AntiBackTimeProvider(new MockStorageTimeProvider().Transform(s => {
+	public void AntiBackTimeProvider_CheckConsistency()
+		=> new AntiBackTimeProvider(new MockStorageTimeProvider().Transform(s =>
+		{
 			s.SaveUtcTime(DateTime.UtcNow);
 			return s;
 		})).CheckConsistency(Output);

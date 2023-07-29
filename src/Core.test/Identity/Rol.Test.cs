@@ -89,7 +89,11 @@ public class RolTest : BaseTest<RolTest>
 				Value = true,
 				Scopes = new[] {
 					new ScopeDao("", "", Categories.Purchases, ScopePropagation.ToMe),
-					new ScopeDao("", "", pro.GetRequiredService<TypeDiscriminatorFactory>().FromType<BaseDao>(true), ScopePropagation.ToMe | ScopePropagation.ToInclusions)
+					new ScopeDao("", "", pro.GetRequiredService<TypeDiscriminatorFactory>().FromType<BaseDao>(true)
+#if NETSTABDARD2_0 || NET462
+						?? throw new NullReferenceException()
+#endif
+						, ScopePropagation.ToMe | ScopePropagation.ToInclusions)
 				}
 			}
 		}.ToList();

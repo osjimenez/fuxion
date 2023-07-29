@@ -2,8 +2,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Serialization;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using System.Text.Json.Serialization;
-using Fuxion.Reflection;
 using Fuxion.Text.Json.Serialization;
 
 namespace Fuxion.Text.Json;
@@ -17,7 +15,6 @@ public class JsonNodePod<TDiscriminator>(TDiscriminator discriminator, object pa
 	public TDiscriminator Discriminator { get; init; } = discriminator;
 	// ATTENTION: The init setter cannot be removed, it is needed for deserialization
 	public JsonNode Payload { get; init; } = CreateValue(payload, resolver);
-	// string IPod<TDiscriminator, string>.Payload => this;
 	static JsonNode CreateValue(object payload, IUriKeyResolver? resolver)
 	{
 		// TODO ver si podemos mejorar este tratamiento de nullable
@@ -27,8 +24,6 @@ public class JsonNodePod<TDiscriminator>(TDiscriminator discriminator, object pa
 		var node = JsonSerializer.SerializeToNode(payload, options) ?? throw new SerializationException("Serialization returns null");
 		return node;
 	}
-	// public override string ToString() => this.SerializeToJson();
-	// public static implicit operator string(JsonNodePod<TDiscriminator> pod) => pod.SerializeToJson();
 	public T? As<T>()
 	{
 		JsonSerializerOptions options = new();

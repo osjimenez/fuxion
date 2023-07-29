@@ -1,5 +1,4 @@
-﻿using Castle.Components.DictionaryAdapter;
-using Fuxion.Reflection;
+﻿using Fuxion.Reflection;
 using Fuxion.Testing;
 using Xunit;
 using Xunit.Abstractions;
@@ -31,12 +30,19 @@ public class FeatureTest : BaseTest<FeatureTest>
 		group.Features().Remove<MockGroupFeature>();
 	}
 }
-[TypeKey(nameof(AggregateFeature))]
+
+[UriKey(UriKey.FuxionBaseUri + $"test/{nameof(AggregateFeature)}/1.0.0")]
 public class AggregateFeature : IFeature<IAggregate>
 {
-	
+	public void OnAttach(IAggregate featurizable) { }
+	public void OnDetach(IAggregate featurizable) { }
 }
-public class MockUser : IAggregate, IFeaturizable<MockUser>
+
+public class MockUser : 
+#if NET462
+	Featurizable<MockAggregate>,
+#endif
+	IAggregate, IFeaturizable<MockUser>
 {
 	public MockUser(Guid id)
 	{
@@ -44,12 +50,26 @@ public class MockUser : IAggregate, IFeaturizable<MockUser>
 	}
 	public bool Attached { get; set; }
 	//IFeatureCollection<IAggregate> IFeaturizable<IAggregate>.Features => ((IFeaturizable<MockUser>)this).Features;
-	IFeatureCollection<IAggregate> IFeaturizable<IAggregate>.Features { get; } = IFeatureCollection<IAggregate>.Create();
+	IFeatureCollection<IAggregate> IFeaturizable<IAggregate>.Features { get; } = 
+#if NET462
+		new FeatureCollection<IAggregate>();
+#else
+		IFeatureCollection<IAggregate>.Create();
+#endif
 	// IFeatureCollection<MockUser> IFeaturizable<MockUser>.Features { get; } = IFeatureCollection<MockUser>.Create();
 	IFeatureCollection<MockUser> IFeaturizable<MockUser>.Features => ((IFeaturizable<IAggregate>)this).Features;
-	public Guid Id { get; init; }
+	public Guid Id
+	{
+		get;
+#if !NET462
+		init;
+#endif
+	}
+#if NET462
+		= Guid.NewGuid();
+#endif
 }
-[TypeKey(nameof(MockUserFeature))]
+[UriKey(UriKey.FuxionBaseUri + $"test/{nameof(MockUserFeature)}/1.0.0")]
 public class MockUserFeature : IFeature<MockUser>
 {
 	public void OnAttach(MockUser user) => user.Attached = true;
@@ -57,17 +77,34 @@ public class MockUserFeature : IFeature<MockUser>
 }
 
 
-public class MockGroup : IAggregate
+public class MockGroup : 
+#if NET462
+	Featurizable<MockAggregate>,
+#endif
+	IAggregate
 {
 	public MockGroup(Guid id)
 	{
 		Id = id;
 	}
-	IFeatureCollection<IAggregate> IFeaturizable<IAggregate>.Features { get; } = IFeatureCollection<IAggregate>.Create();
-	public Guid Id { get; init; }
+	IFeatureCollection<IAggregate> IFeaturizable<IAggregate>.Features { get; } = 
+#if NET462
+		new FeatureCollection<IAggregate>();
+#else
+		IFeatureCollection<IAggregate>.Create();
+#endif
+	public Guid Id { get; 
+#if !NET462
+		init;
+#endif
+	}
+#if NET462
+		= Guid.NewGuid();
+#endif
 }
-[TypeKey(nameof(MockGroupFeature))]
+[UriKey(UriKey.FuxionBaseUri + $"test/{nameof(MockGroupFeature)}/1.0.0")]
 public class MockGroupFeature : IFeature<IAggregate>
 {
-	
+	public void OnAttach(IAggregate featurizable) { }
+	public void OnDetach(IAggregate featurizable) { }
 }

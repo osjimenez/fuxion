@@ -37,6 +37,7 @@ public class TypeDiscriminatorTetst : BaseTest<TypeDiscriminatorTetst>
 		};
 		fac.RegisterTree<BaseDao>(typeof(BaseDao).Assembly.DefinedTypes.ToArray());
 		var dis = fac.FromType<DocumentDao>(true);
+		Assert.NotNull(dis);
 		Assert.Equal(Helpers.TypeDiscriminatorIds.Document, dis.Id);
 		Assert.Equal(Helpers.TypeDiscriminatorIds.Document, dis.Name);
 		Assert.Equal(TypeDiscriminator.TypeDiscriminatorId, dis.TypeKey);
@@ -72,6 +73,7 @@ public class TypeDiscriminatorTetst : BaseTest<TypeDiscriminatorTetst>
 		// Register from Base
 		fac.RegisterTree(typeof(BaseDvo<>));
 		var d2 = fac.FromType(typeof(BaseDvo<>), true);
+		Assert.NotNull(d2);
 		Assert.Single(d2.Inclusions.Where(d => d.Name == "Person"));
 	}
 	[Fact(DisplayName = "TypeDiscriminator - New test")]
@@ -106,6 +108,7 @@ public class TypeDiscriminatorTetst : BaseTest<TypeDiscriminatorTetst>
 		// Register from Base
 		fac.RegisterTree<BaseDao>();
 		var dis = fac.FromType<DocumentDao>(true);
+		Assert.NotNull(dis);
 		Assert.Equal(2, dis.Inclusions.Count());
 		Assert.Single(dis.Exclusions);
 	}
@@ -115,9 +118,11 @@ public class TypeDiscriminatorTetst : BaseTest<TypeDiscriminatorTetst>
 		var fac = new TypeDiscriminatorFactory();
 		fac.RegisterTree<BaseDao>();
 		var dis = fac.FromType<FileDao>(true);
+		Assert.NotNull(dis);
 		Assert.Equal(3, dis.Inclusions.Count());
 		Assert.Single(dis.Exclusions);
 		dis = fac.FromType<BaseDao>();
+		Assert.NotNull(dis);
 		Assert.Equal(7, dis.Inclusions.Count());
 		Assert.Empty(dis.Exclusions);
 	}
@@ -132,6 +137,7 @@ public class TypeDiscriminatorTetst : BaseTest<TypeDiscriminatorTetst>
 		fac.RegisterTree<FileDao>();
 		fac.Register<BaseDao>();
 		var dis = fac.FromType<DocumentDao>(true);
+		Assert.NotNull(dis);
 		Assert.Equal(2, dis.Inclusions.Count());
 		Assert.Single(dis.Exclusions);
 	}
@@ -142,6 +148,7 @@ public class TypeDiscriminatorTetst : BaseTest<TypeDiscriminatorTetst>
 		fac.RegisterTree(typeof(FileDvo<>));
 		fac.Register(typeof(BaseDvo<>));
 		var dis = fac.FromType(typeof(DocumentDvo<>), true);
+		Assert.NotNull(dis);
 		Assert.Equal(2, dis.Inclusions.Count());
 		Assert.Single(dis.Exclusions);
 	}
@@ -154,6 +161,7 @@ public class TypeDiscriminatorTetst : BaseTest<TypeDiscriminatorTetst>
 		// Register from generic type BaseDvo<>
 		fac.RegisterTree(typeof(BaseDvo<>));
 		var dis = fac.FromType(typeof(LocationDvo<>), true);
+		Assert.NotNull(dis);
 		Assert.Equal(3, dis.Inclusions.Count());
 		Assert.Single(dis.Exclusions);
 		fac.Reset();
@@ -161,6 +169,7 @@ public class TypeDiscriminatorTetst : BaseTest<TypeDiscriminatorTetst>
 		// Register from generic type LocationDvo<>
 		fac.RegisterTree(typeof(LocationDvo<>));
 		dis = fac.FromType<CityDvo>(true);
+		Assert.NotNull(dis);
 		Assert.Empty(dis.Inclusions);
 		Assert.Single(dis.Exclusions);
 		fac.Reset();
@@ -193,12 +202,14 @@ public class TypeDiscriminatorTetst : BaseTest<TypeDiscriminatorTetst>
 		fac.Register(typeof(CityDao));
 		fac.Register(typeof(CountryDao));
 		var dao = fac.FromType<CityDao>(true);
+		Assert.NotNull(dao);
 		fac.Reset();
 		fac.Register(typeof(BaseDto));
 		fac.Register(typeof(LocationDto));
 		fac.Register(typeof(CityDto));
 		fac.Register(typeof(CountryDto));
 		var dto = fac.FromType<CityDto>(true);
+		Assert.NotNull(dto);
 		Assert.True(dao.Id == dto.Id, $"Type discriminators DAO & DTO must have same Id. Values are '{dao.Id}' and '{dto.Id}'");
 		fac.ClearRegistrations();
 		fac.Register(typeof(BaseDvo<>));
@@ -206,8 +217,11 @@ public class TypeDiscriminatorTetst : BaseTest<TypeDiscriminatorTetst>
 		fac.Register(typeof(CityDvo));
 		fac.Register(typeof(CountryDvo));
 		var dvo = fac.FromId(TypeDiscriminatorIds.City);
+		Assert.NotNull(dvo);
 		var dvo2 = fac.FromId(TypeDiscriminatorIds.Location);
+		Assert.NotNull(dvo2);
 		var dvo3 = fac.FromType(typeof(LocationDvo<>));
+		Assert.NotNull(dvo3);
 		Assert.True(dao.Id == dvo.Id, $"Type discriminators DAO & DVO must have same Id. Values are '{dao.Id}' and '{dvo.Id}'");
 		Assert.True(dvo2.Id == dvo3.Id, $"Type discriminators DAO & DVO must have same Id. Values are '{dvo2.Id}' and '{dvo3.Id}'");
 		Assert.True(dvo2.Inclusions.Contains(dvo), "Type discriminator 'Location' must include 'City'");

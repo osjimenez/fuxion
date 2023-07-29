@@ -1,4 +1,5 @@
-﻿using EventStore.Client;
+﻿#if false
+using EventStore.Client;
 using Fuxion.EventStore;
 using Fuxion.Reflection;
 
@@ -23,3 +24,4 @@ public static class EventStoreDIExtensions
 		return me;
 	}
 }
+#endif

@@ -1,4 +1,5 @@
-﻿using Fuxion.Application.Events;
+﻿#if false
+using Fuxion.Application.Events;
 using Fuxion.RabbitMQ;
 using Fuxion.Reflection;
 using RabbitMQ.Client;
@@ -30,3 +31,4 @@ public static class RabbitDIExtensions
 		return me;
 	}
 }
+#endif

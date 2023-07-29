@@ -1,10 +1,5 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Net.Sockets;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using Fuxion.Json;
-using Fuxion.Reflection;
 
 namespace Fuxion.Domain;
 
@@ -13,13 +8,49 @@ public interface IFeature { }
 
 public interface IFeature<in TFeaturizable> : IFeature where TFeaturizable : IFeaturizable<TFeaturizable>
 {
-	public void OnAttach(TFeaturizable featurizable) { }
-	public void OnDetach(TFeaturizable featurizable) { }
+	public void OnAttach(TFeaturizable featurizable)
+#if NETSTANDARD2_0 || NET462
+		;
+#else
+		{ }
+#endif
+	public void OnDetach(TFeaturizable featurizable)
+#if NETSTANDARD2_0 || NET462
+		;
+#else
+		{ }
+#endif
 }
 
-public interface IFeaturizable<in TFeaturizable> where TFeaturizable : IFeaturizable<TFeaturizable>
+public interface IFeaturizable<in TFeaturizable>
+	where TFeaturizable : IFeaturizable<TFeaturizable>
+#if NETSTANDARD2_0 || NET462
+// In legacy frameworks default interface implementations is not supported
+// The interface will be implemented without implmentations
 {
 	IFeatureCollection<TFeaturizable> Features { get; }
+	public bool Has(UriKey key);
+	public bool Has<TFeature>() where TFeature : IFeature;
+	public void Add(Type type);
+	public void Add<TFeature>(Action<TFeature>? initializeAction = null)
+		where TFeature : IFeature, new();
+	public bool Remove<TFeature>(bool exceptionIfNotFound = true)
+		where TFeature : IFeature;
+	public TFeature Get<TFeature>()
+		where TFeature : IFeature;
+	public bool TryGet<TFeature>([NotNullWhen(true)] out TFeature? feature)
+		where TFeature : IFeature;
+	public IEnumerable<TFeature> All<TFeature>()
+		where TFeature : IFeature;
+}
+// The implemented methods will be in a class
+public class Featurizable<TFeaturizable> where TFeaturizable : IFeaturizable<TFeaturizable>
+#endif
+{
+	IFeatureCollection<TFeaturizable> Features { get; }
+#if NETSTANDARD2_0 || NET462
+		= new FeatureCollection<TFeaturizable>();
+#endif
 	public bool Has(UriKey key)
 		=> Features.Has(key);
 	public bool Has<TFeature>()
@@ -29,9 +60,11 @@ public interface IFeaturizable<in TFeaturizable> where TFeaturizable : IFeaturiz
 	{
 		if (Has(type.GetUriKey())) throw new FeatureAlreadyExistException($"'{GetType().GetSignature()}' object already has '{type.Name}' feature");
 		var feaObj = Activator.CreateInstance(type) ?? throw new InvalidProgramException($"Feature cannot be created");
-		// TFeature fea = new();
-		((IFeature<TFeaturizable>)feaObj).OnAttach((TFeaturizable)this);
-		// initializeAction?.Invoke(fea);
+		((IFeature<TFeaturizable>)feaObj).OnAttach((TFeaturizable)
+#if NETSTANDARD2_0 || NET462
+			(IFeaturizable<TFeaturizable>)
+#endif
+			this);
 		Features.Add((IFeature)feaObj);
 	}
 	public void Add<TFeature>(Action<TFeature>? initializeAction = null) 
@@ -39,7 +72,11 @@ public interface IFeaturizable<in TFeaturizable> where TFeaturizable : IFeaturiz
 	{
 		if (Has<TFeature>()) throw new FeatureAlreadyExistException($"'{GetType().GetSignature()}' object already has '{typeof(TFeature).Name}' feature");
 		TFeature fea = new();
-		((IFeature<TFeaturizable>)fea).OnAttach((TFeaturizable)this);
+		((IFeature<TFeaturizable>)fea).OnAttach((TFeaturizable)
+#if NETSTANDARD2_0 || NET462
+			(IFeaturizable<TFeaturizable>)
+#endif
+			this);
 		initializeAction?.Invoke(fea);
 		Features.Add(fea);
 	}
@@ -47,7 +84,11 @@ public interface IFeaturizable<in TFeaturizable> where TFeaturizable : IFeaturiz
 		where TFeature : IFeature
 	{
 		if (!Has<TFeature>() && exceptionIfNotFound) throw new FeatureNotFoundException($"Feature {typeof(TFeature).GetSignature()} was not found");
-		((IFeature<TFeaturizable>)Features.Get<TFeature>()).OnDetach((TFeaturizable)this);
+		((IFeature<TFeaturizable>)Features.Get<TFeature>()).OnDetach((TFeaturizable)
+#if NETSTANDARD2_0 || NET462
+			(IFeaturizable<TFeaturizable>)
+#endif
+			this);
 		return Features.Remove(typeof(TFeature).GetUriKey());
 	}
 	public TFeature Get<TFeature>()
@@ -70,9 +111,11 @@ public interface IFeatureCollection<in TFeaturizable> where TFeaturizable : IFea
 	internal bool TryGet<TFeature>([NotNullWhen(true)] out TFeature? feature) where TFeature : IFeature;
 	internal dynamic Get(UriKey key);
 	internal IEnumerable<TFeature> All<TFeature>() where TFeature : IFeature;
+#if !NETSTANDARD2_0 && !NET462
 	public static IFeatureCollection<TFeaturizable> Create() => new FeatureCollection<TFeaturizable>();
+#endif
 }
-class FeatureCollection<TFeaturizable> : IFeatureCollection<TFeaturizable>
+internal class FeatureCollection<TFeaturizable> : IFeatureCollection<TFeaturizable>
 	where TFeaturizable : IFeaturizable<TFeaturizable>
 {
 	Dictionary<UriKey, IFeature> Features { get; } = new();
@@ -112,68 +155,9 @@ class FeatureCollection<TFeaturizable> : IFeatureCollection<TFeaturizable>
 		=> Features.Values.Where(_ => _ is TFeature).Cast<TFeature>();
 }
 
-
 public static class IFeaturizableExtensions
 {
 	public static IFeaturizable<T> Features<T>(this T me) where T : IFeaturizable<T> => me;
 }
-public class FeatureAlreadyExistException : FuxionException
-{
-	public FeatureAlreadyExistException(string message) : base(message) { }
-}
-public class FeatureNotFoundException : FuxionException
-{
-	public FeatureNotFoundException(string message) : base(message) { }
-}
-//
-// // [JsonConverter(typeof(FeaturizablePodConverterFactory))]
-// public class FeaturizablePod<TFeaturizable> : TypeKeyPod<TFeaturizable> where TFeaturizable : IFeaturizable<TFeaturizable>
-// {
-// 	[JsonConstructor]
-// 	protected FeaturizablePod() { }
-// 	public FeaturizablePod(TFeaturizable payload) : base(payload)
-// 	{
-// 		// foreach (var feature in payload.Features().All<IFeature<TFeaturizable>>())
-// 		// 	Headers.Add<IFeature<TFeaturizable>>(feature);
-// 	}
-// }
-//
-// public class FeaturizablePodJsonConverter<TFeaturizable> : JsonPodConverter<FeaturizablePod<TFeaturizable>, TypeKey, TFeaturizable> 
-// 	where TFeaturizable : IFeaturizable<TFeaturizable>
-// {
-// 	ITypeKeyResolver _typeKeyResolver;
-// 	public FeaturizablePodJsonConverter(ITypeKeyResolver typeKeyResolver) => _typeKeyResolver = typeKeyResolver;
-// 	public override FeaturizablePod<TFeaturizable>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-// 	{
-// 		var pod = base.Read(ref reader, typeToConvert, options);
-// 		if (pod is null) return pod;
-// 		if (pod.Payload is null) return pod;
-// 		foreach (var header in pod.Headers)
-// 		{
-// 			var obj = pod.As(_typeKeyResolver[pod.Discriminator]);
-// 			//var obj = value.Deserialize(_typeKeyResolver[key], options);
-// 			if (obj is null) continue;
-// 			pod.Payload.Features().Add(_typeKeyResolver[pod.Discriminator]);
-// 			// pod.Payload.Features().Add(_typeKeyResolver[key]);
-// 		}
-// 		return pod;
-// 	}
-// }
-// public class FeaturizablePodConverterFactory : JsonConverterFactory
-// {
-// 	ITypeKeyResolver _typeKeyResolver;
-// 	public FeaturizablePodConverterFactory(ITypeKeyResolver typeKeyResolver)
-// 	{
-// 		_typeKeyResolver = typeKeyResolver;
-// 	}
-// 	public override bool CanConvert(Type typeToConvert) => typeToConvert.IsSubclassOfRawGeneric(typeof(FeaturizablePod<>));
-// 	public override JsonConverter? CreateConverter(Type typeToConvert, JsonSerializerOptions options)
-// 	{
-// 		var types = typeToConvert.GetGenericArguments();
-// 		var converterType = typeof(FeaturizablePodJsonConverter<>).MakeGenericType(types);
-// 		return (JsonConverter)(Activator.CreateInstance(converterType, new object[]
-// 		{
-// 			_typeKeyResolver
-// 		}) ?? throw new InvalidCastException($"'{converterType.GetSignature()}' can not be created"));
-// 	}
-// }
+public class FeatureAlreadyExistException(string message) : FuxionException(message) { }
+public class FeatureNotFoundException(string message) : FuxionException(message) { }

@@ -3,8 +3,19 @@
 namespace Fuxion.Domain;
 
 [UriKey(UriKey.FuxionBaseUri + "domain/event/1.0.0")]
-public abstract record Event(Guid AggregateId) : IFeaturizable<Event>
+public abstract
+#if NETSTANDARD2_0 || NET462
+	class
+#else
+	record
+#endif
+	Event(Guid aggregateId) :
+#if NETSTANDARD2_0 || NET462
+	Featurizable<Event>,
+#endif
+	IFeaturizable<Event>
 {
+	public Guid AggregateId { get; set; } = aggregateId;
 	IFeatureCollection<Event> IFeaturizable<Event>.Features { get; } = new FeatureCollection<Event>();
 }
 

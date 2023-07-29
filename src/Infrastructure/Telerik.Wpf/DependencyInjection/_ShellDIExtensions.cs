@@ -1,9 +1,4 @@
-﻿using System.Windows;
-using Fuxion.Reflection;
-using Fuxion.Telerik_.Wpf;
-using Fuxion.Telerik_.Wpf.ViewModels;
-using Fuxion.Telerik_.Wpf.Views;
-
+﻿#if false
 namespace Microsoft.Extensions.DependencyInjection;
 
 public static class ShellDIExtensions
@@ -79,32 +74,4 @@ class ShellBuilder : IShellBuilder
 	public IFuxionBuilder FuxionBuilder { get; }
 	public ShellWindow? GetShellWindow() => ShellWindow;
 }
-
-class GenericPanelDescriptor : IPanelDescriptor
-{
-	public GenericPanelDescriptor(string name, Type viewType, PanelPosition defaultPosition, bool removeOnHide, bool isPinned)
-	{
-		Name = PanelName.Parse(name);
-		ViewType = viewType;
-		DefaultPosition = defaultPosition;
-		RemoveOnHide = removeOnHide;
-		IsPinned = isPinned;
-	}
-	public Type ViewType { get; }
-	public PanelPosition DefaultPosition { get; }
-	public PanelName Name { get; }
-	public bool RemoveOnHide { get; }
-	public bool IsPinned { get; }
-}
-
-class GenericMenu : IMenu
-{
-	public GenericMenu(object header, Action? clickAction = null)
-	{
-		Header = header;
-		this.clickAction = clickAction;
-	}
-	readonly Action? clickAction;
-	public object Header { get; }
-	public void OnClick() => clickAction?.Invoke();
-}
+#endif

@@ -1,4 +1,5 @@
-﻿using Fuxion.Json;
+﻿#if false
+using Fuxion.Json;
 using Fuxion.Reflection;
 using Fuxion.Threading;
 
@@ -43,3 +44,4 @@ public class InMemorySnapshotStorage : ISnapshotStorage
 			});
 	}
 }
+#endif

@@ -8,12 +8,16 @@ namespace Fuxion;
 [JsonConverter(typeof(UriKeyJsonConverter))]
 public class UriKey: IEquatable<UriKey>//, IComparable, IComparable<UriKey>
 {
-	public const string InterfaceParameterName = "__interface";
-	public const string BaseParameterNamePrefix = "__base";
+	internal const string InterfaceParameterName = "__interface";
+	internal const string BaseParameterNamePrefix = "__base";
 	public const string FuxionBaseUri = "https://meta.fuxion.dev/";
 	public const string FuxionSystemTypesBaseUri = FuxionBaseUri+"system/";
 
-	public UriKey([ConstantExpected]string key)
+	public UriKey(
+#if !NETSTANDARD2_0 && !NET462 && !NET6_0
+		[ConstantExpected]
+#endif
+		string key)
 	{
 		(Uri, Bases, Version) = ValidateAndNormalizeUri(new(key), false);
 	}
@@ -62,7 +66,8 @@ public class UriKey: IEquatable<UriKey>//, IComparable, IComparable<UriKey>
 		}
 
 		// If the source uri is relative, return it
-		if (!uri.IsAbsoluteUri) return (uri, Array.Empty<Uri>(), version);
+		if (!uri.IsAbsoluteUri)
+			return (uri, Array.Empty<Uri>(), version);
 		
 		// Use UriBuilder to normalize the uri
 		UriBuilder ub = new(currentUri);
@@ -76,7 +81,6 @@ public class UriKey: IEquatable<UriKey>//, IComparable, IComparable<UriKey>
 		{
 			var par = pars[BaseParameterNamePrefix + i];
 			if(par is not null)
-			//if (pars.AllKeys.Contains(BaseParameterNamePrefix + i))
 			{
 				bases.Add(new(System.Uri.UnescapeDataString(par)));
 			} else break;

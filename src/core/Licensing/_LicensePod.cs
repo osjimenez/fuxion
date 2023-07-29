@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿#if false
+using System.Security.Cryptography;
 using System.Text;
 using Fuxion.Json;
 
@@ -89,3 +90,4 @@ public static class LicensePodExtensions
 		return me.WithValidSignature(publicKey).OfType(type).Where(l => l.Is(type)).Where(l => l.AsLicense(type)!.Validate(out _));
 	}
 }
+#endif

@@ -1,4 +1,5 @@
-﻿using System.Dynamic;
+﻿#if false
+using System.Dynamic;
 using Fuxion.Application.Factories;
 using Fuxion.Domain;
 using Microsoft.Extensions.DependencyInjection;
@@ -35,3 +36,4 @@ public interface IFactoryFeature<TAggregate> : IFeature<Factory<TAggregate>> whe
 	void Initialize(TAggregate aggregate);
 	void IFeature<Factory<TAggregate>>.OnAttach(Factory<TAggregate> factory) => Factory = factory;
 }
+#endif

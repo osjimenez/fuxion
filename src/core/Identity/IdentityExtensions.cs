@@ -117,13 +117,18 @@ static class IdentityExtensions
 	{
 		using (var res = Printer.CallResult<IEnumerable<(PropertyInfo PropertyInfo, Type PropertyType, Type DiscriminatorType, object DiscriminatorTypeId)>>())
 		{
-			res.OnPrintResult = r => {
+			res.OnPrintResult = r =>
+			{
 				foreach (var p in r)
 					Printer.WriteLine($"Property '{p.PropertyInfo.Name}' of type '{p.PropertyType.Name}' is discriminated by '{p.DiscriminatorTypeId}' of type '{p.DiscriminatorType.Name}'");
 			};
-			return res.Value = me.GetRuntimeProperties().Where(p => p.GetCustomAttribute<DiscriminatedByAttribute>(true, false) != null).Select(p =>
-				(PropertyInfo: p, p.PropertyType, DiscriminatorType: p.GetCustomAttribute<DiscriminatedByAttribute>(true, true).Type,
-					DiscriminatorTypeId: p.GetCustomAttribute<DiscriminatedByAttribute>(true).Type.GetTypeInfo().GetCustomAttribute<DiscriminatorAttribute>(true).TypeKey));
+			return res.Value = me.GetRuntimeProperties()
+				.Where(p => p.GetCustomAttribute<DiscriminatedByAttribute>(true, false) != null)
+				.Select(p => (PropertyInfo: p, p.PropertyType, DiscriminatorType: p.GetCustomAttribute<DiscriminatedByAttribute>(true, true)
+					.Type, DiscriminatorTypeId: p.GetCustomAttribute<DiscriminatedByAttribute>(true)
+					.Type.GetTypeInfo()
+					.GetCustomAttribute<DiscriminatorAttribute>(true)
+					.TypeKey));
 		}
 	}
 	internal static IEnumerable<IDiscriminator> GetDiscriminatorsOfDiscriminatedProperties(this Type me, object? value = null) =>
@@ -284,8 +289,11 @@ static class IdentityExtensions
 			}
 			var props = typeof(TEntity).GetDiscriminatedProperties();
 			Printer.Foreach("Properties:", props, p => Printer.WriteLine($"{p.PropertyType.Name} {p.PropertyInfo.Name} - {p.DiscriminatorTypeId} {p.DiscriminatorType.Name}"));
-			var pers = functions.SelectMany(fun => me.SearchPermissions(
-				true, fun, Singleton.Get<TypeDiscriminatorFactory>().FromType<TEntity>(true), typeof(TEntity).GetDiscriminatorsOfDiscriminatedProperties().ToArray())).Distinct().ToList();
+			var pers = functions.SelectMany(fun => me.SearchPermissions(true, fun, Singleton.Get<TypeDiscriminatorFactory>()
+					.FromType<TEntity>(true), typeof(TEntity).GetDiscriminatorsOfDiscriminatedProperties()
+					.ToArray()))
+				.Distinct()
+				.ToList();
 			Expression<Func<TEntity, bool>>? denyPersExp = null;
 			Printer.Foreach("Deny permissions:", pers.Where(p => !p.Value), per => {
 				Expression<Func<TEntity, bool>>? perExp = null;

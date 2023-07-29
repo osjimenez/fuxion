@@ -1,6 +1,7 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Nodes;
+using Fuxion.Reflection;
 
 namespace Fuxion;
 
@@ -21,7 +22,11 @@ public class UriKeyDirectory : IUriKeyResolver
 		SystemRegister = new(this);
 	}
 	readonly Dictionary<UriKey, Type> _keyToTypeDictionary = new();
-	readonly Dictionary<Type, UriKey> _typeToKeyDictionary = new(ReferenceEqualityComparer.Instance);
+	readonly Dictionary<Type, UriKey> _typeToKeyDictionary = new(
+#if !NETSTANDARD2_0 && !NET462
+		ReferenceEqualityComparer.Instance
+#endif
+		);
 	public Type this[UriKey key]
 	{
 		get
@@ -46,8 +51,9 @@ public class UriKeyDirectory : IUriKeyResolver
 		RegisterAssembly(typeof(T).Assembly, predicate);
 	public void RegisterAssembly(Assembly assembly, Func<(Type Type, UriKeyAttribute? Attribute), bool>? predicate = null)
 	{
-		var query = assembly.GetTypes().Where(t => t.HasCustomAttribute<UriKeyAttribute>(false))
-			.Select(t => (Type: t, Attribute: t.GetCustomAttribute<UriKeyAttribute>()));
+		var query = assembly.GetTypes()
+			.Where(t => t.HasCustomAttribute<UriKeyAttribute>(false))
+			.Select(t => (Type: t, Attribute: t.GetCustomAttribute<UriKeyAttribute>(true, false)));
 		if (predicate != null) query = query.Where(predicate);
 		foreach (var tup in query) Register(tup.Type);
 	}
@@ -111,10 +117,12 @@ public class UriKeyDirectory : IUriKeyResolver
 			// Additional types
 			DateTime();
 			DateTimeArray();
+#if !NETSTANDARD2_0 && !NET462
 			DateOnly();
 			DateOnlyArray();
 			TimeOnly();
 			TimeOnlyArray();
+#endif
 			JsonNode();
 			JsonObject();
 		}
@@ -223,6 +231,7 @@ public class UriKeyDirectory : IUriKeyResolver
 		public static UriKey DateTimeArrayUriKey { get; } = new(UriKey.FuxionSystemTypesBaseUri + "datetime[]/1.0.0");
 		public void DateTimeArray() => directory.Register<DateTime[]>(DateTimeArrayUriKey);
 		public static UriKey DateOnlyUriKey { get; } = new(UriKey.FuxionSystemTypesBaseUri + "dateonly/1.0.0");
+#if !NETSTANDARD2_0 && !NET462
 		public void DateOnly() => directory.Register<DateOnly>(DateOnlyUriKey);
 		public static UriKey DateOnlyArrayUriKey { get; } = new(UriKey.FuxionSystemTypesBaseUri + "dateonly[]/1.0.0");
 		public void DateOnlyArray() => directory.Register<DateOnly[]>(DateOnlyArrayUriKey);
@@ -230,6 +239,7 @@ public class UriKeyDirectory : IUriKeyResolver
 		public void TimeOnly() => directory.Register<TimeOnly>(TimeOnlyUriKey);
 		public static UriKey TimeOnlyArrayUriKey { get; } = new(UriKey.FuxionSystemTypesBaseUri + "timeonly[]/1.0.0");
 		public void TimeOnlyArray() => directory.Register<TimeOnly[]>(TimeOnlyArrayUriKey);
+#endif
 		#endregion
 		#region JsonNode
 		public static UriKey JsonNodeUriKey { get; } = new(UriKey.FuxionSystemTypesBaseUri + "text/json/nodes/jsonnode/1.0.0");

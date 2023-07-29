@@ -1,4 +1,5 @@
-﻿using Fuxion.Application.Aggregates;
+﻿#if false
+using Fuxion.Application.Aggregates;
 using Fuxion.Domain;
 
 namespace Fuxion.Application.Factories;
@@ -31,3 +32,4 @@ public class SnapshotFactoryFeature<TAggregate> : IFactoryFeature<TAggregate> wh
 		return agg;
 	}
 }
+#endif

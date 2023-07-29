@@ -1,4 +1,5 @@
-﻿using Fuxion.Application;
+﻿#if false
+using Fuxion.Application;
 using Fuxion.Domain;
 using Fuxion.Domain.Aggregates;
 using Microsoft.EntityFrameworkCore;
@@ -38,3 +39,4 @@ public abstract class DbContextRepository<TContext, TAggregate> : IRepository<TA
 	public abstract Task<TAggregate> GetAsync(Guid aggregateId);
 	public abstract Task AddAsync(TAggregate aggregate);
 }
+#endif

@@ -1,4 +1,5 @@
-﻿using Fuxion.Application.Aggregates;
+﻿#if false
+using Fuxion.Application.Aggregates;
 using Fuxion.Domain;
 
 namespace Fuxion.Application.Factories;
@@ -8,3 +9,4 @@ public class EventSourcingFactoryFeature<TAggregate> : IFactoryFeature<TAggregat
 	Factory<TAggregate>? IFactoryFeature<TAggregate>.Factory { get; set; }
 	public void Initialize(TAggregate agg) => agg.Add<EventSourcingAggregateFeature>();
 }
+#endif

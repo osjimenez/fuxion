@@ -1,48 +1,39 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFrameworks>net462;net6.0;net7.0;net8.0</TargetFrameworks>
 		<IsPackable>false</IsPackable>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Using Include="Xunit" />
-		<Using Include="Xunit.Abstractions" />
-		<Using Include="Fuxion.Testing" />
-		<Using Include="Microsoft.Extensions.Logging" />
+		<Using Include="Xunit"/>
+		<Using Include="Xunit.Abstractions"/>
+		<Using Include="Fuxion.Testing"/>
 	</ItemGroup>
 
 	<ItemGroup>
-		<Compile Remove="FakesAssemblies\**" />
-		<Compile Remove="Properties\**" />
-		<EmbeddedResource Remove="FakesAssemblies\**" />
-		<EmbeddedResource Remove="Properties\**" />
-		<None Remove="FakesAssemblies\**" />
-		<None Remove="Properties\**" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.1"/>
+		<PackageReference Include="Nullable" Version="1.3.1">
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="IsExternalInit" Version="1.0.3">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.1" />
-		<PackageReference Include="Microsoft.QualityTools.Testing.Fakes" Version="17.5.0-beta.23060.1" />
-		<PackageReference Include="Moq" Version="4.18.4" />
-		<PackageReference Include="Pose" Version="1.2.1" />
+		<ProjectReference Include="..\..\Core\Fuxion\Fuxion.csproj"/>
+		<ProjectReference Include="..\..\Core\Testing\Fuxion.Testing.csproj"/>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net462'">
+		<Reference Include="System.Web"/>
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\Core\Fuxion\Fuxion.csproj" />
-		<ProjectReference Include="..\..\Core\Testing\Fuxion.Testing.csproj" />
+		<Content Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest"/>
 	</ItemGroup>
-
-	<ItemGroup>
-		<Content Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<AdditionalDesignTimeBuildInput Remove="FakesAssemblies\**" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Json\" />
-	</ItemGroup>
-
+	
 </Project>

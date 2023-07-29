@@ -6,10 +6,13 @@ public interface ICompositeDisposable : IDisposable
 {
 	CompositeDisposable CompositeDisposable { get; }
 	bool Disposed { get; set; }
-	void IDisposable.Dispose() => Dispose(true);
+	void IDisposable.Dispose()
+	{
+		Dispose(true);
 #if !DEBUG
-			GC.SuppressFinalize(this);
+		GC.SuppressFinalize(this);
 #endif
+	}
 	protected void Dispose(bool disposing)
 	{
 		if (!Disposed)

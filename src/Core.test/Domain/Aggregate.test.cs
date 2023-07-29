@@ -1,5 +1,4 @@
 using Fuxion.Domain.Aggregates;
-using Moq;
 using Xunit;
 
 namespace Fuxion.Domain.Test;
@@ -21,25 +20,67 @@ public class AggregateTest
 	}
 }
 
-public record TestedEvent : Fuxion.Domain.Event
+public
+#if NET462
+	class
+#else
+	record
+#endif
+TestedEvent : Fuxion.Domain.Event
 {
 	public TestedEvent(Guid aggregateId) : base(aggregateId) { }
 }
 
-public class MockAggregate : IAggregate
+public class MockAggregate :
+#if NET462
+	Featurizable<MockAggregate>,
+#endif
+	IAggregate
 {
 	[AggregateEventHandler]
 	public virtual void WhenTested(TestedEvent @event) { }
 
-	public Guid Id { get; init; }
-	IFeatureCollection<IAggregate> IFeaturizable<IAggregate>.Features { get; } = IFeatureCollection<IAggregate>.Create();
+	public Guid Id
+	{
+		get;
+#if !NET462
+		init;
+#endif
+	}
+#if NET462
+		= Guid.NewGuid();
+#endif
+	IFeatureCollection<IAggregate> IFeaturizable<IAggregate>.Features { get; } =
+#if NET462
+		new FeatureCollection<IAggregate>();
+#else
+		IFeatureCollection<IAggregate>.Create();
+#endif
 }
 
-public class User : IAggregate
+public class User : 
+#if NET462
+	Featurizable<User>,
+#endif
+	IAggregate
 {
 	
-	public IFeatureCollection<IAggregate> Features { get; } = IFeatureCollection<IAggregate>.Create();
-	public Guid Id { get; init; }
+	public IFeatureCollection<IAggregate> Features { get; } = 
+#if NET462
+		new FeatureCollection<IAggregate>();
+#else
+		IFeatureCollection<IAggregate>.Create();
+#endif
+	public Guid Id
+	{
+		get;
+#if !NET462
+		init;
+#endif
+	}
+#if NET462
+		= Guid.NewGuid();
+#endif
 	public DateTime BirthdayDate { get; private set; }
 	
 	public void ChangeName(string newName){}
