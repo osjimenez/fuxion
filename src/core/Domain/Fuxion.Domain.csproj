@@ -17,7 +17,6 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
-		<PackageReference Include="System.Reactive" Version="6.0.1-preview.1" />
 		<PackageReference Include="Nullable" Version="1.3.1">
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 			<PrivateAssets>all</PrivateAssets>
@@ -26,6 +25,14 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+	</ItemGroup>
+	
+	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+		<PackageReference Include="System.Reactive" Version="6.0.1-preview.1" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' != 'net8.0'">
+		<PackageReference Include="System.Reactive" Version="6.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
