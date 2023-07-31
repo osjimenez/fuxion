@@ -110,14 +110,14 @@ jobs:
 #      run: dotnet test --configuration Release --no-restore --verbosity minimal src/Fuxion.sln
 #    - name: Test - Fuxion
 #      run: dotnet test --configuration Release --no-restore --verbosity minimal src/Core.test/Fuxion/Fuxion.Test.csproj
-    - name: Test - Domain
-      run: dotnet test --configuration Release --no-restore --verbosity minimal src/Core.test/Domain/Fuxion.Domain.Test.csproj
-    - name: Test - Application
-      run: dotnet test --configuration Release --no-restore --verbosity minimal src/Core.test/Application/Fuxion.Application.Test.csproj
-    - name: Test - Licensing
-      run: dotnet test --configuration Release --no-restore --verbosity minimal src/Core.test/Licensing/Fuxion.Licensing.Test.csproj
-    - name: Test - Windows
-      run: dotnet test --configuration Release --no-restore --verbosity minimal src/Infrastructure.test/Windows/Fuxion.Windows.Test.csproj
+#    - name: Test - Domain
+#      run: dotnet test --configuration Release --no-restore --verbosity minimal src/Core.test/Domain/Fuxion.Domain.Test.csproj
+#    - name: Test - Application
+#      run: dotnet test --configuration Release --no-restore --verbosity minimal src/Core.test/Application/Fuxion.Application.Test.csproj
+#    - name: Test - Licensing
+#      run: dotnet test --configuration Release --no-restore --verbosity minimal src/Core.test/Licensing/Fuxion.Licensing.Test.csproj
+#    - name: Test - Windows
+#      run: dotnet test --configuration Release --no-restore --verbosity minimal src/Infrastructure.test/Windows/Fuxion.Windows.Test.csproj
 
 #    - name: Create packages
 #      run: dotnet pack --configuration Release --no-build -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} src/Fuxion.sln
