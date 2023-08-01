@@ -302,6 +302,48 @@ public class SystemExtensionsTest : BaseTest<SystemExtensionsTest>
 			foreach (var i in -10) Logger.LogInformation($"\t{i}");
 		});
 	}
+	[Fact(DisplayName = "Enumerable - DistributeAsPercentages")]
+	public void DistributeAsPercentages()
+	{
+		void Do(int num, List<double> list)
+		{
+			Logger.LogInformation("================================");
+			Logger.LogInformation($"Num: {num}");
+			Logger.LogInformation("Percentage List:");
+			foreach (var percentage in list) Logger.LogInformation($"\t{percentage}");
+			var res = list.DistributeAsPercentages(num);
+			Logger.LogInformation("Results:");
+			foreach (var r in res) Logger.LogInformation($"\t{r.Percentage:N2}% - {r.Rounded.ToString().PadRight(5)} - {r.Exact:N2}");
+			Logger.LogInformation($"Sum exact: {res.Sum(_ => _.Exact)}");
+			Logger.LogInformation($"Sum roundad: {res.Sum(_ => _.Rounded)}");
+			if (res.Sum(_ => _.Rounded) > num) Logger.LogWarning("ATENCION !!!");
+		}
+		Assert.Throws<InvalidProgramException>(() => Do(100, new() { 50, 60 }));
+		Assert.Throws<InvalidDataException>(() => Do(1, new() { 50, 50 }));
+		Do(5, new() { 0.1d, 9.9d, 20, 40, 30 });
+		Do(50, new() { 0.1d, 9.9d, 20, 40, 30 });
+		Do(1000, new() { 0.1d, 9.9d, 20, 40, 30 });
+		Do(5884, new() { 0.1d, 9.9d, 20, 40, 30 });
+		Do(5884, new() { 20, 40, 40 });
+	}
+	[Fact(DisplayName = "Enumerable - TakeRandomly")]
+	public void TakeRandomly()
+	{
+		List<string> list = new() { "One", "Two", "Three", "Four", "Five" };
+		void Do(int take)
+		{
+			var res = list.TakeRandomly(take);
+			Logger.LogInformation($"Ran: {res.Aggregate((a, b) => $"{a},{b}")}");
+		}
+		Do(1);
+		Do(1);
+		Do(1);
+		Do(1);
+		Do(2);
+		Do(2);
+		Do(2);
+		Do(2);
+	}
 }
 
 public struct MockStruct { }
