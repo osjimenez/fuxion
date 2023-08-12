@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 using Xunit.Abstractions;
@@ -28,14 +29,14 @@ public abstract class BaseTest<TBaseTest> where TBaseTest : BaseTest<TBaseTest>
 	}
 	protected void PrintVariable(object? value, [CallerArgumentExpression(nameof(value))] string? name = null) 
 		=> Output.WriteLine($"{name} = {value}");
-	protected void IsTrue(bool? value, [CallerArgumentExpression(nameof(value))] string? name = null)
+	protected void IsTrue(bool? value, string? userMessage = null, [CallerArgumentExpression(nameof(value))] string? name = null)
 	{
-		Assert.True(value);
+		Assert.True(value, userMessage);
 		PrintVariable(value, name);
 	}
-	protected void IsFalse(bool value, [CallerArgumentExpression(nameof(value))] string? name = null)
+	protected void IsFalse(bool value, string? userMessage = null, [CallerArgumentExpression(nameof(value))] string? name = null)
 	{
-		Assert.False(value);
+		Assert.False(value, userMessage);
 		PrintVariable(value, name);
 	}
 	protected void Throws<TException>(Action testCode, [CallerArgumentExpression(nameof(testCode))] string? name = null)
@@ -43,6 +44,26 @@ public abstract class BaseTest<TBaseTest> where TBaseTest : BaseTest<TBaseTest>
 	{
 		var ex = Assert.Throws<TException>(testCode);
 		PrintVariable($"Throws '{ex.GetType().Name}' => {ex.Message}", name);
+	}
+	protected async Task ThrowsAsync<TException>(Func<Task> testCode, [CallerArgumentExpression(nameof(testCode))] string? name = null)
+		where TException: Exception
+	{
+		var ex = await Assert.ThrowsAsync<TException>(testCode);
+		PrintVariable($"Throws '{ex.GetType().Name}' => {ex.Message}", name);
+	}
+	protected void MatchFormattedString(string pattern, string input)
+	{
+		var regexPattern = pattern;
+		for (var i = 0;; i++)
+		{
+			if (regexPattern.Contains($"{i}"))
+				regexPattern = regexPattern.Replace($"{{{i}}}", ".*");
+			else
+				break;
+		}
+		regexPattern += "$";
+		Assert.True(new Regex(regexPattern).Match(input).Success,$"String '{input}' doesn't match pattern '{pattern}'");
+		Output.WriteLine($"String '{input}' match pattern '{pattern}'");
 	}
 	protected internal ITestOutputHelper Output { get; }
 	protected internal IServiceProvider ServiceProvider { get; }

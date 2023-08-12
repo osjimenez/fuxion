@@ -476,6 +476,10 @@ public static class Extensions
 		}
 		return res;
 	}
+	public static string Format(this string me, params object?[] @params)
+	{
+		return string.Format(me, @params);
+	}
 	#endregion
 
 	#region IsBetween
@@ -493,9 +497,16 @@ public static class Extensions
 	#endregion
 
 	#region Time
-	public static string ToTimeString(this TimeSpan ts, int numberOfElements = 5, bool onlyLetters = false)
+	public static string ToTimeString(this TimeSpan me, int numberOfElements = 5, bool onlyLetters = false)
 	{
 		var res = "";
+		TimeSpan ts;
+		if (me.Ticks < 0)
+		{
+			res += "- ";
+			ts = me.Negate();
+		} else
+			ts = me;
 		var count = 0;
 		if (count >= numberOfElements) return res.Trim(',', ' ');
 		if (ts.Days > 0)
@@ -523,7 +534,7 @@ public static class Extensions
 		}
 		if (count >= numberOfElements) return res.Trim(',', ' ');
 		if (ts.Milliseconds > 0) res += $"{ts.Milliseconds} {(onlyLetters ? "ms" : ts.Milliseconds > 1 ? Strings.milliseconds : Strings.millisecond)}{(onlyLetters ? "" : ",")} ";
-		//count++;
+		if (string.IsNullOrWhiteSpace(res)) res = "0";
 		return res.Trim(',', ' ');
 	}
 	public static DateTime AverageDateTime(this IEnumerable<DateTime> me)
