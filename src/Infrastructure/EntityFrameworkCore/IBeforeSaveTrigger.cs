@@ -2,7 +2,7 @@
 
 namespace Fuxion.EntityFrameworkCore;
 
-public interface IBeforeSaveTrigger<in TContext> where TContext : DbContext
+public interface IBeforeSaveTrigger<TContext> where TContext : DbContext
 {
-	Task Run(TContext db, CancellationToken cancellationToken = default);
+	Task Run(ITriggerState<TContext> state, CancellationToken cancellationToken = default);
 }

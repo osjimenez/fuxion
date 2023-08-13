@@ -49,18 +49,18 @@ public class TriggerDbContextDecorator<TContext> : ITriggerDbContextDecorator, I
 	public void Dispose() => Context.Dispose();
 	public int SaveChangesTriggered()
 	{
-		foreach (var trigger in _beforeSaveTriggers) trigger.Run(Context).Wait();
-		var changes = Context.ChangeTracker.Entries().Select(e => (e.Entity, e.State)).ToList();
-		var res = Context.SaveChanges();
-		foreach (var trigger in _afterSaveTriggers) trigger.Run(Context, changes).Wait();
+		var state = new TriggerState<TContext>(Context);
+		foreach (var trigger in _beforeSaveTriggers) trigger.Run(state).Wait();
+		var res = state.SaveChanges();
+		foreach (var trigger in _afterSaveTriggers) trigger.Run(state).Wait();
 		return res;
 	}
 	public async Task<int> SaveChangesTriggeredAsync(CancellationToken cancellationToken = default)
 	{
-		foreach (var trigger in _beforeSaveTriggers) await trigger.Run(Context, cancellationToken);
-		var changes = Context.ChangeTracker.Entries().Select(e => (e.Entity, e.State)).ToList();
-		var res = await Context.SaveChangesAsync(cancellationToken);
-		foreach (var trigger in _afterSaveTriggers) await trigger.Run(Context, changes, cancellationToken);
+		var state = new TriggerState<TContext>(Context);
+		foreach (var trigger in _beforeSaveTriggers) await trigger.Run(state, cancellationToken);
+		var res = await state.SaveChangesAsync(cancellationToken);
+		foreach (var trigger in _afterSaveTriggers) await trigger.Run(state, cancellationToken);
 		return res;
 	}
 	public DbSet<TEntity> Set<TEntity>() where TEntity : class => Context.Set<TEntity>();

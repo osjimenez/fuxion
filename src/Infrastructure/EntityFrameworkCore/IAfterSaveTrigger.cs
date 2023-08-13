@@ -2,7 +2,7 @@
 
 namespace Fuxion.EntityFrameworkCore;
 
-public interface IAfterSaveTrigger<in TContext> where TContext : DbContext
+public interface IAfterSaveTrigger<TContext> where TContext : DbContext
 {
-	Task Run(TContext db, List<(object Entity, EntityState State)> changes, CancellationToken cancellationToken = default);
+	Task Run(ITriggerState<TContext> state, CancellationToken cancellationToken = default);
 }
