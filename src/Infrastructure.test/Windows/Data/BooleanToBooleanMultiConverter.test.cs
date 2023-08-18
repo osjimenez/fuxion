@@ -1,5 +1,5 @@
 ﻿using System.Globalization;
-using Fuxion.Testing;
+using Fuxion.Xunit;
 using Fuxion.Windows.Data;
 using Xunit;
 using Xunit.Abstractions;

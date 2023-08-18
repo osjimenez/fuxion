@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Markup;
-using Fuxion.Testing;
+using Fuxion.Xunit;
 using Fuxion.Windows.Markup;
 using Xunit;
 using Xunit.Abstractions;

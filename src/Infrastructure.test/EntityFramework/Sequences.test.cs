@@ -2,7 +2,7 @@
 using System.Data.Entity.Migrations;
 using System.Data.SqlClient;
 using Fuxion.EntityFramework.Test.Migrations;
-using Fuxion.Testing;
+using Fuxion.Xunit;
 using Xunit;
 using Xunit.Abstractions;
 

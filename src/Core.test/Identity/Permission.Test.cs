@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 using Fuxion.Identity.Test.Dao;
-using Fuxion.Testing;
+using Fuxion.Xunit;
 using Xunit;
 using Xunit.Abstractions;
 

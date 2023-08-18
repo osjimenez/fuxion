@@ -1,11 +1,11 @@
 ﻿using Xunit.Abstractions;
 
-namespace Fuxion.Testing;
+namespace Fuxion.Xunit;
 
 // https://stackoverflow.com/questions/43680174/entity-framework-core-log-queries-for-a-single-db-context-instance
-public class XUnitLogger : ILogger
+public class XunitLogger : ILogger
 {
-	public XUnitLogger(ITestOutputHelper output) => Output = output;
+	public XunitLogger(ITestOutputHelper output) => Output = output;
 	public ITestOutputHelper Output { get; }
 	public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
 	{
@@ -18,5 +18,5 @@ public class XUnitLogger : ILogger
 		if (exception != null) Output.WriteLine(exception.ToString());
 	}
 	public bool IsEnabled(LogLevel logLevel) => true;
-	public IDisposable BeginScope<TState>(TState state) where TState : notnull => new XUnitScope();
+	public IDisposable BeginScope<TState>(TState state) where TState : notnull => new XunitScope();
 }

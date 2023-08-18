@@ -3,7 +3,7 @@ using Fuxion.Application.Events;
 using Fuxion.Domain;
 using Fuxion.Json;
 using Fuxion.Reflection;
-using Fuxion.Testing;
+using Fuxion.Xunit;
 using Xunit.Abstractions;
 
 namespace Fuxion.Application.Test.Events;

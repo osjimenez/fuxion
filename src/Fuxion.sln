@@ -50,7 +50,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fuxion.AspNetCore", "Infras
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DemoCoreWpf", "sketches\DemoCoreWpf\DemoCoreWpf.csproj", "{1F769AA2-1510-49BE-8C99-965FB7DE5EE6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fuxion.Testing", "core\Testing\Fuxion.Testing.csproj", "{034A37CA-C36A-4520-A92E-25B71987FCCB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fuxion.Xunit", "core\Xunit\Fuxion.Xunit.csproj", "{034A37CA-C36A-4520-A92E-25B71987FCCB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fuxion.MassTransit", "Infrastructure\MassTransit\Fuxion.MassTransit.csproj", "{3F5084A2-4147-45D6-8A79-2B195E373378}"
 EndProject

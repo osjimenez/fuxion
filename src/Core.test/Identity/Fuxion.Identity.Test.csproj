@@ -26,6 +26,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\Core\Identity\Fuxion.Identity.csproj" />
-		<ProjectReference Include="..\..\Core\Testing\Fuxion.Testing.csproj" />
+		<ProjectReference Include="..\..\core\Xunit\Fuxion.Xunit.csproj" />
 	</ItemGroup>
 </Project>

@@ -1,7 +1,7 @@
 ﻿using Fuxion.Identity.Test.Dao;
 using Fuxion.Identity.Test.Dto;
 using Fuxion.Identity.Test.Dvo;
-using Fuxion.Testing;
+using Fuxion.Xunit;
 using Xunit;
 using Xunit.Abstractions;
 

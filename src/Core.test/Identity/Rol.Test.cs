@@ -2,7 +2,7 @@
 using Fuxion.Identity.Test.Dao;
 using Fuxion.Identity.Test.Mocks;
 using Fuxion.Repositories;
-using Fuxion.Testing;
+using Fuxion.Xunit;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 using Xunit.Abstractions;

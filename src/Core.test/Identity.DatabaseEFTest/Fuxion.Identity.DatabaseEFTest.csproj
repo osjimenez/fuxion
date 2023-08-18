@@ -27,7 +27,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\Core\Identity\Fuxion.Identity.csproj" />
-		<ProjectReference Include="..\..\Core\Testing\Fuxion.Testing.csproj" />
+		<ProjectReference Include="..\..\core\xUnit\Fuxion.Xunit.csproj" />
 		<ProjectReference Include="..\..\Infrastructure\EntityFramework\Fuxion.EntityFramework.csproj" />
 		<ProjectReference Include="..\Identity\Fuxion.Identity.Test.csproj" />
 	</ItemGroup>

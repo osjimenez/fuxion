@@ -1,4 +1,4 @@
-﻿using Fuxion.Testing;
+﻿using Fuxion.Xunit;
 using Xunit;
 using Xunit.Abstractions;
 

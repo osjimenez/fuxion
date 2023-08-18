@@ -8,7 +8,7 @@
 	<ItemGroup>
 		<Using Include="Xunit"/>
 		<Using Include="Xunit.Abstractions"/>
-		<Using Include="Fuxion.Testing"/>
+		<Using Include="Fuxion.Xunit"/>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -32,7 +32,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\Core\Fuxion\Fuxion.csproj"/>
-		<ProjectReference Include="..\..\Core\Testing\Fuxion.Testing.csproj"/>
+		<ProjectReference Include="..\..\Core\Xunit\Fuxion.Xunit.csproj" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net462'">

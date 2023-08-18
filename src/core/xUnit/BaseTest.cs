@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Fuxion.Testing;
+namespace Fuxion.Xunit;
 
 public abstract class BaseTest<TBaseTest> where TBaseTest : BaseTest<TBaseTest>
 {
@@ -20,7 +20,7 @@ public abstract class BaseTest<TBaseTest> where TBaseTest : BaseTest<TBaseTest>
 			} catch { }
 		};
 		var serviceCollection = new ServiceCollection().AddLogging(o => {
-			o.AddProvider(new XUnitLoggerProvider(output));
+			o.AddProvider(new XunitLoggerProvider(output));
 			OnLoggingBuild(o);
 		});
 		OnConfigureServices(serviceCollection);

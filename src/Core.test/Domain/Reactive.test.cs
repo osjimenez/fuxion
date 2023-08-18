@@ -7,7 +7,7 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Reactive.Threading.Tasks;
 using System.Timers;
-using Fuxion.Testing;
+using Fuxion.Xunit;
 using Microsoft.Reactive.Testing;
 using Xunit;
 using Xunit.Abstractions;

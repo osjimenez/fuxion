@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 using System.Windows;
-using Fuxion.Testing;
+using Fuxion.Xunit;
 using Fuxion.Windows.Data;
 using Xunit;
 using Xunit.Abstractions;

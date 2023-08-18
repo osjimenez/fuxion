@@ -28,7 +28,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\Core\Domain\Fuxion.Domain.csproj" />
-		<ProjectReference Include="..\..\Core\Testing\Fuxion.Testing.csproj" />
+		<ProjectReference Include="..\..\core\xUnit\Fuxion.Xunit.csproj" />
 	</ItemGroup>
 
 </Project>

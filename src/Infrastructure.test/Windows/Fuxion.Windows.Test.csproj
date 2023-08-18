@@ -11,7 +11,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\Core\Testing\Fuxion.Testing.csproj" />
+		<ProjectReference Include="..\..\core\Xunit\Fuxion.Xunit.csproj" />
 		<ProjectReference Include="..\..\Infrastructure\Windows\Fuxion.Windows.csproj" />
 	</ItemGroup>
 

@@ -10,7 +10,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\core\Fuxion\Fuxion.csproj"/>
 		<ProjectReference Include="..\..\Core\Licensing\Fuxion.Licensing.csproj"/>
-		<ProjectReference Include="..\..\core\Testing\Fuxion.Testing.csproj"/>
+		<ProjectReference Include="..\..\core\xUnit\Fuxion.Xunit.csproj" />
 	</ItemGroup>
 
 </Project>

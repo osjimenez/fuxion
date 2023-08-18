@@ -1,4 +1,4 @@
-﻿using Fuxion.Testing;
+﻿using Fuxion.Xunit;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 using Xunit.Abstractions;

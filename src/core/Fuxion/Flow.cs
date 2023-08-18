@@ -31,5 +31,10 @@ public class a
 		// 	.If(pod.TryGetHeader<Destination>(out var detinationHeader))
 		// 		.Then(routingFlow)
 		// 		.Else(destinationByTypeFlow)
+		Test t = new(1, new() { 1, 2, 3 });
+		// Test t2 = new(1, [ 1, 2, 3 ]);
 	}
 }
+
+
+public class Test(int Integer, List<int> List);

@@ -1,5 +1,5 @@
 ﻿using Fuxion.Identity.Helpers;
-using Fuxion.Testing;
+using Fuxion.Xunit;
 using Xunit;
 using Xunit.Abstractions;
 
