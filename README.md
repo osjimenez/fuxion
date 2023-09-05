@@ -1,4 +1,4 @@
 # fuxion
 
 Docs
-https://ttiventures.github.io/Fuxion/
+https://osjimenez.github.io/Fuxion
