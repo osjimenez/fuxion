@@ -158,7 +158,7 @@ jobs:
 
     - name: Publish to GitHub Packages
       if: github.ref != 'refs/heads/main'
-      run: dotnet nuget push "nupkgs\*.nupkg" --source https://nuget.pkg.github.com/TTiVentures/index.json --api-key ${{secrets.GITHUB_TOKEN}} --skip-duplicate
+      run: dotnet nuget push "nupkgs\*.nupkg" --source https://nuget.pkg.github.com/OsJimenez/index.json --api-key ${{secrets.GITHUB_TOKEN}} --skip-duplicate
 
     - name: Publish to NuGet.org
       if: github.ref == 'refs/heads/main'
