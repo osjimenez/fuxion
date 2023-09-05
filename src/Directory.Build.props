@@ -12,6 +12,9 @@
 		<Product>Fuxion</Product>
 		<ProductName>Fuxion</ProductName>
 
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/OsJimenez/Fuxion</PackageProjectUrl>
