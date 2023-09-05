@@ -1,0 +1,21 @@
+﻿[
+  {
+    "Comment": null,
+    "Signature": "aRIRbaqvVrHlJsnx11LXWfHFL43hSVrpPZj6VyoihmxIRr/lOSczfSauVcMwoFCQ4tsZAMGdyAUJURLkB3Iqaw60iXyD8VeYu4gvjQj7twentVVVvV7PFV0tGLRJZU9m9+sJH08OJMxca06xOGPdTz2zg9Wzp9rkJ5WW5GXpFf+hp3YH7Xwmp1eB2gCyyTqZ4gWmg9ItXoBmIxH0kqFNGtkLSRpbgGlEvLwAwKbZsGeGcM9Xu5Yj5idABdbqVhZhhjX2rT/P17YKUSknXMvJ/myhiUw68qp85JJ9Crg5m03F+uen6drEyIzuSvEci9+DLcie2sFR9/wvAscPYPfFgA==",
+    "License": {
+      "DeactivationUtcTime": {
+        "Value": "2016-05-17T18:05:32.056904Z"
+      },
+      "ExpirationUtcTime": {
+        "Value": "2017-04-17T18:05:32.056904Z"
+      },
+      "HardwareId": {
+        "Key": "HARDWARE_ID"
+      },
+      "ProductId": {
+        "Key": "PRODUCT_ID"
+      },
+      "SignatureUtcTime": "2016-04-17T18:05:32.056904Z"
+    }
+  }
+]

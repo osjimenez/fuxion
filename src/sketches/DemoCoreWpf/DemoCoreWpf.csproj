@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net8.0-windows</TargetFramework>
+		<UseWPF>true</UseWPF>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Remove="ScreenCapture\ScreenCaptureWindow.xaml"/>
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\core\Drawing\Fuxion.Drawing.csproj"/>
+		<ProjectReference Include="..\..\Infrastructure\Windows\Fuxion.Windows.csproj"/>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="ScreenCapture\ScreenCaptureWindow.xaml.cs">
+			<DependentUpon>ScreenCaptureWindow.xaml</DependentUpon>
+		</Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Page Update="ScreenCapture\ScreenCaptureWindow.xaml">
+			<SubType>Designer</SubType>
+		</Page>
+	</ItemGroup>
+
+</Project>

@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net6.0-windows;net7.0-windows;net8.0-windows</TargetFrameworks>
+		<UseWpf>True</UseWpf>
+		<IsPackable>false</IsPackable>
+		<Title>Fuxion Windows Controls</Title>
+		<PackageId>Fuxion.Windows.Controls</PackageId>
+		<Description>Fuxion Windows Controls</Description>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="icon.png" Pack="true" PackagePath="\"/>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All"/>
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Core\Fuxion\Fuxion.csproj"/>
+		<ProjectReference Include="..\Windows\Fuxion.Windows.csproj"/>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Page Update="UnhandledExceptionWindow.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+		<Compile Update="UnhandledExceptionWindow.xaml.cs">
+			<DependentUpon>UnhandledExceptionWindow.xaml</DependentUpon>
+		</Compile>
+	</ItemGroup>
+
+</Project>

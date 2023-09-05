@@ -1,0 +1,220 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Fuxion.Identity.Test.Dao.BaseDao" Collapsed="true">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Dao\Base.dao.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Dao.GroupDao" Collapsed="true">
+    <Position X="4" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAACAAAAAAAg=</HashCode>
+      <FileName>Dao\Rol.dao.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Dao.IdentityDao" Collapsed="true">
+    <Position X="2.25" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EACAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Dao\Rol.dao.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Dao.PermissionDao" Collapsed="true">
+    <Position X="5.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAACAEAAAAAEYAAAAAAgAAAAAhAAAAAAA=</HashCode>
+      <FileName>Dao\Permission.dao.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Dao.RolDao" Collapsed="true">
+    <Position X="2.25" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAEACAAAAAAAg=</HashCode>
+      <FileName>Dao\Rol.dao.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Dao.ScopeDao" Collapsed="true">
+    <Position X="7.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAIAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAI=</HashCode>
+      <FileName>Dao\Scope.dao.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Dao.FileDao" Collapsed="true">
+    <Position X="2.25" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Dao\File.dao.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Dao.DiscriminatorDao" Collapsed="true">
+    <Position X="2.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAUAEAAAAsAACAAEBAAAEBAAAAAAAAAAAAAAICAAAAA=</HashCode>
+      <FileName>Dao\Discriminator.dao.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Dao.LocationDao" Collapsed="true">
+    <Position X="2.25" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAIAAACAAgAAAAAAAAAAAAAAAAAAAICAAAAA=</HashCode>
+      <FileName>Dao\Discriminator.dao.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Dao.StateDao" Collapsed="true">
+    <Position X="2.25" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAACAAAAAAAAACAAgAAAAAAAAAIQAAAAAEAAAAAAAAA=</HashCode>
+      <FileName>Dao\Discriminator.dao.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Dao.CountryDao" Collapsed="true">
+    <Position X="4" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAACAAgAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Dao\Discriminator.dao.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Dao.CityDao" Collapsed="true">
+    <Position X="5.75" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAQAAAACAAgAAAAAAAAAAAAAAAAAAABCAAAAA=</HashCode>
+      <FileName>Dao\Discriminator.dao.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Dao.CategoryDao" Collapsed="true">
+    <Position X="7.5" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAECAAAAAIAAAAAAAAAEQAAAAAAAAAAAAgAAICAAAAA=</HashCode>
+      <FileName>Dao\Discriminator.dao.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Dao.TagDao" Collapsed="true">
+    <Position X="9.25" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>Dao\Discriminator.dao.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Dao.DocumentDao" Collapsed="true">
+    <Position X="2.25" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Dao\File.dao.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Dao.PdfDocumentDao" Collapsed="true">
+    <Position X="5.75" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Dao\File.dao.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Dao.ExcelDocumentDao" Collapsed="true">
+    <Position X="4" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Dao\File.dao.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Dao.WordDocumentDao" Collapsed="true">
+    <Position X="2.25" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAACAA=</HashCode>
+      <FileName>Dao\File.dao.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Dao.MediaDao" Collapsed="true">
+    <Position X="7.5" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Dao\File.dao.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Dao.FilmDao" Collapsed="true">
+    <Position X="7.5" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Dao\File.dao.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Dao.SongDao" Collapsed="true">
+    <Position X="9.25" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAA=</HashCode>
+      <FileName>Dao\File.dao.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Dao.PackageDao" Collapsed="true">
+    <Position X="11" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIA=</HashCode>
+      <FileName>Dao\File.dao.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Dao.AlbumDao" Collapsed="true">
+    <Position X="11" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Dao\File.dao.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Dao.SoftwareDao" Collapsed="true">
+    <Position X="12.75" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Dao\File.dao.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Dao.PersonDao" Collapsed="true">
+    <Position X="5.75" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAABAAAAAgAIAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Dao\Person.dao.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Dao.SkillDao" Collapsed="true">
+    <Position X="7.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Dao\Skill.dao.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Dao.ActorSkillDao" Collapsed="true">
+    <Position X="7.5" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Dao\Skill.dao.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Dao.SingerSkillDao" Collapsed="true">
+    <Position X="9.25" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Dao\Skill.dao.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Dao.WriterSkillDao" Collapsed="true">
+    <Position X="11" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Dao\Skill.dao.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Fuxion.Identity.Test.Dao.DirectorSkillDao" Collapsed="true">
+    <Position X="12.75" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Dao\Skill.dao.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Consolas" Size="9" />
+</ClassDiagram>

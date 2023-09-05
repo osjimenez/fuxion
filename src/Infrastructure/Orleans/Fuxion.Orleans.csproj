@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net7.0;net8.0</TargetFrameworks>
+		<Title>Fuxion Orleans</Title>
+		<PackageId>Fuxion.Orleans</PackageId>
+		<Description>Fuxion infrastructure for Orleans frameowrk</Description>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="icon.png" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\core\Application\Fuxion.Application.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Orleans.EventSourcing" Version="7.2.1" />
+		<PackageReference Include="Microsoft.Orleans.Sdk" Version="7.2.1" />
+	</ItemGroup>
+
+</Project>

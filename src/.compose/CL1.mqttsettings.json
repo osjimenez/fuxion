@@ -1,0 +1,6 @@
+{
+  "Mqtt": {
+    "Host": "CL1-MQTT",
+    "Port": 1883
+  }
+}

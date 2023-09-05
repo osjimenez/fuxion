@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #next-version: 0.1.0
 assembly-versioning-scheme: MajorMinorPatch
 assembly-file-versioning-scheme: MajorMinorPatchTag
@@ -74,3 +75,10 @@ branches:
     track-merge-target: true
     tracks-release-branches: true
     is-release-branch: false
+=======
+mode: Mainline
+branches: {}
+ignore:
+  sha: []
+merge-message-formats: {}
+>>>>>>> develop
