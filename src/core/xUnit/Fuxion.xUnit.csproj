@@ -23,8 +23,8 @@
 	</ItemGroup>
 	
 	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
-		<PackageReference Include="xunit" Version="2.5.1-pre.33"/>
-		<PackageReference Include="xunit.runner.visualstudio" Version="2.5.1-pre.15">
+		<PackageReference Include="xunit" Version="2.5.2-pre.6"/>
+		<PackageReference Include="xunit.runner.visualstudio" Version="2.5.2-pre.10">
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>

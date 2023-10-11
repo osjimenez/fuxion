@@ -33,10 +33,10 @@ builder.Services.Configure<MqttSettings>(builder.Configuration.GetSection("Mqtt"
 // builder.Services.AddHostedService<MqttHostedService>(sp => new(mqttSettings.Host, mqttSettings.Port, "MS2-topic", sp.GetRequiredService<ILogger<MqttHostedService>>()));
 
 // NODE
-builder.Services.AddSingleton<INexus>(sp => new DefaultNexus("CL1-MS2",new DefaultProducer(), new DefaultConsumer(), new[]
-{
-	new RabbitMQRoute(sp.GetRequiredService<IOptions<RabbitSettings>>(), sp.GetRequiredService<ILogger<RabbitMQRoute>>())
-}));
+// builder.Services.AddSingleton<INexus>(sp => new DefaultNexus("CL1-MS2",new DefaultProducer(), new DefaultConsumer(), new[]
+// {
+// 	new RabbitMQRoute(sp.GetRequiredService<IOptions<RabbitSettings>>(), sp.GetRequiredService<ILogger<RabbitMQRoute>>())
+// }));
 
 // APP
 var app = builder.Build();
