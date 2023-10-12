@@ -1,4 +1,8 @@
-﻿#if false
+﻿using System.Windows;
+using Fuxion.Telerik_.Wpf;
+using Fuxion.Telerik_.Wpf.ViewModels;
+using Fuxion.Telerik_.Wpf.Views;
+
 namespace Microsoft.Extensions.DependencyInjection;
 
 public static class ShellDIExtensions
@@ -52,12 +56,12 @@ public static class ShellDIExtensions
 	{
 		me.AddTransient<TPanelView>();
 		me.AddTransient<TPanel>();
-		me.AddSingleton<IPanelDescriptor>(sp => new GenericPanelDescriptor(typeof(TPanel).GetTypeKey().ToString(), typeof(TPanelView), defaultPosition, removeOnHide, isPinned));
+		me.AddSingleton<IPanelDescriptor>(sp => new GenericPanelDescriptor(typeof(TPanel).GetUriKey().ToString(), typeof(TPanelView), defaultPosition, removeOnHide, isPinned));
 	}
 	public static void AddPanel<TPanel>(this IServiceCollection me, PanelPosition defaultPosition = PanelPosition.Document, bool removeOnHide = true, bool isPinned = true) where TPanel : class, IPanel
 	{
 		me.AddTransient<TPanel>();
-		me.AddSingleton<IPanelDescriptor>(sp => new GenericPanelDescriptor(typeof(TPanel).GetTypeKey().ToString(), typeof(TPanel), defaultPosition, removeOnHide, isPinned));
+		me.AddSingleton<IPanelDescriptor>(sp => new GenericPanelDescriptor(typeof(TPanel).GetUriKey().ToString(), typeof(TPanel), defaultPosition, removeOnHide, isPinned));
 	}
 }
 
@@ -66,12 +70,10 @@ public interface IShellBuilder
 	IFuxionBuilder FuxionBuilder { get; }
 }
 
-class ShellBuilder : IShellBuilder
+class ShellBuilder(IFuxionBuilder fuxionBuilder) : IShellBuilder
 {
-	public ShellBuilder(IFuxionBuilder fuxionBuilder) => FuxionBuilder = fuxionBuilder;
 	public bool ShowWindow { get; set; } = true;
 	public ShellWindow? ShellWindow { get; set; }
-	public IFuxionBuilder FuxionBuilder { get; }
+	public IFuxionBuilder FuxionBuilder { get; } = fuxionBuilder;
 	public ShellWindow? GetShellWindow() => ShellWindow;
 }
-#endif

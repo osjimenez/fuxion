@@ -15,26 +15,43 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
-		<PackageReference Include="ReactiveUI.WPF" Version="19.4.1" />
+		<PackageReference Include="ReactiveUI.WPF" Version="19.5.1" />
 	</ItemGroup>
 
-	<ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' != 'net6.0-windows'">
 		<Reference Include="Telerik.Windows.Controls">
-			<HintPath>$(TELERIK_WPF_PATH)\Binaries\NetCore\Telerik.Windows.Controls.dll</HintPath>
+			<HintPath>$(TELERIK_WPF_PATH)\Binaries\WPF70\Telerik.Windows.Controls.dll</HintPath>
 		</Reference>
 		<Reference Include="Telerik.Windows.Controls.Data">
-			<HintPath>$(TELERIK_WPF_PATH)\Binaries\NetCore\Telerik.Windows.Controls.Data.dll</HintPath>
+			<HintPath>$(TELERIK_WPF_PATH)\Binaries\WPF70\Telerik.Windows.Controls.Data.dll</HintPath>
 		</Reference>
 		<Reference Include="Telerik.Windows.Controls.Docking">
-			<HintPath>$(TELERIK_WPF_PATH)\Binaries\NetCore\Telerik.Windows.Controls.Docking.dll</HintPath>
+			<HintPath>$(TELERIK_WPF_PATH)\Binaries\WPF70\Telerik.Windows.Controls.Docking.dll</HintPath>
 		</Reference>
 		<Reference Include="Telerik.Windows.Controls.GridView">
-			<HintPath>$(TELERIK_WPF_PATH)\Binaries\NetCore\Telerik.Windows.Controls.GridView.dll</HintPath>
+			<HintPath>$(TELERIK_WPF_PATH)\Binaries\WPF70\Telerik.Windows.Controls.GridView.dll</HintPath>
 		</Reference>
 		<Reference Include="Telerik.Windows.Controls.Navigation">
-			<HintPath>$(TELERIK_WPF_PATH)\Binaries\NetCore\Telerik.Windows.Controls.Navigation.dll</HintPath>
+			<HintPath>$(TELERIK_WPF_PATH)\Binaries\WPF70\Telerik.Windows.Controls.Navigation.dll</HintPath>
 		</Reference>
+	</ItemGroup>
 
+	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0-windows'">
+		<Reference Include="Telerik.Windows.Controls">
+			<HintPath>$(TELERIK_WPF_PATH)\Binaries\WPF60\Telerik.Windows.Controls.dll</HintPath>
+		</Reference>
+		<Reference Include="Telerik.Windows.Controls.Data">
+			<HintPath>$(TELERIK_WPF_PATH)\Binaries\WPF60\Telerik.Windows.Controls.Data.dll</HintPath>
+		</Reference>
+		<Reference Include="Telerik.Windows.Controls.Docking">
+			<HintPath>$(TELERIK_WPF_PATH)\Binaries\WPF60\Telerik.Windows.Controls.Docking.dll</HintPath>
+		</Reference>
+		<Reference Include="Telerik.Windows.Controls.GridView">
+			<HintPath>$(TELERIK_WPF_PATH)\Binaries\WPF60\Telerik.Windows.Controls.GridView.dll</HintPath>
+		</Reference>
+		<Reference Include="Telerik.Windows.Controls.Navigation">
+			<HintPath>$(TELERIK_WPF_PATH)\Binaries\WPF60\Telerik.Windows.Controls.Navigation.dll</HintPath>
+		</Reference>
 	</ItemGroup>
 
 	<ItemGroup>
