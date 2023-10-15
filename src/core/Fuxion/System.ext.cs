@@ -57,6 +57,9 @@ public static class Extensions
 	public static DisposableEnvelope<T> AsDisposable<T>(this T me, Action<T>? actionOnDispose = null)
 		where T : notnull
 		=> new(me, actionOnDispose);
+	public static DisposableEnvelope<T> AsDisposableAsync<T>(this T me, Func<T, ValueTask>? functionOnDispose = null)
+		where T : notnull
+		=> new (me, functionOnDispose);
 	#endregion
 
 	#region IsNullOrDefault

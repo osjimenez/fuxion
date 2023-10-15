@@ -12,7 +12,7 @@ public abstract class ShellViewModel : ReactiveObject, IActivatableViewModel, IC
 		Logger.LogTrace($"ShellViewModel '{GetType().Name}' CREATED");
 		this.WhenActivated(d => {
 			HandleActivation();
-			Disposable.Create(() => HandleDeactivation()).DisposeWith(d);
+			Disposable.Create(HandleDeactivation).DisposeWith(d);
 		});
 	}
 	protected ILogger Logger { get; }

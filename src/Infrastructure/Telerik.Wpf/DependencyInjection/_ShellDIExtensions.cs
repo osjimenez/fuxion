@@ -21,10 +21,13 @@ public static class ShellDIExtensions
 			foreach (var module in serviceProvider.GetServices<IModule>()) module.Register(me.Services);
 		});
 		var shellBuilder = new ShellBuilder(me);
-		me.AddToAutoActivateList<ShellWindow>(serviceProvider => {
+		me.AddToAutoActivateList<ShellWindow>(serviceProvider =>
+		{
 			foreach (var module in serviceProvider.GetServices<IModule>()) module.Initialize(serviceProvider);
-		}, (_, win) => {
+		}, (_, win) =>
+		{
 			shellBuilder.ShellWindow = win;
+			shellBuilder.ConfigureAction?.Invoke(win);
 			if (shellBuilder.ShowWindow) win.Show();
 		});
 		builder(shellBuilder);
@@ -42,10 +45,15 @@ public static class ShellDIExtensions
 		return me;
 	}
 	public static IShellBuilder ModulesFromAssemblyOf<T>(this IShellBuilder me) => ModulesFromAssemblyOf(me, typeof(T));
-	public static IShellBuilder ShellFactory(this IShellBuilder me, out Func<ShellWindow> shellFactory)
+	public static IShellBuilder UseShellFactory(this IShellBuilder me, out Func<ShellWindow> shellFactory)
 	{
-		shellFactory = () => ((ShellBuilder)me).GetShellWindow() ?? throw new InvalidProgramException("ShellFactory error, Shell window is not ready jet");
+		shellFactory = () => ((ShellBuilder)me).ShellWindow ?? throw new InvalidProgramException("ShellFactory error, Shell window is not ready jet");
 		((ShellBuilder)me).ShowWindow = false;
+		return me;
+	}
+	public static IShellBuilder ConfigureWindow(this IShellBuilder me, Action<ShellWindow> configureAction)
+	{
+		((ShellBuilder)me).ConfigureAction = configureAction;
 		return me;
 	}
 	public static void AddResource<TResource>(this IServiceCollection me) where TResource : ShellResourceDictionary => me.AddSingleton<ShellResourceDictionary, TResource>();
@@ -75,5 +83,5 @@ class ShellBuilder(IFuxionBuilder fuxionBuilder) : IShellBuilder
 	public bool ShowWindow { get; set; } = true;
 	public ShellWindow? ShellWindow { get; set; }
 	public IFuxionBuilder FuxionBuilder { get; } = fuxionBuilder;
-	public ShellWindow? GetShellWindow() => ShellWindow;
+	public Action<ShellWindow>? ConfigureAction { get; set; }
 }

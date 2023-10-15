@@ -67,20 +67,19 @@ public class DockingManager
 		AttachPane(PanelPosition.DockedRight);
 		var sp = new RadSplitContainer();
 		var gr = new RadPaneGroup {
-			Tag = PanelPosition.Document, TabStripPlacement = Dock.Left
+			Tag = PanelPosition.Document, TabStripPlacement = Dock.Left, CloseTabsOnMouseMiddleButtonDown = true
 		};
 		RadDocking.SetSerializationTag(gr, PanelPosition.Document.ToString());
 		sp.Items.Add(gr);
 		docking.DocumentHost = sp;
 		docking.DockingPanesFactory = new ShellDockingPanesFactory((dock, radPane) => {
 			logger?.LogTrace($"{nameof(docking)}.{nameof(docking.DockingPanesFactory)}.AddPane");
-			IPanelDescriptor descriptor;
-			if (radPane.Content is IPanel panel)
-				descriptor = panelInstances.Single(i => i.Panel == panel).Descriptor;
-			else if (radPane.Content is IPanelView view)
-				descriptor = panelInstances.Single(i => i.Panel == view.Panel).Descriptor;
-			else
-				throw new NotSupportedException($"The '{nameof(RadPane)}.{nameof(radPane.Content)}' must be '{nameof(IPanel)}' or '{nameof(IPanelView)}'");
+			var descriptor = radPane.Content switch
+			{
+				IPanel panel => panelInstances.Single(i => i.Panel == panel).Descriptor,
+				IPanelView view => panelInstances.Single(i => i.Panel == view.Panel).Descriptor,
+				var _ => throw new NotSupportedException($"The '{nameof(RadPane)}.{nameof(radPane.Content)}' must be '{nameof(IPanel)}' or '{nameof(IPanelView)}'")
+			};
 			PositionPanel(radPane, descriptor.DefaultPosition);
 		}, (dock, item) => item is RadPane radPane ? radPane : null);
 		docking.ElementLoading += (_, e) => {
@@ -174,7 +173,7 @@ public class DockingManager
 		logger?.LogTrace($"{nameof(CloseAllPanels)}()");
 		foreach (var panelInstance in panelInstances.ToList()) CloseRadPane(panelInstance.RadPane);
 	}
-	void LockRadPane(RadPane pane)
+	static void LockRadPane(RadPane pane)
 	{
 		// Quita la cabecera de los paneles pineados
 		pane.PaneHeaderVisibility = Visibility.Collapsed;
@@ -186,7 +185,7 @@ public class DockingManager
 		pane.CanFloat = false;
 		pane.IsDockable = false;
 	}
-	void UnlockRadPane(RadPane pane)
+	static void UnlockRadPane(RadPane pane)
 	{
 		// Quita la cabecera de los paneles pineados
 		pane.PaneHeaderVisibility = Visibility.Visible;
