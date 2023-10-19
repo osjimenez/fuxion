@@ -97,7 +97,7 @@ public class UriTest(ITestOutputHelper output) : BaseTest<UriKeyTest>(output)
 	[Fact(DisplayName = "Comparison")]
 	public void Comparison()
 	{
-		// Equals if change Fragment, UserInfo or Port
+		// Equals if change Fragment, UserInfo or default Port
 		Assert.Equal(new("https://fuxion.dev/one#fra"), new Uri("https://fuxion.dev/one"));
 		Assert.Equal(new("https://userInfo@fuxion.dev/one"), new Uri("https://fuxion.dev/one"));
 		Assert.Equal(new("https://fuxion.dev:443/one"), new Uri("https://fuxion.dev/one"));

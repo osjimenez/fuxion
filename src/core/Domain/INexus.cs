@@ -31,9 +31,21 @@ public interface INexus : IInitializable
 	// Routes - Rutas por las que enviar y recibir mensajes
 	// IReadOnlyCollection<IRoute<object,object>> Routes { get; }
 	Task Publish<TMessage>(TMessage message) where TMessage : notnull;
-	Task<IDisposable> OnReceive(Action<object> onMessageReceived);
+	Task<IDisposable> OnReceive(Action<IReceipt<object>> onMessageReceived);
+}
+public interface IReceipt<out T>
+{
+	T Data { get; }
+	IServiceProvider ServiceProvider { get; }
+	IReceipt<TNewData> WithData<TNewData>(TNewData data);
 }
 
+public class Receipt<TData>(TData data, IServiceProvider serviceProvider) : IReceipt<TData>
+{
+	public TData Data { get; } = data;
+	public IServiceProvider ServiceProvider { get; } = serviceProvider;
+	public IReceipt<TNewData> WithData<TNewData>(TNewData data) => new Receipt<TNewData>(data, serviceProvider);
+}
 public interface IInitializable
 {
 	Task Initialize();
@@ -83,9 +95,15 @@ public class DefaultNexus : INexus
 		}
 		if (!wasPublish) throw new InvalidProgramException($"Message didn't send, any publisher match");
 	}
-	public Task<IDisposable> OnReceive(Action<object> onMessageReceived)
+	public Task<IDisposable> OnReceive(Action<IReceipt<object>> onMessageReceived)
 	{
 		return RouteDirectory.OnReceive(onMessageReceived);
+	}
+	public void AddSubscriber<TMessage>(ISubscriber<TMessage> subscriber)
+		where TMessage : notnull
+	{
+		var sub = RouteDirectory.AddSubscriber(subscriber);
+		sub.Attach(this);
 	}
 }
 
@@ -146,18 +164,21 @@ public class RouteDirectory
 	}
 
 	List<ISubscriber<object>> subscribers = new();
-	public void AddSubscriber<TMessage>(ISubscriber<TMessage> subscriber)
+	internal ISubscriber AddSubscriber<TMessage>(ISubscriber<TMessage> subscriber)
 		where TMessage : notnull
 	{
-		subscribers.Add(new BypassSubscriber<object>(subscriber.Initialize, subscriber.Attach, action =>
+		var sub = new BypassSubscriber<object>(subscriber.Initialize, subscriber.Attach, action =>
 		{
-			return subscriber.OnReceive(msg =>
+			return subscriber.OnReceive(receipt =>
 			{
-				action(msg);
+				action(new Receipt<object>(receipt.Data, receipt.ServiceProvider));
 			});
-		}));
+		});
+		sub.Initialize();
+		subscribers.Add(sub);
+		return sub;
 	}
-	public async Task<IDisposable> OnReceive(Action<object> onMessageReceived)
+	public async Task<IDisposable> OnReceive(Action<IReceipt<object>> onMessageReceived)
 	{
 		List<IDisposable> disposables = new();
 		foreach (var subscriber in subscribers)
@@ -191,33 +212,31 @@ public class BypassPublisher<TMessage> : IPublisher<TMessage>
 	public Task Publish(TMessage message) => _onPublish(message);
 }
 
-public interface ISubscriber<out TMessage>
-	where TMessage : notnull
+public interface ISubscriber
 {
 	Task Initialize();
 	void Attach(INexus nexus);
+}
+public interface ISubscriber<out TMessage> : ISubscriber
+	where TMessage : notnull
+{
 	// Task Consume<TMessage>(TMessage message);
 	// Func<object, bool> Receive { get; }
-	Task<IDisposable> OnReceive(Action<TMessage> onMessageReceived);
+	Task<IDisposable> OnReceive(Action<IReceipt<TMessage>> onMessageReceived);
 	// TMessage Subscribe<TMessage>(Expression<Func<TMessage, bool>> predicate);
 	// IObservable<TMessage> Observe<TMessage>(Expression<Func<TMessage, bool>> predicate);
 }
 
-public class BypassSubscriber<TMessage> : ISubscriber<TMessage>
+public class BypassSubscriber<TMessage>(
+	Func<Task> onInitialize, 
+	Action<INexus> onAttach, 
+	Func<Action<IReceipt<TMessage>>, Task<IDisposable>> onReceive) 
+	: ISubscriber<TMessage>
 	where TMessage : notnull
 {
-	public BypassSubscriber(Func<Task> onInitialize, Action<INexus> onAttach, Func<Action<TMessage>,Task<IDisposable>> onReceive)
-	{
-		_onInitialize = onInitialize;
-		_onAttach = onAttach;
-		_onReceive = onReceive;
-	}
-	Func<Task> _onInitialize;
-	Action<INexus> _onAttach;
-	Func<Action<TMessage>, Task<IDisposable>> _onReceive;
-	public Task Initialize() => _onInitialize();
-	public void Attach(INexus nexus) => _onAttach(nexus);
-	public Task<IDisposable> OnReceive(Action<TMessage> onMessageReceived) => _onReceive(onMessageReceived);
+	public Task Initialize() => onInitialize();
+	public void Attach(INexus nexus) => onAttach(nexus);
+	public Task<IDisposable> OnReceive(Action<IReceipt<TMessage>> onMessageReceived) => onReceive(onMessageReceived);
 }
 
 public class ObservableSubscriberDecorator<TMessage> : ISubscriber<TMessage>
@@ -226,14 +245,14 @@ public class ObservableSubscriberDecorator<TMessage> : ISubscriber<TMessage>
 	public ObservableSubscriberDecorator(ISubscriber<TMessage> innerSubscriber)
 	{
 		_innerSubscriber = innerSubscriber;
-		_innerSubscriber.OnReceive(msg => subject.OnNext(msg));
+		_innerSubscriber.OnReceive(receipt => subject.OnNext(receipt));
 	}
 	ISubscriber<TMessage> _innerSubscriber;
 	public Task Initialize() => _innerSubscriber.Initialize();
 	public void Attach(INexus nexus) => _innerSubscriber.Attach(nexus);
-	public Task<IDisposable> OnReceive(Action<TMessage> onMessageReceived) => _innerSubscriber.OnReceive(onMessageReceived);
-	Subject<TMessage> subject = new();
-	public IObservable<TMessage> Observe(Func<TMessage, bool> predicate)
+	public Task<IDisposable> OnReceive(Action<IReceipt<TMessage>> onMessageReceived) => _innerSubscriber.OnReceive(onMessageReceived);
+	Subject<IReceipt<TMessage>> subject = new();
+	public IObservable<IReceipt<TMessage>> Observe(Func<IReceipt<TMessage>, bool> predicate)
 	{
 		return subject.Where(predicate);
 	}
@@ -244,12 +263,12 @@ public class ObservableNexusDecorator
 	public ObservableNexusDecorator(INexus nexus)
 	{
 		_nexus = nexus;
-		_nexus.OnReceive(msg => subject.OnNext(msg));
+		_nexus.OnReceive(receipt => subject.OnNext(receipt));
 	}
 	INexus _nexus;
 	// public Task<IDisposable> OnReceive(Action<object> onMessageReceived) => _nexus.OnReceive(onMessageReceived);
-	Subject<object> subject = new();
-	public IObservable<object> Observe(Func<object, bool> predicate)
+	Subject<IReceipt<object>> subject = new();
+	public IObservable<IReceipt<object>> Observe(Func<IReceipt<object>, bool> predicate)
 	{
 		return subject.Where(predicate);
 	}
@@ -257,7 +276,7 @@ public class ObservableNexusDecorator
 
 public static class ObservableNexusExtensions
 {
-	public static IObservable<object> Observe(this INexus nexus, Func<object, bool> predicate) => new ObservableNexusDecorator(nexus).Observe(predicate);
+	public static IObservable<IReceipt<object>> Observe(this INexus nexus, Func<IReceipt<object>, bool> predicate) => new ObservableNexusDecorator(nexus).Observe(predicate);
 }
 
 // public interface IObservableSubscriber : ISubscriber

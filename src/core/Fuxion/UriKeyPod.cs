@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 
@@ -16,14 +17,14 @@ public class UriKeyPod<TPayload>(UriKey discriminator, TPayload payload) : Pod<U
 	protected UriKeyPod() : this(default!, default!) { }
 	public override IPod<UriKey, object> this[UriKey key] => TryGetHeaderPod(key, out var pod)
 		? pod
-		: throw new UriKeyNotFoundException($"Key '{key}' not found in directory");
+		: throw new UriKeyNotFoundException($"Key '{key}' not found in headers");
 	public override void Add(IPod<UriKey, object> pod)
 	{
 		// Check if new pod is derived from an existing one
-		var header = this.FirstOrDefault(h => h.Discriminator.Uri.IsBaseOf(pod.Discriminator.Uri) || pod.Discriminator.Bases.Any(b => h.Discriminator.Uri.IsBaseOf(b)));
+		var header = this.FirstOrDefault(h => h.Discriminator.Key.IsBaseOf(pod.Discriminator.Key) || pod.Discriminator.Bases.Any(b => h.Discriminator.Key.IsBaseOf(b)));
 		if (header is not null) throw new UriKeyInheritanceException($"The header of type '{pod.Discriminator}' cannot be equals or based on an existing header '{header.Discriminator}'.");
 		// Check if new pod is base of an existing one
-		header = this.FirstOrDefault(h => pod.Discriminator.Uri.IsBaseOf(h.Discriminator.Uri) || h.Discriminator.Bases.Any(b => pod.Discriminator.Uri.IsBaseOf(b)));
+		header = this.FirstOrDefault(h => pod.Discriminator.Key.IsBaseOf(h.Discriminator.Key) || h.Discriminator.Bases.Any(b => pod.Discriminator.Key.IsBaseOf(b)));
 		if (header is not null) throw new UriKeyInheritanceException($"The header of type '{pod.Discriminator}' cannot be equals or base of an existing header '{header.Discriminator}'.");
 		base.Add(pod);
 	}
@@ -32,8 +33,13 @@ public class UriKeyPod<TPayload>(UriKey discriminator, TPayload payload) : Pod<U
 	public IUriKeyResolver? Resolver { get; set; }
 	public bool TryGetHeader<T>([MaybeNullWhen(false)] out T result, IUriKeyResolver? resolver = null)
 	{
-		var uk = Resolver is null ? resolver is null ? typeof(T).GetUriKey() : resolver[typeof(T)] : Resolver[typeof(T)];
-		if (TryGetHeaderPod(uk, out var pod) && pod?.Payload is T payload)
+		var uk = (resolver, Resolver) switch
+		{
+			(not null, _) => resolver[typeof(T)],
+			(null, not null) => Resolver[typeof(T)],
+			_ => typeof(T).GetUriKey()
+		};
+		if (TryGetHeaderPod(uk, out var pod) && pod.Payload is T payload)
 		{
 			result = payload;
 			return true;
@@ -50,16 +56,16 @@ public class UriKeyPod<TPayload>(UriKey discriminator, TPayload payload) : Pod<U
 			return true;
 		}
 		// Search all keys which are based on given key
-		var derivedKey = HeadersDictionary.Keys.Where(k => key.Uri.IsBaseOf(k.Uri))
+		var derivedKey = HeadersDictionary.Keys.Where(k => key.Key.IsBaseOf(k.Key))
 			// Get the key with longest path
-			.MaxBy(k => k.Uri.AbsolutePath.Length);
+			.MaxBy(k => k.Key.AbsolutePath.Length);
 		if (derivedKey is not null)
 		{
 			result = HeadersDictionary[derivedKey];
 			return true;
 		}
 		// Search keys which chains are based on given key
-		derivedKey ??= HeadersDictionary.FirstOrDefault(h => h.Key.Bases.Any(b => key.Uri.IsBaseOf(b)))
+		derivedKey ??= HeadersDictionary.FirstOrDefault(h => h.Key.Bases.Any(b => key.Key.IsBaseOf(b)))
 			.Key;
 		if (derivedKey is not null)
 		{

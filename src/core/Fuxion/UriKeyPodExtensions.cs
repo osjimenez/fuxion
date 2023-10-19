@@ -37,6 +37,7 @@ public static class UriKeyPodExtensions
 	public static IUriKeyPodBuilder<object, IUriKeyPod<object>> FromJsonNode(this IUriKeyPodBuilder<string,IPod<UriKey, string>> me)
 	{
 		JsonSerializerOptions options = new();
+		options.PropertyNameCaseInsensitive = true;
 		options.Converters.Add(new IPodConverterFactory(me.Resolver));
 		return new UriKeyPodBuilder<object, IUriKeyPod<object>>(me.Resolver, me.Pod.Payload.DeserializeFromJson<UriKeyPod<object>>(options: options)
 			?? throw new SerializationException("string couldn't be deserialized"));
@@ -44,6 +45,7 @@ public static class UriKeyPodExtensions
 	public static IUriKeyPodBuilder<object, IUriKeyPod<object>> FromJsonNode(this IUriKeyPodPreBuilder<string> me)
 	{
 		JsonSerializerOptions options = new();
+		options.PropertyNameCaseInsensitive = true;
 		options.Converters.Add(new IPodConverterFactory(me.Resolver));
 		return new UriKeyPodBuilder<object, IUriKeyPod<object>>(me.Resolver, me.Payload.DeserializeFromJson<UriKeyPod<object>>(options: options)
 			?? throw new SerializationException("string couldn't be deserialized"));
@@ -51,6 +53,7 @@ public static class UriKeyPodExtensions
 	public static IUriKeyPodBuilder<object, IUriKeyPod<object>> FromJsonNode(this IUriKeyPodPreBuilder<string> me, out IUriKeyPod<object> pod)
 	{
 		JsonSerializerOptions options = new();
+		options.PropertyNameCaseInsensitive = true;
 		options.Converters.Add(new IPodConverterFactory(me.Resolver));
 		var deserializedPod = me.Payload.DeserializeFromJson<UriKeyPod<object>>(options: options) ?? throw new SerializationException("string couldn't be deserialized");
 		pod = deserializedPod;

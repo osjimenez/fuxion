@@ -1,15 +1,44 @@
+using System.Collections.Specialized;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Text.Json.Serialization;
 using System.Web;
 
 namespace Fuxion;
+/*
+ * Attribute (Key, Version)
+ * Json Pod (Key, Version, Generics)
+ * Directory (Full)
+ * Layout (Key, Version, Generics, Parameters)
+ *
+ * 
+ * Discriminated (Key, Version, Generics)
+ * Full
+ * 
+ */
 
-[JsonConverter(typeof(UriKeyJsonConverter))]
-public class UriKey: IEquatable<UriKey>//, IComparable, IComparable<UriKey>
+public class UriKey2 : IEquatable<UriKey>
 {
-	internal const string InterfaceParameterName = "__interface";
-	internal const string BaseParameterNamePrefix = "__base";
+	public Uri Key { get; } = null!;
+	public Uri?[] Generics { get; } = null!;
+	public SemanticVersion Version { get; } = null!;
+	public bool Equals(UriKey? other) => other is not null && Uri.Equals(Key, other.Key);
+	public override bool Equals(object? obj)
+	{
+		var identifier = obj as UriKey;
+		return identifier is not null && Equals(identifier);
+	}
+	public override int GetHashCode() => Key.GetHashCode();
+}
+[JsonConverter(typeof(UriKeyJsonConverter))]
+public class UriKey : IEquatable<UriKey>//, IComparable, IComparable<UriKey>
+{
+	const string RequiredParameterPrefix = "__";
+	internal const char ParameterSeparator = '.'; // Valid values: . ! * ( )
+	internal const string InterfacesParameterName = RequiredParameterPrefix + "interfaces";
+	internal const string GenericsParameterName = "generics";
+	internal const string BasesParameterName = RequiredParameterPrefix + "bases";
 	public const string FuxionBaseUri = "https://meta.fuxion.dev/";
 	public const string FuxionSystemTypesBaseUri = FuxionBaseUri+"system/";
 
@@ -19,21 +48,25 @@ public class UriKey: IEquatable<UriKey>//, IComparable, IComparable<UriKey>
 #endif
 		string key)
 	{
-		(Uri, Bases, Version) = ValidateAndNormalizeUri(new(key), false);
+		(Key, FullUri, Bases, Generics, Interfaces, Version) = ValidateAndNormalizeUri(new(key), false);
 	}
 	public UriKey(Uri uri)
 	{
-		(Uri, Bases, Version) = ValidateAndNormalizeUri(uri, false);
+		(Key, FullUri, Bases, Generics, Interfaces, Version) = ValidateAndNormalizeUri(uri, false);
 	}
 	internal UriKey(Uri uri, bool allowReservedParameters)
 	{
-		(Uri, Bases, Version) = ValidateAndNormalizeUri(uri, allowReservedParameters);
+		(Key, FullUri, Bases, Generics, Interfaces, Version) = ValidateAndNormalizeUri(uri, allowReservedParameters);
 	}
 	
-	public Uri Uri { get; }
+	public Uri FullUri { get; }
+	public Uri Key { get; }
 	public Uri[] Bases { get; }
+	public Uri?[] Generics { get; }
+	public Uri[] Interfaces { get; }
 	public SemanticVersion Version { get; }
-	internal static (Uri Uri, Uri[] Bases, SemanticVersion Version) ValidateAndNormalizeUri(Uri uri, bool allowReservedParameters)
+	public Dictionary<string, string?> Parameters { get; } = new();
+	internal static (Uri Key, Uri Uri, Uri[] Bases, Uri?[] Generics, Uri[] Interfaces, SemanticVersion Version) ValidateAndNormalizeUri(Uri uri, bool allowReservedParameters)
 	{
 		// If uri is relative, make it absolute only to process it
 		var currentUri = uri;
@@ -59,36 +92,79 @@ public class UriKey: IEquatable<UriKey>//, IComparable, IComparable<UriKey>
 		
 		// Validate that hasn't parameters named with reserved names, if not allowed
 		var pars = HttpUtility.ParseQueryString(currentUri.Query);
+		// foreach (var key in pars.AllKeys.RemoveNulls())
+		// {
+		// 	Parameters
+		// }
 		if (!allowReservedParameters)
 		{
-			if (pars.AllKeys.Any(key => key == InterfaceParameterName)) throw new UriKeyParameterException($"Neither parameter in query can be named '{InterfaceParameterName}'");
-			if (pars.AllKeys.Any(key => key?.StartsWith(BaseParameterNamePrefix) ?? false)) throw new UriKeyParameterException($"Neither parameter in query can be named started with '{BaseParameterNamePrefix}'");
+			if (pars.AllKeys.Any(key => key == InterfacesParameterName)) throw new UriKeyParameterException($"Neither parameter in query can be named '{InterfacesParameterName}'");
+			if (pars.AllKeys.Any(key => key == GenericsParameterName)) throw new UriKeyParameterException($"Neither parameter in query can be named '{GenericsParameterName}'");
+			if (pars.AllKeys.Any(key => key == BasesParameterName)) throw new UriKeyParameterException($"Neither parameter in query can be named '{BasesParameterName}'");
 		}
 
+		// Extract generics
+		List<Uri?> generics = new();
+		var genericsBase64 = pars[GenericsParameterName]
+			?.Split(ParameterSeparator);
+		if(genericsBase64 is not null)
+			foreach(var generic in genericsBase64)
+				generics.Add(string.IsNullOrWhiteSpace(generic) ? null : new(Encoding.UTF8.GetString(generic.FromBase64UrlString())));
+		
+		// Extract interfaces
+		List<Uri> interfaces = new();
+		var interfacesBase64 = pars[InterfacesParameterName]
+			?.Split(ParameterSeparator);
+		if(interfacesBase64 is not null)
+			foreach(var @interface in interfacesBase64)
+				interfaces.Add(new(Encoding.UTF8.GetString(@interface.FromBase64UrlString())));
+		
+		// Extract key chain
+		List<Uri> keyChain = new();
+		var keyChainBase64 = pars[BasesParameterName]
+			?.Split(ParameterSeparator);
+		if(keyChainBase64 is not null)
+			foreach(var key in keyChainBase64)
+				keyChain.Add(new(Encoding.UTF8.GetString(key.FromBase64UrlString())));
+		
+		UriBuilder ub = new(currentUri);
+		// Create key Uri
+		Dictionary<string,string?> newQuery = new();
+		foreach (var key in pars.AllKeys.RemoveNulls().Where(k => !k.StartsWith(RequiredParameterPrefix)))
+		{
+			newQuery[key] = pars[key];
+		}
+		ub.Query = newQuery.Aggregate("?", (c, a) => c + (c == "?" ? "" : "&") + a.Key + "=" + a.Value).TrimEnd('?');
 		// If the source uri is relative, return it
 		if (!uri.IsAbsoluteUri)
-			return (uri, Array.Empty<Uri>(), version);
-		
-		// Use UriBuilder to normalize the uri
-		UriBuilder ub = new(currentUri);
+		{
+			// // Create key Uri
+			// Dictionary<string,string?> newQuery = new();
+			// foreach (var key in pars.AllKeys.RemoveNulls().Where(k => !k.StartsWith(RequiredParameterPrefix)))
+			// {
+			// 	newQuery[key] = pars[key];
+			// }
+			// ub.Query = newQuery.Aggregate("?", (c, a) => c + (c == "?" ? "" : "&") + a.Key + "=" + a.Value).TrimEnd('?');
+			return (ub.Uri, uri, Array.Empty<Uri>(), generics.ToArray(), interfaces.ToArray(), version);
+		}
+
+		// Remove user info and default port
 		ub.UserName = null;
 		if (ub.Uri.IsDefaultPort) ub.Port = -1;
 		currentUri = ub.Uri;
 		
-		// Extract bases
-		List<Uri> bases = new();
-		for (var i = 1;; i++)
-		{
-			var par = pars[BaseParameterNamePrefix + i];
-			if(par is not null)
-			{
-				bases.Add(new(System.Uri.UnescapeDataString(par)));
-			} else break;
-		}
-		
-		return (currentUri, bases.ToArray(), version);
+		// // Create key Uri
+		// {
+		// 	Dictionary<string,string?> newQuery = new();
+		// 	foreach (var key in pars.AllKeys.RemoveNulls().Where(k => !k.StartsWith(RequiredParameterPrefix)))
+		// 	{
+		// 		newQuery[key] = pars[key];
+		// 	}
+		// 	ub.Query = newQuery.Aggregate("?", (c, a) => c + (c == "?" ? "" : "&") + a.Key + "=" + a.Value).TrimEnd('?');
+		// }
+		return (ub.Uri, currentUri, keyChain.ToArray(), generics.ToArray(), interfaces.ToArray(), version);
 	}
-	public override string ToString() => Uri.ToString();
+	public override string ToString() => Key.ToString();
 	
 	// public static bool operator ==(UriKey? identifier1, UriKey? identifier2)
 	// {
@@ -133,11 +209,11 @@ public class UriKey: IEquatable<UriKey>//, IComparable, IComparable<UriKey>
 	// 		?? throw new ArgumentException($"Type must be '{nameof(UriKey)}'", "obj");
 	// 	return CompareTo(other);
 	// }
-	public bool Equals(UriKey? other) => other is not null && Uri.Equals(Uri, other.Uri);
+	public bool Equals(UriKey? other) => other is not null && Uri.Equals(Key, other.Key);
 	public override bool Equals(object? obj)
 	{
 		var identifier = obj as UriKey;
 		return identifier is not null && Equals(identifier);
 	}
-	public override int GetHashCode() => Uri.GetHashCode();
+	public override int GetHashCode() => Key.GetHashCode();
 }

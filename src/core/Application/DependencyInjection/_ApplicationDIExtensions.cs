@@ -18,6 +18,10 @@ public static class ApplicationDIExtensions
 		me.AddSingleton<IUriKeyResolver>(uriKeyDirectory);
 		var builder = new FuxionBuilder(me, uriKeyDirectory);
 		builderAction(builder);
+		foreach (var action in builder.ConfigureDirectoryList)
+		{
+			action(uriKeyDirectory);
+		}
 		foreach (var action in builder.PreRegistrationsList)
 		{
 			var sp = me.BuildServiceProvider();
@@ -152,6 +156,7 @@ public interface IFuxionBuilder
 {
 	IServiceCollection Services { get; }
 	UriKeyDirectory UriKeyDirectory { get; }
+	void ConfigureDirectory(Action<UriKeyDirectory> action);
 	void AddToPreRegistrationList(Action<IServiceProvider> action);
 	void AddToRegistrationList(Action<IServiceProvider> action);
 	void AddToAutoActivateList<T>(Action<IServiceProvider>? preAction = null, Action<IServiceProvider, T>? postAction = null);
@@ -161,9 +166,11 @@ class FuxionBuilder(IServiceCollection services, UriKeyDirectory uriKeyDirectory
 {
 	public List<Action<IServiceProvider>> PreRegistrationsList = new();
 	public List<Action<IServiceProvider>> RegistrationsList = new();
+	public List<Action<UriKeyDirectory>> ConfigureDirectoryList = new();
 	public List<(Type Type, Action<IServiceProvider>? PreAction, Action<IServiceProvider, object>? PostAction)> AutoActivateList { get; } = new();
 	public IServiceCollection Services { get; } = services;
 	public UriKeyDirectory UriKeyDirectory { get; } = uriKeyDirectory;
+	public void ConfigureDirectory(Action<UriKeyDirectory> action) => ConfigureDirectoryList.Add(action);
 	public void AddToPreRegistrationList(Action<IServiceProvider> action) => PreRegistrationsList.Add(action);
 	public void AddToRegistrationList(Action<IServiceProvider> action) => RegistrationsList.Add(action);
 	public void AddToAutoActivateList<T>(Action<IServiceProvider>? preAction = null, Action<IServiceProvider, T>? postAction = null) =>

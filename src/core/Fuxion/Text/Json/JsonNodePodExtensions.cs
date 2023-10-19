@@ -20,6 +20,7 @@ public static class JsonNodePodExtensions
 		where TDiscriminator : notnull
 	{
 		JsonSerializerOptions options = new();
+		options.PropertyNameCaseInsensitive = true;
 		options.Converters.Add(new IPodConverterFactory());
 		return new PodBuilder<TDiscriminator, JsonNode, JsonNodePod<TDiscriminator>>(me.Pod.Payload.DeserializeFromJson<JsonNodePod<TDiscriminator>>(options: options)
 			?? throw new SerializationException("string couldn't be deserialized"));

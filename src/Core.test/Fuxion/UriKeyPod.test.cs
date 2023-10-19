@@ -130,7 +130,7 @@ public class UriKeyPodTest : BaseTest<UriKeyPodTest>
 		};
 		var builder = payload.BuildUriKeyPod(resolver)
 			.ToUriKeyPod()
-			.AddHeader(UriKeyDirectory.SystemRegistrator.IntUriKey, 1234)
+			.AddHeader(SystemUriKeys.Int, 1234)
 			.AddUriKeyHeader(new TestPayloadReset
 			{
 				Age = 12,
@@ -154,7 +154,7 @@ public class UriKeyPodTest : BaseTest<UriKeyPodTest>
 	[Fact(DisplayName = "FromJson")]
 	public void FromJson()
 	{
-		const string base64 = "eyJfX2Rpc2NyaW1pbmF0b3IiOiJodHRwczovL2Z1eGlvbi5kZXYvbWV0YWRhdGEvdGVzdC9UZXN0UGF5bG9hZC9UZXN0UGF5bG9hZERlcml2ZWQvMS4wLjAiLCJfX3BheWxvYWQiOnsiTmljayI6InBheWxvYWROaWNrIiwiQmlydGhkYXRlLWN1c3RvbSI6IjIwMTItMTItMTIiLCJOYW1lIjoicGF5bG9hZE5hbWUiLCJBZ2UtY3VzdG9tIjoyM30sIl9faXRlbXMiOlt7Il9fZGlzY3JpbWluYXRvciI6Imh0dHBzOi8vbWV0YS5mdXhpb24uZGV2L3N5c3RlbS9pbnQvMS4wLjAiLCJfX3BheWxvYWQiOjEyMzR9LHsiX19kaXNjcmltaW5hdG9yIjoiaHR0cHM6Ly9mdXhpb24uZGV2L21ldGFkYXRhL3Rlc3QvVGVzdFBheWxvYWRSZXNldC8xLjAuMD9fX2Jhc2UxPWh0dHBzJTNBJTJGJTJGZnV4aW9uLmRldiUyRm1ldGFkYXRhJTJGdGVzdCUyRlRlc3RQYXlsb2FkJTJGVGVzdFBheWxvYWREZXJpdmVkJTJGMS4wLjAiLCJfX3BheWxvYWQiOnsiQWRkcmVzcyI6ImhlYWRlci5hZGRyZXNzIiwiTmljayI6ImhlYWRlci5uaWNrIiwiQmlydGhkYXRlLWN1c3RvbSI6IjIwMTItMTItMTIiLCJOYW1lIjoiaGVhZGVyLm5hbWUiLCJBZ2UtY3VzdG9tIjoxMn19LHsiX19kaXNjcmltaW5hdG9yIjoiaHR0cHM6Ly9tZXRhLmZ1eGlvbi5kZXYvc3lzdGVtL3N0cmluZ1tdLzEuMC4wIiwiX19wYXlsb2FkIjpbIml0ZW0xLGl0ZW0yIl19XX0=";
+		const string base64 = "eyJfX2Rpc2NyaW1pbmF0b3IiOiJodHRwczovL21ldGEuZnV4aW9uLmRldjo0NDMvbWV0YWRhdGEvdGVzdC9UZXN0UGF5bG9hZC9UZXN0UGF5bG9hZERlcml2ZWQvMS4wLjAiLCJfX3BheWxvYWQiOnsiTmljayI6InBheWxvYWROaWNrIiwiQmlydGhkYXRlLWN1c3RvbSI6IjIwMTItMTItMTIiLCJOYW1lIjoicGF5bG9hZE5hbWUiLCJBZ2UtY3VzdG9tIjoyM30sIl9faXRlbXMiOlt7Il9fZGlzY3JpbWluYXRvciI6Imh0dHBzOi8vbWV0YS5mdXhpb24uZGV2OjQ0My9zeXN0ZW0vaW50LzEuMC4wIiwiX19wYXlsb2FkIjoxMjM0fSx7Il9fZGlzY3JpbWluYXRvciI6Imh0dHBzOi8vbWV0YS5mdXhpb24uZGV2OjQ0My9tZXRhZGF0YS90ZXN0L1Rlc3RQYXlsb2FkUmVzZXQvMS4wLjAiLCJfX3BheWxvYWQiOnsiQWRkcmVzcyI6ImhlYWRlci5hZGRyZXNzIiwiTmljayI6ImhlYWRlci5uaWNrIiwiQmlydGhkYXRlLWN1c3RvbSI6IjIwMTItMTItMTIiLCJOYW1lIjoiaGVhZGVyLm5hbWUiLCJBZ2UtY3VzdG9tIjoxMn19LHsiX19kaXNjcmltaW5hdG9yIjoiaHR0cHM6Ly9tZXRhLmZ1eGlvbi5kZXY6NDQzL3N5c3RlbS9zdHJpbmdbXS8xLjAuMCIsIl9fcGF5bG9hZCI6WyJpdGVtMSxpdGVtMiJdfV19";
 		var builder = base64.FromBase64String()
 			.BuildUriKeyPod(resolver)
 			.FromUtf8Bytes()
@@ -174,19 +174,20 @@ public class UriKeyPodTest : BaseTest<UriKeyPodTest>
 		IsTrue(pod[typeof(TestPayloadReset)].Payload is TestPayloadReset);
 		IsTrue(pod.TryGetHeader<TestPayloadReset>(out var _));
 		Output.WriteLine($"--- int");
-		IsTrue(pod[UriKeyDirectory.SystemRegistrator.IntUriKey].Payload is int);
+		IsTrue(pod[SystemUriKeys.Int].Payload is int);
 		IsTrue(pod[resolver[typeof(int)]].Payload is int);
 		IsTrue(pod[typeof(int)].Payload is int);
 		IsTrue(pod.TryGetHeader<int>(out var _));
 		Output.WriteLine($"--- string[]");
-		IsTrue(pod[UriKeyDirectory.SystemRegistrator.StringArrayUriKey].Payload is string[]);
+		IsTrue(pod[SystemUriKeys.StringArray].Payload is string[]);
 		IsTrue(pod[resolver[typeof(string[])]].Payload is string[]);
 		IsTrue(pod[typeof(string[])].Payload is string[]);
 		IsTrue(pod.TryGetHeader<string[]>(out var _));
 		//Output.WriteLine($"json:\r\n{pod.BuildPod().ToJsonNode(resolver).Pod.Payload.ToJsonString(true)}");
 	}
 }
-[UriKey($"https://fuxion.dev/metadata/test/{nameof(TestPayload)}/1.0.0", false)]
+
+[UriKey($"{UriKey.FuxionBaseUri}metadata/test/{nameof(TestPayload)}/1.0.0")]
 file class TestPayload
 {
 	public string? Name { get; set; }
@@ -218,7 +219,7 @@ file class TestPayloadDerived : TestPayload
 #endif
 }
 
-[UriKey($"https://fuxion.dev/metadata/test/{nameof(TestPayloadReset)}/1.0.0", isReset: true)]
+[UriKey($"{UriKey.FuxionBaseUri}metadata/test/{nameof(TestPayloadReset)}/1.0.0", isReset: true)]
 file class TestPayloadReset : TestPayloadDerived
 {
 #if NET462

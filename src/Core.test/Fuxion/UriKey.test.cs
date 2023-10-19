@@ -1,10 +1,16 @@
+using System.IO.Compression;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Web;
 using Fuxion.Reflection;
+using Fuxion.Text.Json;
 
 namespace Fuxion.Test;
 
 public class UriKeyTest(ITestOutputHelper output) : BaseTest<UriKeyTest>(output)
 {
+	
 	[Fact(Skip = "Debería dar un error en tiempo de compilacion")]
 	public void ConstantExpected()
 	{
@@ -126,9 +132,9 @@ public class UriKeyTest(ITestOutputHelper output) : BaseTest<UriKeyTest>(output)
 		Throws<UriKeyUserInfoException>(() => new UriKeyAttribute("https://userInfo@fuxion.dev/one/two/1.0.0"));
 		Throws<UriKeyFragmentException>(() => new UriKeyAttribute("https://fuxion.dev/one/two/1.0.0#"));
 		Throws<UriKeyFragmentException>(() => new UriKeyAttribute("https://fuxion.dev/one/two/1.0.0#fragment"));
-		Throws<UriKeyParameterException>(() => new UriKeyAttribute("https://fuxion.dev/one/two/1.0.0?__interface=fail"));
-		Throws<UriKeyParameterException>(() => new UriKeyAttribute("https://fuxion.dev/one/two/1.0.0?__base=fail"));
-		Throws<UriKeyParameterException>(() => new UriKeyAttribute("https://fuxion.dev/one/two/1.0.0?__base123=fail"));
+		Throws<UriKeyParameterException>(() => new UriKeyAttribute($"https://fuxion.dev/one/two/1.0.0?{UriKey.InterfacesParameterName}=fail"));
+		Throws<UriKeyParameterException>(() => new UriKeyAttribute($"https://fuxion.dev/one/two/1.0.0?{UriKey.GenericsParameterName}=fail"));
+		Throws<UriKeyParameterException>(() => new UriKeyAttribute($"https://fuxion.dev/one/two/1.0.0?{UriKey.BasesParameterName}=fail"));
 
 		// Relative Uris
 		PrintVariable(new UriKeyAttribute("one/two/1.0.0").Uri.ToString());
@@ -136,9 +142,154 @@ public class UriKeyTest(ITestOutputHelper output) : BaseTest<UriKeyTest>(output)
 		Throws<UriKeySemanticVersionException>(() => new UriKeyAttribute("one/two"));
 		Throws<UriKeyPathException>(() => new UriKeyAttribute("/one/two/1.0.0"));
 		Throws<UriKeyFragmentException>(() => new UriKeyAttribute("one/two/1.0.0#fragment"));
-		Throws<UriKeyParameterException>(() => new UriKeyAttribute("one/two/1.0.0?__interface=fail"));
+		Throws<UriKeyParameterException>(() => new UriKeyAttribute($"one/two/1.0.0?{UriKey.InterfacesParameterName}=fail"));
+	}
+	[Fact(DisplayName = "Validate UriKey properties")]
+	public void ValidateProperties()
+	{
+		var i1 = "https://fuxion.dev/interface-1/1.0.0";
+		var i1b64 = Encoding.UTF8.GetBytes(i1).ToBase64UrlString();
+		var i2 = "https://fuxion.dev/interface-2/1.0.0";
+		var i2b64 = Encoding.UTF8.GetBytes(i2).ToBase64UrlString();
+		var g1 = "https://fuxion.dev/generic-1/1.0.0"u8.ToArray().ToBase64UrlString();
+		var g2 = "https://fuxion.dev/generic-2/1.0.0"u8.ToArray().ToBase64UrlString();
+		var c1 = "https://fuxion.dev/chain-1/1.0.0"u8.ToArray().ToBase64UrlString();
+		var c2 = "https://fuxion.dev/chain-2/1.0.0"u8.ToArray().ToBase64UrlString();
+		// var u1 = new UriKey(new ($"https://fuxion.dev/1.0.0?__interfaces={i1}-{i2}"),true);
+		UriBuilder ub1 = new($"https://fuxion.dev/1.0.0");
+		var query = HttpUtility.ParseQueryString(ub1.Query);
+		query[UriKey.InterfacesParameterName] = $"{i1b64}{UriKey.ParameterSeparator}{i2b64}";
+		ub1.Query += query;
+		var u1 = new UriKey(ub1.Uri, true);
+		AnalyseUriKey(u1);
+		Assert.Equal(i1,u1.Interfaces.First().ToString());
+		Assert.Equal(i2,u1.Interfaces.Last().ToString());
+	}
+	[Fact(DisplayName = "Generic types")]
+	public void GenericTypes()
+	{
+		var t1 = typeof(string).GetUriKey();
+		var t2 = typeof(int).GetUriKey();
+		var g1 = typeof(Generic<string, string>).GetUriKey();
+		var g2 = typeof(Generic<int, int>).GetUriKey();
+		var g3 = typeof(Generic<,>).GetUriKey();
+		var gd1 = typeof(Generic_Echelon1<string, string>).GetUriKey();
+		var gd2 = typeof(Generic_Echelon1<int, int>).GetUriKey();
+		var gr1 = typeof(Generic_Reset<string, string>).GetUriKey();
+		var gr2 = typeof(Generic_Reset<Class, Generic<int, string>>).GetUriKey();
+		
+		PrintVariable(t1);
+		PrintVariable(t2);
+		PrintVariable(g1);
+		PrintVariable(g2);
+		PrintVariable(g3);
+		PrintVariable(gd1);
+		PrintVariable(gd2);
+		PrintVariable(gr1);
+		PrintVariable(gr2);
+		AnalyseUriKey(gr2);
+	}
+	void AnalyseUriKey(UriKey uriKey, string title = "=== Analysing UriKey ===")
+	{
+		using(Printer.Indent(title))
+		{
+			Printer.WriteLine($"KEY: {uriKey.Key}");
+			Printer.WriteLine($"FULL-URI: {uriKey.FullUri}");
+			if (uriKey.Generics.Length == 0) goto interfaces;
+			using (Printer.Indent($"GENERICS"))
+			{
+				for (var i = 0; i < uriKey.Generics.Length; i++)
+				{
+					var gen = uriKey.Generics[i];
+					if(gen is null)
+						Printer.WriteLine($"GENERIC_{i + 1} : UNDEFINED");
+					else
+						AnalyseUriKey(new(gen, true), $"GENERIC_{i + 1}");
+				}
+			}
+		interfaces:
+			if (uriKey.Interfaces.Length == 0) goto bases;
+			using (Printer.Indent($"INTERFACES"))
+			{
+				for (var i = 0; i < uriKey.Interfaces.Length; i++)
+				{
+					AnalyseUriKey(new(uriKey.Interfaces[i], true), $"INTERFACE");
+				}
+			}
+		bases:
+			if (uriKey.Bases.Length == 0) return;
+			using (Printer.Indent($"BASES"))
+			{
+				for (var i = 0; i < uriKey.Bases.Length; i++)
+				{
+					AnalyseUriKey(new(uriKey.Bases[i], true), $"BASE_{i + 1}");
+				}
+			}
+		}
+	}
+	[Fact(DisplayName = "Json")]
+	public void Json()
+	{
+		UriKeyDirectory dir = new();
+		dir.SystemRegister.All();
+		dir.Register<Generic<int, string>>();
+		dir.Register<Generic<string, int>>();
+		var pay = new Generic<int, string>();
+		var json = pay.BuildUriKeyPod(dir)
+			.ToUriKeyPod()
+			.ToJsonNode()
+			.Pod.Payload.ToJsonString(true);
+		PrintVariable(json);
+		var pay2 = json.BuildUriKeyPod(dir)
+			.FromJsonNode()
+			.Pod.Payload;
+		PrintVariable(pay2);
+	}
+	[Fact(DisplayName = "Base64 Url encoding")]
+	public void Base64UrlEncoding()
+	{
+		var uriKey = typeof(Generic<,>).GetUriKey();
+		AnalyseUriKey(uriKey);
+
+
+		// var url = $"https://meta.fuxion.dev/system/string/1.0.0";
+		//
+		// var bytes = Encoding.UTF8.GetBytes(url);
+		// var hexD = bytes.ToHexadecimal();
+		// PrintVariable(hexD);
+		// var base64 = bytes.ToBase64UrlString();
+		// PrintVariable(base64);
+		// var urlBack = Encoding.UTF8.GetString(base64.FromBase64UrlString());
+		// PrintVariable(urlBack);
+
+
+
+		// var url =
+		// 	$"https://generic_reset.com/1.0.0?__generic1=aHR0cHM6Ly9tZXRhLmZ1eGlvbi5kZXYvc3lzdGVtL2ludC8xLjAuMA&__generic2=aHR0cHM6Ly9nZW5lcmljLmNvbS8xLjAuMD9fX2dlbmVyaWMxPWFIUjBjSE02THk5dFpYUmhMbVoxZUdsdmJpNWtaWFl2YzNsemRHVnRMMmx1ZEM4eExqQXVNQSZfX2dlbmVyaWMyPWFIUjBjSE02THk5dFpYUmhMbVoxZUdsdmJpNWtaWFl2YzNsemRHVnRMM04wY21sdVp5OHhMakF1TUE&__interface=aHR0cHM6Ly9pbnRlcmZhY2UxLmNvbS8xLjAuMA&__interface=aHR0cHM6Ly9pbnRlcmZhY2UyLmNvbS8xLjAuMA&__base1=aHR0cHM6Ly9nZW5lcmljLmNvbS9HZW5lcmljX0VjaGVsb24xLzEuMC4wP19fZ2VuZXJpYzE9YUhSMGNITTZMeTl0WlhSaExtWjFlR2x2Ymk1a1pYWXZjM2x6ZEdWdEwybHVkQzh4TGpBdU1BJl9fZ2VuZXJpYzI9YUhSMGNITTZMeTluWlc1bGNtbGpMbU52YlM4eExqQXVNRDlmWDJkbGJtVnlhV014UFdGSVVqQmpTRTAyVEhrNWRGcFlVbWhNYlZveFpVZHNkbUpwTld0YVdGbDJZek5zZW1SSFZuUk1NbXgxWkVNNGVFeHFRWFZOUVNaZlgyZGxibVZ5YVdNeVBXRklVakJqU0UwMlRIazVkRnBZVW1oTWJWb3haVWRzZG1KcE5XdGFXRmwyWXpOc2VtUkhWblJNTTA0d1kyMXNkVnA1T0hoTWFrRjFUVUU";
+		// var uri = new Uri(url);
+		// var pars = HttpUtility.ParseQueryString(uri.Query);
+		// PrintVariable(pars[UriKey.InterfaceParameterName]);
+		// var inters = pars[UriKey.InterfaceParameterName]?.Split(',');
+		// Assert.NotNull(inters);
+		// foreach(var inter in inters)
+		// 	PrintVariable(inter);
 	}
 }
+
+[UriKey($"https://{nameof(Interface1)}.com/1.0.0")]
+public interface Interface1{}
+[UriKey($"https://{nameof(GenericInterface<string>)}.com/1.0.0")]
+public interface GenericInterface<T> : Interface1{}
+
+[UriKey($"https://{nameof(Class)}.com/1.0.0")]
+public class Class : Interface1{}
+
+[UriKey($"https://{nameof(Generic<string, string>)}.com/1.0.0")]
+public class Generic<T1, T2> { }
+[UriKey($"{nameof(Generic_Echelon1<string, string>)}/1.0.0")]
+public class Generic_Echelon1<T1, T2> : Generic<T1, T2>{}
+[UriKey($"https://{nameof(Generic_Reset<string, string>)}.com/1.0.0?param1=value1", isReset: true)]
+public class Generic_Reset<T1, T2> : Generic_Echelon1<T1, T2>, GenericInterface<byte>{}
 
 #region Chain 1 - Show how alone echelon in chain doesn't works
 [UriKey($"{nameof(Chain1)}_Folder/1.0.0")]
