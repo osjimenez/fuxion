@@ -43,7 +43,7 @@ public class UriKey : IEquatable<UriKey>//, IComparable, IComparable<UriKey>
 	public const string FuxionSystemTypesBaseUri = FuxionBaseUri+"system/";
 
 	public UriKey(
-#if !NETSTANDARD2_0 && !NET462 && !NET6_0
+#if !NETSTANDARD2_0 && !NET462
 		[ConstantExpected]
 #endif
 		string key)

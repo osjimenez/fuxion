@@ -12,12 +12,12 @@ public interface IInternalTriggerState : ITriggerState
 {
 	List<(object Entity, EntityState State, PropertyValues OriginalValues)>? Changes { get; }
 }
-public interface ITriggerState<TDbContext> : ITriggerState where TDbContext : DbContext
+public interface ITriggerState<out TDbContext> : ITriggerState where TDbContext : DbContext
 {
 	DbContext ITriggerState.DbContext => DbContext;
 	new TDbContext DbContext { get; }
 }
-internal class TriggerState<TDbContext>(TDbContext context) : IInternalTriggerState, ITriggerState<TDbContext>
+class TriggerState<TDbContext>(TDbContext context) : IInternalTriggerState, ITriggerState<TDbContext>
 	where TDbContext : DbContext
 {
 	DbContext ITriggerState.DbContext => DbContext;

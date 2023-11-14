@@ -195,8 +195,6 @@ file class TestPayload
 #if NET462
 	[JsonInclude]
 	public int Age { get; internal set; }
-#elif NET6_0
-	public int Age { get; init; }
 #else
 	public required int Age { get; init; }
 #endif
@@ -205,8 +203,6 @@ file class TestPayload
 file class TestPayloadDerived : TestPayload
 {
 #if NET462
-	public string Nick { get; set; } = "";
-#elif NET6_0
 	public string Nick { get; set; } = "";
 #else
 	public required string Nick { get; set; }
@@ -223,8 +219,6 @@ file class TestPayloadDerived : TestPayload
 file class TestPayloadReset : TestPayloadDerived
 {
 #if NET462
-	public string Address { get; set; } = "";
-#elif NET6_0
 	public string Address { get; set; } = "";
 #else
 	public required string Address { get; set; }

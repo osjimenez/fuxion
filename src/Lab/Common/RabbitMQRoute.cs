@@ -8,6 +8,7 @@ using Fuxion.Json;
 using Fuxion.Reflection;
 using Fuxion.Threading;
 using Fuxion.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Polly;
 using Polly.CircuitBreaker;
@@ -68,27 +69,22 @@ public class RabbitMQPublisher : IPublisher<RabbitMQSend>
 		});
 	});
 }
-public class RabbitMQSubscriber : ISubscriber<RabbitMQReceive>
+public class RabbitMQSubscriber(
+	RabbitMQConnection connection, 
+	ILogger<RabbitMQSubscriber> logger, 
+	IOptions<RabbitSettings> settings,
+	IServiceProvider serviceProvider) : ISubscriber<RabbitMQReceive>
 {
-	RabbitMQConnection _connection;
-	ILogger<RabbitMQSubscriber> _logger;
-	IOptions<RabbitSettings> _settings;
-	INexus? _nexus;
-	IModel? _consumerChannel;
+	INexus? nexus;
+	IModel? consumerChannel;
 	public Task Initialize()
 	{
-		_consumerChannel = CreateConsumerChannel();
+		consumerChannel = CreateConsumerChannel();
 		return Task.CompletedTask;
 	}
-	public void Attach(INexus nexus) => _nexus = nexus;
-	List<Action<RabbitMQReceive>> receivers = new();
-	public RabbitMQSubscriber(RabbitMQConnection connection, ILogger<RabbitMQSubscriber> logger, IOptions<RabbitSettings> settings)
-	{
-		_connection = connection;
-		_logger = logger;
-		_settings = settings;
-	}
-	public Task<IDisposable> OnReceive(Action<RabbitMQReceive> onMessageReceived)
+	public void Attach(INexus nexus) => this.nexus = nexus;
+	readonly List<Action<IReceipt<RabbitMQReceive>>> receivers = [];
+	public Task<IDisposable> OnReceive(Action<IReceipt<RabbitMQReceive>> onMessageReceived)
 	{
 		receivers.Add(onMessageReceived);
 		var dis = onMessageReceived.AsDisposable(f =>
@@ -98,37 +94,38 @@ public class RabbitMQSubscriber : ISubscriber<RabbitMQReceive>
 		return Task.FromResult<IDisposable>(dis);
 	}
 	public IModel CreateConsumerChannel()
-		=> _connection.DoWithConnection(connection =>
+		=> connection.DoWithConnection(connection =>
 		{
 			// TODO Change exception type
-			if (_nexus is null) throw new InvalidStateException($"Route was not attached to node.");
-			_logger.LogInformation("Creating consumer channel ...");
+			if (nexus is null) throw new InvalidStateException($"Route was not attached to node.");
+			logger.LogInformation("Creating consumer channel ...");
 			// if (!(_connection is { IsOpen: true } && !_disposed)) Connect();
 			// if (_connection is null) throw new InvalidProgramException($"Connection was null at create consumer channel");
-			var settings = _settings.Value;
+			var settings1 = settings.Value;
 			var channel = connection.CreateModel();
-			channel.ExchangeDeclare(settings.Exchange, ExchangeType.Direct);
-			channel.QueueDeclare(settings.QueuePrefix + _nexus.DeployId, true, false, false, null);
+			channel.ExchangeDeclare(settings1.Exchange, ExchangeType.Direct);
+			channel.QueueDeclare(settings1.QueuePrefix + nexus.DeployId, true, false, false, null);
 			var consumer = new EventingBasicConsumer(channel);
 			consumer.Received += (model, ea) =>
 			{
+				using var scope = serviceProvider.CreateScope();
 				foreach (var receive in receivers)
 				{
-					receive(new()
+					receive(new Receipt<RabbitMQReceive>(new()
 					{
 						Body = ea.Body,
 						Source = ""
-					});
+					}, scope.ServiceProvider));
 				}
 				channel.BasicAck(ea.DeliveryTag, false);
 			};
-			channel.BasicConsume(settings.QueuePrefix + _nexus.DeployId, false, consumer);
+			channel.BasicConsume(settings1.QueuePrefix + nexus.DeployId, false, consumer);
 			channel.CallbackException += (sender, ea) =>
 			{
-				_consumerChannel?.Dispose();
-				_consumerChannel = CreateConsumerChannel();
+				consumerChannel?.Dispose();
+				consumerChannel = CreateConsumerChannel();
 			};
-			channel.QueueBind(settings.QueuePrefix + _nexus.DeployId, settings.Exchange, settings.QueuePrefix + _nexus.DeployId, new Dictionary<string, object>());
+			channel.QueueBind(settings1.QueuePrefix + nexus.DeployId, settings1.Exchange, settings1.QueuePrefix + nexus.DeployId, new Dictionary<string, object>());
 			return channel;
 		});
 }

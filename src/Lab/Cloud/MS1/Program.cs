@@ -119,7 +119,7 @@ builder.Services.AddScoped<INexus>(sp =>
 	// 	{
 	// 		Console.WriteLine("Message observed:\r\n" + msg);
 	// 	});
-	nexus.RouteDirectory.AddSubscriber(decoObs);
+	nexus.AddSubscriber(decoObs);
 	return nexus;
 });
 

@@ -429,13 +429,13 @@ public static class Extensions
 	public static string RandomString(
 		this string me,
 		int length
-#if NETSTANDARD2_0 || NET462 || NET6_0 || NET7_0
+#if NETSTANDARD2_0 || NET462 || NET7_0
 		, Random? ran = null
 #endif
 	)
 	{
 		const string defaultStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-#if NETSTANDARD2_0 || NET462 || NET6_0 || NET7_0
+#if NETSTANDARD2_0 || NET462 || NET7_0
 		ran ??= new(Guid.NewGuid().GetHashCode());
 		var str = string.IsNullOrWhiteSpace(me) ? defaultStr : me;
 		return new(Enumerable.Repeat(str, length)

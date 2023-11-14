@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net6.0-windows;net7.0-windows;net8.0-windows</TargetFrameworks>
+		<TargetFrameworks>net7.0-windows;net8.0-windows</TargetFrameworks>
 		<UseWPF>true</UseWPF>
 		<Title>Fuxion Windows</Title>
 		<PackageId>Fuxion.Windows</PackageId>
@@ -23,14 +23,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
-		<PackageReference Include="System.Management" Version="8.0.0-rc.2.23479.6" />
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)' != 'net8.0'">
-		<PackageReference Include="System.Management" Version="7.0.2" />
+		<PackageReference Include="System.Management" Version="8.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>

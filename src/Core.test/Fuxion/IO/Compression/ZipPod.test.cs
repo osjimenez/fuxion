@@ -83,15 +83,13 @@ file class TestPayload
 #if NET462
 	[JsonInclude]
 	public int Age { get; internal set; }
-#elif NET6_0
-	public int Age { get; init; }
 #else
 	public required int Age { get; init; }
 #endif
 }
 file class TestPayloadDerived : TestPayload
 {
-#if NET6_0 || NET462
+#if NET462
 	public string Nick { get; set; } = "";
 #else
 	public required string Nick { get; set; }

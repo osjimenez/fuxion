@@ -1,17 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net6.0-windows;net7.0-windows;net8.0-windows</TargetFrameworks>
+		<TargetFrameworks>net7.0-windows;net8.0-windows</TargetFrameworks>
 		<UseWpf>true</UseWpf>
 		<IsPackable>false</IsPackable>
 	</PropertyGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0-preview-23503-02" />
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)' != 'net8.0'">
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.2" />
+	<ItemGroup>
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
 	</ItemGroup>
 
 	<ItemGroup>
