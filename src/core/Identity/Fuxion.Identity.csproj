@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0;net462;net6.0;net7.0;net8.0</TargetFrameworks>
+		<TargetFrameworks>netstandard2.0;net462;net7.0;net8.0</TargetFrameworks>
 		<Title>Fuxion Identity</Title>
 		<PackageId>Fuxion.Identity</PackageId>
 		<Description>Fuxion Identity</Description>
@@ -17,6 +17,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All"/>
+		<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0"/>
 		<PackageReference Include="Nullable" Version="1.3.1">
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 			<PrivateAssets>all</PrivateAssets>
