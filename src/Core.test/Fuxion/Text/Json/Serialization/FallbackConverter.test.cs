@@ -13,7 +13,9 @@ public class FallbackConverterTest : BaseTest<FallbackConverterTest>
 				Task.Run(() => {
 					InvalidProgramException ipex = new("InvalidProgramException message");
 					throw ipex;
+#pragma warning disable xUnit1031
 				}).Wait();
+#pragma warning restore xUnit1031
 			} catch (Exception ex)
 			{
 				InvalidOperationException ioex = new("InvalidOperationException message", ex);

@@ -140,7 +140,9 @@ public class TaskManagerTest : BaseTest<TaskManagerTest>
 				{
 					AddToSeq($"S{order}-");
 					Printer.WriteLine("Start " + order);
+#pragma warning disable xUnit1031
 					Task.Delay(runDelay, TaskManager.Current?.GetCancellationToken() ?? throw new InvalidProgramException("Cancellation token cannot be obtained")).Wait();
+#pragma warning restore xUnit1031
 					AddToSeq($"E{order}-");
 					Printer.WriteLine("End " + order);
 				} catch
@@ -174,7 +176,9 @@ public class TaskManagerTest : BaseTest<TaskManagerTest>
 				{
 					AddToSeq($"S{order}-");
 					Printer.WriteLine("Start " + order);
+#pragma warning disable xUnit1031
 					Task.Delay(runDelay, TaskManager.Current?.GetCancellationToken() ?? throw new InvalidProgramException("Cancellation token cannot be obtained")).Wait();
+#pragma warning restore xUnit1031
 					AddToSeq($"E{order}-");
 					Printer.WriteLine("End " + order);
 					return $"{doneResult}_{parNum}";
@@ -391,9 +395,11 @@ public class TaskManagerTest : BaseTest<TaskManagerTest>
 					}
 				});
 			await Task.WhenAll(res);
+#pragma warning disable xUnit1031
 			results[0] = res[0].Result;
 			results[1] = res[1].Result;
 			results[2] = res[2].Result;
+#pragma warning restore xUnit1031
 			seq = seq.Trim('-');
 			for (var i = 0; i < results.Length; i++) Printer.WriteLine($"Result {i + 1}: WasCanceled<{results[i].WasCancelled}>,Result<{results[i].Result}>");
 			Printer.WriteLine("Sequence: " + seq);

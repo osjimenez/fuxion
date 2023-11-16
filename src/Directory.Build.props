@@ -12,15 +12,19 @@
 		<Product>Fuxion</Product>
 		<ProductName>Fuxion</ProductName>
 
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<PackageProjectUrl>https://github.com/TTiVentures/Fuxion</PackageProjectUrl>
+		<PackageProjectUrl>https://github.com/OsJimenez/Fuxion</PackageProjectUrl>
 		<PackageIcon>icon.png</PackageIcon>
 
 <!--		<PackageOutputPath>$(SolutionDir)..\..\PackOutput</PackageOutputPath>-->
 		<PackageOutputPath>$(SolutionDir)..\nupkgs</PackageOutputPath>
 
-		<RepositoryUrl>https://github.com/TTiVentures/Fuxion.git</RepositoryUrl>
+		<RepositoryUrl>https://github.com/OsJimenez/Fuxion.git</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 
 		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>

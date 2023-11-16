@@ -103,11 +103,14 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{388DFD84-651B-4306-AC4C-4696218B8933}"
 	ProjectSection(SolutionItems) = preProject
 		..\.github\workflows\dotnet-core.yml = ..\.github\workflows\dotnet-core.yml
+		..\.github\workflows\jekyll-gh-pages.yml = ..\.github\workflows\jekyll-gh-pages.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".", ".", "{2AA1795C-8741-4982-ACA8-40F792DCEADB}"
 	ProjectSection(SolutionItems) = preProject
 		..\GitVersion.yml = ..\GitVersion.yml
+		..\README.md = ..\README.md
+		..\LICENSE = ..\LICENSE
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".compose", ".compose", "{B6041283-8261-48BF-BB54-CF486FE59455}"
