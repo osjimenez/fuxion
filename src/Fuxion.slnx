@@ -1,0 +1,98 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="ARM" />
+    <Platform Name="iPhone" />
+    <Platform Name="iPhoneSimulator" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/Sketches/">
+    <Project Path="sketches\DemoConsole\DemoConsole.csproj" />
+    <Project Path="sketches\DemoCoreWpf\DemoCoreWpf.csproj" />
+  </Folder>
+  <Folder Name="/Lab/OnPremise/">
+    <Project Path="Lab\OnPremise\A1\Fuxion.Lab.OnPremise.A1.csproj" />
+    <Project Path="Lab\OnPremise\A2\Fuxion.Lab.OnPremise.A2.csproj" />
+  </Folder>
+  <Folder Name="/Lab/Cloud/">
+    <Project Path="Lab\Cloud\GATE\Fuxion.Lab.Cloud.GATE.csproj" />
+    <Project Path="Lab\Cloud\MS1\Fuxion.Lab.Cloud.MS1.csproj" />
+    <Project Path="Lab\Cloud\MS2\Fuxion.Lab.Cloud.MS2.csproj" />
+  </Folder>
+  <Folder Name="/Lab/">
+    <Project Path="Lab\Common\Fuxion.Lab.Common.csproj" />
+    <Project Path="Lab\Test\Fuxion.Lab.Test.csproj" />
+  </Folder>
+  <Folder Name="/Infrastructure/Test/">
+    <Project Path="Infrastructure.test\EntityFramework\Fuxion.EntityFramework.Test.csproj" />
+    <Project Path="Infrastructure.test\Windows\Fuxion.Windows.Test.csproj" />
+  </Folder>
+  <Folder Name="/Infrastructure/">
+    <Project Path="Infrastructure\AspNetCore\Fuxion.AspNetCore.csproj" />
+    <Project Path="Infrastructure\AutoMapper\Fuxion.AutoMapper.csproj" />
+    <Project Path="infrastructure\EntityFrameworkCore.InMemory\Fuxion.EntityFrameworkCore.InMemory.csproj" />
+    <Project Path="infrastructure\EntityFrameworkCore.SqlServer\Fuxion.EntityFrameworkCore.SqlServer.csproj" />
+    <Project Path="Infrastructure\EntityFrameworkCore\Fuxion.EntityFrameworkCore.csproj" />
+    <Project Path="Infrastructure\EntityFramework\Fuxion.EntityFramework.csproj" />
+    <Project Path="Infrastructure\EventStore\Fuxion.EventStore.csproj" />
+    <Project Path="Infrastructure\MassTransit\Fuxion.MassTransit.csproj" />
+    <Project Path="Infrastructure\MongoDB\Fuxion.MongoDB.csproj" />
+    <Project Path="infrastructure\Orleans\Fuxion.Orleans.csproj" />
+    <Project Path="Infrastructure\RabbitMQ\Fuxion.RabbitMQ.csproj" />
+    <Project Path="Infrastructure\Telerik.Wpf\Fuxion.Telerik.Wpf.csproj" />
+    <Project Path="Infrastructure\Windows.Controls\Fuxion.Windows.Controls.csproj" />
+    <Project Path="Infrastructure\Windows\Fuxion.Windows.csproj" />
+  </Folder>
+  <Folder Name="/Core/Test/">
+    <Project Path="Core.test\Application\Fuxion.Application.Test.csproj" />
+    <Project Path="Core.test\Domain\Fuxion.Domain.Test.csproj" />
+    <Project Path="Core.test\Fuxion\Fuxion.Test.csproj" />
+    <Project Path="Core.test\Identity.DatabaseEFTest\Fuxion.Identity.DatabaseEFTest.csproj" />
+    <Project Path="Core.test\Identity.DatabaseTest\Fuxion.Identity.DatabaseTest.csproj" />
+    <Project Path="Core.test\Identity\Fuxion.Identity.Test.csproj" />
+    <Project Path="Core.test\Licensing\Fuxion.Licensing.Test.csproj" />
+  </Folder>
+  <Folder Name="/Core/">
+    <Project Path="core\Application\Fuxion.Application.csproj" />
+    <Project Path="core\Domain\Fuxion.Domain.csproj" />
+    <Project Path="core\Drawing\Fuxion.Drawing.csproj" />
+    <Project Path="core\Fuxion\Fuxion.csproj" />
+    <Project Path="Core\Identity\Fuxion.Identity.csproj" />
+    <Project Path="Core\Licensing\Fuxion.Licensing.csproj" />
+    <Project Path="core\Xunit\Fuxion.Xunit.csproj" />
+  </Folder>
+  <Folder Name="/./src/.run/">
+    <File Path=".run\Lab_ Compose.run.xml" />
+  </Folder>
+  <Folder Name="/./src/.compose/">
+    <File Path=".compose\CL1.mqttsettings.json" />
+    <File Path=".compose\CL1.rabbitsettings.json" />
+    <File Path=".compose\CL1-BAL.conf" />
+    <File Path=".compose\CL2.mqttsettings.json" />
+    <File Path=".compose\CL2.rabbitsettings.json" />
+    <File Path=".compose\CL2-BAL.conf" />
+  </Folder>
+  <Folder Name="/./src/">
+    <File Path=".dockerignore" />
+    <File Path=".editorconfig" />
+    <File Path="Directory.Build.props" />
+    <File Path="docker-compose.yml" />
+    <File Path="Fuxion.sln" />
+    <File Path="Fuxion.sln.startup.json" />
+    <File Path="global.json" />
+  </Folder>
+  <Folder Name="/./.github/workflows/">
+    <File Path="..\.github\workflows\dotnet-core.yml" />
+    <File Path="..\.github\workflows\jekyll-gh-pages.yml" />
+  </Folder>
+  <Folder Name="/./.github/" />
+  <Folder Name="/./">
+    <File Path="..\GitVersion.yml" />
+    <File Path="..\LICENSE" />
+    <File Path="..\README.md" />
+  </Folder>
+  <Properties Name="ExtensibilityGlobals" Scope="PostLoad">
+    <Property Name="EnterpriseLibraryConfigurationToolBinariesPathV6" Value="packages\EnterpriseLibrary.TransientFaultHandling.6.0.1304.0\lib\portable-net45+win+wp8;packages\EnterpriseLibrary.TransientFaultHandling.Data.6.0.1304.1\lib\NET45" />
+  </Properties>
+</Solution>
