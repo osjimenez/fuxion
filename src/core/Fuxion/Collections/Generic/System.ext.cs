@@ -1,4 +1,4 @@
-﻿using System.Security.Cryptography;
+using System.Security.Cryptography;
 
 namespace System.Collections.Generic;
 
@@ -152,5 +152,49 @@ public static class Extensions
 			quantities.Insert(index, quantity with { Rounded = quantity.Rounded - 1 });
 		}
 		return quantities.Select(_ => (_.Percentage, _.Rounded, _.Exact));
+	}
+	public static IDictionary<string, (double Percentage, int Rounded, double Exact)> DistributeAsPercentages(
+		this IList<(string Label, double Percentage)> percentages,
+		int amountOfItems)
+	{
+		if (percentages.Count > amountOfItems)
+			throw new InvalidDataException(
+				$"{nameof(percentages)}.Count ({percentages.Count}) must be less than {nameof(amountOfItems)} ({amountOfItems})");
+		if (percentages.Sum(x => x.Percentage) != 100)
+			throw new InvalidProgramException($"Percentages must sum 100, but sum {percentages.Sum(x => x.Percentage)}");
+		var ordered = percentages.OrderBy(x => x.Percentage);
+		var quantities = ordered.Select(value => new
+		{
+			value.Label,
+			value.Percentage,
+			Rounded = (int)Math.Floor(amountOfItems * (value.Percentage / 100d)),
+			Exact = amountOfItems * (value.Percentage / 100d)
+		}).ToList();
+		quantities = quantities.Select(x => x with
+		{
+			Rounded = x.Rounded == 0
+				? 1
+				: x.Rounded
+		}).ToList();
+		while (quantities.Sum(x => x.Rounded) > amountOfItems)
+		{
+			var quantity = quantities.OrderByDescending(x => x.Rounded).MaxBy(y => y.Exact);
+			if (quantity is null) throw new InvalidProgramException($"{nameof(quantity)} cannot be null");
+			var index = quantities.IndexOf(quantity);
+			quantities.Remove(quantity);
+			quantities.Insert(index, quantity with { Rounded = quantity.Rounded - 1 });
+		}
+		
+		while (quantities.Sum(x => x.Rounded) < amountOfItems)
+		{
+			var quantity = quantities.OrderBy(x => x.Rounded).MaxBy(y => y.Exact);
+			if (quantity is null) throw new InvalidProgramException($"{nameof(quantity)} cannot be null");
+			var index = quantities.IndexOf(quantity);
+			quantities.Remove(quantity);
+			quantities.Insert(index, quantity with { Rounded = quantity.Rounded + 1 });
+		}
+		
+		return quantities.Select(x => (x.Label, x.Percentage, x.Rounded, x.Exact))
+			.ToDictionary(x => x.Label, x => (x.Percentage, x.Rounded, x.Exact));
 	}
 }
