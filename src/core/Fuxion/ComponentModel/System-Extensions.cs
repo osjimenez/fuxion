@@ -1,6 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
-namespace System.ComponentModel;
+namespace Fuxion.ComponentModel;
 
 public static class PropertyDescriptorExtensions
 {

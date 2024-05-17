@@ -2,6 +2,7 @@
 using System.Reflection;
 using System.Windows;
 using System.Windows.Data;
+using Fuxion.Reflection;
 
 namespace Fuxion.Windows.Data;
 

@@ -10,7 +10,7 @@ using System.Text.Json.Serialization;
 using Fuxion.Json;
 using Fuxion.Resources;
 
-namespace System;
+namespace Fuxion;
 
 public static class Extensions
 {
@@ -306,9 +306,9 @@ public static class Extensions
 	#endregion
 
 	#region Math
-	public static double Pow(this double me, double power) => Math.Pow(me, power);
-	public static long Pow(this long me, long power) => (long)Math.Pow(me, power);
-	public static int Pow(this int me, int power) => (int)Math.Pow(me, power);
+	public static double Pow(this double me, double power) => System.Math.Pow(me, power);
+	public static long Pow(this long me, long power) => (long)System.Math.Pow(me, power);
+	public static int Pow(this int me, int power) => (int)System.Math.Pow(me, power);
 	public static (long Quotient, long Remainder) Division(this long me, long dividend) => (me / dividend, me % dividend);
 	public static (long Quotient, long Remainder) DivisionByPowerOfTwo(this long me, ushort numberOfBits) => me.Division(2.Pow(numberOfBits));
 	public static (long Quotient, long Remainder) DivisionByPowerOfTwo(this byte[] me, ushort numberOfBits)

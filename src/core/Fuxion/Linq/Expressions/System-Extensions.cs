@@ -1,6 +1,7 @@
-﻿using System.Reflection;
+﻿using System.Linq.Expressions;
+using System.Reflection;
 
-namespace System.Linq.Expressions;
+namespace Fuxion.Linq.Expressions;
 
 public static class ExpressionExtensions
 {

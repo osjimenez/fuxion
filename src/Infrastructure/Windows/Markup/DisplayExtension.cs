@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Markup;
+using Fuxion.Reflection;
 
 namespace Fuxion.Windows.Markup;
 

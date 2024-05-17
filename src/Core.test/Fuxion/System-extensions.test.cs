@@ -1,4 +1,5 @@
-﻿using Fuxion.Resources;
+﻿using Fuxion.Collections.Generic;
+using Fuxion.Resources;
 
 namespace Fuxion.Test;
 

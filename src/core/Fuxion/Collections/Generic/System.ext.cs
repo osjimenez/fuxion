@@ -1,6 +1,6 @@
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 
-namespace System.Collections.Generic;
+namespace Fuxion.Collections.Generic;
 
 public static class Extensions
 {
@@ -135,7 +135,7 @@ public static class Extensions
 		var ordered = percentages.OrderBy(_ => _);
 		var quantities = ordered.Select(value => new {
 			Percentage = value,
-			Rounded = (int)Math.Floor(amountOfItems * (value / 100d)),
+			Rounded = (int)System.Math.Floor(amountOfItems * (value / 100d)),
 			Exact = amountOfItems * (value / 100d)
 		}).ToList();
 		quantities = quantities.Select(_ => _ with {
@@ -167,7 +167,7 @@ public static class Extensions
 		{
 			value.Label,
 			value.Percentage,
-			Rounded = (int)Math.Floor(amountOfItems * (value.Percentage / 100d)),
+			Rounded = (int)System.Math.Floor(amountOfItems * (value.Percentage / 100d)),
 			Exact = amountOfItems * (value.Percentage / 100d)
 		}).ToList();
 		quantities = quantities.Select(x => x with

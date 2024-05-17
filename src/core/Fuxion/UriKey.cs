@@ -4,6 +4,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Web;
+using Fuxion.Collections.Generic;
 
 namespace Fuxion;
 /*

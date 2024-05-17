@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Reflection;
 using Fuxion;
+using Fuxion.Reflection;
 
 namespace System.Text.Json.Serialization;
 

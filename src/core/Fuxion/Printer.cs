@@ -2,7 +2,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Fuxion.Threading;
-using Extensions = System.Extensions;
+using Extensions = Fuxion.Extensions;
 
 namespace Fuxion;
 

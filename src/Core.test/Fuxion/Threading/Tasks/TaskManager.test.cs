@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Diagnostics;
 using System.Reflection;
+using Fuxion.Reflection;
 using Fuxion.Threading.Tasks;
 
 namespace Fuxion.Test.Threading.Tasks;

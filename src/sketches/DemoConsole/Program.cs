@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using Fuxion;
 using Fuxion.Licensing;
 using Xunit;
 

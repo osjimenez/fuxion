@@ -1,6 +1,4 @@
-﻿using Fuxion.Threading.Tasks;
-
-namespace System.Threading.Tasks;
+﻿namespace Fuxion.Threading.Tasks;
 
 public static class Extensions
 {

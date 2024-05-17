@@ -2,6 +2,8 @@
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using Fuxion.Collections.Generic;
+using Fuxion.Reflection;
 
 namespace Fuxion.Identity;
 

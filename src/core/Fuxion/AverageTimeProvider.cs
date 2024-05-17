@@ -1,4 +1,5 @@
 ﻿using System.Security.Cryptography;
+using Fuxion.Collections.Generic;
 using Fuxion.Threading.Tasks;
 
 namespace Fuxion;
