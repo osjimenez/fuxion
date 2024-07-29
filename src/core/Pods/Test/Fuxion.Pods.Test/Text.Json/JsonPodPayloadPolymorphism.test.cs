@@ -1,7 +1,26 @@
-﻿using Fuxion.Text.Json;
+﻿using System.Text.Json;
+using Fuxion.Text.Json;
+using Fuxion.Text.Json.Serialization;
 
 namespace Fuxion.Pods.Test.Text.Json;
+// var jsonString = """
+// 						{
+// 							"__discriminator": "Dog",
+// 							"name": "Firulais",
+// 							"age": 3,
+// 							"createdAt": "2018-02-28T00:00:00"
+// 						}
+// 						""";
 
+// var jsonString = """
+// 						{
+// 							"Dog": {
+// 								"name": "Firulais",
+// 								"age": 3,
+// 								"createdAt": "2018-02-28T00:00:00"
+// 							}
+// 						}
+// 						""";
 /// <summary>
 ///    There are different ways to implement polymorphism in JSON:
 ///    - Payload: The object is serialized with a property that contains the object.
@@ -23,8 +42,12 @@ public class JsonPodPayloadPolymorphism : BaseTest<JsonPodPayloadPolymorphism>
 		
 		// Act
 		var pod = cat.BuildPod()
-			.ToJsonNode(nameof(Cat));
-		var jsonText = pod.SerializeToJson();
+			.ToJsonNode(nameof(Cat))
+			.Pod;
+		
+		var options = new JsonSerializerOptions();
+		options.Converters.Add(new IPodConverterFactory());
+		var jsonText = pod.SerializeToJson(options: options);
 		
 		// Assert
 		Output.WriteLine(jsonText);
