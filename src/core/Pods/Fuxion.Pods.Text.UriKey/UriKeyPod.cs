@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 
@@ -15,9 +14,7 @@ public class UriKeyPod<TPayload>(UriKey discriminator, TPayload payload) : Pod<U
 {
 	// ATTENTION: This constructor cannot be removed, it is needed for deserialization
 	protected UriKeyPod() : this(default!, default!) { }
-	public override IPod<UriKey, object> this[UriKey key] => TryGetHeaderPod(key, out var pod)
-		? pod
-		: throw new UriKeyNotFoundException($"Key '{key}' not found in headers");
+	public override IPod<UriKey, object> this[UriKey key] => TryGetHeaderPod(key, out var pod) ? pod : throw new UriKeyNotFoundException($"Key '{key}' not found in headers");
 	public override void Add(IPod<UriKey, object> pod)
 	{
 		// Check if new pod is derived from an existing one

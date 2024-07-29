@@ -1,8 +1,4 @@
-﻿using System.ComponentModel.Design;
-using System.Text;
-using System.Text.Json.Nodes;
-using Fuxion.Reflection;
-using Fuxion.Text.Json;
+﻿using System.Text;
 
 namespace Fuxion;
 
@@ -33,12 +29,14 @@ public static class PodBuilder2Extensions
 		me.Pod.Add(new Pod<TDiscriminator, object>(discriminator, payload));
 		return me;
 	}
-
-	
-	public static IPodBuilder<TDiscriminator, byte[], IPod<TDiscriminator, byte[]>> ToUtf8Bytes<TDiscriminator>(this IPodBuilder<TDiscriminator, string, IPod<TDiscriminator, string>> me, TDiscriminator discriminator)
+	public static IPodBuilder<TDiscriminator, byte[], IPod<TDiscriminator, byte[]>> ToUtf8Bytes<TDiscriminator>(
+		this IPodBuilder<TDiscriminator, string, IPod<TDiscriminator, string>> me,
+		TDiscriminator discriminator)
 		where TDiscriminator : notnull
 		=> new PodBuilder<TDiscriminator, byte[], IPod<TDiscriminator, byte[]>>(new Pod<TDiscriminator, byte[]>(discriminator, Encoding.UTF8.GetBytes(me.Pod.Payload)));
-	public static IPodBuilder<TDiscriminator, string, IPod<TDiscriminator, string>> FromUtf8Bytes<TDiscriminator>(this IPodBuilder<TDiscriminator, byte[], IPod<TDiscriminator, byte[]>> me, TDiscriminator discriminator)
+	public static IPodBuilder<TDiscriminator, string, IPod<TDiscriminator, string>> FromUtf8Bytes<TDiscriminator>(
+		this IPodBuilder<TDiscriminator, byte[], IPod<TDiscriminator, byte[]>> me,
+		TDiscriminator discriminator)
 		where TDiscriminator : notnull
 		=> new PodBuilder<TDiscriminator, string, IPod<TDiscriminator, string>>(new Pod<TDiscriminator, string>(discriminator, Encoding.UTF8.GetString(me.Pod.Payload)));
 	public static IPodBuilder<TDiscriminator, string, IPod<TDiscriminator, string>> FromUtf8Bytes<TDiscriminator>(this IPodPreBuilder<byte[]> me, TDiscriminator discriminator)

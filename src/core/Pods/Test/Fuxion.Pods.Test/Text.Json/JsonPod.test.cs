@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 using Fuxion.Text.Json;
 using static Fuxion.Text.Json.IPodConverter<Fuxion.Text.Json.JsonNodePod<string>, string, System.Text.Json.Nodes.JsonNode>;
 
-namespace Fuxion.Test.Text.Json;
+namespace Fuxion.Pods.Test.Text.Json;
 
 public class JsonPodTest : BaseTest<JsonPodTest>
 {

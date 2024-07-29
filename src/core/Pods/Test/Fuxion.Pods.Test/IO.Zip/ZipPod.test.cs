@@ -1,9 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 using Fuxion.IO.Compression;
-using Fuxion.Test.Text.Json;
 using Fuxion.Text.Json;
 
-namespace Fuxion.Test.IO.Compression;
+namespace Fuxion.Pods.Test.IO.Zip;
 
 public class ZipPodTest(ITestOutputHelper output) : BaseTest<ZipPodTest>(output)
 {

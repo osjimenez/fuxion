@@ -3,8 +3,6 @@ using System.Runtime.Serialization;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
-using Fuxion.Json;
-using Fuxion.Reflection;
 using PodType = Fuxion.IPod<string, string>;
 
 namespace Fuxion.Text.Json;
@@ -29,54 +27,52 @@ public class IPodConverter<TPod, TDiscriminator, TPayload>(IUriKeyResolver? reso
 			?? throw new InvalidProgramException($"Could not be created instance of type '{typeof(TPod).GetSignature()}' using its private constructor");
 		var pod = (TPod)ins;
 		if (reader.TokenType != JsonTokenType.StartObject) throw new JsonException("The reader expected JsonTokenType.StartObject");
-		var jsonObject = JsonObject.Create(JsonDocument.ParseValue(ref reader).RootElement)
-			?? throw new SerializationException($"Couldn't be created JsonObject");
-
-		if (typeToConvert.IsSubclassOfRawGeneric(typeof(IUriKeyPod<>)))
-			typeToConvert.GetProperty(nameof(IUriKeyPod<string>.Resolver))?.SetValue(pod, resolver);
+		var jsonObject = JsonObject.Create(JsonDocument.ParseValue(ref reader)
+			.RootElement) ?? throw new SerializationException("Couldn't be created JsonObject");
+		
+		// TODO: - Alonso - Implement this in another way
+		// if (typeToConvert.IsSubclassOfRawGeneric(typeof(IUriKeyPod<>)))
+		// 	typeToConvert.GetProperty(nameof(IUriKeyPod<string>.Resolver))?.SetValue(pod, resolver);
 		
 		// DISCRIMINATOR
-		var disNode = jsonObject
-			.FirstOrDefault(pair => pair.Key == DISCRIMINATOR_LABEL).Value
-			?? throw new SerializationException($"Discriminator couldn't be obtained from label '{DISCRIMINATOR_LABEL}'");
+		var disNode = jsonObject.FirstOrDefault(pair => pair.Key == DISCRIMINATOR_LABEL)
+			.Value ?? throw new SerializationException($"Discriminator couldn't be obtained from label '{DISCRIMINATOR_LABEL}'");
 		var disProp = pod.GetType()
 				.GetProperty(nameof(IPod<string, string>.Discriminator), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
 			?? throw new InvalidProgramException($"'{nameof(IPod<string, string>.Discriminator)}' property could not be obtained from pod '{pod.GetType().Name}'");
 		var payloadType = typeof(TPayload);
 		if (resolver is not null && typeof(UriKey).IsAssignableFrom(typeof(TDiscriminator)))
 		{
-			var tk = disNode.Deserialize<UriKey>(options)
-				?? throw new SerializationException($"Couldn't be obtained '{nameof(UriKey)}' from discriminator");
+			var tk = disNode.Deserialize<UriKey>(options) ?? throw new SerializationException($"Couldn't be obtained '{nameof(UriKey)}' from discriminator");
 			payloadType = resolver[tk];
 		}
 		pod.SetPrivatePropertyValue(disProp.Name, disNode.Deserialize<TDiscriminator>(options));
-
+		
 		// PAYLOAD
-		var payNode = jsonObject
-				.FirstOrDefault(pair => pair.Key == PAYLOAD_LABEL).Value
-			?? throw new SerializationException($"Payload couldn't be obtained from label '{PAYLOAD_LABEL}'");
+		var payNode = jsonObject.FirstOrDefault(pair => pair.Key == PAYLOAD_LABEL)
+			.Value ?? throw new SerializationException($"Payload couldn't be obtained from label '{PAYLOAD_LABEL}'");
 		var payProp = pod.GetType()
 				.GetProperty(nameof(IPod<string, string>.Payload), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
 			?? throw new InvalidProgramException($"'{nameof(IPod<string, string>.Payload)}' property could not be obtained from pod '{pod.GetType().Name}'");
 		var payValue = payNode.Deserialize(payloadType, options);
 		pod.SetPrivatePropertyValue(payProp.Name, payValue);
-
+		
 		// ITEMS
-		var iteNode = jsonObject.FirstOrDefault(pair => pair.Key == ITEMS_LABEL).Value;
+		var iteNode = jsonObject.FirstOrDefault(pair => pair.Key == ITEMS_LABEL)
+			.Value;
 		if (iteNode is null) return pod;
 		if (pod is not ICollectionPod<TDiscriminator, TPayload> col) throw new SerializationException($"{ITEMS_LABEL} is present but pod '{pod.GetType().Name}' is not a collection pod");
 		foreach (var node in iteNode.AsArray())
-		{
 			if (node is not null && resolver is not null)
-			{
-				var headerPod = (IPod<TDiscriminator, object>?)node.Deserialize(typeof(UriKeyPod<object>), options)?? throw new SerializationException("Cannot be deserialize header");
-				col.Add(headerPod);
-			} else
+				// TODO: - Alonso - Implement this in other way
+				throw new NotImplementedException();
+			// var headerPod = (IPod<TDiscriminator, object>?)node.Deserialize(typeof(UriKeyPod<object>), options)?? throw new SerializationException("Cannot be deserialize header");
+			// col.Add(headerPod);
+			else
 			{
 				var headerPod = (JsonNodePod<TDiscriminator>?)node.Deserialize(typeof(JsonNodePod<TDiscriminator>), options) ?? throw new SerializationException("Cannot be deserialize header");
 				col.Add(headerPod);
 			}
-		}
 		return pod;
 	}
 	public override void Write(Utf8JsonWriter writer, TPod value, JsonSerializerOptions options)

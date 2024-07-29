@@ -12,12 +12,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.10.0"/>
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\Core\Fuxion\Fuxion.csproj"/>
-		<ProjectReference Include="..\..\Core\Xunit\Fuxion.Xunit.csproj" />
+		<ProjectReference Include="..\..\Core\Xunit\Fuxion.Xunit.csproj"/>
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net462'">
@@ -27,5 +27,5 @@
 	<ItemGroup>
 		<Content Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest"/>
 	</ItemGroup>
-	
+
 </Project>
