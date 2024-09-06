@@ -20,8 +20,8 @@
 	</ItemGroup>
 	
 	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
-		<PackageReference Include="Microsoft.Orleans.EventSourcing" Version="8.1.0" />
-		<PackageReference Include="Microsoft.Orleans.Sdk" Version="8.1.0" />
+		<PackageReference Include="Microsoft.Orleans.EventSourcing" Version="8.2.0" />
+		<PackageReference Include="Microsoft.Orleans.Sdk" Version="8.2.0" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' != 'net8.0'">
