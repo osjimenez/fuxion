@@ -194,21 +194,16 @@ file class TestPayload
 	[JsonPropertyName("Age-custom")]
 #if NET462
 	[JsonInclude]
-	public int Age { get; internal set; }
-#else
-	public required int Age { get; init; }
 #endif
+	public required int Age { get; init; }
 }
 [UriKey($"{nameof(TestPayloadDerived)}/1.0.0")]
 file class TestPayloadDerived : TestPayload
 {
-#if NET462
-	public string Nick { get; set; } = "";
-#else
 	public required string Nick { get; set; }
-#endif
 	[JsonPropertyName("Birthdate-custom")]
 #if NET462
+	// PEND https://www.nuget.org/packages/Portable.System.DateTimeOnly#readme-body-tab
 	public DateTime Birthdate { get; set; }
 #else
 	public DateOnly Birthdate { get; set; }
@@ -218,11 +213,7 @@ file class TestPayloadDerived : TestPayload
 [UriKey($"{UriKey.FuxionBaseUri}metadata/test/{nameof(TestPayloadReset)}/1.0.0", isReset: true)]
 file class TestPayloadReset : TestPayloadDerived
 {
-#if NET462
-	public string Address { get; set; } = "";
-#else
 	public required string Address { get; set; }
-#endif
 }
 [UriKey(UriKey.FuxionBaseUri+"lab/test-message/1.0.0")]
 public class TestMessage(int id, string name)

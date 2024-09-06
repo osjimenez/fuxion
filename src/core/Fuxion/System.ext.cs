@@ -598,6 +598,15 @@ public static class Extensions
 	public static CustomIntEnumerator GetEnumerator(this int number)
 		=> number <= 0 ? throw new ArgumentException($"{nameof(number)} must be a positive value greater than 0", nameof(number)) : new(new(0, number));
 	#endregion
+	
+	#region Exception
+	public static string GetDeeperInnerMessage(this Exception me)
+	{
+		var inner = me;
+		while (inner.InnerException is not null) inner = inner.InnerException;
+		return inner.Message;
+	}
+	#endregion
 }
 
 public struct CustomIntEnumerator

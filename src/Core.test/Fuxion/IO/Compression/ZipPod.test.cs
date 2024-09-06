@@ -82,31 +82,18 @@ file class TestPayload
 	[JsonPropertyName("Age-custom")]
 #if NET462
 	[JsonInclude]
-	public int Age { get; internal set; }
-#else
-	public required int Age { get; init; }
 #endif
+	public required int Age { get; init; }
 }
 file class TestPayloadDerived : TestPayload
 {
-#if NET462
-	public string Nick { get; set; } = "";
-#else
 	public required string Nick { get; set; }
-#endif
 	[JsonPropertyName("Birthdate-custom")]
 #if NET462
+	// PEND https://www.nuget.org/packages/Portable.System.DateTimeOnly#readme-body-tab
 	public DateTime Birthdate { get; set; }
 #else
 	public DateOnly Birthdate { get; set; }
 #endif
 }
-#if NET462
-file record TestRecordPayload
-{
-	public TestRecordPayload(string name) => Name = name;
-	public string Name { get; private set; }
-}
-#else
 file record TestRecordPayload(string Name);
-#endif
