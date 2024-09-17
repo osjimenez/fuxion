@@ -268,7 +268,7 @@ public class SystemExtensionsTest : BaseTest<SystemExtensionsTest>
 		ts = new(123, "test");
 		res = ts.TransformIfNotNull(source => source?.String);
 		Assert.Equal("test", res);
-
+		
 		ts = ts.TransformIfNotNull(source =>
 		{
 			source.String = "changed";
