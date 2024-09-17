@@ -29,8 +29,8 @@ public class SystemExtensionsTest : BaseTest<SystemExtensionsTest>
 			Integer = integer;
 			String = @string;
 		}
-		public int Integer { get; }
-		public string String { get; }
+		public int Integer { get; set; }
+		public string String { get; set; }
 	}
 
 	[Fact(DisplayName = "Bytes - FromHexadecimal")]
@@ -253,6 +253,28 @@ public class SystemExtensionsTest : BaseTest<SystemExtensionsTest>
 		var res = new TransformationSource(123, "test").Transform(source => source.Integer);
 		Assert.Equal(123, res);
 	}
+	[Fact(DisplayName = "Object - TransformIfNotNull")]
+	public void TransformIfNotNullTest()
+	{
+		TransformationSource? ts = null;
+		var res = ts.TransformIfNotNull(source => source?.String);
+		Assert.Null(res);
+		ts = ts.TransformIfNotNull(source =>
+		{
+			source.String = "changed";
+		});
+		Assert.Null(ts);
+		
+		ts = new(123, "test");
+		res = ts.TransformIfNotNull(source => source?.String);
+		Assert.Equal("test", res);
+
+		ts = ts.TransformIfNotNull(source =>
+		{
+			source.String = "changed";
+		});
+		Assert.Equal("changed", ts?.String);
+	}
 	[Fact(DisplayName = "Type - IsNullable")]
 	public void TypeIsNullable()
 	{
@@ -289,7 +311,7 @@ public class SystemExtensionsTest : BaseTest<SystemExtensionsTest>
 	public void CustomIntEnumerator()
 	{
 #if !NET462
-		// TODO hacer uqe funcione en net462
+		// TODO hacer que funcione en net462
 		Logger.LogInformation($"Enumerate with range:");
 		foreach (var i in 0..10) Logger.LogInformation($"\t{i}");
 		Assert.Throws<NotSupportedException>(() => {

@@ -118,9 +118,20 @@ public static class Extensions
 
 	#region Transform
 	public static TResult Transform<TSource, TResult>(this TSource me, Func<TSource, TResult> transformFunction) => transformFunction(me);
+	public static TResult? TransformIfNotNull<TSource, TResult>(this TSource? me, Func<TSource, TResult> transformFunction)
+	{
+		if (me is null) return default;
+		return transformFunction(me);
+	}
 	public static TSource Transform<TSource>(this TSource me, Action<TSource> transformFunction)
 	{
 		transformFunction(me);
+		return me;
+	}
+	public static TSource? TransformIfNotNull<TSource>(this TSource? me, Action<TSource> transformFunction)
+	{
+		if(me is not null)
+			transformFunction(me);
 		return me;
 	}
 	public static IEnumerable<TSource> Transform<TSource>(this IEnumerable<TSource> me, Action<TSource> transformFunction)
