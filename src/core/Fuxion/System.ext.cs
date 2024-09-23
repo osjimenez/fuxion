@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
@@ -134,6 +134,30 @@ public static class Extensions
 			transformFunction(me);
 		return me;
 	}
+
+	public static Task<TResult> ThenTransform<TSource, TResult>(this Task<TSource> me, Func<TSource, TResult> transformFunction)
+		=> me.ContinueWith(t => transformFunction(t.Result));
+	public static Task<TResult?> ThenTransformIfNotNull<TSource, TResult>(this Task<TSource?> me, Func<TSource, TResult> transformFunction)
+		=> me.ContinueWith(t => t.Result is not null ? transformFunction(t.Result) : default);
+
+	public static Task<TSource> ThenTransform<TSource>(this Task<TSource> me, Action<TSource> transformFunction)
+	{
+		return me.ContinueWith(t =>
+		{
+			transformFunction(me.Result);
+			return me.Result;
+		});
+	}
+	public static Task<TSource?> ThenTransformIfNotNull<TSource>(this Task<TSource?> me, Action<TSource> transformFunction)
+	{
+		return me.ContinueWith(t =>
+		{
+			if(me.Result is not null)
+				transformFunction(me.Result);
+			return me.Result;
+		});
+	}
+
 	public static IEnumerable<TSource> Transform<TSource>(this IEnumerable<TSource> me, Action<TSource> transformFunction)
 	{
 		foreach (var item in me) transformFunction(item);
