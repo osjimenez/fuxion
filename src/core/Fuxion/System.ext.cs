@@ -135,24 +135,63 @@ public static class Extensions
 		return me;
 	}
 
-	public static Task<TResult> ThenTransform<TSource, TResult>(this Task<TSource> me, Func<TSource, TResult> transformFunction)
-		=> me.ContinueWith(t => transformFunction(t.Result));
-	public static Task<TResult?> ThenTransformIfNotNull<TSource, TResult>(this Task<TSource?> me, Func<TSource, TResult> transformFunction)
-		=> me.ContinueWith(t => t.Result is not null ? transformFunction(t.Result) : default);
+	public static async Task<TResult> ThenTransform<TSource, TResult>(this Task<TSource> me, Func<TSource, TResult> transformFunction)
+		=> await me.ContinueWith(t => transformFunction(t.Result));
+	public static async ValueTask<TResult> ThenTransform<TSource, TResult>(this ValueTask<TSource> me, Func<TSource, TResult> transformFunction)
+		=> me.IsCompleted
+			? transformFunction(me.Result)
+			: await me.AsTask()
+				.ContinueWith(t => transformFunction(t.Result));
 
-	public static Task<TSource> ThenTransform<TSource>(this Task<TSource> me, Action<TSource> transformFunction)
+	public static async Task<TResult?> ThenTransformIfNotNull<TSource, TResult>(this Task<TSource?> me, Func<TSource, TResult> transformFunction)
+		=> await me.ContinueWith(t => t.Result is not null ? transformFunction(t.Result) : default);
+	public static async ValueTask<TResult?> ThenTransformIfNotNull<TSource, TResult>(this ValueTask<TSource?> me, Func<TSource, TResult> transformFunction)
+		=> me.IsCompleted
+			? me.Result is not null ? transformFunction(me.Result) : default
+			: await me.AsTask()
+				.ContinueWith(t => t.Result is not null ? transformFunction(t.Result) : default);
+	
+	public static async Task<TSource> ThenTransform<TSource>(this Task<TSource> me, Action<TSource> transformFunction)
 	{
-		return me.ContinueWith(t =>
+		return await me.ContinueWith(t =>
 		{
 			transformFunction(me.Result);
 			return me.Result;
 		});
 	}
-	public static Task<TSource?> ThenTransformIfNotNull<TSource>(this Task<TSource?> me, Action<TSource> transformFunction)
+	public static async ValueTask<TSource> ThenTransform<TSource>(this ValueTask<TSource> me, Action<TSource> transformFunction)
 	{
-		return me.ContinueWith(t =>
+		if (me.IsCompleted)
+		{
+			transformFunction(me.Result);
+			return me.Result;
+		}
+		return await me.AsTask().ContinueWith(t =>
+		{
+			transformFunction(me.Result);
+			return me.Result;
+		});
+	}
+	public static async Task<TSource?> ThenTransformIfNotNull<TSource>(this Task<TSource?> me, Action<TSource> transformFunction)
+	{
+		return await me.ContinueWith(t =>
 		{
 			if(me.Result is not null)
+				transformFunction(me.Result);
+			return me.Result;
+		});
+	}
+	public static async ValueTask<TSource?> ThenTransformIfNotNull<TSource>(this ValueTask<TSource?> me, Action<TSource> transformFunction)
+	{
+		if (me.IsCompleted)
+		{
+			if(me.Result is not null)
+				transformFunction(me.Result);
+			return me.Result;
+		}
+		return await me.AsTask().ContinueWith(t =>
+		{
+			if (me.Result is not null)
 				transformFunction(me.Result);
 			return me.Result;
 		});
