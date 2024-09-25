@@ -261,7 +261,7 @@ public class TypeDiscriminatorFactory
 			{
 				// La entrada ya existe, agrego el tipo a la lista de tipos de la entrada existente
 				if (AllowMoreThanOneTypeByDiscriminator)
-					existent.Types.AddRange(ent.Types.Transform(t => t.Entry = existent));
+					existent.Types.AddRange(ent.Types.TransformEach(t => t.Entry = existent));
 				else
 					throw new($"Type '{type.FullName}' cannot be registered because the id '{ent.Discriminator.Id}' already registered for '{existent.Discriminator.Id}'");
 			} else
