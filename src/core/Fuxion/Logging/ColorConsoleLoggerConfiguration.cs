@@ -1,4 +1,4 @@
-﻿namespace Fuxion.Logging;
+namespace Fuxion.Logging;
 
 using static ConsoleTools;
 
@@ -8,7 +8,7 @@ public class ColorConsoleLoggerConfiguration
 	public int EventId { get; set; }
 	public string Title
 	{
-		//get => Console.Title;
+		get => Console.Title;
 		set => Console.Title = value;
 	}
 	public Func<string> SingleLinePrefix
