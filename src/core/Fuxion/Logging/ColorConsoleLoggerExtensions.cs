@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging.Configuration;
 
-namespace Microsoft.Extensions.Logging;
+namespace Fuxion.Logging;
 
 using static ConsoleTools;
 
