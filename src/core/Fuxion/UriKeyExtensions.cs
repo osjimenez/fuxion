@@ -1,9 +1,9 @@
-using System.Reflection;
 using System.Text;
 using System.Web;
-using Fuxion;
 using Fuxion.Collections.Generic;
 using Fuxion.Reflection;
+
+namespace Fuxion;
 
 public static class UriKeyExtensions
 {

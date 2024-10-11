@@ -1,7 +1,8 @@
-﻿using System.Collections;
+using System.Collections;
+using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 
-namespace System.ComponentModel.DataAnnotations;
+namespace Fuxion.ComponentModel.DataAnnotations;
 
 public class EnsureNoDuplicatesAttribute : ValidationAttribute
 {

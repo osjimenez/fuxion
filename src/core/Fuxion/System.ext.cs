@@ -9,6 +9,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Fuxion.Json;
 using Fuxion.Resources;
+using Fuxion.Text.Json.Serialization;
 
 namespace Fuxion;
 

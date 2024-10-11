@@ -1,4 +1,4 @@
-﻿namespace System;
+namespace Fuxion;
 
 public class DisposableEnvelope<T> : IDisposable, IAsyncDisposable where T : notnull
 {

@@ -1,4 +1,5 @@
-﻿using System.Windows;
+using System.Windows;
+using Fuxion;
 using Fuxion.Telerik_.Wpf;
 using Fuxion.Telerik_.Wpf.ViewModels;
 using Fuxion.Telerik_.Wpf.Views;
