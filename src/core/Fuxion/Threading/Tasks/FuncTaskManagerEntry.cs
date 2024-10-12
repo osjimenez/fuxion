@@ -1,4 +1,4 @@
-﻿namespace Fuxion.Threading.Tasks;
+namespace Fuxion.Threading.Tasks;
 
 class FuncTaskManagerEntry<TResult> : TaskManagerEntry
 {
@@ -17,7 +17,7 @@ class FuncTaskManagerEntry<TResult> : TaskManagerEntry
 		Delegate? @delegate = null) : base(@delegate ?? func, scheduler, default, concurrencyProfile) =>
 		Task = new Task<TResult>(st => {
 			DoConcurrency();
-			var res = func(st ?? throw new ArgumentNullException($"'{nameof(state)}' argument acannot be null"));
+			var res = func(st ?? throw new ArgumentNullException($"'{nameof(state)}' argument cannot be null"));
 			return res;
 		}, state, CancellationTokenSource.Token, TaskCreationOptions);
 }
