@@ -1,2 +1,2 @@
 # Sample Title
-Sample document 
+Sample document
