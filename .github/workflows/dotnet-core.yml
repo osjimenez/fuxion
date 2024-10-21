@@ -25,6 +25,8 @@ jobs:
     - name: Use GitVersion
       id: gitversion # step id used as reference for output values
       uses: gittools/actions/gitversion/execute@v3.0.0
+      with:
+        useConfigFile: true
 
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v4
