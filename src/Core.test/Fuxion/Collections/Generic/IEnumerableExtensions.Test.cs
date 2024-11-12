@@ -1,4 +1,6 @@
-﻿namespace Fuxion.Test.Collections.Generic;
+﻿using Fuxion.Collections.Generic;
+
+namespace Fuxion.Test.Collections.Generic;
 
 public class IEnumerableExtensionsTest : BaseTest<IEnumerableExtensionsTest>
 {

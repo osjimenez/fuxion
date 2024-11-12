@@ -1,8 +1,10 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Reflection;
-using Fuxion;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using Fuxion.Reflection;
 
-namespace System.Text.Json.Serialization;
+namespace Fuxion.Text.Json.Serialization;
 
 public abstract class PropertyFallbackResolver
 {

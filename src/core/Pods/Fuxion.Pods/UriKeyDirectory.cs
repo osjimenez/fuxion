@@ -1,10 +1,9 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Text.Json.Nodes;
 using Fuxion.Reflection;
 
-namespace Fuxion;
+namespace Fuxion.Pods;
 
 public interface IUriKeyResolver
 {

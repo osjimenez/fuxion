@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
@@ -9,8 +9,9 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Fuxion.Json;
 using Fuxion.Resources;
+using Fuxion.Text.Json.Serialization;
 
-namespace System;
+namespace Fuxion;
 
 public static class Extensions
 {
@@ -117,28 +118,161 @@ public static class Extensions
 	#endregion
 
 	#region Transform
-	public static TResult Transform<TSource, TResult>(this TSource me, Func<TSource, TResult> transformFunction) => transformFunction(me);
+	// Transform without map
+	//		No nullable
 	public static TSource Transform<TSource>(this TSource me, Action<TSource> transformFunction)
 	{
 		transformFunction(me);
 		return me;
 	}
-	public static IEnumerable<TSource> Transform<TSource>(this IEnumerable<TSource> me, Action<TSource> transformFunction)
+	public static async Task<TSource> ThenTransform<TSource>(this Task<TSource> me, Action<TSource> transformFunction, CancellationToken ct = default)
+		=> await me.ContinueWith(t =>
+		{
+			transformFunction(me.Result);
+			return t.Result;
+		}, ct);
+	public static async Task<TSource> ThenTransform<TSource>(this Task<TSource> me, Func<TSource, CancellationToken, Task> transformFunction, CancellationToken ct = default)
+		=> await await me.ContinueWith(async t =>
+		{
+			await transformFunction(me.Result, ct);
+			return t.Result;
+		}, ct);
+	public static async ValueTask<TSource> ThenTransform<TSource>(this ValueTask<TSource> me, Action<TSource> transformFunction, CancellationToken ct = default)
+	{
+		if (me.IsCompleted)
+		{
+			transformFunction(me.Result);
+			return me.Result;
+		}
+		return await me.AsTask().ContinueWith(t =>
+		{
+			transformFunction(t.Result);
+			return t.Result;
+		}, ct);
+	}
+	public static async ValueTask<TSource> ThenTransform<TSource>(this ValueTask<TSource> me, Func<TSource, CancellationToken, ValueTask> transformFunction, CancellationToken ct = default)
+	{
+		if (me.IsCompleted)
+		{
+			await transformFunction(me.Result, ct);
+			return me.Result;
+		}
+		return await await me.AsTask().ContinueWith(async t =>
+		{
+			await transformFunction(t.Result, ct);
+			return t.Result;
+		}, ct);
+	}
+	//		Nullable
+	public static TSource? TransformIfNotNull<TSource>(this TSource? me, Action<TSource> transformFunction)
+	{
+		if (me is not null)
+			transformFunction(me);
+		return me;
+	}
+	public static async Task<TSource?> ThenTransformIfNotNull<TSource>(this Task<TSource?> me, Action<TSource> transformFunction, CancellationToken ct = default)
+		=> await me.ContinueWith(t =>
+		{
+			if (t.Result is not null) transformFunction(t.Result);
+			return t.Result;
+		}, ct);
+	public static async Task<TSource?> ThenTransformIfNotNull<TSource>(this Task<TSource?> me, Func<TSource, CancellationToken, Task> transformFunction, CancellationToken ct = default)
+		=> await await me.ContinueWith(async t =>
+		{
+			if (t.Result is not null) await transformFunction(t.Result, ct);
+			return t.Result;
+		}, ct);
+	public static async ValueTask<TSource?> ThenTransformIfNotNull<TSource>(this ValueTask<TSource?> me, Action<TSource> transformFunction, CancellationToken ct = default)
+	{
+		if (me.IsCompleted)
+		{
+			if (me.Result is not null)
+				transformFunction(me.Result);
+			return me.Result;
+		}
+		var res = await me.AsTask().ContinueWith(t =>
+		{
+			if (t.Result is not null)
+				transformFunction(t.Result);
+			return t.Result;
+		}, ct);
+		return res;
+	}
+	public static async ValueTask<TSource?> ThenTransformIfNotNull<TSource>(this ValueTask<TSource?> me, Func<TSource, CancellationToken, ValueTask> transformFunction, CancellationToken ct = default)
+	{
+		if (me.IsCompleted)
+		{
+			if (me.Result is not null)
+				await transformFunction(me.Result, ct);
+			return me.Result;
+		}
+		return await await me.AsTask().ContinueWith(async t =>
+		{
+			if (t.Result is not null)
+				await transformFunction(t.Result, ct);
+			return t.Result;
+		}, ct);
+	}
+
+	// Transform and map
+	//		No nullable
+	public static TResult Transform<TSource, TResult>(this TSource me, Func<TSource, TResult> transformFunction) => transformFunction(me);
+	public static async Task<TResult> ThenTransform<TSource, TResult>(this Task<TSource> me, Func<TSource, TResult> transformFunction, CancellationToken ct = default)
+		=> await me.ContinueWith(t => transformFunction(t.Result), ct);
+	public static async Task<TResult> ThenTransform<TSource, TResult>(this Task<TSource> me, Func<TSource, CancellationToken, Task<TResult>> transformFunction, CancellationToken ct = default)
+		=> await await me.ContinueWith(async t => await transformFunction(t.Result, ct), ct);
+	public static async ValueTask<TResult> ThenTransform<TSource, TResult>(this ValueTask<TSource> me, Func<TSource, TResult> transformFunction, CancellationToken ct = default)
+		=> me.IsCompleted
+			? transformFunction(me.Result)
+			: await me.AsTask()
+				.ContinueWith(t => transformFunction(t.Result), ct);
+	public static async ValueTask<TResult> ThenTransform<TSource, TResult>(
+		this ValueTask<TSource> me,
+		Func<TSource, CancellationToken, ValueTask<TResult>> transformFunction,
+		CancellationToken ct = default)
+		=> me.IsCompleted
+			? await transformFunction(me.Result, ct)
+			: await await me.AsTask()
+				.ContinueWith(async t => await transformFunction(t.Result, ct), ct);
+	//		Nullable
+	public static TResult? TransformIfNotNull<TSource, TResult>(this TSource? me, Func<TSource, TResult> transformFunction)
+	{
+		if (me is null) return default;
+		return transformFunction(me);
+	}
+	public static async Task<TResult?> ThenTransformIfNotNull<TSource, TResult>(this Task<TSource?> me, Func<TSource, TResult> transformFunction, CancellationToken ct = default)
+		=> await me.ContinueWith(t => t.Result is not null ? transformFunction(t.Result) : default, ct);
+	public static async Task<TResult?> ThenTransformIfNotNull<TSource, TResult>(this Task<TSource?> me, Func<TSource, CancellationToken, Task<TResult>> transformFunction, CancellationToken ct = default)
+		=> await await me.ContinueWith(async t => t.Result is not null ? await transformFunction(t.Result, ct) : default, ct);
+	public static async ValueTask<TResult?> ThenTransformIfNotNull<TSource, TResult>(this ValueTask<TSource?> me, Func<TSource, TResult> transformFunction, CancellationToken ct = default)
+		=> me.IsCompleted
+			? me.Result is not null ? transformFunction(me.Result) : default
+			: await me.AsTask()
+				.ContinueWith(t => t.Result is not null ? transformFunction(t.Result) : default, ct);
+	public static async ValueTask<TResult?> ThenTransformIfNotNull<TSource, TResult>(this ValueTask<TSource?> me, Func<TSource, CancellationToken, ValueTask<TResult>> transformFunction, CancellationToken ct = default)
+		=> me.IsCompleted
+			? me.Result is not null ? await transformFunction(me.Result, ct) : default
+			: await await me.AsTask()
+				.ContinueWith(async t => t.Result is not null ? await transformFunction(t.Result, ct) : default, ct);
+
+
+
+	public static IEnumerable<TSource> TransformEach<TSource>(this IEnumerable<TSource> me, Action<TSource> transformFunction)
 	{
 		foreach (var item in me) transformFunction(item);
 		return me;
 	}
-	public static async Task<IEnumerable<TSource>> Transform<TSource>(this IEnumerable<TSource> me, Func<TSource, Task> transformFunction)
+	public static async Task<IEnumerable<TSource>> TransformEach<TSource>(this IEnumerable<TSource> me, Func<TSource, Task> transformFunction)
 	{
 		foreach (var item in me) await transformFunction(item);
 		return me;
 	}
-	public static ICollection<TSource> Transform<TSource>(this ICollection<TSource> me, Action<TSource> transformFunction)
+	public static ICollection<TSource> TransformEach<TSource>(this ICollection<TSource> me, Action<TSource> transformFunction)
 	{
 		foreach (var item in me) transformFunction(item);
 		return me;
 	}
-	public static async Task<ICollection<TSource>> Transform<TSource>(this ICollection<TSource> me, Func<TSource, Task> transformFunction)
+	public static async Task<ICollection<TSource>> TransformEach<TSource>(this ICollection<TSource> me, Func<TSource, Task> transformFunction)
 	{
 		foreach (var item in me) await transformFunction(item);
 		return me;
@@ -306,9 +440,9 @@ public static class Extensions
 	#endregion
 
 	#region Math
-	public static double Pow(this double me, double power) => Math.Pow(me, power);
-	public static long Pow(this long me, long power) => (long)Math.Pow(me, power);
-	public static int Pow(this int me, int power) => (int)Math.Pow(me, power);
+	public static double Pow(this double me, double power) => System.Math.Pow(me, power);
+	public static long Pow(this long me, long power) => (long)System.Math.Pow(me, power);
+	public static int Pow(this int me, int power) => (int)System.Math.Pow(me, power);
 	public static (long Quotient, long Remainder) Division(this long me, long dividend) => (me / dividend, me % dividend);
 	public static (long Quotient, long Remainder) DivisionByPowerOfTwo(this long me, ushort numberOfBits) => me.Division(2.Pow(numberOfBits));
 	public static (long Quotient, long Remainder) DivisionByPowerOfTwo(this byte[] me, ushort numberOfBits)
@@ -597,6 +731,15 @@ public static class Extensions
 	public static CustomIntEnumerator GetEnumerator(this Range range) => new(range);
 	public static CustomIntEnumerator GetEnumerator(this int number)
 		=> number <= 0 ? throw new ArgumentException($"{nameof(number)} must be a positive value greater than 0", nameof(number)) : new(new(0, number));
+	#endregion
+	
+	#region Exception
+	public static string GetDeeperInnerMessage(this Exception me)
+	{
+		var inner = me;
+		while (inner.InnerException is not null) inner = inner.InnerException;
+		return inner.Message;
+	}
 	#endregion
 }
 

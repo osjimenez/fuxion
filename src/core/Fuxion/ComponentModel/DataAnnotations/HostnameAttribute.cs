@@ -1,4 +1,6 @@
-﻿namespace System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
+
+namespace Fuxion.ComponentModel.DataAnnotations;
 
 public class HostnameAttribute : RegularExpressionAttribute
 {

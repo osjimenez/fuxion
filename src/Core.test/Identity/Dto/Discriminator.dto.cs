@@ -1,4 +1,6 @@
-﻿namespace Fuxion.Identity.Test.Dto;
+﻿using Fuxion.Collections.Generic;
+
+namespace Fuxion.Identity.Test.Dto;
 
 public abstract class DiscriminatorDto : BaseDto, IDiscriminator<string, string>
 {

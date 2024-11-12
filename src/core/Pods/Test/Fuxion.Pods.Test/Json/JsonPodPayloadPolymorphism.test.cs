@@ -1,8 +1,8 @@
-﻿using System.Text.Json;
-using Fuxion.Text.Json;
-using Fuxion.Text.Json.Serialization;
+using System.Text.Json;
+using Fuxion.Pods.Json;
+using Fuxion.Pods.Json.Serialization;
 
-namespace Fuxion.Pods.Test.Text.Json;
+namespace Fuxion.Pods.Test.Json;
 // var jsonString = """
 // 						{
 // 							"__discriminator": "Dog",

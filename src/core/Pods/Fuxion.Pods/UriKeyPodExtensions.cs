@@ -2,10 +2,10 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using Fuxion.Text.Json;
-using Fuxion.Text.Json.Serialization;
+using Fuxion.Pods.Json;
+using Fuxion.Pods.Json.Serialization;
 
-namespace Fuxion;
+namespace Fuxion.Pods;
 
 public static class UriKeyPodExtensions
 {

@@ -1,8 +1,9 @@
-﻿using System.Text.Json.Serialization;
-using Fuxion.IO.Compression;
+using System.Text.Json.Serialization;
+using Fuxion.Pods.Compression;
+using Fuxion.Pods.Json;
 using Fuxion.Text.Json;
 
-namespace Fuxion.Pods.Test.IO.Zip;
+namespace Fuxion.Pods.Test.Compression;
 
 public class ZipPodTest(ITestOutputHelper output) : BaseTest<ZipPodTest>(output)
 {
@@ -69,43 +70,42 @@ public class ZipPodTest(ITestOutputHelper output) : BaseTest<ZipPodTest>(output)
 			.Payload;
 	}
 }
-file class TestPod(string discriminator, TestPayload payload) : Pod<string, TestPayload>(discriminator, payload)
+#if !NET462
+file
+#endif
+	class TestPod(string discriminator, TestPayload payload) : Pod<string, TestPayload>(discriminator, payload)
 {
 	public TestPod() : this(null!, null!) { }
 	[JsonPropertyName("Class-custom")]
 	public string? Class { get; set; }
 }
-file class TestPayload
+#if !NET462
+file
+#endif
+	class TestPayload
 {
 	public string? Name { get; set; }
 	[JsonPropertyName("Age-custom")]
 #if NET462
 	[JsonInclude]
-	public int Age { get; internal set; }
-#else
+#endif
 	public required int Age { get; init; }
-#endif
 }
-file class TestPayloadDerived : TestPayload
-{
-#if NET462
-	public string Nick { get; set; } = "";
-#else
-	public required string Nick { get; set; }
+#if !NET462
+file
 #endif
+	class TestPayloadDerived : TestPayload
+{
+	public required string Nick { get; set; }
 	[JsonPropertyName("Birthdate-custom")]
 #if NET462
+	// PEND https://www.nuget.org/packages/Portable.System.DateTimeOnly#readme-body-tab
 	public DateTime Birthdate { get; set; }
 #else
 	public DateOnly Birthdate { get; set; }
 #endif
 }
-#if NET462
-file record TestRecordPayload
-{
-	public TestRecordPayload(string name) => Name = name;
-	public string Name { get; private set; }
-}
-#else
-file record TestRecordPayload(string Name);
+#if !NET462
+file
 #endif
+	record TestRecordPayload(string Name);

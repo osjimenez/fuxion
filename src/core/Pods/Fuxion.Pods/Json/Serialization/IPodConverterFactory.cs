@@ -1,11 +1,8 @@
-﻿using System.Diagnostics;
-using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Fuxion.Reflection;
-using PodType = Fuxion.IPod<string, string>;
+using PodType = Fuxion.Pods.IPod<string, string>;
 
-namespace Fuxion.Text.Json.Serialization;
+namespace Fuxion.Pods.Json.Serialization;
 
 public class IPodConverterFactory(IUriKeyResolver? resolver = null) : JsonConverterFactory
 {

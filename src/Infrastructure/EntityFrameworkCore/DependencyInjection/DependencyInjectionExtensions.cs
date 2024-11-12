@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Fuxion;
 using Fuxion.EntityFrameworkCore;
 
 namespace Microsoft.Extensions.DependencyInjection;

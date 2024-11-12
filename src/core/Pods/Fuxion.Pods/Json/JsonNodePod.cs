@@ -2,9 +2,9 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Serialization;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using Fuxion.Text.Json.Serialization;
+using Fuxion.Pods.Json.Serialization;
 
-namespace Fuxion.Text.Json;
+namespace Fuxion.Pods.Json;
 
 public class JsonNodePod<TDiscriminator>(TDiscriminator discriminator, object payload, IUriKeyResolver? resolver = null) : IPod<TDiscriminator, JsonNode>//, IPod<TDiscriminator, string>
 	where TDiscriminator : notnull

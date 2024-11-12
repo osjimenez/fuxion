@@ -1,11 +1,12 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
-using PodType = Fuxion.IPod<string, string>;
+using Fuxion.Text.Json;
+using PodType = Fuxion.Pods.IPod<string, string>;
 
-namespace Fuxion.Text.Json;
+namespace Fuxion.Pods.Json.Serialization;
 
 public class IPodConverter<TPod, TDiscriminator, TPayload>(IUriKeyResolver? resolver = null) : JsonConverter<TPod>
 	where TPod : IPod<TDiscriminator, TPayload>
@@ -31,8 +32,8 @@ public class IPodConverter<TPod, TDiscriminator, TPayload>(IUriKeyResolver? reso
 			.RootElement) ?? throw new SerializationException("Couldn't be created JsonObject");
 		
 		// TODO: - Alonso - Implement this in another way
-		// if (typeToConvert.IsSubclassOfRawGeneric(typeof(IUriKeyPod<>)))
-		// 	typeToConvert.GetProperty(nameof(IUriKeyPod<string>.Resolver))?.SetValue(pod, resolver);
+		 if (typeToConvert.IsSubclassOfRawGeneric(typeof(IUriKeyPod<>)))
+		 	typeToConvert.GetProperty(nameof(IUriKeyPod<string>.Resolver))?.SetValue(pod, resolver);
 		
 		// DISCRIMINATOR
 		var disNode = jsonObject.FirstOrDefault(pair => pair.Key == DISCRIMINATOR_LABEL)
@@ -65,10 +66,11 @@ public class IPodConverter<TPod, TDiscriminator, TPayload>(IUriKeyResolver? reso
 		foreach (var node in iteNode.AsArray())
 			if (node is not null && resolver is not null)
 				// TODO: - Alonso - Implement this in other way
-				throw new NotImplementedException();
-			// var headerPod = (IPod<TDiscriminator, object>?)node.Deserialize(typeof(UriKeyPod<object>), options)?? throw new SerializationException("Cannot be deserialize header");
-			// col.Add(headerPod);
-			else
+				//throw new NotImplementedException();
+			{
+				var headerPod = (IPod<TDiscriminator, object>?)node.Deserialize(typeof(UriKeyPod<object>), options) ?? throw new SerializationException("Cannot be deserialize header");
+				col.Add(headerPod);
+			} else
 			{
 				var headerPod = (JsonNodePod<TDiscriminator>?)node.Deserialize(typeof(JsonNodePod<TDiscriminator>), options) ?? throw new SerializationException("Cannot be deserialize header");
 				col.Add(headerPod);

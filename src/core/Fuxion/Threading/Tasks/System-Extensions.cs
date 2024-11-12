@@ -1,6 +1,4 @@
-﻿using Fuxion.Threading.Tasks;
-
-namespace System.Threading.Tasks;
+﻿namespace Fuxion.Threading.Tasks;
 
 public static class Extensions
 {
@@ -13,15 +11,29 @@ public static class Extensions
 		new[] {
 			task
 		}.CancelAndWait(timeout, throwExceptionIfNotRunning);
+	public static async Task CancelAndWaitAsync(this Task task, bool throwExceptionIfNotRunning = true) =>
+		await new[] {
+			task
+		}.CancelAndWaitAsync(throwExceptionIfNotRunning);
 	public static void CancelAndWait(this IEnumerable<Task> me, TimeSpan timeout = default, bool throwExceptionIfNotRunning = true)
 	{
 		foreach (var task in me) task.Cancel(throwExceptionIfNotRunning);
 		try
 		{
 			if (timeout != default)
-				Task.WaitAll(me.Where(t => t != null && !t.IsCanceled).ToArray(), timeout);
+				Task.WaitAll(me.Where(t => t is { IsCanceled: false }).ToArray(), timeout);
 			else
-				Task.WaitAll(me.Where(t => t != null && !t.IsCanceled).ToArray());
+				Task.WaitAll(me.Where(t => t is { IsCanceled: false }).ToArray());
+		}
+		// If task was cancelled, nothing happens
+		catch (Exception ex) when (ex is TaskCanceledException || ex is AggregateException aex && aex.Flatten().InnerException is TaskCanceledException) { }
+	}
+	public static async Task CancelAndWaitAsync(this IEnumerable<Task> me, bool throwExceptionIfNotRunning = true)
+	{
+		foreach (var task in me) task.Cancel(throwExceptionIfNotRunning);
+		try
+		{
+			await Task.WhenAll(me);
 		}
 		// If task was cancelled, nothing happens
 		catch (Exception ex) when (ex is TaskCanceledException || ex is AggregateException aex && aex.Flatten().InnerException is TaskCanceledException) { }

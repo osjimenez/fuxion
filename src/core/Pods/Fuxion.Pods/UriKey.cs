@@ -1,11 +1,10 @@
-using System.Collections.Specialized;
 using System.Diagnostics.CodeAnalysis;
-using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Web;
+using Fuxion.Collections.Generic;
 
-namespace Fuxion;
+namespace Fuxion.Pods;
 /*
  * Attribute (Key, Version)
  * Json Pod (Key, Version, Generics)

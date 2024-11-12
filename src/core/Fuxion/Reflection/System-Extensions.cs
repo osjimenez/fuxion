@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
-using Fuxion.Reflection;
 
-namespace System.Reflection;
+namespace Fuxion.Reflection;
 
 public static class MemberInfoExtensions
 {

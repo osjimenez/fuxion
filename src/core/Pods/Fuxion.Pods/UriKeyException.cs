@@ -1,4 +1,4 @@
-namespace Fuxion;
+namespace Fuxion.Pods;
 
 public abstract class UriKeyException(string message) : FuxionException(message);
 public class UriKeyNotFoundException(string message) : UriKeyException(message);

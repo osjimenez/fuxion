@@ -1,9 +1,10 @@
-﻿using System.Text;
+using System.Text;
 using System.Text.Json.Serialization;
+using Fuxion.Pods.Json;
+using static Fuxion.Pods.Json.Serialization.IPodConverter<Fuxion.Pods.IPod<int,int>,int,int>;
 using Fuxion.Text.Json;
-using static Fuxion.Text.Json.IPodConverter<Fuxion.Text.Json.JsonNodePod<string>, string, System.Text.Json.Nodes.JsonNode>;
 
-namespace Fuxion.Pods.Test.Text.Json;
+namespace Fuxion.Pods.Test.Json;
 
 public class JsonPodTest : BaseTest<JsonPodTest>
 {

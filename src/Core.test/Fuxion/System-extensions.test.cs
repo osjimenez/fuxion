@@ -1,4 +1,6 @@
-﻿using Fuxion.Resources;
+using Fuxion.Collections.Generic;
+using Fuxion.Resources;
+using Fuxion.Threading.Tasks;
 
 namespace Fuxion.Test;
 
@@ -28,8 +30,8 @@ public class SystemExtensionsTest : BaseTest<SystemExtensionsTest>
 			Integer = integer;
 			String = @string;
 		}
-		public int Integer { get; }
-		public string String { get; }
+		public int Integer { get; set; }
+		public string String { get; set; }
 	}
 
 	[Fact(DisplayName = "Bytes - FromHexadecimal")]
@@ -247,10 +249,72 @@ public class SystemExtensionsTest : BaseTest<SystemExtensionsTest>
 		Output.WriteLine("ToTimeString (onlyLetters): " + res);
 	}
 	[Fact(DisplayName = "Object - Transform")]
-	public void TransfromTest()
+	public async Task TransformTest()
 	{
-		var res = new TransformationSource(123, "test").Transform(source => source.Integer);
+		var source = new TransformationSource(0, "test");
+
+		source.Transform(s => { s.Integer = 123; });
+		Assert.Equal(123, source.Integer);
+
+		var res = source.Transform(s => s.Integer);
 		Assert.Equal(123, res);
+	}
+	[Fact(DisplayName = "Object - ThenTransform")]
+	public async Task ThenTransformTest()
+	{
+		var sourceTask = TaskManager.StartNew(() => new TransformationSource(0, "test"));
+
+		var source = await sourceTask.ThenTransform(s => { s.Integer = 123; });
+		Assert.Equal(123, source.Integer);
+
+		var res = await sourceTask.ThenTransform(s => s.Integer);
+		Assert.Equal(123, res);
+	}
+	[Fact(DisplayName = "Object - TransformIfNotNull")]
+	public async Task TransformIfNotNullTest()
+	{
+		TransformationSource? source = null;
+
+		source = source.TransformIfNotNull(s =>
+		{
+			s.String = "changed";
+		});
+		Assert.Null(source);
+		var res = source.TransformIfNotNull(s => s?.String);
+		Assert.Null(res);
+		
+		source = new(123, "test");
+
+		source = source.TransformIfNotNull(s =>
+		{
+			s.String = "changed";
+		});
+		Assert.Equal("changed", source?.String);
+		res = source.TransformIfNotNull(s => s?.String);
+		Assert.Equal("changed", res);
+	}
+	[Fact(DisplayName = "Object - ThenTransformIfNotNull")]
+	public async Task ThenTransformIfNotNullTest()
+	{
+		var sourceTask = TaskManager.StartNew(()=>(TransformationSource?)null);
+
+		var source = await sourceTask.ThenTransformIfNotNull(s =>
+		{
+			s.String = "changed";
+		});
+		Assert.Null(source);
+		var res = await sourceTask.ThenTransformIfNotNull(s => s?.String);
+		Assert.Null(res);
+
+		sourceTask = TaskManager.StartNew(() => (TransformationSource?)new TransformationSource(0, "test"));
+
+		source = await sourceTask.ThenTransformIfNotNull(s =>
+		{
+			s.String = "changed";
+		});
+		Assert.Equal("changed", source?.String);
+		res = await sourceTask.ThenTransformIfNotNull(s => s?.String);
+		Assert.Equal("changed", res);
 	}
 	[Fact(DisplayName = "Type - IsNullable")]
 	public void TypeIsNullable()
@@ -288,7 +352,7 @@ public class SystemExtensionsTest : BaseTest<SystemExtensionsTest>
 	public void CustomIntEnumerator()
 	{
 #if !NET462
-		// TODO hacer uqe funcione en net462
+		// TODO hacer que funcione en net462
 		Logger.LogInformation($"Enumerate with range:");
 		foreach (var i in 0..10) Logger.LogInformation($"\t{i}");
 		Assert.Throws<NotSupportedException>(() => {

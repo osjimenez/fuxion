@@ -1,10 +1,10 @@
-﻿using System.Runtime.Serialization;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using Fuxion.Text.Json.Serialization;
+using Fuxion.Pods.Json.Serialization;
 
-namespace Fuxion.Text.Json;
+namespace Fuxion.Pods.Json;
 
 public static class JsonNodePodExtensions
 {

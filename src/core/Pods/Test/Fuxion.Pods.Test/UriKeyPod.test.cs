@@ -1,8 +1,21 @@
 using System.Text.Json.Serialization;
-using Fuxion.Test;
+
+/* Unmerged change from project 'Fuxion.Pods.Test (net8.0)'
+Before:
+using Fuxion.Text.Json;
+After:
+using Fuxion;
+using Fuxion.Pods;
+using Fuxion.Pods.Test;
+using Fuxion.Pods.Test;
+using Fuxion.Pods.Test.Text;
+using Fuxion.Pods.Test.Text.UriKey;
+using Fuxion.Text.Json;
+*/
+using Fuxion.Pods;
 using Fuxion.Text.Json;
 
-namespace Fuxion.Pods.Test.Text.UriKey;
+namespace Fuxion.Pods.Test;
 
 public class UriKeyPodTest : BaseTest<UriKeyPodTest>
 {
@@ -21,14 +34,16 @@ public class UriKeyPodTest : BaseTest<UriKeyPodTest>
 	[Fact(DisplayName = "FromJson")]
 	public void FromJson()
 	{
-		const string base64 =
+		const string base642 =
 			"eyJfX2Rpc2NyaW1pbmF0b3IiOiJodHRwczovL21ldGEuZnV4aW9uLmRldjo0NDMvbWV0YWRhdGEvdGVzdC9UZXN0UGF5bG9hZC9UZXN0UGF5bG9hZERlcml2ZWQvMS4wLjAiLCJfX3BheWxvYWQiOnsiTmljayI6InBheWxvYWROaWNrIiwiQmlydGhkYXRlLWN1c3RvbSI6IjIwMTItMTItMTIiLCJOYW1lIjoicGF5bG9hZE5hbWUiLCJBZ2UtY3VzdG9tIjoyM30sIl9faXRlbXMiOlt7Il9fZGlzY3JpbWluYXRvciI6Imh0dHBzOi8vbWV0YS5mdXhpb24uZGV2OjQ0My9zeXN0ZW0vaW50LzEuMC4wIiwiX19wYXlsb2FkIjoxMjM0fSx7Il9fZGlzY3JpbWluYXRvciI6Imh0dHBzOi8vbWV0YS5mdXhpb24uZGV2OjQ0My9tZXRhZGF0YS90ZXN0L1Rlc3RQYXlsb2FkUmVzZXQvMS4wLjAiLCJfX3BheWxvYWQiOnsiQWRkcmVzcyI6ImhlYWRlci5hZGRyZXNzIiwiTmljayI6ImhlYWRlci5uaWNrIiwiQmlydGhkYXRlLWN1c3RvbSI6IjIwMTItMTItMTIiLCJOYW1lIjoiaGVhZGVyLm5hbWUiLCJBZ2UtY3VzdG9tIjoxMn19LHsiX19kaXNjcmltaW5hdG9yIjoiaHR0cHM6Ly9tZXRhLmZ1eGlvbi5kZXY6NDQzL3N5c3RlbS9zdHJpbmdbXS8xLjAuMCIsIl9fcGF5bG9hZCI6WyJpdGVtMSxpdGVtMiJdfV19";
+		const string base64 =
+			"eyJfX2Rpc2NyaW1pbmF0b3IiOiJodHRwczovL21ldGEuZnV4aW9uLmRldi9tZXRhZGF0YS90ZXN0L1Rlc3RQYXlsb2FkL1Rlc3RQYXlsb2FkRGVyaXZlZC8xLjAuMCIsIl9fcGF5bG9hZCI6eyJOaWNrIjoicGF5bG9hZE5pY2siLCJCaXJ0aGRhdGUtY3VzdG9tIjoiMjAxMi0xMi0xMiIsIk5hbWUiOiJwYXlsb2FkTmFtZSIsIkFnZS1jdXN0b20iOjIzfSwiX19pdGVtcyI6W3siX19kaXNjcmltaW5hdG9yIjoiaHR0cHM6Ly9tZXRhLmZ1eGlvbi5kZXYvc3lzdGVtL2ludC8xLjAuMCIsIl9fcGF5bG9hZCI6MTIzNH0seyJfX2Rpc2NyaW1pbmF0b3IiOiJodHRwczovL21ldGEuZnV4aW9uLmRldi9tZXRhZGF0YS90ZXN0L1Rlc3RQYXlsb2FkUmVzZXQvMS4wLjAiLCJfX3BheWxvYWQiOnsiQWRkcmVzcyI6ImhlYWRlci5hZGRyZXNzIiwiTmljayI6ImhlYWRlci5uaWNrIiwiQmlydGhkYXRlLWN1c3RvbSI6IjIwMTItMTItMTIiLCJOYW1lIjoiaGVhZGVyLm5hbWUiLCJBZ2UtY3VzdG9tIjoxMn19LHsiX19kaXNjcmltaW5hdG9yIjoiaHR0cHM6Ly9tZXRhLmZ1eGlvbi5kZXYvc3lzdGVtL3N0cmluZ1tdLzEuMC4wIiwiX19wYXlsb2FkIjpbIml0ZW0xLGl0ZW0yIl19XX0=";
 		var builder = base64.FromBase64String()
 			.BuildUriKeyPod(resolver)
 			.FromUtf8Bytes()
 			.FromJsonNode();
 		var pod = builder.Pod;
-		
+
 		Output.WriteLine($"--- {nameof(TestPayload)}");
 		IsTrue(pod[typeof(TestPayload).GetUriKey()].Payload is TestPayload);
 		IsTrue(pod[typeof(TestPayload)].Payload is TestPayload);
@@ -64,33 +79,33 @@ public class UriKeyPodTest : BaseTest<UriKeyPodTest>
 				Name = "header.name"
 			});
 		Throws<UriKeyInheritanceException>(() => builder.AddUriKeyHeader(new TestPayload
-			{
-				Age = 12,
-				Name = "header.name"
-			}), $"'{nameof(TestPayload)}' is based on '{nameof(TestPayload)}'");
+		{
+			Age = 12,
+			Name = "header.name"
+		}), $"'{nameof(TestPayload)}' is based on '{nameof(TestPayload)}'");
 		Throws<UriKeyInheritanceException>(() => builder.AddUriKeyHeader(new TestPayloadDerived
-			{
-				Age = 12,
-				Name = "header.name",
-				Nick = "header.nick",
+		{
+			Age = 12,
+			Name = "header.name",
+			Nick = "header.nick",
 #if NET462
 			Birthdate = DateTime.Parse("12/12/2012"),
 #else
 				Birthdate = DateOnly.Parse("12/12/2012"),
 #endif
-			}), $"'{nameof(TestPayloadDerived)}' is based on '{nameof(TestPayload)}'");
+		}), $"'{nameof(TestPayloadDerived)}' is based on '{nameof(TestPayload)}'");
 		Throws<UriKeyInheritanceException>(() => builder.AddUriKeyHeader(new TestPayloadReset
-			{
-				Age = 12,
-				Name = "header.name",
-				Nick = "header.nick",
+		{
+			Age = 12,
+			Name = "header.name",
+			Nick = "header.nick",
 #if NET462
 			Birthdate = DateTime.Parse("12/12/2012"),
 #else
 				Birthdate = DateOnly.Parse("12/12/2012"),
 #endif
-				Address = "header.address"
-			}), $"'{nameof(TestPayloadReset)}' is based on '{nameof(TestPayload)}'");
+			Address = "header.address"
+		}), $"'{nameof(TestPayloadReset)}' is based on '{nameof(TestPayload)}'");
 		builder = "".BuildUriKeyPod(resolver)
 			.ToUriKeyPod()
 			.AddUriKeyHeader(new TestPayloadReset
@@ -101,38 +116,38 @@ public class UriKeyPodTest : BaseTest<UriKeyPodTest>
 #if NET462
 				Birthdate = DateTime.Parse("12/12/2012"),
 #else
-				Birthdate = DateOnly.Parse("12/12/2012"),
+					Birthdate = DateOnly.Parse("12/12/2012"),
 #endif
 				Address = "header.address"
 			});
 		Throws<UriKeyInheritanceException>(() => builder.AddUriKeyHeader(new TestPayload
-			{
-				Age = 12,
-				Name = "header.name"
-			}), $"'{nameof(TestPayload)}' is base of '{nameof(TestPayloadReset)}'");
+		{
+			Age = 12,
+			Name = "header.name"
+		}), $"'{nameof(TestPayload)}' is base of '{nameof(TestPayloadReset)}'");
 		Throws<UriKeyInheritanceException>(() => builder.AddUriKeyHeader(new TestPayloadDerived
-			{
-				Age = 12,
-				Name = "header.name",
-				Nick = "header.nick",
+		{
+			Age = 12,
+			Name = "header.name",
+			Nick = "header.nick",
 #if NET462
 			Birthdate = DateTime.Parse("12/12/2012"),
 #else
 				Birthdate = DateOnly.Parse("12/12/2012"),
 #endif
-			}), $"'{nameof(TestPayloadDerived)}' is base of '{nameof(TestPayloadReset)}'");
+		}), $"'{nameof(TestPayloadDerived)}' is base of '{nameof(TestPayloadReset)}'");
 		Throws<UriKeyInheritanceException>(() => builder.AddUriKeyHeader(new TestPayloadReset
-			{
-				Age = 12,
-				Name = "header.name",
-				Nick = "header.nick",
+		{
+			Age = 12,
+			Name = "header.name",
+			Nick = "header.nick",
 #if NET462
 			Birthdate = DateTime.Parse("12/12/2012"),
 #else
 				Birthdate = DateOnly.Parse("12/12/2012"),
 #endif
-				Address = "header.address"
-			}), $"'{nameof(TestPayloadReset)}' is base of '{nameof(TestPayloadReset)}'");
+			Address = "header.address"
+		}), $"'{nameof(TestPayloadReset)}' is base of '{nameof(TestPayloadReset)}'");
 	}
 	[Fact(DisplayName = "Json")]
 	public void Json()
@@ -176,7 +191,7 @@ public class UriKeyPodTest : BaseTest<UriKeyPodTest>
 #if NET462
 			Birthdate = DateTime.Parse("12/12/2012"),
 #else
-			Birthdate = DateOnly.Parse("12/12/2012"),
+				Birthdate = DateOnly.Parse("12/12/2012"),
 #endif
 		};
 		var builder = payload.BuildUriKeyPod(resolver)
@@ -190,7 +205,7 @@ public class UriKeyPodTest : BaseTest<UriKeyPodTest>
 #if NET462
 				Birthdate = DateTime.Parse("12/12/2012"),
 #else
-				Birthdate = DateOnly.Parse("12/12/2012"),
+					Birthdate = DateOnly.Parse("12/12/2012"),
 #endif
 				Address = "header.address"
 			})
@@ -204,54 +219,60 @@ public class UriKeyPodTest : BaseTest<UriKeyPodTest>
 	}
 }
 
-[UriKey($"{Fuxion.UriKey.FuxionBaseUri}metadata/test/{nameof(TestPayload)}/1.0.0")]
-file class TestPayload
+[UriKey($"{UriKey.FuxionBaseUri}metadata/test/{nameof(TestPayload)}/1.0.0")]
+#if !NET462
+file
+#endif
+class TestPayload
 {
 	public string? Name { get; set; }
 	[JsonPropertyName("Age-custom")]
 #if NET462
 	[JsonInclude]
-	public int Age { get; internal set; }
-#else
-	public required int Age { get; init; }
 #endif
+	public required int Age { get; init; }
 }
 
 [UriKey($"{nameof(TestPayloadDerived)}/1.0.0")]
-file class TestPayloadDerived : TestPayload
-{
-#if NET462
-	public string Nick { get; set; } = "";
-#else
-	public required string Nick { get; set; }
+#if !NET462
+file
 #endif
+class TestPayloadDerived : TestPayload
+{
+	public required string Nick { get; set; }
 	[JsonPropertyName("Birthdate-custom")]
 #if NET462
+	// PEND https://www.nuget.org/packages/Portable.System.DateTimeOnly#readme-body-tab
 	public DateTime Birthdate { get; set; }
 #else
-	public DateOnly Birthdate { get; set; }
+	 public DateOnly Birthdate { get; set; }
 #endif
 }
 
-[UriKey($"{Fuxion.UriKey.FuxionBaseUri}metadata/test/{nameof(TestPayloadReset)}/1.0.0", isReset: true)]
-file class TestPayloadReset : TestPayloadDerived
+[UriKey($"{UriKey.FuxionBaseUri}metadata/test/{nameof(TestPayloadReset)}/1.0.0", isReset: true)]
+#if !NET462
+file
+#endif
+class TestPayloadReset : TestPayloadDerived
 {
-#if NET462
-	public string Address { get; set; } = "";
-#else
 	public required string Address { get; set; }
-#endif
 }
 
-[UriKey(Fuxion.UriKey.FuxionBaseUri + "lab/test-message/1.0.0")]
-public class TestMessage(int id, string name)
+[UriKey(UriKey.FuxionBaseUri + "lab/test-message/1.0.0")]
+#if !NET462
+file
+#endif
+class TestMessage(int id, string name)
 {
 	public int Id { get; set; } = id;
 	public string Name { get; set; } = name;
 }
 
-[UriKey(Fuxion.UriKey.FuxionBaseUri + "lab/test-destination/1.0.0")]
-public class TestDestination(string destination)
+[UriKey(UriKey.FuxionBaseUri + "lab/test-destination/1.0.0")]
+#if !NET462
+file
+#endif
+class TestDestination(string destination)
 {
 	public string Destination { get; } = destination;
 }

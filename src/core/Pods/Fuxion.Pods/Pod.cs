@@ -1,6 +1,6 @@
 using System.Collections;
 
-namespace Fuxion;
+namespace Fuxion.Pods;
 
 public interface IPod<out TDiscriminator, out TPayload>
 {

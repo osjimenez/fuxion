@@ -1,6 +1,6 @@
-﻿using System.Text;
+using System.Text;
 
-namespace Fuxion;
+namespace Fuxion.Pods;
 
 public static class PodBuilder2Extensions
 {

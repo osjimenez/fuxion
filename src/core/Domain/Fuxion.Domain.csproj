@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFrameworks>netstandard2.0;net462;net7.0;net8.0</TargetFrameworks>
@@ -8,30 +8,26 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Include="icon.png" Pack="true" PackagePath="\"/>
+		<None Include="icon.png" Pack="true" PackagePath="\" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Compile Update="Properties\AssemblyInfo.cs"/>
+		<Compile Update="Properties\AssemblyInfo.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All"/>
-		<PackageReference Include="System.Reactive" Version="6.0.1"/>
-		<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0"/>
-		<PackageReference Include="Nullable" Version="1.3.1">
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-			<PrivateAssets>all</PrivateAssets>
-		</PackageReference>
-		<PackageReference Include="IsExternalInit" Version="1.0.3">
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
+		<PackageReference Include="System.Reactive" Version="6.0.1" />
+		<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0" />
+		<PackageReference Include="PolySharp" Version="1.14.1">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Fuxion\Fuxion.csproj"/>
-		<ProjectReference Include="..\Pods\Fuxion.Pods.Text.UriKey\Fuxion.Pods.Text.UriKey.csproj"/>
+		<ProjectReference Include="..\Fuxion\Fuxion.csproj" />
+		<ProjectReference Include="..\Pods\Fuxion.Pods\Fuxion.Pods.csproj" />
 	</ItemGroup>
 
 </Project>

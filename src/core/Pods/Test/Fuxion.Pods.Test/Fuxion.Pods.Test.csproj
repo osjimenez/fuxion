@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net7.0;net8.0</TargetFrameworks>
+		<TargetFrameworks>net462;net7.0;net8.0</TargetFrameworks>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 
@@ -10,14 +10,15 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Using Include="Xunit"/>
-		<Using Include="Xunit.Abstractions"/>
-		<Using Include="Fuxion.Xunit"/>
+		<Using Include="Xunit" />
+		<Using Include="Xunit.Abstractions" />
+		<Using Include="Fuxion.Xunit" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.10.0"/>
-		<PackageReference Include="xunit" Version="2.9.0"/>
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+		
+		<!--<PackageReference Include="xunit" Version="2.9.2" />
 		<PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 			<PrivateAssets>all</PrivateAssets>
@@ -25,15 +26,15 @@
 		<PackageReference Include="coverlet.collector" Version="6.0.2">
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 			<PrivateAssets>all</PrivateAssets>
-		</PackageReference>
-		<PackageReference Include="Nullable" Version="1.3.1">
+		</PackageReference>-->
+		<!--<PackageReference Include="Nullable" Version="1.3.1">
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
 		<PackageReference Include="IsExternalInit" Version="1.0.3">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
+		</PackageReference>-->
 	</ItemGroup>
 
 	<ItemGroup>
@@ -43,15 +44,21 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\..\..\Core.test\Fuxion\Fuxion.Test.csproj"/>
-		<ProjectReference Include="..\..\..\Xunit\Fuxion.Xunit.csproj"/>
-		<ProjectReference Include="..\..\Fuxion.Pods.IO.Zip\Fuxion.Pods.IO.Zip.csproj"/>
-		<ProjectReference Include="..\..\Fuxion.Pods.Text.Json\Fuxion.Pods.Text.Json.csproj"/>
-		<ProjectReference Include="..\..\Fuxion.Pods.Text.UriKey\Fuxion.Pods.Text.UriKey.csproj"/>
+		<ProjectReference Include="..\..\..\Xunit\Fuxion.Xunit.csproj" />
+		<ProjectReference Include="..\..\Fuxion.Pods\Fuxion.Pods.csproj" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net462'">
-		<Reference Include="System.Web"/>
+		<Reference Include="System.Web" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' Or '$(TargetFramework)' == 'net462'">
+		<!--<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+		<PackageReference Include="System.Net.Http" Version="4.3.4" />-->
+		<PackageReference Include="PolySharp" Version="1.14.1">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 	</ItemGroup>
 
 </Project>

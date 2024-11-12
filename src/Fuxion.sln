@@ -7,12 +7,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{291B05EE-7
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{ABD253A3-63FE-4FF0-8877-E872691E8D41}"
 	ProjectSection(SolutionItems) = preProject
-		Directory.Build.props = Directory.Build.props
-		docker-compose.yml = docker-compose.yml
-		Fuxion.sln.startup.json = Fuxion.sln.startup.json
 		.dockerignore = .dockerignore
 		.editorconfig = .editorconfig
+		Directory.Build.props = Directory.Build.props
+		docker-compose.yml = docker-compose.yml
 		Fuxion.sln = Fuxion.sln
+		Fuxion.sln.startup.json = Fuxion.sln.startup.json
 		global.json = global.json
 	EndProjectSection
 EndProject
@@ -116,41 +116,40 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".compose", ".compose", "{B6041283-8261-48BF-BB54-CF486FE59455}"
 	ProjectSection(SolutionItems) = preProject
 		.compose\CL1-BAL.conf = .compose\CL1-BAL.conf
-		.compose\CL2-BAL.conf = .compose\CL2-BAL.conf
-		.compose\CL1.rabbitsettings.json = .compose\CL1.rabbitsettings.json
-		.compose\CL2.rabbitsettings.json = .compose\CL2.rabbitsettings.json
 		.compose\CL1.mqttsettings.json = .compose\CL1.mqttsettings.json
+		.compose\CL1.rabbitsettings.json = .compose\CL1.rabbitsettings.json
+		.compose\CL2-BAL.conf = .compose\CL2-BAL.conf
 		.compose\CL2.mqttsettings.json = .compose\CL2.mqttsettings.json
+		.compose\CL2.rabbitsettings.json = .compose\CL2.rabbitsettings.json
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OnPremise", "OnPremise", "{31DA9C4F-6F3F-407B-B291-1AB307AF1721}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion.Lab.OnPremise.A1", "Lab\OnPremise\A1\Fuxion.Lab.OnPremise.A1.csproj", "{3CDD7B33-2BA5-49D6-A31C-C725CFEACA14}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fuxion.Lab.OnPremise.A1", "Lab\OnPremise\A1\Fuxion.Lab.OnPremise.A1.csproj", "{3CDD7B33-2BA5-49D6-A31C-C725CFEACA14}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion.Lab.OnPremise.A2", "Lab\OnPremise\A2\Fuxion.Lab.OnPremise.A2.csproj", "{91B1B548-0B39-4D56-9864-6ED91C9B65BC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fuxion.Lab.OnPremise.A2", "Lab\OnPremise\A2\Fuxion.Lab.OnPremise.A2.csproj", "{91B1B548-0B39-4D56-9864-6ED91C9B65BC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion.Lab.Cloud.GATE", "Lab\Cloud\GATE\Fuxion.Lab.Cloud.GATE.csproj", "{4E5063BC-7F8B-4F31-90D3-08FA1A0F4632}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fuxion.Lab.Cloud.GATE", "Lab\Cloud\GATE\Fuxion.Lab.Cloud.GATE.csproj", "{4E5063BC-7F8B-4F31-90D3-08FA1A0F4632}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".run", ".run", "{84287B4F-8D1B-44BE-BCEF-555290EB6670}"
 	ProjectSection(SolutionItems) = preProject
 		.run\Lab_ Compose.run.xml = .run\Lab_ Compose.run.xml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion.Lab.Test", "Lab\Test\Fuxion.Lab.Test.csproj", "{2C18AE90-E4CC-4AF8-90C6-CCC3A453A9EC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fuxion.Lab.Test", "Lab\Test\Fuxion.Lab.Test.csproj", "{2C18AE90-E4CC-4AF8-90C6-CCC3A453A9EC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_", "_", "{6F9C1484-004F-475D-BF2B-1E4D638FBA91}"
+	ProjectSection(SolutionItems) = preProject
+		..\GitVersion.yml = ..\GitVersion.yml
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Pods", "Pods", "{7E42AA4F-9923-418E-A305-57A758A9A912}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion.Pods", "core\Pods\Fuxion.Pods\Fuxion.Pods.csproj", "{D42B9352-54C5-4224-9AC3-9C552DB6D981}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion.Pods.Text.Json", "core\Pods\Fuxion.Pods.Text.Json\Fuxion.Pods.Text.Json.csproj", "{C86A78B1-8489-4F04-B0D1-4C4182AF1016}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion.Pods.IO.Zip", "core\Pods\Fuxion.Pods.IO.Zip\Fuxion.Pods.IO.Zip.csproj", "{0A65471C-4E51-4C5C-81C7-1490F96EF023}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion.Pods.Text.UriKey", "core\Pods\Fuxion.Pods.Text.UriKey\Fuxion.Pods.Text.UriKey.csproj", "{3FB8BC7C-8CCD-485A-A5E4-438666BF3DE2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fuxion.Pods", "core\Pods\Fuxion.Pods\Fuxion.Pods.csproj", "{D42B9352-54C5-4224-9AC3-9C552DB6D981}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{16ED4232-BD4B-4B4E-BA3E-1574CC9717AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fuxion.Pods.Test", "core\Pods\Test\Fuxion.Pods.Test\Fuxion.Pods.Test.csproj", "{B2A26C19-FC74-4E53-9B00-03B20FFE97B2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fuxion.Pods.Test", "core\Pods\Test\Fuxion.Pods.Test\Fuxion.Pods.Test.csproj", "{B2A26C19-FC74-4E53-9B00-03B20FFE97B2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -1128,78 +1127,6 @@ Global
 		{D42B9352-54C5-4224-9AC3-9C552DB6D981}.Release|x64.Build.0 = Release|Any CPU
 		{D42B9352-54C5-4224-9AC3-9C552DB6D981}.Release|x86.ActiveCfg = Release|Any CPU
 		{D42B9352-54C5-4224-9AC3-9C552DB6D981}.Release|x86.Build.0 = Release|Any CPU
-		{C86A78B1-8489-4F04-B0D1-4C4182AF1016}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C86A78B1-8489-4F04-B0D1-4C4182AF1016}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C86A78B1-8489-4F04-B0D1-4C4182AF1016}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{C86A78B1-8489-4F04-B0D1-4C4182AF1016}.Debug|ARM.Build.0 = Debug|Any CPU
-		{C86A78B1-8489-4F04-B0D1-4C4182AF1016}.Debug|iPhone.ActiveCfg = Debug|Any CPU
-		{C86A78B1-8489-4F04-B0D1-4C4182AF1016}.Debug|iPhone.Build.0 = Debug|Any CPU
-		{C86A78B1-8489-4F04-B0D1-4C4182AF1016}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
-		{C86A78B1-8489-4F04-B0D1-4C4182AF1016}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
-		{C86A78B1-8489-4F04-B0D1-4C4182AF1016}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{C86A78B1-8489-4F04-B0D1-4C4182AF1016}.Debug|x64.Build.0 = Debug|Any CPU
-		{C86A78B1-8489-4F04-B0D1-4C4182AF1016}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{C86A78B1-8489-4F04-B0D1-4C4182AF1016}.Debug|x86.Build.0 = Debug|Any CPU
-		{C86A78B1-8489-4F04-B0D1-4C4182AF1016}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C86A78B1-8489-4F04-B0D1-4C4182AF1016}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C86A78B1-8489-4F04-B0D1-4C4182AF1016}.Release|ARM.ActiveCfg = Release|Any CPU
-		{C86A78B1-8489-4F04-B0D1-4C4182AF1016}.Release|ARM.Build.0 = Release|Any CPU
-		{C86A78B1-8489-4F04-B0D1-4C4182AF1016}.Release|iPhone.ActiveCfg = Release|Any CPU
-		{C86A78B1-8489-4F04-B0D1-4C4182AF1016}.Release|iPhone.Build.0 = Release|Any CPU
-		{C86A78B1-8489-4F04-B0D1-4C4182AF1016}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
-		{C86A78B1-8489-4F04-B0D1-4C4182AF1016}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
-		{C86A78B1-8489-4F04-B0D1-4C4182AF1016}.Release|x64.ActiveCfg = Release|Any CPU
-		{C86A78B1-8489-4F04-B0D1-4C4182AF1016}.Release|x64.Build.0 = Release|Any CPU
-		{C86A78B1-8489-4F04-B0D1-4C4182AF1016}.Release|x86.ActiveCfg = Release|Any CPU
-		{C86A78B1-8489-4F04-B0D1-4C4182AF1016}.Release|x86.Build.0 = Release|Any CPU
-		{0A65471C-4E51-4C5C-81C7-1490F96EF023}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0A65471C-4E51-4C5C-81C7-1490F96EF023}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0A65471C-4E51-4C5C-81C7-1490F96EF023}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{0A65471C-4E51-4C5C-81C7-1490F96EF023}.Debug|ARM.Build.0 = Debug|Any CPU
-		{0A65471C-4E51-4C5C-81C7-1490F96EF023}.Debug|iPhone.ActiveCfg = Debug|Any CPU
-		{0A65471C-4E51-4C5C-81C7-1490F96EF023}.Debug|iPhone.Build.0 = Debug|Any CPU
-		{0A65471C-4E51-4C5C-81C7-1490F96EF023}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
-		{0A65471C-4E51-4C5C-81C7-1490F96EF023}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
-		{0A65471C-4E51-4C5C-81C7-1490F96EF023}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{0A65471C-4E51-4C5C-81C7-1490F96EF023}.Debug|x64.Build.0 = Debug|Any CPU
-		{0A65471C-4E51-4C5C-81C7-1490F96EF023}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{0A65471C-4E51-4C5C-81C7-1490F96EF023}.Debug|x86.Build.0 = Debug|Any CPU
-		{0A65471C-4E51-4C5C-81C7-1490F96EF023}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0A65471C-4E51-4C5C-81C7-1490F96EF023}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0A65471C-4E51-4C5C-81C7-1490F96EF023}.Release|ARM.ActiveCfg = Release|Any CPU
-		{0A65471C-4E51-4C5C-81C7-1490F96EF023}.Release|ARM.Build.0 = Release|Any CPU
-		{0A65471C-4E51-4C5C-81C7-1490F96EF023}.Release|iPhone.ActiveCfg = Release|Any CPU
-		{0A65471C-4E51-4C5C-81C7-1490F96EF023}.Release|iPhone.Build.0 = Release|Any CPU
-		{0A65471C-4E51-4C5C-81C7-1490F96EF023}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
-		{0A65471C-4E51-4C5C-81C7-1490F96EF023}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
-		{0A65471C-4E51-4C5C-81C7-1490F96EF023}.Release|x64.ActiveCfg = Release|Any CPU
-		{0A65471C-4E51-4C5C-81C7-1490F96EF023}.Release|x64.Build.0 = Release|Any CPU
-		{0A65471C-4E51-4C5C-81C7-1490F96EF023}.Release|x86.ActiveCfg = Release|Any CPU
-		{0A65471C-4E51-4C5C-81C7-1490F96EF023}.Release|x86.Build.0 = Release|Any CPU
-		{3FB8BC7C-8CCD-485A-A5E4-438666BF3DE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3FB8BC7C-8CCD-485A-A5E4-438666BF3DE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3FB8BC7C-8CCD-485A-A5E4-438666BF3DE2}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{3FB8BC7C-8CCD-485A-A5E4-438666BF3DE2}.Debug|ARM.Build.0 = Debug|Any CPU
-		{3FB8BC7C-8CCD-485A-A5E4-438666BF3DE2}.Debug|iPhone.ActiveCfg = Debug|Any CPU
-		{3FB8BC7C-8CCD-485A-A5E4-438666BF3DE2}.Debug|iPhone.Build.0 = Debug|Any CPU
-		{3FB8BC7C-8CCD-485A-A5E4-438666BF3DE2}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
-		{3FB8BC7C-8CCD-485A-A5E4-438666BF3DE2}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
-		{3FB8BC7C-8CCD-485A-A5E4-438666BF3DE2}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{3FB8BC7C-8CCD-485A-A5E4-438666BF3DE2}.Debug|x64.Build.0 = Debug|Any CPU
-		{3FB8BC7C-8CCD-485A-A5E4-438666BF3DE2}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{3FB8BC7C-8CCD-485A-A5E4-438666BF3DE2}.Debug|x86.Build.0 = Debug|Any CPU
-		{3FB8BC7C-8CCD-485A-A5E4-438666BF3DE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3FB8BC7C-8CCD-485A-A5E4-438666BF3DE2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3FB8BC7C-8CCD-485A-A5E4-438666BF3DE2}.Release|ARM.ActiveCfg = Release|Any CPU
-		{3FB8BC7C-8CCD-485A-A5E4-438666BF3DE2}.Release|ARM.Build.0 = Release|Any CPU
-		{3FB8BC7C-8CCD-485A-A5E4-438666BF3DE2}.Release|iPhone.ActiveCfg = Release|Any CPU
-		{3FB8BC7C-8CCD-485A-A5E4-438666BF3DE2}.Release|iPhone.Build.0 = Release|Any CPU
-		{3FB8BC7C-8CCD-485A-A5E4-438666BF3DE2}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
-		{3FB8BC7C-8CCD-485A-A5E4-438666BF3DE2}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
-		{3FB8BC7C-8CCD-485A-A5E4-438666BF3DE2}.Release|x64.ActiveCfg = Release|Any CPU
-		{3FB8BC7C-8CCD-485A-A5E4-438666BF3DE2}.Release|x64.Build.0 = Release|Any CPU
-		{3FB8BC7C-8CCD-485A-A5E4-438666BF3DE2}.Release|x86.ActiveCfg = Release|Any CPU
-		{3FB8BC7C-8CCD-485A-A5E4-438666BF3DE2}.Release|x86.Build.0 = Release|Any CPU
 		{B2A26C19-FC74-4E53-9B00-03B20FFE97B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B2A26C19-FC74-4E53-9B00-03B20FFE97B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B2A26C19-FC74-4E53-9B00-03B20FFE97B2}.Debug|ARM.ActiveCfg = Debug|Any CPU
@@ -1229,6 +1156,7 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{ABD253A3-63FE-4FF0-8877-E872691E8D41} = {2AA1795C-8741-4982-ACA8-40F792DCEADB}
 		{0F5CB7BF-7FF8-447D-9DEC-8CD0D946D208} = {291B05EE-78EA-412F-9449-5EC4D5E0FC9C}
 		{D377EF6C-1DBD-42B0-90F9-1DCBA7CE7E11} = {291B05EE-78EA-412F-9449-5EC4D5E0FC9C}
 		{80BFF656-3BE0-4587-A6B3-DEEEE7B653AF} = {291B05EE-78EA-412F-9449-5EC4D5E0FC9C}
@@ -1267,21 +1195,17 @@ Global
 		{F7051632-00D6-4C28-86DE-D63EE6746028} = {B1E5F1D9-46D2-4D4C-B0B6-7BBCE8AAA7DF}
 		{C713974A-85EE-4DCD-8707-3CEB4B38620E} = {F7051632-00D6-4C28-86DE-D63EE6746028}
 		{E7B60A1E-C0EF-4D30-A6BA-B972D498D723} = {B1E5F1D9-46D2-4D4C-B0B6-7BBCE8AAA7DF}
+		{7EA171AB-27E8-46CB-AF12-EAC873FE9DCC} = {2AA1795C-8741-4982-ACA8-40F792DCEADB}
 		{388DFD84-651B-4306-AC4C-4696218B8933} = {7EA171AB-27E8-46CB-AF12-EAC873FE9DCC}
 		{B6041283-8261-48BF-BB54-CF486FE59455} = {ABD253A3-63FE-4FF0-8877-E872691E8D41}
 		{31DA9C4F-6F3F-407B-B291-1AB307AF1721} = {B1E5F1D9-46D2-4D4C-B0B6-7BBCE8AAA7DF}
 		{3CDD7B33-2BA5-49D6-A31C-C725CFEACA14} = {31DA9C4F-6F3F-407B-B291-1AB307AF1721}
 		{91B1B548-0B39-4D56-9864-6ED91C9B65BC} = {31DA9C4F-6F3F-407B-B291-1AB307AF1721}
 		{4E5063BC-7F8B-4F31-90D3-08FA1A0F4632} = {F7051632-00D6-4C28-86DE-D63EE6746028}
-		{ABD253A3-63FE-4FF0-8877-E872691E8D41} = {2AA1795C-8741-4982-ACA8-40F792DCEADB}
-		{7EA171AB-27E8-46CB-AF12-EAC873FE9DCC} = {2AA1795C-8741-4982-ACA8-40F792DCEADB}
 		{84287B4F-8D1B-44BE-BCEF-555290EB6670} = {ABD253A3-63FE-4FF0-8877-E872691E8D41}
 		{2C18AE90-E4CC-4AF8-90C6-CCC3A453A9EC} = {B1E5F1D9-46D2-4D4C-B0B6-7BBCE8AAA7DF}
 		{7E42AA4F-9923-418E-A305-57A758A9A912} = {291B05EE-78EA-412F-9449-5EC4D5E0FC9C}
 		{D42B9352-54C5-4224-9AC3-9C552DB6D981} = {7E42AA4F-9923-418E-A305-57A758A9A912}
-		{C86A78B1-8489-4F04-B0D1-4C4182AF1016} = {7E42AA4F-9923-418E-A305-57A758A9A912}
-		{0A65471C-4E51-4C5C-81C7-1490F96EF023} = {7E42AA4F-9923-418E-A305-57A758A9A912}
-		{3FB8BC7C-8CCD-485A-A5E4-438666BF3DE2} = {7E42AA4F-9923-418E-A305-57A758A9A912}
 		{16ED4232-BD4B-4B4E-BA3E-1574CC9717AC} = {7E42AA4F-9923-418E-A305-57A758A9A912}
 		{B2A26C19-FC74-4E53-9B00-03B20FFE97B2} = {16ED4232-BD4B-4B4E-BA3E-1574CC9717AC}
 	EndGlobalSection

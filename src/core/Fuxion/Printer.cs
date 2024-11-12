@@ -1,8 +1,8 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Fuxion.Threading;
-using Extensions = System.Extensions;
+using Extensions = Fuxion.Extensions;
 
 namespace Fuxion;
 
@@ -13,12 +13,28 @@ public class Printer
 	Printer() { }
 	static readonly Dictionary<object, PrinterInstance> factories = new();
 	public static IPrinter Default { get; } = new PrinterInstance();
-	public static IPrinter WithKey(object key)
+	public static IPrinter GetOrCreate(Action<string>? writeLineAction = null, object? key = null)
 	{
-		if (key == null) return Default;
-		if (factories.ContainsKey(key)) return factories[key];
-		return factories[key] = new() {
-			Key = key
+		if (key is null && writeLineAction is null) return Default;
+		IPrinter res;
+		if (key is not null)
+		{
+			if (factories.TryGetValue(key, out var printer))
+			{
+				if (writeLineAction is not null) throw new InvalidOperationException("Cannot get a printer with a key that already exists and a new write line action");
+				return printer;
+			}
+			return factories[key] = new()
+			{
+				Key = key,
+				WriteLineAction = writeLineAction ?? WriteLineAction
+			};
+		}
+		key = "".RandomString(10);
+		return factories[key] = new()
+		{
+			Key = key,
+			WriteLineAction = writeLineAction ?? WriteLineAction
 		};
 	}
 	public static string GetPrinted(Action action)

@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Windows;
+using Fuxion.Collections.Generic;
 
 namespace Fuxion.Windows.Data;
 

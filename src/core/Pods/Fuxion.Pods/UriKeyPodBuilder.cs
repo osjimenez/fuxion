@@ -1,4 +1,4 @@
-namespace Fuxion;
+namespace Fuxion.Pods;
 
 public interface IUriKeyPodPreBuilder<out TPayload> : IPodPreBuilder<TPayload>
 {

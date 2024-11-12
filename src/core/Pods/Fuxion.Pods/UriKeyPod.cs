@@ -1,7 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 
-namespace Fuxion;
+namespace Fuxion.Pods;
 
 public interface IUriKeyPod<out TPayload> : ICollectionPod<UriKey, TPayload>
 {

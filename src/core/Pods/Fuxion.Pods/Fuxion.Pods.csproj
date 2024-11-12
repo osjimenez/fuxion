@@ -1,13 +1,14 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFrameworks>netstandard2.0;net462;net7.0;net8.0</TargetFrameworks>
-		<RootNamespace>Fuxion</RootNamespace>
-		<Nullable>enable</Nullable>
+		<Title>Fuxion Pods</Title>
+		<PackageId>Fuxion.Pods</PackageId>
+		<Description>Fuxion Pods library</Description>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\Fuxion\Fuxion.csproj"/>
+		<ProjectReference Include="..\..\Fuxion\Fuxion.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -22,15 +23,15 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0"/>
+		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net462'">
-		<Reference Include="System.Web"/>
+		<Reference Include="System.Web" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' Or '$(TargetFramework)' == 'net462'">
-		<PackageReference Include="Microsoft.CSharp" Version="4.7.0"/>
-		<PackageReference Include="System.Net.Http" Version="4.3.4"/>
+		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+		<PackageReference Include="System.Net.Http" Version="4.3.4" />
 	</ItemGroup>
 </Project>

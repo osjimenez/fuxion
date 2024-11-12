@@ -1,4 +1,4 @@
-﻿using Fuxion;
+using Fuxion;
 using Fuxion.Application;
 using Fuxion.Application.Commands;
 using Fuxion.Application.Events;
@@ -6,6 +6,7 @@ using Fuxion.Application.Events;
 // using Fuxion.Application.Repositories;
 using Fuxion.Application.Snapshots;
 using Fuxion.Domain;
+using Fuxion.Pods;
 using Fuxion.Reflection;
 
 namespace Microsoft.Extensions.DependencyInjection;

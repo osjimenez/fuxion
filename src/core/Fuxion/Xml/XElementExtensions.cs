@@ -2,7 +2,7 @@
 using System.Xml.Linq;
 using System.Xml.Serialization;
 
-namespace System.Xml;
+namespace Fuxion.Xml;
 
 public static class XElementExtensions
 {

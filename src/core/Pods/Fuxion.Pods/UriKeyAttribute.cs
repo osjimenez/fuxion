@@ -1,4 +1,4 @@
-namespace Fuxion;
+namespace Fuxion.Pods;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, Inherited = false)]
 public class UriKeyAttribute(string key, bool isSealed = false, bool isReset = false) : Attribute

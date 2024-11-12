@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Windows.Data;
 using System.Windows.Markup;
+using Fuxion.Reflection;
 
 namespace Fuxion.Windows.Data;
 

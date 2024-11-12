@@ -1,4 +1,6 @@
-﻿namespace Fuxion.Identity.Test.Dvo;
+﻿using Fuxion.Collections.Generic;
+
+namespace Fuxion.Identity.Test.Dvo;
 
 public abstract class DiscriminatorDvo<TDiscriminator> : BaseDvo<TDiscriminator>, IDiscriminator<string, string> where TDiscriminator : DiscriminatorDvo<TDiscriminator>
 {

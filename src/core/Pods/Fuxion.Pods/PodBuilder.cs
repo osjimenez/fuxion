@@ -1,4 +1,6 @@
-﻿namespace Fuxion;
+using Fuxion.Pods;
+
+namespace Fuxion;
 
 public interface IPodPreBuilder<out TPayload>
 {
