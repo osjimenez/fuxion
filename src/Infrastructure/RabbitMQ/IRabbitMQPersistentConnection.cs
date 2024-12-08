@@ -1,10 +1,10 @@
-﻿using RabbitMQ.Client;
+using RabbitMQ.Client;
 
 namespace Fuxion.RabbitMQ;
 
 public interface IRabbitMQPersistentConnection : IDisposable
 {
 	bool IsConnected { get; }
-	bool TryConnect();
-	IModel CreateModel();
+	Task<bool> TryConnect();
+	Task<IChannel> CreateModel(CancellationToken ct = default);
 }

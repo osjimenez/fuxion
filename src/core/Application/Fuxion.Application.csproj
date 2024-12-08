@@ -1,7 +1,7 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0;net462;net7.0;net8.0</TargetFrameworks>
+		<TargetFrameworks>netstandard2.0;net462;net8.0;net9.0</TargetFrameworks>
 		<Title>Fuxion Application</Title>
 		<PackageId>Fuxion.Application</PackageId>
 		<Description>Fuxion library for DDD</Description>
@@ -17,7 +17,7 @@
 
 	<ItemGroup>		
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>

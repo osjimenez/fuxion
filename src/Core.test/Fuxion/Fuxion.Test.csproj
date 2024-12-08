@@ -1,31 +1,31 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net462;net7.0;net8.0</TargetFrameworks>
+		<TargetFrameworks>net462;net8.0;net9.0</TargetFrameworks>
 		<IsPackable>false</IsPackable>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Using Include="Xunit"/>
-		<Using Include="Xunit.Abstractions"/>
-		<Using Include="Fuxion.Xunit"/>
+		<Using Include="Xunit" />
+		<Using Include="Xunit.Abstractions" />
+		<Using Include="Fuxion.Xunit" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\Core\Fuxion\Fuxion.csproj"/>
-		<ProjectReference Include="..\..\Core\Xunit\Fuxion.Xunit.csproj"/>
+		<ProjectReference Include="..\..\Core\Fuxion\Fuxion.csproj" />
+		<ProjectReference Include="..\..\Core\Xunit\Fuxion.Xunit.csproj" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net462'">
-		<Reference Include="System.Web"/>
+		<Reference Include="System.Web" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest"/>
+		<Content Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
 	</ItemGroup>
 
 </Project>

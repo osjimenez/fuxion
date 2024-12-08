@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0;net462;net7.0;net8.0</TargetFrameworks>
+		<TargetFrameworks>netstandard2.0;net462;net8.0;net9.0</TargetFrameworks>
 		<Title>Fuxion Pods</Title>
 		<PackageId>Fuxion.Pods</PackageId>
 		<Description>Fuxion Pods library</Description>

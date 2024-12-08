@@ -4,7 +4,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using Fuxion.Text.Json;
-using PodType = Fuxion.Pods.IPod<string, string>;
+using PodNames = Fuxion.Pods.IPod<string, string>;
 
 namespace Fuxion.Pods.Json.Serialization;
 
@@ -39,8 +39,8 @@ public class IPodConverter<TPod, TDiscriminator, TPayload>(IUriKeyResolver? reso
 		var disNode = jsonObject.FirstOrDefault(pair => pair.Key == DISCRIMINATOR_LABEL)
 			.Value ?? throw new SerializationException($"Discriminator couldn't be obtained from label '{DISCRIMINATOR_LABEL}'");
 		var disProp = pod.GetType()
-				.GetProperty(nameof(IPod<string, string>.Discriminator), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
-			?? throw new InvalidProgramException($"'{nameof(IPod<string, string>.Discriminator)}' property could not be obtained from pod '{pod.GetType().Name}'");
+				.GetProperty(nameof(PodNames.Discriminator), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+			?? throw new InvalidProgramException($"'{nameof(PodNames.Discriminator)}' property could not be obtained from pod '{pod.GetType().Name}'");
 		var payloadType = typeof(TPayload);
 		if (resolver is not null && typeof(UriKey).IsAssignableFrom(typeof(TDiscriminator)))
 		{
@@ -53,8 +53,8 @@ public class IPodConverter<TPod, TDiscriminator, TPayload>(IUriKeyResolver? reso
 		var payNode = jsonObject.FirstOrDefault(pair => pair.Key == PAYLOAD_LABEL)
 			.Value ?? throw new SerializationException($"Payload couldn't be obtained from label '{PAYLOAD_LABEL}'");
 		var payProp = pod.GetType()
-				.GetProperty(nameof(IPod<string, string>.Payload), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
-			?? throw new InvalidProgramException($"'{nameof(IPod<string, string>.Payload)}' property could not be obtained from pod '{pod.GetType().Name}'");
+				.GetProperty(nameof(PodNames.Payload), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+			?? throw new InvalidProgramException($"'{nameof(PodNames.Payload)}' property could not be obtained from pod '{pod.GetType().Name}'");
 		var payValue = payNode.Deserialize(payloadType, options);
 		pod.SetPrivatePropertyValue(payProp.Name, payValue);
 		
@@ -85,7 +85,7 @@ public class IPodConverter<TPod, TDiscriminator, TPayload>(IUriKeyResolver? reso
 			.GetProperties()
 			.Where(p => p.GetCustomAttribute<JsonIgnoreAttribute>() == null && p.GetIndexParameters()
 				.Length == 0)
-			.Where(p => p.Name != nameof(PodType.Payload) && p.Name != nameof(PodType.Discriminator)))
+			.Where(p => p.Name != nameof(PodNames.Payload) && p.Name != nameof(PodNames.Discriminator)))
 		{
 			writer.WritePropertyName(prop.GetCustomAttribute<JsonPropertyNameAttribute>()
 				?.Name ?? prop.Name);

@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Net.Sockets;
 using Polly;
 using RabbitMQ.Client;
@@ -23,10 +23,10 @@ public class DefaultRabbitMQPersistentConnection : IRabbitMQPersistentConnection
 	IConnection? _connection;
 	bool _disposed;
 	public bool IsConnected => _connection != null && _connection.IsOpen && !_disposed;
-	public IModel CreateModel()
+	public async Task<IChannel> CreateModel()
 	{
 		if (!IsConnected) throw new InvalidOperationException("No RabbitMQ connections are available to perform this action");
-		return _connection!.CreateModel();
+		return await _connection!.CreateChannelAsync();
 	}
 	public void Dispose()
 	{
@@ -41,7 +41,7 @@ public class DefaultRabbitMQPersistentConnection : IRabbitMQPersistentConnection
 			//_logger.LogCritical(ex.ToString());
 		}
 	}
-	public bool TryConnect()
+	public Task<bool> TryConnect()
 	{
 		Debug.WriteLine("RabbitMQ Client is trying to connect");
 		//_logger.LogInformation("RabbitMQ Client is trying to connect");
@@ -52,36 +52,36 @@ public class DefaultRabbitMQPersistentConnection : IRabbitMQPersistentConnection
 					Debug.WriteLine(ex.ToString());
 					//_logger.LogWarning(ex.ToString());
 				});
-			policy.Execute(() => { _connection = _connectionFactory.CreateConnection(); });
+			policy.Execute(async () => { _connection = await _connectionFactory.CreateConnectionAsync(); }).Wait();
 			if (IsConnected)
 			{
-				_connection!.ConnectionShutdown += OnConnectionShutdown;
-				_connection!.CallbackException += OnCallbackException;
-				_connection!.ConnectionBlocked += OnConnectionBlocked;
+				_connection!.ConnectionShutdownAsync += OnConnectionShutdown;
+				_connection!.CallbackExceptionAsync += OnCallbackException;
+				_connection!.ConnectionBlockedAsync += OnConnectionBlocked;
 				Debug.WriteLine($"RabbitMQ persistent connection acquired a connection {_connection.Endpoint.HostName} and is subscribed to failure events");
 				//_logger.LogInformation($"RabbitMQ persistent connection acquired a connection {_connection.Endpoint.HostName} and is subscribed to failure events");
-				return true;
+				return Task.FromResult(true);
 			}
 			Debug.WriteLine("FATAL ERROR: RabbitMQ connections could not be created and opened");
 			//_logger.LogCritical("FATAL ERROR: RabbitMQ connections could not be created and opened");
-			return false;
+			return Task.FromResult(false);
 		}
 	}
-	void OnConnectionBlocked(object? sender, ConnectionBlockedEventArgs e)
+	async Task OnConnectionBlocked(object? sender, ConnectionBlockedEventArgs e)
 	{
 		if (_disposed) return;
 		Debug.WriteLine("A RabbitMQ connection is shutdown. Trying to re-connect...");
 		//_logger.LogWarning("A RabbitMQ connection is shutdown. Trying to re-connect...");
 		TryConnect();
 	}
-	void OnCallbackException(object? sender, CallbackExceptionEventArgs e)
+	async Task OnCallbackException(object? sender, CallbackExceptionEventArgs e)
 	{
 		if (_disposed) return;
 		Debug.WriteLine("A RabbitMQ connection throw exception. Trying to re-connect...");
 		//_logger.LogWarning("A RabbitMQ connection throw exception. Trying to re-connect...");
 		TryConnect();
 	}
-	void OnConnectionShutdown(object? sender, ShutdownEventArgs reason)
+	async Task OnConnectionShutdown(object? sender, ShutdownEventArgs reason)
 	{
 		if (_disposed) return;
 		Debug.WriteLine("A RabbitMQ connection is on shutdown. Trying to re-connect...");
