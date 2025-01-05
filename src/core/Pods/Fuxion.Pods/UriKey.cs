@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -20,7 +21,9 @@ namespace Fuxion.Pods;
 public class UriKey2 : IEquatable<UriKey>
 {
 	public Uri Key { get; } = null!;
-	public Uri?[] Generics { get; } = null!;
+	public UriKey[] Bases { get; } = [];
+	public UriKey?[] Generics { get; } = [];
+	public UriKey[] Interfaces { get; } = [];
 	public SemanticVersion Version { get; } = null!;
 	public bool Equals(UriKey? other) => other is not null && Uri.Equals(Key, other.Key);
 	public override bool Equals(object? obj)
@@ -31,7 +34,7 @@ public class UriKey2 : IEquatable<UriKey>
 	public override int GetHashCode() => Key.GetHashCode();
 }
 [JsonConverter(typeof(UriKeyJsonConverter))]
-public class UriKey : IEquatable<UriKey>//, IComparable, IComparable<UriKey>
+public class UriKey : IEquatable<UriKey>, IComparable, IComparable<UriKey>
 {
 	const string RequiredParameterPrefix = "__";
 	internal const char ParameterSeparator = '.'; // Valid values: . ! * ( )
@@ -39,20 +42,14 @@ public class UriKey : IEquatable<UriKey>//, IComparable, IComparable<UriKey>
 	internal const string GenericsParameterName = RequiredParameterPrefix + "generics";
 	internal const string BasesParameterName = RequiredParameterPrefix + "bases";
 	public const string FuxionBaseUri = "https://meta.fuxion.dev/";
-	public const string FuxionSystemTypesBaseUri = FuxionBaseUri+"system/";
+	public const string FuxionSystemTypesBaseUri = FuxionBaseUri + "system/";
 
 	public UriKey(
 #if !NETSTANDARD2_0 && !NET462
 		[ConstantExpected]
 #endif
-		string key)
-	{
-		(Key, FullUri, Bases, Generics, Interfaces, Version) = ValidateAndNormalizeUri(new(key), false);
-	}
-	public UriKey(Uri uri)
-	{
-		(Key, FullUri, Bases, Generics, Interfaces, Version) = ValidateAndNormalizeUri(uri, false);
-	}
+		string key) : this(new(key),false) { }
+	public UriKey(Uri uri) : this(uri, false) { }
 	internal UriKey(Uri uri, bool allowReservedParameters)
 	{
 		(Key, FullUri, Bases, Generics, Interfaces, Version) = ValidateAndNormalizeUri(uri, allowReservedParameters);
@@ -164,50 +161,61 @@ public class UriKey : IEquatable<UriKey>//, IComparable, IComparable<UriKey>
 		return (ub.Uri, currentUri, keyChain.ToArray(), generics.ToArray(), interfaces.ToArray(), version);
 	}
 	public override string ToString() => Key.ToString();
-	
-	// public static bool operator ==(UriKey? identifier1, UriKey? identifier2)
-	// {
-	// 	if (identifier1 is null) return identifier2 is null;
-	// 	return identifier1.Equals(identifier2);
-	// }
-	// public static bool operator !=(UriKey identifier1, UriKey identifier2) => !(identifier1 == identifier2);
-	// public static bool operator < (UriKey identifier1, UriKey identifier2)
-	// {
-	// 	ArgumentNullException.ThrowIfNull(identifier1);
-	// 	return identifier1.CompareTo(identifier2) < 0;
-	// }
-	// public static bool operator <=(UriKey identifier1, UriKey identifier2) => identifier1 == identifier2 || identifier1 < identifier2;
-	// public static bool operator > (UriKey identifier1, UriKey identifier2)
-	// {
-	// 	ArgumentNullException.ThrowIfNull(identifier1);
-	// 	return identifier2 < identifier1;
-	// }
-	// public static bool operator >=(UriKey identifier1, UriKey identifier2) => identifier1 == identifier2 || identifier1 > identifier2;
-	// public int CompareTo(UriKey? other)
-	// {
-	// 	if (ReferenceEquals(this, other)) return 0;
-	// 	if (other is null) return 1;
-	// 	var uriRes = Uri.IsBaseOf(other.Uri) ? 
-	// 		
-	// 		
-	// 		
-	// 		
-	// 	return (IsNumber, other.IsNumber) switch
-	// 	{
-	// 		(true, true) => Nullable.Compare(NumberValue, other.NumberValue),
-	// 		(true, false) => -1,
-	// 		(false, true) => 1,
-	// 		var _ => string.Compare(Value, other.Value, StringComparison.Ordinal)
-	// 	};
-	// }
-	// public int CompareTo(object? obj)
-	// {
-	// 	if (obj is null)
-	// 		return 1;
-	// 	var other = obj as UriKey
-	// 		?? throw new ArgumentException($"Type must be '{nameof(UriKey)}'", "obj");
-	// 	return CompareTo(other);
-	// }
+
+	public static bool operator ==(UriKey? identifier1, UriKey? identifier2)
+	{
+		if (identifier1 is null) return identifier2 is null;
+		return identifier1.Equals(identifier2);
+	}
+	public static bool operator !=(UriKey identifier1, UriKey identifier2) => !(identifier1 == identifier2);
+	public static bool operator <(UriKey identifier1, UriKey identifier2)
+	{
+#if !NETSTANDARD2_0 && !NET462
+		ArgumentNullException.ThrowIfNull(identifier1);
+#else
+		if(identifier1 is null) throw new ArgumentException(nameof(identifier1));
+#endif
+		return identifier1.CompareTo(identifier2) < 0;
+	}
+	public static bool operator <=(UriKey identifier1, UriKey identifier2) => identifier1 == identifier2 || identifier1 < identifier2;
+	public static bool operator >(UriKey identifier1, UriKey identifier2)
+	{
+#if !NETSTANDARD2_0 && !NET462
+		ArgumentNullException.ThrowIfNull(identifier1);
+#else
+		if(identifier1 is null) throw new ArgumentException(nameof(identifier1));
+#endif
+		return identifier2 < identifier1;
+	}
+	public static bool operator >=(UriKey identifier1, UriKey identifier2) => identifier1 == identifier2 || identifier1 > identifier2;
+	public int CompareTo(UriKey? other)
+	{
+		if (other is null) return 1;
+
+		// Compare the key
+		if(Key == other.Key) return 0;
+
+		return (MajorVersionAreEquals: Version.Major == other.Version.Major, Upper: other.Key.IsBaseOf(Key), Less: Key.IsBaseOf(other.Key)) switch
+		{
+			// 1. If echelon is the same, the greater version is the greater
+			(_,true, true) => Version.CompareTo(other.Version),
+			// 2.If major versions differ, the greater version is the greater
+			(false, _, _) => Version.CompareTo(other.Version),
+			// 3. If major versions are equals, the greater echelon is the greater
+			(true, true, false) => 1, // Isn't 1 because must be a greater or equal version,
+			(true, false, true) => -1,
+			
+		};
+		//return baseCheck != 0 ? baseCheck : 0;
+	}
+	public int CompareTo(object? obj)
+	{
+		if (obj is null)
+			return 1;
+		var other = obj as UriKey
+			?? throw new ArgumentException($"Type must be '{nameof(UriKey)}'", "obj");
+		return CompareTo(other);
+	}
 	public bool Equals(UriKey? other) => other is not null && Uri.Equals(Key, other.Key);
 	public override bool Equals(object? obj)
 	{

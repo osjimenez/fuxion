@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace Fuxion;
 
+// SPEC: https://semver.org/#semantic-versioning-specification-semver
 public partial class SemanticVersion : IComparable, IComparable<SemanticVersion>, IEquatable<SemanticVersion>
 {
 	public SemanticVersion(string semanticVersion)
@@ -19,12 +20,12 @@ public partial class SemanticVersion : IComparable, IComparable<SemanticVersion>
 		Minor = uint.Parse(minor.Value);
 		Patch = uint.Parse(patch.Value);
 		PreRelease = string.IsNullOrWhiteSpace(preRelease.Value)
-			? new(Array.Empty<SemanticVersionIdentifier>())
+			? new([])
 			: new(preRelease.Value.Split('.')
 				.Select(i => new SemanticVersionIdentifier(i))
 				.ToArray());
 		BuildMetadata = string.IsNullOrWhiteSpace(buildMetadata.Value)
-			? new(Array.Empty<SemanticVersionIdentifier>())
+			? new([])
 			: new(buildMetadata.Value.Split('.')
 				.Select(i => new SemanticVersionIdentifier(i))
 				.ToArray());

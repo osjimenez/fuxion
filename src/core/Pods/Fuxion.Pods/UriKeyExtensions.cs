@@ -130,6 +130,8 @@ public static class UriKeyExtensions
 				.Select(r => (r.Current!.Value, r.Base)))
 			{
 				if (current.Uri is null || @base?.Uri is null || @base?.Type is null) throw new InvalidProgramException($"Unexpected fail when process UriKey");
+				// PEND Change by: @base.Value.Uri > lastKeyUri - or maybe <, check it
+				// PEND Search all IsBaseOf to apply this change if necessary
 				if (@base.Value.Uri.IsBaseOf(lastKeyUri))
 					throw new UriKeyResetException($"The uri '{lastKeyUri}' of the reset type '{lastKeyType.Name}' cannot be based on previous uri '{@base.Value.Uri}' of type '{@base.Value.Type.Name}'");
 				keyChain += Encoding.UTF8.GetBytes(current.Uri.ToString())

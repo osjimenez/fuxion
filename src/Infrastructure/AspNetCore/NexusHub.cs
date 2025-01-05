@@ -1,4 +1,4 @@
-﻿using Fuxion.Domain;
+using Fuxion.Domain;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.DependencyInjection;
@@ -45,7 +45,6 @@ public class SignalRServerSubscriber(IHubContext<NexusHub, INexuxHubClient> hub)
 		}
 	}
 }
-#if NET8_0
 public class SignalRClientPublisher([FromKeyedServices("NexusHub")] HubConnection nexusHub) : IPublisher<object>
 {
 	public PublisherInfo Info { get; } = new("");
@@ -76,4 +75,3 @@ public class SignalRClientSubscriber([FromKeyedServices("NexusHub")] HubConnecti
 		return Task.FromResult<IDisposable>(dis);
 	}
 }
-#endif

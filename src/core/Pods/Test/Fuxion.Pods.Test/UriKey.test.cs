@@ -245,6 +245,122 @@ public class UriKeyTest(ITestOutputHelper output) : BaseTest<UriKeyTest>(output)
 		Throws<UriKeyFragmentException>(() => new UriKeyAttribute("one/two/1.0.0#fragment"));
 		Throws<UriKeyParameterException>(() => new UriKeyAttribute($"one/two/1.0.0?{UriKey.InterfacesParameterName}=fail"));
 	}
+	[Fact(DisplayName = "Echelon comparision")]
+	public void EchelonComparision()
+	{
+		var e1 = new UriKey("https://fuxion.dev/one/1.0.0");
+		var e3 = new UriKey("https://fuxion.dev/one/two/three/1.0.0");
+		var e3Bis = new UriKey("https://fuxion.dev/one/two/three/1.0.0");
+		var e4 = new UriKey("https://fuxion.dev/one/two/three/four/1.0.0");
+
+		IsTrue(e1 < e3);
+		IsTrue(e1 <= e3);
+		IsTrue(e1 != e3);
+		IsTrue(e1 != e4);
+
+		IsTrue(e3 > e1);
+		IsTrue(e3 >= e1);
+		IsTrue(e3 == e3Bis);
+		IsTrue(e3 != e1);
+		IsTrue(e3.Equals(e3Bis));
+		IsTrue(e3.Equals((object)e3Bis));
+
+		IsTrue(e4 > e3);
+		IsTrue(e4 >= e3);
+		IsTrue(e4 != e3);
+	}
+	[Fact(DisplayName = "Version comparision")]
+	public void VersionComparision()
+	{
+		var v1_0_0 = new UriKey("https://fuxion.dev/one/1.0.0");
+		var v1_0_1 = new UriKey("https://fuxion.dev/one/1.0.1");
+		var _1 = new UriKey("https://fuxion.dev/one/1.0.1-1");
+		var alpha = new UriKey("https://fuxion.dev/one/1.0.1-alpha");
+		var alpha_1 = new UriKey("https://fuxion.dev/one/1.0.1-alpha.1");
+		var alpha_2 = new UriKey("https://fuxion.dev/one/1.0.1-alpha.2");
+		var v1_0_2 = new UriKey("https://fuxion.dev/one/1.0.2");
+		var v1_0_12 = new UriKey("https://fuxion.dev/one/1.0.12");
+		var v_1_1_0 = new UriKey("https://fuxion.dev/one/1.1.0");
+
+		IsTrue(v1_0_2 < v1_0_12);
+
+		IsTrue(v1_0_0 < v1_0_1);
+		IsTrue(v1_0_0 <= v1_0_1);
+		IsTrue(v1_0_0 != v1_0_1);
+
+		IsTrue(v1_0_0 != v_1_1_0);
+		IsTrue(v1_0_0 < v_1_1_0);
+		IsTrue(v1_0_0 <= v_1_1_0);
+		IsTrue(v1_0_0 != v_1_1_0);
+
+		IsTrue(v1_0_1 > v1_0_0);
+		IsTrue(v1_0_1 >= v1_0_0);
+		IsTrue(v1_0_1 != v1_0_0);
+
+		IsTrue(v1_0_1 > _1);
+		IsTrue(v1_0_1 > alpha);
+
+		IsTrue(_1 < alpha);
+		IsTrue(alpha < alpha_1);
+		IsTrue(alpha < alpha_1);
+		IsTrue(alpha_1 < alpha_2);
+
+		IsTrue(v_1_1_0 > _1);
+	}
+	[Fact(DisplayName = "Full comparision")]
+	public void FullComparision()
+	{
+		// Version is mandatory over the echelon
+		// An echelon must be compatible with the version
+		// that is the first thing to compare
+
+		var e1_v1_0_0 = new UriKey("https://fuxion.dev/one/1.0.0");
+		var e1_v1_0_1 = new UriKey("https://fuxion.dev/one/1.0.1");
+		var e1_v1_1_0 = new UriKey("https://fuxion.dev/one/1.1.0");
+		var e2_v1_0_0 = new UriKey("https://fuxion.dev/one/two/1.0.0");
+		var e2_v1_0_1 = new UriKey("https://fuxion.dev/one/two/1.0.1");
+		var e2_v1_1_1 = new UriKey("https://fuxion.dev/one/two/1.1.1");
+
+		var e1_v2_0_0 = new UriKey("https://fuxion.dev/one/2.0.0");
+		var e1_v2_0_1 = new UriKey("https://fuxion.dev/one/2.0.1");
+		var e2_v2_0_0 = new UriKey("https://fuxion.dev/one/two/2.0.0");
+		var e2_v2_0_1 = new UriKey("https://fuxion.dev/one/two/2.0.1");
+
+		IsTrue(e1_v1_0_1 < e2_v1_0_0);
+
+		// The rules are:
+		// 1. If echelon is the same, the greater version is the greater
+		IsTrue(e1_v1_0_0 < e1_v1_0_1);
+		IsTrue(e1_v1_0_1 < e1_v2_0_0);
+		// 2. If major versions differ, the greater version is the greater
+		IsTrue(e2_v1_0_0 < e2_v2_0_1);
+		IsTrue(e2_v1_0_1 < e2_v2_0_0);
+		// 3. If major versions are equals, the greater echelon is the greater
+		IsTrue(e1_v1_0_1 < e2_v1_0_0);
+		IsTrue(e1_v1_1_0 < e2_v1_0_0);
+		IsTrue(e1_v1_0_1 < e2_v1_0_0);
+
+
+
+		IsTrue(e1_v1_0_0 < e1_v1_0_1);
+		IsTrue(e1_v1_0_0 < e2_v1_0_0);
+		IsTrue(e1_v1_0_0 < e2_v1_0_1);
+
+		IsTrue(e1_v1_0_1 > e1_v1_0_0);
+		// The u2 is not greater than u1 because the version 1.0.0 is less than 1.0.1
+		//IsTrue(u1v1_0_1 > u2v_1_0_0);
+		IsTrue(e1_v1_0_1 < e2_v1_0_1);
+
+		IsTrue(e2_v1_0_0 > e1_v1_0_0);
+		// The u2 is not greater than u1 because the version 1.0.0 is less than 1.0.1
+		//IsTrue(u2v_1_0_0 < u1v1_0_1);
+		IsTrue(e2_v1_0_0 < e2_v1_0_1);
+
+		IsTrue(e2_v1_0_1 > e1_v1_0_0);
+		IsTrue(e2_v1_0_1 > e1_v1_0_1);
+		IsTrue(e2_v1_0_1 > e2_v1_0_0);
+
+	}
 }
 
 [UriKey($"https://{nameof(Interface1)}.com/1.0.0")]
