@@ -6,6 +6,8 @@ using Fuxion.Pods.Json.Serialization;
 
 namespace Fuxion.Pods.Json;
 
+//[IPodJsonConverterFactory]
+[JsonFactory<IPodConverterFactory>((IUriKeyResolver?)null)]
 public class JsonNodePod<TDiscriminator>(TDiscriminator discriminator, object payload, IUriKeyResolver? resolver = null) : IPod<TDiscriminator, JsonNode>//, IPod<TDiscriminator, string>
 	where TDiscriminator : notnull
 {
@@ -27,6 +29,7 @@ public class JsonNodePod<TDiscriminator>(TDiscriminator discriminator, object pa
 	public T? As<T>()
 	{
 		JsonSerializerOptions options = new();
+		options.PropertyNameCaseInsensitive = true;
 		options.Converters.Add(new IPodConverterFactory());
 		var res = Payload.Deserialize<T>(options);
 		return res ?? default;

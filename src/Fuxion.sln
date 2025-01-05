@@ -151,6 +151,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{16ED4232-B
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fuxion.Pods.Test", "core\Pods\Test\Fuxion.Pods.Test\Fuxion.Pods.Test.csproj", "{B2A26C19-FC74-4E53-9B00-03B20FFE97B2}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{5FC31A60-74E8-4F6D-ACF2-284C11CAACD1}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1208,9 +1213,10 @@ Global
 		{D42B9352-54C5-4224-9AC3-9C552DB6D981} = {7E42AA4F-9923-418E-A305-57A758A9A912}
 		{16ED4232-BD4B-4B4E-BA3E-1574CC9717AC} = {7E42AA4F-9923-418E-A305-57A758A9A912}
 		{B2A26C19-FC74-4E53-9B00-03B20FFE97B2} = {16ED4232-BD4B-4B4E-BA3E-1574CC9717AC}
+		{5FC31A60-74E8-4F6D-ACF2-284C11CAACD1} = {6F9C1484-004F-475D-BF2B-1E4D638FBA91}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {935D1C59-A88C-491F-B27D-3B0CF8AF2605}
 		EnterpriseLibraryConfigurationToolBinariesPathV6 = packages\EnterpriseLibrary.TransientFaultHandling.6.0.1304.0\lib\portable-net45+win+wp8;packages\EnterpriseLibrary.TransientFaultHandling.Data.6.0.1304.1\lib\NET45
+		SolutionGuid = {935D1C59-A88C-491F-B27D-3B0CF8AF2605}
 	EndGlobalSection
 EndGlobal

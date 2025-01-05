@@ -11,6 +11,7 @@ public interface IUriKeyResolver
 	UriKey this[Type type] { get; }
 	bool ContainsKey(UriKey key);
 	bool ContainsKey(Type type);
+	UriKey? GetFullKey(UriKey key);
 }
 
 public class UriKeyResolverNotFoundException(string message) : FuxionException(message) { }
@@ -45,6 +46,8 @@ public class UriKeyDirectory : IUriKeyResolver
 	}
 	public bool ContainsKey(UriKey key) => _keyToTypeDictionary.ContainsKey(key);
 	public bool ContainsKey(Type type) => _typeToKeyDictionary.ContainsKey(type);
+	public UriKey? GetFullKey(UriKey key) => _keyToTypeDictionary.Keys.FirstOrDefault(k => k.Equals(key));
+
 	public void RegisterAssemblyOf(Type type, Func<(Type Type, UriKeyAttribute? Attribute), bool>? predicate = null) =>
 		RegisterAssembly(type.Assembly, predicate);
 	public void RegisterAssemblyOf<T>(Func<(Type Type, UriKeyAttribute? Attribute), bool>? predicate = null) =>

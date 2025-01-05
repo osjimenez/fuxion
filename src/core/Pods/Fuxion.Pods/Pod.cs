@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Text.Json.Serialization;
+using Fuxion.Pods.Json.Serialization;
 
 namespace Fuxion.Pods;
 
@@ -26,6 +28,7 @@ public class Pod<TDiscriminator, TPayload>(TDiscriminator discriminator, TPayloa
 	public TDiscriminator Discriminator { get; init; } = discriminator;
 	// ATTENTION: The private setter cannot be removed, it is needed for deserialization
 	public TPayload Payload { get; init; } = payload;
+
 	public bool Has(TDiscriminator discriminator) => HeadersDictionary.ContainsKey(discriminator);
 	public virtual IPod<TDiscriminator, object> this[TDiscriminator discriminator] => HeadersDictionary[discriminator];
 	public bool Remove(TDiscriminator discriminator) => HeadersDictionary.Remove(discriminator);

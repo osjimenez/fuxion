@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 
@@ -17,6 +18,7 @@ public class UriKeyPod<TPayload>(UriKey discriminator, TPayload payload) : Pod<U
 	public override IPod<UriKey, object> this[UriKey key] => TryGetHeaderPod(key, out var pod) ? pod : throw new UriKeyNotFoundException($"Key '{key}' not found in headers");
 	public override void Add(IPod<UriKey, object> pod)
 	{
+		var oo = Resolver?.GetFullKey(pod.Discriminator);
 		// Check if new pod is derived from an existing one
 		var header = this.FirstOrDefault(h => h.Discriminator.Key.IsBaseOf(pod.Discriminator.Key) || pod.Discriminator.Bases.Any(b => h.Discriminator.Key.IsBaseOf(b)));
 		if (header is not null) throw new UriKeyInheritanceException($"The header of type '{pod.Discriminator}' cannot be equals or based on an existing header '{header.Discriminator}'.");
@@ -69,6 +71,15 @@ public class UriKeyPod<TPayload>(UriKey discriminator, TPayload payload) : Pod<U
 			result = HeadersDictionary[derivedKey];
 			return true;
 		}
+
+		if (Resolver is not null)
+		{
+			var tt = Resolver[key];
+			var k2 = Resolver.GetFullKey(key);
+			Debug.WriteLine("");
+		}
+
+
 		result = null;
 		return false;
 		// return derivedKey is not null ? HeadersDictionary[derivedKey] : throw new UriKeyNotFoundException($"Key '{key}' not found in directory");

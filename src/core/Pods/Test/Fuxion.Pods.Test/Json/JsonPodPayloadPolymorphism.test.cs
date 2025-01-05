@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Fuxion.Pods.Json;
 using Fuxion.Pods.Json.Serialization;
+using Fuxion.Pods.Test.Compression;
 
 namespace Fuxion.Pods.Test.Json;
 // var jsonString = """
@@ -45,41 +46,36 @@ public class JsonPodPayloadPolymorphism : BaseTest<JsonPodPayloadPolymorphism>
 			.ToJsonNode(nameof(Cat))
 			.Pod;
 		
-		var options = new JsonSerializerOptions();
-		options.Converters.Add(new IPodConverterFactory());
-		var jsonText = pod.SerializeToJson(options: options);
-		
 		// Assert
-		Output.WriteLine(jsonText);
+		PrintVariable(pod.SerializeToJson(true));
 	}
 	[Fact]
 	public void StringToPod_ShouldReturnRequestedObject_WhenStringIsCorrect()
 	{
-		var jsonString = """
-								{
-									"__discriminator": "Dog",
-									"__payload": {
-										"name": "Firulais",
-										"age": 3,
-										"createdAt": "2018-02-28T00:00:00"
-								}
-								""";
-		
+		var json = """
+						{
+							"__discriminator": "Dog",
+							"__payload": {
+								"name": "Firulais",
+								"age": 3,
+								"createdAt": "2018-02-28T00:00:00"
+							}
+						}
+						""";
+
 		// Act
-		jsonString.BuildPod()
+		json.BuildPod()
 			.FromJsonNode<string>(out var pod);
-		
 		var dog = pod.As<Dog>();
 		
 		// Assert
-		Output.WriteLine(pod.SerializeToJson());
+		PrintVariable(pod.SerializeToJson(true));
 		Assert.Equal("Dog", pod.Discriminator);
-		Assert.Equal("Firulais", dog!.Name);
-		Assert.Equal(3, dog!.Age);
+		Assert.NotNull(dog);
+		Assert.Equal("Firulais", dog.Name);
+		Assert.Equal(3, dog.Age);
 	}
 }
-
-file class JsonNodePod<TPayload> : Pod<string, TPayload> { }
 
 file abstract class Animal
 {

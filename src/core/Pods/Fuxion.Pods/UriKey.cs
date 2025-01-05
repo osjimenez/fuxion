@@ -36,7 +36,7 @@ public class UriKey : IEquatable<UriKey>//, IComparable, IComparable<UriKey>
 	const string RequiredParameterPrefix = "__";
 	internal const char ParameterSeparator = '.'; // Valid values: . ! * ( )
 	internal const string InterfacesParameterName = RequiredParameterPrefix + "interfaces";
-	internal const string GenericsParameterName = "generics";
+	internal const string GenericsParameterName = RequiredParameterPrefix + "generics";
 	internal const string BasesParameterName = RequiredParameterPrefix + "bases";
 	public const string FuxionBaseUri = "https://meta.fuxion.dev/";
 	public const string FuxionSystemTypesBaseUri = FuxionBaseUri+"system/";
@@ -74,7 +74,7 @@ public class UriKey : IEquatable<UriKey>//, IComparable, IComparable<UriKey>
 		// Validate that the last segment is a valid semantic version pattern
 		var lastSegment = currentUri.Segments.LastOrDefault()
 			?? throw new UriKeySemanticVersionException($"Uri must be a last segment with a semantic version valid pattern");
-		if (!SemanticVersion.TryParse(lastSegment, out SemanticVersion? version)) throw new UriKeySemanticVersionException($"The last segment '{lastSegment}' isn't a valid semantic version pattern");
+		if (!SemanticVersion.TryParse(lastSegment, out var version)) throw new UriKeySemanticVersionException($"The last segment '{lastSegment}' isn't a valid semantic version pattern");
 		
 		// If the uri is relative, checks that not start with '/'
 		if(!uri.IsAbsoluteUri && uri.ToString().StartsWith('/'))
@@ -83,7 +83,7 @@ public class UriKey : IEquatable<UriKey>//, IComparable, IComparable<UriKey>
 		// Validate that hasn't user info
 		// Issue when call IsBaseOf and UserInfo differs
 		// https://github.com/dotnet/runtime/issues/88265
-		// This a BUG that Microsoft must be resolve
+		// This a BUG that Microsoft must be resolved
 		if (!string.IsNullOrWhiteSpace(currentUri.UserInfo)) throw new UriKeyUserInfoException($"Uri cannot has user info");
 		
 		// Validate that hasn't fragment
@@ -144,13 +144,13 @@ public class UriKey : IEquatable<UriKey>//, IComparable, IComparable<UriKey>
 			// 	newQuery[key] = pars[key];
 			// }
 			// ub.Query = newQuery.Aggregate("?", (c, a) => c + (c == "?" ? "" : "&") + a.Key + "=" + a.Value).TrimEnd('?');
-			return (ub.Uri, uri, Array.Empty<Uri>(), generics.ToArray(), interfaces.ToArray(), version);
+			return (ub.Uri, uri, [], generics.ToArray(), interfaces.ToArray(), version);
 		}
 
 		// Remove user info and default port
 		ub.UserName = null;
 		if (ub.Uri.IsDefaultPort) ub.Port = -1;
-		currentUri = ub.Uri;
+		//currentUri = ub.Uri;
 		
 		// // Create key Uri
 		// {
