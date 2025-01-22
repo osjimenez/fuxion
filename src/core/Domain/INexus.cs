@@ -7,6 +7,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks.Sources;
 using Fuxion.Json;
+using Fuxion.Pods;
 using Fuxion.Reflection;
 
 namespace Fuxion.Domain;
@@ -251,10 +252,10 @@ public class ObservableSubscriberDecorator<TMessage> : ISubscriber<TMessage>
 	public Task Initialize() => _innerSubscriber.Initialize();
 	public void Attach(INexus nexus) => _innerSubscriber.Attach(nexus);
 	public Task<IDisposable> OnReceive(Action<IReceipt<TMessage>> onMessageReceived) => _innerSubscriber.OnReceive(onMessageReceived);
-	Subject<IReceipt<TMessage>> subject = new();
+	readonly Subject<IReceipt<TMessage>> subject = new();
 	public IObservable<IReceipt<TMessage>> Observe(Func<IReceipt<TMessage>, bool> predicate)
 	{
-		return subject.Where(predicate);
+		return subject.Where(predicate);//.AsObservable();
 	}
 }
 

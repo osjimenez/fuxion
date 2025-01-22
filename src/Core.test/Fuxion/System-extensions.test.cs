@@ -63,7 +63,7 @@ public class SystemExtensionsTest : BaseTest<SystemExtensionsTest>
 			GenerateException();
 		} catch (Exception ex)
 		{
-			var json = ex.SerializeToJson();
+			var json = ex.SerializeToJson(true);
 			Output.WriteLine(json);
 		} finally
 		{
@@ -75,7 +75,7 @@ public class SystemExtensionsTest : BaseTest<SystemExtensionsTest>
 			GenerateExceptionWithInner();
 		} catch (Exception ex)
 		{
-			var json = ex.SerializeToJson();
+			var json = ex.SerializeToJson(true);
 			Output.WriteLine(json);
 		} finally
 		{

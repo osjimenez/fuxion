@@ -4,7 +4,6 @@
 		<Nullable>enable</Nullable>
 		<WarningsAsErrors>Nullable;CA1857</WarningsAsErrors>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<!--<IncludeSymbols>true</IncludeSymbols>-->
 
 		<Title>Fuxion</Title>
 		<Authors>Oscar Jimenez</Authors>

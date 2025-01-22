@@ -8,6 +8,8 @@ using Fuxion.Domain;
 using Fuxion.Json;
 using Fuxion.Lab.Cloud.MS1;
 using Fuxion.Lab.Common;
+using Fuxion.Pods;
+using Fuxion.Pods.Json.Serialization;
 using Fuxion.Reflection;
 using Fuxion.Text.Json;
 using Fuxion.Text.Json.Serialization;
@@ -57,10 +59,15 @@ builder.Services.AddScoped<RabbitMQSubscriber>();
 builder.Services.AddScoped<INexus>(sp =>
 {
 	DefaultNexus nexus = new ("CL1-MS1");
-	nexus.RouteDirectory.AddPublisher<object>(new(""), obj => obj is JsonElement, async obj => await nexus.Publish((JsonElement)obj));
+	nexus.RouteDirectory.AddPublisher<object>(
+		new(""),
+		obj => obj is JsonElement,
+		async obj => await nexus.Publish((JsonElement)obj));
 	nexus.RouteDirectory.AddPublisher<JsonElement>(new(""), jsonElement => jsonElement.ValueKind == JsonValueKind.Object,
 		async jsonElement => await nexus.Publish(JsonNode.Parse(jsonElement.GetRawText()) ?? throw new SerializationException($"The text couldn't be deserialized as JsonNode")));
-	nexus.RouteDirectory.AddPublisher<JsonNode>(new(""), async jsonNode => await nexus.Publish(jsonNode.ToJsonString()
+	nexus.RouteDirectory.AddPublisher<JsonNode>(
+		new(""),
+		async jsonNode => await nexus.Publish(jsonNode.ToJsonString()
 		.BuildUriKeyPod(directory)
 		.FromJsonNode()
 		.Pod));

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0;net462;net7.0;net8.0</TargetFrameworks>
+		<TargetFrameworks>netstandard2.0;net462;net8.0;net9.0</TargetFrameworks>
 		<Title>Fuxion</Title>
 		<PackageId>Fuxion</PackageId>
 		<Description>Fuxion library</Description>
@@ -21,9 +21,6 @@
 			<Generator>PublicResXFileCodeGenerator</Generator>
 			<LastGenOutput>Strings.Designer.cs</LastGenOutput>
 		</EmbeddedResource>
-		<Compile Update="PodBuilder.cs">
-			<DependentUpon>Pod.cs</DependentUpon>
-		</Compile>
 		<Compile Update="SemanticVersionException.cs">
 			<DependentUpon>SemanticVersion.cs</DependentUpon>
 		</Compile>
@@ -58,13 +55,14 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="8.0.1" />
-		<PackageReference Include="System.Text.Json" Version="8.0.5" />
-		<PackageReference Include="PolySharp" Version="1.14.1">
+		<PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="9.0.0" />
+		<PackageReference Include="System.Text.Json" Version="9.0.0" />
+		<PackageReference Include="PolySharp" Version="1.15.0">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 	</ItemGroup>
+
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
 		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />

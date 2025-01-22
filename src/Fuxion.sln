@@ -140,7 +140,32 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fuxion.Lab.Test", "Lab\Test
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_", "_", "{6F9C1484-004F-475D-BF2B-1E4D638FBA91}"
 	ProjectSection(SolutionItems) = preProject
+		..\.gitattributes = ..\.gitattributes
+		..\.gitignore = ..\.gitignore
 		..\GitVersion.yml = ..\GitVersion.yml
+		..\LICENSE = ..\LICENSE
+		..\README.md = ..\README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Pods", "Pods", "{7E42AA4F-9923-418E-A305-57A758A9A912}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fuxion.Pods", "core\Pods\Fuxion.Pods\Fuxion.Pods.csproj", "{D42B9352-54C5-4224-9AC3-9C552DB6D981}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{16ED4232-BD4B-4B4E-BA3E-1574CC9717AC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fuxion.Pods.Test", "core\Pods\Test\Fuxion.Pods.Test\Fuxion.Pods.Test.csproj", "{B2A26C19-FC74-4E53-9B00-03B20FFE97B2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{5FC31A60-74E8-4F6D-ACF2-284C11CAACD1}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{9E30E4AB-579D-4BB0-B799-77F4D9CE6AD4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{30F89CAB-95B7-4287-ADBC-50E7AB5BB1BE}"
+	ProjectSection(SolutionItems) = preProject
+		..\.github\workflows\dotnet-core.yml = ..\.github\workflows\dotnet-core.yml
+		..\.github\workflows\jekyll-gh-pages.yml = ..\.github\workflows\jekyll-gh-pages.yml
 	EndProjectSection
 EndProject
 Global
@@ -1095,6 +1120,54 @@ Global
 		{2C18AE90-E4CC-4AF8-90C6-CCC3A453A9EC}.Release|x64.Build.0 = Release|Any CPU
 		{2C18AE90-E4CC-4AF8-90C6-CCC3A453A9EC}.Release|x86.ActiveCfg = Release|Any CPU
 		{2C18AE90-E4CC-4AF8-90C6-CCC3A453A9EC}.Release|x86.Build.0 = Release|Any CPU
+		{D42B9352-54C5-4224-9AC3-9C552DB6D981}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D42B9352-54C5-4224-9AC3-9C552DB6D981}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D42B9352-54C5-4224-9AC3-9C552DB6D981}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{D42B9352-54C5-4224-9AC3-9C552DB6D981}.Debug|ARM.Build.0 = Debug|Any CPU
+		{D42B9352-54C5-4224-9AC3-9C552DB6D981}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{D42B9352-54C5-4224-9AC3-9C552DB6D981}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{D42B9352-54C5-4224-9AC3-9C552DB6D981}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{D42B9352-54C5-4224-9AC3-9C552DB6D981}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{D42B9352-54C5-4224-9AC3-9C552DB6D981}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D42B9352-54C5-4224-9AC3-9C552DB6D981}.Debug|x64.Build.0 = Debug|Any CPU
+		{D42B9352-54C5-4224-9AC3-9C552DB6D981}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D42B9352-54C5-4224-9AC3-9C552DB6D981}.Debug|x86.Build.0 = Debug|Any CPU
+		{D42B9352-54C5-4224-9AC3-9C552DB6D981}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D42B9352-54C5-4224-9AC3-9C552DB6D981}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D42B9352-54C5-4224-9AC3-9C552DB6D981}.Release|ARM.ActiveCfg = Release|Any CPU
+		{D42B9352-54C5-4224-9AC3-9C552DB6D981}.Release|ARM.Build.0 = Release|Any CPU
+		{D42B9352-54C5-4224-9AC3-9C552DB6D981}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{D42B9352-54C5-4224-9AC3-9C552DB6D981}.Release|iPhone.Build.0 = Release|Any CPU
+		{D42B9352-54C5-4224-9AC3-9C552DB6D981}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{D42B9352-54C5-4224-9AC3-9C552DB6D981}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{D42B9352-54C5-4224-9AC3-9C552DB6D981}.Release|x64.ActiveCfg = Release|Any CPU
+		{D42B9352-54C5-4224-9AC3-9C552DB6D981}.Release|x64.Build.0 = Release|Any CPU
+		{D42B9352-54C5-4224-9AC3-9C552DB6D981}.Release|x86.ActiveCfg = Release|Any CPU
+		{D42B9352-54C5-4224-9AC3-9C552DB6D981}.Release|x86.Build.0 = Release|Any CPU
+		{B2A26C19-FC74-4E53-9B00-03B20FFE97B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2A26C19-FC74-4E53-9B00-03B20FFE97B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2A26C19-FC74-4E53-9B00-03B20FFE97B2}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{B2A26C19-FC74-4E53-9B00-03B20FFE97B2}.Debug|ARM.Build.0 = Debug|Any CPU
+		{B2A26C19-FC74-4E53-9B00-03B20FFE97B2}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{B2A26C19-FC74-4E53-9B00-03B20FFE97B2}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{B2A26C19-FC74-4E53-9B00-03B20FFE97B2}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{B2A26C19-FC74-4E53-9B00-03B20FFE97B2}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{B2A26C19-FC74-4E53-9B00-03B20FFE97B2}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B2A26C19-FC74-4E53-9B00-03B20FFE97B2}.Debug|x64.Build.0 = Debug|Any CPU
+		{B2A26C19-FC74-4E53-9B00-03B20FFE97B2}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B2A26C19-FC74-4E53-9B00-03B20FFE97B2}.Debug|x86.Build.0 = Debug|Any CPU
+		{B2A26C19-FC74-4E53-9B00-03B20FFE97B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2A26C19-FC74-4E53-9B00-03B20FFE97B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2A26C19-FC74-4E53-9B00-03B20FFE97B2}.Release|ARM.ActiveCfg = Release|Any CPU
+		{B2A26C19-FC74-4E53-9B00-03B20FFE97B2}.Release|ARM.Build.0 = Release|Any CPU
+		{B2A26C19-FC74-4E53-9B00-03B20FFE97B2}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{B2A26C19-FC74-4E53-9B00-03B20FFE97B2}.Release|iPhone.Build.0 = Release|Any CPU
+		{B2A26C19-FC74-4E53-9B00-03B20FFE97B2}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{B2A26C19-FC74-4E53-9B00-03B20FFE97B2}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{B2A26C19-FC74-4E53-9B00-03B20FFE97B2}.Release|x64.ActiveCfg = Release|Any CPU
+		{B2A26C19-FC74-4E53-9B00-03B20FFE97B2}.Release|x64.Build.0 = Release|Any CPU
+		{B2A26C19-FC74-4E53-9B00-03B20FFE97B2}.Release|x86.ActiveCfg = Release|Any CPU
+		{B2A26C19-FC74-4E53-9B00-03B20FFE97B2}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1148,9 +1221,16 @@ Global
 		{4E5063BC-7F8B-4F31-90D3-08FA1A0F4632} = {F7051632-00D6-4C28-86DE-D63EE6746028}
 		{84287B4F-8D1B-44BE-BCEF-555290EB6670} = {ABD253A3-63FE-4FF0-8877-E872691E8D41}
 		{2C18AE90-E4CC-4AF8-90C6-CCC3A453A9EC} = {B1E5F1D9-46D2-4D4C-B0B6-7BBCE8AAA7DF}
+		{7E42AA4F-9923-418E-A305-57A758A9A912} = {291B05EE-78EA-412F-9449-5EC4D5E0FC9C}
+		{D42B9352-54C5-4224-9AC3-9C552DB6D981} = {7E42AA4F-9923-418E-A305-57A758A9A912}
+		{16ED4232-BD4B-4B4E-BA3E-1574CC9717AC} = {7E42AA4F-9923-418E-A305-57A758A9A912}
+		{B2A26C19-FC74-4E53-9B00-03B20FFE97B2} = {16ED4232-BD4B-4B4E-BA3E-1574CC9717AC}
+		{5FC31A60-74E8-4F6D-ACF2-284C11CAACD1} = {6F9C1484-004F-475D-BF2B-1E4D638FBA91}
+		{9E30E4AB-579D-4BB0-B799-77F4D9CE6AD4} = {6F9C1484-004F-475D-BF2B-1E4D638FBA91}
+		{30F89CAB-95B7-4287-ADBC-50E7AB5BB1BE} = {9E30E4AB-579D-4BB0-B799-77F4D9CE6AD4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		EnterpriseLibraryConfigurationToolBinariesPathV6 = packages\EnterpriseLibrary.TransientFaultHandling.6.0.1304.0\lib\portable-net45+win+wp8;packages\EnterpriseLibrary.TransientFaultHandling.Data.6.0.1304.1\lib\NET45
 		SolutionGuid = {935D1C59-A88C-491F-B27D-3B0CF8AF2605}
+		EnterpriseLibraryConfigurationToolBinariesPathV6 = packages\EnterpriseLibrary.TransientFaultHandling.6.0.1304.0\lib\portable-net45+win+wp8;packages\EnterpriseLibrary.TransientFaultHandling.Data.6.0.1304.1\lib\NET45
 	EndGlobalSection
 EndGlobal

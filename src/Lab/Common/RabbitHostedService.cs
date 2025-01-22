@@ -19,41 +19,40 @@ public class RabbitHostedService : IHostedService
 		_queueName = queueName;
 		_persistentConnection = persistentConnection;
 	}
-	IModel? _consumerChannel;
-	IModel CreateConsumerChannel()
+	IChannel? _consumerChannel;
+	async Task<IChannel> CreateConsumerChannel()
 	{
 		Console.WriteLine("============= CREATING CONSUMER CHANNEL ===============================");
 		if (!_persistentConnection.IsConnected) _persistentConnection.TryConnect();
-		var channel = _persistentConnection.CreateModel();
-		channel.ExchangeDeclare("test-exchange", ExchangeType.Direct);
-		channel.QueueDeclare(_queueName, true, false, false, null);
-		var consumer = new EventingBasicConsumer(channel);
-		consumer.Received += async (model, ea) => {
+		var channel = await _persistentConnection.CreateModel();
+		await channel.ExchangeDeclareAsync("test-exchange", ExchangeType.Direct);
+		await channel.QueueDeclareAsync(_queueName, true, false, false, null);
+		var consumer = new AsyncEventingBasicConsumer(channel);
+		consumer.ReceivedAsync += async (model, ea) => {
 			//var integrationEventTypeId = ea.RoutingKey;
 			var message = Encoding.UTF8.GetString(ea.Body.ToArray());
 			Console.WriteLine($"Message received: {message}");
-			channel.BasicAck(ea.DeliveryTag, false);
+			await channel.BasicAckAsync(ea.DeliveryTag, false);
 		};
-		channel.BasicConsume(_queueName, false, consumer);
-		channel.CallbackException += (sender, ea) => {
+		await channel.BasicConsumeAsync(_queueName, false, consumer);
+		channel.CallbackExceptionAsync += async (sender, ea) => {
 			_consumerChannel?.Dispose();
-			_consumerChannel = CreateConsumerChannel();
+			_consumerChannel = await CreateConsumerChannel();
 		};
 		return channel;
 	}
-	void Subscribe()
+	async Task Subscribe()
 	{
 		Console.WriteLine("Subscribing queue ...");
-		if (!_persistentConnection.IsConnected && !_persistentConnection.TryConnect()) throw new Exception("Cannot connect to Rabbit MQ");
-		using var channel = _persistentConnection.CreateModel();
-		channel.QueueBind(_queueName, "test-exchange", _queueName,new Dictionary<string, object>());
+		if (!_persistentConnection.IsConnected && await _persistentConnection.TryConnect()) throw new Exception("Cannot connect to Rabbit MQ");
+		await using var channel = await _persistentConnection.CreateModel();
+		await channel.QueueBindAsync(_queueName, "test-exchange", _queueName,new Dictionary<string, object?>());
 	}
-	public Task StartAsync(CancellationToken cancellationToken)
+	public async Task StartAsync(CancellationToken cancellationToken)
 	{
 		Console.WriteLine("Starting RabbitHostedService");
-		_consumerChannel = CreateConsumerChannel();
-		Subscribe();
-		return Task.CompletedTask;
+		_consumerChannel = await CreateConsumerChannel();
+		await Subscribe();
 	} 
 	public Task StopAsync(CancellationToken cancellationToken)
 	{
@@ -68,13 +67,13 @@ public class RabbitHostedService : IHostedService
 			(ex, time) => {
 				Console.WriteLine(ex.ToString());
 			});
-		using var channel = persistentConnection.CreateModel();
-		channel.ExchangeDeclare("test-exchange", ExchangeType.Direct);
+		await using var channel = await persistentConnection.CreateModel();
+		await channel.ExchangeDeclareAsync("test-exchange", ExchangeType.Direct);
 		var body = Encoding.UTF8.GetBytes(message);
-		await policy.ExecuteAsync(() => {
-			var properties = channel.CreateBasicProperties();
-			properties.DeliveryMode = 2; // persistent
-			channel.BasicPublish("test-exchange", rountingKey, true, properties, body);
+		await policy.ExecuteAsync(async () => {
+			var properties = new BasicProperties();
+			properties.DeliveryMode = DeliveryModes.Persistent; // persistent
+			await channel.BasicPublishAsync("test-exchange", rountingKey, true, properties, body);
 			return Task.CompletedTask;
 		});
 	}
