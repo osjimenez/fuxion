@@ -30,4 +30,28 @@
 		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
 		<PackageReference Include="System.Net.Http" Version="4.3.4" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Update="UriKeyAttribute.cs">
+	    <DependentUpon>UriKey.cs</DependentUpon>
+	  </Compile>
+	  <Compile Update="UriKeyException.cs">
+	    <DependentUpon>UriKey.cs</DependentUpon>
+	  </Compile>
+	  <Compile Update="UriKeyExtensions.cs">
+	    <DependentUpon>UriKey.cs</DependentUpon>
+	  </Compile>
+	  <Compile Update="UriKeyJsonConverter.cs">
+	    <DependentUpon>UriKey.cs</DependentUpon>
+	  </Compile>
+	  <Compile Update="PodBuilder.cs">
+	    <DependentUpon>Pod.cs</DependentUpon>
+	  </Compile>
+	  <Compile Update="PodBuilderExtensions.cs">
+	    <DependentUpon>Pod.cs</DependentUpon>
+	  </Compile>
+	  <Compile Update="Json\JsonNodePodExtensions.cs">
+	    <DependentUpon>JsonNodePod.cs</DependentUpon>
+	  </Compile>
+	</ItemGroup>
 </Project>

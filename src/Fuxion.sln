@@ -140,7 +140,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fuxion.Lab.Test", "Lab\Test
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_", "_", "{6F9C1484-004F-475D-BF2B-1E4D638FBA91}"
 	ProjectSection(SolutionItems) = preProject
+		..\.gitattributes = ..\.gitattributes
+		..\.gitignore = ..\.gitignore
 		..\GitVersion.yml = ..\GitVersion.yml
+		..\LICENSE = ..\LICENSE
+		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Pods", "Pods", "{7E42AA4F-9923-418E-A305-57A758A9A912}"
@@ -154,6 +158,14 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{5FC31A60-74E8-4F6D-ACF2-284C11CAACD1}"
 	ProjectSection(SolutionItems) = preProject
 		Directory.Build.props = Directory.Build.props
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{9E30E4AB-579D-4BB0-B799-77F4D9CE6AD4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{30F89CAB-95B7-4287-ADBC-50E7AB5BB1BE}"
+	ProjectSection(SolutionItems) = preProject
+		..\.github\workflows\dotnet-core.yml = ..\.github\workflows\dotnet-core.yml
+		..\.github\workflows\jekyll-gh-pages.yml = ..\.github\workflows\jekyll-gh-pages.yml
 	EndProjectSection
 EndProject
 Global
@@ -1214,9 +1226,11 @@ Global
 		{16ED4232-BD4B-4B4E-BA3E-1574CC9717AC} = {7E42AA4F-9923-418E-A305-57A758A9A912}
 		{B2A26C19-FC74-4E53-9B00-03B20FFE97B2} = {16ED4232-BD4B-4B4E-BA3E-1574CC9717AC}
 		{5FC31A60-74E8-4F6D-ACF2-284C11CAACD1} = {6F9C1484-004F-475D-BF2B-1E4D638FBA91}
+		{9E30E4AB-579D-4BB0-B799-77F4D9CE6AD4} = {6F9C1484-004F-475D-BF2B-1E4D638FBA91}
+		{30F89CAB-95B7-4287-ADBC-50E7AB5BB1BE} = {9E30E4AB-579D-4BB0-B799-77F4D9CE6AD4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		EnterpriseLibraryConfigurationToolBinariesPathV6 = packages\EnterpriseLibrary.TransientFaultHandling.6.0.1304.0\lib\portable-net45+win+wp8;packages\EnterpriseLibrary.TransientFaultHandling.Data.6.0.1304.1\lib\NET45
 		SolutionGuid = {935D1C59-A88C-491F-B27D-3B0CF8AF2605}
+		EnterpriseLibraryConfigurationToolBinariesPathV6 = packages\EnterpriseLibrary.TransientFaultHandling.6.0.1304.0\lib\portable-net45+win+wp8;packages\EnterpriseLibrary.TransientFaultHandling.Data.6.0.1304.1\lib\NET45
 	EndGlobalSection
 EndGlobal

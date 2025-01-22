@@ -456,8 +456,7 @@ public static class Extensions
 	{
 		string hex;
 		if (asBigEndian)
-			hex = BitConverter.ToString(me.Reverse()
-				.ToArray());
+			hex = BitConverter.ToString(me.Reverse().ToArray());
 		else
 			hex = BitConverter.ToString(me);
 		if (separatorChar is not null) return hex.Replace('-', separatorChar.Value);
@@ -475,8 +474,7 @@ public static class Extensions
 			for (var i = 0; i < NumberChars; i += 2)
 				bytes[i / 2] = Convert.ToByte(me.Substring(i, 2), 16);
 		if (isBigEndian)
-			bytes = bytes.Reverse()
-				.ToArray();
+			bytes = bytes.Reverse().ToArray();
 		return bytes;
 	}
 	public static string ToBase64String(this byte[] me) => Convert.ToBase64String(me);
