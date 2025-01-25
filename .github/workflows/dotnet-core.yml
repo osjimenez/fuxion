@@ -50,6 +50,8 @@ jobs:
       run: dotnet restore -p:RestoreUseSkipNonexistentTargets=false src/Core/Licensing/Fuxion.Licensing.csproj
     - name: Dependencies - xUnit
       run: dotnet restore -p:RestoreUseSkipNonexistentTargets=false src/Core/xUnit/Fuxion.xUnit.csproj
+    - name: Dependencies - AspNet
+      run: dotnet restore -p:RestoreUseSkipNonexistentTargets=false src/Infrastructure/AspNet/Fuxion.AspNet.csproj
     - name: Dependencies - AspNetCore
       run: dotnet restore -p:RestoreUseSkipNonexistentTargets=false src/Infrastructure/AspNetCore/Fuxion.AspNetCore.csproj
     - name: Dependencies - AutoMapper
@@ -91,6 +93,8 @@ jobs:
       run: dotnet build --configuration Release --no-restore -p:Version=${{ steps.gitversion.outputs.semVer }} src/Core/Licensing/Fuxion.Licensing.csproj
     - name: Build - xUnit
       run: dotnet build --configuration Release --no-restore -p:Version=${{ steps.gitversion.outputs.semVer }} src/Core/xUnit/Fuxion.xUnit.csproj
+    - name: Build - AspNet
+      run: dotnet build --configuration Release --no-restore -p:Version=${{ steps.gitversion.outputs.semVer }} src/Infrastructure/AspNet/Fuxion.AspNet.csproj
     - name: Build - AspNetCore
       run: dotnet build --configuration Release --no-restore -p:Version=${{ steps.gitversion.outputs.semVer }} src/Infrastructure/AspNetCore/Fuxion.AspNetCore.csproj
     - name: Build - AutoMapper
@@ -145,6 +149,8 @@ jobs:
       run: dotnet pack --configuration Release --no-build --output nupkgs -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} src/Core/Licensing/Fuxion.Licensing.csproj
     - name: Create package - xUnit
       run: dotnet pack --configuration Release --no-build --output nupkgs -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} src/Core/xUnit/Fuxion.xUnit.csproj
+    - name: Create package - AspNet
+      run: dotnet pack --configuration Release --no-build --output nupkgs -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} src/Infrastructure/AspNet/Fuxion.AspNet.csproj
     - name: Create package - AspNetCore
       run: dotnet pack --configuration Release --no-build --output nupkgs -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} src/Infrastructure/AspNetCore/Fuxion.AspNetCore.csproj
     - name: Create package - AutoMapper
