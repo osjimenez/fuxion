@@ -12,6 +12,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<None Include="icon.png" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="PolySharp" Version="1.15.0">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -32,26 +36,26 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Update="UriKeyAttribute.cs">
-	    <DependentUpon>UriKey.cs</DependentUpon>
-	  </Compile>
-	  <Compile Update="UriKeyException.cs">
-	    <DependentUpon>UriKey.cs</DependentUpon>
-	  </Compile>
-	  <Compile Update="UriKeyExtensions.cs">
-	    <DependentUpon>UriKey.cs</DependentUpon>
-	  </Compile>
-	  <Compile Update="UriKeyJsonConverter.cs">
-	    <DependentUpon>UriKey.cs</DependentUpon>
-	  </Compile>
-	  <Compile Update="PodBuilder.cs">
-	    <DependentUpon>Pod.cs</DependentUpon>
-	  </Compile>
-	  <Compile Update="PodBuilderExtensions.cs">
-	    <DependentUpon>Pod.cs</DependentUpon>
-	  </Compile>
-	  <Compile Update="Json\JsonNodePodExtensions.cs">
-	    <DependentUpon>JsonNodePod.cs</DependentUpon>
-	  </Compile>
+		<Compile Update="UriKeyAttribute.cs">
+			<DependentUpon>UriKey.cs</DependentUpon>
+		</Compile>
+		<Compile Update="UriKeyException.cs">
+			<DependentUpon>UriKey.cs</DependentUpon>
+		</Compile>
+		<Compile Update="UriKeyExtensions.cs">
+			<DependentUpon>UriKey.cs</DependentUpon>
+		</Compile>
+		<Compile Update="UriKeyJsonConverter.cs">
+			<DependentUpon>UriKey.cs</DependentUpon>
+		</Compile>
+		<Compile Update="PodBuilder.cs">
+			<DependentUpon>Pod.cs</DependentUpon>
+		</Compile>
+		<Compile Update="PodBuilderExtensions.cs">
+			<DependentUpon>Pod.cs</DependentUpon>
+		</Compile>
+		<Compile Update="Json\JsonNodePodExtensions.cs">
+			<DependentUpon>JsonNodePod.cs</DependentUpon>
+		</Compile>
 	</ItemGroup>
 </Project>
