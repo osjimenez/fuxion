@@ -1,110 +1,173 @@
+using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 
 namespace Fuxion;
 
-public interface IResponse
+public class Response
+	: Response<object?>
 {
-	bool IsSuccess { get; }
-	[JsonIgnore]
-#if NETSTANDARD2_0 || NET462
-	bool IsError { get; }
-#else
-	bool IsError => !IsSuccess;
-#endif
-	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-	string? Message { get; }
-#if NETSTANDARD2_0 || NET462
-	internal object? GetPayloadObject();
-#else
-	internal object? GetPayloadObject() => null;
-#endif
+	internal Response(bool isSuccess, object? payload, string? message = null, int? code = null, object? type = null, Exception? exception = null)
+		: base(isSuccess, payload, message, code, type, exception) { }
+	public Response(bool isSuccess, string? message = null, int? code = null, object? type = null, Exception? exception = null)
+		: this(isSuccess, null, message, code, type, exception) { }
+	public bool TryGetPayload<TPayload>([NotNullWhen(true)] out TPayload payload)
+	{
+		if (Payload is TPayload tp)
+		{
+			payload = tp;
+			return true;
+		}
+		payload = default!;
+		return false;
+	}
+	public static IResponseFactory Get => new ResponseFactory();
 }
 
-public interface IResponse<out TPayload> : IResponse
-{
-	TPayload Payload { get; }
-#if !NETSTANDARD2_0 && !NET462
-	object? IResponse.GetPayloadObject() => Payload;
-#endif
-}
-
-public abstract class Response(bool isSuccess, string? message) : IResponse
+public class Response<TPayload>(bool isSuccess, TPayload? payload, string? message = null, int? code = null, object? type = null, Exception? exception = null) //: Response
 {
 	public bool IsSuccess { get; } = isSuccess;
-#if NETSTANDARD2_0 || NET462
+	[JsonIgnore]
 	public bool IsError => !IsSuccess;
-#endif
+
 	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
 	public string? Message { get; } = message;
-#if NETSTANDARD2_0 || NET462
-	object? IResponse.GetPayloadObject() => null;
-#endif
-	public static IResponseFactory Get { get; } = null!;
-}
 
-public interface IResponseFactory;
+	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+	public TPayload? Payload { get; } = payload;
 
-[JsonConverter(typeof(JsonStringEnumConverter))]
-public enum ErrorType
-{
-	NotFound,
-	Invalid,
-	Unauthorized,
-	Forbidden,
-	Conflict,
-	InternalError
-}
-
-public class SuccessResponse(string? message = null) : Response(true, message);
-
-public class SuccessResponse<TPayload>(TPayload value, string? message = null) : SuccessResponse(message), IResponse<TPayload>
-{
-	public TPayload Payload { get; } = value;
-	public static implicit operator TPayload(SuccessResponse<TPayload> res) => res.Payload;
-}
-
-public class ErrorResponse(string message, int? code = null, object? type = null, Exception? exception = null) : Response(false, message)
-{
 	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
 	public int? ErrorCode { get; } = code;
 	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
 	public object? ErrorType { get; } = type;
 	[JsonIgnore]
 	public Exception? Exception { get; } = exception;
-}
 
-public class ErrorResponse<TPayload>(string message, TPayload value, int? code = null, object? type = null, Exception? exception = null)
-	: ErrorResponse(message, code, type, exception), IResponse<TPayload>
-{
-	public TPayload Payload { get; } = value;
-	public static implicit operator TPayload(ErrorResponse<TPayload> res) => res.Payload;
+	public static implicit operator TPayload?(Response<TPayload> response) => response.Payload;
+	public static implicit operator Response<TPayload>(TPayload payload) => new(true, payload);
+
+	public static implicit operator Response(Response<TPayload> response) => new(response.IsSuccess, response.Payload, response.Message, response.ErrorCode, response.ErrorType, response.Exception);
+	public static implicit operator Response<TPayload>(Response response) => new(response.IsSuccess,
+		response.Payload is TPayload payload ? payload : default,
+		response.Message, response.ErrorCode, response.ErrorType, response.Exception);
 }
 
 public static class ResponseExtensions
 {
-	public static IResponse CombineResponses(this IEnumerable<IResponse> responses)
+	public static Response CombineResponses(this IEnumerable<Response<object?>> responses, string? message = null)
 	{
-		foreach (var res in responses)
-			if (res.IsError)
-				return res;
-		if (responses.Any(r => r.IsError)) return new ErrorResponse<IEnumerable<IResponse>>("Multiple errors", responses.Where(r => r.IsError));
-		return new SuccessResponse<IEnumerable<IResponse>>(responses);
+		if (responses.Any(r => r.IsError))
+			return new Response<IEnumerable<Response<object?>>>(false, responses.Where(r => r.IsError), message);
+		return new Response<IEnumerable<Response<object?>>>(true, responses, message);
 	}
-	public static SuccessResponse Success(this IResponseFactory me) => new();
-	public static SuccessResponse SuccessMessage(this IResponseFactory me, string? message = null) => new(message);
-	public static SuccessResponse<TPayload> Success<TPayload>(this IResponseFactory me, TPayload payload, string? message = null) => new(payload, message);
-	public static ErrorResponse Error(this IResponseFactory me, string message) => new(message);
-	public static ErrorResponse<TPayload> Error<TPayload>(this IResponseFactory me, string message, TPayload payload) => new(message, payload);
-	public static bool IsErrorType(this IResponse res, object type) => res is ErrorResponse er && er.ErrorType?.Equals(type) == true;
+
+	// Response.Get helpers
+	public static Response Success(this IResponseFactory me, string? message = null)
+		=> new(true, message);
+	public static Response<TPayload> Success<TPayload>(this IResponseFactory me, TPayload payload, string? message = null)
+		=> new(true, payload, message);
+
+	public static Response Error(this IResponseFactory me, string message, int? code = null, object? type = null, Exception? exception = null)
+		=> new(false, message, code, type, exception);
+	public static Response<TPayload> Error<TPayload>(this IResponseFactory me, string message, TPayload payload, int? code = null, object? type = null, Exception? exception = null)
+		=> new(false, payload, message, code, type, exception);
+	public static bool IsErrorType(this Response res, object type)
+		=> res.ErrorType?.Equals(type) == true;
+
 	// Specific error types
-	public static ErrorResponse NotFound(this IResponseFactory me, string message = "Not found") => new(message, type: ErrorType.NotFound);
-	public static ErrorResponse<TPayload> NotFound<TPayload>(this IResponseFactory me, TPayload payload, string message = "Not found") => new(message, payload, type: ErrorType.NotFound);
-	public static bool IsNotFound(this IResponse res) => res.IsErrorType(ErrorType.NotFound);
-	public static ErrorResponse Invalid(this IResponseFactory me, string message = "Invalid") => new(message, type: ErrorType.Invalid);
-	public static bool IsInvalid(this IResponse res) => res is ErrorResponse { ErrorType: ErrorType.Invalid };
-	public static bool IsUnauthorized(this IResponse res) => res is ErrorResponse { ErrorType: ErrorType.Unauthorized };
-	public static bool IsForbidden(this IResponse res) => res is ErrorResponse { ErrorType: ErrorType.Forbidden };
-	public static bool IsConflict(this IResponse res) => res is ErrorResponse { ErrorType: ErrorType.Conflict };
-	public static bool IsInternalError(this IResponse res) => res is ErrorResponse { ErrorType: ErrorType.InternalError };
-	public static object? GetPayload(this IResponse res) => res.GetPayloadObject();
+	public static Response NotFound(this IErrorResponseFactory me, string message, int? code = null, Exception? exception = null)
+		=> me.Factory.Error(message, code, ErrorType.NotFound, exception);
+	public static Response<TPayload> NotFound<TPayload>(this IErrorResponseFactory me, string message, TPayload payload, int? code = null, Exception? exception = null)
+		=> me.Factory.Error(message, payload, code, ErrorType.NotFound, exception);
+	public static bool IsNotFound(this Response res)
+		=> res.IsErrorType(ErrorType.NotFound);
+
+	public static Response PermissionDenied(this IErrorResponseFactory me, string message, int? code = null, Exception? exception = null)
+		=> me.Factory.Error(message, code, ErrorType.PermissionDenied, exception);
+	public static Response<TPayload> PermissionDenied<TPayload>(this IErrorResponseFactory me, string message, TPayload payload, int? code = null, Exception? exception = null)
+		=> me.Factory.Error(message, payload, code, ErrorType.PermissionDenied, exception);
+	public static bool IsPermissionDenied(this Response res)
+		=> res.IsErrorType(ErrorType.PermissionDenied);
+
+	public static Response InvalidData(this IErrorResponseFactory me, string message, int? code = null, Exception? exception = null)
+		=> me.Factory.Error(message, code, ErrorType.InvalidData, exception);
+	public static Response<TPayload> InvalidData<TPayload>(this IErrorResponseFactory me, string message, TPayload payload, int? code = null, Exception? exception = null)
+		=> me.Factory.Error(message, payload, code, ErrorType.InvalidData, exception);
+	public static bool IsInvalidData(this Response res)
+		=> res.IsErrorType(ErrorType.InvalidData);
+
+	public static Response Conflict(this IErrorResponseFactory me, string message, int? code = null, Exception? exception = null)
+		=> me.Factory.Error(message, code, ErrorType.Conflict, exception);
+	public static Response<TPayload> Conflict<TPayload>(this IErrorResponseFactory me, string message, TPayload payload, int? code = null, Exception? exception = null)
+		=> me.Factory.Error(message, payload, code, ErrorType.Conflict, exception);
+	public static bool IsConflict(this Response res)
+		=> res.IsErrorType(ErrorType.Conflict);
+
+	public static Response Critical(this IErrorResponseFactory me, string message, int? code = null, Exception? exception = null)
+		=> me.Factory.Error(message, code, ErrorType.Critical, exception);
+	public static Response<TPayload> Critical<TPayload>(this IErrorResponseFactory me, string message, TPayload payload, int? code = null, Exception? exception = null)
+		=> me.Factory.Error(message, payload, code, ErrorType.Critical, exception);
+	public static bool IsCritical(this Response res)
+		=> res.IsErrorType(ErrorType.Critical);
+
+	public static Response NotSupported(this IErrorResponseFactory me, string message, int? code = null, Exception? exception = null)
+		=> me.Factory.Error(message, code, ErrorType.NotSupported, exception);
+	public static Response<TPayload> NotSupported<TPayload>(this IErrorResponseFactory me, string message, TPayload payload, int? code = null, Exception? exception = null)
+		=> me.Factory.Error(message, payload, code, ErrorType.NotSupported, exception);
+	public static bool IsNotSupported(this Response res)
+		=> res.IsErrorType(ErrorType.NotSupported);
+
+	public static Response Unavailable(this IErrorResponseFactory me, string message, int? code = null, Exception? exception = null)
+		=> me.Factory.Error(message, code, ErrorType.Unavailable, exception);
+	public static Response<TPayload> Unavailable<TPayload>(this IErrorResponseFactory me, string message, TPayload payload, int? code = null, Exception? exception = null)
+		=> me.Factory.Error(message, payload, code, ErrorType.Unavailable, exception);
+	public static bool IsUnavailable(this Response res)
+		=> res.IsErrorType(ErrorType.Unavailable);
+}
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum ErrorType
+{
+	////Ok,
+	////Created,
+	//Error,
+	//Forbidden,
+	//Unauthorized,
+	//Invalid,
+	//NotFound,
+	////NoContent,
+	//Conflict,
+	//CriticalError,
+	//Unavailable,
+
+	NotFound,
+	PermissionDenied,
+	InvalidData,
+	Conflict,
+	Critical,
+	NotSupported,
+	Unavailable
+}
+
+public interface IResponseFactory
+{
+	IErrorResponseFactory Error { get; }
+}
+
+internal class ResponseFactory : IResponseFactory
+{
+	public ResponseFactory()
+	{
+		Error = new ErrorResponseFactory(this);
+	}
+	public IErrorResponseFactory Error { get; }
+}
+
+public interface IErrorResponseFactory
+{
+	internal IResponseFactory Factory { get; }
+}
+internal class ErrorResponseFactory(IResponseFactory factory) : IErrorResponseFactory
+{
+	public IResponseFactory Factory { get; } = factory;
 }
