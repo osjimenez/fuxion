@@ -38,6 +38,8 @@ jobs:
 #      run: dotnet restore -p:RestoreUseSkipNonexistentTargets=false src/Fuxion.sln
     - name: Dependencies - Fuxion
       run: dotnet restore -p:RestoreUseSkipNonexistentTargets=false src/Core/Fuxion/Fuxion.csproj
+    - name: Dependencies - Pods
+      run: dotnet restore -p:RestoreUseSkipNonexistentTargets=false src/Core/Pods/Fuxion.Pods.csproj
     - name: Dependencies - Domain
       run: dotnet restore -p:RestoreUseSkipNonexistentTargets=false src/Core/Domain/Fuxion.Domain.csproj
     - name: Dependencies - Application
@@ -77,6 +79,8 @@ jobs:
 #      run: dotnet build --configuration Release --no-restore -p:Version=${{ steps.gitversion.outputs.semVer }} src/Fuxion.sln
     - name: Build - Fuxion
       run: dotnet build --configuration Release --no-restore -p:Version=${{ steps.gitversion.outputs.semVer }} src/Core/Fuxion/Fuxion.csproj
+    - name: Build - Pods
+      run: dotnet build --configuration Release --no-restore -p:Version=${{ steps.gitversion.outputs.semVer }} src/Core/Pods/Fuxion.Pods.csproj
     - name: Build - Domain
       run: dotnet build --configuration Release --no-restore -p:Version=${{ steps.gitversion.outputs.semVer }} src/Core/Domain/Fuxion.Domain.csproj
     - name: Build - Application
@@ -129,6 +133,8 @@ jobs:
 #      run: dotnet pack --configuration Release --no-build -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} src/Fuxion.sln
     - name: Create package - Fuxion
       run: dotnet pack --configuration Release --no-build --output nupkgs -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} src/Core/Fuxion/Fuxion.csproj
+    - name: Create package - Pods
+      run: dotnet pack --configuration Release --no-build --output nupkgs -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} src/Core/Pods/Fuxion.Pods.csproj
     - name: Create package - Domain
       run: dotnet pack --configuration Release --no-build --output nupkgs -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} src/Core/Domain/Fuxion.Domain.csproj
     - name: Create package - Application

@@ -27,7 +27,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Fuxion\Fuxion.csproj" />
-		<ProjectReference Include="..\Pods\Fuxion.Pods\Fuxion.Pods.csproj" />
+		<ProjectReference Include="..\Pods\Fuxion.Pods.csproj" />
 	</ItemGroup>
 
 </Project>
