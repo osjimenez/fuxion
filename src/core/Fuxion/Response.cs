@@ -24,7 +24,7 @@ public class Response
 	public static IResponseFactory Get => new ResponseFactory();
 }
 
-public class Response<TPayload>(bool isSuccess, TPayload? payload, string? message = null, int? code = null, object? type = null, Exception? exception = null) //: Response
+public class Response<TPayload>(bool isSuccess, TPayload? payload, string? message = null, int? code = null, object? type = null, Exception? exception = null)
 {
 	public bool IsSuccess { get; } = isSuccess;
 	[JsonIgnore]
@@ -71,7 +71,7 @@ public static class ResponseExtensions
 		=> new(false, message, code, type, exception);
 	public static Response<TPayload> Error<TPayload>(this IResponseFactory me, string message, TPayload payload, int? code = null, object? type = null, Exception? exception = null)
 		=> new(false, payload, message, code, type, exception);
-	public static bool IsErrorType(this Response res, object type)
+	public static bool IsErrorType<TPayload>(this Response<TPayload> res, object type)
 		=> res.ErrorType?.Equals(type) == true;
 
 	// Specific error types
@@ -79,49 +79,49 @@ public static class ResponseExtensions
 		=> me.Factory.Error(message, code, ErrorType.NotFound, exception);
 	public static Response<TPayload> NotFound<TPayload>(this IErrorResponseFactory me, string message, TPayload payload, int? code = null, Exception? exception = null)
 		=> me.Factory.Error(message, payload, code, ErrorType.NotFound, exception);
-	public static bool IsNotFound(this Response res)
+	public static bool IsNotFound<TPayload>(this Response<TPayload> res)
 		=> res.IsErrorType(ErrorType.NotFound);
 
 	public static Response PermissionDenied(this IErrorResponseFactory me, string message, int? code = null, Exception? exception = null)
 		=> me.Factory.Error(message, code, ErrorType.PermissionDenied, exception);
 	public static Response<TPayload> PermissionDenied<TPayload>(this IErrorResponseFactory me, string message, TPayload payload, int? code = null, Exception? exception = null)
 		=> me.Factory.Error(message, payload, code, ErrorType.PermissionDenied, exception);
-	public static bool IsPermissionDenied(this Response res)
+	public static bool IsPermissionDenied<TPayload>(this Response<TPayload> res)
 		=> res.IsErrorType(ErrorType.PermissionDenied);
 
 	public static Response InvalidData(this IErrorResponseFactory me, string message, int? code = null, Exception? exception = null)
 		=> me.Factory.Error(message, code, ErrorType.InvalidData, exception);
 	public static Response<TPayload> InvalidData<TPayload>(this IErrorResponseFactory me, string message, TPayload payload, int? code = null, Exception? exception = null)
 		=> me.Factory.Error(message, payload, code, ErrorType.InvalidData, exception);
-	public static bool IsInvalidData(this Response res)
+	public static bool IsInvalidData<TPayload>(this Response<TPayload> res)
 		=> res.IsErrorType(ErrorType.InvalidData);
 
 	public static Response Conflict(this IErrorResponseFactory me, string message, int? code = null, Exception? exception = null)
 		=> me.Factory.Error(message, code, ErrorType.Conflict, exception);
 	public static Response<TPayload> Conflict<TPayload>(this IErrorResponseFactory me, string message, TPayload payload, int? code = null, Exception? exception = null)
 		=> me.Factory.Error(message, payload, code, ErrorType.Conflict, exception);
-	public static bool IsConflict(this Response res)
+	public static bool IsConflict<TPayload>(this Response<TPayload> res)
 		=> res.IsErrorType(ErrorType.Conflict);
 
 	public static Response Critical(this IErrorResponseFactory me, string message, int? code = null, Exception? exception = null)
 		=> me.Factory.Error(message, code, ErrorType.Critical, exception);
 	public static Response<TPayload> Critical<TPayload>(this IErrorResponseFactory me, string message, TPayload payload, int? code = null, Exception? exception = null)
 		=> me.Factory.Error(message, payload, code, ErrorType.Critical, exception);
-	public static bool IsCritical(this Response res)
+	public static bool IsCritical<TPayload>(this Response<TPayload> res)
 		=> res.IsErrorType(ErrorType.Critical);
 
 	public static Response NotSupported(this IErrorResponseFactory me, string message, int? code = null, Exception? exception = null)
 		=> me.Factory.Error(message, code, ErrorType.NotSupported, exception);
 	public static Response<TPayload> NotSupported<TPayload>(this IErrorResponseFactory me, string message, TPayload payload, int? code = null, Exception? exception = null)
 		=> me.Factory.Error(message, payload, code, ErrorType.NotSupported, exception);
-	public static bool IsNotSupported(this Response res)
+	public static bool IsNotSupported<TPayload>(this Response<TPayload> res)
 		=> res.IsErrorType(ErrorType.NotSupported);
 
 	public static Response Unavailable(this IErrorResponseFactory me, string message, int? code = null, Exception? exception = null)
 		=> me.Factory.Error(message, code, ErrorType.Unavailable, exception);
 	public static Response<TPayload> Unavailable<TPayload>(this IErrorResponseFactory me, string message, TPayload payload, int? code = null, Exception? exception = null)
 		=> me.Factory.Error(message, payload, code, ErrorType.Unavailable, exception);
-	public static bool IsUnavailable(this Response res)
+	public static bool IsUnavailable<TPayload>(this Response<TPayload> res)
 		=> res.IsErrorType(ErrorType.Unavailable);
 }
 
