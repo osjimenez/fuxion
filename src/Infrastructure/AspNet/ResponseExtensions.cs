@@ -2,6 +2,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Formatting;
+using System.Text;
 using System.Web.Http;
 using System.Web.Http.Results;
 using Newtonsoft.Json;
@@ -13,7 +14,7 @@ public static class ResponseExtensions
 	public static IHttpActionResult ToApiResult<TPayload>(this Response<TPayload> me)
 	{
 		if (me.IsSuccess)
-			return HttpActionResultFactory.Ok(me.Payload);
+			return HttpActionResultFactory.Success(me.Payload);
 
 		var extensions = me.Extensions?.ToDictionary(e=>e.Key, e=>e.Value);
 		if (me.Payload is not null)
@@ -49,10 +50,11 @@ file class HttpActionResultFactory(HttpStatusCode status, object? payload = null
 			? Task.FromResult(new HttpResponseMessage(status))
 			: Task.FromResult(new HttpResponseMessage(status)
 			{
-				Content = new ObjectContent(payload.GetType(), payload, new JsonMediaTypeFormatter()),
+				Content = new StringContent(payload.SerializeToJson(true),Encoding.UTF8,"application/json")
+				//Content = new ObjectContent(payload.GetType(), payload, new JsonMediaTypeFormatter()),
 			});
 	//public static IHttpActionResult Ok() => new HttpActionResultFactory(HttpStatusCode.OK);
-	public static IHttpActionResult Ok(object? payload) 
+	public static IHttpActionResult Success(object? payload) 
 		=> payload is null
 			? new HttpActionResultFactory(HttpStatusCode.NoContent, payload)
 			: new HttpActionResultFactory(HttpStatusCode.OK, payload);
