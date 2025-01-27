@@ -88,8 +88,8 @@ public static class Extensions
 			};
 		options ??= new();
 		if (!options.Converters.Any(c => c.GetType()
-			.IsSubclassOfRawGeneric(typeof(FallbackConverter<>))))
-			options.Converters.Add(new FallbackConverter<Exception>(new MultilineStringToCollectionPropertyFallbackResolver()));
+			.IsSubclassOf(typeof(ExceptionConverter))))
+			options.Converters.Add(new ExceptionConverter());
 		return JsonSerializer.Serialize(me, options);
 	}
 	public static T? DeserializeFromJson<T>(

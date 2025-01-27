@@ -13,27 +13,27 @@ public static class ResponseExtensions
 	{
 		//if (me.Payload is not null)
 		//{
-			if (me.IsSuccess)
-				return HttpActionResultFactory.Ok(me.Payload);
+		if (me.IsSuccess)
+			return HttpActionResultFactory.Ok(me.Payload);
 
-			return me.ErrorType switch
-			{
-				ErrorType.NotFound
-					=> HttpActionResultFactory.Problem(me.Message, HttpStatusCode.NotFound, "Not found", me.Payload),
-				ErrorType.PermissionDenied
-					=> HttpActionResultFactory.Problem(me.Message, HttpStatusCode.Forbidden, "Forbidden", me.Payload),
-				ErrorType.InvalidData
-					=> HttpActionResultFactory.Problem(me.Message, HttpStatusCode.BadRequest, "Bad request", me.Payload),
-				ErrorType.Conflict
-					=> HttpActionResultFactory.Problem(me.Message, HttpStatusCode.Conflict, "Conflict", me.Payload),
-				ErrorType.Critical
-					=> HttpActionResultFactory.Problem(me.Message, HttpStatusCode.InternalServerError, "Internal server error", me.Payload),
-				ErrorType.NotSupported
-					=> HttpActionResultFactory.Problem(me.Message, HttpStatusCode.NotImplemented, "Not implemented", me.Payload),
-				ErrorType.Unavailable
-					=> HttpActionResultFactory.Problem(me.Message, HttpStatusCode.ServiceUnavailable, "Service unavailable", me.Payload),
-				var _ => HttpActionResultFactory.Problem(me.Message, HttpStatusCode.InternalServerError, "Internal server error", me.Payload)
-			};
+		return me.ErrorType switch
+		{
+			ErrorType.NotFound
+				=> HttpActionResultFactory.Problem(me.Message, HttpStatusCode.NotFound, "Not found", me.Payload),
+			ErrorType.PermissionDenied
+				=> HttpActionResultFactory.Problem(me.Message, HttpStatusCode.Forbidden, "Forbidden", me.Payload),
+			ErrorType.InvalidData
+				=> HttpActionResultFactory.Problem(me.Message, HttpStatusCode.BadRequest, "Bad request", me.Payload),
+			ErrorType.Conflict
+				=> HttpActionResultFactory.Problem(me.Message, HttpStatusCode.Conflict, "Conflict", me.Payload),
+			ErrorType.Critical
+				=> HttpActionResultFactory.Problem(me.Message, HttpStatusCode.InternalServerError, "Internal server error", me.Payload),
+			ErrorType.NotSupported
+				=> HttpActionResultFactory.Problem(me.Message, HttpStatusCode.NotImplemented, "Not implemented", me.Payload),
+			ErrorType.Unavailable
+				=> HttpActionResultFactory.Problem(me.Message, HttpStatusCode.ServiceUnavailable, "Service unavailable", me.Payload),
+			var _ => HttpActionResultFactory.Problem(me.Message, HttpStatusCode.InternalServerError, "Internal server error", me.Payload)
+		};
 		//}
 		//if (me.IsSuccess)
 		//	return HttpActionResultFactory.Ok();

@@ -3,11 +3,16 @@ namespace Fuxion.Test;
 public class ResponseTest(ITestOutputHelper output) : BaseTest<ResponseTest>(output)
 {
 	public Response GetSuccess() => Response.Get.Success();
+	public Response GetSuccessMessage() => Response.Get.Success("message");
+	public Response GetSuccessMessageWithExtensions() => Response.Get.Success("message", ("Extension", 123.456));
 	public Response GetSuccessWithPayload() => Response.Get.Success(123);
-	public Response GetError() => Response.Get.Error("message4");
+	public Response GetSuccessWithPayloadAndExtensions()
+		=> Response.Get.Success(123, extensions: ("Extension", 123.456));
+	public Response GetError() => Response.Get.Error("message");
 	public Response GetErrorWithPayload() => Response.Get.Error("message", 123);
 	public Response GetNotFound() => Response.Get.Error.NotFound("message");
 	public Response GetNotFoundWithPayload() => Response.Get.Error.NotFound("message", 123);
+	public Response GetNotFoundWithPayloadAndExtensions() => Response.Get.Error.NotFound("message", 123, extensions: ("Extension", 123.456));
 	public Response GetCustomError() => Response.Get.Custom("message", "customData");
 	[Fact]
 	public void ImplicitConversion()
@@ -42,23 +47,27 @@ public class ResponseTest(ITestOutputHelper output) : BaseTest<ResponseTest>(out
 	public void Serialize()
 	{
 		PrintVariable(GetSuccess().SerializeToJson(true));
+		PrintVariable(GetSuccessMessage().SerializeToJson(true));
+		PrintVariable(GetSuccessMessageWithExtensions().SerializeToJson(true));
 		PrintVariable(GetSuccessWithPayload().SerializeToJson(true));
+		PrintVariable(GetSuccessWithPayloadAndExtensions().SerializeToJson(true));
 
 		PrintVariable(GetError().SerializeToJson(true));
 		PrintVariable(GetErrorWithPayload().SerializeToJson(true));
 
 		PrintVariable(GetNotFound().SerializeToJson(true));
 		PrintVariable(GetNotFoundWithPayload().SerializeToJson(true));
+		PrintVariable(GetNotFoundWithPayloadAndExtensions().SerializeToJson(true));
 
 		PrintVariable(GetCustomError().SerializeToJson(true));
 
 		var results = new Response[]
 		{
 			Response.Get.Success(),
-			Response.Get.Success("message"),
+			Response.Get.Success("message",("Extension", 123.456)),
 			Response.Get.Success(123, "message"),
 			Response.Get.Error.NotFound("message"),
-			Response.Get.Error("message", new Payload("Bob", 25))
+			Response.Get.Error("message", new Payload("Bob", 25), extensions: ("Extension", 123.456))
 		};
 		PrintVariable(results.SerializeToJson(true));
 		PrintVariable(results.CombineResponses().SerializeToJson(true));
@@ -68,11 +77,26 @@ public class ResponseTest(ITestOutputHelper output) : BaseTest<ResponseTest>(out
 		IsTrue(GetNotFoundWithPayload().IsNotFound());
 	}
 	[Fact]
-	public void a()
+	public void Exception()
 	{
+		Dictionary<int, int> dic = new();
+		var res = Do();
+		PrintVariable(res.SerializeToJson(true));
+		return;
 		Response<int> Do()
 		{
-			return Response.Get.Error.Critical("");
+			try
+			{
+				return Do2();
+			} catch (Exception ex)
+			{
+				PrintVariable(ex.SerializeToJson(true));
+				return Response.Get.Error.Critical("Exception", exception: ex);
+			}
+		}
+		Response<int> Do2()
+		{
+			return dic[1];
 		}
 	}
 }

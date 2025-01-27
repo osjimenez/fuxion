@@ -29,7 +29,7 @@ public class IfNullWritePropertyFallbackResolver : PropertyFallbackResolver
 		writer.WriteNull(propertyInfo.Name);
 }
 
-public class IfMemeberInfoWriteNamePropertyFallbackResolver : PropertyFallbackResolver
+public class IfMemberInfoWriteNamePropertyFallbackResolver : PropertyFallbackResolver
 {
 	public override bool Match(object value, PropertyInfo propertyInfo) => propertyInfo.GetValue(value) is MemberInfo;
 	public override void Do(object value, PropertyInfo propertyInfo, Utf8JsonWriter writer, JsonSerializerOptions options, List<PropertyFallbackResolver> resolvers)
@@ -75,12 +75,53 @@ public class MultilineStringToCollectionPropertyFallbackResolver : PropertyFallb
 	}
 }
 
+public class StackTraceFallbackResolver : PropertyFallbackResolver
+{
+	public override bool Match(object value, PropertyInfo propertyInfo)
+		=> propertyInfo.Name == "StackTrace" && propertyInfo.GetValue(value) is string;// s && s.Contains('\r');
+	public override void Do(object value, PropertyInfo propertyInfo, Utf8JsonWriter writer, JsonSerializerOptions options, List<PropertyFallbackResolver> resolvers)
+	{
+		if (propertyInfo.GetValue(value) is not string str) throw new InvalidProgramException("str cannot be null");
+		writer.WritePropertyName(propertyInfo.Name);
+		writer.WriteStartArray();
+		foreach (var item in str.SplitInLines())
+		{
+			var val = item;
+			val = val.Trim();
+			val = val.Replace("at ", "");
+			var s1 = val.Split([" in "], StringSplitOptions.RemoveEmptyEntries);
+			if (s1.Length > 1)
+			{
+				var s2 = s1[1].Split([":line"], StringSplitOptions.RemoveEmptyEntries);
+				JsonSerializer.Serialize(writer, new
+				{
+					At = s1[0].Trim(),
+					In = s2[0].Trim(),
+					Line = s2[1].Trim()
+				}, options);
+			} else
+			{
+				JsonSerializer.Serialize(writer, new
+				{
+					At = s1[0].Trim()
+				}, options);
+			}
+		}
+		writer.WriteEndArray();
+	}
+}
+
+public class ExceptionConverter() : FallbackConverter<Exception>(
+	new StackTraceFallbackResolver(),
+	new MultilineStringToCollectionPropertyFallbackResolver()
+	);
 public class FallbackConverter<T> : JsonConverter<T>
 {
+	public FallbackConverter() : this([]){}
 	public FallbackConverter(params PropertyFallbackResolver[] resolvers)
 	{
 		if (!resolvers.OfType<IfNullWritePropertyFallbackResolver>().Any()) this.resolvers.Add(new IfNullWritePropertyFallbackResolver());
-		if (!resolvers.OfType<IfMemeberInfoWriteNamePropertyFallbackResolver>().Any()) this.resolvers.Add(new IfMemeberInfoWriteNamePropertyFallbackResolver());
+		if (!resolvers.OfType<IfMemberInfoWriteNamePropertyFallbackResolver>().Any()) this.resolvers.Add(new IfMemberInfoWriteNamePropertyFallbackResolver());
 		if (!resolvers.OfType<CollectionPropertyFallbackResolver>().Any()) this.resolvers.Add(new CollectionPropertyFallbackResolver());
 		this.resolvers.AddRange(resolvers);
 	}
@@ -98,7 +139,7 @@ public class FallbackConverter<T> : JsonConverter<T>
 			if (con is not null) opt.Converters.Remove(con);
 			//foreach (var conv in options.Converters.Where(_ => _ is not FallbackConverter<T>))
 			//	opt.Converters.Add(conv);
-			var json = value.SerializeToJson(options:opt);
+			var json = value.SerializeToJson(options: opt);
 			writer.WriteRawValue(json);
 			Printer.WriteLine(" = OK");
 		} catch
@@ -131,10 +172,10 @@ public class FallbackConverter<T> : JsonConverter<T>
 			var converter = Activator.CreateInstance(converterType, new object?[] {
 				resolvers.ToArray()
 			});
-			if (converter is null) throw new InvalidProgramException($"Program couldn't create IgnoreErrorsConverter<{value.GetType().Name}>");
+			if (converter is null) throw new InvalidProgramException($"Program couldn't create FallbackConverter<{value.GetType().Name}>");
 			opt.Converters.Add((JsonConverter)converter);
 			using var d = Printer.Indent($"Write RAW with {converterType.GetSignature()}", '·');
-			var json = value.SerializeToJson(options:opt);
+			var json = value.SerializeToJson(options: opt);
 			writer.WriteRawValue(json);
 		} catch (Exception ex)
 		{
