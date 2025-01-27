@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Formatting;
@@ -11,49 +12,34 @@ public static class ResponseExtensions
 {
 	public static IHttpActionResult ToApiResult<TPayload>(this Response<TPayload> me)
 	{
-		//if (me.Payload is not null)
-		//{
 		if (me.IsSuccess)
 			return HttpActionResultFactory.Ok(me.Payload);
+
+		var extensions = me.Extensions?.ToDictionary(e=>e.Key, e=>e.Value);
+		if (me.Payload is not null)
+		{
+			extensions ??= new();
+			extensions["payload"] = me.Payload;
+		}
 
 		return me.ErrorType switch
 		{
 			ErrorType.NotFound
-				=> HttpActionResultFactory.Problem(me.Message, HttpStatusCode.NotFound, "Not found", me.Payload),
+				=> HttpActionResultFactory.Problem(me.Message, HttpStatusCode.NotFound, "Not found", extensions),
 			ErrorType.PermissionDenied
-				=> HttpActionResultFactory.Problem(me.Message, HttpStatusCode.Forbidden, "Forbidden", me.Payload),
+				=> HttpActionResultFactory.Problem(me.Message, HttpStatusCode.Forbidden, "Forbidden", extensions),
 			ErrorType.InvalidData
-				=> HttpActionResultFactory.Problem(me.Message, HttpStatusCode.BadRequest, "Bad request", me.Payload),
+				=> HttpActionResultFactory.Problem(me.Message, HttpStatusCode.BadRequest, "Bad request", extensions),
 			ErrorType.Conflict
-				=> HttpActionResultFactory.Problem(me.Message, HttpStatusCode.Conflict, "Conflict", me.Payload),
+				=> HttpActionResultFactory.Problem(me.Message, HttpStatusCode.Conflict, "Conflict", extensions),
 			ErrorType.Critical
-				=> HttpActionResultFactory.Problem(me.Message, HttpStatusCode.InternalServerError, "Internal server error", me.Payload),
+				=> HttpActionResultFactory.Problem(me.Message, HttpStatusCode.InternalServerError, "Internal server error", extensions),
 			ErrorType.NotSupported
-				=> HttpActionResultFactory.Problem(me.Message, HttpStatusCode.NotImplemented, "Not implemented", me.Payload),
+				=> HttpActionResultFactory.Problem(me.Message, HttpStatusCode.NotImplemented, "Not implemented", extensions),
 			ErrorType.Unavailable
-				=> HttpActionResultFactory.Problem(me.Message, HttpStatusCode.ServiceUnavailable, "Service unavailable", me.Payload),
-			var _ => HttpActionResultFactory.Problem(me.Message, HttpStatusCode.InternalServerError, "Internal server error", me.Payload)
+				=> HttpActionResultFactory.Problem(me.Message, HttpStatusCode.ServiceUnavailable, "Service unavailable", extensions),
+			var _ => HttpActionResultFactory.Problem(me.Message, HttpStatusCode.InternalServerError, "Internal server error", extensions)
 		};
-		//}
-		//if (me.IsSuccess)
-		//	return HttpActionResultFactory.Ok();
-
-		//return me.ErrorType switch
-		//{
-		//	ErrorType.NotFound
-		//		=> HttpActionResultFactory.Problem(me.Message, HttpStatusCode.NotFound, "Not found"),
-		//	ErrorType.PermissionDenied
-		//		=> HttpActionResultFactory.Problem(me.Message, HttpStatusCode.Forbidden, "Forbidden"),
-		//	ErrorType.InvalidData
-		//		=> HttpActionResultFactory.Problem(me.Message, HttpStatusCode.BadRequest, "Bad request"),
-		//	ErrorType.Conflict
-		//		=> HttpActionResultFactory.Problem(me.Message, HttpStatusCode.Conflict, "Conflict"),
-		//	ErrorType.Critical
-		//		=> HttpActionResultFactory.Problem(me.Message, HttpStatusCode.InternalServerError, "Internal server error"),
-		//	ErrorType.NotSupported
-		//		=> HttpActionResultFactory.Problem(me.Message, HttpStatusCode.NotImplemented, "Not implemented"),
-		//	var _ => HttpActionResultFactory.Problem(me.Message, HttpStatusCode.InternalServerError, "Internal server error")
-		//};
 	}
 }
 file class HttpActionResultFactory(HttpStatusCode status, object? payload = null) : IHttpActionResult
@@ -66,20 +52,26 @@ file class HttpActionResultFactory(HttpStatusCode status, object? payload = null
 				Content = new ObjectContent(payload.GetType(), payload, new JsonMediaTypeFormatter()),
 			});
 	//public static IHttpActionResult Ok() => new HttpActionResultFactory(HttpStatusCode.OK);
-	public static IHttpActionResult Ok(object? payload) => new HttpActionResultFactory(HttpStatusCode.OK, payload);
-	public static IHttpActionResult Problem(string? detail, HttpStatusCode statusCode, string title, object? payload = null)
-		=> new HttpActionResultFactory(statusCode, new ProblemDetails(statusCode, title, detail, payload));
+	public static IHttpActionResult Ok(object? payload) 
+		=> payload is null
+			? new HttpActionResultFactory(HttpStatusCode.NoContent, payload)
+			: new HttpActionResultFactory(HttpStatusCode.OK, payload);
+	public static IHttpActionResult Problem(string? detail, HttpStatusCode statusCode, string title, Dictionary<string,object?>? extensions)
+		=> new HttpActionResultFactory(statusCode, new ProblemDetails(statusCode, title, detail)
+		{
+			Extensions = extensions
+		});
 }
 
 public class ProblemDetails
 {
-	public ProblemDetails(HttpStatusCode status, string? title, string? detail, object? payload)
+	public ProblemDetails(HttpStatusCode status, string? title, string? detail)
 	{
 		Type = GetTypeFromStatusCode(status);
 		Title = title;
 		Detail = detail;
 		Status = (int)status;
-		Payload = payload;
+		//Payload = payload;
 	}
 	string GetTypeFromStatusCode(HttpStatusCode status)
 	{
@@ -146,6 +138,8 @@ public class ProblemDetails
 	public int? Status { get; set; }
 	//[JsonProperty("instance", DefaultValueHandling = DefaultValueHandling.Ignore)]
 	//public string? Instance { get; set; }
-	[JsonProperty("payload", DefaultValueHandling = DefaultValueHandling.Ignore)]
-	public object? Payload { get; set; }
+	//[JsonProperty("payload", DefaultValueHandling = DefaultValueHandling.Ignore)]
+	//public object? Payload { get; set; }
+	[JsonExtensionData]
+	public Dictionary<string, object?>? Extensions { get; internal set; }
 }

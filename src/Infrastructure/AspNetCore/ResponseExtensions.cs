@@ -16,59 +16,99 @@ public static class ResponseExtensions
 	// https://learn.microsoft.com/en-us/aspnet/core/fundamentals/minimal-apis/responses?view=aspnetcore-9.0
 	public static IResult ToApiResult<TPayload>(this Response<TPayload> me)
 	{
-		if(me.Payload is not null)
-		{
-			if(me.IsSuccess)
-				return Results.Ok(me.Payload);
-
-			var extensions = new Dictionary<string, object?>
-			{
-				{
-					"payload", me.Payload
-				}
-			};
-
-			return me.ErrorType switch
-			{
-				ErrorType.NotFound
-					=> Results.Problem(me.Message, statusCode: StatusCodes.Status404NotFound, title: "Not found",extensions: extensions),
-				ErrorType.PermissionDenied
-					=> Results.Problem(me.Message, statusCode: StatusCodes.Status403Forbidden, title: "Forbidden", extensions: extensions),
-				ErrorType.InvalidData
-					=> Results.Problem(me.Message, statusCode: StatusCodes.Status400BadRequest, title: "Bad request", extensions: extensions),
-				ErrorType.Conflict
-					=> Results.Problem(me.Message, statusCode: StatusCodes.Status409Conflict, title: "Conflict", extensions: extensions),
-				ErrorType.Critical
-					=> Results.Problem(me.Message, statusCode: StatusCodes.Status500InternalServerError, title: "Internal server error", extensions: extensions),
-				ErrorType.NotSupported
-					=> Results.Problem(me.Message, statusCode: StatusCodes.Status501NotImplemented, title: "Not implemented", extensions: extensions),
-				ErrorType.Unavailable
-					=> Results.Problem(me.Message, statusCode: StatusCodes.Status503ServiceUnavailable, title: "Service unavailable", extensions: extensions),
-				var _ => Results.Problem(me.Message, statusCode: StatusCodes.Status500InternalServerError, title: "Internal server error", extensions: extensions)
-			};
-		}
 		if (me.IsSuccess)
-			return Results.Ok();
+			if(me.Payload is not null)
+				return Results.Ok(me.Payload);
+			else
+				return Results.NoContent();
+
+		var extensions = me.Extensions?.ToDictionary();
+		if (me.Payload is not null)
+		{
+			extensions ??= new();
+			extensions["payload"] = me.Payload;
+		}
 
 		return me.ErrorType switch
 		{
 			ErrorType.NotFound
-				=> Results.Problem(me.Message, statusCode: StatusCodes.Status404NotFound, title: "Not found"),
+				=> Results.Problem(me.Message, statusCode: StatusCodes.Status404NotFound, title: "Not found", extensions:extensions),
 			ErrorType.PermissionDenied
-				=> Results.Problem(me.Message, statusCode: StatusCodes.Status403Forbidden, title: "Forbidden"),
+				=> Results.Problem(me.Message, statusCode: StatusCodes.Status403Forbidden, title: "Forbidden", extensions: extensions),
 			ErrorType.InvalidData
-				=> Results.Problem(me.Message, statusCode: StatusCodes.Status400BadRequest, title: "Bad request"),
+				=> Results.Problem(me.Message, statusCode: StatusCodes.Status400BadRequest, title: "Bad request", extensions: extensions),
 			ErrorType.Conflict
-				=> Results.Problem(me.Message, statusCode: StatusCodes.Status409Conflict, title: "Conflict"),
+				=> Results.Problem(me.Message, statusCode: StatusCodes.Status409Conflict, title: "Conflict", extensions: extensions),
 			ErrorType.Critical
-				=> Results.Problem(me.Message, statusCode: StatusCodes.Status500InternalServerError, title: "Internal server error"),
+				=> Results.Problem(me.Message, statusCode: StatusCodes.Status500InternalServerError, title: "Internal server error", extensions: extensions),
 			ErrorType.NotSupported
-				=> Results.Problem(me.Message, statusCode: StatusCodes.Status501NotImplemented, title: "Not implemented"),
-			var _ => Results.Problem(me.Message, statusCode: StatusCodes.Status500InternalServerError, title: "Internal server error")
+				=> Results.Problem(me.Message, statusCode: StatusCodes.Status501NotImplemented, title: "Not implemented", extensions: extensions),
+			var _ => Results.Problem(me.Message, statusCode: StatusCodes.Status500InternalServerError, title: "Internal server error", extensions: extensions)
 		};
 	}
-	public static IActionResult ToControllerApiResult(this Response me)
+	public static IActionResult ToApiActionResult(this Response me)
 	{
-		return new ContentResult();
+		if (me.IsSuccess)
+			if (me.Payload is not null)
+				return new OkObjectResult(me.Payload);
+			else
+				return new NoContentResult();
+
+		var extensions = me.Extensions?.ToDictionary();
+		if (me.Payload is not null)
+		{
+			extensions ??= new();
+			extensions["payload"] = me.Payload;
+		}
+
+		return me.ErrorType switch
+		{
+			ErrorType.NotFound
+				=> new ObjectResult(GetProblem(me.Message, StatusCodes.Status404NotFound, "Not found", extensions))
+				{
+					StatusCode = StatusCodes.Status404NotFound
+				},
+			ErrorType.PermissionDenied
+				=> new ObjectResult(GetProblem(me.Message, StatusCodes.Status403Forbidden, "Forbidden", extensions))
+				{
+					StatusCode = StatusCodes.Status403Forbidden
+				},
+			ErrorType.InvalidData
+				=> new ObjectResult(GetProblem(me.Message, StatusCodes.Status400BadRequest, "Bad request", extensions))
+				{
+					StatusCode = StatusCodes.Status400BadRequest
+				},
+			ErrorType.Conflict
+				=> new ObjectResult(GetProblem(me.Message, StatusCodes.Status409Conflict, "Conflict", extensions))
+				{
+					StatusCode = StatusCodes.Status409Conflict
+				},
+			ErrorType.Critical
+				=> new ObjectResult(GetProblem(me.Message, StatusCodes.Status500InternalServerError, "Internal server error", extensions))
+				{
+					StatusCode = StatusCodes.Status500InternalServerError
+				},
+			ErrorType.NotSupported
+				=> new ObjectResult(GetProblem(me.Message, StatusCodes.Status501NotImplemented, "Not implemented", extensions))
+				{
+					StatusCode = StatusCodes.Status501NotImplemented
+				},
+			var _ => new ObjectResult(GetProblem(me.Message, StatusCodes.Status500InternalServerError, "Internal server error", extensions))
+			{
+				StatusCode = StatusCodes.Status500InternalServerError
+			},
+		};
+		ProblemDetails GetProblem(string? detail,int? status, string? title, Dictionary<string,object?>? extensions)
+		{
+			var res = new ProblemDetails
+			{
+				Detail = detail,
+				Status = status,
+				Title = title
+			};
+			if(extensions is not null)
+				res.Extensions = extensions;
+			return res;
+		}
 	}
 }

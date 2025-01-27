@@ -31,6 +31,7 @@ public class ResponseTest(ITestOutputHelper output) : BaseTest<ResponseTest>(out
 	public void Success()
 	{
 		var s1 = Response.Get.Success();
+
 		Assert.Null(s1.Message);
 		Assert.Null(s1.Payload);
 		var s2 = Response.Get.Success("message");
@@ -82,6 +83,7 @@ public class ResponseTest(ITestOutputHelper output) : BaseTest<ResponseTest>(out
 		Dictionary<int, int> dic = new();
 		var res = Do();
 		PrintVariable(res.SerializeToJson(true));
+
 		return;
 		Response<int> Do()
 		{

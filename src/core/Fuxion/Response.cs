@@ -21,7 +21,7 @@ public class Response
 		string? message = null,
 		object? type = null,
 		Exception? exception = null)
-		: this(isSuccess, null, message, type, exception) { }
+		: this(isSuccess, isSuccess ? new object() : null, message, type, exception) { }
 	public bool TryGetPayload<TPayload>([NotNullWhen(true)] out TPayload payload)
 	{
 		if (Payload is TPayload tp)
@@ -37,13 +37,15 @@ public class Response
 
 public class Response<TPayload>(
 	bool isSuccess,
-	TPayload? payload,
+	TPayload payload,
 	string? message = null,
 	object? type = null,
 	Exception? exception = null)
 {
+	[MemberNotNullWhen(true, nameof(Payload))]
 	public bool IsSuccess { get; } = isSuccess;
 	[JsonIgnore]
+	[MemberNotNullWhen(false, nameof(Payload))]
 	public bool IsError => !IsSuccess;
 
 	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
@@ -76,7 +78,7 @@ public class Response<TPayload>(
 		};
 	public static implicit operator Response<TPayload>(Response response) => new(
 		response.IsSuccess,
-		response.Payload is TPayload payload ? payload : default,
+		response.Payload is TPayload payload ? payload : default!,
 		response.Message,
 		response.ErrorType,
 		response.Exception)
@@ -95,8 +97,6 @@ public static class ResponseExtensions
 	}
 
 	// Response.Get helpers
-	//public static Response Success(this IResponseFactory me)
-	//	=> new(true);
 	public static Response Success(this IResponseFactory me, string message)
 		=> new(true, message);
 	public static Response Success(this IResponseFactory me, string? message = null, params (string Property, object? Value)[] extensions)
