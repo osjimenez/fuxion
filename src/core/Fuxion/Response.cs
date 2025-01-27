@@ -44,6 +44,7 @@ public class Response<TPayload>(
 {
 	[MemberNotNullWhen(true, nameof(Payload))]
 	public bool IsSuccess { get; } = isSuccess;
+
 	[JsonIgnore]
 	[MemberNotNullWhen(false, nameof(Payload))]
 	public bool IsError => !IsSuccess;
@@ -56,6 +57,7 @@ public class Response<TPayload>(
 
 	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
 	public object? ErrorType { get; } = type;
+
 	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 	[JsonConverter(typeof(ExceptionConverter))]
 	public Exception? Exception { get; } = exception;
@@ -66,7 +68,7 @@ public class Response<TPayload>(
 	public static implicit operator TPayload?(Response<TPayload> response) => response.Payload;
 	public static implicit operator Response<TPayload>(TPayload payload) => new(true, payload);
 
-	public static implicit operator Response(Response<TPayload> response) 
+	public static implicit operator Response(Response<TPayload> response)
 		=> new(
 			response.IsSuccess,
 			response.Payload,
@@ -177,18 +179,6 @@ public static class ResponseExtensions
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum ErrorType
 {
-	////Ok,
-	////Created,
-	//Error,
-	//Forbidden,
-	//Unauthorized,
-	//Invalid,
-	//NotFound,
-	////NoContent,
-	//Conflict,
-	//CriticalError,
-	//Unavailable,
-
 	NotFound,
 	PermissionDenied,
 	InvalidData,

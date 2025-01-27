@@ -73,7 +73,6 @@ public class ProblemDetails
 		Title = title;
 		Detail = detail;
 		Status = (int)status;
-		//Payload = payload;
 	}
 	string GetTypeFromStatusCode(HttpStatusCode status)
 	{
@@ -131,17 +130,26 @@ public class ProblemDetails
 	string GetTypeFromInt(int status) => GetTypeFromStatusCode((HttpStatusCode)status);
 
 	[JsonProperty("type", DefaultValueHandling = DefaultValueHandling.Ignore)]
+	[System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+	[System.Text.Json.Serialization.JsonPropertyName("type")]
 	public string? Type { get; set; }
+
 	[JsonProperty("title", DefaultValueHandling = DefaultValueHandling.Ignore)]
+	[System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+	[System.Text.Json.Serialization.JsonPropertyName("title")]
 	public string? Title { get; set; }
+
 	[JsonProperty("detail", DefaultValueHandling = DefaultValueHandling.Ignore)]
+	[System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+	[System.Text.Json.Serialization.JsonPropertyName("detail")]
 	public string? Detail { get; set; }
+
 	[JsonProperty("status", DefaultValueHandling = DefaultValueHandling.Ignore)]
+	[System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+	[System.Text.Json.Serialization.JsonPropertyName("status")]
 	public int? Status { get; set; }
-	//[JsonProperty("instance", DefaultValueHandling = DefaultValueHandling.Ignore)]
-	//public string? Instance { get; set; }
-	//[JsonProperty("payload", DefaultValueHandling = DefaultValueHandling.Ignore)]
-	//public object? Payload { get; set; }
+
 	[JsonExtensionData]
+	[System.Text.Json.Serialization.JsonExtensionData]
 	public Dictionary<string, object?>? Extensions { get; internal set; }
 }
