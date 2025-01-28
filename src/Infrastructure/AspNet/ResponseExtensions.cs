@@ -11,16 +11,22 @@ namespace Fuxion.AspNet;
 
 public static class ResponseExtensions
 {
+	public static bool IncludeException { get; set; } = true;
 	public static IHttpActionResult ToApiResult<TPayload>(this Response<TPayload> me)
 	{
 		if (me.IsSuccess)
 			return HttpActionResultFactory.Success(me.Payload);
 
-		var extensions = me.Extensions?.ToDictionary(e=>e.Key, e=>e.Value);
+		var extensions = me.Extensions?.ToDictionary(e => e.Key, e => e.Value);
 		if (me.Payload is not null)
 		{
 			extensions ??= new();
 			extensions["payload"] = me.Payload;
+		}
+		if(IncludeException && me.Exception is not null)
+		{
+			extensions ??= new();
+			extensions["exception"] = me.Exception;
 		}
 
 		return me.ErrorType switch
@@ -53,7 +59,6 @@ file class HttpActionResultFactory(HttpStatusCode status, object? payload = null
 				Content = new StringContent(payload.SerializeToJson(true),Encoding.UTF8,"application/json")
 				//Content = new ObjectContent(payload.GetType(), payload, new JsonMediaTypeFormatter()),
 			});
-	//public static IHttpActionResult Ok() => new HttpActionResultFactory(HttpStatusCode.OK);
 	public static IHttpActionResult Success(object? payload) 
 		=> payload is null
 			? new HttpActionResultFactory(HttpStatusCode.NoContent, payload)

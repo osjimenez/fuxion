@@ -13,6 +13,7 @@ namespace Fuxion.AspNetCore;
 
 public static class ResponseExtensions
 {
+	public static bool IncludeException { get; set; } = true;
 	// https://learn.microsoft.com/en-us/aspnet/core/fundamentals/minimal-apis/responses?view=aspnetcore-9.0
 	public static IResult ToApiResult<TPayload>(this Response<TPayload> me)
 	{
@@ -27,6 +28,11 @@ public static class ResponseExtensions
 		{
 			extensions ??= new();
 			extensions["payload"] = me.Payload;
+		}
+		if (IncludeException && me.Exception is not null)
+		{
+			extensions ??= new();
+			extensions["exception"] = me.Exception;
 		}
 
 		return me.ErrorType switch
