@@ -20,6 +20,8 @@ public static class ResponseExtensions
 		if (me.IsSuccess)
 			if(me.Payload is not null)
 				return Results.Ok(me.Payload);
+			else if (me.Message is not null)
+				return Results.Ok(me.Message);
 			else
 				return Results.NoContent();
 
