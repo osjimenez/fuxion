@@ -21,7 +21,7 @@ public class Response
 		string? message = null,
 		object? type = null,
 		Exception? exception = null)
-		: this(isSuccess, isSuccess ? new object() : null, message, type, exception) { }
+		: this(isSuccess, null, message, type, exception) { }
 	public bool TryGetPayload<TPayload>([NotNullWhen(true)] out TPayload payload)
 	{
 		if (Payload is TPayload tp)
