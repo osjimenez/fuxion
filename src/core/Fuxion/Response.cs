@@ -125,6 +125,9 @@ public static class ResponseExtensions
 	public static bool IsErrorType<TPayload>(this Response<TPayload> res, object type)
 		=> res.ErrorType?.Equals(type) == true;
 
+	public static Response Exception(this IResponseFactory me, Exception exception, string? message = null)
+		=> new(false, message ?? $"{exception.GetType().Name}: {exception.Message}", exception: exception);
+
 	// Specific error types
 	public static Response NotFound(this IErrorResponseFactory me, string message, Exception? exception = null, params (string Property, object? Value)[] extensions)
 		=> me.Factory.Error(message, ErrorType.NotFound, exception, extensions);

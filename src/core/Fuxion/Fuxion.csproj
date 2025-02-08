@@ -5,6 +5,8 @@
 		<Title>Fuxion</Title>
 		<PackageId>Fuxion</PackageId>
 		<Description>Fuxion library</Description>
+		<!--<UpdateAssemblyInfo>true</UpdateAssemblyInfo>
+		<GitVersionTargetFramework>net8.0</GitVersionTargetFramework>-->
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -54,13 +56,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="9.0.0" />
-		<PackageReference Include="System.Text.Json" Version="9.0.0" />
-		<PackageReference Include="PolySharp" Version="1.15.0">
+		<PackageReference Include="GitVersion.MsBuild" Version="6.1.0">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="9.0.0" />
+		<PackageReference Include="System.Text.Json" Version="9.0.0" />
 	</ItemGroup>
 
 
@@ -75,6 +77,10 @@
 	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' Or '$(TargetFramework)' == 'net462'">
 		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
 		<PackageReference Include="System.Net.Http" Version="4.3.4" />
+		<PackageReference Include="PolySharp" Version="1.15.0">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 	</ItemGroup>
 
 </Project>

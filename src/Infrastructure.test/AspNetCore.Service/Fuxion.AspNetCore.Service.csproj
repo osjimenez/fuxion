@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\core\Fuxion\Fuxion.csproj" />
+		<ProjectReference Include="..\..\Infrastructure\AspNetCore\Fuxion.AspNetCore.csproj" />
+	</ItemGroup>
+
+</Project>

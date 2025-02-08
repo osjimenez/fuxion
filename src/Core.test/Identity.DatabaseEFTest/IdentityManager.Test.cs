@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using Fuxion.Identity.Test;
 using Fuxion.Identity.Test.Dao;
 using Fuxion.Identity.Test.Mocks;
@@ -28,14 +28,10 @@ public class IdentityManagerTest
 		public const string scenarios = "";
 #endif
 	IdentityManager? _IdentityManager;
-	IdentityManager IM
-	{
-		get
-		{
-			if (_IdentityManager == null) _IdentityManager = new(new PasswordProviderMock(), new CurrentUserNameProviderMock(() => "root"), new IdentityMemoryTestRepository());
-			return _IdentityManager;
-		}
-	}
+	IdentityManager IM => _IdentityManager ??= new(
+		new PasswordProviderMock(),
+		new CurrentUserNameProviderMock(() => "root"),
+		new IdentityMemoryTestRepository());
 
 	#region Login
 	[Theory]

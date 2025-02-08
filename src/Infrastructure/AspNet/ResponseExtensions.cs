@@ -6,6 +6,7 @@ using System.Text;
 using System.Web.Http;
 using System.Web.Http.Results;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Fuxion.AspNet;
 
@@ -26,7 +27,7 @@ public static class ResponseExtensions
 		if(IncludeException && me.Exception is not null)
 		{
 			extensions ??= new();
-			extensions["exception"] = me.Exception;
+			extensions["exception"] = JObject.Parse(me.Exception.SerializeToJson(true));
 		}
 
 		return me.ErrorType switch
@@ -134,24 +135,20 @@ public class ProblemDetails
 	}
 	string GetTypeFromInt(int status) => GetTypeFromStatusCode((HttpStatusCode)status);
 
-	[JsonProperty("type", DefaultValueHandling = DefaultValueHandling.Ignore)]
+	[JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
 	[System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
-	[System.Text.Json.Serialization.JsonPropertyName("type")]
 	public string? Type { get; set; }
 
-	[JsonProperty("title", DefaultValueHandling = DefaultValueHandling.Ignore)]
+	[JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
 	[System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
-	[System.Text.Json.Serialization.JsonPropertyName("title")]
 	public string? Title { get; set; }
 
-	[JsonProperty("detail", DefaultValueHandling = DefaultValueHandling.Ignore)]
+	[JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
 	[System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
-	[System.Text.Json.Serialization.JsonPropertyName("detail")]
 	public string? Detail { get; set; }
 
-	[JsonProperty("status", DefaultValueHandling = DefaultValueHandling.Ignore)]
+	[JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
 	[System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
-	[System.Text.Json.Serialization.JsonPropertyName("status")]
 	public int? Status { get; set; }
 
 	[JsonExtensionData]

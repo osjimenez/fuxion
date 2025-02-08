@@ -84,6 +84,7 @@ public class StackTraceFallbackResolver : PropertyFallbackResolver
 		if (propertyInfo.GetValue(value) is not string str) throw new InvalidProgramException("str cannot be null");
 		writer.WritePropertyName(propertyInfo.Name);
 		writer.WriteStartArray();
+		var lineOrder = 1;
 		foreach (var item in str.SplitInLines())
 		{
 			var val = item;
@@ -95,6 +96,7 @@ public class StackTraceFallbackResolver : PropertyFallbackResolver
 				var s2 = s1[1].Split([":line"], StringSplitOptions.RemoveEmptyEntries);
 				JsonSerializer.Serialize(writer, new
 				{
+					Order = lineOrder,
 					At = s1[0].Trim(),
 					In = s2[0].Trim(),
 					Line = s2[1].Trim()
@@ -103,9 +105,11 @@ public class StackTraceFallbackResolver : PropertyFallbackResolver
 			{
 				JsonSerializer.Serialize(writer, new
 				{
+					Order = lineOrder,
 					At = s1[0].Trim()
 				}, options);
 			}
+			lineOrder++;
 		}
 		writer.WriteEndArray();
 	}
@@ -131,7 +135,6 @@ public class FallbackConverter<T> : JsonConverter<T>
 	public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
 	{
 		if (value is null) throw new ArgumentNullException(nameof(value));
-		Printer.Write($"Write '{typeof(T).Name}'");
 		try
 		{
 			JsonSerializerOptions opt = new(options);
@@ -141,10 +144,8 @@ public class FallbackConverter<T> : JsonConverter<T>
 			//	opt.Converters.Add(conv);
 			var json = value.SerializeToJson(options: opt);
 			writer.WriteRawValue(json);
-			Printer.WriteLine(" = OK");
 		} catch
 		{
-			Printer.WriteLine(" = FAILED");
 			writer.WriteStartObject();
 			foreach (var prop in value.GetType().GetProperties())
 			{
@@ -174,12 +175,10 @@ public class FallbackConverter<T> : JsonConverter<T>
 			});
 			if (converter is null) throw new InvalidProgramException($"Program couldn't create FallbackConverter<{value.GetType().Name}>");
 			opt.Converters.Add((JsonConverter)converter);
-			using var d = Printer.Indent($"Write RAW with {converterType.GetSignature()}", '·');
 			var json = value.SerializeToJson(options: opt);
 			writer.WriteRawValue(json);
 		} catch (Exception ex)
 		{
-			Printer.WriteLine($"***** ERROR '{ex.Message}'");
 			writer.WriteRawValue($"\"ERROR '{ex.Message}'\"");
 		}
 	}
