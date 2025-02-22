@@ -682,8 +682,8 @@ public static partial class Extensions
 	{
 		return string.Format(me, @params);
 	}
-	public static bool IsNullOrEmpty(this string me) => string.IsNullOrEmpty(me);
-	public static bool IsNullOrWhiteSpace(this string me) => string.IsNullOrWhiteSpace(me);
+	public static bool IsNullOrEmpty(this string? me) => string.IsNullOrEmpty(me);
+	public static bool IsNullOrWhiteSpace(this string? me) => string.IsNullOrWhiteSpace(me);
 	#endregion
 
 	#region IsBetween
