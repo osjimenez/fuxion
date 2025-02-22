@@ -504,7 +504,11 @@ public static partial class Extensions
 			for (var i = 0; i < NumberChars; i += 2)
 				bytes[i / 2] = Convert.ToByte(me.Substring(i, 2), 16);
 		if (isBigEndian)
-			bytes = bytes.Reverse().ToArray();
+		{
+			var list = bytes.ToList();
+			list.Reverse();
+			bytes = list.ToArray();
+		}
 		return bytes;
 	}
 	public static string ToBase64String(this byte[] me) => Convert.ToBase64String(me);
