@@ -483,8 +483,10 @@ public static partial class Extensions
 	{
 		string hex;
 		if (asBigEndian)
-			hex = BitConverter.ToString(me.Reverse().ToArray());
-		else
+		{
+			var tt = me.Reverse();
+			hex = BitConverter.ToString(tt.ToArray());
+		} else
 			hex = BitConverter.ToString(me);
 		if (separatorChar is not null) return hex.Replace('-', separatorChar.Value);
 		return hex.Replace("-", string.Empty);
