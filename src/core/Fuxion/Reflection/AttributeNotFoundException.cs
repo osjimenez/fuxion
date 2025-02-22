@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 
 namespace Fuxion.Reflection;
 
@@ -13,8 +13,11 @@ public class AttributeNotFoundException : FuxionException
 	/// <param name="member">Miembro sobre el que se ha buscado el atributo personalizado.</param>
 	/// <param name="attributeType">Tipo del atributo personalizado que se ha buscado.</param>
 	public AttributeNotFoundException(MemberInfo member, Type attributeType) : base(
-		(member.DeclaringType == null ? "Type '" + member.Name + "' " : "The member '" + member.Name + "' of the type '" + member.DeclaringType.Name + "' ") + "it's not adorned with attribute '"
-		+ attributeType.Name + "'.")
+		(member.DeclaringType == null 
+			? "Type '" + (member is Type t1 ? t1.GetSignature() : member.Name) + "' "
+			: "The member '" + (member is Type t2 ? t2.GetSignature() : member.Name) + "' of the type '" 
+				+ member.DeclaringType.GetSignature() + "' ") + "it's not adorned with attribute '"
+				+ attributeType.GetSignature() + "'.")
 	{
 		Member = member;
 		AttributeType = attributeType;

@@ -348,6 +348,16 @@ public class SystemExtensionsTest : BaseTest<SystemExtensionsTest>
 		Assert.False(typeof(MockEnum).IsNullableValue<MockEnum>());
 		Assert.True(typeof(MockEnum?).IsNullableValue<MockEnum>());
 	}
+	[Fact(DisplayName = "Type - GetSignature")]
+	public void GetSignature()
+	{
+		Assert.Equal("bool", typeof(bool).GetSignature());
+		Assert.Equal("byte", typeof(byte).GetSignature());
+		Assert.Equal("byte[]", typeof(byte[]).GetSignature());
+		Assert.Equal("List<byte[]>", typeof(List<byte[]>).GetSignature());
+		// TODO Esto no va
+		//Assert.Equal("List<(string Name, int Age)>", typeof(List<(string Name, int Age)>).GetSignature());
+	}
 	[Fact(DisplayName = "Range - Custom integer enumerator")]
 	public void CustomIntEnumerator()
 	{

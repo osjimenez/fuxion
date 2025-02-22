@@ -1,3 +1,4 @@
+using System.Buffers.Text;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -7,13 +8,14 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 using Fuxion.Json;
 using Fuxion.Resources;
 using Fuxion.Text.Json.Serialization;
 
 namespace Fuxion;
 
-public static class Extensions
+public static partial class Extensions
 {
 	/// <summary>
 	///    Permite una clonación en profundidad de origen.
@@ -60,7 +62,7 @@ public static class Extensions
 		=> new(me, actionOnDispose);
 	public static DisposableEnvelope<T> AsDisposableAsync<T>(this T me, Func<T, ValueTask>? functionOnDispose = null)
 		where T : notnull
-		=> new (me, functionOnDispose);
+		=> new(me, functionOnDispose);
 	#endregion
 
 	#region IsNullOrDefault
@@ -296,24 +298,49 @@ public static class Extensions
 			? Activator.CreateInstance(me)
 			: null;
 	public static string GetFullNameWithAssemblyName(this Type me) => $"{me.AssemblyQualifiedName?.Split(',').Take(2).Aggregate("", (a, n) => a + ", " + n, a => a.Trim(' ', ','))}";
+	const string FileScopeClassNameRegexPattern = "^(.*)<[a-zA-Z_]+>[A-F0-9]+__(.*)$";
+#if !NET462 && !NETSTANDARD2_0
+	[GeneratedRegex(FileScopeClassNameRegexPattern)]
+	private static partial Regex FileScopeClassNameRegex();
+#endif
 	public static string GetSignature(this Type type, bool useFullNames = false)
 	{
+		var regex =
+#if NET462 || NETSTANDARD2_0
+		new Regex(FileScopeClassNameRegexPattern);
+#else
+		FileScopeClassNameRegex();
+#endif
+		var name = useFullNames && !string.IsNullOrWhiteSpace(type.FullName) ? type.FullName : type.Name;
+		var match = regex.Match(name);
+		if (match.Success && match.Groups.Count >= 3) name = match.Groups[1].Value + match.Groups[2].Value;
+		//name = type.Name[(type.Name.IndexOf("__", StringComparison.Ordinal) + 2)..];
+
 		var nullableType = Nullable.GetUnderlyingType(type);
 		if (nullableType != null) return nullableType.GetSignature(useFullNames) + "?";
-		var typeName = useFullNames && !string.IsNullOrWhiteSpace(type.FullName) ? type.FullName : type.Name;
+		//var name = useFullNames && !string.IsNullOrWhiteSpace(type.FullName) ? type.FullName : typeName;
 		if (!type.GetTypeInfo()
 			.IsGenericType)
 			return type.Name switch
 			{
 				"String" => "string",
+				"String[]" => "string[]",
+				"Boolean" => "bool",
+				"Boolean[]" => "bool[]",
 				"Int32" => "int",
+				"Int32[]" => "int[]",
 				"Int64" => "long",
+				"Int64[]" => "long[]",
 				"Decimal" => "decimal",
+				"Decimal[]" => "decimal[]",
+				"Byte" => "byte",
+				"Byte[]" => "byte[]",
 				"Object" => "object",
+				"Object[]" => "object[]",
 				"Void" => "void",
-				var _ => typeName
+				var _ => name
 			};
-		StringBuilder sb = new(typeName[..typeName.IndexOf('`')]);
+		StringBuilder sb = new(name[..name.IndexOf('`')]);
 		sb.Append('<');
 		var first = true;
 		foreach (var t in type.GenericTypeArguments)
@@ -480,6 +507,12 @@ public static class Extensions
 	public static string ToBase64String(this byte[] me) => Convert.ToBase64String(me);
 	public static string ToBase64UrlString(this byte[] me)
 	{
+#if NET9_0_OR_GREATER
+		return Base64Url.EncodeToString(me);
+#endif
+		// TODO More efficient implementation
+		// https://github.com/dotnet/aspnetcore/blob/ec389c71560ceba39148831343ba8f20962e0228/src/Shared/WebEncoders/WebEncoders.cs#L367
+		// https://github.com/dotnet/aspnetcore/blob/main/src/Http/WebUtilities/src/Base64UrlTextEncoder.cs
 		var s = Convert.ToBase64String(me); // Regular base64 encoder
 		s = s.Split('=')[0]; // Remove any trailing '='s
 		s = s.Replace('+', '-'); // 62nd char of encoding
@@ -489,6 +522,9 @@ public static class Extensions
 	public static byte[] FromBase64String(this string me) => Convert.FromBase64String(me);
 	public static byte[] FromBase64UrlString(this string me)
 	{
+#if NET9_0_OR_GREATER
+		return Base64Url.DecodeFromChars(me);
+#endif
 		var s = me;
 		s = s.Replace('-', '+'); // 62nd char of encoding
 		s = s.Replace('_', '/'); // 63rd char of encoding
@@ -497,7 +533,8 @@ public static class Extensions
 			case 0: break; // No pad chars in this case
 			case 2: s += "=="; break; // Two pad chars
 			case 3: s += "="; break; // One pad char
-			default: throw new System.Exception(
+			default:
+				throw new System.Exception(
 				"Illegal base64url string!");
 		}
 		return Convert.FromBase64String(s); // Standard base64 decoder
@@ -590,7 +627,7 @@ public static class Extensions
 	public static IEnumerable<int> AllIndexesOf(this string me, string value, StringComparison comparisonType)
 	{
 		if (string.IsNullOrEmpty(value)) throw new ArgumentException("The string to find may not be empty", "value");
-		for (var index = 0;; index += value.Length)
+		for (var index = 0; ; index += value.Length)
 		{
 			index = me.IndexOf(value, index, comparisonType);
 			if (index == -1) break;
@@ -638,6 +675,8 @@ public static class Extensions
 	{
 		return string.Format(me, @params);
 	}
+	public static bool IsNullOrEmpty(this string me) => string.IsNullOrEmpty(me);
+	public static bool IsNullOrWhiteSpace(this string me) => string.IsNullOrWhiteSpace(me);
 	#endregion
 
 	#region IsBetween
@@ -730,7 +769,7 @@ public static class Extensions
 	public static CustomIntEnumerator GetEnumerator(this int number)
 		=> number <= 0 ? throw new ArgumentException($"{nameof(number)} must be a positive value greater than 0", nameof(number)) : new(new(0, number));
 	#endregion
-	
+
 	#region Exception
 	public static string GetDeeperInnerMessage(this Exception me)
 	{
@@ -757,3 +796,4 @@ public struct CustomIntEnumerator
 		return Current <= _end;
 	}
 }
+

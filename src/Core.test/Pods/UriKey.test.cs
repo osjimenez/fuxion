@@ -128,12 +128,12 @@ public class UriKeyTest(ITestOutputHelper output) : BaseTest<UriKeyTest>(output)
 		void DoTypeThrow<TException>(Type type)
 			where TException : Exception
 		{
-			Output.WriteLine("\t" + type.Name);
+			Output.WriteLine("\t" + type.GetSignature());
 			Throws<TException>(() => type.GetUriKey(), "\t\t");
 		}
 		void DoType(Type type)
 		{
-			Output.WriteLine("\t" + type.Name);
+			Output.WriteLine("\t" + type.GetSignature());
 			Output.WriteLine("\t\t" + type.GetUriKey());
 		}
 	}
@@ -313,7 +313,6 @@ public class UriKeyTest(ITestOutputHelper output) : BaseTest<UriKeyTest>(output)
 		// Version is mandatory over the echelon
 		// An echelon must be compatible with the version
 		// that is the first thing to compare
-
 		var e1_v1_0_0 = new UriKey("https://fuxion.dev/one/1.0.0");
 		var e1_v1_0_1 = new UriKey("https://fuxion.dev/one/1.0.1");
 		var e1_v1_1_0 = new UriKey("https://fuxion.dev/one/1.1.0");
@@ -338,7 +337,6 @@ public class UriKeyTest(ITestOutputHelper output) : BaseTest<UriKeyTest>(output)
 		// 3. If major versions are equals, the greater echelon is the greater
 		IsTrue(e1_v1_0_1 < e2_v1_0_0);
 		IsTrue(e1_v1_1_0 < e2_v1_0_0);
-		IsTrue(e1_v1_0_1 < e2_v1_0_0);
 
 
 

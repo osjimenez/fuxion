@@ -80,7 +80,7 @@ public static class UriKeyExtensions
 		if (!keyList.Last()
 			.First()
 			.Uri?.IsAbsoluteUri ?? true)
-			throw new UriKeyInheritanceException($"'{nameof(UriKeyAttribute)}' inheritance must start with an absolute uri. The type '{me.Name}' couldn't be processed.");
+			throw new UriKeyInheritanceException($"'{nameof(UriKeyAttribute)}' inheritance must start with an absolute uri. The type '{me.GetSignature()}' couldn't be processed.");
 		List<((Uri Uri, Type Type)? Current, (Uri Uri, Type Type)? Base, Exception? Exception)> results = new();
 		foreach (var list in keyList)
 		{
@@ -93,12 +93,12 @@ public static class UriKeyExtensions
 				// If any except first in the chain is seal, throw
 				var @sealed = list.Skip(1)
 					.FirstOrDefault(t => t.IsSealed ?? false);
-				if (@sealed.Uri is not null) throw new UriKeySealedException($"Type '{@sealed.Type.Name}' is sealed in '{nameof(UriKeyAttribute)}'.");
+				if (@sealed.Uri is not null) throw new UriKeySealedException($"Type '{@sealed.Type.GetSignature()}' is sealed in '{nameof(UriKeyAttribute)}'.");
 				// If first in the chain is bypass, save the exception to add it to the list
 				UriKeyBypassedException? bypassedException = null;
 				if (list.Last()
 					.Bypass is not null)
-					bypassedException = new($"Type '{me.Name}' is bypassed and cannot have a '{nameof(UriKey)}' associated.");
+					bypassedException = new($"Type '{me.GetSignature()}' is bypassed and cannot have a '{nameof(UriKey)}' associated.");
 				// Create uris
 				results.Add(((list.Where(t => t.Bypass == null)
 					.Select(t => t.Uri)
@@ -133,7 +133,7 @@ public static class UriKeyExtensions
 				// PEND Change by: @base.Value.Uri > lastKeyUri - or maybe <, check it
 				// PEND Search all IsBaseOf to apply this change if necessary
 				if (@base.Value.Uri.IsBaseOf(lastKeyUri))
-					throw new UriKeyResetException($"The uri '{lastKeyUri}' of the reset type '{lastKeyType.Name}' cannot be based on previous uri '{@base.Value.Uri}' of type '{@base.Value.Type.Name}'");
+					throw new UriKeyResetException($"The uri '{lastKeyUri}' of the reset type '{lastKeyType.GetSignature()}' cannot be based on previous uri '{@base.Value.Uri}' of type '{@base.Value.Type.GetSignature()}'");
 				keyChain += Encoding.UTF8.GetBytes(current.Uri.ToString())
 					.ToBase64UrlString()+UriKey.ParameterSeparator;
 			}
