@@ -72,8 +72,12 @@ file class HttpActionResultFactory(HttpStatusCode status, object? payload = null
 			{
 				Content = ResponseExtensions.UseNewtonsoft
 					? new ObjectContent(payload.GetType(), payload, new JsonMediaTypeFormatter())
-					: new StringContent(payload.SerializeToJson(true, ResponseExtensions.JsonSerializerOptions), Encoding.UTF8, "application/json"),
-			});
+					: new StringContent(payload.SerializeToJson(
+							true, ResponseExtensions.JsonSerializerOptions != null
+								? new(ResponseExtensions.JsonSerializerOptions)
+								: null),
+						Encoding.UTF8,
+						"application/json"), });
 	public static IHttpActionResult Success(object? payload)
 		=> payload is null
 			? new HttpActionResultFactory(HttpStatusCode.NoContent, payload)
