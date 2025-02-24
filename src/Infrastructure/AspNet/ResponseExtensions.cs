@@ -3,9 +3,10 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Formatting;
 using System.Text;
+using System.Text.Json;
 using System.Web.Http;
 using System.Web.Http.Results;
-using Newtonsoft.Json;
+using Fuxion.Text.Json.Serialization;
 using Newtonsoft.Json.Linq;
 
 namespace Fuxion.AspNet;
@@ -13,6 +14,8 @@ namespace Fuxion.AspNet;
 public static class ResponseExtensions
 {
 	public static bool IncludeException { get; set; } = true;
+	public static bool UseNewtonsoft { get; set; } = false;
+	public static JsonSerializerOptions? JsonSerializerOptions { get; set; }
 	public static IHttpActionResult ToApiResult<TPayload>(this Response<TPayload> me)
 	{
 		if (me.IsSuccess)
@@ -24,10 +27,20 @@ public static class ResponseExtensions
 			extensions ??= new();
 			extensions["payload"] = me.Payload;
 		}
-		if(IncludeException && me.Exception is not null)
+		if (IncludeException && me.Exception is not null)
 		{
 			extensions ??= new();
-			extensions["exception"] = JObject.Parse(me.Exception.SerializeToJson(true));
+			var jsonOptions = JsonSerializerOptions is null
+				? new(){ Converters = { new ExceptionConverter() } }
+				: JsonSerializerOptions.Transform(o=>
+				{
+					var res = new JsonSerializerOptions(o);
+					res.Converters.Add(new ExceptionConverter());
+					return res;
+				});
+			extensions["exception"] = UseNewtonsoft
+				? JObject.Parse(me.Exception.SerializeToJson(true))
+				: JsonSerializer.SerializeToElement(me.Exception, options: jsonOptions);
 		}
 
 		return me.ErrorType switch
@@ -57,14 +70,15 @@ file class HttpActionResultFactory(HttpStatusCode status, object? payload = null
 			? Task.FromResult(new HttpResponseMessage(status))
 			: Task.FromResult(new HttpResponseMessage(status)
 			{
-				Content = new StringContent(payload.SerializeToJson(true),Encoding.UTF8,"application/json")
-				//Content = new ObjectContent(payload.GetType(), payload, new JsonMediaTypeFormatter()),
+				Content = ResponseExtensions.UseNewtonsoft
+					? new ObjectContent(payload.GetType(), payload, new JsonMediaTypeFormatter())
+					: new StringContent(payload.SerializeToJson(true, ResponseExtensions.JsonSerializerOptions), Encoding.UTF8, "application/json"),
 			});
-	public static IHttpActionResult Success(object? payload) 
+	public static IHttpActionResult Success(object? payload)
 		=> payload is null
 			? new HttpActionResultFactory(HttpStatusCode.NoContent, payload)
 			: new HttpActionResultFactory(HttpStatusCode.OK, payload);
-	public static IHttpActionResult Problem(string? detail, HttpStatusCode statusCode, string title, Dictionary<string,object?>? extensions)
+	public static IHttpActionResult Problem(string? detail, HttpStatusCode statusCode, string title, Dictionary<string, object?>? extensions)
 		=> new HttpActionResultFactory(statusCode, new ProblemDetails(statusCode, title, detail)
 		{
 			Extensions = extensions
@@ -135,23 +149,23 @@ public class ProblemDetails
 	}
 	string GetTypeFromInt(int status) => GetTypeFromStatusCode((HttpStatusCode)status);
 
-	[JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+	[Newtonsoft.Json.JsonProperty(DefaultValueHandling = Newtonsoft.Json.DefaultValueHandling.Ignore)]
 	[System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
 	public string? Type { get; set; }
 
-	[JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+	[Newtonsoft.Json.JsonProperty(DefaultValueHandling = Newtonsoft.Json.DefaultValueHandling.Ignore)]
 	[System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
 	public string? Title { get; set; }
 
-	[JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+	[Newtonsoft.Json.JsonProperty(DefaultValueHandling = Newtonsoft.Json.DefaultValueHandling.Ignore)]
 	[System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
 	public string? Detail { get; set; }
 
-	[JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+	[Newtonsoft.Json.JsonProperty(DefaultValueHandling = Newtonsoft.Json.DefaultValueHandling.Ignore)]
 	[System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
 	public int? Status { get; set; }
 
-	[JsonExtensionData]
+	[Newtonsoft.Json.JsonExtensionData]
 	[System.Text.Json.Serialization.JsonExtensionData]
 	public Dictionary<string, object?>? Extensions { get; internal set; }
 }
